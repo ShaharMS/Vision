@@ -1,0 +1,8 @@
+{
+    "name": "Vision",
+    "license": "MIT",
+    "version": "1.0.0-alpha",   
+    "description": "Vision is a simple, powerful and flexible image processing library for Haxe.",
+    "contributors": ["ShaharMS"],
+    "releasenote": "Vision is a simple, powerful and flexible image processing library for Haxe."
+}

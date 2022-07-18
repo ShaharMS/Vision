@@ -1,0 +1,6 @@
+--class-path src
+--main Main
+
+--library formula
+--library console.hx
+--js bin/main.js
