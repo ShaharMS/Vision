@@ -240,36 +240,36 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	}
 
 	/**
-	 * Multiply the RGB channels of two Colors
+	 * Multiply the RGB and alpha channels of two Colors
 	 */
 	@:op(A * B)
 	public static inline function multiply(lhs:Color, rhs:Color):Color
 	{
-		return Color.fromRGBFloat(lhs.redFloat * rhs.redFloat, lhs.greenFloat * rhs.greenFloat, lhs.blueFloat * rhs.blueFloat);
+		return Color.fromRGBFloat(lhs.redFloat * rhs.redFloat, lhs.greenFloat * rhs.greenFloat, lhs.blueFloat * rhs.blueFloat, lhs.alphaFloat * rhs.alphaFloat);
 	}
 
 	/**
-	 * Add the RGB channels of two Colors
+	 * Add the RGB and alpha channels of two Colors
 	 */
 	@:op(A + B)
 	public static inline function add(lhs:Color, rhs:Color):Color
 	{
-		return Color.fromRGB(lhs.red + rhs.red, lhs.green + rhs.green, lhs.blue + rhs.blue);
+		return Color.fromRGB(lhs.red + rhs.red, lhs.green + rhs.green, lhs.blue + rhs.blue, lhs.alpha + rhs.alpha);
 	}
 
 	/**
-	 * Subtract the RGB channels of one Color from another
+	 * Subtract the RGB and alpha channels of one Color from another
 	 */
 	@:op(A - B)
 	public static inline function subtract(lhs:Color, rhs:Color):Color
 	{
-		return Color.fromRGB(lhs.red - rhs.red, lhs.green - rhs.green, lhs.blue - rhs.blue);
+		return Color.fromRGB(lhs.red - rhs.red, lhs.green - rhs.green, lhs.blue - rhs.blue, lhs.alpha - rhs.alpha);
 	}
 
     @:op(A / B)
     public static inline function divide(lhs:Color, rhs:Color):Color
     {
-        return Color.fromRGB(Std.int(lhs.red / rhs.red), Std.int(lhs.green / rhs.green), Std.int(lhs.blue / rhs.blue));
+        return Color.fromRGB(Std.int(lhs.red / rhs.red), Std.int(lhs.green / rhs.green), Std.int(lhs.blue / rhs.blue), Std.int(lhs.alpha / rhs.alpha));
     }
 
 

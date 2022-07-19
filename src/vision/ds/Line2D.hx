@@ -24,7 +24,7 @@ class Line2D {
     }
         
     function angleFromSlope(slope:Float) {
-        return Math.atan(slope);
+        return Math.atan(slope) * 180 / Math.PI;
     }
 
     function slopeFromAngle(angle:Float) {
@@ -42,7 +42,7 @@ class Line2D {
 	}
 
     public static function from2Points(point1:Point2D, point2:Point2D) {
-        var angle = Math.atan2(point2.y - point1.y, point2.x - point1.x);
-        return new Line2D(point1, null , angle);
+        var slope = (point2.y - point1.y) / (point2.x - point1.x);
+        return new Line2D(point1, slope);
     }
 }

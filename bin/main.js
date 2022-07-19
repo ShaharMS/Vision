@@ -587,7 +587,14 @@ HxOverrides.now = function() {
 var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
-	vision_algorithms_HoughTransform.jsExample();
+	var image = vision_ds_Image._new(300,300,0);
+	vision_ds_Image.drawLine(image,12,53,54,15,16777215);
+	vision_ds_Image.drawLine(image,56,271,181,95,16777215);
+	vision_ds_Image.drawLine(image,110,15,221,231,16777215);
+	vision_Vision.blackAndWhite(image);
+	Main.printIm(image);
+	var hough = vision_algorithms_HoughTransform.toHoughSpace(image);
+	Main.printIm(hough);
 };
 Main.printIm = function(image) {
 	var c = window.document.createElement("canvas");
@@ -932,25 +939,65 @@ vision_Vision.blackAndWhite = function(image,threshold) {
 };
 var vision_algorithms_HoughTransform = function() { };
 vision_algorithms_HoughTransform.__name__ = true;
-vision_algorithms_HoughTransform.generateTransformed = function(image) {
-	var accumulator = vision_ds_Image._new(361,Math.round(Math.sqrt(vision_ds_Image.get_width(image) * vision_ds_Image.get_width(image) + vision_ds_Image.get_height(image) * vision_ds_Image.get_height(image))));
+vision_algorithms_HoughTransform.toHoughSpace = function(image) {
+	var accum = [];
+	var rhoMax = Math.sqrt(vision_ds_Image.get_width(image) * vision_ds_Image.get_width(image) + vision_ds_Image.get_height(image) * vision_ds_Image.get_height(image));
+	var houghSpace = vision_ds_Image._new(361,rhoMax | 0,-1);
 	var _g = 0;
 	var _g1 = vision_ds_Image.get_width(image);
 	while(_g < _g1) {
-		var x = _g++;
+		var i = _g++;
 		var _g2 = 0;
 		var _g3 = vision_ds_Image.get_height(image);
 		while(_g2 < _g3) {
-			var y = _g2++;
-			if(vision_ds_Image.getPixel(image,x,y) == 0) {
-				continue;
+			var j = _g2++;
+			if(Math.abs(vision_ds_Image.getPixel(image,i,j)) > 0) {
+				var rho;
+				var theta = 0.;
+				var thetaIndex = 0;
+				var x = i - (vision_ds_Image.get_width(image) / 2 | 0);
+				var y = j - (vision_ds_Image.get_height(image) / 2 | 0);
+				while(thetaIndex < 360) {
+					rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
+					rho = (rho | 0) >> 1;
+					if(accum[thetaIndex] == null) {
+						accum[thetaIndex] = [];
+					}
+					if(accum[thetaIndex][rho | 0] == null) {
+						accum[thetaIndex][rho | 0] = 1;
+					} else {
+						var accum1 = accum[thetaIndex];
+						accum1[rho | 0]++;
+					}
+					var Alpha = 0.01;
+					if(Alpha == null) {
+						Alpha = 1;
+					}
+					var color = vision_ds_Color._new();
+					var Alpha1 = Alpha;
+					if(Alpha1 == null) {
+						Alpha1 = 1;
+					}
+					var Value = Math.round(0);
+					color &= -16711681;
+					color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
+					var Value1 = Math.round(0);
+					color &= -65281;
+					color |= (Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1) << 8;
+					var Value2 = Math.round(0);
+					color &= -256;
+					color |= Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2;
+					var Value3 = Math.round(Alpha1 * 255);
+					color &= 16777215;
+					color |= (Value3 > 255 ? 255 : Value3 < 0 ? 0 : Value3) << 24;
+					vision_ds_Image.paintPixel(houghSpace,thetaIndex,rho | 0,color);
+					theta += Math.PI / 360;
+					++thetaIndex;
+				}
 			}
-			var rho = Math.round(Math.sqrt(x * x + y * y));
-			var theta = Math.round(Math.atan2(y,x) * 180 / Math.PI);
-			vision_ds_Image.paintPixel(accumulator,theta | 0,rho,285147136);
 		}
 	}
-	return accumulator;
+	return houghSpace;
 };
 vision_algorithms_HoughTransform.jsExample = function() {
 	var THICKNESS = 2;
@@ -1541,10 +1588,14 @@ vision_ds_Color.multiply = function(lhs,rhs) {
 	var Red = (lhs >> 16 & 255) / 255 * ((rhs >> 16 & 255) / 255);
 	var Green = (lhs >> 8 & 255) / 255 * ((rhs >> 8 & 255) / 255);
 	var Blue = (lhs & 255) / 255 * ((rhs & 255) / 255);
-	var color = vision_ds_Color._new();
-	var Alpha = 1;
+	var Alpha = (lhs >> 24 & 255) / 255 * ((rhs >> 24 & 255) / 255);
 	if(Alpha == null) {
 		Alpha = 1;
+	}
+	var color = vision_ds_Color._new();
+	var Alpha1 = Alpha;
+	if(Alpha1 == null) {
+		Alpha1 = 1;
 	}
 	var Value = Math.round(Red * 255);
 	color &= -16711681;
@@ -1555,7 +1606,7 @@ vision_ds_Color.multiply = function(lhs,rhs) {
 	var Value = Math.round(Blue * 255);
 	color &= -256;
 	color |= Value > 255 ? 255 : Value < 0 ? 0 : Value;
-	var Value = Math.round(Alpha * 255);
+	var Value = Math.round(Alpha1 * 255);
 	color &= 16777215;
 	color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 24;
 	return color;
@@ -1564,10 +1615,14 @@ vision_ds_Color.add = function(lhs,rhs) {
 	var Red = (lhs >> 16 & 255) + (rhs >> 16 & 255);
 	var Green = (lhs >> 8 & 255) + (rhs >> 8 & 255);
 	var Blue = (lhs & 255) + (rhs & 255);
-	var color = vision_ds_Color._new();
-	var Alpha = 255;
+	var Alpha = (lhs >> 24 & 255) + (rhs >> 24 & 255);
 	if(Alpha == null) {
 		Alpha = 255;
+	}
+	var color = vision_ds_Color._new();
+	var Alpha1 = Alpha;
+	if(Alpha1 == null) {
+		Alpha1 = 255;
 	}
 	color &= -16711681;
 	color |= (Red > 255 ? 255 : Red < 0 ? 0 : Red) << 16;
@@ -1576,17 +1631,21 @@ vision_ds_Color.add = function(lhs,rhs) {
 	color &= -256;
 	color |= Blue > 255 ? 255 : Blue < 0 ? 0 : Blue;
 	color &= 16777215;
-	color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
+	color |= (Alpha1 > 255 ? 255 : Alpha1 < 0 ? 0 : Alpha1) << 24;
 	return color;
 };
 vision_ds_Color.subtract = function(lhs,rhs) {
 	var Red = (lhs >> 16 & 255) - (rhs >> 16 & 255);
 	var Green = (lhs >> 8 & 255) - (rhs >> 8 & 255);
 	var Blue = (lhs & 255) - (rhs & 255);
-	var color = vision_ds_Color._new();
-	var Alpha = 255;
+	var Alpha = (lhs >> 24 & 255) - (rhs >> 24 & 255);
 	if(Alpha == null) {
 		Alpha = 255;
+	}
+	var color = vision_ds_Color._new();
+	var Alpha1 = Alpha;
+	if(Alpha1 == null) {
+		Alpha1 = 255;
 	}
 	color &= -16711681;
 	color |= (Red > 255 ? 255 : Red < 0 ? 0 : Red) << 16;
@@ -1595,17 +1654,21 @@ vision_ds_Color.subtract = function(lhs,rhs) {
 	color &= -256;
 	color |= Blue > 255 ? 255 : Blue < 0 ? 0 : Blue;
 	color &= 16777215;
-	color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
+	color |= (Alpha1 > 255 ? 255 : Alpha1 < 0 ? 0 : Alpha1) << 24;
 	return color;
 };
 vision_ds_Color.divide = function(lhs,rhs) {
 	var Red = (lhs >> 16 & 255) / (rhs >> 16 & 255) | 0;
 	var Green = (lhs >> 8 & 255) / (rhs >> 8 & 255) | 0;
 	var Blue = (lhs & 255) / (rhs & 255) | 0;
-	var color = vision_ds_Color._new();
-	var Alpha = 255;
+	var Alpha = (lhs >> 24 & 255) / (rhs >> 24 & 255) | 0;
 	if(Alpha == null) {
 		Alpha = 255;
+	}
+	var color = vision_ds_Color._new();
+	var Alpha1 = Alpha;
+	if(Alpha1 == null) {
+		Alpha1 = 255;
 	}
 	color &= -16711681;
 	color |= (Red > 255 ? 255 : Red < 0 ? 0 : Red) << 16;
@@ -1614,7 +1677,7 @@ vision_ds_Color.divide = function(lhs,rhs) {
 	color &= -256;
 	color |= Blue > 255 ? 255 : Blue < 0 ? 0 : Blue;
 	color &= 16777215;
-	color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
+	color |= (Alpha1 > 255 ? 255 : Alpha1 < 0 ? 0 : Alpha1) << 24;
 	return color;
 };
 vision_ds_Color.getComplementHarmony = function(this1) {
@@ -1931,10 +1994,14 @@ vision_ds_Color.getInverted = function(this1) {
 	var Red = (lhs >> 16 & 255) - (this1 >> 16 & 255);
 	var Green = (lhs >> 8 & 255) - (this1 >> 8 & 255);
 	var Blue = (lhs & 255) - (this1 & 255);
-	var color = vision_ds_Color._new();
-	var Alpha = 255;
+	var Alpha = (lhs >> 24 & 255) - (this1 >> 24 & 255);
 	if(Alpha == null) {
 		Alpha = 255;
+	}
+	var color = vision_ds_Color._new();
+	var Alpha1 = Alpha;
+	if(Alpha1 == null) {
+		Alpha1 = 255;
 	}
 	color &= -16711681;
 	color |= (Red > 255 ? 255 : Red < 0 ? 0 : Red) << 16;
@@ -1943,7 +2010,7 @@ vision_ds_Color.getInverted = function(this1) {
 	color &= -256;
 	color |= Blue > 255 ? 255 : Blue < 0 ? 0 : Blue;
 	color &= 16777215;
-	color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
+	color |= (Alpha1 > 255 ? 255 : Alpha1 < 0 ? 0 : Alpha1) << 24;
 	var output = color;
 	output &= 16777215;
 	output |= (oldAlpha > 255 ? 255 : oldAlpha < 0 ? 0 : oldAlpha) << 24;
@@ -3287,45 +3354,32 @@ vision_ds_Image.paintPixel = function(this1,x,y,color) {
 	if(x < 0 || x >= this1.length || y < 0 || y >= this1[x].length) {
 		throw new vision_exceptions_OutOfBounds(this1,new vision_ds_Point2D(x,y));
 	}
-	var oldColor = this1[x][y];
-	var newAlpha = color >> 24 & 255;
-	var oldAlpha = oldColor >> 24 & 255;
-	if(newAlpha == 0) {
-		return;
-	} else if(newAlpha == 255) {
-		this1[x][y] = color;
-	} else {
-		var newRed = color >> 16 & 255;
-		var newGreen = color >> 8 & 255;
-		var newBlue = color & 255;
-		var oldRed = oldColor >> 16 & 255;
-		var oldGreen = oldColor >> 8 & 255;
-		var oldBlue = oldColor & 255;
-		var newRed1 = (newRed * newAlpha + oldRed * oldAlpha * (255 - newAlpha)) / 255;
-		var newGreen1 = (newGreen * newAlpha + oldGreen * oldAlpha * (255 - newAlpha)) / 255;
-		var newBlue1 = (newBlue * newAlpha + oldBlue * oldAlpha * (255 - newAlpha)) / 255;
-		var Red = newRed1 | 0;
-		var Green = newGreen1 | 0;
-		var Blue = newBlue1 | 0;
-		var Alpha = oldAlpha + newAlpha;
-		if(Alpha == null) {
-			Alpha = 255;
-		}
-		var color = vision_ds_Color._new();
-		var Alpha1 = Alpha;
-		if(Alpha1 == null) {
-			Alpha1 = 255;
-		}
-		color &= -16711681;
-		color |= (Red > 255 ? 255 : Red < 0 ? 0 : Red) << 16;
-		color &= -65281;
-		color |= (Green > 255 ? 255 : Green < 0 ? 0 : Green) << 8;
-		color &= -256;
-		color |= Blue > 255 ? 255 : Blue < 0 ? 0 : Blue;
-		color &= 16777215;
-		color |= (Alpha1 > 255 ? 255 : Alpha1 < 0 ? 0 : Alpha1) << 24;
-		this1[x][y] = color;
+	var Red = ((color >> 16 & 255) / 255 + (vision_ds_Image.getPixel(this1,x,y) >> 16 & 255) / 255) / 2;
+	var Green = ((color >> 8 & 255) / 255 + (vision_ds_Image.getPixel(this1,x,y) >> 8 & 255) / 255) / 2;
+	var Blue = ((color & 255) / 255 + (vision_ds_Image.getPixel(this1,x,y) & 255) / 255) / 2;
+	var Alpha = ((color >> 24 & 255) / 255 + (vision_ds_Image.getPixel(this1,x,y) >> 24 & 255) / 255) / 2;
+	if(Alpha == null) {
+		Alpha = 1;
 	}
+	var color = vision_ds_Color._new();
+	var Alpha1 = Alpha;
+	if(Alpha1 == null) {
+		Alpha1 = 1;
+	}
+	var Value = Math.round(Red * 255);
+	color &= -16711681;
+	color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
+	var Value = Math.round(Green * 255);
+	color &= -65281;
+	color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 8;
+	var Value = Math.round(Blue * 255);
+	color &= -256;
+	color |= Value > 255 ? 255 : Value < 0 ? 0 : Value;
+	var Value = Math.round(Alpha1 * 255);
+	color &= 16777215;
+	color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 24;
+	var newColor = color;
+	vision_ds_Image.setPixel(this1,x,y,newColor);
 };
 vision_ds_Image.setColorOfRect = function(this1,rect,color) {
 	var _g = rect.x;
@@ -3449,12 +3503,12 @@ var vision_ds_Line2D = function(point,m,angle) {
 };
 vision_ds_Line2D.__name__ = true;
 vision_ds_Line2D.from2Points = function(point1,point2) {
-	var angle = Math.atan2(point2.y - point1.y,point2.x - point1.x);
-	return new vision_ds_Line2D(point1,null,angle);
+	var slope = (point2.y - point1.y) / (point2.x - point1.x);
+	return new vision_ds_Line2D(point1,slope);
 };
 vision_ds_Line2D.prototype = {
 	angleFromSlope: function(slope) {
-		return Math.atan(slope);
+		return Math.atan(slope) * 180 / Math.PI;
 	}
 	,slopeFromAngle: function(angle) {
 		return Math.tan(angle);

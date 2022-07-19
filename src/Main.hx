@@ -1,29 +1,26 @@
 package;
 
+import vision.ds.Point2D;
+import vision.ds.Line2D;
 import haxe.display.Display.Package;
+#if js
 import js.html.Document;
 import js.Browser;
+#end
 import vision.algorithms.HoughTransform;
 import vision.Vision;
 import vision.ds.Image;
 
 class Main {
 	static function main() {
-		//var image = new Image(300, 300, 0x000000);
-		////randomaly draw some lines
-		//image.drawLine(1, 242, 1, 45, 0xff0000);
-		//image.drawLine(154, 2, 133, 245, 0xff0000);
-		//image.drawLine(112, 11, 149, 291, 0xff0000);
-		//image.drawLine(1, 219, 250, 249, 0xff0000);
-		//image.drawLine(143, 123, 13, 239, 0xff0000);
-		//image.drawLine(134, 41, 164, 246, 0xff0000);
-		//printIm(image);
-		////Console.log(image);
-		//var accum = HoughTransform.generateTransformed(image);
-		//printIm(accum);
-		#if js
-		HoughTransform.jsExample();
-		#end
+		var image = new Image(300, 300, 0x000000);
+		image.drawLine(12, 53, 54, 15, 0xffffff);
+		image.drawLine(56, 271, 181, 95, 0xffffff);
+		image.drawLine(110, 15, 221, 231, 0xffffff);
+		Vision.blackAndWhite(image);
+		printIm(image);
+		var hough = HoughTransform.toHoughSpace(image);
+		printIm(hough);
 	}
 
 	static function printIm(image:Image) {

@@ -83,25 +83,12 @@ abstract Image(Matrix<Null<Color>>) {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
             throw new OutOfBounds(cast this, new Point2D(x, y));
         }
-        var oldColor = this[x][y];
-        var newAlpha = color.alpha;
-        var oldAlpha = oldColor.alpha;
-        if (newAlpha == 0) {
-            return;
-        } else if (newAlpha == 255) {
-            this[x][y] = color;
-        } else {
-            var newRed = color.red;
-            var newGreen = color.green;
-            var newBlue = color.blue;
-            var oldRed = oldColor.red;
-            var oldGreen = oldColor.green;
-            var oldBlue = oldColor.blue;
-            var newRed = (newRed * newAlpha + oldRed * oldAlpha * (255 - newAlpha)) / 255;
-            var newGreen = (newGreen * newAlpha + oldGreen * oldAlpha * (255 - newAlpha)) / 255;
-            var newBlue = (newBlue * newAlpha + oldBlue * oldAlpha * (255 - newAlpha)) / 255;
-            this[x][y] = Color.fromRGB(Std.int(newRed), Std.int(newGreen), Std.int(newBlue), oldAlpha + newAlpha);
-        }
+        var newColor = Color.fromRGBFloat(
+            (color.redFloat + getPixel(x, y).redFloat) / 2, 
+            (color.greenFloat + getPixel(x, y).greenFloat) / 2, 
+            (color.blueFloat + getPixel(x, y).blueFloat) / 2, 
+            (color.alphaFloat + getPixel(x, y).alphaFloat) / 2);
+        setPixel(x, y, newColor);
     }
 
     /**
