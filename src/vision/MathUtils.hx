@@ -5,10 +5,21 @@ import vision.ds.LineSegment2D;
 import vision.ds.Point2D;
 
 class MathUtils {
-    
-    public static function distanceFromPointToLine(point:Point2D, line:Line2D) {
-		//use the formula for the distance from a point to a line
-		return Math.abs(Math.cos(line.angle) * (line.point.y - point.y) - Math.sin(line.angle) * (line.point.x - point.x));
+	public static function distanceFromPointToLine(point:Point2D, line:Line2D) {
+		// use the formula for the distance from a point to a line
+		// cos and sin work with radians
+		// COPILOT ITS NOT A LINE SEGMENT ITS A FUCKING VECTOR
+		// JUST MAKE A FUCKING POINT TO VECTOR DISTANCE FUNCTION
+		var cos:Float = Math.cos(line.radians);
+		var sin:Float = Math.sin(line.radians);
+		var x0:Float = line.point.x;
+		var y0:Float = line.point.y;
+		var x1:Float = point.x;
+		var y1:Float = point.y;
+		var numerator:Float = (x0 - x1) * cos + (y0 - y1) * sin;
+		var denominator:Float = Math.sqrt(Math.pow(x0 - x1, 2) + Math.pow(y0 - y1, 2));
+		var distance:Float = numerator / denominator;
+		return distance;
 	}
 
 	public static function angleFromPointToLine(point:Point2D, line:LineSegment2D):Float {
@@ -28,7 +39,30 @@ class MathUtils {
 		var y:Float = point2.y - point1.y;
 		return Math.sqrt(x * x + y * y);
 	}
-	
+
+	public static function intersectionBetweenLineSegments(line1:LineSegment2D, line2:LineSegment2D):Point2D {
+		var x1 = line1.start.x, y1 = line1.start.y;
+		var x2 = line1.end.x, y2 = line1.end.y;
+		var x3 = line2.start.x, y3 = line2.start.y;
+		var x4 = line2.end.x, y4 = line2.end.y;
+		var denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)); 
+
+		if ((x1 == x2 && y1 == y2) || (x3 == x4 && y3 == y4)) return null;
+		if (denominator == 0) return null; //if the denominator is 0, the lines are parallel
+			
+		var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+		var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+
+		// is the intersection along the segments?
+		if (ua < 0 || ua > 1 || ub < 0 || ub > 1) return null;
+
+		// Return a object with the x and y coordinates of the intersection
+		var x = x1 + ua * (x2 - x1);
+		var y = y1 + ua * (y2 - y1);
+
+		return {x: Std.int(x), y: Std.int(y)};
+	}
+
 	/**
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
@@ -67,5 +101,29 @@ class MathUtils {
 	**/
 	public static function boundFloat(value:Float, min:Float, max:Float) {
 		return Math.min(Math.max(value, min), max);
+	}
+
+	public static inline function degreesFromSlope(slope:Float) {
+		return Math.atan(slope) * 180 / Math.PI;
+	}
+
+	public static inline function radiansFromSlope(slope:Float) {
+		return Math.atan(slope);
+	}
+
+	public static inline function slopeFromDegrees(degrees:Float) {
+		return Math.tan(degrees * Math.PI / 180);
+	}
+
+	public static inline function radiansFromDegrees(degrees:Float) {
+		return degrees * Math.PI / 180;
+	}
+
+	public static inline function degreesFromRadians(radians:Float) {
+		return radians * 180 / Math.PI;
+	}
+
+	public static inline function slopeFromRadians(radians:Float) {
+		return Math.tan(radians);
 	}
 }

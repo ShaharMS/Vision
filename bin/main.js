@@ -588,13 +588,29 @@ var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
 	var image = vision_ds_Image._new(300,300,0);
-	vision_ds_Image.drawLine(image,12,53,54,15,16777215);
-	vision_ds_Image.drawLine(image,56,271,181,95,16777215);
-	vision_ds_Image.drawLine(image,110,15,221,231,16777215);
-	vision_Vision.blackAndWhite(image);
+	vision_ds_Image.drawLine(image,12,53,54,15,12386818);
+	vision_ds_Image.drawLine(image,56,271,181,95,853);
+	vision_ds_Image.drawLine(image,110,15,121,131,3273472);
+	vision_ds_Image.drawLine(image,271,53,15,231,16777215);
+	vision_ds_Image.drawRect(image,34,12,33,53,15793990);
+	vision_ds_Image.drawRect(image,12,53,33,53,16777215);
+	vision_ds_Image.drawCircle(image,100,100,50,3967342);
+	vision_ds_Image.drawCircle(image,100,100,30,16711892);
+	vision_ds_Image.drawCircle(image,200,200,40,-256);
+	vision_ds_Image.fillColor(image,new vision_ds_Point2D(200,200),-256);
+	vision_ds_Image.drawCircle(image,180,190,5,-7650029);
+	vision_ds_Image.fillColor(image,new vision_ds_Point2D(180,190),-7650029);
+	vision_ds_Image.drawCircle(image,220,190,5,-7650029);
+	vision_ds_Image.fillColor(image,new vision_ds_Point2D(220,190),-7650029);
+	vision_ds_Image.drawCircle(image,200,225,8,-7650029);
+	vision_ds_Image.fillColor(image,new vision_ds_Point2D(200,225),-7650029);
 	Main.printIm(image);
-	var hough = vision_algorithms_HoughTransform.toHoughSpace(image);
-	Main.printIm(hough);
+	Main.printIm(vision_Vision.blackAndWhite(vision_ds_Image.clone(image)));
+	Main.printIm(vision_Vision.grayscale(vision_ds_Image.clone(image)));
+	var hough = vision_algorithms_HoughTransform.toHoughSpace(vision_Vision.detectEdgesPerwitt(vision_ds_Image.clone(image)));
+	Main.printIm(hough.image);
+	var l = vision_Vision.detectEdgesPerwitt(image);
+	Main.printIm(l);
 };
 Main.printIm = function(image) {
 	var c = window.document.createElement("canvas");
@@ -725,6 +741,31 @@ haxe_Exception.prototype = $extend(Error.prototype,{
 		return this.__nativeException;
 	}
 });
+var haxe_Log = function() { };
+haxe_Log.__name__ = true;
+haxe_Log.formatOutput = function(v,infos) {
+	var str = Std.string(v);
+	if(infos == null) {
+		return str;
+	}
+	var pstr = infos.fileName + ":" + infos.lineNumber;
+	if(infos.customParams != null) {
+		var _g = 0;
+		var _g1 = infos.customParams;
+		while(_g < _g1.length) {
+			var v = _g1[_g];
+			++_g;
+			str += ", " + Std.string(v);
+		}
+	}
+	return pstr + ": " + str;
+};
+haxe_Log.trace = function(v,infos) {
+	var str = haxe_Log.formatOutput(v,infos);
+	if(typeof(console) != "undefined" && console.log != null) {
+		console.log(str);
+	}
+};
 var haxe_ValueException = function(value,previous,native) {
 	haxe_Exception.call(this,String(value),previous,native);
 	this.value = value;
@@ -815,7 +856,16 @@ js_Boot.__string_rec = function(o,s) {
 var vision_MathUtils = function() { };
 vision_MathUtils.__name__ = true;
 vision_MathUtils.distanceFromPointToLine = function(point,line) {
-	return Math.abs(Math.cos(line.angle) * (line.point.y - point.y) - Math.sin(line.angle) * (line.point.x - point.x));
+	var cos = Math.cos(line.radians);
+	var sin = Math.sin(line.radians);
+	var x0 = line.point.x;
+	var y0 = line.point.y;
+	var x1 = point.x;
+	var y1 = point.y;
+	var numerator = (x0 - x1) * cos + (y0 - y1) * sin;
+	var denominator = Math.sqrt(Math.pow(x0 - x1,2) + Math.pow(y0 - y1,2));
+	var distance = numerator / denominator;
+	return distance;
 };
 vision_MathUtils.angleFromPointToLine = function(point,line) {
 	var angle = Math.atan2(line.end.y - line.start.y,line.end.x - line.start.x);
@@ -831,6 +881,31 @@ vision_MathUtils.distanceBetweenPoints = function(point1,point2) {
 	var x = point2.x - point1.x;
 	var y = point2.y - point1.y;
 	return Math.sqrt(x * x + y * y);
+};
+vision_MathUtils.intersectionBetweenLineSegments = function(line1,line2) {
+	var x1 = line1.start.x;
+	var y1 = line1.start.y;
+	var x2 = line1.end.x;
+	var y2 = line1.end.y;
+	var x3 = line2.start.x;
+	var y3 = line2.start.y;
+	var x4 = line2.end.x;
+	var y4 = line2.end.y;
+	var denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+	if(x1 == x2 && y1 == y2 || x3 == x4 && y3 == y4) {
+		return null;
+	}
+	if(denominator == 0) {
+		return null;
+	}
+	var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+	var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+	if(ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+		return null;
+	}
+	var x = x1 + ua * (x2 - x1);
+	var y = y1 + ua * (y2 - y1);
+	return new vision_ds_Point2D(x | 0,y | 0);
 };
 vision_MathUtils.wrapInt = function(value,min,max) {
 	var range = max - min + 1;
@@ -851,6 +926,24 @@ vision_MathUtils.boundInt = function(value,min,max) {
 };
 vision_MathUtils.boundFloat = function(value,min,max) {
 	return Math.min(Math.max(value,min),max);
+};
+vision_MathUtils.degreesFromSlope = function(slope) {
+	return Math.atan(slope) * 180 / Math.PI;
+};
+vision_MathUtils.radiansFromSlope = function(slope) {
+	return Math.atan(slope);
+};
+vision_MathUtils.slopeFromDegrees = function(degrees) {
+	return Math.tan(degrees * Math.PI / 180);
+};
+vision_MathUtils.radiansFromDegrees = function(degrees) {
+	return degrees * Math.PI / 180;
+};
+vision_MathUtils.degreesFromRadians = function(radians) {
+	return radians * 180 / Math.PI;
+};
+vision_MathUtils.slopeFromRadians = function(radians) {
+	return Math.tan(radians);
 };
 var vision_Vision = function() { };
 vision_Vision.__name__ = true;
@@ -937,9 +1030,153 @@ vision_Vision.blackAndWhite = function(image,threshold) {
 	}
 	return image;
 };
+vision_Vision.detectLinesHough = function(image,threshold,minLineLength,minLineGap,maxLineGap) {
+	if(maxLineGap == null) {
+		maxLineGap = 10;
+	}
+	if(minLineGap == null) {
+		minLineGap = 2;
+	}
+	if(minLineLength == null) {
+		minLineLength = 30;
+	}
+	if(threshold == null) {
+		threshold = 100;
+	}
+	var edges = vision_Vision.detectEdgesPerwitt(image,threshold);
+	var houghSpace = vision_algorithms_HoughTransform.toHoughSpace(edges);
+	var accumulator = houghSpace.accumulator;
+	var peaks = [];
+	var s = Console.logPrefix + ("" + Std.string(accumulator));
+	var outputStream = 0;
+	if(outputStream == null) {
+		outputStream = 0;
+	}
+	if(s == null) {
+		s = "";
+	}
+	Console.printFormatted(s + "\n",outputStream);
+	var _g = 0;
+	var _g1 = accumulator.length;
+	while(_g < _g1) {
+		var i = _g++;
+		var _g2 = 0;
+		var _g3 = accumulator[i].length;
+		while(_g2 < _g3) {
+			var j = _g2++;
+			if(accumulator[i][j] == null) {
+				continue;
+			}
+			if(accumulator[i][j] - vision_ds_Image.get_width(image) - vision_ds_Image.get_height(image) > minLineLength) {
+				haxe_Log.trace(accumulator[i][j],{ fileName : "src/vision/Vision.hx", lineNumber : 106, className : "vision.Vision", methodName : "detectLinesHough", customParams : [vision_ds_Image.get_width(image),vision_ds_Image.get_height(image),minLineLength,accumulator[i][j] - vision_ds_Image.get_width(image) - vision_ds_Image.get_height(image) - minLineLength]});
+				peaks.push(new vision_ds_Point2D(i,j));
+			}
+		}
+	}
+	var lineSegments = [];
+	var s = Console.logPrefix + ("" + Std.string(peaks));
+	var outputStream = 0;
+	if(outputStream == null) {
+		outputStream = 0;
+	}
+	if(s == null) {
+		s = "";
+	}
+	Console.printFormatted(s + "\n",outputStream);
+	var _g = 0;
+	var _g1 = peaks.length;
+	while(_g < _g1) {
+		var i = _g++;
+		var peak = peaks[i];
+		var theta = peak.x;
+		var rho = peak.y;
+		var lineSegment = vision_algorithms_HoughTransform.getLineSegments(houghSpace,edges,theta,rho,maxLineGap);
+		lineSegments.concat(lineSegment);
+	}
+	return lineSegments;
+};
+vision_Vision.detectEdgesPerwitt = function(image,threshold) {
+	if(threshold == null) {
+		threshold = 100;
+	}
+	var edges = vision_ds_Image.get_width(image);
+	var edges1 = vision_ds_Image.get_height(image);
+	var color = vision_ds_Color._new();
+	var Alpha = 255;
+	if(Alpha == null) {
+		Alpha = 255;
+	}
+	color &= -16711681;
+	color |= 0;
+	color &= -65281;
+	color |= 0;
+	color &= -256;
+	color |= 0;
+	color &= 16777215;
+	color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
+	var edges2 = vision_ds_Image._new(edges,edges1,color);
+	var blacknwhite = vision_Vision.blackAndWhite(vision_ds_Image.clone(image));
+	var _g = 1;
+	var _g1 = vision_ds_Image.get_width(blacknwhite) - 1;
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = 1;
+		var _g3 = vision_ds_Image.get_height(blacknwhite) - 1;
+		while(_g2 < _g3) {
+			var y = _g2++;
+			var neighbors_0 = vision_ds_Image.getPixel(blacknwhite,x - 1,y - 1);
+			var neighbors_1 = vision_ds_Image.getPixel(blacknwhite,x,y - 1);
+			var neighbors_2 = vision_ds_Image.getPixel(blacknwhite,x + 1,y - 1);
+			var neighbors_3 = vision_ds_Image.getPixel(blacknwhite,x - 1,y);
+			var neighbors_4 = vision_ds_Image.getPixel(blacknwhite,x,y);
+			var neighbors_5 = vision_ds_Image.getPixel(blacknwhite,x + 1,y);
+			var neighbors_6 = vision_ds_Image.getPixel(blacknwhite,x - 1,y + 1);
+			var neighbors_7 = vision_ds_Image.getPixel(blacknwhite,x,y + 1);
+			var neighbors_8 = vision_ds_Image.getPixel(blacknwhite,x + 1,y + 1);
+			var perwittCalculationIterationLTR = (neighbors_0 >> 16 & 255) * -1 + (neighbors_3 >> 16 & 255) * -1 + (neighbors_6 >> 16 & 255) * -1 + (neighbors_2 >> 16 & 255) + (neighbors_5 >> 16 & 255) + (neighbors_8 >> 16 & 255);
+			if(Math.abs(perwittCalculationIterationLTR) > threshold) {
+				var color = vision_ds_Color._new();
+				var Alpha = 255;
+				if(Alpha == null) {
+					Alpha = 255;
+				}
+				color &= -16711681;
+				color |= 16711680;
+				color &= -65281;
+				color |= 65280;
+				color &= -256;
+				color |= 255;
+				color &= 16777215;
+				color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
+				vision_ds_Image.setPixel(edges2,x,y,color);
+				continue;
+			}
+			var perwittCalculationIterationTTB = (neighbors_0 >> 16 & 255) * -1 + (neighbors_1 >> 16 & 255) * -1 + (neighbors_2 >> 16 & 255) * -1 + (neighbors_6 >> 16 & 255) + (neighbors_7 >> 16 & 255) + (neighbors_8 >> 16 & 255);
+			if(Math.abs(perwittCalculationIterationTTB) > threshold) {
+				var color1 = vision_ds_Color._new();
+				var Alpha1 = 255;
+				if(Alpha1 == null) {
+					Alpha1 = 255;
+				}
+				color1 &= -16711681;
+				color1 |= 16711680;
+				color1 &= -65281;
+				color1 |= 65280;
+				color1 &= -256;
+				color1 |= 255;
+				color1 &= 16777215;
+				color1 |= (Alpha1 > 255 ? 255 : Alpha1 < 0 ? 0 : Alpha1) << 24;
+				vision_ds_Image.setPixel(edges2,x,y,color1);
+				continue;
+			}
+		}
+	}
+	return edges2;
+};
 var vision_algorithms_HoughTransform = function() { };
 vision_algorithms_HoughTransform.__name__ = true;
 vision_algorithms_HoughTransform.toHoughSpace = function(image) {
+	var start = HxOverrides.now() / 1000;
 	var accum = [];
 	var rhoMax = Math.sqrt(vision_ds_Image.get_width(image) * vision_ds_Image.get_width(image) + vision_ds_Image.get_height(image) * vision_ds_Image.get_height(image));
 	var houghSpace = vision_ds_Image._new(361,rhoMax | 0,-1);
@@ -951,7 +1188,7 @@ vision_algorithms_HoughTransform.toHoughSpace = function(image) {
 		var _g3 = vision_ds_Image.get_height(image);
 		while(_g2 < _g3) {
 			var j = _g2++;
-			if(Math.abs(vision_ds_Image.getPixel(image,i,j)) > 0) {
+			if(Math.abs(vision_ds_Image.getPixel(image,i,j) >> 16 & 255) == 255) {
 				var rho;
 				var theta = 0.;
 				var thetaIndex = 0;
@@ -969,205 +1206,95 @@ vision_algorithms_HoughTransform.toHoughSpace = function(image) {
 						var accum1 = accum[thetaIndex];
 						accum1[rho | 0]++;
 					}
-					var Alpha = 0.01;
-					if(Alpha == null) {
-						Alpha = 1;
-					}
-					var color = vision_ds_Color._new();
-					var Alpha1 = Alpha;
-					if(Alpha1 == null) {
-						Alpha1 = 1;
-					}
-					var Value = Math.round(0);
-					color &= -16711681;
-					color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
-					var Value1 = Math.round(0);
-					color &= -65281;
-					color |= (Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1) << 8;
-					var Value2 = Math.round(0);
-					color &= -256;
-					color |= Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2;
-					var Value3 = Math.round(Alpha1 * 255);
-					color &= 16777215;
-					color |= (Value3 > 255 ? 255 : Value3 < 0 ? 0 : Value3) << 24;
-					vision_ds_Image.paintPixel(houghSpace,thetaIndex,rho | 0,color);
+					vision_ds_Image.setPixel(houghSpace,thetaIndex,rho | 0,vision_ds_Color.getDarkened(vision_ds_Image.getPixel(houghSpace,thetaIndex,rho | 0),0.02));
 					theta += Math.PI / 360;
 					++thetaIndex;
 				}
 			}
 		}
 	}
-	return houghSpace;
+	var end = HxOverrides.now() / 1000;
+	haxe_Log.trace("Hough Transform took " + (end - start) + " seconds",{ fileName : "src/vision/algorithms/HoughTransform.hx", lineNumber : 83, className : "vision.algorithms.HoughTransform", methodName : "toHoughSpace"});
+	return new vision_ds_hough_HoughSpace(accum,houghSpace);
 };
-vision_algorithms_HoughTransform.jsExample = function() {
-	var THICKNESS = 2;
-	var drawing = window.document.createElement("canvas");
-	var houghSp = window.document.createElement("canvas");
-	var ctx = drawing.getContext("2d",null);
-	var HSctx = houghSp.getContext("2d",null);
-	var drawingMode = false;
-	var drawingWidth = drawing.width;
-	var drawingHeight = drawing.height;
-	var numAngleCells = 360;
-	var rhoMax = Math.sqrt(drawingWidth * drawingWidth + drawingHeight * drawingHeight);
-	var this1 = new Array(numAngleCells);
-	var accum = this1;
-	var this1 = new Array(numAngleCells);
-	var cosTable = this1;
-	var this1 = new Array(numAngleCells);
-	var sinTable = this1;
-	var border = 20;
-	houghSp.width = numAngleCells + border + border;
-	houghSp.height = rhoMax + border + border | 0;
-	HSctx.fillStyle = "rgba(0,0,0,.5)";
-	HSctx.strokeStyle = "rgba(0,0,0,.5)";
-	HSctx.beginPath();
-	HSctx.moveTo(border,border);
-	HSctx.lineTo(border,rhoMax + border);
-	HSctx.lineTo(numAngleCells + border,rhoMax + border);
-	HSctx.stroke();
-	HSctx.font = "10px Arial";
-	HSctx.fillText("Rho",5,border);
-	HSctx.fillText("Theta",numAngleCells,rhoMax + border + border / 2);
-	HSctx.fillStyle = "rgba(0,0,0,.1)";
-	var drawInHough = function(rho,thetaIndex) {
-		HSctx.beginPath();
-		HSctx.fillRect(thetaIndex + border,rho,1,1);
-		HSctx.closePath();
-	};
-	var findMaxInHough = function() {
-		var max = 0;
-		var bestRho = 0;
-		var bestTheta = 0;
+vision_algorithms_HoughTransform.getLineSegments = function(houghspace,image,theta,rho,maxGap) {
+	var accumulator = houghspace.accumulator;
+	var peak = accumulator[theta][rho];
+	var x = rho * Math.cos(theta);
+	var y = rho * Math.sin(theta);
+	var slope;
+	if(theta == Math.PI / 2 || theta == -Math.PI / 2) {
+		slope = null;
+	} else {
+		slope = Math.tan(theta);
+	}
+	var point1 = null;
+	var point2 = null;
+	var lineGapCounter = 0;
+	var segments = [];
+	if(slope == null) {
+		var X = x | 0;
 		var _g = 0;
-		while(_g < 360) {
-			var i = _g++;
-			var _g1 = 0;
-			var _g2 = accum[i].length;
-			while(_g1 < _g2) {
-				var j = _g1++;
-				if(accum[i][j] > max) {
-					max = accum[i][j];
-					bestRho = j;
-					bestTheta = i;
+		var _g1 = vision_ds_Image.get_height(image);
+		while(_g < _g1) {
+			var Y = _g++;
+			if(!vision_ds_Image.hasPixel(image,X,Y)) {
+				continue;
+			}
+			if(Math.abs(vision_ds_Image.getPixel(image,X,Y)) > 0) {
+				if(point1 == null) {
+					point1 = new vision_ds_Point2D(X,Y);
+				} else {
+					point2 = new vision_ds_Point2D(X,Y);
+				}
+				lineGapCounter = 0;
+			} else {
+				++lineGapCounter;
+				if(lineGapCounter > maxGap) {
+					if(point1 != null && point2 != null) {
+						segments.push(new vision_ds_LineSegment2D(point1,point2));
+					}
+					point1 = null;
+					point2 = null;
+					lineGapCounter = 0;
 				}
 			}
 		}
-		if(max > 30) {
-			HSctx.fillStyle = "rgba(255,0,0,1)";
-			HSctx.fillRect(bestTheta + border,bestRho,2,2);
-			HSctx.fillStyle = "rgba(0,0,0,.1)";
-			bestRho <<= 1;
-			bestRho -= rhoMax | 0;
-			var s = Console.logPrefix + ("" + bestTheta + " " + bestRho);
-			var outputStream = 0;
-			if(outputStream == null) {
-				outputStream = 0;
-			}
-			if(s == null) {
-				s = "";
-			}
-			Console.printFormatted(s + "\n",outputStream);
-			var a = cosTable[bestTheta];
-			var b = sinTable[bestTheta];
-			var x1 = a * bestRho + 1000 * -b;
-			var y1 = b * bestRho + 1000 * a;
-			var x2 = a * bestRho - 1000 * -b;
-			var y2 = b * bestRho - 1000 * a;
-			var s = Console.logPrefix + ("" + x1 + " " + y1 + " " + x2 + " " + y2);
-			var outputStream = 0;
-			if(outputStream == null) {
-				outputStream = 0;
-			}
-			if(s == null) {
-				s = "";
-			}
-			Console.printFormatted(s + "\n",outputStream);
-			ctx.beginPath();
-			ctx.strokeStyle = "rgba(255,0,0,1)";
-			ctx.moveTo(x1 + drawingWidth / 2,y1 + drawingHeight / 2);
-			ctx.lineTo(x2 + drawingWidth / 2,y2 + drawingHeight / 2);
-			ctx.stroke();
-			ctx.strokeStyle = "rgba(0,0,0,1)";
-			ctx.closePath();
+	} else {
+		while(x > 0) {
+			y -= slope;
+			--x;
 		}
-	};
-	var theta = 0.;
-	var thetaIndex = 0;
-	while(thetaIndex < numAngleCells) {
-		cosTable[thetaIndex] = Math.cos(theta);
-		sinTable[thetaIndex] = Math.sin(theta);
-		theta += Math.PI / numAngleCells;
-		++thetaIndex;
+		var Y = y | 0;
+		var _g = 0;
+		var _g1 = vision_ds_Image.get_width(image);
+		while(_g < _g1) {
+			var X = _g++;
+			if(!vision_ds_Image.hasPixel(image,X,Y)) {
+				continue;
+			}
+			if(Math.abs(vision_ds_Image.getPixel(image,X,Y)) > 0) {
+				if(point1 == null) {
+					point1 = new vision_ds_Point2D(X,Y);
+				} else {
+					point2 = new vision_ds_Point2D(X,Y);
+				}
+				lineGapCounter = 0;
+			} else {
+				++lineGapCounter;
+				if(lineGapCounter > maxGap) {
+					if(point1 != null && point2 != null) {
+						segments.push(new vision_ds_LineSegment2D(point1,point2));
+					}
+					point1 = null;
+					point2 = null;
+					lineGapCounter = 0;
+				}
+			}
+			y += slope;
+		}
 	}
-	var houghAcc = function(x,y) {
-		var rho;
-		var thetaIndex = 0;
-		x -= drawingWidth / 2 | 0;
-		y -= drawingHeight / 2 | 0;
-		while(thetaIndex < numAngleCells) {
-			rho = rhoMax + x * cosTable[thetaIndex] + y * sinTable[thetaIndex];
-			rho = (rho | 0) >> 1;
-			if(accum[thetaIndex] == null) {
-				accum[thetaIndex] = [];
-			}
-			if(accum[thetaIndex][rho | 0] == null) {
-				accum[thetaIndex][rho | 0] = 1;
-			} else {
-				var accum1 = accum[thetaIndex];
-				accum1[rho | 0]++;
-			}
-			drawInHough(rho,thetaIndex);
-			++thetaIndex;
-		}
-		findMaxInHough();
-	};
-	var houghAccClassical = function(x,y) {
-		var rho;
-		var theta = 0.;
-		var thetaIndex = 0;
-		x -= drawingWidth / 2 | 0;
-		y -= drawingHeight / 2 | 0;
-		while(thetaIndex < numAngleCells) {
-			rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
-			rho = (rho | 0) >> 1;
-			if(accum[thetaIndex] == null) {
-				accum[thetaIndex] = [];
-			}
-			if(accum[thetaIndex][rho | 0] == null) {
-				accum[thetaIndex][rho | 0] = 1;
-			} else {
-				var accum1 = accum[thetaIndex];
-				accum1[rho | 0]++;
-			}
-			drawInHough(rho,thetaIndex);
-			theta += Math.PI / numAngleCells;
-			++thetaIndex;
-		}
-	};
-	drawing.addEventListener("mousedown",function() {
-		drawingMode = true;
-	});
-	drawing.addEventListener("mouseup",function() {
-		drawingMode = false;
-	});
-	drawing.addEventListener("mouseout",function() {
-		drawingMode = false;
-	});
-	drawing.addEventListener("mousemove",function(e) {
-		if(drawingMode) {
-			var rect = drawing.getBoundingClientRect();
-			var x = (e.clientX - rect.left) / (rect.right - rect.left) * drawing.width;
-			var y = (e.clientY - rect.top) / (rect.bottom - rect.top) * drawing.height;
-			ctx.fillStyle = "rgba(0,0,0,1)";
-			ctx.beginPath();
-			ctx.fillRect(x - THICKNESS / 2,y - THICKNESS / 2,THICKNESS,THICKNESS);
-			ctx.closePath();
-			houghAcc(x | 0,y | 0);
-		}
-	});
-	window.document.body.appendChild(drawing);
-	window.document.body.appendChild(houghSp);
+	return segments;
 };
 var vision_ds_Color = {};
 vision_ds_Color.fromInt = function(Value) {
@@ -3165,6 +3292,9 @@ vision_ds_Color.toString = function(this1) {
 	var tmp = Alpha ? StringTools.hex(this1 >> 24 & 255,2) : "";
 	return "<bg" + ("#" + ((Prefix ? "0x" : "") + tmp + StringTools.hex(this1 >> 16 & 255,2) + StringTools.hex(this1 >> 8 & 255,2) + StringTools.hex(this1 & 255,2))) + ">   </>";
 };
+vision_ds_Color.toInt = function(this1) {
+	return this1;
+};
 vision_ds_Color.color_greater_than_color = function(lhs,rhs) {
 	return lhs > rhs;
 };
@@ -3350,14 +3480,21 @@ vision_ds_Image.setPixel = function(this1,x,y,color) {
 	}
 	this1[x][y] = color;
 };
+vision_ds_Image.hasPixel = function(this1,x,y) {
+	if(x >= 0 && x < this1.length && y >= 0) {
+		return y < this1[x].length;
+	} else {
+		return false;
+	}
+};
 vision_ds_Image.paintPixel = function(this1,x,y,color) {
 	if(x < 0 || x >= this1.length || y < 0 || y >= this1[x].length) {
 		throw new vision_exceptions_OutOfBounds(this1,new vision_ds_Point2D(x,y));
 	}
-	var Red = ((color >> 16 & 255) / 255 + (vision_ds_Image.getPixel(this1,x,y) >> 16 & 255) / 255) / 2;
-	var Green = ((color >> 8 & 255) / 255 + (vision_ds_Image.getPixel(this1,x,y) >> 8 & 255) / 255) / 2;
-	var Blue = ((color & 255) / 255 + (vision_ds_Image.getPixel(this1,x,y) & 255) / 255) / 2;
-	var Alpha = ((color >> 24 & 255) / 255 + (vision_ds_Image.getPixel(this1,x,y) >> 24 & 255) / 255) / 2;
+	var Red = ((color >> 16 & 255) / 255 * ((color >> 24 & 255) / 255) + (vision_ds_Image.getPixel(this1,x,y) >> 16 & 255) / 255) / 2;
+	var Green = ((color >> 8 & 255) / 255 * ((color >> 24 & 255) / 255) + (vision_ds_Image.getPixel(this1,x,y) >> 8 & 255) / 255) / 2;
+	var Blue = ((color & 255) / 255 * ((color >> 24 & 255) / 255) + (vision_ds_Image.getPixel(this1,x,y) & 255) / 255) / 2;
+	var Alpha = 1;
 	if(Alpha == null) {
 		Alpha = 1;
 	}
@@ -3381,16 +3518,16 @@ vision_ds_Image.paintPixel = function(this1,x,y,color) {
 	var newColor = color;
 	vision_ds_Image.setPixel(this1,x,y,newColor);
 };
-vision_ds_Image.setColorOfRect = function(this1,rect,color) {
-	var _g = rect.x;
-	var _g1 = rect.x + rect.width;
+vision_ds_Image.drawRect = function(this1,x,y,width,height,color) {
+	var _g = x;
+	var _g1 = x + width;
 	while(_g < _g1) {
-		var x = _g++;
-		var _g2 = rect.y;
-		var _g3 = rect.y + rect.height;
+		var X = _g++;
+		var _g2 = y;
+		var _g3 = y + height;
 		while(_g2 < _g3) {
-			var y = _g2++;
-			vision_ds_Image.setPixel(this1,x,y,color);
+			var Y = _g2++;
+			vision_ds_Image.setPixel(this1,X,Y,color);
 		}
 	}
 };
@@ -3470,6 +3607,28 @@ vision_ds_Image.drawCircle = function(this1,X,Y,r,color) {
 		}
 	}
 };
+vision_ds_Image.fillColor = function(this1,position,color) {
+	var edgeDetector = vision_Vision.detectEdgesPerwitt(vision_ds_Image.clone(this1),5);
+	var expandFill = null;
+	expandFill = function(x,y) {
+		if(x < 0 || x >= this1.length || y < 0 || y >= this1[x].length) {
+			return;
+		}
+		if(vision_ds_Image.getPixel(this1,x,y) == color) {
+			return;
+		}
+		if((vision_ds_Image.image_array_read(edgeDetector,x)[y] >> 16 & 255) == 255) {
+			vision_ds_Image.setPixel(this1,x,y,color);
+			return;
+		}
+		vision_ds_Image.setPixel(this1,x,y,color);
+		expandFill(x + 1,y);
+		expandFill(x - 1,y);
+		expandFill(x,y + 1);
+		expandFill(x,y - 1);
+	};
+	expandFill(position.x,position.y);
+};
 vision_ds_Image.clone = function(this1) {
 	var clone = vision_ds_Image._new(vision_ds_Image.get_width(this1),vision_ds_Image.get_height(this1),0);
 	var _g = 0;
@@ -3491,35 +3650,74 @@ vision_ds_Image.image_array_read = function(this1,index) {
 vision_ds_Image.image_array_write = function(this1,index,value) {
 	this1[index] = value;
 };
-var vision_ds_Line2D = function(point,m,angle) {
+var vision_ds_Line2D = function(point,m,degrees,radians) {
 	this.point = point;
 	if(m != null) {
 		this.set_slope(m);
-		this.set_angle(this.angleFromSlope(m));
-	} else if(angle != null) {
-		this.set_angle(angle);
-		this.set_slope(this.slopeFromAngle(angle));
+		this.set_degrees(Math.atan(m) * 180 / Math.PI);
+		this.set_radians(Math.atan(m));
+	} else if(degrees != null) {
+		this.set_degrees(degrees);
+		this.set_slope(Math.tan(degrees * Math.PI / 180));
+		this.set_radians(degrees * Math.PI / 180);
+	} else if(radians != null) {
+		this.set_radians(radians);
+		this.set_slope(Math.tan(radians));
+		this.set_degrees(radians * 180 / Math.PI);
 	}
 };
 vision_ds_Line2D.__name__ = true;
 vision_ds_Line2D.from2Points = function(point1,point2) {
-	var slope = (point2.y - point1.y) / (point2.x - point1.x);
-	return new vision_ds_Line2D(point1,slope);
+	var s = (point2.y - point1.y) / (point2.x - point1.x);
+	return new vision_ds_Line2D(point1,s);
 };
 vision_ds_Line2D.prototype = {
-	angleFromSlope: function(slope) {
-		return Math.atan(slope) * 180 / Math.PI;
-	}
-	,slopeFromAngle: function(angle) {
-		return Math.tan(angle);
-	}
-	,set_slope: function(value) {
-		this["angle"] = this.angleFromSlope(value);
+	set_slope: function(value) {
+		this["degrees"] = Math.atan(value) * 180 / Math.PI;
+		this["radians"] = Math.atan(value);
 		return this.slope = value;
 	}
-	,set_angle: function(value) {
-		this["slope"] = this.slopeFromAngle(value);
-		return this.angle = value;
+	,set_degrees: function(value) {
+		this["slope"] = Math.tan(value * Math.PI / 180);
+		this["radians"] = value * Math.PI / 180;
+		return this.degrees = value;
+	}
+	,set_radians: function(value) {
+		this["slope"] = Math.tan(value);
+		this["degrees"] = value * 180 / Math.PI;
+		return this.radians = value;
+	}
+	,get_yIntercept: function() {
+		var px = this.point.x;
+		var py = this.point.y;
+		if(px > 0) {
+			while(px > 0) {
+				--px;
+				py -= this.slope;
+			}
+		} else if(px < 0) {
+			while(px < 0) {
+				++px;
+				py += this.slope;
+			}
+		}
+		return py;
+	}
+	,get_xIntercept: function() {
+		var px = this.point.x;
+		var py = this.point.y;
+		if(py > 0) {
+			while(py > 0) {
+				--py;
+				px -= 1 / this.slope;
+			}
+		} else if(py < 0) {
+			while(py < 0) {
+				++py;
+				px += 1 / this.slope;
+			}
+		}
+		return px;
 	}
 };
 var vision_ds_LineSegment2D = function(start,end) {
@@ -3539,17 +3737,26 @@ vision_ds_LineSegment2D.fromPointAndAngle = function(point,angle) {
 	return new vision_ds_LineSegment2D(point,end);
 };
 vision_ds_LineSegment2D.prototype = {
-	toString: function() {
+	get_length: function() {
+		return Math.sqrt(Math.pow(this.end.x - this.start.x,2) + Math.pow(this.end.y - this.start.y,2));
+	}
+	,toString: function() {
 		return "\n (" + Std.string(this.start) + ".x, " + Std.string(this.start) + ".y) --> (" + Std.string(this.end) + ".x, " + Std.string(this.end) + ".y)";
 	}
-	,get_length: function() {
-		return Math.sqrt((this.start.x - this.end.x) * (this.start.x - this.end.x) + (this.start.y - this.end.y) * (this.start.y - this.end.y));
+	,set_slope: function(value) {
+		this["degrees"] = Math.atan(value) * 180 / Math.PI;
+		this["radians"] = Math.atan(value);
+		return this.slope = value;
 	}
-	,get_angle: function() {
-		var dx = this.start.x - this.end.x;
-		var dy = this.start.y - this.end.y;
-		var angle = Math.atan2(dy,dx) * (180 / Math.PI) - 180;
-		return angle;
+	,set_degrees: function(value) {
+		this["slope"] = Math.tan(value * Math.PI / 180);
+		this["radians"] = value * Math.PI / 180;
+		return this.degrees = value;
+	}
+	,set_radians: function(value) {
+		this["slope"] = Math.tan(value);
+		this["degrees"] = value * 180 / Math.PI;
+		return this.radians = value;
 	}
 };
 var vision_ds_Point2D = function(x,y) {
@@ -3562,6 +3769,11 @@ vision_ds_Point2D.prototype = {
 		return "(" + this.x + ", " + this.y + ")";
 	}
 };
+var vision_ds_hough_HoughSpace = function(accumulator,image) {
+	this.accumulator = accumulator;
+	this.image = image;
+};
+vision_ds_hough_HoughSpace.__name__ = true;
 var vision_exceptions_OutOfBounds = function(image,position) {
 	haxe_Exception.call(this,"Coordinate Out Of Bounds: pixel " + Std.string(position) + " is outside the bounds of the image (size: " + vision_ds_Image.get_width(image) + "x" + vision_ds_Image.get_height(image) + ")");
 };
@@ -3643,3 +3855,5 @@ vision_ds_Color.CYAN = -16711681;
 vision_ds_Color.COLOR_REGEX = new EReg("^(0x|#)(([A-F0-9]{2}){3,4})$","i");
 Main.main();
 })({});
+
+//# sourceMappingURL=main.js.map

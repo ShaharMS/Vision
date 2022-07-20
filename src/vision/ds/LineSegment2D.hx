@@ -3,7 +3,11 @@ package vision.ds;
 class LineSegment2D {
 	public var length(get, null):Float;
 
-	public var angle(get, null):Float;
+	public var slope(default, set):Float;
+
+    public var degrees(default, set):Float;
+
+    public var radians(default, set):Float;
 
 	public var start(default, null):Point2D = {x: 0, y: 0};
 
@@ -16,20 +20,31 @@ class LineSegment2D {
 		this.end.y = end.y;
 	}
 
+	function get_length():Float {
+		return Math.sqrt(Math.pow(this.end.x - this.start.x, 2) + Math.pow(this.end.y - this.start.y, 2));
+	}
+
 	public function toString() {
 		return '\n ($start.x, $start.y) --> ($end.x, $end.y)';
 	}
 
-    public function get_length() {
-        return Math.sqrt((start.x - end.x) * (start.x - end.x) + (start.y - end.y) * (start.y - end.y));
-    }
-
-	public function get_angle() {
-		var dx:Float = start.x - end.x;
-		var dy:Float = start.y - end.y;
-		var angle:Float = Math.atan2(dy, dx) * (180 / Math.PI) - 180;
-		return angle;
+	function set_slope(value:Float):Float {
+		Reflect.setField(this, "degrees", MathUtils.degreesFromSlope(value));
+        Reflect.setField(this, "radians", MathUtils.radiansFromSlope(value));
+        return slope = value;
 	}
+
+	function set_degrees(value:Float):Float {
+		Reflect.setField(this, "slope", MathUtils.slopeFromDegrees(value));
+        Reflect.setField(this, "radians", MathUtils.radiansFromDegrees(value));
+        return degrees = value;
+	}
+
+    function set_radians(value:Float):Float {
+        Reflect.setField(this, "slope", MathUtils.slopeFromRadians(value));
+        Reflect.setField(this, "degrees", MathUtils.degreesFromRadians(value));
+        return radians = value;
+    }
 
 	public static function fromPointAndAngle(point:Point2D, angle:Float) {
 		var x:Float = point.x;

@@ -3,4 +3,5 @@
 
 --library formula
 --library console.hx
+-debug
 --js bin/main.js

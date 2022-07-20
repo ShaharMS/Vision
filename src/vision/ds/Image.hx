@@ -68,6 +68,18 @@ abstract Image(Matrix<Null<Color>>) {
     }
 
     /**
+        Checks if the given coordinates are within the bounds of the image.
+
+        @param x The x coordinate of the pixel.
+        @param y The y coordinate of the pixel.
+
+        @return True if the coordinates are within the bounds of the image.
+    **/
+    public function hasPixel(x:Int, y:Int):Bool {
+        return x >= 0 && x < this.length && y >= 0 && y < this[x].length;
+    }
+
+    /**
         Sets the color of a pixel, but doesnt completely overwrite the pixel:
 
         - if the color of the new pixel is the same as the old pixel, the old pixel is kept.
@@ -84,10 +96,10 @@ abstract Image(Matrix<Null<Color>>) {
             throw new OutOfBounds(cast this, new Point2D(x, y));
         }
         var newColor = Color.fromRGBFloat(
-            (color.redFloat + getPixel(x, y).redFloat) / 2, 
-            (color.greenFloat + getPixel(x, y).greenFloat) / 2, 
-            (color.blueFloat + getPixel(x, y).blueFloat) / 2, 
-            (color.alphaFloat + getPixel(x, y).alphaFloat) / 2);
+            (color.redFloat * color.alphaFloat + getPixel(x, y).redFloat) / 2 ,
+            (color.greenFloat * color.alphaFloat + getPixel(x, y).greenFloat) / 2, 
+            (color.blueFloat * color.alphaFloat + getPixel(x, y).blueFloat) / 2,
+            1);
         setPixel(x, y, newColor);
     }
 
@@ -98,10 +110,10 @@ abstract Image(Matrix<Null<Color>>) {
         extends to (x + width, y + height), not including the endpoints.
         @param color The color to fill that rectangular portion with.
     **/
-    public function setColorOfRect(rect:Rectangle, color:Color) {
-        for (x in rect.x...rect.x + rect.width) {
-            for (y in rect.y...rect.y + rect.height) {
-                setPixel(x, y, color);
+    public function drawRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
+        for (X in x...x + width) {
+            for (Y in y...y + height) {
+                setPixel(X, Y, color);
             }
         }
     }
@@ -182,6 +194,29 @@ abstract Image(Matrix<Null<Color>>) {
             }
         } while (x < 0);
     }
+
+    public function fillColor(position:Point2D, color:Color) {
+        //for detecting the edges of the fill, were gonna use perwitt edge detection  on a very low threshold
+        var edgeDetector = Vision.detectEdgesPerwitt(clone(), 5);
+
+        function expandFill(x:Int, y:Int) {
+            if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+                return;
+            }
+            if (getPixel(x, y) == color) return;
+            if (edgeDetector[x][y].red == 255) {
+                setPixel(x, y, color);
+                return;
+            }
+            setPixel(x, y, color);
+            expandFill(x + 1, y);
+            expandFill(x - 1, y);
+            expandFill(x, y + 1);
+            expandFill(x, y - 1);
+        }
+        expandFill(position.x, position.y);
+    }
+
 
     /**
         Clones this image.

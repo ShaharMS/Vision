@@ -766,6 +766,8 @@ abstract Color(Int) from Int from UInt to Int to UInt
         #end
     }
 
+	public function toInt():Int { return getThis(); }
+
 
 
 
