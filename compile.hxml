@@ -2,6 +2,7 @@
 --main Main
 
 --library formula
+--library format
 --library console.hx
 -debug
 --js bin/main.js

@@ -5,9 +5,9 @@ import vision.ds.Point2D;
 import vision.ds.LineSegment2D;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.MathUtils;
+import vision.tools.MathUtils;
 
-using vision.MathUtils;
+using vision.tools.MathUtils;
 
 /**
     The class where all image manipulation functions are stored.
@@ -109,11 +109,9 @@ class Vision {
         it will do the rest. (ie. it doesn't need to be edge detected/grayscaled)
     
         @param image The image to be processed.
-        @param threshold The threshold for detecting lines. This exists because we need to detect edges before applying
-        the transformation, and this threshold will be used as the argument for the Perwitt edge detector.
+        @param threshold The threshold for detecting lines. This exists because we need to detect edges before applying the transformation, and this threshold will be used as the argument for the Perwitt edge detector.
         @param minLineLength The minimum length of a line to be detected, lines shorter than this will be ignored.
-        @param minLineGap The minimum gap between two lines to be detected, lines with a 
-        gap smaller than this will make the second line ignored.
+        @param minLineGap The minimum gap between two lines to be detected, lines with a gap smaller than this will make the second line ignored.
         @param maxLineGap The maximum gap between two lines to be detected, lines with a gap smaller then that will be merged.
     **/
     public static function detectLinesHough(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<LineSegment2D> {
@@ -127,7 +125,7 @@ class Vision {
         for (i in 0...accumulator.length) {
             for (j in 0...accumulator[i].length) {
                 if (accumulator[i][j] == null) continue;
-                if (accumulator[i][j] - image.width - image.height > minLineLength) {
+                if (accumulator[i][j] > minLineLength) {
                     trace(accumulator[i][j], image.width, image.height, minLineLength, accumulator[i][j] - image.width - image.height - minLineLength);
                     peaks.push(new Point2D(i, j));
                 }
@@ -231,8 +229,7 @@ class Vision {
         (ie. it doesn't need to be grayscaled/black and white)
 
         @param image The image to be processed.
-        @param threshold The threshold for detecting edges. The lower the value, 
-        the more pixels will be considered edges (check this function's source code for more information).
+        @param threshold The threshold for detecting edges. The lower the value, the more pixels will be considered edges (check this function's source code for more information).
 
         @return The image with edges detected. This image is returned as a new, black and white image.
     **/
@@ -294,4 +291,58 @@ class Vision {
         }
         return edges;
     }
+
+    /**
+        Uses an iterative, nearest-neighbor style algorithm to blur an image.
+
+        The algorithm is very simple and quite fast, but also very sensitive 
+        performance-wise. The maximum value recommended ti use for the 
+        `iterations` property is 100.
+
+        @param image The image to be blurred.
+        @param iterations The number of times the algorithm will be run. the more iterations, the more blurry the image will be, and the higher the "blur range". for example: a value of 3 will produce a blur range of 3 pixels on each object.
+
+        @return The blurred image.
+    **/
+    public static function nearestNeighborBlur(image:Image, iterations:Int = 1):Image {
+        var blurredImage = image.clone();
+        var imageClone = image.clone();
+        for (i in 0...iterations) {
+            for (x in 1...blurredImage.width - 1) {
+                for (y in 1...blurredImage.height - 1) {
+                    var neighbors = [
+                        imageClone.getPixel(x - 1, y - 1), 
+                        imageClone.getPixel(x, y - 1), 
+                        imageClone.getPixel(x + 1, y - 1),
+                        imageClone.getPixel(x - 1, y), 
+                        imageClone.getPixel(x, y),
+                        imageClone.getPixel(x + 1, y),
+                        imageClone.getPixel(x - 1, y + 1), 
+                        imageClone.getPixel(x, y + 1), 
+                        imageClone.getPixel(x + 1, y + 1)
+                    ];
+                    var averageRed = (
+                        neighbors[0].red + neighbors[1].red + neighbors[2].red +
+                        neighbors[3].red + neighbors[4].red + neighbors[5].red +
+                        neighbors[6].red + neighbors[7].red + neighbors[8].red
+                    ) / 9;
+                    var averageGreen = (
+                        neighbors[0].green + neighbors[1].green + neighbors[2].green +
+                        neighbors[3].green + neighbors[4].green + neighbors[5].green +
+                        neighbors[6].green + neighbors[7].green + neighbors[8].green
+                    ) / 9;
+                    var averageBlue = (
+                        neighbors[0].blue + neighbors[1].blue + neighbors[2].blue +
+                        neighbors[3].blue + neighbors[4].blue + neighbors[5].blue +
+                        neighbors[6].blue + neighbors[7].blue + neighbors[8].blue
+                    ) / 9;
+                    blurredImage.setPixel(x, y, Color.fromRGB(Std.int(averageRed), Std.int(averageGreen), Std.int(averageBlue)));
+                }
+            }
+            imageClone = blurredImage.clone();
+        }
+
+        return blurredImage;
+    }
+    
 }

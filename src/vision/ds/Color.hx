@@ -1,5 +1,7 @@
 package vision.ds;
 
+import vision.tools.MathUtils;
+
 abstract Color(Int) from Int from UInt to Int to UInt
 {
 	public static inline var TRANSPARENT:Color = 0x00000000;
@@ -67,9 +69,9 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 * @param	Value And Int with bytes in the format 0xAARRGGBB
 	 * @return	The color as a Color
 	 */
-	public static inline function fromInt(Value:Int):Color
+	public static inline function fromInt(value:Int):Color
 	{
-		return new Color(Value);
+		return new Color(value);
 	}
 
 	/**
@@ -368,7 +370,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 * @param	Factor Value from 0 to 1 of how much to progress toward black.
 	 * @return 	A darkened version of this color
 	 */
-	public function getDarkened(Factor:Float = 0.2):Color
+	public function darken(Factor:Float = 0.2):Color
 	{
 		Factor = MathUtils.boundFloat(Factor, 0, 1);
 		var output:Color = this;
@@ -382,7 +384,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 * @param	Factor Value from 0 to 1 of how much to progress toward white.
 	 * @return 	A lightened version of this color
 	 */
-	public inline function getLightened(Factor:Float = 0.2):Color
+	public inline function lighten(Factor:Float = 0.2):Color
 	{
 		Factor = MathUtils.boundFloat(Factor, 0, 1);
 		var output:Color = this;
@@ -395,7 +397,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 *
 	 * @return The inversion of this color
 	 */
-	public inline function getInverted():Color
+	public inline function invert():Color
 	{
 		var oldAlpha = alpha;
 		var output:Color = Color.WHITE - this;

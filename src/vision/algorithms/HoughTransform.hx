@@ -72,7 +72,7 @@ class HoughTransform {
 						} else {
 							accum[thetaIndex][Std.int(rho)]++;
 						}
-						houghSpace.setPixel(thetaIndex, Std.int(rho), houghSpace.getPixel(thetaIndex, Std.int(rho)).getDarkened(0.005));
+						houghSpace.setPixel(thetaIndex, Std.int(rho), houghSpace.getPixel(thetaIndex, Std.int(rho)).darken(0.02));
 						
 						theta += Math.PI / 360;
 						thetaIndex++;
@@ -86,9 +86,6 @@ class HoughTransform {
 	}
 
 	public static function getLineSegments(houghspace:HoughSpace, image:Image, theta:Int, rho:Int, maxGap:Int):Array<LineSegment2D> {
-		var accumulator = houghspace.accumulator;
-
-		var peak = accumulator[theta][rho];
 		//now, convert theta and rho to x and y
 		var x = rho * Math.cos(theta);
 		var y = rho * Math.sin(theta);
@@ -107,12 +104,11 @@ class HoughTransform {
 		var point1:Point2D = null, point2:Point2D = null;
 		var lineGapCounter = 0;
 		var segments = new Array<LineSegment2D>();
-		var lastPushed:Array<Point2D> = [];
 		if (slope == null) { //incase of m being infinity - vertical line
 			var X = Std.int(x);
 			for (Y in 0...image.height) {
 				if (!image.hasPixel(X, Y)) continue;
-				if (Math.abs(image.getPixel(X, Y)) > 0) {
+				if (image.getPixel(X, Y).red == 255) {
 					if (point1 == null) {
 						point1 = new Point2D(X, Y);
 					} else {
@@ -139,7 +135,7 @@ class HoughTransform {
 			var Y = Std.int(y);
 			for (X in 0...image.width) {
 				if (!image.hasPixel(X, Y)) continue;
-				if (Math.abs(image.getPixel(X, Y)) > 0) {
+				if (image.getPixel(X, Y).red == 255) {
 					if (point1 == null) {
 						point1 = new Point2D(X, Y);
 					} else {
@@ -158,6 +154,7 @@ class HoughTransform {
 					}
 				}
 				y += slope;
+				Y = Std.int(y);
 			}
 		}
 
