@@ -587,11 +587,11 @@ HxOverrides.now = function() {
 var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
-	var image = vision_ds_Image._new(300,300,0);
+	var image = vision_ds_Image._new(250,250,0);
 	vision_ds_Image.drawLine(image,12,53,54,15,12386818);
-	vision_ds_Image.drawLine(image,56,271,181,95,853);
+	vision_ds_Image.drawLine(image,56,248,181,95,853);
 	vision_ds_Image.drawLine(image,110,15,121,131,3273472);
-	vision_ds_Image.drawLine(image,271,53,15,231,16777215);
+	vision_ds_Image.drawLine(image,248,53,15,231,16777215);
 	vision_ds_Image.drawRect(image,34,12,33,53,15793990);
 	vision_ds_Image.drawRect(image,12,53,33,53,16777215);
 	vision_ds_Image.drawCircle(image,100,100,50,3967342);
@@ -611,6 +611,7 @@ Main.main = function() {
 	Main.printIm(hough.image);
 	var l = vision_Vision.detectEdgesPerwitt(image);
 	Main.printIm(l);
+	Main.printIm(vision_Vision.nearestNeighborBlur(vision_ds_Image.clone(image),100));
 };
 Main.printIm = function(image) {
 	var c = window.document.createElement("canvas");
@@ -1067,8 +1068,8 @@ vision_Vision.detectLinesHough = function(image,threshold,minLineLength,minLineG
 			if(accumulator[i][j] == null) {
 				continue;
 			}
-			if(accumulator[i][j] - vision_ds_Image.get_width(image) - vision_ds_Image.get_height(image) > minLineLength) {
-				haxe_Log.trace(accumulator[i][j],{ fileName : "src/vision/Vision.hx", lineNumber : 106, className : "vision.Vision", methodName : "detectLinesHough", customParams : [vision_ds_Image.get_width(image),vision_ds_Image.get_height(image),minLineLength,accumulator[i][j] - vision_ds_Image.get_width(image) - vision_ds_Image.get_height(image) - minLineLength]});
+			if(accumulator[i][j] > minLineLength) {
+				haxe_Log.trace(accumulator[i][j],{ fileName : "src/vision/Vision.hx", lineNumber : 104, className : "vision.Vision", methodName : "detectLinesHough", customParams : [vision_ds_Image.get_width(image),vision_ds_Image.get_height(image),minLineLength,accumulator[i][j] - vision_ds_Image.get_width(image) - vision_ds_Image.get_height(image) - minLineLength]});
 				peaks.push(new vision_ds_Point2D(i,j));
 			}
 		}
@@ -1173,6 +1174,59 @@ vision_Vision.detectEdgesPerwitt = function(image,threshold) {
 	}
 	return edges2;
 };
+vision_Vision.nearestNeighborBlur = function(image,iterations) {
+	if(iterations == null) {
+		iterations = 1;
+	}
+	var blurredImage = vision_ds_Image.clone(image);
+	var imageClone = vision_ds_Image.clone(image);
+	var _g = 0;
+	var _g1 = iterations;
+	while(_g < _g1) {
+		var i = _g++;
+		var _g2 = 1;
+		var _g3 = vision_ds_Image.get_width(blurredImage) - 1;
+		while(_g2 < _g3) {
+			var x = _g2++;
+			var _g4 = 1;
+			var _g5 = vision_ds_Image.get_height(blurredImage) - 1;
+			while(_g4 < _g5) {
+				var y = _g4++;
+				var neighbors_0 = vision_ds_Image.getPixel(imageClone,x - 1,y - 1);
+				var neighbors_1 = vision_ds_Image.getPixel(imageClone,x,y - 1);
+				var neighbors_2 = vision_ds_Image.getPixel(imageClone,x + 1,y - 1);
+				var neighbors_3 = vision_ds_Image.getPixel(imageClone,x - 1,y);
+				var neighbors_4 = vision_ds_Image.getPixel(imageClone,x,y);
+				var neighbors_5 = vision_ds_Image.getPixel(imageClone,x + 1,y);
+				var neighbors_6 = vision_ds_Image.getPixel(imageClone,x - 1,y + 1);
+				var neighbors_7 = vision_ds_Image.getPixel(imageClone,x,y + 1);
+				var neighbors_8 = vision_ds_Image.getPixel(imageClone,x + 1,y + 1);
+				var averageRed = ((neighbors_0 >> 16 & 255) + (neighbors_1 >> 16 & 255) + (neighbors_2 >> 16 & 255) + (neighbors_3 >> 16 & 255) + (neighbors_4 >> 16 & 255) + (neighbors_5 >> 16 & 255) + (neighbors_6 >> 16 & 255) + (neighbors_7 >> 16 & 255) + (neighbors_8 >> 16 & 255)) / 9;
+				var averageGreen = ((neighbors_0 >> 8 & 255) + (neighbors_1 >> 8 & 255) + (neighbors_2 >> 8 & 255) + (neighbors_3 >> 8 & 255) + (neighbors_4 >> 8 & 255) + (neighbors_5 >> 8 & 255) + (neighbors_6 >> 8 & 255) + (neighbors_7 >> 8 & 255) + (neighbors_8 >> 8 & 255)) / 9;
+				var averageBlue = ((neighbors_0 & 255) + (neighbors_1 & 255) + (neighbors_2 & 255) + (neighbors_3 & 255) + (neighbors_4 & 255) + (neighbors_5 & 255) + (neighbors_6 & 255) + (neighbors_7 & 255) + (neighbors_8 & 255)) / 9;
+				var Red = averageRed | 0;
+				var Green = averageGreen | 0;
+				var Blue = averageBlue | 0;
+				var color = vision_ds_Color._new();
+				var Alpha = 255;
+				if(Alpha == null) {
+					Alpha = 255;
+				}
+				color &= -16711681;
+				color |= (Red > 255 ? 255 : Red < 0 ? 0 : Red) << 16;
+				color &= -65281;
+				color |= (Green > 255 ? 255 : Green < 0 ? 0 : Green) << 8;
+				color &= -256;
+				color |= Blue > 255 ? 255 : Blue < 0 ? 0 : Blue;
+				color &= 16777215;
+				color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
+				vision_ds_Image.setPixel(blurredImage,x,y,color);
+			}
+		}
+		imageClone = vision_ds_Image.clone(blurredImage);
+	}
+	return blurredImage;
+};
 var vision_algorithms_HoughTransform = function() { };
 vision_algorithms_HoughTransform.__name__ = true;
 vision_algorithms_HoughTransform.toHoughSpace = function(image) {
@@ -1206,7 +1260,7 @@ vision_algorithms_HoughTransform.toHoughSpace = function(image) {
 						var accum1 = accum[thetaIndex];
 						accum1[rho | 0]++;
 					}
-					vision_ds_Image.setPixel(houghSpace,thetaIndex,rho | 0,vision_ds_Color.getDarkened(vision_ds_Image.getPixel(houghSpace,thetaIndex,rho | 0),0.02));
+					vision_ds_Image.setPixel(houghSpace,thetaIndex,rho | 0,vision_ds_Color.darken(vision_ds_Image.getPixel(houghSpace,thetaIndex,rho | 0),0.02));
 					theta += Math.PI / 360;
 					++thetaIndex;
 				}
@@ -1218,8 +1272,6 @@ vision_algorithms_HoughTransform.toHoughSpace = function(image) {
 	return new vision_ds_hough_HoughSpace(accum,houghSpace);
 };
 vision_algorithms_HoughTransform.getLineSegments = function(houghspace,image,theta,rho,maxGap) {
-	var accumulator = houghspace.accumulator;
-	var peak = accumulator[theta][rho];
 	var x = rho * Math.cos(theta);
 	var y = rho * Math.sin(theta);
 	var slope;
@@ -1241,7 +1293,7 @@ vision_algorithms_HoughTransform.getLineSegments = function(houghspace,image,the
 			if(!vision_ds_Image.hasPixel(image,X,Y)) {
 				continue;
 			}
-			if(Math.abs(vision_ds_Image.getPixel(image,X,Y)) > 0) {
+			if((vision_ds_Image.getPixel(image,X,Y) >> 16 & 255) == 255) {
 				if(point1 == null) {
 					point1 = new vision_ds_Point2D(X,Y);
 				} else {
@@ -1273,7 +1325,7 @@ vision_algorithms_HoughTransform.getLineSegments = function(houghspace,image,the
 			if(!vision_ds_Image.hasPixel(image,X,Y)) {
 				continue;
 			}
-			if(Math.abs(vision_ds_Image.getPixel(image,X,Y)) > 0) {
+			if((vision_ds_Image.getPixel(image,X,Y) >> 16 & 255) == 255) {
 				if(point1 == null) {
 					point1 = new vision_ds_Point2D(X,Y);
 				} else {
@@ -1292,13 +1344,14 @@ vision_algorithms_HoughTransform.getLineSegments = function(houghspace,image,the
 				}
 			}
 			y += slope;
+			Y = y | 0;
 		}
 	}
 	return segments;
 };
 var vision_ds_Color = {};
-vision_ds_Color.fromInt = function(Value) {
-	return vision_ds_Color._new(Value);
+vision_ds_Color.fromInt = function(value) {
+	return vision_ds_Color._new(value);
 };
 vision_ds_Color.fromRGB = function(Red,Green,Blue,Alpha) {
 	if(Alpha == null) {
@@ -1857,7 +1910,7 @@ vision_ds_Color.toWebString = function(this1) {
 	var tmp = Alpha ? StringTools.hex(this1 >> 24 & 255,2) : "";
 	return "#" + ((Prefix ? "0x" : "") + tmp + StringTools.hex(this1 >> 16 & 255,2) + StringTools.hex(this1 >> 8 & 255,2) + StringTools.hex(this1 & 255,2));
 };
-vision_ds_Color.getDarkened = function(this1,Factor) {
+vision_ds_Color.darken = function(this1,Factor) {
 	if(Factor == null) {
 		Factor = 0.2;
 	}
@@ -1986,7 +2039,7 @@ vision_ds_Color.getDarkened = function(this1,Factor) {
 	}
 	return output;
 };
-vision_ds_Color.getLightened = function(this1,Factor) {
+vision_ds_Color.lighten = function(this1,Factor) {
 	if(Factor == null) {
 		Factor = 0.2;
 	}
@@ -2115,7 +2168,7 @@ vision_ds_Color.getLightened = function(this1,Factor) {
 	}
 	return output;
 };
-vision_ds_Color.getInverted = function(this1) {
+vision_ds_Color.invert = function(this1) {
 	var oldAlpha = this1 >> 24 & 255;
 	var lhs = -1;
 	var Red = (lhs >> 16 & 255) - (this1 >> 16 & 255);

@@ -1,4 +1,4 @@
-package vision;
+package vision.tools;
 
 import vision.ds.Line2D;
 import vision.ds.LineSegment2D;

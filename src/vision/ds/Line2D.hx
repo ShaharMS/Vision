@@ -1,5 +1,7 @@
 package vision.ds;
 
+import vision.tools.MathUtils;
+
 class Line2D {
     public var point:Point2D;
 

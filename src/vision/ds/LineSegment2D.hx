@@ -1,5 +1,7 @@
 package vision.ds;
 
+import vision.tools.MathUtils;
+
 class LineSegment2D {
 	public var length(get, null):Float;
 
