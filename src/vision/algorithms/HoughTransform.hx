@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import js.Browser;
 import haxe.Timer;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Matrix;
@@ -71,7 +72,7 @@ class HoughTransform {
 						} else {
 							accum[thetaIndex][Std.int(rho)]++;
 						}
-						houghSpace.setPixel(thetaIndex, Std.int(rho), houghSpace.getPixel(thetaIndex, Std.int(rho)).getDarkened(0.02));
+						houghSpace.setPixel(thetaIndex, Std.int(rho), houghSpace.getPixel(thetaIndex, Std.int(rho)).getDarkened(0.005));
 						
 						theta += Math.PI / 360;
 						thetaIndex++;
@@ -81,7 +82,6 @@ class HoughTransform {
 		}
 		var end = Timer.stamp();
 		trace("Hough Transform took " + (end - start) + " seconds");
-
 		return {accumulator: accum, image: houghSpace};
 	}
 

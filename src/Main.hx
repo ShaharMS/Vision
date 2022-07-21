@@ -12,6 +12,7 @@ import js.Browser;
 import vision.algorithms.HoughTransform;
 import vision.Vision;
 import vision.ds.Image;
+using vision.Vision;
 
 class Main {
 	static function main() {
@@ -35,9 +36,11 @@ class Main {
 		printIm(image);
 		printIm(Vision.blackAndWhite(image.clone()));
 		printIm(Vision.grayscale(image.clone()));
+		printIm(image.clone().detectEdgesSobel());
 		var hough = HoughTransform.toHoughSpace(Vision.detectEdgesPerwitt(image.clone()));
 		printIm(hough.image);
-		var l = Vision.detectEdgesPerwitt(image);
+		printIm(hough.image.clone().invert());
+		var l = Vision.detectEdgesPerwitt(image.clone());
 		printIm(l);
 	}
 

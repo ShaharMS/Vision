@@ -197,7 +197,7 @@ abstract Image(Matrix<Null<Color>>) {
 
     public function fillColor(position:Point2D, color:Color) {
         //for detecting the edges of the fill, were gonna use perwitt edge detection  on a very low threshold
-        var edgeDetector = Vision.detectEdgesPerwitt(clone(), 5);
+        var edgeDetector = Vision.detectEdgesPerwitt(clone(), 1);
 
         function expandFill(x:Int, y:Int) {
             if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
@@ -206,6 +206,10 @@ abstract Image(Matrix<Null<Color>>) {
             if (getPixel(x, y) == color) return;
             if (edgeDetector[x][y].red == 255) {
                 setPixel(x, y, color);
+                setPixel(x + 1, y, color);
+                setPixel(x - 1, y, color);
+                setPixel(x, y + 1, color);
+                setPixel(x, y - 1, color);
                 return;
             }
             setPixel(x, y, color);
