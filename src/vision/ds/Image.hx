@@ -229,6 +229,34 @@ abstract Image(Matrix<Null<Color>>) {
     }
 
     /**
+        Draws an infine line specified by a Line2D object.
+
+        @param line The line to draw.
+        @param color The color to draw the line with.
+
+        @see Line2D
+    **/
+    public function drawLine2D(line:Line2D, color:Color) {
+        var p1 = line.getPointAtY(0);
+        var p2 = line.getPointAtY(height - 1);
+        var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+        var dx = Math.abs(x2 - x1);
+        var dy = Math.abs(y2 - y1);
+        var sx = (x1 < x2) ? 1 : -1;
+        var sy = (y1 < y2) ? 1 : -1;
+        var err = dx - dy;
+        while (true) {
+            if (hasPixel(x1, y1)) {
+                setPixel(x1, y1, color);
+            }
+            if (x1 == x2 && y1 == y2) break;
+            var e2 = 2 * err;
+            if (e2 > -dy) { err -= dy; x1 += sx; }
+            if (e2 < dx) { err += dx; y1 += sy; }
+        }
+    }
+
+    /**
         Draws a circle of the given color:
 
          - The center of the circle is at (X, Y)

@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.Line2D;
 import vision.algorithms.Gaussian;
 import vision.algorithms.HoughTransform;
 import vision.ds.Point2D;
@@ -115,34 +116,49 @@ class Vision {
         @param minLineGap The minimum gap between two lines to be detected, lines with a gap smaller than this will make the second line ignored.
         @param maxLineGap The maximum gap between two lines to be detected, lines with a gap smaller then that will be merged.
     **/
-    public static function houghLineDetection(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<LineSegment2D> {
+    public static function houghLine2DDetection(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<Line2D> {
         var edges = sobelEdgeDetection(image, threshold);
         var houghSpace = HoughTransform.toHoughSpace(edges);
         var accumulator = houghSpace.accumulator;
 
         //find the peaks in the accumulator using a for loop
         var peaks:Array<Point2D> = [];
-        Console.log(accumulator);
+        var min = Math.POSITIVE_INFINITY;
+        var max = Math.NEGATIVE_INFINITY;
+        for (i in 0...accumulator.length) {
+            for (j in 0...accumulator[i].length) {
+                if (accumulator[i][j] < min) {
+                    min = accumulator[i][j];
+                    trace("min: " + min);
+                }
+                if (accumulator[i][j] > max) {
+                    max = accumulator[i][j];
+                    trace("max: " + max);
+                }
+            }
+        }
         for (i in 0...accumulator.length) {
             for (j in 0...accumulator[i].length) {
                 if (accumulator[i][j] == null) continue;
-                if (accumulator[i][j] > minLineLength) {
-                    trace(accumulator[i][j], image.width, image.height, minLineLength, accumulator[i][j] - image.width - image.height - minLineLength);
+                if (accumulator[i][j] - max / 4 > minLineLength) {
                     peaks.push(new Point2D(i, j));
                 }
             }
         }
         //now, the peaks in hough space are inside the peaks array. extract the line segments from the peaks
-        var lineSegments:Array<LineSegment2D> = [];
+        var lines:Array<Line2D> = [];
         Console.log(peaks);
         for (i in 0...peaks.length) {
             var peak = peaks[i];
             var theta = peak.x;
             var rho = peak.y;
-            var lineSegment = HoughTransform.getLineSegments(houghSpace, edges, theta, rho, maxLineGap);
-            lineSegments.concat(lineSegment);
+            
+            var p1:Point2D = {x: 0, y: Std.int(rho / Math.sin(theta))};
+            trace("p1: " + p1);
+            var slope = -1 / Math.tan(theta);
+            lines.push(new Line2D(p1, slope));
         }
-        return lineSegments;
+        return lines;
     }
 
     /**

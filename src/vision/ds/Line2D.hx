@@ -93,4 +93,14 @@ class Line2D {
         var s = (point2.y - point1.y) / (point2.x - point1.x);
         return new Line2D(point1, s);
     }
+
+    public function getPointAtX(x:Int):Point2D {
+        //you have the slope, and the x value, find the y value
+        return new Point2D(x, Std.int(slope * x + yIntercept));
+    }
+
+    public function getPointAtY(y:Int):Point2D {
+        //you have the slope, and the y value, find the x value
+        return new Point2D(Std.int(y / slope), y);
+    }
 }

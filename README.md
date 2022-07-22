@@ -28,7 +28,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] black and white
  - [x] inverting
  - [x] Contrast image (exaggerated colors)
- - [ ] **Line detection (hough method)**
+ - [x] Line detection (hough method)
  - [x] Line detection (recursive method)
  - [ ] *Circle detection (hough method)*
  - [ ] *Rectangle detection (recursive method)*

@@ -79,6 +79,15 @@ class Main {
 		printIm(image.clone());
 		end = haxe.Timer.stamp();
 		trace("Image Cloning took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
+		var list = image.clone().houghLine2DDetection(100, 50);
+		var clone = image.clone();
+		for (l in list) {
+			clone.drawLine2D(l, Color.RED);
+		}
+		printIm(clone);
+		end = haxe.Timer.stamp();
+		trace("Hough line detection took: " + (end - start) + " seconds");
 
 	}
 
