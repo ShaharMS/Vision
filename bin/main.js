@@ -856,98 +856,6 @@ js_Boot.__string_rec = function(o,s) {
 		return String(o);
 	}
 };
-var vision_MathUtils = function() { };
-vision_MathUtils.__name__ = true;
-vision_MathUtils.distanceFromPointToLine = function(point,line) {
-	var cos = Math.cos(line.radians);
-	var sin = Math.sin(line.radians);
-	var x0 = line.point.x;
-	var y0 = line.point.y;
-	var x1 = point.x;
-	var y1 = point.y;
-	var numerator = (x0 - x1) * cos + (y0 - y1) * sin;
-	var denominator = Math.sqrt(Math.pow(x0 - x1,2) + Math.pow(y0 - y1,2));
-	var distance = numerator / denominator;
-	return distance;
-};
-vision_MathUtils.angleFromPointToLine = function(point,line) {
-	var angle = Math.atan2(line.end.y - line.start.y,line.end.x - line.start.x);
-	var angle2 = Math.atan2(point.y - line.start.y,point.x - line.start.x);
-	return angle2 - angle;
-};
-vision_MathUtils.angleFromPointToPoint = function(point1,point2) {
-	var x = point2.x - point1.x;
-	var y = point2.y - point1.y;
-	return Math.atan2(y,x);
-};
-vision_MathUtils.distanceBetweenPoints = function(point1,point2) {
-	var x = point2.x - point1.x;
-	var y = point2.y - point1.y;
-	return Math.sqrt(x * x + y * y);
-};
-vision_MathUtils.intersectionBetweenLineSegments = function(line1,line2) {
-	var x1 = line1.start.x;
-	var y1 = line1.start.y;
-	var x2 = line1.end.x;
-	var y2 = line1.end.y;
-	var x3 = line2.start.x;
-	var y3 = line2.start.y;
-	var x4 = line2.end.x;
-	var y4 = line2.end.y;
-	var denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-	if(x1 == x2 && y1 == y2 || x3 == x4 && y3 == y4) {
-		return null;
-	}
-	if(denominator == 0) {
-		return null;
-	}
-	var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
-	var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
-	if(ua < 0 || ua > 1 || ub < 0 || ub > 1) {
-		return null;
-	}
-	var x = x1 + ua * (x2 - x1);
-	var y = y1 + ua * (y2 - y1);
-	return new vision_ds_Point2D(x | 0,y | 0);
-};
-vision_MathUtils.wrapInt = function(value,min,max) {
-	var range = max - min + 1;
-	if(value < min) {
-		value += range * ((min - value) / range + 1 | 0);
-	}
-	return min + (value - min) % range;
-};
-vision_MathUtils.wrapFloat = function(value,min,max) {
-	var range = max - min;
-	if(value < min) {
-		value += range * (min - value) / range + 1;
-	}
-	return min + (value - min) % range;
-};
-vision_MathUtils.boundInt = function(value,min,max) {
-	return Math.min(Math.max(value,min),max) | 0;
-};
-vision_MathUtils.boundFloat = function(value,min,max) {
-	return Math.min(Math.max(value,min),max);
-};
-vision_MathUtils.degreesFromSlope = function(slope) {
-	return Math.atan(slope) * 180 / Math.PI;
-};
-vision_MathUtils.radiansFromSlope = function(slope) {
-	return Math.atan(slope);
-};
-vision_MathUtils.slopeFromDegrees = function(degrees) {
-	return Math.tan(degrees * Math.PI / 180);
-};
-vision_MathUtils.radiansFromDegrees = function(degrees) {
-	return degrees * Math.PI / 180;
-};
-vision_MathUtils.degreesFromRadians = function(radians) {
-	return radians * 180 / Math.PI;
-};
-vision_MathUtils.slopeFromRadians = function(radians) {
-	return Math.tan(radians);
-};
 var vision_Vision = function() { };
 vision_Vision.__name__ = true;
 vision_Vision.grayscale = function(image) {
@@ -1106,7 +1014,7 @@ vision_Vision.detectLinesHough = function(image,threshold,minLineLength,minLineG
 				continue;
 			}
 			if(accumulator[i][j] > minLineLength) {
-				haxe_Log.trace(accumulator[i][j],{ fileName : "src/vision/Vision.hx", lineNumber : 104, className : "vision.Vision", methodName : "detectLinesHough", customParams : [vision_ds_Image.get_width(image),vision_ds_Image.get_height(image),minLineLength,accumulator[i][j] - vision_ds_Image.get_width(image) - vision_ds_Image.get_height(image) - minLineLength]});
+				haxe_Log.trace(accumulator[i][j],{ fileName : "src/vision/Vision.hx", lineNumber : 129, className : "vision.Vision", methodName : "detectLinesHough", customParams : [vision_ds_Image.get_width(image),vision_ds_Image.get_height(image),minLineLength,accumulator[i][j] - vision_ds_Image.get_width(image) - vision_ds_Image.get_height(image) - minLineLength]});
 				peaks.push(new vision_ds_Point2D(i,j));
 			}
 		}
@@ -1976,28 +1884,28 @@ vision_ds_Color.divide = function(lhs,rhs) {
 	return color;
 };
 vision_ds_Color.getComplementHarmony = function(this1) {
-	return vision_ds_Color.fromHSB(vision_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) + 180,0,350),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
+	return vision_ds_Color.fromHSB(vision_tools_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) + 180,0,350),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
 };
 vision_ds_Color.getAnalogousHarmony = function(this1,Threshold) {
 	if(Threshold == null) {
 		Threshold = 30;
 	}
-	var warmer = vision_ds_Color.fromHSB(vision_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) - Threshold,0,350),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
-	var colder = vision_ds_Color.fromHSB(vision_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) + Threshold,0,350),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
+	var warmer = vision_ds_Color.fromHSB(vision_tools_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) - Threshold,0,350),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
+	var colder = vision_ds_Color.fromHSB(vision_tools_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) + Threshold,0,350),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
 	return { original : this1, warmer : warmer, colder : colder};
 };
 vision_ds_Color.getSplitComplementHarmony = function(this1,Threshold) {
 	if(Threshold == null) {
 		Threshold = 30;
 	}
-	var oppositeHue = vision_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) + 180,0,350);
-	var warmer = vision_ds_Color.fromHSB(vision_MathUtils.wrapInt(oppositeHue - Threshold,0,350),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
-	var colder = vision_ds_Color.fromHSB(vision_MathUtils.wrapInt(oppositeHue + Threshold,0,350),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
+	var oppositeHue = vision_tools_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) + 180,0,350);
+	var warmer = vision_ds_Color.fromHSB(vision_tools_MathUtils.wrapInt(oppositeHue - Threshold,0,350),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
+	var colder = vision_ds_Color.fromHSB(vision_tools_MathUtils.wrapInt(oppositeHue + Threshold,0,350),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
 	return { original : this1, warmer : warmer, colder : colder};
 };
 vision_ds_Color.getTriadicHarmony = function(this1) {
-	var triadic1 = vision_ds_Color.fromHSB(vision_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) + 120,0,359),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
-	var triadic2 = vision_ds_Color.fromHSB(vision_MathUtils.wrapInt((vision_ds_Color.get_hue(triadic1) | 0) + 120,0,359),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
+	var triadic1 = vision_ds_Color.fromHSB(vision_tools_MathUtils.wrapInt((vision_ds_Color.get_hue(this1) | 0) + 120,0,359),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
+	var triadic2 = vision_ds_Color.fromHSB(vision_tools_MathUtils.wrapInt((vision_ds_Color.get_hue(triadic1) | 0) + 120,0,359),(Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) - Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)),(this1 >> 24 & 255) / 255);
 	return { color1 : this1, color2 : triadic1, color3 : triadic2};
 };
 vision_ds_Color.to24Bit = function(this1) {
@@ -2029,7 +1937,7 @@ vision_ds_Color.darken = function(this1,Factor) {
 	if(Factor == null) {
 		Factor = 0.2;
 	}
-	Factor = vision_MathUtils.boundFloat(Factor,0,1);
+	Factor = vision_tools_MathUtils.boundFloat(Factor,0,1);
 	var output = this1;
 	var Value = (Math.max((output >> 16 & 255) / 255,Math.max((output >> 8 & 255) / 255,(output & 255) / 255)) + Math.min((output >> 16 & 255) / 255,Math.min((output >> 8 & 255) / 255,(output & 255) / 255))) / 2 * (1 - Factor);
 	var Hue = vision_ds_Color.get_hue(output);
@@ -2158,7 +2066,7 @@ vision_ds_Color.lighten = function(this1,Factor) {
 	if(Factor == null) {
 		Factor = 0.2;
 	}
-	Factor = vision_MathUtils.boundFloat(Factor,0,1);
+	Factor = vision_tools_MathUtils.boundFloat(Factor,0,1);
 	var output = this1;
 	var Value = (Math.max((output >> 16 & 255) / 255,Math.max((output >> 8 & 255) / 255,(output & 255) / 255)) + Math.min((output >> 16 & 255) / 255,Math.min((output >> 8 & 255) / 255,(output & 255) / 255))) / 2 + (1 - (Math.max((this1 >> 16 & 255) / 255,Math.max((this1 >> 8 & 255) / 255,(this1 & 255) / 255)) + Math.min((this1 >> 16 & 255) / 255,Math.min((this1 >> 8 & 255) / 255,(this1 & 255) / 255))) / 2) * Factor;
 	var Hue = vision_ds_Color.get_hue(output);
@@ -3953,6 +3861,98 @@ vision_exceptions_OutOfBounds.__name__ = true;
 vision_exceptions_OutOfBounds.__super__ = haxe_Exception;
 vision_exceptions_OutOfBounds.prototype = $extend(haxe_Exception.prototype,{
 });
+var vision_tools_MathUtils = function() { };
+vision_tools_MathUtils.__name__ = true;
+vision_tools_MathUtils.distanceFromPointToLine = function(point,line) {
+	var cos = Math.cos(line.radians);
+	var sin = Math.sin(line.radians);
+	var x0 = line.point.x;
+	var y0 = line.point.y;
+	var x1 = point.x;
+	var y1 = point.y;
+	var numerator = (x0 - x1) * cos + (y0 - y1) * sin;
+	var denominator = Math.sqrt(Math.pow(x0 - x1,2) + Math.pow(y0 - y1,2));
+	var distance = numerator / denominator;
+	return distance;
+};
+vision_tools_MathUtils.angleFromPointToLine = function(point,line) {
+	var angle = Math.atan2(line.end.y - line.start.y,line.end.x - line.start.x);
+	var angle2 = Math.atan2(point.y - line.start.y,point.x - line.start.x);
+	return angle2 - angle;
+};
+vision_tools_MathUtils.angleFromPointToPoint = function(point1,point2) {
+	var x = point2.x - point1.x;
+	var y = point2.y - point1.y;
+	return Math.atan2(y,x);
+};
+vision_tools_MathUtils.distanceBetweenPoints = function(point1,point2) {
+	var x = point2.x - point1.x;
+	var y = point2.y - point1.y;
+	return Math.sqrt(x * x + y * y);
+};
+vision_tools_MathUtils.intersectionBetweenLineSegments = function(line1,line2) {
+	var x1 = line1.start.x;
+	var y1 = line1.start.y;
+	var x2 = line1.end.x;
+	var y2 = line1.end.y;
+	var x3 = line2.start.x;
+	var y3 = line2.start.y;
+	var x4 = line2.end.x;
+	var y4 = line2.end.y;
+	var denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+	if(x1 == x2 && y1 == y2 || x3 == x4 && y3 == y4) {
+		return null;
+	}
+	if(denominator == 0) {
+		return null;
+	}
+	var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+	var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+	if(ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+		return null;
+	}
+	var x = x1 + ua * (x2 - x1);
+	var y = y1 + ua * (y2 - y1);
+	return new vision_ds_Point2D(x | 0,y | 0);
+};
+vision_tools_MathUtils.wrapInt = function(value,min,max) {
+	var range = max - min + 1;
+	if(value < min) {
+		value += range * ((min - value) / range + 1 | 0);
+	}
+	return min + (value - min) % range;
+};
+vision_tools_MathUtils.wrapFloat = function(value,min,max) {
+	var range = max - min;
+	if(value < min) {
+		value += range * (min - value) / range + 1;
+	}
+	return min + (value - min) % range;
+};
+vision_tools_MathUtils.boundInt = function(value,min,max) {
+	return Math.min(Math.max(value,min),max) | 0;
+};
+vision_tools_MathUtils.boundFloat = function(value,min,max) {
+	return Math.min(Math.max(value,min),max);
+};
+vision_tools_MathUtils.degreesFromSlope = function(slope) {
+	return Math.atan(slope) * 180 / Math.PI;
+};
+vision_tools_MathUtils.radiansFromSlope = function(slope) {
+	return Math.atan(slope);
+};
+vision_tools_MathUtils.slopeFromDegrees = function(degrees) {
+	return Math.tan(degrees * Math.PI / 180);
+};
+vision_tools_MathUtils.radiansFromDegrees = function(degrees) {
+	return degrees * Math.PI / 180;
+};
+vision_tools_MathUtils.degreesFromRadians = function(radians) {
+	return radians * 180 / Math.PI;
+};
+vision_tools_MathUtils.slopeFromRadians = function(radians) {
+	return Math.tan(radians);
+};
 if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
 	HxOverrides.now = performance.now.bind(performance);
 }
