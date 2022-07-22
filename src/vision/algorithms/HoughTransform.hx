@@ -49,7 +49,6 @@ class HoughTransform {
 		@return A `HoughSpace` object, containing the accumulator and an image representation of the accumulator.
 	**/
 	public static function toHoughSpace(image:Image):HoughSpace {
-		var start = Timer.stamp();
 		var accum:Array<Array<Int>> = [];
 		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
 		var houghSpace = new Image(361, Std.int(rhoMax), Color.WHITE);
@@ -80,8 +79,6 @@ class HoughTransform {
 				}
 			}
 		}
-		var end = Timer.stamp();
-		trace("Hough Transform took " + (end - start) + " seconds");
 		return {accumulator: accum, image: houghSpace};
 	}
 

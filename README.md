@@ -36,10 +36,41 @@ Here is a roadmap of all features added/planned for the future:
  - [x] edge detection (perwitt method)
  - [x] edge detection (sobel method)
  - [ ] *edge detection (canny method)*
+ - [x] nearest-neighbor style blur
+ - [x] gaussian blur 
 
 #### algorithms:
+
  - Hough Transform
     - [x] hough space generation
     - [ ] *adaptive hough space generation*
     - [ ] line segment finder
     - [ ] *Circle finder*
+
+ - Gaussian
+   - [x] 5x5 kernal generation
+   - [ ] *3x3 kernal generation*
+   
+#### class `Image`:
+
+ - [x] `getPixel()`
+ - [x] `setPixel()`
+ - [x] `hasPixel()`
+ - [x] `paintPixel()`
+ - [x] matrix access
+ - [x] floodfill
+ - Drawing:
+   - [x] `drawLine()`
+   - [x] `drawRect()`
+   - [x] `drawCircle()`
+   - [ ] `drawCurve()`
+   - [ ] `drawBezierCurve()`
+   - [x] `drawLineWithLerp()`
+   - [x] `fillRect()`
+   - [ ] `fillCircle()`
+   - [x] `callDrawSequence()`
+ - Copying:
+   - [x] `clone()`
+   - [x] `getImagePortion()`
+   - [x] `setImagePortion()`
+   - [x] `copyPixel()`

@@ -1,5 +1,6 @@
 package vision;
 
+import vision.algorithms.Gaussian;
 import vision.algorithms.HoughTransform;
 import vision.ds.Point2D;
 import vision.ds.LineSegment2D;
@@ -114,8 +115,8 @@ class Vision {
         @param minLineGap The minimum gap between two lines to be detected, lines with a gap smaller than this will make the second line ignored.
         @param maxLineGap The maximum gap between two lines to be detected, lines with a gap smaller then that will be merged.
     **/
-    public static function detectLinesHough(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<LineSegment2D> {
-        var edges = detectEdgesPerwitt(image, threshold);
+    public static function houghLineDetection(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<LineSegment2D> {
+        var edges = sobelEdgeDetection(image, threshold);
         var houghSpace = HoughTransform.toHoughSpace(edges);
         var accumulator = houghSpace.accumulator;
 
@@ -160,7 +161,7 @@ class Vision {
 
         @return The image with edges detected. This image is returned as a new, black and white image.
     **/
-    public static function detectEdgesSobel(image:Image, threshold:Float = 100):Image {
+    public static function sobelEdgeDetection(image:Image, threshold:Float = 100):Image {
 
         // If you came here for the explanation of the algorithm, Congrats! learning is fun :D
         /*
@@ -208,8 +209,8 @@ class Vision {
                     continue;
                 }
                 final sobelCalculationIterationTTB = 
-                    neighbors[0].red * -1 + neighbors[1].red * -1 + neighbors[2].red * -1 +
-                    neighbors[6].red * 1 + neighbors[7].red * 1 + neighbors[8].red * 1
+                    neighbors[0].red * -3 + neighbors[1].red * -10 + neighbors[2].red * -3 +
+                    neighbors[6].red * 3 + neighbors[7].red * 10 + neighbors[8].red * 3
                 ;
                 if (Math.abs(sobelCalculationIterationTTB) > threshold) {
                     edges.setPixel(x, y, Color.fromRGB(255, 255, 255));
@@ -233,7 +234,7 @@ class Vision {
 
         @return The image with edges detected. This image is returned as a new, black and white image.
     **/
-    public static function detectEdgesPerwitt(image:Image, threshold:Float = 100):Image {
+    public static function perwittEdgeDetection(image:Image, threshold:Float = 100):Image {
 
         // If you came here for the explanation of the algorithm, Congrats! learning is fun :D
         /*
@@ -342,6 +343,64 @@ class Vision {
             imageClone = blurredImage.clone();
         }
 
+        return blurredImage;
+    }
+
+    /**
+        Uses the gaussian blur algorithm to blur an image.
+
+        This algorithm works by creating a 5x5 matrix, and then applying
+        the gaussiann distribution function to that matrix.
+
+        That matrix will go over each pixel and decide it's color based on the values of 
+        the pixels covered by the 5x5 matrix, and the [gaussian distribution function](https://en.wikipedia.org/wiki/Gaussian_function).
+
+        You can modify the values of the matrix by passing a float to the `sigma` parameter.
+        The higher the value of `sigma`, the more value will be given to the center pixel's color, and the less value will be given to the surrounding pixels.
+
+        example of how sigma values effect distribution:
+        \
+        \
+        \
+        ![gaussian disdribution at different sigma values](https://i.stack.imgur.com/B33AE.png)
+    **/
+    public static function gaussianBlur(image:Image, ?sigma:Float = 1) {
+        var kernal = Gaussian.create5x5Kernal(sigma);
+        var blurredImage = image.clone();
+
+        function getNeighbors(x:Int, y:Int):Array<Array<Color>> {
+            var neighbors = [[], [], [], [], []];
+            for (X in -2...3) {
+                for (Y in -2...3) {
+                    if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
+                        neighbors[X + 2].push(null);
+                        continue;
+                    }
+                    neighbors[X + 2].push(image.getPixel(x + X, y + Y));
+                }
+            }
+            return neighbors;
+        }
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                var neighbors = getNeighbors(x, y);
+                var newColor = Color.fromRGB(0, 0, 0);
+                for (X in 0...5) {
+                    for (Y in 0...5) {
+                        if (neighbors[X][Y] == null) {
+                            continue;
+                        }
+                        var red = neighbors[X][Y].redFloat * kernal[X][Y];
+                        var green = neighbors[X][Y].greenFloat * kernal[X][Y];
+                        var blue = neighbors[X][Y].blueFloat * kernal[X][Y];
+                        newColor.redFloat += red;
+                        newColor.greenFloat += green;
+                        newColor.blueFloat += blue;
+                    }
+                }
+                blurredImage.setPixel(x, y, newColor);
+            }
+        }
         return blurredImage;
     }
     

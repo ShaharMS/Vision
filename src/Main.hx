@@ -1,5 +1,7 @@
 package;
 
+import haxe.Timer;
+import vision.algorithms.Gaussian;
 import vision.Vision;
 import vision.ds.Color;
 import vision.ds.Rectangle;
@@ -16,13 +18,15 @@ using vision.Vision;
 
 class Main {
 	static function main() {
+		var start:Float, end:Float;
+
 		var image = new Image(250, 250, 0x000000);
 		image.drawLine(12, 53, 54, 15, 0xbd0202);
 		image.drawLine(56, 248, 181, 95, 0x000355);
 		image.drawLine(110, 15, 121, 131, 0x31f300);
 		image.drawLine(248, 53, 15, 231, 0xffffff);
 		image.drawRect(34, 12, 33, 53, 0xf0ff46);
-		image.drawRect(12, 53, 33, 53, 0xffffff);
+		image.fillRect(12, 53, 33, 53, 0xffffff);
 		image.drawCircle(100, 100, 50, 0x3c896e);
 		image.drawCircle(100, 100, 30, 0xff00d4);
 		image.drawCircle(200, 200, 40, Color.YELLOW);
@@ -34,15 +38,48 @@ class Main {
 		image.drawCircle(200, 225, 8, Color.BROWN);
 		image.fillColor(new Point2D(200, 225), Color.BROWN);
 		printIm(image);
+		start = haxe.Timer.stamp();
 		printIm(Vision.blackAndWhite(image.clone()));
+		end = haxe.Timer.stamp();
+		trace("Black and white took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
 		printIm(Vision.grayscale(image.clone()));
-		printIm(image.clone().detectEdgesSobel());
-		var hough = HoughTransform.toHoughSpace(Vision.detectEdgesPerwitt(image.clone()));
+		end = haxe.Timer.stamp();
+		trace("Grayscale took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
+		printIm(image.clone().sobelEdgeDetection());
+		end = haxe.Timer.stamp();
+		trace("Sobel edge detection took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
+		var hough = HoughTransform.toHoughSpace(Vision.perwittEdgeDetection(image.clone()));
 		printIm(hough.image);
+		end = haxe.Timer.stamp();
+		trace("Hough transform took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
 		printIm(hough.image.clone().invert());
-		var l = Vision.detectEdgesPerwitt(image.clone());
-		printIm(l);
-		printIm(Vision.nearestNeighborBlur(image.clone(), 100));
+		end = haxe.Timer.stamp();
+		trace("Invertion took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
+		printIm(Vision.perwittEdgeDetection(image.clone()));
+		end = haxe.Timer.stamp();
+		trace("Perwitt edge detection took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
+		printIm(Vision.nearestNeighborBlur(image.clone(), 1));
+		end = haxe.Timer.stamp();
+		trace("Nearest neighbor blur took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
+		printIm(image.clone().contrast());
+		end = haxe.Timer.stamp();
+		trace("Contrast took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
+		printIm(image.clone().gaussianBlur(0.5));
+		end = haxe.Timer.stamp();
+		trace("Gaussian blur took: " + (end - start) + " seconds");
+		start = haxe.Timer.stamp();
+		printIm(image.clone());
+		end = haxe.Timer.stamp();
+		trace("Image Cloning took: " + (end - start) + " seconds");
+
 	}
 
 	static function printIm(image:Image) {

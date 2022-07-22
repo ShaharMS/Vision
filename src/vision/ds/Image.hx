@@ -45,6 +45,9 @@ abstract Image(Matrix<Null<Color>>) {
 
         @param x The x coordinate of the pixel.
         @param y The y coordinate of the pixel.
+
+        @throws OutOfBounds if the coordinates are out of bounds.
+        @return The color of the pixel at the given coordinates.
     **/
     public function getPixel(x:Int, y:Int):Color {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
@@ -59,6 +62,8 @@ abstract Image(Matrix<Null<Color>>) {
         @param x The x coordinate of the pixel.
         @param y The y coordinate of the pixel.
         @param color The color to set the pixel to.
+
+        @throws OutOfBounds if the pixel is out of bounds.
     **/
     public function setPixel(x:Int, y:Int, color:Color) {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
@@ -77,6 +82,24 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function hasPixel(x:Int, y:Int):Bool {
         return x >= 0 && x < this.length && y >= 0 && y < this[x].length;
+    }
+
+    /**
+        Copies a pixel from the given image to this image.
+
+        @param x The x coordinate of the pixel.
+        @param y The y coordinate of the pixel.
+        @param image The image to copy the pixel from.
+
+        @throws OutOfBounds if the given coordinates are outside the bounds of the image.
+        @return The color of the pixel at the given coordinates.
+    **/
+    public function copyPixel(x:Int, y:Int, image:Image):Color {
+        if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+            throw new OutOfBounds(cast this, new Point2D(x, y));
+        }
+        this[x][y] = image[x][y];
+        return this[x][y];
     }
 
     /**
@@ -106,17 +129,32 @@ abstract Image(Matrix<Null<Color>>) {
     /**
         Sets a rectangle of pixels to the given color, essentially filling it with the given color.
 
-        @param rect The rectangle to fill: The fill starts at (x, y) and 
-        extends to (x + width, y + height), not including the endpoints.
+        @param rect The rectangle to fill: The fill starts at (x, y) and extends to (x + width, y + height), not including the endpoints.
         @param color The color to fill that rectangular portion with.
     **/
-    public function drawRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
+    public function fillRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
         for (X in x...x + width) {
             for (Y in y...y + height) {
                 setPixel(X, Y, color);
             }
         }
     }
+
+    /**
+        Draws a rectangular outline of the given color.
+
+        This function is a shortcut for just doing repeated calls to drawLine.
+
+        @param rect The rectangle to draw the outline of.
+        @param color The color to draw the outline with.
+    **/
+    public function drawRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
+        drawLine(x, y, x + width, y, color);
+        drawLine(x + width, y, x + width, y + height, color);
+        drawLine(x + width, y + height, x, y + height, color);
+        drawLine(x, y + height, x, y, color);
+    }
+
 
     /**
         Returns a portion of the image, specified by a rectangle.
@@ -133,6 +171,25 @@ abstract Image(Matrix<Null<Color>>) {
             }
         }
         return subImage;
+    }
+
+    /**
+        Sets a portion of the image, specified by a rectangle, to another image.
+
+        @param rect The rectangle specifying the portion of the image to set.
+        @param image The image to set the portion of the image to.
+
+        @throws OutOfBounds if the portion of the image to set is outside the bounds of the original image.
+    **/
+    public function setImagePortion(rect:Rectangle, image:Image) {
+        if (rect.x < 0 || rect.x + rect.width > this.length || rect.y < 0 || rect.y + rect.height > this[0].length) {
+            throw new OutOfBounds(cast this, {x: rect.x, y: rect.y});
+        }
+        for (x in rect.x...rect.x + rect.width) {
+            for (y in rect.y...rect.y + rect.height) {
+                setPixel(x, y, image.getPixel(x - rect.x, y - rect.y));
+            }
+        }
     }
 
     /**
@@ -196,27 +253,20 @@ abstract Image(Matrix<Null<Color>>) {
     }
 
     public function fillColor(position:Point2D, color:Color) {
-        //for detecting the edges of the fill, were gonna use perwitt edge detection  on a very low threshold
-        var edgeDetector = Vision.detectEdgesPerwitt(clone(), 1);
+        var originalColor = getPixel(position.x, position.y);
 
         function expandFill(x:Int, y:Int) {
             if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
                 return;
             }
             if (getPixel(x, y) == color) return;
-            if (edgeDetector[x][y].red == 255) {
+            if (getPixel(x, y) == originalColor) {
                 setPixel(x, y, color);
-                setPixel(x + 1, y, color);
-                setPixel(x - 1, y, color);
-                setPixel(x, y + 1, color);
-                setPixel(x, y - 1, color);
-                return;
+                expandFill(x + 1, y);
+                expandFill(x - 1, y);
+                expandFill(x, y + 1);
+                expandFill(x, y - 1);
             }
-            setPixel(x, y, color);
-            expandFill(x + 1, y);
-            expandFill(x - 1, y);
-            expandFill(x, y + 1);
-            expandFill(x, y - 1);
         }
         expandFill(position.x, position.y);
     }
