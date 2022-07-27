@@ -1,7 +1,7 @@
 package vision.exceptions;
 
-import js.Syntax;
 #if js
+import js.Syntax;
 class VisionException  {
     
     public function new(message:String, type:String) {
@@ -9,6 +9,7 @@ class VisionException  {
     }
 }
 #else
+import haxe.Exception;
 class VisionException extends Exception {
     
     public function new(message:String, type:String) {

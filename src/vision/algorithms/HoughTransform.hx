@@ -1,6 +1,5 @@
 package vision.algorithms;
 
-import js.Browser;
 import haxe.Timer;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Matrix;
