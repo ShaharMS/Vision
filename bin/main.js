@@ -25,540 +25,6 @@ EReg.prototype = {
 			throw haxe_Exception.thrown("EReg::matched");
 		}
 	}
-	,matchedPos: function() {
-		if(this.r.m == null) {
-			throw haxe_Exception.thrown("No string matched");
-		}
-		return { pos : this.r.m.index, len : this.r.m[0].length};
-	}
-	,matchSub: function(s,pos,len) {
-		if(len == null) {
-			len = -1;
-		}
-		if(this.r.global) {
-			this.r.lastIndex = pos;
-			this.r.m = this.r.exec(len < 0 ? s : HxOverrides.substr(s,0,pos + len));
-			var b = this.r.m != null;
-			if(b) {
-				this.r.s = s;
-			}
-			return b;
-		} else {
-			var b = this.match(len < 0 ? HxOverrides.substr(s,pos,null) : HxOverrides.substr(s,pos,len));
-			if(b) {
-				this.r.s = s;
-				this.r.m.index += pos;
-			}
-			return b;
-		}
-	}
-	,map: function(s,f) {
-		var offset = 0;
-		var buf_b = "";
-		while(true) {
-			if(offset >= s.length) {
-				break;
-			} else if(!this.matchSub(s,offset)) {
-				buf_b += Std.string(HxOverrides.substr(s,offset,null));
-				break;
-			}
-			var p = this.matchedPos();
-			buf_b += Std.string(HxOverrides.substr(s,offset,p.pos - offset));
-			buf_b += Std.string(f(this));
-			if(p.len == 0) {
-				buf_b += Std.string(HxOverrides.substr(s,p.pos,1));
-				offset = p.pos + 1;
-			} else {
-				offset = p.pos + p.len;
-			}
-			if(!this.r.global) {
-				break;
-			}
-		}
-		if(!this.r.global && offset > 0 && offset < s.length) {
-			buf_b += Std.string(HxOverrides.substr(s,offset,null));
-		}
-		return buf_b;
-	}
-};
-var Console = function() { };
-Console.__name__ = true;
-Console.printlnFormatted = function(s,outputStream) {
-	if(outputStream == null) {
-		outputStream = 0;
-	}
-	if(s == null) {
-		s = "";
-	}
-	Console.printFormatted(s + "\n",outputStream);
-};
-Console.println = function(s,outputStream) {
-	if(outputStream == null) {
-		outputStream = 0;
-	}
-	if(s == null) {
-		s = "";
-	}
-	Console.print(s + "\n",outputStream);
-};
-Console.format = function(s,formatMode) {
-	s += "<//>";
-	var activeFormatFlagStack = [];
-	var groupedProceedingTags = [];
-	var browserFormatArguments = [];
-	var result = Console.formatTagPattern.map(s,function(e) {
-		var escaped = e.matched(1) != null;
-		if(escaped) {
-			return e.matched(0);
-		}
-		var open = e.matched(2) == null;
-		var tags = e.matched(3).split(",");
-		if(!open && tags.length == 1) {
-			if(tags[0] == "") {
-				var last = activeFormatFlagStack[activeFormatFlagStack.length - 1];
-				var i = activeFormatFlagStack.indexOf(last);
-				if(i != -1) {
-					var proceedingTags = groupedProceedingTags[i];
-					activeFormatFlagStack.splice(i - proceedingTags,proceedingTags + 1);
-					groupedProceedingTags.splice(i - proceedingTags,proceedingTags + 1);
-				}
-			} else if(FormatFlag.fromString(tags[0]) == "reset") {
-				activeFormatFlagStack = [];
-				groupedProceedingTags = [];
-			} else {
-				var flag = FormatFlag.fromString(tags[0]);
-				if(flag != null) {
-					var i = activeFormatFlagStack.indexOf(flag);
-					if(i != -1) {
-						var proceedingTags = groupedProceedingTags[i];
-						activeFormatFlagStack.splice(i - proceedingTags,proceedingTags + 1);
-						groupedProceedingTags.splice(i - proceedingTags,proceedingTags + 1);
-					}
-				}
-			}
-		} else {
-			var proceedingTags = 0;
-			var _g = 0;
-			while(_g < tags.length) {
-				var tag = tags[_g];
-				++_g;
-				var flag = FormatFlag.fromString(tag);
-				if(flag == null) {
-					return e.matched(0);
-				}
-				if(open) {
-					activeFormatFlagStack.push(flag);
-					groupedProceedingTags.push(proceedingTags);
-					++proceedingTags;
-				} else {
-					var i = activeFormatFlagStack.indexOf(flag);
-					if(i != -1) {
-						var proceedingTags1 = groupedProceedingTags[i];
-						activeFormatFlagStack.splice(i - proceedingTags1,proceedingTags1 + 1);
-						groupedProceedingTags.splice(i - proceedingTags1,proceedingTags1 + 1);
-					}
-				}
-			}
-		}
-		switch(formatMode) {
-		case 0:
-			if(open) {
-				if(activeFormatFlagStack.length > 0) {
-					var lastFlagCount = groupedProceedingTags[groupedProceedingTags.length - 1] + 1;
-					var asciiFormatString = "";
-					var _g = 0;
-					var _g1 = lastFlagCount;
-					while(_g < _g1) {
-						var i = _g++;
-						var idx = groupedProceedingTags.length - 1 - i;
-						asciiFormatString += Console.getAsciiFormat(activeFormatFlagStack[idx]);
-					}
-					return asciiFormatString;
-				} else {
-					return "";
-				}
-			} else {
-				var result = Console.getAsciiFormat("reset");
-				var result1 = new Array(activeFormatFlagStack.length);
-				var _g = 0;
-				var _g1 = activeFormatFlagStack.length;
-				while(_g < _g1) {
-					var i = _g++;
-					result1[i] = Console.getAsciiFormat(activeFormatFlagStack[i]);
-				}
-				var _g = [];
-				var _g1 = 0;
-				var _g2 = result1;
-				while(_g1 < _g2.length) {
-					var v = _g2[_g1];
-					++_g1;
-					if(v != null) {
-						_g.push(v);
-					}
-				}
-				return result + _g.join("");
-			}
-			break;
-		case 1:
-			var browserFormatArguments1 = browserFormatArguments;
-			var result = new Array(activeFormatFlagStack.length);
-			var _g = 0;
-			var _g1 = activeFormatFlagStack.length;
-			while(_g < _g1) {
-				var i = _g++;
-				result[i] = Console.getBrowserFormat(activeFormatFlagStack[i]);
-			}
-			var _g = [];
-			var _g1 = 0;
-			var _g2 = result;
-			while(_g1 < _g2.length) {
-				var v = _g2[_g1];
-				++_g1;
-				if(v != null) {
-					_g.push(v);
-				}
-			}
-			browserFormatArguments1.push(_g.join(";"));
-			return "%c";
-		case 2:
-			return "";
-		}
-	});
-	return { formatted : result, browserFormatArguments : browserFormatArguments};
-};
-Console.stripFormatting = function(s) {
-	return Console.format(s,2).formatted;
-};
-Console.printFormatted = function(s,outputStream) {
-	if(outputStream == null) {
-		outputStream = 0;
-	}
-	if(s == null) {
-		s = "";
-	}
-	var result = Console.format(s,Console.formatMode);
-	if(Console.formatMode == 1) {
-		var logArgs = [result.formatted].concat(result.browserFormatArguments);
-		switch(outputStream) {
-		case 1:
-			console.warn.apply(console, logArgs);
-			break;
-		case 2:
-			console.error.apply(console, logArgs);
-			break;
-		case 0:case 3:
-			console.log.apply(console, logArgs);
-			break;
-		}
-		return;
-	}
-	Console.print(result.formatted,outputStream);
-};
-Console.print = function(s,outputStream) {
-	if(outputStream == null) {
-		outputStream = 0;
-	}
-	if(s == null) {
-		s = "";
-	}
-	if(Console.printIntercept != null) {
-		var allowDefaultPrint = Console.printIntercept(s,outputStream);
-		if(!allowDefaultPrint) {
-			return;
-		}
-	}
-	switch(outputStream) {
-	case 1:
-		console.warn(s);
-		break;
-	case 2:
-		console.error(s);
-		break;
-	case 0:case 3:
-		console.log(s);
-		break;
-	}
-};
-Console.getAsciiFormat = function(flag) {
-	if(flag.charAt(0) == "#") {
-		var hex = HxOverrides.substr(flag,1,null);
-		var r = Std.parseInt("0x" + HxOverrides.substr(hex,0,2));
-		var g = Std.parseInt("0x" + HxOverrides.substr(hex,2,2));
-		var b = Std.parseInt("0x" + HxOverrides.substr(hex,4,2));
-		return "\x1B[38;5;" + Console.rgbToAscii256(r,g,b) + "m";
-	}
-	if(HxOverrides.substr(flag,0,3) == "bg#") {
-		var hex = HxOverrides.substr(flag,3,null);
-		var r = Std.parseInt("0x" + HxOverrides.substr(hex,0,2));
-		var g = Std.parseInt("0x" + HxOverrides.substr(hex,2,2));
-		var b = Std.parseInt("0x" + HxOverrides.substr(hex,4,2));
-		return "\x1B[48;5;" + Console.rgbToAscii256(r,g,b) + "m";
-	}
-	switch(flag) {
-	case "bg_black":
-		return "\x1B[48;5;" + 0 + "m";
-	case "bg_blue":
-		return "\x1B[48;5;" + 4 + "m";
-	case "bg_cyan":
-		return "\x1B[48;5;" + 6 + "m";
-	case "bg_green":
-		return "\x1B[48;5;" + 2 + "m";
-	case "bg_light_black":
-		return "\x1B[48;5;" + 8 + "m";
-	case "bg_light_blue":
-		return "\x1B[48;5;" + 12 + "m";
-	case "bg_light_cyan":
-		return "\x1B[48;5;" + 14 + "m";
-	case "bg_light_green":
-		return "\x1B[48;5;" + 10 + "m";
-	case "bg_light_magenta":
-		return "\x1B[48;5;" + 13 + "m";
-	case "bg_light_red":
-		return "\x1B[48;5;" + 9 + "m";
-	case "bg_light_white":
-		return "\x1B[48;5;" + 15 + "m";
-	case "bg_light_yellow":
-		return "\x1B[48;5;" + 11 + "m";
-	case "bg_magenta":
-		return "\x1B[48;5;" + 5 + "m";
-	case "bg_red":
-		return "\x1B[48;5;" + 1 + "m";
-	case "bg_white":
-		return "\x1B[48;5;" + 7 + "m";
-	case "bg_yellow":
-		return "\x1B[48;5;" + 3 + "m";
-	case "black":
-		return "\x1B[38;5;" + 0 + "m";
-	case "blink":
-		return "\x1B[5m";
-	case "blue":
-		return "\x1B[38;5;" + 4 + "m";
-	case "bold":
-		return "\x1B[1m";
-	case "cyan":
-		return "\x1B[38;5;" + 6 + "m";
-	case "dim":
-		return "\x1B[2m";
-	case "green":
-		return "\x1B[38;5;" + 2 + "m";
-	case "hidden":
-		return "\x1B[8m";
-	case "invert":
-		return "\x1B[7m";
-	case "italic":
-		return "\x1B[3m";
-	case "light_black":
-		return "\x1B[38;5;" + 8 + "m";
-	case "light_blue":
-		return "\x1B[38;5;" + 12 + "m";
-	case "light_cyan":
-		return "\x1B[38;5;" + 14 + "m";
-	case "light_green":
-		return "\x1B[38;5;" + 10 + "m";
-	case "light_magenta":
-		return "\x1B[38;5;" + 13 + "m";
-	case "light_red":
-		return "\x1B[38;5;" + 9 + "m";
-	case "light_white":
-		return "\x1B[38;5;" + 15 + "m";
-	case "light_yellow":
-		return "\x1B[38;5;" + 11 + "m";
-	case "magenta":
-		return "\x1B[38;5;" + 5 + "m";
-	case "red":
-		return "\x1B[38;5;" + 1 + "m";
-	case "reset":
-		return "\x1B[m";
-	case "underline":
-		return "\x1B[4m";
-	case "white":
-		return "\x1B[38;5;" + 7 + "m";
-	case "yellow":
-		return "\x1B[38;5;" + 3 + "m";
-	default:
-		return "";
-	}
-};
-Console.rgbToAscii256 = function(r,g,b) {
-	var nearIdx = function(c,set) {
-		var delta = Infinity;
-		var index = -1;
-		var _g = 0;
-		var _g1 = set.length;
-		while(_g < _g1) {
-			var i = _g++;
-			var d = Math.abs(c - set[i]);
-			if(d < delta) {
-				delta = d;
-				index = i;
-			}
-		}
-		return index;
-	};
-	var colorSteps = [0,95,135,175,215,255];
-	var ir = nearIdx(r,colorSteps);
-	var ig = nearIdx(g,colorSteps);
-	var ib = nearIdx(b,colorSteps);
-	var ier = Math.abs(r - colorSteps[ir]);
-	var ieg = Math.abs(g - colorSteps[ig]);
-	var ieb = Math.abs(b - colorSteps[ib]);
-	var averageColorError = ier + ieg + ieb;
-	var jr = Math.round((r - 8) / 10);
-	var jg = Math.round((g - 8) / 10);
-	var jb = Math.round((b - 8) / 10);
-	var jer = Math.abs(r - Math.max(Math.min(jr * 10 + 8,238),8));
-	var jeg = Math.abs(g - Math.max(Math.min(jg * 10 + 8,238),8));
-	var jeb = Math.abs(b - Math.max(Math.min(jb * 10 + 8,238),8));
-	var averageGrayError = jer + jeg + jeb;
-	if(averageGrayError < averageColorError && r == g && g == b) {
-		var grayIndex = jr + 232;
-		return grayIndex;
-	} else {
-		var colorIndex = 16 + ir * 36 + ig * 6 + ib;
-		return colorIndex;
-	}
-};
-Console.getBrowserFormat = function(flag) {
-	if(flag.charAt(0) == "#") {
-		return "color: " + flag;
-	}
-	if(HxOverrides.substr(flag,0,3) == "bg#") {
-		return "background-color: " + HxOverrides.substr(flag,2,null);
-	}
-	if(flag.charAt(0) == "{") {
-		return HxOverrides.substr(flag,1,flag.length - 2);
-	}
-	switch(flag) {
-	case "bg_black":
-		return "background-color: black";
-	case "bg_blue":
-		return "background-color: blue";
-	case "bg_cyan":
-		return "background-color: cyan";
-	case "bg_green":
-		return "background-color: green";
-	case "bg_light_black":
-		return "background-color: gray";
-	case "bg_light_blue":
-		return "background-color: lightBlue";
-	case "bg_light_cyan":
-		return "background-color: lightCyan";
-	case "bg_light_green":
-		return "background-color: lightGreen";
-	case "bg_light_magenta":
-		return "background-color: lightPink";
-	case "bg_light_red":
-		return "background-color: salmon";
-	case "bg_light_white":
-		return "background-color: white";
-	case "bg_light_yellow":
-		return "background-color: lightYellow";
-	case "bg_magenta":
-		return "background-color: magenta";
-	case "bg_red":
-		return "background-color: red";
-	case "bg_white":
-		return "background-color: whiteSmoke";
-	case "bg_yellow":
-		return "background-color: gold";
-	case "black":
-		return "color: black";
-	case "blink":
-		return "text-decoration: blink";
-	case "blue":
-		return "color: blue";
-	case "bold":
-		return "font-weight: bold";
-	case "cyan":
-		return "color: cyan";
-	case "dim":
-		return "color: gray";
-	case "green":
-		return "color: green";
-	case "hidden":
-		return "visibility: hidden; color: white";
-	case "invert":
-		return "-webkit-filter: invert(100%); filter: invert(100%)";
-	case "italic":
-		return "font-style: italic";
-	case "light_black":
-		return "color: gray";
-	case "light_blue":
-		return "color: lightBlue";
-	case "light_cyan":
-		return "color: lightCyan";
-	case "light_green":
-		return "color: lightGreen";
-	case "light_magenta":
-		return "color: lightPink";
-	case "light_red":
-		return "color: salmon";
-	case "light_white":
-		return "color: white";
-	case "light_yellow":
-		return "color: #ffed88";
-	case "magenta":
-		return "color: magenta";
-	case "red":
-		return "color: red";
-	case "reset":
-		return "";
-	case "underline":
-		return "text-decoration: underline";
-	case "white":
-		return "color: whiteSmoke";
-	case "yellow":
-		return "color: #f5ba00";
-	default:
-		return "";
-	}
-};
-Console.determineConsoleFormatMode = function() {
-	var hasWindowObject = typeof(window) != "undefined";
-	if(hasWindowObject) {
-		return 1;
-	} else {
-		var isTTY = (typeof process !== "undefined") && (process?.stdout?.isTTY === true);
-		if(isTTY) {
-			return 0;
-		}
-	}
-	return 2;
-};
-var FormatFlag = {};
-FormatFlag.fromString = function(str) {
-	str = str.toLowerCase();
-	if(str.charAt(0) == "#" || HxOverrides.substr(str,0,3) == "bg#") {
-		var hIdx = str.indexOf("#");
-		var hex = HxOverrides.substr(str,hIdx + 1,null);
-		if(hex.length == 3) {
-			var a = hex.split("");
-			hex = [a[0],a[0],a[1],a[1],a[2],a[2]].join("");
-		}
-		if(new EReg("[^0-9a-f]","i").match(hex) || hex.length < 6) {
-			return "";
-		}
-		var normalized = str.substring(0,hIdx) + "#" + hex;
-		return normalized;
-	}
-	switch(str) {
-	case "!":
-		return "invert";
-	case "/":
-		return "reset";
-	case "b":
-		return "bold";
-	case "bg_gray":
-		return "bg_light_black";
-	case "gray":
-		return "light_black";
-	case "i":
-		return "italic";
-	case "u":
-		return "underline";
-	default:
-		return str;
-	}
 };
 var HxOverrides = function() { };
 HxOverrides.__name__ = true;
@@ -639,7 +105,7 @@ Main.main = function() {
 	end = HxOverrides.now() / 1000;
 	console.log("src/Main.hx:73:","Contrast took: " + (end - start) + " seconds");
 	start = HxOverrides.now() / 1000;
-	Main.printIm(vision_Vision.gaussianBlur(vision_ds_Image.clone(image),0.5));
+	Main.printIm(vision_Vision.gaussianBlur(vision_ds_Image.clone(image),1));
 	end = HxOverrides.now() / 1000;
 	console.log("src/Main.hx:77:","Gaussian blur took: " + (end - start) + " seconds");
 	start = HxOverrides.now() / 1000;
@@ -647,17 +113,10 @@ Main.main = function() {
 	end = HxOverrides.now() / 1000;
 	console.log("src/Main.hx:81:","Image Cloning took: " + (end - start) + " seconds");
 	start = HxOverrides.now() / 1000;
-	var list = vision_Vision.houghLine2DDetection(vision_ds_Image.clone(image),100,50);
-	var clone = vision_ds_Image.clone(image);
-	var _g = 0;
-	while(_g < list.length) {
-		var l = list[_g];
-		++_g;
-		vision_ds_Image.drawLine2D(clone,l,-65536);
-	}
-	Main.printIm(clone);
+	var canny = vision_Vision.cannyEdgeDetection(vision_ds_Image.clone(image));
+	Main.printIm(canny);
 	end = HxOverrides.now() / 1000;
-	console.log("src/Main.hx:90:","Hough line detection took: " + (end - start) + " seconds");
+	console.log("src/Main.hx:86:","Hough line detection took: " + (end - start) + " seconds");
 };
 Main.printIm = function(image) {
 	var c = window.document.createElement("canvas");
@@ -1008,30 +467,10 @@ vision_Vision.houghLine2DDetection = function(image,threshold,minLineLength,minL
 	if(threshold == null) {
 		threshold = 100;
 	}
-	var edges = vision_Vision.sobelEdgeDetection(image,threshold);
+	var edges = vision_Vision.sobelEdgeDetection(vision_ds_Image.clone(image),threshold);
 	var houghSpace = vision_algorithms_HoughTransform.toHoughSpace(edges);
 	var accumulator = houghSpace.accumulator;
 	var peaks = [];
-	var min = Infinity;
-	var max = -Infinity;
-	var _g = 0;
-	var _g1 = accumulator.length;
-	while(_g < _g1) {
-		var i = _g++;
-		var _g2 = 0;
-		var _g3 = accumulator[i].length;
-		while(_g2 < _g3) {
-			var j = _g2++;
-			if(accumulator[i][j] < min) {
-				min = accumulator[i][j];
-				console.log("src/vision/Vision.hx:132:","min: " + min);
-			}
-			if(accumulator[i][j] > max) {
-				max = accumulator[i][j];
-				console.log("src/vision/Vision.hx:136:","max: " + max);
-			}
-		}
-	}
 	var _g = 0;
 	var _g1 = accumulator.length;
 	while(_g < _g1) {
@@ -1041,35 +480,16 @@ vision_Vision.houghLine2DDetection = function(image,threshold,minLineLength,minL
 		while(_g2 < _g3) {
 			var j = _g2++;
 			if(accumulator[i][j] == null) {
+				accumulator[i][j] = 0;
 				continue;
 			}
-			if(accumulator[i][j] - max / 4 > minLineLength) {
+			if(accumulator[i][j] > minLineLength) {
 				peaks.push(new vision_ds_Point2D(i,j));
 			}
 		}
 	}
+	console.log("src/vision/Vision.hx:140:",accumulator);
 	var lines = [];
-	var s = Console.logPrefix + ("" + Std.string(peaks));
-	var outputStream = 0;
-	if(outputStream == null) {
-		outputStream = 0;
-	}
-	if(s == null) {
-		s = "";
-	}
-	Console.printFormatted(s + "\n",outputStream);
-	var _g = 0;
-	var _g1 = peaks.length;
-	while(_g < _g1) {
-		var i = _g++;
-		var peak = peaks[i];
-		var theta = peak.x;
-		var rho = peak.y;
-		var p1 = new vision_ds_Point2D(0,rho / Math.sin(theta) | 0);
-		console.log("src/vision/Vision.hx:157:","p1: " + Std.string(p1));
-		var slope = -1 / Math.tan(theta);
-		lines.push(new vision_ds_Line2D(p1,slope));
-	}
 	return lines;
 };
 vision_Vision.sobelEdgeDetection = function(image,threshold) {
@@ -1281,26 +701,37 @@ vision_Vision.nearestNeighborBlur = function(image,iterations) {
 	}
 	return blurredImage;
 };
-vision_Vision.gaussianBlur = function(image,sigma) {
+vision_Vision.gaussianBlur = function(image,sigma,kernalSize) {
+	if(kernalSize == null) {
+		kernalSize = 5;
+	}
 	if(sigma == null) {
 		sigma = 1;
 	}
 	var kernal = vision_algorithms_Gaussian.create5x5Kernal(sigma);
 	var blurredImage = vision_ds_Image.clone(image);
 	var getNeighbors = function(x,y) {
-		var neighbors = [[],[],[],[],[]];
-		var _g = -2;
-		while(_g < 3) {
+		var neighbors = [];
+		var _g = 0;
+		var _g1 = kernalSize + 1;
+		while(_g < _g1) {
+			var i = _g++;
+			neighbors[i] = [];
+		}
+		var roundedDown = (kernalSize - 1) / 2 | 0;
+		var _g = -roundedDown;
+		var _g1 = roundedDown + 1;
+		while(_g < _g1) {
 			var X = _g++;
-			var _g1 = -2;
-			while(_g1 < 3) {
-				var Y = _g1++;
+			var _g2 = roundedDown;
+			var _g3 = roundedDown + 1;
+			while(_g2 < _g3) {
+				var Y = _g2++;
 				if(x + X < 0 || x + X >= vision_ds_Image.get_width(image) || y + Y < 0 || y + Y >= vision_ds_Image.get_height(image)) {
-					neighbors[X + 2].push(null);
+					neighbors[X + roundedDown][Y + roundedDown] = null;
 					continue;
 				}
-				var getNeighbors = vision_ds_Image.getPixel(image,x + X,y + Y);
-				neighbors[X + 2].push(getNeighbors);
+				neighbors[X + roundedDown][Y + roundedDown] = vision_ds_Image.getPixel(image,x + X,y + Y);
 			}
 		}
 		return neighbors;
@@ -1329,11 +760,13 @@ vision_Vision.gaussianBlur = function(image,sigma) {
 			color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
 			var newColor = color;
 			var _g4 = 0;
-			while(_g4 < 5) {
+			var _g5 = kernalSize;
+			while(_g4 < _g5) {
 				var X = _g4++;
-				var _g5 = 0;
-				while(_g5 < 5) {
-					var Y = _g5++;
+				var _g6 = 0;
+				var _g7 = kernalSize;
+				while(_g6 < _g7) {
+					var Y = _g6++;
 					if(neighbors[X][Y] == null) {
 						continue;
 					}
@@ -1359,8 +792,141 @@ vision_Vision.gaussianBlur = function(image,sigma) {
 	}
 	return blurredImage;
 };
+vision_Vision.cannyEdgeDetection = function(image,sigma,threshold,lowThreshold,highThreshold) {
+	if(highThreshold == null) {
+		highThreshold = 0.6;
+	}
+	if(lowThreshold == null) {
+		lowThreshold = 0.4;
+	}
+	if(threshold == null) {
+		threshold = 0.5;
+	}
+	if(sigma == null) {
+		sigma = 1;
+	}
+	var blurred = vision_Vision.gaussianBlur(image,sigma);
+	var grayed = vision_Vision.grayscale(blurred);
+	var edges = vision_ds_Image._new(vision_ds_Image.get_width(blurred),vision_ds_Image.get_height(blurred),0);
+	var getNeighbors = function(x,y) {
+		var neighbors = [[],[],[]];
+		var _g = -1;
+		while(_g < 2) {
+			var X = _g++;
+			var _g1 = -1;
+			while(_g1 < 2) {
+				var Y = _g1++;
+				if(x + X < 0 || x + X >= vision_ds_Image.get_width(grayed) || y + Y < 0 || y + Y >= vision_ds_Image.get_height(grayed)) {
+					continue;
+				}
+				neighbors[X + 1][Y + 1] = vision_ds_Image.getPixel(grayed,x + X,y + Y);
+			}
+		}
+		return neighbors;
+	};
+	var _g = 1;
+	var _g1 = vision_ds_Image.get_width(blurred) - 1;
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = 1;
+		var _g3 = vision_ds_Image.get_height(blurred) - 1;
+		while(_g2 < _g3) {
+			var y = _g2++;
+			var neighbors = getNeighbors(x,y);
+			var gradient = ((neighbors[0][0] >> 16 & 255) / 255 * -1 + (neighbors[0][2] >> 16 & 255) / 255 + (neighbors[1][0] >> 16 & 255) / 255 * -2 + (neighbors[1][2] >> 16 & 255) / 255 * 2 + (neighbors[2][0] >> 16 & 255) / 255 * -1 + (neighbors[2][2] >> 16 & 255) / 255) / 9;
+			if(gradient > threshold) {
+				var color = vision_ds_Color._new();
+				var Alpha = 1;
+				if(Alpha == null) {
+					Alpha = 1;
+				}
+				var Value = Math.round(gradient * 255);
+				color &= -16711681;
+				color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
+				var Value1 = Math.round(gradient * 255);
+				color &= -65281;
+				color |= (Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1) << 8;
+				var Value2 = Math.round(gradient * 255);
+				color &= -256;
+				color |= Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2;
+				var Value3 = Math.round(Alpha * 255);
+				color &= 16777215;
+				color |= (Value3 > 255 ? 255 : Value3 < 0 ? 0 : Value3) << 24;
+				vision_ds_Image.setPixel(edges,x,y,color);
+			}
+			var gradient1 = ((neighbors[0][0] >> 16 & 255) / 255 * -1 + (neighbors[0][1] >> 16 & 255) / 255 * -2 + (neighbors[0][2] >> 16 & 255) / 255 * -1 + (neighbors[2][0] >> 16 & 255) / 255 + (neighbors[2][1] >> 16 & 255) / 255 * 2 + (neighbors[2][2] >> 16 & 255) / 255) / 9;
+			if(gradient1 > threshold) {
+				var color1 = vision_ds_Color._new();
+				var Alpha1 = 1;
+				if(Alpha1 == null) {
+					Alpha1 = 1;
+				}
+				var Value4 = Math.round(gradient1 * 255);
+				color1 &= -16711681;
+				color1 |= (Value4 > 255 ? 255 : Value4 < 0 ? 0 : Value4) << 16;
+				var Value5 = Math.round(gradient1 * 255);
+				color1 &= -65281;
+				color1 |= (Value5 > 255 ? 255 : Value5 < 0 ? 0 : Value5) << 8;
+				var Value6 = Math.round(gradient1 * 255);
+				color1 &= -256;
+				color1 |= Value6 > 255 ? 255 : Value6 < 0 ? 0 : Value6;
+				var Value7 = Math.round(Alpha1 * 255);
+				color1 &= 16777215;
+				color1 |= (Value7 > 255 ? 255 : Value7 < 0 ? 0 : Value7) << 24;
+				vision_ds_Image.setPixel(edges,x,y,color1);
+			}
+		}
+	}
+	return edges;
+};
 var vision_algorithms_Gaussian = function() { };
 vision_algorithms_Gaussian.__name__ = true;
+vision_algorithms_Gaussian.create1x1Kernal = function(sigma) {
+	return [[1]];
+};
+vision_algorithms_Gaussian.create3x3Kernal = function(sigma) {
+	var r;
+	var s = 2.0 * sigma * sigma;
+	var kernal = [[],[],[],[]];
+	var sum = 0.0;
+	r = Math.sqrt(2);
+	kernal[0][0] = Math.exp(-(r * r) / s) / (Math.PI * s);
+	sum += kernal[0][0];
+	r = Math.sqrt(1);
+	kernal[0][1] = Math.exp(-(r * r) / s) / (Math.PI * s);
+	sum += kernal[0][1];
+	r = Math.sqrt(2);
+	kernal[0][2] = Math.exp(-(r * r) / s) / (Math.PI * s);
+	sum += kernal[0][2];
+	r = Math.sqrt(1);
+	kernal[1][0] = Math.exp(-(r * r) / s) / (Math.PI * s);
+	sum += kernal[1][0];
+	r = Math.sqrt(0);
+	kernal[1][1] = Math.exp(-(r * r) / s) / (Math.PI * s);
+	sum += kernal[1][1];
+	r = Math.sqrt(1);
+	kernal[1][2] = Math.exp(-(r * r) / s) / (Math.PI * s);
+	sum += kernal[1][2];
+	r = Math.sqrt(2);
+	kernal[2][0] = Math.exp(-(r * r) / s) / (Math.PI * s);
+	sum += kernal[2][0];
+	r = Math.sqrt(1);
+	kernal[2][1] = Math.exp(-(r * r) / s) / (Math.PI * s);
+	sum += kernal[2][1];
+	r = Math.sqrt(2);
+	kernal[2][2] = Math.exp(-(r * r) / s) / (Math.PI * s);
+	sum += kernal[2][2];
+	kernal[0][0] /= sum;
+	kernal[0][1] /= sum;
+	kernal[0][2] /= sum;
+	kernal[1][0] /= sum;
+	kernal[1][1] /= sum;
+	kernal[1][2] /= sum;
+	kernal[2][0] /= sum;
+	kernal[2][1] /= sum;
+	kernal[2][2] /= sum;
+	return kernal;
+};
 vision_algorithms_Gaussian.create5x5Kernal = function(sigma) {
 	var r;
 	var s = 2.0 * sigma * sigma;
@@ -1402,6 +968,213 @@ vision_algorithms_Gaussian.create5x5Kernal = function(sigma) {
 	kernal[4][2] /= sum;
 	kernal[4][3] /= sum;
 	kernal[4][4] /= sum;
+	return kernal;
+};
+vision_algorithms_Gaussian.create7x7Kernal = function(sigma) {
+	var r;
+	var s = 2.0 * sigma * sigma;
+	var kernal = [[],[],[],[],[],[],[],[]];
+	var sum = 0.0;
+	var _g = -3;
+	while(_g < 4) {
+		var x = _g++;
+		var _g1 = -3;
+		while(_g1 < 4) {
+			var y = _g1++;
+			r = Math.sqrt(x * x + y * y);
+			kernal[x + 3][y + 3] = Math.exp(-(r * r) / s) / (Math.PI * s);
+			sum += kernal[x + 3][y + 3];
+		}
+	}
+	kernal[0][0] /= sum;
+	kernal[0][1] /= sum;
+	kernal[0][2] /= sum;
+	kernal[0][3] /= sum;
+	kernal[0][4] /= sum;
+	kernal[0][5] /= sum;
+	kernal[0][6] /= sum;
+	kernal[1][0] /= sum;
+	kernal[1][1] /= sum;
+	kernal[1][2] /= sum;
+	kernal[1][3] /= sum;
+	kernal[1][4] /= sum;
+	kernal[1][5] /= sum;
+	kernal[1][6] /= sum;
+	kernal[2][0] /= sum;
+	kernal[2][1] /= sum;
+	kernal[2][2] /= sum;
+	kernal[2][3] /= sum;
+	kernal[2][4] /= sum;
+	kernal[2][5] /= sum;
+	kernal[2][6] /= sum;
+	kernal[3][0] /= sum;
+	kernal[3][1] /= sum;
+	kernal[3][2] /= sum;
+	kernal[3][3] /= sum;
+	kernal[3][4] /= sum;
+	kernal[3][5] /= sum;
+	kernal[3][6] /= sum;
+	kernal[4][0] /= sum;
+	kernal[4][1] /= sum;
+	kernal[4][2] /= sum;
+	kernal[4][3] /= sum;
+	kernal[4][4] /= sum;
+	kernal[4][5] /= sum;
+	kernal[4][6] /= sum;
+	kernal[5][0] /= sum;
+	kernal[5][1] /= sum;
+	kernal[5][2] /= sum;
+	kernal[5][3] /= sum;
+	kernal[5][4] /= sum;
+	kernal[5][5] /= sum;
+	kernal[5][6] /= sum;
+	kernal[6][0] /= sum;
+	kernal[6][1] /= sum;
+	kernal[6][2] /= sum;
+	kernal[6][3] /= sum;
+	kernal[6][4] /= sum;
+	kernal[6][5] /= sum;
+	kernal[6][6] /= sum;
+	return kernal;
+};
+vision_algorithms_Gaussian.create9x9Kernal = function(sigma) {
+	var r;
+	var s = 2.0 * sigma * sigma;
+	var kernal = [[],[],[],[],[],[],[],[],[],[]];
+	var sum = 0.0;
+	var _g = -4;
+	while(_g < 5) {
+		var x = _g++;
+		var _g1 = -4;
+		while(_g1 < 5) {
+			var y = _g1++;
+			r = Math.sqrt(x * x + y * y);
+			kernal[x + 4][y + 4] = Math.exp(-(r * r) / s) / (Math.PI * s);
+			sum += kernal[x + 4][y + 4];
+		}
+	}
+	kernal[0][0] /= sum;
+	kernal[0][1] /= sum;
+	kernal[0][2] /= sum;
+	kernal[0][3] /= sum;
+	kernal[0][4] /= sum;
+	kernal[0][5] /= sum;
+	kernal[0][6] /= sum;
+	kernal[0][7] /= sum;
+	kernal[0][8] /= sum;
+	kernal[1][0] /= sum;
+	kernal[1][1] /= sum;
+	kernal[1][2] /= sum;
+	kernal[1][3] /= sum;
+	kernal[1][4] /= sum;
+	kernal[1][5] /= sum;
+	kernal[1][6] /= sum;
+	kernal[1][7] /= sum;
+	kernal[1][8] /= sum;
+	kernal[2][0] /= sum;
+	kernal[2][1] /= sum;
+	kernal[2][2] /= sum;
+	kernal[2][3] /= sum;
+	kernal[2][4] /= sum;
+	kernal[2][5] /= sum;
+	kernal[2][6] /= sum;
+	kernal[2][7] /= sum;
+	kernal[2][8] /= sum;
+	kernal[3][0] /= sum;
+	kernal[3][1] /= sum;
+	kernal[3][2] /= sum;
+	kernal[3][3] /= sum;
+	kernal[3][4] /= sum;
+	kernal[3][5] /= sum;
+	kernal[3][6] /= sum;
+	kernal[3][7] /= sum;
+	kernal[3][8] /= sum;
+	kernal[4][0] /= sum;
+	kernal[4][1] /= sum;
+	kernal[4][2] /= sum;
+	kernal[4][3] /= sum;
+	kernal[4][4] /= sum;
+	kernal[4][5] /= sum;
+	kernal[4][6] /= sum;
+	kernal[4][7] /= sum;
+	kernal[4][8] /= sum;
+	kernal[5][0] /= sum;
+	kernal[5][1] /= sum;
+	kernal[5][2] /= sum;
+	kernal[5][3] /= sum;
+	kernal[5][4] /= sum;
+	kernal[5][5] /= sum;
+	kernal[5][6] /= sum;
+	kernal[5][7] /= sum;
+	kernal[5][8] /= sum;
+	kernal[6][0] /= sum;
+	kernal[6][1] /= sum;
+	kernal[6][2] /= sum;
+	kernal[6][3] /= sum;
+	kernal[6][4] /= sum;
+	kernal[6][5] /= sum;
+	kernal[6][6] /= sum;
+	kernal[6][7] /= sum;
+	kernal[6][8] /= sum;
+	kernal[7][0] /= sum;
+	kernal[7][1] /= sum;
+	kernal[7][2] /= sum;
+	kernal[7][3] /= sum;
+	kernal[7][4] /= sum;
+	kernal[7][5] /= sum;
+	kernal[7][6] /= sum;
+	kernal[7][7] /= sum;
+	kernal[7][8] /= sum;
+	kernal[8][0] /= sum;
+	kernal[8][1] /= sum;
+	kernal[8][2] /= sum;
+	kernal[8][3] /= sum;
+	kernal[8][4] /= sum;
+	kernal[8][5] /= sum;
+	kernal[8][6] /= sum;
+	kernal[8][7] /= sum;
+	kernal[8][8] /= sum;
+	return kernal;
+};
+vision_algorithms_Gaussian.createKernalOfSize = function(size,sigma) {
+	if(size % 2 == 0) {
+		throw new vision_exceptions_InvalidGaussianKernalSize(size);
+	}
+	var r;
+	var s = 2.0 * sigma * sigma;
+	var sum = 0.;
+	var kernal = [];
+	var _g = 0;
+	var _g1 = size + 1;
+	while(_g < _g1) {
+		var i = _g++;
+		kernal[i] = [];
+	}
+	var avg = (size - 1) / 2 | 0;
+	var _g = -avg;
+	var _g1 = avg + 1;
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = -avg;
+		var _g3 = avg + 1;
+		while(_g2 < _g3) {
+			var y = _g2++;
+			r = Math.sqrt(x * x + y * y);
+			kernal[x + avg][y + avg] = Math.exp(-(r * r) / s) / (Math.PI * s);
+			sum += kernal[x + avg][y + avg];
+		}
+	}
+	var _g = 0;
+	var _g1 = size;
+	while(_g < _g1) {
+		var i = _g++;
+		var _g2 = 0;
+		var _g3 = size;
+		while(_g2 < _g3) {
+			var j = _g2++;
+			kernal[i][j] /= sum;
+		}
+	}
 	return kernal;
 };
 var vision_algorithms_HoughTransform = function() { };
@@ -3935,82 +3708,6 @@ vision_ds_Image.image_array_read = function(this1,index) {
 vision_ds_Image.image_array_write = function(this1,index,value) {
 	this1[index] = value;
 };
-var vision_ds_Line2D = function(point,m,degrees,radians) {
-	this.point = point;
-	if(m != null) {
-		this.set_slope(m);
-		this.set_degrees(Math.atan(m) * 180 / Math.PI);
-		this.set_radians(Math.atan(m));
-	} else if(degrees != null) {
-		this.set_degrees(degrees);
-		this.set_slope(Math.tan(degrees * Math.PI / 180));
-		this.set_radians(degrees * Math.PI / 180);
-	} else if(radians != null) {
-		this.set_radians(radians);
-		this.set_slope(Math.tan(radians));
-		this.set_degrees(radians * 180 / Math.PI);
-	}
-};
-vision_ds_Line2D.__name__ = true;
-vision_ds_Line2D.from2Points = function(point1,point2) {
-	var s = (point2.y - point1.y) / (point2.x - point1.x);
-	return new vision_ds_Line2D(point1,s);
-};
-vision_ds_Line2D.prototype = {
-	set_slope: function(value) {
-		this["degrees"] = Math.atan(value) * 180 / Math.PI;
-		this["radians"] = Math.atan(value);
-		return this.slope = value;
-	}
-	,set_degrees: function(value) {
-		this["slope"] = Math.tan(value * Math.PI / 180);
-		this["radians"] = value * Math.PI / 180;
-		return this.degrees = value;
-	}
-	,set_radians: function(value) {
-		this["slope"] = Math.tan(value);
-		this["degrees"] = value * 180 / Math.PI;
-		return this.radians = value;
-	}
-	,get_yIntercept: function() {
-		var px = this.point.x;
-		var py = this.point.y;
-		if(px > 0) {
-			while(px > 0) {
-				--px;
-				py -= this.slope;
-			}
-		} else if(px < 0) {
-			while(px < 0) {
-				++px;
-				py += this.slope;
-			}
-		}
-		return py;
-	}
-	,get_xIntercept: function() {
-		var px = this.point.x;
-		var py = this.point.y;
-		if(py > 0) {
-			while(py > 0) {
-				--py;
-				px -= 1 / this.slope;
-			}
-		} else if(py < 0) {
-			while(py < 0) {
-				++py;
-				px += 1 / this.slope;
-			}
-		}
-		return px;
-	}
-	,getPointAtX: function(x) {
-		return new vision_ds_Point2D(x,this.slope * x + this.get_yIntercept() | 0);
-	}
-	,getPointAtY: function(y) {
-		return new vision_ds_Point2D(y / this.slope | 0,y);
-	}
-};
 var vision_ds_LineSegment2D = function(start,end) {
 	this.end = new vision_ds_Point2D(0,0);
 	this.start = new vision_ds_Point2D(0,0);
@@ -4066,11 +3763,94 @@ vision_ds_Point2D.prototype = {
 		return "(" + this.x + ", " + this.y + ")";
 	}
 };
+var vision_ds_Ray2D = function(point,m,degrees,radians) {
+	this.point = point;
+	if(m != null) {
+		this.set_slope(m);
+		this.set_degrees(Math.atan(m) * 180 / Math.PI);
+		this.set_radians(Math.atan(m));
+	} else if(degrees != null) {
+		this.set_degrees(degrees);
+		this.set_slope(Math.tan(degrees * Math.PI / 180));
+		this.set_radians(degrees * Math.PI / 180);
+	} else if(radians != null) {
+		this.set_radians(radians);
+		this.set_slope(Math.tan(radians));
+		this.set_degrees(radians * 180 / Math.PI);
+	}
+};
+vision_ds_Ray2D.__name__ = true;
+vision_ds_Ray2D.from2Points = function(point1,point2) {
+	var s = (point2.y - point1.y) / (point2.x - point1.x);
+	return new vision_ds_Ray2D(point1,s);
+};
+vision_ds_Ray2D.prototype = {
+	set_slope: function(value) {
+		this["degrees"] = Math.atan(value) * 180 / Math.PI;
+		this["radians"] = Math.atan(value);
+		return this.slope = value;
+	}
+	,set_degrees: function(value) {
+		this["slope"] = Math.tan(value * Math.PI / 180);
+		this["radians"] = value * Math.PI / 180;
+		return this.degrees = value;
+	}
+	,set_radians: function(value) {
+		this["slope"] = Math.tan(value);
+		this["degrees"] = value * 180 / Math.PI;
+		return this.radians = value;
+	}
+	,get_yIntercept: function() {
+		var px = this.point.x;
+		var py = this.point.y;
+		if(px > 0) {
+			while(px > 0) {
+				--px;
+				py -= this.slope;
+			}
+		} else if(px < 0) {
+			while(px < 0) {
+				++px;
+				py += this.slope;
+			}
+		}
+		return py;
+	}
+	,get_xIntercept: function() {
+		var px = this.point.x;
+		var py = this.point.y;
+		if(py > 0) {
+			while(py > 0) {
+				--py;
+				px -= 1 / this.slope;
+			}
+		} else if(py < 0) {
+			while(py < 0) {
+				++py;
+				px += 1 / this.slope;
+			}
+		}
+		return px;
+	}
+	,getPointAtX: function(x) {
+		return new vision_ds_Point2D(x,this.slope * x + this.get_yIntercept() | 0);
+	}
+	,getPointAtY: function(y) {
+		return new vision_ds_Point2D(y / this.slope | 0,y);
+	}
+};
 var vision_ds_hough_HoughSpace = function(accumulator,image) {
 	this.accumulator = accumulator;
 	this.image = image;
 };
 vision_ds_hough_HoughSpace.__name__ = true;
+var vision_exceptions_InvalidGaussianKernalSize = function(size) {
+	haxe_Exception.call(this,"Creating a gaussian kernal of size " + size + " is not allowed. Is the kernal size even?");
+};
+vision_exceptions_InvalidGaussianKernalSize.__name__ = true;
+vision_exceptions_InvalidGaussianKernalSize.__super__ = haxe_Exception;
+vision_exceptions_InvalidGaussianKernalSize.prototype = $extend(haxe_Exception.prototype,{
+});
 var vision_exceptions_OutOfBounds = function(image,position) {
 	haxe_Exception.call(this,"Coordinate Out Of Bounds: pixel " + Std.string(position) + " is outside the bounds of the image (size: " + vision_ds_Image.get_width(image) + "x" + vision_ds_Image.get_height(image) + ")");
 };
@@ -4176,56 +3956,6 @@ if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : 
 String.__name__ = true;
 Array.__name__ = true;
 js_Boot.__toStr = ({ }).toString;
-Console.formatMode = Console.determineConsoleFormatMode();
-Console.logPrefix = "<b,gray>><//> ";
-Console.warnPrefix = "<b,yellow>><//> ";
-Console.errorPrefix = "<b,red>></b> ";
-Console.successPrefix = "<b,light_green>><//> ";
-Console.debugPrefix = "<b,magenta>><//> ";
-Console.argSeparator = " ";
-Console.unicodeCompatibilityMode = 0;
-Console.unicodeCompatibilityEnabled = false;
-Console.formatTagPattern = new EReg("(\\\\)?<(/)?([^><{}\\s]*|{[^}<>]*})>","g");
-FormatFlag.RESET = "reset";
-FormatFlag.BOLD = "bold";
-FormatFlag.ITALIC = "italic";
-FormatFlag.DIM = "dim";
-FormatFlag.UNDERLINE = "underline";
-FormatFlag.BLINK = "blink";
-FormatFlag.INVERT = "invert";
-FormatFlag.HIDDEN = "hidden";
-FormatFlag.BLACK = "black";
-FormatFlag.RED = "red";
-FormatFlag.GREEN = "green";
-FormatFlag.YELLOW = "yellow";
-FormatFlag.BLUE = "blue";
-FormatFlag.MAGENTA = "magenta";
-FormatFlag.CYAN = "cyan";
-FormatFlag.WHITE = "white";
-FormatFlag.LIGHT_BLACK = "light_black";
-FormatFlag.LIGHT_RED = "light_red";
-FormatFlag.LIGHT_GREEN = "light_green";
-FormatFlag.LIGHT_YELLOW = "light_yellow";
-FormatFlag.LIGHT_BLUE = "light_blue";
-FormatFlag.LIGHT_MAGENTA = "light_magenta";
-FormatFlag.LIGHT_CYAN = "light_cyan";
-FormatFlag.LIGHT_WHITE = "light_white";
-FormatFlag.BG_BLACK = "bg_black";
-FormatFlag.BG_RED = "bg_red";
-FormatFlag.BG_GREEN = "bg_green";
-FormatFlag.BG_YELLOW = "bg_yellow";
-FormatFlag.BG_BLUE = "bg_blue";
-FormatFlag.BG_MAGENTA = "bg_magenta";
-FormatFlag.BG_CYAN = "bg_cyan";
-FormatFlag.BG_WHITE = "bg_white";
-FormatFlag.BG_LIGHT_BLACK = "bg_light_black";
-FormatFlag.BG_LIGHT_RED = "bg_light_red";
-FormatFlag.BG_LIGHT_GREEN = "bg_light_green";
-FormatFlag.BG_LIGHT_YELLOW = "bg_light_yellow";
-FormatFlag.BG_LIGHT_BLUE = "bg_light_blue";
-FormatFlag.BG_LIGHT_MAGENTA = "bg_light_magenta";
-FormatFlag.BG_LIGHT_CYAN = "bg_light_cyan";
-FormatFlag.BG_LIGHT_WHITE = "bg_light_white";
 vision_ds_Color.TRANSPARENT = 0;
 vision_ds_Color.WHITE = -1;
 vision_ds_Color.GRAY = -8355712;

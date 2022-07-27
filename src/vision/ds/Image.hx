@@ -236,7 +236,7 @@ abstract Image(Matrix<Null<Color>>) {
 
         @see Line2D
     **/
-    public function drawLine2D(line:Line2D, color:Color) {
+    public function drawLine2D(line:Ray2D, color:Color) {
         var p1 = line.getPointAtY(0);
         var p2 = line.getPointAtY(height - 1);
         var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;

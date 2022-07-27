@@ -6,7 +6,7 @@ import vision.Vision;
 import vision.ds.Color;
 import vision.ds.Rectangle;
 import vision.ds.Point2D;
-import vision.ds.Line2D;
+import vision.ds.Ray2D;
 import haxe.display.Display.Package;
 #if js
 import js.html.Document;
@@ -72,7 +72,7 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Contrast took: " + (end - start) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(image.clone().gaussianBlur(0.5));
+		printIm(image.clone().gaussianBlur(1));
 		end = haxe.Timer.stamp();
 		trace("Gaussian blur took: " + (end - start) + " seconds");
 		start = haxe.Timer.stamp();
@@ -80,18 +80,13 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Image Cloning took: " + (end - start) + " seconds");
 		start = haxe.Timer.stamp();
-		var list = image.clone().houghLine2DDetection(100, 50);
-		var clone = image.clone();
-		for (l in list) {
-			clone.drawLine2D(l, Color.RED);
-		}
-		printIm(clone);
+		var canny = Vision.cannyEdgeDetection(image.clone());
+		printIm(canny);
 		end = haxe.Timer.stamp();
 		trace("Hough line detection took: " + (end - start) + " seconds");
-
 	}
 
-	static function printIm(image:Image) {
+	public static function printIm(image:Image) {
 		#if js
 		var c = Browser.document.createCanvasElement();
 		c.width = image.width;

@@ -1,6 +1,8 @@
 package vision;
 
-import vision.ds.Line2D;
+import vision.ds.gaussian.GaussianKernalSize;
+import vision.ds.hough.HoughSpace;
+import vision.ds.Ray2D;
 import vision.algorithms.Gaussian;
 import vision.algorithms.HoughTransform;
 import vision.ds.Point2D;
@@ -116,48 +118,28 @@ class Vision {
         @param minLineGap The minimum gap between two lines to be detected, lines with a gap smaller than this will make the second line ignored.
         @param maxLineGap The maximum gap between two lines to be detected, lines with a gap smaller then that will be merged.
     **/
-    public static function houghLine2DDetection(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<Line2D> {
-        var edges = sobelEdgeDetection(image, threshold);
+    public static function houghLine2DDetection(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<Ray2D> {
+        
+        var edges = sobelEdgeDetection(image.clone(), threshold);
         var houghSpace = HoughTransform.toHoughSpace(edges);
         var accumulator = houghSpace.accumulator;
 
         //find the peaks in the accumulator using a for loop
         var peaks:Array<Point2D> = [];
-        var min = Math.POSITIVE_INFINITY;
-        var max = Math.NEGATIVE_INFINITY;
         for (i in 0...accumulator.length) {
             for (j in 0...accumulator[i].length) {
-                if (accumulator[i][j] < min) {
-                    min = accumulator[i][j];
-                    trace("min: " + min);
+                if (accumulator[i][j] == null) {
+                    accumulator[i][j] = 0;
+                    continue;
                 }
-                if (accumulator[i][j] > max) {
-                    max = accumulator[i][j];
-                    trace("max: " + max);
-                }
-            }
-        }
-        for (i in 0...accumulator.length) {
-            for (j in 0...accumulator[i].length) {
-                if (accumulator[i][j] == null) continue;
-                if (accumulator[i][j] - max / 4 > minLineLength) {
+                if (accumulator[i][j] > minLineLength) {
                     peaks.push(new Point2D(i, j));
                 }
             }
         }
+        trace(accumulator);
+        var lines:Array<Ray2D> = [];
         //now, the peaks in hough space are inside the peaks array. extract the line segments from the peaks
-        var lines:Array<Line2D> = [];
-        Console.log(peaks);
-        for (i in 0...peaks.length) {
-            var peak = peaks[i];
-            var theta = peak.x;
-            var rho = peak.y;
-            
-            var p1:Point2D = {x: 0, y: Std.int(rho / Math.sin(theta))};
-            trace("p1: " + p1);
-            var slope = -1 / Math.tan(theta);
-            lines.push(new Line2D(p1, slope));
-        }
         return lines;
     }
 
@@ -380,19 +362,23 @@ class Vision {
         \
         ![gaussian disdribution at different sigma values](https://i.stack.imgur.com/B33AE.png)
     **/
-    public static function gaussianBlur(image:Image, ?sigma:Float = 1) {
+    public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
         var kernal = Gaussian.create5x5Kernal(sigma);
         var blurredImage = image.clone();
 
         function getNeighbors(x:Int, y:Int):Array<Array<Color>> {
-            var neighbors = [[], [], [], [], []];
-            for (X in -2...3) {
-                for (Y in -2...3) {
+            var neighbors:Array<Array<Color>> = [];
+
+            for (i in 0...kernalSize + 1) neighbors[i] = [];
+            var roundedDown = Std.int((kernalSize - 1) / 2);
+
+            for (X in -roundedDown...roundedDown + 1) {
+                for (Y in roundedDown...roundedDown + 1) {
                     if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
-                        neighbors[X + 2].push(null);
+                        neighbors[X + roundedDown][Y + roundedDown] = null;
                         continue;
                     }
-                    neighbors[X + 2].push(image.getPixel(x + X, y + Y));
+                    neighbors[X + roundedDown][Y + roundedDown]= image.getPixel(x + X, y + Y);
                 }
             }
             return neighbors;
@@ -401,8 +387,8 @@ class Vision {
             for (y in 0...image.height) {
                 var neighbors = getNeighbors(x, y);
                 var newColor = Color.fromRGB(0, 0, 0);
-                for (X in 0...5) {
-                    for (Y in 0...5) {
+                for (X in 0...kernalSize) {
+                    for (Y in 0...kernalSize) {
                         if (neighbors[X][Y] == null) {
                             continue;
                         }
@@ -419,5 +405,62 @@ class Vision {
         }
         return blurredImage;
     }
-    
+
+    /**
+        Uses Canny's edge multi stage edge detection algorithm to detect edges in an image,
+        while reducing noise.
+
+        This algorithm works by first applying a gaussian blur to the image, and then
+        applying more filters to differentiate between strong edges, weak edges and non-edges.
+
+        @param image The image to be edge detected.
+        @param sigma The sigma value to be used in the gaussian blur.
+        @param threshold The threshold value to be used in the hysteresis thresholding.
+        @param lowThreshold The low threshold value to be used in the hysteresis thresholding.
+        @param highThreshold The high threshold value to be used in the hysteresis thresholding.
+
+        @return The edge detected image.
+
+    **/
+    public static function cannyEdgeDetection(image:Image, sigma:Float = 1, threshold:Float = 0.5, lowThreshold:Float = 0.4, highThreshold:Float = 0.6):Image {
+        var blurred = gaussianBlur(image, sigma);
+        var grayed = grayscale(blurred);
+        var edges = new Image(blurred.width, blurred.height, 0x00000000);
+
+        function getNeighbors(x:Int, y:Int) {
+            var neighbors = [[], [], []];
+            for (X in -1...2) {
+                for (Y in -1...2) {
+                    if (x + X < 0 || x + X >= grayed.width || y + Y < 0 || y + Y >= grayed.height) {
+                        continue;
+                    }
+                    neighbors[X + 1][Y + 1] = grayed.getPixel(x + X, y + Y);
+                }
+            }
+            return neighbors;
+        }
+
+        for (x in 1...blurred.width - 1) {
+            for (y in 1...blurred.height - 1) {
+                var neighbors = getNeighbors(x, y);
+                var gradient = (
+                    neighbors[0][0].redFloat * -1 + neighbors[0][2].redFloat * 1 +
+                    neighbors[1][0].redFloat * -2 + neighbors[1][2].redFloat * 2 +
+                    neighbors[2][0].redFloat * -1 + neighbors[2][2].redFloat * 1
+                ) / 9;
+                if (gradient > threshold) {
+                    edges.setPixel(x, y, Color.fromRGBFloat(gradient, gradient, gradient));
+                } 
+                var gradient = (
+                    neighbors[0][0].redFloat * -1 + neighbors[0][1].redFloat * -2 + neighbors[0][2].redFloat * -1 +
+                    neighbors[2][0].redFloat * 1 + neighbors[2][1].redFloat * 2 + neighbors[2][2].redFloat * 1
+                ) / 9;
+                if (gradient > threshold) {
+                    edges.setPixel(x, y, Color.fromRGBFloat(gradient, gradient, gradient));
+                }
+            }
+        }
+
+        return edges;
+    }
 }

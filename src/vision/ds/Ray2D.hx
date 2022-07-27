@@ -2,7 +2,7 @@ package vision.ds;
 
 import vision.tools.MathUtils;
 
-class Line2D {
+class Ray2D {
     public var point:Point2D;
 
     public var slope(default, set):Float;
@@ -91,7 +91,7 @@ class Line2D {
 
     public static function from2Points(point1:Point2D, point2:Point2D) {
         var s = (point2.y - point1.y) / (point2.x - point1.x);
-        return new Line2D(point1, s);
+        return new Ray2D(point1, s);
     }
 
     public function getPointAtX(x:Int):Point2D {

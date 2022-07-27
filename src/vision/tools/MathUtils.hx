@@ -1,15 +1,11 @@
 package vision.tools;
 
-import vision.ds.Line2D;
+import vision.ds.Ray2D;
 import vision.ds.LineSegment2D;
 import vision.ds.Point2D;
 
 class MathUtils {
-	public static function distanceFromPointToLine(point:Point2D, line:Line2D) {
-		// use the formula for the distance from a point to a line
-		// cos and sin work with radians
-		// COPILOT ITS NOT A LINE SEGMENT ITS A FUCKING VECTOR
-		// JUST MAKE A FUCKING POINT TO VECTOR DISTANCE FUNCTION
+	public static function distanceFromPointToRay2D(point:Point2D, line:Ray2D) {
 		var cos:Float = Math.cos(line.radians);
 		var sin:Float = Math.sin(line.radians);
 		var x0:Float = line.point.x;
@@ -125,5 +121,17 @@ class MathUtils {
 
 	public static inline function slopeFromRadians(radians:Float) {
 		return Math.tan(radians);
+	}
+
+	public static inline function cotan(radians:Float):Float {
+		return 1 / Math.tan(radians);
+	}
+
+	public static inline function cosec(radians:Float):Float {
+		return 1 / Math.sin(radians);
+	}
+
+	public static inline function sec(radians:Float):Float {
+		return 1 / Math.cos(radians);
 	}
 }
