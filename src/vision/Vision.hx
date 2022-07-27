@@ -363,7 +363,7 @@ class Vision {
         ![gaussian disdribution at different sigma values](https://i.stack.imgur.com/B33AE.png)
     **/
     public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
-        var kernal = Gaussian.create5x5Kernal(sigma);
+        var kernal = Gaussian.createKernalOfSize(kernalSize, sigma);
         var blurredImage = image.clone();
 
         function getNeighbors(x:Int, y:Int):Array<Array<Color>> {
@@ -375,10 +375,10 @@ class Vision {
             for (X in -roundedDown...roundedDown + 1) {
                 for (Y in roundedDown...roundedDown + 1) {
                     if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
-                        neighbors[X + roundedDown][Y + roundedDown] = null;
+                        neighbors[X + roundedDown].push(null);
                         continue;
                     }
-                    neighbors[X + roundedDown][Y + roundedDown]= image.getPixel(x + X, y + Y);
+                    neighbors[X + roundedDown].push(image.getPixel(x + X, y + Y));
                 }
             }
             return neighbors;
@@ -392,12 +392,12 @@ class Vision {
                         if (neighbors[X][Y] == null) {
                             continue;
                         }
-                        var red = neighbors[X][Y].redFloat * kernal[X][Y];
-                        var green = neighbors[X][Y].greenFloat * kernal[X][Y];
-                        var blue = neighbors[X][Y].blueFloat * kernal[X][Y];
-                        newColor.redFloat += red;
-                        newColor.greenFloat += green;
-                        newColor.blueFloat += blue;
+                        var red = neighbors[X][Y].red * kernal[X][Y];
+                        var green = neighbors[X][Y].green * kernal[X][Y];
+                        var blue = neighbors[X][Y].blue * kernal[X][Y];
+                        newColor.red += Std.int(red);
+                        newColor.green += Std.int(green);
+                        newColor.blue += Std.int(blue);
                     }
                 }
                 blurredImage.setPixel(x, y, newColor);

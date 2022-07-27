@@ -134,4 +134,9 @@ class MathUtils {
 	public static inline function sec(radians:Float):Float {
 		return 1 / Math.cos(radians);
 	}
+
+	public static function turnicate(num:Float, numbersAfterDecimal:Int):Float {
+		var multiplier:Float = Math.pow(10, numbersAfterDecimal);
+		return Math.round(num * multiplier) / multiplier;
+	}
 }

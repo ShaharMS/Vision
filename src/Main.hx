@@ -1,5 +1,6 @@
 package;
 
+import vision.tools.MathUtils;
 import haxe.Timer;
 import vision.algorithms.Gaussian;
 import vision.Vision;
@@ -41,49 +42,49 @@ class Main {
 		start = haxe.Timer.stamp();
 		printIm(Vision.blackAndWhite(image.clone()));
 		end = haxe.Timer.stamp();
-		trace("Black and white took: " + (end - start) + " seconds");
+		trace("Black and white took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		printIm(Vision.grayscale(image.clone()));
 		end = haxe.Timer.stamp();
-		trace("Grayscale took: " + (end - start) + " seconds");
+		trace("Grayscale took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		printIm(image.clone().sobelEdgeDetection());
 		end = haxe.Timer.stamp();
-		trace("Sobel edge detection took: " + (end - start) + " seconds");
+		trace("Sobel edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		var hough = HoughTransform.toHoughSpace(Vision.perwittEdgeDetection(image.clone()));
 		printIm(hough.image);
 		end = haxe.Timer.stamp();
-		trace("Hough transform took: " + (end - start) + " seconds");
+		trace("Hough transform took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		printIm(hough.image.clone().invert());
 		end = haxe.Timer.stamp();
-		trace("Invertion took: " + (end - start) + " seconds");
+		trace("Invertion took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		printIm(Vision.perwittEdgeDetection(image.clone()));
 		end = haxe.Timer.stamp();
-		trace("Perwitt edge detection took: " + (end - start) + " seconds");
+		trace("Perwitt edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		printIm(Vision.nearestNeighborBlur(image.clone(), 1));
 		end = haxe.Timer.stamp();
-		trace("Nearest neighbor blur took: " + (end - start) + " seconds");
+		trace("Nearest neighbor blur took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		printIm(image.clone().contrast());
 		end = haxe.Timer.stamp();
-		trace("Contrast took: " + (end - start) + " seconds");
+		trace("Contrast took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(image.clone().gaussianBlur(1));
+		printIm(image.clone().gaussianBlur(1, 2));
 		end = haxe.Timer.stamp();
-		trace("Gaussian blur took: " + (end - start) + " seconds");
+		trace("Gaussian blur took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		printIm(image.clone());
 		end = haxe.Timer.stamp();
-		trace("Image Cloning took: " + (end - start) + " seconds");
+		trace("Image Cloning took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		var canny = Vision.cannyEdgeDetection(image.clone());
 		printIm(canny);
 		end = haxe.Timer.stamp();
-		trace("Hough line detection took: " + (end - start) + " seconds");
+		trace("Canny edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 	}
 
 	public static function printIm(image:Image) {
