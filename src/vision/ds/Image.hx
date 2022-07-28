@@ -118,7 +118,7 @@ abstract Image(Matrix<Null<Color>>) {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
             throw new OutOfBounds(cast this, new Point2D(x, y));
         }
-        var newColor = Color.fromRGBFloat(
+        var newColor = Color.fromRGBAFloat(
             (color.redFloat * color.alphaFloat + getPixel(x, y).redFloat) / 2 ,
             (color.greenFloat * color.alphaFloat + getPixel(x, y).greenFloat) / 2, 
             (color.blueFloat * color.alphaFloat + getPixel(x, y).blueFloat) / 2,

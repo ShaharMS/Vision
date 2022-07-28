@@ -67,7 +67,7 @@ class ImageTools {
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
 				var i = (y * image.width + x) * 4;
-                var color = Color.fromRGB(data[i], data[i + 1], data[i + 2], data[i + 3]);
+                var color = Color.fromRGBA(data[i], data[i + 1], data[i + 2], data[i + 3]);
 				image.setPixel(x, y, color);
 			}
 		}
@@ -75,5 +75,52 @@ class ImageTools {
         return image;
         #end
         return null;
+    }
+
+    /**
+        Adds an `Image` to the screen.
+
+        **Currently, this function only works on the web**, and
+        it uses an absoultly positioned canvas element.
+
+        #### Notice - JS Only
+
+        if you want to use this function to add an image to a web page,
+        and also want to use different units than pixels, you can use the `units` parameter.
+
+            addToScreen(image, 50, 20, {xUnits: "vw", yUnits: "vh", zIndex: 1});
+
+        @param image the image to add.
+        @param x the x position of the image.
+        @param y the y position of the image.
+        
+        @returns the image object.
+    **/
+    public static function addToScreen(image:Image, x:Int, y:Int #if js , ?units:{?xUnits:String, ?yUnits:String, ?zIndex:String} #end):Image {
+        #if sys
+
+        #else
+        var c = js.Browser.document.createCanvasElement();
+		c.width = image.width;
+		c.height = image.height;
+		var ctx = c.getContext2d();
+		var imageData = ctx.getImageData(0, 0, image.width, image.height);
+		var data = imageData.data;
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				var i = (y * image.width + x) * 4;
+				data[i] = image.getPixel(x, y).red;
+				data[i + 1] = image.getPixel(x, y).green;
+				data[i + 2] = image.getPixel(x, y).blue;
+				data[i + 3] = 255;
+			}
+		}
+		ctx.putImageData(imageData, 0, 0);
+		c.style.position = "absolute";
+        c.style.top = (y + units.yUnits) != null ? y + units.yUnits : y + "px";
+        c.style.left = (x + units.xUnits) != null ? x + units.xUnits : x + "px";
+		js.Browser.document.body.appendChild(c);
+        #end
+        return image;
     }
 }

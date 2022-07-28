@@ -30,7 +30,7 @@ class Vision {
             for (j in 0...image.height) {
                 var pixel = image.getPixel(i, j);
                 var gray = Std.int((pixel.red + pixel.green + pixel.blue) / 3);
-                image.setPixel(i, j, Color.fromRGB(gray, gray, gray));
+                image.setPixel(i, j, Color.fromRGBA(gray, gray, gray));
             }
         }
         return image;
@@ -47,7 +47,7 @@ class Vision {
         for (i in 0...image.width) {
             for (j in 0...image.height) {
                 var pixel = image.getPixel(i, j);
-                image.setPixel(i, j, Color.fromRGB(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
+                image.setPixel(i, j, Color.fromRGBA(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
             }
         }
         return image;
@@ -90,7 +90,7 @@ class Vision {
             var red = color.red > 127 ? 255 : 0;
             var green = color.green > 127 ? 255 : 0;
             var blue = color.blue > 127 ? 255 : 0;
-            return Color.fromRGB(red, green, blue);
+            return Color.fromRGBA(red, green, blue);
         }
         
         for (x in 0...image.width) {
@@ -183,7 +183,7 @@ class Vision {
             If this value is greater than the threshold, then we declare it an edge. now, were gonna do the same thing
             for all chunks of the image, and from top to bottom too if needed.
         */
-        var edges = new Image(image.width, image.height, Color.fromRGB(0, 0, 0));
+        var edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
         var blacknwhite = grayscale(image.clone());
         for (x in 1...blacknwhite.width - 1) {
             for (y in 1...blacknwhite.height - 1) {
@@ -203,7 +203,7 @@ class Vision {
                     neighbors[2].red * 3 + neighbors[5].red * 10 + neighbors[8].red * 3
                 ;
                 if (Math.abs(sobelCalculationIterationLTR) > threshold) {
-                    edges.setPixel(x, y, Color.fromRGB(255, 255, 255));
+                    edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
                     continue;
                 }
                 final sobelCalculationIterationTTB = 
@@ -211,7 +211,7 @@ class Vision {
                     neighbors[6].red * 3 + neighbors[7].red * 10 + neighbors[8].red * 3
                 ;
                 if (Math.abs(sobelCalculationIterationTTB) > threshold) {
-                    edges.setPixel(x, y, Color.fromRGB(255, 255, 255));
+                    edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
                     continue;
                 }
             }
@@ -255,7 +255,7 @@ class Vision {
             Now, if this value is greater than the threshold, then we declare it an edge. now, were gonna do the same thing
             for all chunks of the image, and from top to bottom too if needed.
         */
-        var edges = new Image(image.width, image.height, Color.fromRGB(0, 0, 0));
+        var edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
         var blacknwhite = grayscale(image.clone());
         for (x in 1...blacknwhite.width - 1) {
             for (y in 1...blacknwhite.height - 1) {
@@ -275,7 +275,7 @@ class Vision {
                     neighbors[2].red * 1 + neighbors[5].red * 1 + neighbors[8].red * 1
                 ;
                 if (Math.abs(perwittCalculationIterationLTR) > threshold) {
-                    edges.setPixel(x, y, Color.fromRGB(255, 255, 255));
+                    edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
                     continue;
                 }
                 final perwittCalculationIterationTTB = 
@@ -283,7 +283,7 @@ class Vision {
                     neighbors[6].red * 1 + neighbors[7].red * 1 + neighbors[8].red * 1
                 ;
                 if (Math.abs(perwittCalculationIterationTTB) > threshold) {
-                    edges.setPixel(x, y, Color.fromRGB(255, 255, 255));
+                    edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
                     continue;
                 }
             }
@@ -335,7 +335,7 @@ class Vision {
                         neighbors[3].blue + neighbors[4].blue + neighbors[5].blue +
                         neighbors[6].blue + neighbors[7].blue + neighbors[8].blue
                     ) / 9;
-                    blurredImage.setPixel(x, y, Color.fromRGB(Std.int(averageRed), Std.int(averageGreen), Std.int(averageBlue)));
+                    blurredImage.setPixel(x, y, Color.fromRGBA(Std.int(averageRed), Std.int(averageGreen), Std.int(averageBlue)));
                 }
             }
             imageClone = blurredImage.clone();
@@ -384,7 +384,7 @@ class Vision {
         for (x in 0...image.width) {
             for (y in 0...image.height) {
                 var neighbors = getNeighbors(x, y);
-                var newColor = Color.fromRGB(0, 0, 0);
+                var newColor = Color.fromRGBA(0, 0, 0);
                 for (X in 0...kernalSize) {
                     for (Y in 0...kernalSize) {
                         if (neighbors[X][Y] == null) {
@@ -447,14 +447,14 @@ class Vision {
                     neighbors[2][0].redFloat * -1 + neighbors[2][2].redFloat * 1
                 ) / 9;
                 if (gradient > threshold) {
-                    edges.setPixel(x, y, Color.fromRGBFloat(gradient, gradient, gradient));
+                    edges.setPixel(x, y, Color.fromRGBAFloat(gradient, gradient, gradient));
                 } 
                 var gradient = (
                     neighbors[0][0].redFloat * -1 + neighbors[0][1].redFloat * -2 + neighbors[0][2].redFloat * -1 +
                     neighbors[2][0].redFloat * 1 + neighbors[2][1].redFloat * 2 + neighbors[2][2].redFloat * 1
                 ) / 9;
                 if (gradient > threshold) {
-                    edges.setPixel(x, y, Color.fromRGBFloat(gradient, gradient, gradient));
+                    edges.setPixel(x, y, Color.fromRGBAFloat(gradient, gradient, gradient));
                 }
             }
         }

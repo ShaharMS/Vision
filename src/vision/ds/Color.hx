@@ -4,22 +4,33 @@ import vision.tools.MathUtils;
 
 abstract Color(Int) from Int from UInt to Int to UInt
 {
-	public static inline var TRANSPARENT:Color = 0x00000000;
-	public static inline var WHITE:Color = 0xFFFFFFFF;
-	public static inline var GRAY:Color = 0xFF808080;
-	public static inline var BLACK:Color = 0xFF000000;
+	public static inline var TRANSPARENT:Color = 0x000000;
+	public static inline var WHITE:Color = 0xFFFFFF;
+	public static inline var GRAY:Color = 0x808080;
+	public static inline var BLACK:Color = 0x000000;
 
-	public static inline var GREEN:Color = 0xFF008000;
-	public static inline var LIME:Color = 0xFF00FF00;
-	public static inline var YELLOW:Color = 0xFFFFFF00;
-	public static inline var ORANGE:Color = 0xFFFFA500;
-	public static inline var RED:Color = 0xFFFF0000;
-	public static inline var PURPLE:Color = 0xFF800080;
-	public static inline var BLUE:Color = 0xFF0000FF;
-	public static inline var BROWN:Color = 0xFF8B4513;
-	public static inline var PINK:Color = 0xFFFFC0CB;
-	public static inline var MAGENTA:Color = 0xFFFF00FF;
-	public static inline var CYAN:Color = 0xFF00FFFF;
+	public static inline var GREEN:Color = 0x00FF00;
+	public static inline var YELLOW:Color = 0xFFFF00;
+	public static inline var ORANGE:Color = 0xFFA500;
+	public static inline var RED:Color = 0xFF0000;
+	public static inline var PURPLE:Color = 0x800080;
+	public static inline var BLUE:Color = 0x0000FF;
+	public static inline var BROWN:Color = 0x8B4513;
+	public static inline var PINK:Color = 0xFFC0CB;
+	public static inline var MAGENTA:Color = 0xFF00FF;
+	public static inline var CYAN:Color = 0x00FFFF;
+	public static inline var SILVER:Color = 0xC0C0C0;
+	public static inline var GOLD:Color = 0xFFD700;
+	public static inline var OLIVE:Color = 0x808000;
+	public static inline var MAROON:Color = 0x800000;
+	public static inline var NAVY:Color = 0x000080;
+	public static inline var TEAL:Color = 0x008080;
+	public static inline var FUCHSIA:Color = 0xFF00FF;
+	public static inline var AQUA:Color = 0x00FFFF;
+	public static inline var LIME:Color = 0x32CD32;
+	public static inline var ROYAL_BLUE:Color = 0x4169E1;
+
+	
 
 	public var red(get, set):Int;
 	public var blue(get, set):Int;
@@ -66,7 +77,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	/**
 	 * Create a color from the least significant four bytes of an Int
 	 *
-	 * @param	Value And Int with bytes in the format 0xAARRGGBB
+	 * @param	value And Int with bytes in the format 0xAARRGGBB
 	 * @return	The color as a Color
 	 */
 	public static inline function fromInt(value:Int):Color
@@ -83,10 +94,10 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 * @param Alpha	How opaque the color should be, from 0 to 255
 	 * @return The color as a Color
 	 */
-	public static inline function fromRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color
+	public static inline function fromRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color
 	{
 		var color = new Color();
-		return color.setRGB(Red, Green, Blue, Alpha);
+		return color.setRGBA(Red, Green, Blue, Alpha);
 	}
 
 	/**
@@ -98,10 +109,10 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 * @param Alpha	How opaque the color should be, from 0 to 1
 	 * @return The color as a Color
 	 */
-	public static inline function fromRGBFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color
+	public static inline function fromRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color
 	{
 		var color = new Color();
-		return color.setRGBFloat(Red, Green, Blue, Alpha);
+		return color.setRGBAFloat(Red, Green, Blue, Alpha);
 	}
 
 	/**
@@ -209,7 +220,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 		var b:Int = Std.int((Color2.blue - Color1.blue) * Factor + Color1.blue);
 		var a:Int = Std.int((Color2.alpha - Color1.alpha) * Factor + Color1.alpha);
 
-		return fromRGB(r, g, b, a);
+		return fromRGBA(r, g, b, a);
 	}
 
 	/**
@@ -247,7 +258,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	@:op(A * B)
 	public static inline function multiply(lhs:Color, rhs:Color):Color
 	{
-		return Color.fromRGBFloat(lhs.redFloat * rhs.redFloat, lhs.greenFloat * rhs.greenFloat, lhs.blueFloat * rhs.blueFloat, lhs.alphaFloat * rhs.alphaFloat);
+		return Color.fromRGBAFloat(lhs.redFloat * rhs.redFloat, lhs.greenFloat * rhs.greenFloat, lhs.blueFloat * rhs.blueFloat, lhs.alphaFloat * rhs.alphaFloat);
 	}
 
 	/**
@@ -256,7 +267,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	@:op(A + B)
 	public static inline function add(lhs:Color, rhs:Color):Color
 	{
-		return Color.fromRGB(lhs.red + rhs.red, lhs.green + rhs.green, lhs.blue + rhs.blue, lhs.alpha + rhs.alpha);
+		return Color.fromRGBA(lhs.red + rhs.red, lhs.green + rhs.green, lhs.blue + rhs.blue, lhs.alpha + rhs.alpha);
 	}
 
 	/**
@@ -265,13 +276,13 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	@:op(A - B)
 	public static inline function subtract(lhs:Color, rhs:Color):Color
 	{
-		return Color.fromRGB(lhs.red - rhs.red, lhs.green - rhs.green, lhs.blue - rhs.blue, lhs.alpha - rhs.alpha);
+		return Color.fromRGBA(lhs.red - rhs.red, lhs.green - rhs.green, lhs.blue - rhs.blue, lhs.alpha - rhs.alpha);
 	}
 
     @:op(A / B)
     public static inline function divide(lhs:Color, rhs:Color):Color
     {
-        return Color.fromRGB(Std.int(lhs.red / rhs.red), Std.int(lhs.green / rhs.green), Std.int(lhs.blue / rhs.blue), Std.int(lhs.alpha / rhs.alpha));
+        return Color.fromRGBA(Std.int(lhs.red / rhs.red), Std.int(lhs.green / rhs.green), Std.int(lhs.blue / rhs.blue), Std.int(lhs.alpha / rhs.alpha));
     }
 
 
@@ -414,7 +425,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 * @param Alpha	How opaque the color should be, from 0 to 255
 	 * @return This color
 	 */
-	public inline function setRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color
+	public inline function setRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color
 	{
 		red = Red;
 		green = Green;
@@ -432,7 +443,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 * @param Alpha	How opaque the color should be, from 0 to 1
 	 * @return This color
 	 */
-	public inline function setRGBFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color
+	public inline function setRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color
 	{
 		redFloat = Red;
 		greenFloat = Green;
@@ -505,17 +516,17 @@ abstract Color(Int) from Int from UInt to Int to UInt
 		switch (Std.int(hueD))
 		{
 			case 0:
-				setRGBFloat(Chroma, mid, Match, Alpha);
+				setRGBAFloat(Chroma, mid, Match, Alpha);
 			case 1:
-				setRGBFloat(mid, Chroma, Match, Alpha);
+				setRGBAFloat(mid, Chroma, Match, Alpha);
 			case 2:
-				setRGBFloat(Match, Chroma, mid, Alpha);
+				setRGBAFloat(Match, Chroma, mid, Alpha);
 			case 3:
-				setRGBFloat(Match, mid, Chroma, Alpha);
+				setRGBAFloat(Match, mid, Chroma, Alpha);
 			case 4:
-				setRGBFloat(mid, Match, Chroma, Alpha);
+				setRGBAFloat(mid, Match, Chroma, Alpha);
 			case 5:
-				setRGBFloat(Chroma, Match, mid, Alpha);
+				setRGBAFloat(Chroma, Match, mid, Alpha);
 		}
 
 		return this;
