@@ -1,5 +1,6 @@
 package vision;
 
+import vision.algorithms.SimpleLineDetector;
 import vision.ds.gaussian.GaussianKernalSize;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Ray2D;
@@ -460,5 +461,31 @@ class Vision {
         }
 
         return edges;
+    }
+
+    /**
+        Uses a simple, partially recursive algorithm to detect line segments in an image.
+
+        those lines can be curved/partially incomplete, but they will be detected as lines.
+
+        @param image The image to be line detected.
+        @param minLineLength The minimum length of a line segment to be detected.
+
+        @return The line detected image.
+    **/
+    public static function simpleLine2DDetection(image:Image, minLineLength:Int = 50):Array<LineSegment2D> {
+        var lines:Array<LineSegment2D> = [];
+        var blackAndWhited = blackAndWhite(image);
+
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                var line = SimpleLineDetector.findLineFromPoint(blackAndWhited, {x: x, y: y}, minLineLength);
+                if (line != null) {
+                    lines.push(line);
+                }
+            }
+        }
+        SimpleLineDetector.clearPositionalInfo();
+        return lines;
     }
 }

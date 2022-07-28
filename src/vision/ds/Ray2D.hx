@@ -39,20 +39,20 @@ class Ray2D {
     }
 
 	function set_slope(value:Float):Float {
-		Reflect.setField(this, "degrees", MathUtils.degreesFromSlope(value));
-        Reflect.setField(this, "radians", MathUtils.radiansFromSlope(value));
+		@:bypassAccessor degrees = MathUtils.degreesFromSlope(value);
+        @:bypassAccessor radians = MathUtils.radiansFromSlope(value);
         return slope = value;
 	}
 
 	function set_degrees(value:Float):Float {
-		Reflect.setField(this, "slope", MathUtils.slopeFromDegrees(value));
-        Reflect.setField(this, "radians", MathUtils.radiansFromDegrees(value));
+		@:bypassAccessor slope = MathUtils.slopeFromDegrees(value);
+        @:bypassAccessor radians = MathUtils.radiansFromDegrees(value);
         return degrees = value;
 	}
 
     function set_radians(value:Float):Float {
-        Reflect.setField(this, "slope", MathUtils.slopeFromRadians(value));
-        Reflect.setField(this, "degrees", MathUtils.degreesFromRadians(value));
+        @:bypassAccessor slope = MathUtils.slopeFromRadians(value);
+        @:bypassAccessor degrees = MathUtils.degreesFromRadians(value);
         return radians = value;
     }
 
