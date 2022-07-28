@@ -377,7 +377,7 @@ class Vision {
     /**
         Uses the gaussian blur algorithm to blur an image.
 
-        This algorithm works by creating a 5x5 matrix, and then applying
+        This algorithm works by creating a 5x5 (thats the default size) matrix, and then applying
         the gaussiann distribution function to that matrix.
 
         That matrix will go over each pixel and decide it's color based on the values of 
