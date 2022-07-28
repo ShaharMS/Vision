@@ -73,7 +73,7 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Contrast took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(image.clone().gaussianBlur(1, 2));
+		printIm(image.clone().gaussianBlur(2, 15));
 		end = haxe.Timer.stamp();
 		trace("Gaussian blur took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();

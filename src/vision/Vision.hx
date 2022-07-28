@@ -365,15 +365,13 @@ class Vision {
     public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
         var kernal = Gaussian.createKernalOfSize(kernalSize, sigma);
         var blurredImage = image.clone();
-
         function getNeighbors(x:Int, y:Int):Array<Array<Color>> {
             var neighbors:Array<Array<Color>> = [];
-
             for (i in 0...kernalSize + 1) neighbors[i] = [];
             var roundedDown = Std.int((kernalSize - 1) / 2);
 
             for (X in -roundedDown...roundedDown + 1) {
-                for (Y in roundedDown...roundedDown + 1) {
+                for (Y in -roundedDown...roundedDown + 1) {
                     if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
                         neighbors[X + roundedDown].push(null);
                         continue;

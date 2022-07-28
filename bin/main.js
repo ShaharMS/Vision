@@ -105,7 +105,7 @@ Main.main = function() {
 	end = HxOverrides.now() / 1000;
 	console.log("src/Main.hx:74:","Contrast took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
-	Main.printIm(vision_Vision.gaussianBlur(vision_ds_Image.clone(image),1,2));
+	Main.printIm(vision_Vision.gaussianBlur(vision_ds_Image.clone(image),2,15));
 	end = HxOverrides.now() / 1000;
 	console.log("src/Main.hx:78:","Gaussian blur took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
@@ -717,7 +717,7 @@ vision_Vision.gaussianBlur = function(image,sigma,kernalSize) {
 		var _g1 = roundedDown + 1;
 		while(_g < _g1) {
 			var X = _g++;
-			var _g2 = roundedDown;
+			var _g2 = -roundedDown;
 			var _g3 = roundedDown + 1;
 			while(_g2 < _g3) {
 				var Y = _g2++;
@@ -1137,7 +1137,7 @@ vision_algorithms_Gaussian.createKernalOfSize = function(size,sigma) {
 	var sum = 0.;
 	var kernal = [];
 	var _g = 0;
-	var _g1 = size + 1;
+	var _g1 = size;
 	while(_g < _g1) {
 		var i = _g++;
 		kernal[i] = [];
@@ -3837,7 +3837,7 @@ var vision_ds_hough_HoughSpace = function(accumulator,image) {
 };
 vision_ds_hough_HoughSpace.__name__ = true;
 var vision_exceptions_VisionException = function(message,type) {
-	throw "Vision Exception - " + type + ":\n\n\t" + message + "\n";
+	throw "Exception - " + type + ":\n\n\t" + message + "\n";
 };
 vision_exceptions_VisionException.__name__ = true;
 var vision_exceptions_InvalidGaussianKernalSize = function(size) {
@@ -3848,7 +3848,7 @@ vision_exceptions_InvalidGaussianKernalSize.__super__ = vision_exceptions_Vision
 vision_exceptions_InvalidGaussianKernalSize.prototype = $extend(vision_exceptions_VisionException.prototype,{
 });
 var vision_exceptions_OutOfBounds = function(image,position) {
-	vision_exceptions_VisionException.call(this,"pixel " + Std.string(position) + " is outside the bounds of the image (size: " + vision_ds_Image.get_width(image) + "x" + vision_ds_Image.get_height(image) + ")","Pixel Coordinates Out Of Bounds");
+	vision_exceptions_VisionException.call(this,"pixel " + Std.string(position) + " is outside the bounds of the image (size: " + vision_ds_Image.get_width(image) + "x" + vision_ds_Image.get_height(image) + ", position: " + Std.string(position) + ")","Pixel Coordinates Out Of Bounds");
 };
 vision_exceptions_OutOfBounds.__name__ = true;
 vision_exceptions_OutOfBounds.__super__ = vision_exceptions_VisionException;

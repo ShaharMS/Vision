@@ -108,7 +108,7 @@ class Gaussian {
         if (size % 2 == 0) throw new InvalidGaussianKernalSize(size);
         var r, s = 2.0 * sigma * sigma, sum = 0.;
         var kernal:Array<Array<Float>> = [];
-        for (i in 0...size + 1) {
+        for (i in 0...size) {
             kernal[i] = [];
         }
         //get the average of the parameter size, rounded down
