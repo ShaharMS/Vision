@@ -57,10 +57,6 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Hough transform took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(hough.image.clone().invert());
-		end = haxe.Timer.stamp();
-		trace("Invertion took: " + MathUtils.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
 		printIm(Vision.perwittEdgeDetection(image.clone()));
 		end = haxe.Timer.stamp();
 		trace("Perwitt edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
