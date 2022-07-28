@@ -81,6 +81,14 @@ class Main {
 		printIm(canny);
 		end = haxe.Timer.stamp();
 		trace("Canny edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		start = haxe.Timer.stamp();
+		var lines = Vision.simpleLine2DDetection(image.clone(), 3, 30);
+		for (l in lines) {
+			image.drawLineSegment2D(l, 0x00FFD5);
+		}
+		printIm(image);
+		end = haxe.Timer.stamp();
+		trace("Simple line detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 	}
 
 	public static function printIm(image:Image) {

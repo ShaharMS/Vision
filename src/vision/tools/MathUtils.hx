@@ -18,6 +18,29 @@ class MathUtils {
 		return distance;
 	}
 
+	public static function distanceFromPointToLineSegment2D(line:LineSegment2D, point:Point2D):Float
+	{
+	
+	  var ch = (line.start.y - line.end.y) * point.x + (line.end.x - line.start.x) * point.y + (line.start.x * line.end.y - line.end.x * line.start.y);
+	  var del = Math.sqrt(Math.pow(line.end.x - line.start.x, 2) + Math.pow(line.end.y - line.start.y, 2));
+	  var d = ch / del;
+	  return d;
+	}
+
+	public static function distanceBetweenlineSegments2D(line1:LineSegment2D, line2:LineSegment2D):Float {
+		if (intersectionBetweenLineSegments2D(line1, line2) != null) {
+			return 0;
+		}
+		var distance1:Float = distanceFromPointToLineSegment2D(line1, line2.start);
+		var distance2:Float = distanceFromPointToLineSegment2D(line1, line2.end);
+		var distance3:Float = distanceFromPointToLineSegment2D(line2, line1.start);
+		var distance4:Float = distanceFromPointToLineSegment2D(line2, line1.end);
+
+		var distance:Float = MathUtils.min(distance1, distance2, distance3, distance4);
+		return distance;
+
+	}
+
 	public static function angleFromPointToLine(point:Point2D, line:LineSegment2D):Float {
 		var angle:Float = Math.atan2(line.end.y - line.start.y, line.end.x - line.start.x);
 		var angle2:Float = Math.atan2(point.y - line.start.y, point.x - line.start.x);
@@ -36,7 +59,7 @@ class MathUtils {
 		return Math.sqrt(x * x + y * y);
 	}
 
-	public static function intersectionBetweenLineSegments(line1:LineSegment2D, line2:LineSegment2D):Point2D {
+	public static function intersectionBetweenLineSegments2D(line1:LineSegment2D, line2:LineSegment2D):Point2D {
 		var x1 = line1.start.x, y1 = line1.start.y;
 		var x2 = line1.end.x, y2 = line1.end.y;
 		var x3 = line2.start.x, y3 = line2.start.y;
@@ -138,5 +161,21 @@ class MathUtils {
 	public static function turnicate(num:Float, numbersAfterDecimal:Int):Float {
 		var multiplier:Float = Math.pow(10, numbersAfterDecimal);
 		return Math.round(num * multiplier) / multiplier;
+	}
+
+	public static function min(...values:Float) {
+		var min:Float = values[0];
+		for (i in 0...values.length) {
+			if (values[i] < min) min = values[i];
+		}
+		return min;
+	}
+
+	public static function max(...values:Float) {
+		var max:Float = values[0];
+		for (i in 0...values.length) {
+			if (values[i] > max) max = values[i];
+		}
+		return max;
 	}
 }

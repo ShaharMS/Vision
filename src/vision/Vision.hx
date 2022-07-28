@@ -217,7 +217,36 @@ class Vision {
                 }
             }
         }
-        return edges;
+
+        var intermediate = edges.clone();
+
+        for (x in 1...intermediate.width - 1) {
+            for (y in 1...intermediate.height - 1) {
+                if (edges.getPixel(x, y).red == 0) {
+                    var candidate = false, X = false, Y = false;
+                    if (image.getPixel(x + 1, y).red == 255 && image.getPixel(x - 1, y).red == 255) {
+                        candidate = true; X = true;
+                    }
+                    if (image.getPixel(x, y + 1).red == 255 && image.getPixel(x, y - 1).red == 255) {
+                        candidate = true; Y = true;
+                    }
+
+                    if (candidate) {
+                        intermediate.setPixel(x, y, Color.fromRGBA(255, 255, 255));
+                        if (X) {
+                            intermediate.setPixel(x + 1, y, Color.fromRGBA(0, 0, 0));
+                            intermediate.setPixel(x - 1, y, Color.fromRGBA(0, 0, 0));
+                        }
+                        if (Y) {
+                            intermediate.setPixel(x, y + 1, Color.fromRGBA(0, 0, 0));
+                            intermediate.setPixel(x, y - 1, Color.fromRGBA(0, 0, 0));
+                        }
+                    }
+                }
+            }
+        }
+
+        return intermediate;
     }
 
     /**
@@ -473,19 +502,32 @@ class Vision {
 
         @return The line detected image.
     **/
-    public static function simpleLine2DDetection(image:Image, minLineLength:Int = 50):Array<LineSegment2D> {
+    public static function simpleLine2DDetection(image:Image, minLineGap:Int = 2, minLineLength:Float = 10):Array<LineSegment2D> {
         var lines:Array<LineSegment2D> = [];
-        var blackAndWhited = blackAndWhite(image);
+        var edgeDetected = blackAndWhite(image.clone(), 1);
 
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(blackAndWhited, {x: x, y: y}, minLineLength);
+                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength);
                 if (line != null) {
                     lines.push(line);
                 }
             }
         }
-        SimpleLineDetector.clearPositionalInfo();
-        return lines;
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true);
+                if (line != null) {
+                    lines.push(line);
+                }
+            }
+        }
+
+        var actualLines:Array<LineSegment2D> = [];
+        for (l in lines) {
+            var coverage = SimpleLineDetector.lineCoveragePercentage(edgeDetected, l);
+            if (coverage > 90) actualLines.push(l);
+        }
+        return actualLines;
     }
 }

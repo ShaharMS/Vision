@@ -37,7 +37,11 @@ class ImageTools {
         Gets an image from a file.
         the supplied path can be an absolute path or a relative path.
 
-        Note: this function requires the `format` library.
+        **Note: this function requires the `format` library.**
+
+        To install:\
+        \
+        `haxelib install format`
         
         @param image optional, used for chaining purposes. (eg. `image.fromFile("path/to/image.png")`)
         @param path the path to the image file. on js, it can only be a relative path.
