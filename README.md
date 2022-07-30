@@ -48,8 +48,11 @@ Here is a roadmap of all features added/planned for the future:
     - [ ] *Circle finder*
 
  - Gaussian
+   - [x] 3x3 kernal generation
    - [x] 5x5 kernal generation
-   - [ ] *3x3 kernal generation*
+   - [x] 7x7 kernal generation
+   - [x] 9x9 kernal generation
+   - [x] custom size kernal generation
    
 #### class `Image`:
 
