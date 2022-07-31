@@ -7,7 +7,7 @@ class HoughSpace {
         The Hough space is a 2D array of ints.
         the accumulator is that array.
     **/
-    public var accumulator(default, null):Array<Array<Int>>;
+    public var accumulator(default, null):HoughAccumulator;
 
     /**
         This isn't really the acculator, but its used to visualize the Hough space.
@@ -16,7 +16,7 @@ class HoughSpace {
     **/
     public var image(default, null):Image;
 
-    public function new(accumulator:Array<Array<Int>>, image:Image) {
+    public function new(accumulator:HoughAccumulator, image:Image) {
         this.accumulator = accumulator;
         this.image = image;
     }

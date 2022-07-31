@@ -1,11 +1,16 @@
 package vision.ds.hough;
 
+import haxe.ds.Map;
+import haxe.ds.BalancedTree;
+
 /**
     Used for the accumulator array of the hough transform.
 
-    valuse should be accessed using:
+    values should be accessed using:
     ```haxe
-    accumulator[theta][rho] = value;
+    accumulator.get(rho)[0] //thetaIndex;
+    accumulator.get(rho)[1] //value;
+    accumulator.set(rho, [thetaIndex, value]);
     ```
 **/
-typedef HoughAccumulator = Array<Array<Int>>;
+typedef HoughAccumulator = Map<Array<Float>, Int>

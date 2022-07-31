@@ -5,7 +5,7 @@ import vision.ds.gaussian.GaussianKernalSize;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Ray2D;
 import vision.algorithms.Gaussian;
-import vision.algorithms.HoughTransform;
+import vision.algorithms.Hough;
 import vision.ds.Point2D;
 import vision.ds.LineSegment2D;
 import vision.ds.Color;
@@ -122,26 +122,19 @@ class Vision {
     public static function houghLine2DDetection(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<Ray2D> {
         
         var edges = sobelEdgeDetection(image.clone(), threshold);
-        var houghSpace = HoughTransform.toHoughSpace(edges);
+        var houghSpace = Hough.toHoughSpace(edges);
         var accumulator = houghSpace.accumulator;
-
-        //find the peaks in the accumulator using a for loop
-        var peaks:Array<Point2D> = [];
-        for (i in 0...accumulator.length) {
-            for (j in 0...accumulator[i].length) {
-                if (accumulator[i][j] == null) {
-                    accumulator[i][j] = 0;
-                    continue;
-                }
-                if (accumulator[i][j] > minLineLength) {
-                    peaks.push(new Point2D(i, j));
-                }
+        var values = [];
+        for (vals in accumulator.keyValueIterator()) {
+            if (vals.value > minLineLength) {
+                values.push(vals);
             }
         }
-        trace(accumulator);
-        var lines:Array<Ray2D> = [];
+        trace(values);
+        //find the peaks in the accumulator using a for loop
+        
         //now, the peaks in hough space are inside the peaks array. extract the line segments from the peaks
-        return lines;
+        return [];
     }
 
     /**

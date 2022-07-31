@@ -84,7 +84,7 @@ Main.main = function() {
 	end = HxOverrides.now() / 1000;
 	haxe_Log.trace("Sobel edge detection took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 53, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
-	var hough = vision_algorithms_HoughTransform.toHoughSpace(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
+	var hough = vision_algorithms_Hough.toHoughSpace(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
 	Main.printIm(hough.image);
 	end = HxOverrides.now() / 1000;
 	haxe_Log.trace("Hough transform took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 58, className : "Main", methodName : "main"});
@@ -115,15 +115,27 @@ Main.main = function() {
 	haxe_Log.trace("Canny edge detection took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 83, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	var lines = vision_Vision.simpleLine2DDetection(vision_ds_Image.clone(image),3,30);
+	var newI = vision_ds_Image.clone(image);
 	var _g = 0;
 	while(_g < lines.length) {
 		var l = lines[_g];
 		++_g;
-		vision_ds_Image.drawLineSegment2D(image,l,65493);
+		vision_ds_Image.drawLineSegment2D(newI,l,65493);
+	}
+	Main.printIm(newI);
+	end = HxOverrides.now() / 1000;
+	haxe_Log.trace("Simple line detection took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 92, className : "Main", methodName : "main"});
+	start = HxOverrides.now() / 1000;
+	var lines = vision_Vision.houghLine2DDetection(vision_ds_Image.clone(image));
+	var _g = 0;
+	while(_g < lines.length) {
+		var l = lines[_g];
+		++_g;
+		vision_ds_Image.drawRay2D(image,l,65493);
 	}
 	Main.printIm(image);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Simple line detection took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 91, className : "Main", methodName : "main"});
+	haxe_Log.trace("Hough line detection took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 100, className : "Main", methodName : "main"});
 };
 Main.printIm = function(image) {
 	var c = window.document.createElement("canvas");
@@ -281,6 +293,32 @@ haxe_ValueException.__name__ = true;
 haxe_ValueException.__super__ = haxe_Exception;
 haxe_ValueException.prototype = $extend(haxe_Exception.prototype,{
 });
+var haxe_ds_ObjectMap = function() {
+	this.h = { __keys__ : { }};
+};
+haxe_ds_ObjectMap.__name__ = true;
+haxe_ds_ObjectMap.prototype = {
+	set: function(key,value) {
+		var id = key.__id__;
+		if(id == null) {
+			id = (key.__id__ = $global.$haxeUID++);
+		}
+		this.h[id] = value;
+		this.h.__keys__[id] = key;
+	}
+	,get: function(key) {
+		return this.h[key.__id__];
+	}
+	,keys: function() {
+		var a = [];
+		for( var key in this.h.__keys__ ) {
+		if(this.h.hasOwnProperty(key)) {
+			a.push(this.h.__keys__[key]);
+		}
+		}
+		return new haxe_iterators_ArrayIterator(a);
+	}
+};
 var haxe_iterators_ArrayIterator = function(array) {
 	this.current = 0;
 	this.array = array;
@@ -494,29 +532,21 @@ vision_Vision.houghLine2DDetection = function(image,threshold,minLineLength,minL
 		threshold = 100;
 	}
 	var edges = vision_Vision.sobelEdgeDetection(vision_ds_Image.clone(image),threshold);
-	var houghSpace = vision_algorithms_HoughTransform.toHoughSpace(edges);
+	var houghSpace = vision_algorithms_Hough.toHoughSpace(edges);
 	var accumulator = houghSpace.accumulator;
-	var peaks = [];
-	var _g = 0;
-	var _g1 = accumulator.length;
-	while(_g < _g1) {
-		var i = _g++;
-		var _g2 = 0;
-		var _g3 = accumulator[i].length;
-		while(_g2 < _g3) {
-			var j = _g2++;
-			if(accumulator[i][j] == null) {
-				accumulator[i][j] = 0;
-				continue;
-			}
-			if(accumulator[i][j] > minLineLength) {
-				peaks.push(new vision_ds_Point2D(i,j));
-			}
+	var values = [];
+	var map = accumulator;
+	var vals_map = map;
+	var vals_keys = map.keys();
+	while(vals_keys.hasNext()) {
+		var key = vals_keys.next();
+		var vals = { value : vals_map.get(key), key : key};
+		if(vals.value > minLineLength) {
+			values.push(vals);
 		}
 	}
-	haxe_Log.trace(accumulator,{ fileName : "src/vision/Vision.hx", lineNumber : 141, className : "vision.Vision", methodName : "houghLine2DDetection"});
-	var lines = [];
-	return lines;
+	haxe_Log.trace(values,{ fileName : "src/vision/Vision.hx", lineNumber : 133, className : "vision.Vision", methodName : "houghLine2DDetection"});
+	return [];
 };
 vision_Vision.sobelEdgeDetection = function(image,threshold) {
 	if(threshold == null) {
@@ -1310,7 +1340,7 @@ vision_algorithms_Gaussian.create9x9Kernal = function(sigma) {
 	return kernal;
 };
 vision_algorithms_Gaussian.createKernalOfSize = function(size,sigma) {
-	if(size % 2 == 0) {
+	if(size % 2 == 0 || size <= 0) {
 		throw haxe_Exception.thrown(new vision_exceptions_InvalidGaussianKernalSize(size));
 	}
 	var r;
@@ -1350,10 +1380,10 @@ vision_algorithms_Gaussian.createKernalOfSize = function(size,sigma) {
 	}
 	return kernal;
 };
-var vision_algorithms_HoughTransform = function() { };
-vision_algorithms_HoughTransform.__name__ = true;
-vision_algorithms_HoughTransform.toHoughSpace = function(image) {
-	var accum = [];
+var vision_algorithms_Hough = function() { };
+vision_algorithms_Hough.__name__ = true;
+vision_algorithms_Hough.toHoughSpace = function(image) {
+	var accum = new haxe_ds_ObjectMap();
 	var rhoMax = Math.sqrt(vision_ds_Image.get_width(image) * vision_ds_Image.get_width(image) + vision_ds_Image.get_height(image) * vision_ds_Image.get_height(image));
 	var houghSpace = vision_ds_Image._new(361,rhoMax | 0,16777215);
 	var _g = 0;
@@ -1372,15 +1402,11 @@ vision_algorithms_HoughTransform.toHoughSpace = function(image) {
 				var y = j - (vision_ds_Image.get_height(image) / 2 | 0);
 				while(thetaIndex < 360) {
 					rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
-					rho = (rho | 0) >> 1;
-					if(accum[thetaIndex] == null) {
-						accum[thetaIndex] = [];
-					}
-					if(accum[thetaIndex][rho | 0] == null) {
-						accum[thetaIndex][rho | 0] = 1;
+					rho /= 2;
+					if(accum.h[[theta,rho].__id__] == null) {
+						accum.set([theta,rho],0);
 					} else {
-						var accum1 = accum[thetaIndex];
-						accum1[rho | 0]++;
+						accum.set([theta,rho],accum.h[[theta,rho].__id__] + 1);
 					}
 					vision_ds_Image.setPixel(houghSpace,thetaIndex,rho | 0,vision_ds_Color.darken(vision_ds_Image.getPixel(houghSpace,thetaIndex,rho | 0),0.02));
 					theta += Math.PI / 360;
@@ -1390,84 +1416,6 @@ vision_algorithms_HoughTransform.toHoughSpace = function(image) {
 		}
 	}
 	return new vision_ds_hough_HoughSpace(accum,houghSpace);
-};
-vision_algorithms_HoughTransform.getLineSegments = function(houghspace,image,theta,rho,maxGap) {
-	var x = rho * Math.cos(theta);
-	var y = rho * Math.sin(theta);
-	var slope;
-	if(theta == Math.PI / 2 || theta == -Math.PI / 2) {
-		slope = null;
-	} else {
-		slope = Math.tan(theta);
-	}
-	var point1 = null;
-	var point2 = null;
-	var lineGapCounter = 0;
-	var segments = [];
-	if(slope == null) {
-		var X = x | 0;
-		var _g = 0;
-		var _g1 = vision_ds_Image.get_height(image);
-		while(_g < _g1) {
-			var Y = _g++;
-			if(!vision_ds_Image.hasPixel(image,X,Y)) {
-				continue;
-			}
-			if((vision_ds_Image.getPixel(image,X,Y) >> 16 & 255) == 255) {
-				if(point1 == null) {
-					point1 = new vision_ds_Point2D(X,Y);
-				} else {
-					point2 = new vision_ds_Point2D(X,Y);
-				}
-				lineGapCounter = 0;
-			} else {
-				++lineGapCounter;
-				if(lineGapCounter > maxGap) {
-					if(point1 != null && point2 != null) {
-						segments.push(new vision_ds_LineSegment2D(point1,point2));
-					}
-					point1 = null;
-					point2 = null;
-					lineGapCounter = 0;
-				}
-			}
-		}
-	} else {
-		while(x > 0) {
-			y -= slope;
-			--x;
-		}
-		var Y = y | 0;
-		var _g = 0;
-		var _g1 = vision_ds_Image.get_width(image);
-		while(_g < _g1) {
-			var X = _g++;
-			if(!vision_ds_Image.hasPixel(image,X,Y)) {
-				continue;
-			}
-			if((vision_ds_Image.getPixel(image,X,Y) >> 16 & 255) == 255) {
-				if(point1 == null) {
-					point1 = new vision_ds_Point2D(X,Y);
-				} else {
-					point2 = new vision_ds_Point2D(X,Y);
-				}
-				lineGapCounter = 0;
-			} else {
-				++lineGapCounter;
-				if(lineGapCounter > maxGap) {
-					if(point1 != null && point2 != null) {
-						segments.push(new vision_ds_LineSegment2D(point1,point2));
-					}
-					point1 = null;
-					point2 = null;
-					lineGapCounter = 0;
-				}
-			}
-			y += slope;
-			Y = y | 0;
-		}
-	}
-	return segments;
 };
 var vision_algorithms_SimpleLineDetector = function() { };
 vision_algorithms_SimpleLineDetector.__name__ = true;
@@ -4315,11 +4263,13 @@ vision_tools_MathUtils.max = function() {
 	}
 	return max;
 };
+$global.$haxeUID |= 0;
 if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
 	HxOverrides.now = performance.now.bind(performance);
 }
 String.__name__ = true;
 Array.__name__ = true;
+haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = ({ }).toString;
 vision_ds_Color.TRANSPARENT = 0;
 vision_ds_Color.WHITE = 16777215;
@@ -4347,6 +4297,6 @@ vision_ds_Color.LIME = 3329330;
 vision_ds_Color.ROYAL_BLUE = 4286945;
 vision_ds_Color.COLOR_REGEX = new EReg("^(0x|#)(([A-F0-9]{2}){3,4})$","i");
 Main.main();
-})({});
+})(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
 
 //# sourceMappingURL=main.js.map

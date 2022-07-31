@@ -13,7 +13,7 @@ import haxe.display.Display.Package;
 import js.html.Document;
 import js.Browser;
 #end
-import vision.algorithms.HoughTransform;
+import vision.algorithms.Hough;
 import vision.ds.Image;
 using vision.Vision;
 
@@ -52,7 +52,7 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Sobel edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		var hough = HoughTransform.toHoughSpace(Vision.perwittEdgeDetection(image.clone()));
+		var hough = Hough.toHoughSpace(Vision.perwittEdgeDetection(image.clone()));
 		printIm(hough.image);
 		end = haxe.Timer.stamp();
 		trace("Hough transform took: " + MathUtils.turnicate(end - start, 4) + " seconds");
@@ -83,12 +83,21 @@ class Main {
 		trace("Canny edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		var lines = Vision.simpleLine2DDetection(image.clone(), 3, 30);
+		var newI = image.clone();
 		for (l in lines) {
-			image.drawLineSegment2D(l, 0x00FFD5);
+			newI.drawLineSegment2D(l, 0x00FFD5);
+		}
+		printIm(newI);
+		end = haxe.Timer.stamp();
+		trace("Simple line detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		start = haxe.Timer.stamp();
+		var lines = Vision.houghLine2DDetection(image.clone());
+		for (l in lines) {
+			image.drawRay2D(l, 0x00FFD5);
 		}
 		printIm(image);
 		end = haxe.Timer.stamp();
-		trace("Simple line detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Hough line detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 	}
 
 	public static function printIm(image:Image) {

@@ -1,5 +1,7 @@
 package vision.algorithms;
 
+import haxe.ds.BalancedTree;
+import vision.ds.hough.HoughAccumulator;
 import haxe.Timer;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Matrix;
@@ -38,7 +40,7 @@ import vision.ds.Image;
 	1. To visualize the result, overlay these lines on your original image.
 
 **/
-class HoughTransform {
+class Hough {
 	/**
 		Uses the Hough Transform to generate an accumulator based on the
 		image provided.
@@ -48,10 +50,9 @@ class HoughTransform {
 		@return A `HoughSpace` object, containing the accumulator and an image representation of the accumulator.
 	**/
 	public static function toHoughSpace(image:Image):HoughSpace {
-		var accum:Array<Array<Int>> = [];
+		var accum:HoughAccumulator = new HoughAccumulator();
 		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
 		var houghSpace = new Image(361, Std.int(rhoMax), Color.WHITE);
-
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
 				if (Math.abs(image.getPixel(i, j).red) == 255) {
@@ -62,13 +63,11 @@ class HoughTransform {
 					var y = j - Std.int(image.height / 2);
 					while (thetaIndex < 360) {
 						rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
-						rho = Std.int(rho) >> 1;
-						if (accum[thetaIndex] == null)
-							accum[thetaIndex] = [];
-						if (accum[thetaIndex][Std.int(rho)] == null) {
-							accum[thetaIndex][Std.int(rho)] = 1;
+						rho /= 2;
+						if (accum.get([theta, rho]) == null) {
+							accum.set([theta, rho], 0);
 						} else {
-							accum[thetaIndex][Std.int(rho)]++;
+							accum.set([theta, rho], accum.get([theta, rho]) + 1);
 						}
 						houghSpace.setPixel(thetaIndex, Std.int(rho), houghSpace.getPixel(thetaIndex, Std.int(rho)).darken(0.02));
 						
@@ -81,80 +80,5 @@ class HoughTransform {
 		return {accumulator: accum, image: houghSpace};
 	}
 
-	public static function getLineSegments(houghspace:HoughSpace, image:Image, theta:Int, rho:Int, maxGap:Int):Array<LineSegment2D> {
-		//now, convert theta and rho to x and y
-		var x = rho * Math.cos(theta);
-		var y = rho * Math.sin(theta);
-		//now, get the slope of the line
-		//beware of theta being +/- PI/2, that produces a slope of infinity
-		var slope:Null<Float>;
-		if (theta == Math.PI / 2 || theta == -Math.PI / 2) {
-			slope = null;
-		} else {
-			slope = Math.tan(theta);
-		}
-
-		//now, were going to "place" that line on the image, and go over all of
-		//the pixels that line passes through. we can do that quite easily,
-		//because the slope is just rise/run.
-		var point1:Point2D = null, point2:Point2D = null;
-		var lineGapCounter = 0;
-		var segments = new Array<LineSegment2D>();
-		if (slope == null) { //incase of m being infinity - vertical line
-			var X = Std.int(x);
-			for (Y in 0...image.height) {
-				if (!image.hasPixel(X, Y)) continue;
-				if (image.getPixel(X, Y).red == 255) {
-					if (point1 == null) {
-						point1 = new Point2D(X, Y);
-					} else {
-						point2 = new Point2D(X, Y);
-					}
-					lineGapCounter = 0;
-				} else {
-					lineGapCounter++;
-					if (lineGapCounter > maxGap) {
-						if (point1 != null && point2 != null) {
-							segments.push(new LineSegment2D(point1, point2));
-						} 
-						point1 = null;
-						point2 = null;
-						lineGapCounter = 0;
-					}
-				}
-			}
-		} else {
-			while (x > 0) {
-				y -= slope;
-				x -= 1;
-			}
-			var Y = Std.int(y);
-			for (X in 0...image.width) {
-				if (!image.hasPixel(X, Y)) continue;
-				if (image.getPixel(X, Y).red == 255) {
-					if (point1 == null) {
-						point1 = new Point2D(X, Y);
-					} else {
-						point2 = new Point2D(X, Y);
-					}
-					lineGapCounter = 0;
-				} else {
-					lineGapCounter++;
-					if (lineGapCounter > maxGap) {
-						if (point1 != null && point2 != null) {
-							segments.push(new LineSegment2D(point1, point2));
-						} 
-						point1 = null;
-						point2 = null;
-						lineGapCounter = 0;
-					}
-				}
-				y += slope;
-				Y = Std.int(y);
-			}
-		}
-
-		return segments;
-	}
 }
 	
