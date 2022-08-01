@@ -113,7 +113,7 @@ class Vision {
         ANOTHER NOTICE - this function doesn't require pre-processing of the image. just throw your image on it and 
         it will do the rest. (ie. it doesn't need to be edge detected/grayscaled)
     
-        @param image The image to be processed.
+        @param image The image to be processed.H
         @param threshold The threshold for detecting lines. This exists because we need to detect edges before applying the transformation, and this threshold will be used as the argument for the Perwitt edge detector.
         @param minLineLength The minimum length of a line to be detected, lines shorter than this will be ignored.
         @param minLineGap The minimum gap between two lines to be detected, lines with a gap smaller than this will make the second line ignored.
@@ -121,16 +121,10 @@ class Vision {
     **/
     public static function houghLine2DDetection(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<Ray2D> {
         
-        var edges = sobelEdgeDetection(image.clone(), threshold);
+        var edges = sobelEdgeDetection(image.clone(), threshold); //TODO: #3 switch to canny edge detection
         var houghSpace = Hough.toHoughSpace(edges);
         var accumulator = houghSpace.accumulator;
-        var values = [];
-        for (vals in accumulator.keyValueIterator()) {
-            if (vals.value > minLineLength) {
-                values.push(vals);
-            }
-        }
-        trace(values);
+        
         //find the peaks in the accumulator using a for loop
         
         //now, the peaks in hough space are inside the peaks array. extract the line segments from the peaks

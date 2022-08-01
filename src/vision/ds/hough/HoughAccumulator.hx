@@ -13,4 +13,4 @@ import haxe.ds.BalancedTree;
     accumulator.set(rho, [thetaIndex, value]);
     ```
 **/
-typedef HoughAccumulator = Map<Array<Float>, Int>
+typedef HoughAccumulator = Array<Array<Int>>

@@ -64,10 +64,12 @@ class Hough {
 					while (thetaIndex < 360) {
 						rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
 						rho /= 2;
-						if (accum.get([theta, rho]) == null) {
-							accum.set([theta, rho], 0);
+						if (accum[thetaIndex] == null) {
+							accum[thetaIndex] = [];
+						} else if (accum[thetaIndex][Std.int(rho)] == null) {
+							accum[thetaIndex][Std.int(rho)] = 0;
 						} else {
-							accum.set([theta, rho], accum.get([theta, rho]) + 1);
+							accum[thetaIndex][Std.int(rho)] += 1;
 						}
 						houghSpace.setPixel(thetaIndex, Std.int(rho), houghSpace.getPixel(thetaIndex, Std.int(rho)).darken(0.02));
 						
