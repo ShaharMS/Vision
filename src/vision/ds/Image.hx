@@ -51,7 +51,7 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function getPixel(x:Int, y:Int):Color {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
-            throw new OutOfBounds(cast this, new Point2D(x, y));
+            throw new OutOfBounds(cast this, new IntPoint2D(x, y));
         }
         return this[x][y];
     }
@@ -67,7 +67,7 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function setPixel(x:Int, y:Int, color:Color) {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
-            throw new OutOfBounds(cast this, new Point2D(x, y));
+            throw new OutOfBounds(cast this, new IntPoint2D(x, y));
         }
         this[x][y] = color;
     }
@@ -96,7 +96,7 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function copyPixel(x:Int, y:Int, image:Image):Color {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
-            throw new OutOfBounds(cast this, new Point2D(x, y));
+            throw new OutOfBounds(cast this, new IntPoint2D(x, y));
         }
         this[x][y] = image[x][y];
         return this[x][y];
@@ -116,7 +116,7 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function paintPixel(x:Int, y:Int, color:Color) {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
-            throw new OutOfBounds(cast this, new Point2D(x, y));
+            throw new OutOfBounds(cast this, new IntPoint2D(x, y));
         }
         var newColor = Color.fromRGBAFloat(
             (color.redFloat * color.alphaFloat + getPixel(x, y).redFloat) / 2 ,
@@ -237,8 +237,8 @@ abstract Image(Matrix<Null<Color>>) {
         @see Line2D
     **/
     public function drawRay2D(line:Ray2D, color:Color) {
-        var p1 = line.getPointAtY(0);
-        var p2 = line.getPointAtY(height - 1);
+        var p1 = IntPoint2D.fromPoint2D(line.getPointAtY(0));
+        var p2 = IntPoint2D.fromPoint2D(line.getPointAtY(height - 1));
         var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
         var dx = Math.abs(x2 - x1);
         var dy = Math.abs(y2 - y1);
@@ -265,8 +265,8 @@ abstract Image(Matrix<Null<Color>>) {
         @see LineSegment2D
     **/
     public function drawLineSegment2D(line:LineSegment2D, color:Color) {
-        var p1 = line.start;
-        var p2 = line.end;
+        var p1 = IntPoint2D.fromPoint2D(line.start);
+        var p2 = IntPoint2D.fromPoint2D(line.end);
         var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
         var dx = Math.abs(x2 - x1);
         var dy = Math.abs(y2 - y1);
@@ -281,6 +281,84 @@ abstract Image(Matrix<Null<Color>>) {
             var e2 = 2 * err;
             if (e2 > -dy) { err -= dy; x1 += sx; }
             if (e2 < dx) { err += dx; y1 += sy; }
+        }
+    }
+
+    /**
+        Draws a curved line specified by a line and one control point.
+
+        This method draws a quadratic Bezier curve.
+
+        @param line The line to draw.
+        @param control The control point of the curve.
+        @param color The color to draw the line with.
+        @param accuracy The number of iterations to use when drawing the curve. the higher the number, the more iterations are used, and the more accurate the curve is. for example, accuracy of 100 will draw the curve with 100 iterations, and will draw 100 points on the curve. **default is 1000**
+
+        @see LineSegment2D
+    **/
+    public function drawQuadraticBezier(line:LineSegment2D, control:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
+        
+        function bezier(t:Float, p0:IntPoint2D, p1:IntPoint2D, p2:IntPoint2D):IntPoint2D {
+            var t2 = t * t;
+            var t3 = t2 * t;
+            return new Point2D(
+                p0.x * (1 - t) * (1 - t) + p1.x * 2 * t * (1 - t) + p2.x * t * t,
+                p0.y * (1 - t) * (1 - t) + p1.y * 2 * t * (1 - t) + p2.y * t * t
+            );
+        }
+        
+        var p0 = IntPoint2D.fromPoint2D(line.start);
+        var p1 = IntPoint2D.fromPoint2D(line.end);
+        var p2 = IntPoint2D.fromPoint2D(control);
+        var i = 0.;
+        var step = 1 / accuracy;
+        while (i <= 1) {
+            var p = bezier(i, p0, p1, p2);
+            if (hasPixel(p.x, p.y)) {
+                setPixel(p.x, p.y, color);
+            }
+            i += step;
+        }
+    }
+
+    /**
+        Draws a curved line specified by a line and two control points.
+
+        This method draws a cubic Bezier curve.
+
+        @param line The line to draw.
+        @param control1 The first control point of the curve.
+        @param control2 The second control point of the curve.
+        @param color The color to draw the line with.
+        @param accuracy The number of iterations to use when drawing the curve. the higher the number, the more iterations are used, and the more accurate the curve is. for example, accuracy of 100 will draw the curve with 100 iterations, and will draw 100 points on the curve. **default is 1000**
+
+        @see LineSegment2D
+    **/
+    public function drawCubicBezier(line:LineSegment2D, control1:IntPoint2D, control2:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
+        
+        function bezier(t:Float, p0:IntPoint2D, p1:IntPoint2D, p2:IntPoint2D, p3:IntPoint2D):IntPoint2D {
+            var cX = 3 * (p1.x - p0.x),
+                bX = 3 * (p2.x - p1.x) - cX,
+                aX = p3.x - p0.x - cX - bX;
+                  
+            var cY = 3 * (p1.y - p0.y),
+                bY = 3 * (p2.y - p1.y) - cY,
+                aY = p3.y - p0.y - cY - bY;
+                  
+            var x = (aX * Math.pow(t, 3)) + (bX * Math.pow(t, 2)) + (cX * t) + p0.x;
+            var y = (aY * Math.pow(t, 3)) + (bY * Math.pow(t, 2)) + (cY * t) + p0.y;
+                  
+            return {x: x, y: y};
+        }
+
+        var i = 0.;
+        var step = 1 / accuracy;
+        while (i < 1) {
+            var p = bezier(i, line.start, line.end, control1, control2);
+            if (hasPixel(p.x, p.y)) {
+                setPixel(p.x, p.y, color);
+            }
+            i += step;
         }
     }
 
@@ -308,7 +386,7 @@ abstract Image(Matrix<Null<Color>>) {
         } while (x < 0);
     }
 
-    public function fillColor(position:Point2D, color:Color) {
+    public function fillColor(position:IntPoint2D, color:Color) {
         var originalColor = getPixel(position.x, position.y);
 
         function expandFill(x:Int, y:Int) {

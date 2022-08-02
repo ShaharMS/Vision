@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import vision.ds.IntPoint2D;
 import vision.tools.MathUtils;
 import vision.ds.Color;
 import vision.ds.Point2D;
@@ -8,7 +9,7 @@ import vision.ds.Image;
 
 class SimpleLineDetector {
 	
-	public static function findLineFromPoint(image:Image, point:Point2D, minLineGap:Float, minLineLength:Float, preferTTB = false):LineSegment2D {
+	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float, preferTTB = false):LineSegment2D {
 		var startX = point.x, startY = point.y;
 		var yArr = preferTTB ? [0, 1, 2, 3] :[0, -1, 1, 2, -2];
 		var xArr = preferTTB ? [0, -1, 1, 2, -2] : [1, 2, 3, 0];
@@ -68,8 +69,8 @@ class SimpleLineDetector {
 	**/
 	public static function lineCoveragePercentage(image:Image, line:LineSegment2D) {
 		var coveredPixels = 0, totalPixels = 0;
-		var p1 = line.start;
-        var p2 = line.end;
+		var p1 = IntPoint2D.fromPoint2D(line.start);
+        var p2 = IntPoint2D.fromPoint2D(line.end);
         var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
         var dx = Math.abs(x2 - x1);
         var dy = Math.abs(y2 - y1);
@@ -78,7 +79,7 @@ class SimpleLineDetector {
         var err = dx - dy;
         while (true) {
             if (image.hasPixel(x1, y1)) {
-				if (image.getPixel(x1, y1).to24Bit() == Color.WHITE) {
+				if (image.getPixel(Std.int(x1), Std.int(y1)).to24Bit() == Color.WHITE) {
 					coveredPixels++;
 				}
             }

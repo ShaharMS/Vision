@@ -35,7 +35,7 @@ Here is a roadmap of all features added/planned for the future:
  - [ ] *Triangle detection (recursive method)*
  - [x] edge detection (perwitt method)
  - [x] edge detection (sobel method)
- - [ ] *edge detection (canny method)*
+ - [ ] **edge detection (canny method)**
  - [x] nearest-neighbor style blur
  - [x] gaussian blur 
 
@@ -63,11 +63,13 @@ Here is a roadmap of all features added/planned for the future:
  - [x] matrix access
  - [x] floodfill
  - Drawing:
-   - [x] `drawLine()`
+   - [x] `drawLineSegment2D()`
+   - [x] `drawRay2D()`
    - [x] `drawRect()`
    - [x] `drawCircle()`
    - [ ] `drawCurve()`
-   - [ ] `drawBezierCurve()`
+   - [x] `drawQuadraticBezier()`
+   - [x] `drawCubicBezier()`
    - [x] `drawLineWithLerp()`
    - [x] `fillRect()`
    - [ ] `fillCircle()`

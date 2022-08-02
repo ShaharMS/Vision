@@ -1,5 +1,6 @@
 package;
 
+import vision.ds.LineSegment2D;
 import vision.tools.MathUtils;
 import haxe.Timer;
 import vision.algorithms.Gaussian;
@@ -38,6 +39,8 @@ class Main {
 		image.fillColor(new Point2D(220, 190), Color.BROWN);
 		image.drawCircle(200, 225, 8, Color.BROWN);
 		image.fillColor(new Point2D(200, 225), Color.BROWN);
+		image.drawQuadraticBezier(new LineSegment2D({x: 100, y: 100}, {x: 200, y: 100}), {x: 200, y: 200}, 0x1900ff);
+		image.drawCubicBezier(new LineSegment2D({x: 10, y: 10}, {x: 50, y: 100}), {x: 150, y: 200}, {x: 200, y: 75}, 0xff0000);
 		printIm(image);
 		start = haxe.Timer.stamp();
 		printIm(Vision.blackAndWhite(image.clone()));

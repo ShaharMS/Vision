@@ -3,11 +3,11 @@ package vision.ds;
 @:structInit
 class Point2D {
     
-    public var x:Int;
+    public var x:Float;
 
-    public var y:Int;
+    public var y:Float;
 
-    public function new(x:Int = 0, y:Int = 0) {
+    public function new(x:Float = 0, y:Float = 0) {
         this.x = x;
         this.y = y;
     }

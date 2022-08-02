@@ -71,7 +71,7 @@ class Hough {
 						} else {
 							accum[thetaIndex][Std.int(rho)] += 1;
 						}
-						houghSpace.setPixel(thetaIndex, Std.int(rho), houghSpace.getPixel(thetaIndex, Std.int(rho)).darken(0.02));
+						houghSpace.paintPixel(thetaIndex, Std.int(rho), Color.fromRGBAFloat(0, 0, 0, 0.01));
 						
 						theta += Math.PI / 360;
 						thetaIndex++;

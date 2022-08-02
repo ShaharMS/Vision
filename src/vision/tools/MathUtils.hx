@@ -178,4 +178,8 @@ class MathUtils {
 		}
 		return max;
 	}
+
+	public static function verifyInt(v:Float) {
+		return v == Std.int(v);
+	}
 }
