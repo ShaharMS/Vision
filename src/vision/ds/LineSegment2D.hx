@@ -31,20 +31,20 @@ class LineSegment2D {
 	}
 
 	function set_slope(value:Float):Float {
-		Reflect.setField(this, "degrees", MathTools.degreesFromSlope(value));
-        Reflect.setField(this, "radians", MathTools.radiansFromSlope(value));
+		Reflect.setField(this, "degrees", MathTools.slopeToDegrees(value));
+        Reflect.setField(this, "radians", MathTools.slopeToRadians(value));
         return slope = value;
 	}
 
 	function set_degrees(value:Float):Float {
-		Reflect.setField(this, "slope", MathTools.slopeFromDegrees(value));
-        Reflect.setField(this, "radians", MathTools.radiansFromDegrees(value));
+		Reflect.setField(this, "slope", MathTools.degreesToSlope(value));
+        Reflect.setField(this, "radians", MathTools.degreesToRadians(value));
         return degrees = value;
 	}
 
     function set_radians(value:Float):Float {
-        Reflect.setField(this, "slope", MathTools.slopeFromRadians(value));
-        Reflect.setField(this, "degrees", MathTools.degreesFromRadians(value));
+        Reflect.setField(this, "slope", MathTools.radiansToSlope(value));
+        Reflect.setField(this, "degrees", MathTools.radiansToDegrees(value));
         return radians = value;
     }
 

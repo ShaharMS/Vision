@@ -556,7 +556,10 @@ vision_Vision.houghRay2DDetection = function(image,threshold) {
 		++_g;
 		var theta = p.x * Math.PI / 180;
 		var rho = p.y;
-		lines.push(vision_ds_Ray2D.fromThetaAndRho(theta,rho));
+		var x1 = Math.cos(theta) * rho;
+		var y1 = Math.sin(theta) * rho;
+		var slope = -(-(x1 / y1));
+		lines.push(new vision_ds_Ray2D(new vision_ds_Point2D(x1,y1),slope));
 	}
 	return lines;
 };
@@ -4087,12 +4090,12 @@ vision_ds_LineSegment2D.prototype = {
 		return "\n (" + Std.string(this.start) + ".x, " + Std.string(this.start) + ".y) --> (" + Std.string(this.end) + ".x, " + Std.string(this.end) + ".y)";
 	}
 	,set_slope: function(value) {
-		this["degrees"] = Math.atan(value) * 180 / Math.PI;
-		this["radians"] = Math.atan(value);
+		this["degrees"] = 90 + Math.tan(value) * 180 / vision_tools_MathTools.get_PI();
+		this["radians"] = vision_tools_MathTools.PI_OVER_2 + Math.tan(value);
 		return this.slope = value;
 	}
 	,set_degrees: function(value) {
-		this["slope"] = Math.tan(value * Math.PI / 180);
+		this["slope"] = Math.tan(value * vision_tools_MathTools.get_PI() / 180);
 		this["radians"] = value * Math.PI / 180;
 		return this.degrees = value;
 	}
@@ -4122,11 +4125,11 @@ var vision_ds_Ray2D = function(point,m,degrees,radians) {
 	this.point = point;
 	if(m != null) {
 		this.set_slope(m);
-		this.set_degrees(Math.atan(m) * 180 / Math.PI);
-		this.set_radians(Math.atan(m));
+		this.set_degrees(90 + Math.tan(m) * 180 / vision_tools_MathTools.get_PI());
+		this.set_radians(vision_tools_MathTools.PI_OVER_2 + Math.tan(m));
 	} else if(degrees != null) {
 		this.set_degrees(degrees);
-		this.set_slope(Math.tan(degrees * Math.PI / 180));
+		this.set_slope(Math.tan(degrees * vision_tools_MathTools.get_PI() / 180));
 		this.set_radians(degrees * Math.PI / 180);
 	} else if(radians != null) {
 		this.set_radians(radians);
@@ -4139,17 +4142,14 @@ vision_ds_Ray2D.from2Points = function(point1,point2) {
 	var s = (point2.y - point1.y) / (point2.x - point1.x);
 	return new vision_ds_Ray2D(point1,s);
 };
-vision_ds_Ray2D.fromThetaAndRho = function(theta,rho) {
-	return new vision_ds_Ray2D(new vision_ds_Point2D(rho * Math.cos(theta),rho * Math.sin(theta)),Math.tan(theta));
-};
 vision_ds_Ray2D.prototype = {
 	set_slope: function(value) {
-		this.degrees = Math.atan(value) * 180 / Math.PI;
-		this.radians = Math.atan(value);
+		this.degrees = 90 + Math.tan(value) * 180 / vision_tools_MathTools.get_PI();
+		this.radians = vision_tools_MathTools.PI_OVER_2 + Math.tan(value);
 		return this.slope = value;
 	}
 	,set_degrees: function(value) {
-		this.slope = Math.tan(value * Math.PI / 180);
+		this.slope = Math.tan(value * vision_tools_MathTools.get_PI() / 180);
 		this.radians = value * Math.PI / 180;
 		return this.degrees = value;
 	}
@@ -4191,10 +4191,10 @@ vision_ds_Ray2D.prototype = {
 		return px;
 	}
 	,getPointAtX: function(x) {
-		return new vision_ds_Point2D(x,this.slope * x + this.get_yIntercept() | 0);
+		return new vision_ds_Point2D(x,this.slope * x + this.get_yIntercept());
 	}
 	,getPointAtY: function(y) {
-		return new vision_ds_Point2D(y / this.slope | 0,y);
+		return new vision_ds_Point2D(y / this.slope,y);
 	}
 };
 var vision_ds_hough_HoughSpace = function(accumulator,image) {
@@ -4311,22 +4311,22 @@ vision_tools_MathTools.boundInt = function(value,min,max) {
 vision_tools_MathTools.boundFloat = function(value,min,max) {
 	return Math.min(Math.max(value,min),max);
 };
-vision_tools_MathTools.degreesFromSlope = function(slope) {
-	return Math.atan(slope) * 180 / Math.PI;
+vision_tools_MathTools.slopeToDegrees = function(slope) {
+	return 90 + Math.tan(slope) * 180 / vision_tools_MathTools.get_PI();
 };
-vision_tools_MathTools.radiansFromSlope = function(slope) {
-	return Math.atan(slope);
+vision_tools_MathTools.slopeToRadians = function(slope) {
+	return vision_tools_MathTools.PI_OVER_2 + Math.tan(slope);
 };
-vision_tools_MathTools.slopeFromDegrees = function(degrees) {
-	return Math.tan(degrees * Math.PI / 180);
+vision_tools_MathTools.degreesToSlope = function(degrees) {
+	return Math.tan(degrees * vision_tools_MathTools.get_PI() / 180);
 };
-vision_tools_MathTools.radiansFromDegrees = function(degrees) {
+vision_tools_MathTools.degreesToRadians = function(degrees) {
 	return degrees * Math.PI / 180;
 };
-vision_tools_MathTools.degreesFromRadians = function(radians) {
+vision_tools_MathTools.radiansToDegrees = function(radians) {
 	return radians * 180 / Math.PI;
 };
-vision_tools_MathTools.slopeFromRadians = function(radians) {
+vision_tools_MathTools.radiansToSlope = function(radians) {
 	return Math.tan(radians);
 };
 vision_tools_MathTools.cotan = function(radians) {
@@ -4389,6 +4389,9 @@ vision_tools_MathTools.get_POSITIVE_INFINITY = function() {
 };
 vision_tools_MathTools.get_NaN = function() {
 	return NaN;
+};
+vision_tools_MathTools.get_PI = function() {
+	return Math.PI;
 };
 vision_tools_MathTools.abs = function(v) {
 	return Math.abs(v);
@@ -4484,6 +4487,7 @@ vision_ds_Color.AQUA = 65535;
 vision_ds_Color.LIME = 3329330;
 vision_ds_Color.ROYAL_BLUE = 4286945;
 vision_ds_Color.COLOR_REGEX = new EReg("^(0x|#)(([A-F0-9]{2}){3,4})$","i");
+vision_tools_MathTools.PI_OVER_2 = Math.PI / 2;
 Main.main();
 })({});
 

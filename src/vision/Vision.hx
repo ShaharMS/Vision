@@ -153,11 +153,12 @@ class Vision {
         Main.printImage(indexImage);
         var lines = [];
         for (p in points) {
-            var theta = MathTools.radiansFromDegrees(p.x);
+            var theta = MathTools.degreesToRadians(p.x);
             var rho = p.y;
-            lines.push(Ray2D.fromThetaAndRho(theta, rho));
-            //now, find the rays that correspond to this point when normalized - eg. if theta = 0 and rho = 60, then the ray's normal's theta and rho will be 0 and 60.
-
+            var x1 = Math.cos(theta) * rho;
+            var y1 = Math.sin(theta) * rho;
+            var slope = -(-(x1 / y1));
+            lines.push(new Ray2D({x: x1, y: y1}, slope));
         }
         //find the peaks in the accumulator using a for loop
         

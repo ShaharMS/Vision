@@ -12,6 +12,9 @@ import vision.ds.Point2D;
 	both at the same time.
 **/
 class MathTools {
+
+	public static var PI_OVER_2(default, never):Float = Math.PI / 2;
+
 	public static function distanceFromPointToRay2D(point:Point2D, line:Ray2D) {
 		var cos:Float = Math.cos(line.radians);
 		var sin:Float = Math.sin(line.radians);
@@ -129,30 +132,33 @@ class MathTools {
 		return Math.min(Math.max(value, min), max);
 	}
 
-	public static inline function degreesFromSlope(slope:Float) {
-		return Math.atan(slope) * 180 / Math.PI;
+	public static inline function slopeToDegrees(slope:Float) {
+		return 90 + tan(slope) * 180 / PI;
 	}
 
-	public static inline function radiansFromSlope(slope:Float) {
-		return Math.atan(slope);
+	public static inline function slopeToRadians(slope:Float) {
+		return PI_OVER_2 + tan(slope);
 	}
 
-	public static inline function slopeFromDegrees(degrees:Float) {
-		return Math.tan(degrees * Math.PI / 180);
+	public static inline function degreesToSlope(degrees:Float) {
+		return Math.tan(degrees * PI / 180);
 	}
 
-	public static inline function radiansFromDegrees(degrees:Float) {
+	public static inline function degreesToRadians(degrees:Float) {
 		return degrees * Math.PI / 180;
 	}
 
-	public static inline function degreesFromRadians(radians:Float) {
+	public static inline function radiansToDegrees(radians:Float) {
 		return radians * 180 / Math.PI;
 	}
 
-	public static inline function slopeFromRadians(radians:Float) {
+	public static inline function radiansToSlope(radians:Float) {
 		return Math.tan(radians);
 	}
 
+	/**
+		For fuck sake d not fuckin use this i will come to your house
+	**/
 	public static inline function cotan(radians:Float):Float {
 		return 1 / Math.tan(radians);
 	}
@@ -204,6 +210,9 @@ class MathTools {
 
 	public static var NaN(get, null):Float;
 	@:noCompletion static function get_NaN() return Math.NaN;
+
+	public static var PI(get, null):Float;
+	@:noCompletion static function get_PI() return Math.PI;
 
 	public static inline function abs(v:Float):Float return Math.abs(v);
 	public static inline function acos(v:Float):Float return Math.acos(v);
