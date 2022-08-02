@@ -118,10 +118,11 @@ abstract Image(Matrix<Null<Color>>) {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
         }
+        var oldColor = this[x][y];
         var newColor = Color.fromRGBAFloat(
-            (color.redFloat * color.alphaFloat + getPixel(x, y).redFloat) / 2 ,
-            (color.greenFloat * color.alphaFloat + getPixel(x, y).greenFloat) / 2, 
-            (color.blueFloat * color.alphaFloat + getPixel(x, y).blueFloat) / 2,
+            color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
+            color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat),
+            color.blueFloat * color.alphaFloat + oldColor.blueFloat * (1 - color.alphaFloat),
             1);
         setPixel(x, y, newColor);
     }
@@ -229,12 +230,12 @@ abstract Image(Matrix<Null<Color>>) {
     }
 
     /**
-        Draws an infine line specified by a Line2D object.
+        Draws an infine line specified by a Ray2D object.
 
         @param line The line to draw.
         @param color The color to draw the line with.
 
-        @see Line2D
+        @see Ray2D
     **/
     public function drawRay2D(line:Ray2D, color:Color) {
         var p1 = IntPoint2D.fromPoint2D(line.getPointAtY(0));

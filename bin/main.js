@@ -116,7 +116,7 @@ Main.main = function() {
 	end = HxOverrides.now() / 1000;
 	haxe_Log.trace("Canny edge detection took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 86, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
-	var lines = vision_Vision.simpleLine2DDetection(vision_ds_Image.clone(image),3,30);
+	var lines = vision_Vision.simpleLineSegment2DDetection(vision_ds_Image.clone(image),3,30);
 	var newI = vision_ds_Image.clone(image);
 	var _g = 0;
 	while(_g < lines.length) {
@@ -128,7 +128,7 @@ Main.main = function() {
 	end = HxOverrides.now() / 1000;
 	haxe_Log.trace("Simple line detection took: " + vision_tools_MathUtils.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 95, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
-	var lines = vision_Vision.houghLine2DDetection(vision_ds_Image.clone(image));
+	var lines = vision_Vision.houghRay2DDetection(vision_ds_Image.clone(image));
 	var _g = 0;
 	while(_g < lines.length) {
 		var l = lines[_g];
@@ -494,7 +494,7 @@ vision_Vision.contrast = function(image) {
 	}
 	return image;
 };
-vision_Vision.houghLine2DDetection = function(image,threshold,minLineLength,minLineGap,maxLineGap) {
+vision_Vision.houghRay2DDetection = function(image,threshold,minLineLength,minLineGap,maxLineGap) {
 	if(maxLineGap == null) {
 		maxLineGap = 10;
 	}
@@ -997,7 +997,7 @@ vision_Vision.cannyEdgeDetection = function(image,sigma,threshold,lowThreshold,h
 	}
 	return edges;
 };
-vision_Vision.simpleLine2DDetection = function(image,minLineGap,minLineLength) {
+vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLength) {
 	if(minLineLength == null) {
 		minLineLength = 10;
 	}
@@ -3705,9 +3705,10 @@ vision_ds_Image.paintPixel = function(this1,x,y,color) {
 	if(x < 0 || x >= this1.length || y < 0 || y >= this1[x].length) {
 		throw haxe_Exception.thrown(new vision_exceptions_OutOfBounds(this1,vision_ds_IntPoint2D.toPoint2D(vision_ds_IntPoint2D._new(x,y))));
 	}
-	var Red = ((color >> 16 & 255) / 255 * ((color >> 24 & 255) / 255) + (vision_ds_Image.getPixel(this1,x,y) >> 16 & 255) / 255) / 2;
-	var Green = ((color >> 8 & 255) / 255 * ((color >> 24 & 255) / 255) + (vision_ds_Image.getPixel(this1,x,y) >> 8 & 255) / 255) / 2;
-	var Blue = ((color & 255) / 255 * ((color >> 24 & 255) / 255) + (vision_ds_Image.getPixel(this1,x,y) & 255) / 255) / 2;
+	var oldColor = this1[x][y];
+	var Red = (color >> 16 & 255) / 255 * ((color >> 24 & 255) / 255) + (oldColor >> 16 & 255) / 255 * (1 - (color >> 24 & 255) / 255);
+	var Green = (color >> 8 & 255) / 255 * ((color >> 24 & 255) / 255) + (oldColor >> 8 & 255) / 255 * (1 - (color >> 24 & 255) / 255);
+	var Blue = (color & 255) / 255 * ((color >> 24 & 255) / 255) + (oldColor & 255) / 255 * (1 - (color >> 24 & 255) / 255);
 	var Alpha = 1;
 	if(Alpha == null) {
 		Alpha = 1;

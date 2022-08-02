@@ -85,7 +85,7 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Canny edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		var lines = Vision.simpleLine2DDetection(image.clone(), 3, 30);
+		var lines = Vision.simpleLineSegment2DDetection(image.clone(), 3, 30);
 		var newI = image.clone();
 		for (l in lines) {
 			newI.drawLineSegment2D(l, 0x00FFD5);
@@ -94,7 +94,7 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Simple line detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		var lines = Vision.houghLine2DDetection(image.clone());
+		var lines = Vision.houghRay2DDetection(image.clone());
 		for (l in lines) {
 			image.drawRay2D(l, 0x00FFD5);
 		}

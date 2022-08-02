@@ -119,7 +119,7 @@ class Vision {
         @param minLineGap The minimum gap between two lines to be detected, lines with a gap smaller than this will make the second line ignored.
         @param maxLineGap The maximum gap between two lines to be detected, lines with a gap smaller then that will be merged.
     **/
-    public static function houghLine2DDetection(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<Ray2D> {
+    public static function houghRay2DDetection(image:Image, threshold:Float = 100, minLineLength:Float = 30, ?minLineGap:Float = 2, ?maxLineGap:Int = 10):Array<Ray2D> {
         
         var edges = sobelEdgeDetection(image.clone(), threshold); //TODO: #3 switch to canny edge detection
         var houghSpace = Hough.toHoughSpace(edges);
@@ -489,7 +489,7 @@ class Vision {
 
         @return The line detected image.
     **/
-    public static function simpleLine2DDetection(image:Image, minLineGap:Int = 2, minLineLength:Float = 10):Array<LineSegment2D> {
+    public static function simpleLineSegment2DDetection(image:Image, minLineGap:Int = 2, minLineLength:Float = 10):Array<LineSegment2D> {
         var lines:Array<LineSegment2D> = [];
         var edgeDetected = blackAndWhite(image.clone(), 1);
 
