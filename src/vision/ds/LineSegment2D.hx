@@ -1,6 +1,6 @@
 package vision.ds;
 
-import vision.tools.MathUtils;
+import vision.tools.MathTools;
 
 class LineSegment2D {
 	public var length(get, null):Float;
@@ -31,20 +31,20 @@ class LineSegment2D {
 	}
 
 	function set_slope(value:Float):Float {
-		Reflect.setField(this, "degrees", MathUtils.degreesFromSlope(value));
-        Reflect.setField(this, "radians", MathUtils.radiansFromSlope(value));
+		Reflect.setField(this, "degrees", MathTools.degreesFromSlope(value));
+        Reflect.setField(this, "radians", MathTools.radiansFromSlope(value));
         return slope = value;
 	}
 
 	function set_degrees(value:Float):Float {
-		Reflect.setField(this, "slope", MathUtils.slopeFromDegrees(value));
-        Reflect.setField(this, "radians", MathUtils.radiansFromDegrees(value));
+		Reflect.setField(this, "slope", MathTools.slopeFromDegrees(value));
+        Reflect.setField(this, "radians", MathTools.radiansFromDegrees(value));
         return degrees = value;
 	}
 
     function set_radians(value:Float):Float {
-        Reflect.setField(this, "slope", MathUtils.slopeFromRadians(value));
-        Reflect.setField(this, "degrees", MathUtils.degreesFromRadians(value));
+        Reflect.setField(this, "slope", MathTools.slopeFromRadians(value));
+        Reflect.setField(this, "degrees", MathTools.degreesFromRadians(value));
         return radians = value;
     }
 

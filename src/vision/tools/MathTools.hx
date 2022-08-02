@@ -4,7 +4,14 @@ import vision.ds.Ray2D;
 import vision.ds.LineSegment2D;
 import vision.ds.Point2D;
 
-class MathUtils {
+/**
+	A class consistin of a b u n c h of static methods for manipulating values,
+	calculating distances, intersections, etc.
+
+	This class is fully compatible with haxe's `Math` class. That means you don't have to use
+	both at the same time.
+**/
+class MathTools {
 	public static function distanceFromPointToRay2D(point:Point2D, line:Ray2D) {
 		var cos:Float = Math.cos(line.radians);
 		var sin:Float = Math.sin(line.radians);
@@ -36,7 +43,7 @@ class MathUtils {
 		var distance3:Float = distanceFromPointToLineSegment2D(line2, line1.start);
 		var distance4:Float = distanceFromPointToLineSegment2D(line2, line1.end);
 
-		var distance:Float = MathUtils.min(distance1, distance2, distance3, distance4);
+		var distance:Float = MathTools.min(distance1, distance2, distance3, distance4);
 		return distance;
 
 	}
@@ -166,6 +173,7 @@ class MathUtils {
 	public static function min(...values:Float) {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
+			if (values[i] == null) continue;
 			if (values[i] < min) min = values[i];
 		}
 		return min;
@@ -174,6 +182,7 @@ class MathUtils {
 	public static function max(...values:Float) {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
+			if (values[i] == null) continue;
 			if (values[i] > max) max = values[i];
 		}
 		return max;
@@ -182,4 +191,39 @@ class MathUtils {
 	public static function verifyInt(v:Float) {
 		return v == Std.int(v);
 	}
+
+	//---------------------
+	// Math.hx compatibility
+	//---------------------
+
+	public static var NEGATIVE_INFINITY(get, null):Float;
+	@:noCompletion static function get_NEGATIVE_INFINITY() return Math.NEGATIVE_INFINITY;
+
+	public static var POSITIVE_INFINITY(get, null):Float;
+	@:noCompletion static function get_POSITIVE_INFINITY() return Math.POSITIVE_INFINITY;
+
+	public static var NaN(get, null):Float;
+	@:noCompletion static function get_NaN() return Math.NaN;
+
+	public static inline function abs(v:Float):Float return Math.abs(v);
+	public static inline function acos(v:Float):Float return Math.acos(v);
+	public static inline function asin(v:Float):Float return Math.asin(v);
+	public static inline function atan(v:Float):Float return Math.atan(v);
+	public static inline function atan2(y:Float, x:Float):Float return Math.atan2(x, y);
+	public static inline function ceil(v:Float):Int return Math.ceil(v);
+	public static inline function cos(v:Float):Float return Math.cos(v);
+	public static inline function exp(v:Float):Float return Math.exp(v);
+	public static inline function floor(v:Float):Int return Math.floor(v);
+	public static inline function log(v:Float):Float return Math.log(v);
+	public static inline function pow(v:Float, exp:Float):Float return Math.pow(v, exp);
+	public static inline function random():Float return Math.random();
+	public static inline function round(v:Float):Int return Math.round(v);
+	public static inline function sin(v:Float):Float return Math.sin(v);
+	public static inline function sqrt(v:Float):Float return Math.sqrt(v);
+	public static inline function tan(v:Float):Float return Math.tan(v);
+	public static inline function ffloor(v:Float):Float return floor(v);
+	public static inline function fceil(v:Float):Float return ceil(v);
+	public static inline function fround(v:Float):Float return round(v);
+	public static inline function isFinite(f:Float):Bool return Math.isFinite(f);
+	public static inline function isNaN(f:Float):Bool return Math.isNaN(f);
 }

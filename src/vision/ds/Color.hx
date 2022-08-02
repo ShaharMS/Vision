@@ -1,6 +1,6 @@
 package vision.ds;
 
-import vision.tools.MathUtils;
+import vision.tools.MathTools;
 
 abstract Color(Int) from Int from UInt to Int to UInt
 {
@@ -294,7 +294,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function getComplementHarmony():Color
 	{
-		return fromHSB(MathUtils.wrapInt(Std.int(hue) + 180, 0, 350), brightness, saturation, alphaFloat);
+		return fromHSB(MathTools.wrapInt(Std.int(hue) + 180, 0, 350), brightness, saturation, alphaFloat);
 	}
 
 	/**
@@ -306,8 +306,8 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function getAnalogousHarmony(Threshold:Int = 30):Harmony
 	{
-		var warmer:Int = fromHSB(MathUtils.wrapInt(Std.int(hue) - Threshold, 0, 350), saturation, brightness, alphaFloat);
-		var colder:Int = fromHSB(MathUtils.wrapInt(Std.int(hue) + Threshold, 0, 350), saturation, brightness, alphaFloat);
+		var warmer:Int = fromHSB(MathTools.wrapInt(Std.int(hue) - Threshold, 0, 350), saturation, brightness, alphaFloat);
+		var colder:Int = fromHSB(MathTools.wrapInt(Std.int(hue) + Threshold, 0, 350), saturation, brightness, alphaFloat);
 
 		return {original: this, warmer: warmer, colder: colder};
 	}
@@ -321,9 +321,9 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function getSplitComplementHarmony(Threshold:Int = 30):Harmony
 	{
-		var oppositeHue:Int = MathUtils.wrapInt(Std.int(hue) + 180, 0, 350);
-		var warmer:Color = fromHSB(MathUtils.wrapInt(oppositeHue - Threshold, 0, 350), saturation, brightness, alphaFloat);
-		var colder:Color = fromHSB(MathUtils.wrapInt(oppositeHue + Threshold, 0, 350), saturation, brightness, alphaFloat);
+		var oppositeHue:Int = MathTools.wrapInt(Std.int(hue) + 180, 0, 350);
+		var warmer:Color = fromHSB(MathTools.wrapInt(oppositeHue - Threshold, 0, 350), saturation, brightness, alphaFloat);
+		var colder:Color = fromHSB(MathTools.wrapInt(oppositeHue + Threshold, 0, 350), saturation, brightness, alphaFloat);
 
 		return {original: this, warmer: warmer, colder: colder};
 	}
@@ -336,8 +336,8 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function getTriadicHarmony():TriadicHarmony
 	{
-		var triadic1:Color = fromHSB(MathUtils.wrapInt(Std.int(hue) + 120, 0, 359), saturation, brightness, alphaFloat);
-		var triadic2:Color = fromHSB(MathUtils.wrapInt(Std.int(triadic1.hue) + 120, 0, 359), saturation, brightness, alphaFloat);
+		var triadic1:Color = fromHSB(MathTools.wrapInt(Std.int(hue) + 120, 0, 359), saturation, brightness, alphaFloat);
+		var triadic2:Color = fromHSB(MathTools.wrapInt(Std.int(triadic1.hue) + 120, 0, 359), saturation, brightness, alphaFloat);
 
 		return {color1: this, color2: triadic1, color3: triadic2};
 	}
@@ -383,7 +383,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 */
 	public function darken(Factor:Float = 0.2):Color
 	{
-		Factor = MathUtils.boundFloat(Factor, 0, 1);
+		Factor = MathTools.boundFloat(Factor, 0, 1);
 		var output:Color = this;
 		output.lightness = output.lightness * (1 - Factor);
 		return output;
@@ -397,7 +397,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function lighten(Factor:Float = 0.2):Color
 	{
-		Factor = MathUtils.boundFloat(Factor, 0, 1);
+		Factor = MathTools.boundFloat(Factor, 0, 1);
 		var output:Color = this;
 		output.lightness = output.lightness + (1 - lightness) * Factor;
 		return output;

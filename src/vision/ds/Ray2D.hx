@@ -1,6 +1,6 @@
 package vision.ds;
 
-import vision.tools.MathUtils;
+import vision.tools.MathTools;
 
 class Ray2D {
     public var point:Point2D;
@@ -25,34 +25,34 @@ class Ray2D {
         this.point = point;
         if (m != null) {
             this.slope = m;
-            this.degrees = MathUtils.degreesFromSlope(m);
-            this.radians = MathUtils.radiansFromSlope(m);
+            this.degrees = MathTools.degreesFromSlope(m);
+            this.radians = MathTools.radiansFromSlope(m);
         } else if (degrees != null) {
             this.degrees = degrees;
-            this.slope = MathUtils.slopeFromDegrees(degrees);
-            this.radians = MathUtils.radiansFromDegrees(degrees);
+            this.slope = MathTools.slopeFromDegrees(degrees);
+            this.radians = MathTools.radiansFromDegrees(degrees);
         } else if (radians != null) {
             this.radians = radians;
-            this.slope = MathUtils.slopeFromRadians(radians);
-            this.degrees = MathUtils.degreesFromRadians(radians);
+            this.slope = MathTools.slopeFromRadians(radians);
+            this.degrees = MathTools.degreesFromRadians(radians);
         }
     }
 
 	function set_slope(value:Float):Float {
-		@:bypassAccessor degrees = MathUtils.degreesFromSlope(value);
-        @:bypassAccessor radians = MathUtils.radiansFromSlope(value);
+		@:bypassAccessor degrees = MathTools.degreesFromSlope(value);
+        @:bypassAccessor radians = MathTools.radiansFromSlope(value);
         return slope = value;
 	}
 
 	function set_degrees(value:Float):Float {
-		@:bypassAccessor slope = MathUtils.slopeFromDegrees(value);
-        @:bypassAccessor radians = MathUtils.radiansFromDegrees(value);
+		@:bypassAccessor slope = MathTools.slopeFromDegrees(value);
+        @:bypassAccessor radians = MathTools.radiansFromDegrees(value);
         return degrees = value;
 	}
 
     function set_radians(value:Float):Float {
-        @:bypassAccessor slope = MathUtils.slopeFromRadians(value);
-        @:bypassAccessor degrees = MathUtils.degreesFromRadians(value);
+        @:bypassAccessor slope = MathTools.slopeFromRadians(value);
+        @:bypassAccessor degrees = MathTools.degreesFromRadians(value);
         return radians = value;
     }
 
@@ -92,6 +92,10 @@ class Ray2D {
     public static function from2Points(point1:Point2D, point2:Point2D) {
         var s = (point2.y - point1.y) / (point2.x - point1.x);
         return new Ray2D(point1, s);
+    }
+
+    public static function fromThetaAndRho(theta:Float, rho:Float) {
+        return new Ray2D(new Point2D(rho * MathTools.cos(theta), rho * MathTools.sin(theta)), MathTools.slopeFromRadians(theta));
     }
 
     public function getPointAtX(x:Int):Point2D {

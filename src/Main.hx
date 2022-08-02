@@ -1,7 +1,7 @@
 package;
 
 import vision.ds.LineSegment2D;
-import vision.tools.MathUtils;
+import vision.tools.MathTools;
 import haxe.Timer;
 import vision.algorithms.Gaussian;
 import vision.Vision;
@@ -41,69 +41,69 @@ class Main {
 		image.fillColor(new Point2D(200, 225), Color.BROWN);
 		image.drawQuadraticBezier(new LineSegment2D({x: 100, y: 100}, {x: 200, y: 100}), {x: 200, y: 200}, 0x1900ff);
 		image.drawCubicBezier(new LineSegment2D({x: 10, y: 10}, {x: 50, y: 100}), {x: 150, y: 200}, {x: 200, y: 75}, 0xff0000);
-		printIm(image);
+		printImage(image);
 		start = haxe.Timer.stamp();
-		printIm(Vision.blackAndWhite(image.clone()));
+		printImage(Vision.blackAndWhite(image.clone()));
 		end = haxe.Timer.stamp();
-		trace("Black and white took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Black and white took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(Vision.grayscale(image.clone()));
+		printImage(Vision.grayscale(image.clone()));
 		end = haxe.Timer.stamp();
-		trace("Grayscale took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Grayscale took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(image.clone().sobelEdgeDetection());
+		printImage(image.clone().sobelEdgeDetection());
 		end = haxe.Timer.stamp();
-		trace("Sobel edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Sobel edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		var hough = Hough.toHoughSpace(Vision.perwittEdgeDetection(image.clone()));
-		printIm(hough.image);
+		printImage(hough.image);
 		end = haxe.Timer.stamp();
-		trace("Hough transform took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Hough transform took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(Vision.perwittEdgeDetection(image.clone()));
+		printImage(Vision.perwittEdgeDetection(image.clone()));
 		end = haxe.Timer.stamp();
-		trace("Perwitt edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Perwitt edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(Vision.nearestNeighborBlur(image.clone(), 1));
+		printImage(Vision.nearestNeighborBlur(image.clone(), 1));
 		end = haxe.Timer.stamp();
-		trace("Nearest neighbor blur took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Nearest neighbor blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(image.clone().contrast());
+		printImage(image.clone().contrast());
 		end = haxe.Timer.stamp();
-		trace("Contrast took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Contrast took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(image.clone().gaussianBlur(2, 15));
+		printImage(image.clone().gaussianBlur(2, 15));
 		end = haxe.Timer.stamp();
-		trace("Gaussian blur took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printIm(image.clone());
+		printImage(image.clone());
 		end = haxe.Timer.stamp();
-		trace("Image Cloning took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Image Cloning took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		var canny = Vision.cannyEdgeDetection(image.clone());
-		printIm(canny);
+		printImage(canny);
 		end = haxe.Timer.stamp();
-		trace("Canny edge detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Canny edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		var lines = Vision.simpleLineSegment2DDetection(image.clone(), 3, 30);
 		var newI = image.clone();
 		for (l in lines) {
 			newI.drawLineSegment2D(l, 0x00FFD5);
 		}
-		printIm(newI);
+		printImage(newI);
 		end = haxe.Timer.stamp();
-		trace("Simple line detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Simple line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		var lines = Vision.houghRay2DDetection(image.clone());
 		for (l in lines) {
 			image.drawRay2D(l, 0x00FFD5);
 		}
-		printIm(image);
+		printImage(image);
 		end = haxe.Timer.stamp();
-		trace("Hough line detection took: " + MathUtils.turnicate(end - start, 4) + " seconds");
+		trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 	}
 
-	public static function printIm(image:Image) {
+	public static function printImage(image:Image) {
 		#if js
 		var c = Browser.document.createCanvasElement();
 		c.width = image.width;

@@ -1,7 +1,7 @@
 package vision.algorithms;
 
 import vision.ds.IntPoint2D;
-import vision.tools.MathUtils;
+import vision.tools.MathTools;
 import vision.ds.Color;
 import vision.ds.Point2D;
 import vision.ds.LineSegment2D;
