@@ -115,16 +115,14 @@ class Vision {
     
         @param image The image to be processed.H
         @param threshold The threshold for detecting lines. This exists because we need to detect edges before applying the transformation, and this threshold will be used as the argument for the Perwitt edge detector.
-        @param minLineLength The minimum length of a line to be detected, lines shorter than this will be ignored.
-        @param minLineGap The minimum gap between two lines to be detected, lines with a gap smaller than this will make the second line ignored.
-        @param maxLineGap The maximum gap between two lines to be detected, lines with a gap smaller then that will be merged.
+        @param maxRayCount The maximum number of rays to be detected. Unless you have a very large image, or a good reason, this should remain unset.
     **/
-    public static function houghRay2DDetection(image:Image, threshold:Int = 100, ?M):Array<Ray2D> {
+    public static function houghRay2DDetection(image:Image, threshold:Int = 100, ?maxRayCount:Null<Int> = null):Array<Ray2D> {
         
         var edges = sobelEdgeDetection(image.clone(), threshold); //TODO: #3 switch to canny edge detection
-        var houghSpace = Hough.toHoughSpaceWithRays(edges, threshold);
-       
-        return null;
+        var houghSpace = Hough.toHoughSpaceWithRays(edges, threshold, maxRayCount);
+
+        return houghSpace.rays;
     }
 
     /**

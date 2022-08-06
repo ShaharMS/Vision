@@ -25,6 +25,540 @@ EReg.prototype = {
 			throw haxe_Exception.thrown("EReg::matched");
 		}
 	}
+	,matchedPos: function() {
+		if(this.r.m == null) {
+			throw haxe_Exception.thrown("No string matched");
+		}
+		return { pos : this.r.m.index, len : this.r.m[0].length};
+	}
+	,matchSub: function(s,pos,len) {
+		if(len == null) {
+			len = -1;
+		}
+		if(this.r.global) {
+			this.r.lastIndex = pos;
+			this.r.m = this.r.exec(len < 0 ? s : HxOverrides.substr(s,0,pos + len));
+			var b = this.r.m != null;
+			if(b) {
+				this.r.s = s;
+			}
+			return b;
+		} else {
+			var b = this.match(len < 0 ? HxOverrides.substr(s,pos,null) : HxOverrides.substr(s,pos,len));
+			if(b) {
+				this.r.s = s;
+				this.r.m.index += pos;
+			}
+			return b;
+		}
+	}
+	,map: function(s,f) {
+		var offset = 0;
+		var buf_b = "";
+		while(true) {
+			if(offset >= s.length) {
+				break;
+			} else if(!this.matchSub(s,offset)) {
+				buf_b += Std.string(HxOverrides.substr(s,offset,null));
+				break;
+			}
+			var p = this.matchedPos();
+			buf_b += Std.string(HxOverrides.substr(s,offset,p.pos - offset));
+			buf_b += Std.string(f(this));
+			if(p.len == 0) {
+				buf_b += Std.string(HxOverrides.substr(s,p.pos,1));
+				offset = p.pos + 1;
+			} else {
+				offset = p.pos + p.len;
+			}
+			if(!this.r.global) {
+				break;
+			}
+		}
+		if(!this.r.global && offset > 0 && offset < s.length) {
+			buf_b += Std.string(HxOverrides.substr(s,offset,null));
+		}
+		return buf_b;
+	}
+};
+var Console = function() { };
+Console.__name__ = true;
+Console.printlnFormatted = function(s,outputStream) {
+	if(outputStream == null) {
+		outputStream = 0;
+	}
+	if(s == null) {
+		s = "";
+	}
+	Console.printFormatted(s + "\n",outputStream);
+};
+Console.println = function(s,outputStream) {
+	if(outputStream == null) {
+		outputStream = 0;
+	}
+	if(s == null) {
+		s = "";
+	}
+	Console.print(s + "\n",outputStream);
+};
+Console.format = function(s,formatMode) {
+	s += "<//>";
+	var activeFormatFlagStack = [];
+	var groupedProceedingTags = [];
+	var browserFormatArguments = [];
+	var result = Console.formatTagPattern.map(s,function(e) {
+		var escaped = e.matched(1) != null;
+		if(escaped) {
+			return e.matched(0);
+		}
+		var open = e.matched(2) == null;
+		var tags = e.matched(3).split(",");
+		if(!open && tags.length == 1) {
+			if(tags[0] == "") {
+				var last = activeFormatFlagStack[activeFormatFlagStack.length - 1];
+				var i = activeFormatFlagStack.indexOf(last);
+				if(i != -1) {
+					var proceedingTags = groupedProceedingTags[i];
+					activeFormatFlagStack.splice(i - proceedingTags,proceedingTags + 1);
+					groupedProceedingTags.splice(i - proceedingTags,proceedingTags + 1);
+				}
+			} else if(FormatFlag.fromString(tags[0]) == "reset") {
+				activeFormatFlagStack = [];
+				groupedProceedingTags = [];
+			} else {
+				var flag = FormatFlag.fromString(tags[0]);
+				if(flag != null) {
+					var i = activeFormatFlagStack.indexOf(flag);
+					if(i != -1) {
+						var proceedingTags = groupedProceedingTags[i];
+						activeFormatFlagStack.splice(i - proceedingTags,proceedingTags + 1);
+						groupedProceedingTags.splice(i - proceedingTags,proceedingTags + 1);
+					}
+				}
+			}
+		} else {
+			var proceedingTags = 0;
+			var _g = 0;
+			while(_g < tags.length) {
+				var tag = tags[_g];
+				++_g;
+				var flag = FormatFlag.fromString(tag);
+				if(flag == null) {
+					return e.matched(0);
+				}
+				if(open) {
+					activeFormatFlagStack.push(flag);
+					groupedProceedingTags.push(proceedingTags);
+					++proceedingTags;
+				} else {
+					var i = activeFormatFlagStack.indexOf(flag);
+					if(i != -1) {
+						var proceedingTags1 = groupedProceedingTags[i];
+						activeFormatFlagStack.splice(i - proceedingTags1,proceedingTags1 + 1);
+						groupedProceedingTags.splice(i - proceedingTags1,proceedingTags1 + 1);
+					}
+				}
+			}
+		}
+		switch(formatMode) {
+		case 0:
+			if(open) {
+				if(activeFormatFlagStack.length > 0) {
+					var lastFlagCount = groupedProceedingTags[groupedProceedingTags.length - 1] + 1;
+					var asciiFormatString = "";
+					var _g = 0;
+					var _g1 = lastFlagCount;
+					while(_g < _g1) {
+						var i = _g++;
+						var idx = groupedProceedingTags.length - 1 - i;
+						asciiFormatString += Console.getAsciiFormat(activeFormatFlagStack[idx]);
+					}
+					return asciiFormatString;
+				} else {
+					return "";
+				}
+			} else {
+				var result = Console.getAsciiFormat("reset");
+				var result1 = new Array(activeFormatFlagStack.length);
+				var _g = 0;
+				var _g1 = activeFormatFlagStack.length;
+				while(_g < _g1) {
+					var i = _g++;
+					result1[i] = Console.getAsciiFormat(activeFormatFlagStack[i]);
+				}
+				var _g = [];
+				var _g1 = 0;
+				var _g2 = result1;
+				while(_g1 < _g2.length) {
+					var v = _g2[_g1];
+					++_g1;
+					if(v != null) {
+						_g.push(v);
+					}
+				}
+				return result + _g.join("");
+			}
+			break;
+		case 1:
+			var browserFormatArguments1 = browserFormatArguments;
+			var result = new Array(activeFormatFlagStack.length);
+			var _g = 0;
+			var _g1 = activeFormatFlagStack.length;
+			while(_g < _g1) {
+				var i = _g++;
+				result[i] = Console.getBrowserFormat(activeFormatFlagStack[i]);
+			}
+			var _g = [];
+			var _g1 = 0;
+			var _g2 = result;
+			while(_g1 < _g2.length) {
+				var v = _g2[_g1];
+				++_g1;
+				if(v != null) {
+					_g.push(v);
+				}
+			}
+			browserFormatArguments1.push(_g.join(";"));
+			return "%c";
+		case 2:
+			return "";
+		}
+	});
+	return { formatted : result, browserFormatArguments : browserFormatArguments};
+};
+Console.stripFormatting = function(s) {
+	return Console.format(s,2).formatted;
+};
+Console.printFormatted = function(s,outputStream) {
+	if(outputStream == null) {
+		outputStream = 0;
+	}
+	if(s == null) {
+		s = "";
+	}
+	var result = Console.format(s,Console.formatMode);
+	if(Console.formatMode == 1) {
+		var logArgs = [result.formatted].concat(result.browserFormatArguments);
+		switch(outputStream) {
+		case 1:
+			console.warn.apply(console, logArgs);
+			break;
+		case 2:
+			console.error.apply(console, logArgs);
+			break;
+		case 0:case 3:
+			console.log.apply(console, logArgs);
+			break;
+		}
+		return;
+	}
+	Console.print(result.formatted,outputStream);
+};
+Console.print = function(s,outputStream) {
+	if(outputStream == null) {
+		outputStream = 0;
+	}
+	if(s == null) {
+		s = "";
+	}
+	if(Console.printIntercept != null) {
+		var allowDefaultPrint = Console.printIntercept(s,outputStream);
+		if(!allowDefaultPrint) {
+			return;
+		}
+	}
+	switch(outputStream) {
+	case 1:
+		console.warn(s);
+		break;
+	case 2:
+		console.error(s);
+		break;
+	case 0:case 3:
+		console.log(s);
+		break;
+	}
+};
+Console.getAsciiFormat = function(flag) {
+	if(flag.charAt(0) == "#") {
+		var hex = HxOverrides.substr(flag,1,null);
+		var r = Std.parseInt("0x" + HxOverrides.substr(hex,0,2));
+		var g = Std.parseInt("0x" + HxOverrides.substr(hex,2,2));
+		var b = Std.parseInt("0x" + HxOverrides.substr(hex,4,2));
+		return "\x1B[38;5;" + Console.rgbToAscii256(r,g,b) + "m";
+	}
+	if(HxOverrides.substr(flag,0,3) == "bg#") {
+		var hex = HxOverrides.substr(flag,3,null);
+		var r = Std.parseInt("0x" + HxOverrides.substr(hex,0,2));
+		var g = Std.parseInt("0x" + HxOverrides.substr(hex,2,2));
+		var b = Std.parseInt("0x" + HxOverrides.substr(hex,4,2));
+		return "\x1B[48;5;" + Console.rgbToAscii256(r,g,b) + "m";
+	}
+	switch(flag) {
+	case "bg_black":
+		return "\x1B[48;5;" + 0 + "m";
+	case "bg_blue":
+		return "\x1B[48;5;" + 4 + "m";
+	case "bg_cyan":
+		return "\x1B[48;5;" + 6 + "m";
+	case "bg_green":
+		return "\x1B[48;5;" + 2 + "m";
+	case "bg_light_black":
+		return "\x1B[48;5;" + 8 + "m";
+	case "bg_light_blue":
+		return "\x1B[48;5;" + 12 + "m";
+	case "bg_light_cyan":
+		return "\x1B[48;5;" + 14 + "m";
+	case "bg_light_green":
+		return "\x1B[48;5;" + 10 + "m";
+	case "bg_light_magenta":
+		return "\x1B[48;5;" + 13 + "m";
+	case "bg_light_red":
+		return "\x1B[48;5;" + 9 + "m";
+	case "bg_light_white":
+		return "\x1B[48;5;" + 15 + "m";
+	case "bg_light_yellow":
+		return "\x1B[48;5;" + 11 + "m";
+	case "bg_magenta":
+		return "\x1B[48;5;" + 5 + "m";
+	case "bg_red":
+		return "\x1B[48;5;" + 1 + "m";
+	case "bg_white":
+		return "\x1B[48;5;" + 7 + "m";
+	case "bg_yellow":
+		return "\x1B[48;5;" + 3 + "m";
+	case "black":
+		return "\x1B[38;5;" + 0 + "m";
+	case "blink":
+		return "\x1B[5m";
+	case "blue":
+		return "\x1B[38;5;" + 4 + "m";
+	case "bold":
+		return "\x1B[1m";
+	case "cyan":
+		return "\x1B[38;5;" + 6 + "m";
+	case "dim":
+		return "\x1B[2m";
+	case "green":
+		return "\x1B[38;5;" + 2 + "m";
+	case "hidden":
+		return "\x1B[8m";
+	case "invert":
+		return "\x1B[7m";
+	case "italic":
+		return "\x1B[3m";
+	case "light_black":
+		return "\x1B[38;5;" + 8 + "m";
+	case "light_blue":
+		return "\x1B[38;5;" + 12 + "m";
+	case "light_cyan":
+		return "\x1B[38;5;" + 14 + "m";
+	case "light_green":
+		return "\x1B[38;5;" + 10 + "m";
+	case "light_magenta":
+		return "\x1B[38;5;" + 13 + "m";
+	case "light_red":
+		return "\x1B[38;5;" + 9 + "m";
+	case "light_white":
+		return "\x1B[38;5;" + 15 + "m";
+	case "light_yellow":
+		return "\x1B[38;5;" + 11 + "m";
+	case "magenta":
+		return "\x1B[38;5;" + 5 + "m";
+	case "red":
+		return "\x1B[38;5;" + 1 + "m";
+	case "reset":
+		return "\x1B[m";
+	case "underline":
+		return "\x1B[4m";
+	case "white":
+		return "\x1B[38;5;" + 7 + "m";
+	case "yellow":
+		return "\x1B[38;5;" + 3 + "m";
+	default:
+		return "";
+	}
+};
+Console.rgbToAscii256 = function(r,g,b) {
+	var nearIdx = function(c,set) {
+		var delta = Infinity;
+		var index = -1;
+		var _g = 0;
+		var _g1 = set.length;
+		while(_g < _g1) {
+			var i = _g++;
+			var d = Math.abs(c - set[i]);
+			if(d < delta) {
+				delta = d;
+				index = i;
+			}
+		}
+		return index;
+	};
+	var colorSteps = [0,95,135,175,215,255];
+	var ir = nearIdx(r,colorSteps);
+	var ig = nearIdx(g,colorSteps);
+	var ib = nearIdx(b,colorSteps);
+	var ier = Math.abs(r - colorSteps[ir]);
+	var ieg = Math.abs(g - colorSteps[ig]);
+	var ieb = Math.abs(b - colorSteps[ib]);
+	var averageColorError = ier + ieg + ieb;
+	var jr = Math.round((r - 8) / 10);
+	var jg = Math.round((g - 8) / 10);
+	var jb = Math.round((b - 8) / 10);
+	var jer = Math.abs(r - Math.max(Math.min(jr * 10 + 8,238),8));
+	var jeg = Math.abs(g - Math.max(Math.min(jg * 10 + 8,238),8));
+	var jeb = Math.abs(b - Math.max(Math.min(jb * 10 + 8,238),8));
+	var averageGrayError = jer + jeg + jeb;
+	if(averageGrayError < averageColorError && r == g && g == b) {
+		var grayIndex = jr + 232;
+		return grayIndex;
+	} else {
+		var colorIndex = 16 + ir * 36 + ig * 6 + ib;
+		return colorIndex;
+	}
+};
+Console.getBrowserFormat = function(flag) {
+	if(flag.charAt(0) == "#") {
+		return "color: " + flag;
+	}
+	if(HxOverrides.substr(flag,0,3) == "bg#") {
+		return "background-color: " + HxOverrides.substr(flag,2,null);
+	}
+	if(flag.charAt(0) == "{") {
+		return HxOverrides.substr(flag,1,flag.length - 2);
+	}
+	switch(flag) {
+	case "bg_black":
+		return "background-color: black";
+	case "bg_blue":
+		return "background-color: blue";
+	case "bg_cyan":
+		return "background-color: cyan";
+	case "bg_green":
+		return "background-color: green";
+	case "bg_light_black":
+		return "background-color: gray";
+	case "bg_light_blue":
+		return "background-color: lightBlue";
+	case "bg_light_cyan":
+		return "background-color: lightCyan";
+	case "bg_light_green":
+		return "background-color: lightGreen";
+	case "bg_light_magenta":
+		return "background-color: lightPink";
+	case "bg_light_red":
+		return "background-color: salmon";
+	case "bg_light_white":
+		return "background-color: white";
+	case "bg_light_yellow":
+		return "background-color: lightYellow";
+	case "bg_magenta":
+		return "background-color: magenta";
+	case "bg_red":
+		return "background-color: red";
+	case "bg_white":
+		return "background-color: whiteSmoke";
+	case "bg_yellow":
+		return "background-color: gold";
+	case "black":
+		return "color: black";
+	case "blink":
+		return "text-decoration: blink";
+	case "blue":
+		return "color: blue";
+	case "bold":
+		return "font-weight: bold";
+	case "cyan":
+		return "color: cyan";
+	case "dim":
+		return "color: gray";
+	case "green":
+		return "color: green";
+	case "hidden":
+		return "visibility: hidden; color: white";
+	case "invert":
+		return "-webkit-filter: invert(100%); filter: invert(100%)";
+	case "italic":
+		return "font-style: italic";
+	case "light_black":
+		return "color: gray";
+	case "light_blue":
+		return "color: lightBlue";
+	case "light_cyan":
+		return "color: lightCyan";
+	case "light_green":
+		return "color: lightGreen";
+	case "light_magenta":
+		return "color: lightPink";
+	case "light_red":
+		return "color: salmon";
+	case "light_white":
+		return "color: white";
+	case "light_yellow":
+		return "color: #ffed88";
+	case "magenta":
+		return "color: magenta";
+	case "red":
+		return "color: red";
+	case "reset":
+		return "";
+	case "underline":
+		return "text-decoration: underline";
+	case "white":
+		return "color: whiteSmoke";
+	case "yellow":
+		return "color: #f5ba00";
+	default:
+		return "";
+	}
+};
+Console.determineConsoleFormatMode = function() {
+	var hasWindowObject = typeof(window) != "undefined";
+	if(hasWindowObject) {
+		return 1;
+	} else {
+		var isTTY = (typeof process !== "undefined") && (process?.stdout?.isTTY === true);
+		if(isTTY) {
+			return 0;
+		}
+	}
+	return 2;
+};
+var FormatFlag = {};
+FormatFlag.fromString = function(str) {
+	str = str.toLowerCase();
+	if(str.charAt(0) == "#" || HxOverrides.substr(str,0,3) == "bg#") {
+		var hIdx = str.indexOf("#");
+		var hex = HxOverrides.substr(str,hIdx + 1,null);
+		if(hex.length == 3) {
+			var a = hex.split("");
+			hex = [a[0],a[0],a[1],a[1],a[2],a[2]].join("");
+		}
+		if(new EReg("[^0-9a-f]","i").match(hex) || hex.length < 6) {
+			return "";
+		}
+		var normalized = str.substring(0,hIdx) + "#" + hex;
+		return normalized;
+	}
+	switch(str) {
+	case "!":
+		return "invert";
+	case "/":
+		return "reset";
+	case "b":
+		return "bold";
+	case "bg_gray":
+		return "bg_light_black";
+	case "gray":
+		return "light_black";
+	case "i":
+		return "italic";
+	case "u":
+		return "underline";
+	default:
+		return str;
+	}
 };
 var HxOverrides = function() { };
 HxOverrides.__name__ = true;
@@ -494,74 +1028,13 @@ vision_Vision.contrast = function(image) {
 	}
 	return image;
 };
-vision_Vision.houghRay2DDetection = function(image,threshold) {
+vision_Vision.houghRay2DDetection = function(image,threshold,maxRayCount) {
 	if(threshold == null) {
 		threshold = 100;
 	}
 	var edges = vision_Vision.sobelEdgeDetection(vision_ds_Image.clone(image),threshold);
-	var houghSpace = vision_algorithms_Hough.toHoughSpace(edges);
-	var indexImage = vision_ds_Image._new(vision_ds_Image.get_width(houghSpace.image),vision_ds_Image.get_height(houghSpace.image),16777215);
-	var getNeighbors = function(x,y) {
-		var neighbors = [[],[],[],[],[]];
-		var _g = -2;
-		while(_g < 3) {
-			var X = _g++;
-			var _g1 = -2;
-			while(_g1 < 3) {
-				var Y = _g1++;
-				if(x + X < 0 || x + X >= vision_ds_Image.get_width(houghSpace.image) || y + Y < 0 || y + Y >= vision_ds_Image.get_height(houghSpace.image)) {
-					continue;
-				}
-				neighbors[X + 2][Y + 2] = houghSpace.accumulator[x + X] == null ? null : houghSpace.accumulator[x + X][y + Y];
-			}
-		}
-		return neighbors;
-	};
-	var points = [];
-	var _g = 0;
-	var _g1 = vision_ds_Image.get_width(houghSpace.image);
-	while(_g < _g1) {
-		var x = _g++;
-		var _g2 = 0;
-		var _g3 = vision_ds_Image.get_height(houghSpace.image);
-		while(_g2 < _g3) {
-			var y = _g2++;
-			var neighbors = getNeighbors(x,y);
-			var _g4 = [];
-			var _g5 = 0;
-			while(_g5 < neighbors.length) {
-				var n = neighbors[_g5];
-				++_g5;
-				var _g6 = 0;
-				while(_g6 < n.length) {
-					var m = n[_g6];
-					++_g6;
-					_g4.push(m);
-				}
-			}
-			var this1 = _g4;
-			var max = vision_tools_MathTools.max.apply(null,this1);
-			if(max > 150 && max == neighbors[2][2]) {
-				vision_ds_Image.setPixel(indexImage,x,y,vision_ds_Image.getPixel(houghSpace.image,x,y));
-				points.push(new vision_ds_Point2D(x,y));
-				haxe_Log.trace("max: " + max + " at " + x + ", " + y,{ fileName : "src/vision/Vision.hx", lineNumber : 148, className : "vision.Vision", methodName : "houghRay2DDetection"});
-			}
-		}
-	}
-	Main.printImage(indexImage);
-	var lines = [];
-	var _g = 0;
-	while(_g < points.length) {
-		var p = points[_g];
-		++_g;
-		var theta = p.x * Math.PI / 180;
-		var rho = p.y;
-		var x1 = Math.cos(theta) * rho;
-		var y1 = Math.sin(theta) * rho;
-		var slope = -(-(x1 / y1));
-		lines.push(new vision_ds_Ray2D(new vision_ds_Point2D(x1,y1),slope));
-	}
-	return lines;
+	var houghSpace = vision_algorithms_Hough.toHoughSpaceWithRays(edges,threshold,maxRayCount);
+	return houghSpace.rays;
 };
 vision_Vision.sobelEdgeDetection = function(image,threshold) {
 	if(threshold == null) {
@@ -1454,6 +1927,135 @@ vision_algorithms_Hough.toHoughSpace = function(image) {
 		}
 	}
 	return new vision_ds_hough_HoughSpace(accum,houghSpace);
+};
+vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocalMaxima,maximaCheckLoop) {
+	if(threshold == null) {
+		threshold = 30;
+	}
+	var accum = [];
+	var rhoMax = Math.sqrt(vision_ds_Image.get_width(image) * vision_ds_Image.get_width(image) + vision_ds_Image.get_height(image) * vision_ds_Image.get_height(image));
+	var houghSpace = vision_ds_Image._new(361,rhoMax | 0,16777215);
+	var maximas = [];
+	var rays = [];
+	var checkMaxima = function() {
+		var max = 0;
+		var bestRho = 0;
+		var bestTheta = 0;
+		var _g = 0;
+		while(_g < 360) {
+			var i = _g++;
+			var _g1 = 0;
+			var _g2 = accum[i].length;
+			while(_g1 < _g2) {
+				var j = _g1++;
+				if(accum[i][j] > max) {
+					max = accum[i][j];
+					bestRho = j;
+					bestTheta = i;
+				}
+			}
+		}
+		if(max > threshold) {
+			bestRho >>= 1;
+			bestRho -= rhoMax | 0;
+			var a = Math.cos(bestTheta * Math.PI / 180);
+			var b = Math.sin(bestTheta * Math.PI / 180);
+			var localMax = new vision_ds_Point2D(bestTheta,bestRho);
+			if(maximas.indexOf(localMax) != -1) {
+				return;
+			}
+			maximas.push(localMax);
+			var x1 = a * bestRho + 1000 * -b;
+			var y1 = b * bestRho + 1000 * a;
+			var x2 = a * bestRho - 1000 * -b;
+			var y2 = b * bestRho - 1000 * a;
+			var p1 = new vision_ds_Point2D(x1 + vision_ds_Image.get_width(image) / 2,y1 + vision_ds_Image.get_height(image) / 2);
+			var p2 = new vision_ds_Point2D(x2 + vision_ds_Image.get_width(image) / 2,y2 + vision_ds_Image.get_height(image) / 2);
+			rays.push(vision_ds_Ray2D.from2Points(p1,p2));
+		}
+	};
+	var loop = 0;
+	if(maximaCheckLoop == null) {
+		maximaCheckLoop = (vision_ds_Image.get_width(image) + vision_ds_Image.get_height(image)) / 20 | 0;
+	}
+	var _g = 0;
+	var _g1 = vision_ds_Image.get_width(image);
+	while(_g < _g1) {
+		var i = _g++;
+		var _g2 = 0;
+		var _g3 = vision_ds_Image.get_height(image);
+		while(_g2 < _g3) {
+			var j = _g2++;
+			if(Math.abs(vision_ds_Image.getPixel(image,i,j) >> 16 & 255) == 255) {
+				var rho;
+				var theta = 0.;
+				var thetaIndex = 0;
+				var x = i - (vision_ds_Image.get_width(image) / 2 | 0);
+				var y = j - (vision_ds_Image.get_height(image) / 2 | 0);
+				while(thetaIndex < 360) {
+					rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
+					rho /= 2;
+					if(accum[thetaIndex] == null) {
+						accum[thetaIndex] = [];
+					} else if(accum[thetaIndex][rho | 0] == null) {
+						accum[thetaIndex][rho | 0] = 0;
+					} else {
+						accum[thetaIndex][rho | 0] += 1;
+					}
+					var Alpha = 0.01;
+					if(Alpha == null) {
+						Alpha = 1;
+					}
+					var color = vision_ds_Color._new();
+					var Alpha1 = Alpha;
+					if(Alpha1 == null) {
+						Alpha1 = 1;
+					}
+					var Value = Math.round(0);
+					color &= -16711681;
+					color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
+					var Value1 = Math.round(0);
+					color &= -65281;
+					color |= (Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1) << 8;
+					var Value2 = Math.round(0);
+					color &= -256;
+					color |= Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2;
+					var Value3 = Math.round(Alpha1 * 255);
+					color &= 16777215;
+					color |= (Value3 > 255 ? 255 : Value3 < 0 ? 0 : Value3) << 24;
+					vision_ds_Image.paintPixel(houghSpace,thetaIndex,rho | 0,color);
+					theta += Math.PI / 360;
+					++thetaIndex;
+				}
+			}
+			++loop;
+			if(loop >= maximaCheckLoop && Math.abs(vision_ds_Image.getPixel(image,i,j) >> 16 & 255) == 255) {
+				checkMaxima();
+				loop = 0;
+				if(numLocalMaxima != null) {
+					if(maximas.length >= numLocalMaxima) {
+						var space = new vision_ds_hough_HoughSpace(accum,houghSpace);
+						space.rays = rays;
+						space.maximums = maximas;
+						return space;
+					}
+				}
+			}
+		}
+	}
+	var space = new vision_ds_hough_HoughSpace(accum,houghSpace);
+	space.rays = rays;
+	space.maximums = maximas;
+	var s = Console.logPrefix + ("" + Std.string(space));
+	var outputStream = 0;
+	if(outputStream == null) {
+		outputStream = 0;
+	}
+	if(s == null) {
+		s = "";
+	}
+	Console.printFormatted(s + "\n",outputStream);
+	return space;
 };
 var vision_algorithms_SimpleLineDetector = function() { };
 vision_algorithms_SimpleLineDetector.__name__ = true;
@@ -4462,6 +5064,56 @@ if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : 
 String.__name__ = true;
 Array.__name__ = true;
 js_Boot.__toStr = ({ }).toString;
+Console.formatMode = Console.determineConsoleFormatMode();
+Console.logPrefix = "<b,gray>><//> ";
+Console.warnPrefix = "<b,yellow>><//> ";
+Console.errorPrefix = "<b,red>></b> ";
+Console.successPrefix = "<b,light_green>><//> ";
+Console.debugPrefix = "<b,magenta>><//> ";
+Console.argSeparator = " ";
+Console.unicodeCompatibilityMode = 0;
+Console.unicodeCompatibilityEnabled = false;
+Console.formatTagPattern = new EReg("(\\\\)?<(/)?([^><{}\\s]*|{[^}<>]*})>","g");
+FormatFlag.RESET = "reset";
+FormatFlag.BOLD = "bold";
+FormatFlag.ITALIC = "italic";
+FormatFlag.DIM = "dim";
+FormatFlag.UNDERLINE = "underline";
+FormatFlag.BLINK = "blink";
+FormatFlag.INVERT = "invert";
+FormatFlag.HIDDEN = "hidden";
+FormatFlag.BLACK = "black";
+FormatFlag.RED = "red";
+FormatFlag.GREEN = "green";
+FormatFlag.YELLOW = "yellow";
+FormatFlag.BLUE = "blue";
+FormatFlag.MAGENTA = "magenta";
+FormatFlag.CYAN = "cyan";
+FormatFlag.WHITE = "white";
+FormatFlag.LIGHT_BLACK = "light_black";
+FormatFlag.LIGHT_RED = "light_red";
+FormatFlag.LIGHT_GREEN = "light_green";
+FormatFlag.LIGHT_YELLOW = "light_yellow";
+FormatFlag.LIGHT_BLUE = "light_blue";
+FormatFlag.LIGHT_MAGENTA = "light_magenta";
+FormatFlag.LIGHT_CYAN = "light_cyan";
+FormatFlag.LIGHT_WHITE = "light_white";
+FormatFlag.BG_BLACK = "bg_black";
+FormatFlag.BG_RED = "bg_red";
+FormatFlag.BG_GREEN = "bg_green";
+FormatFlag.BG_YELLOW = "bg_yellow";
+FormatFlag.BG_BLUE = "bg_blue";
+FormatFlag.BG_MAGENTA = "bg_magenta";
+FormatFlag.BG_CYAN = "bg_cyan";
+FormatFlag.BG_WHITE = "bg_white";
+FormatFlag.BG_LIGHT_BLACK = "bg_light_black";
+FormatFlag.BG_LIGHT_RED = "bg_light_red";
+FormatFlag.BG_LIGHT_GREEN = "bg_light_green";
+FormatFlag.BG_LIGHT_YELLOW = "bg_light_yellow";
+FormatFlag.BG_LIGHT_BLUE = "bg_light_blue";
+FormatFlag.BG_LIGHT_MAGENTA = "bg_light_magenta";
+FormatFlag.BG_LIGHT_CYAN = "bg_light_cyan";
+FormatFlag.BG_LIGHT_WHITE = "bg_light_white";
 vision_ds_Color.TRANSPARENT = 0;
 vision_ds_Color.WHITE = 16777215;
 vision_ds_Color.GRAY = 8421504;

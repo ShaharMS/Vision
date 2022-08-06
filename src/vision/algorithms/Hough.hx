@@ -105,9 +105,9 @@ class Hough {
 
 		function checkMaxima() {
 			var max = 0;
-			var bestRho = 0.;
+			var bestRho = 0;
 			var bestTheta = 0;
-			for (i in 0...361) {
+			for (i in 0...360) {
 				for (j in 0...accum[i].length) {
 					if (accum[i][j] > max) {
 						max = accum[i][j];
@@ -119,10 +119,8 @@ class Hough {
 
 			if (max > threshold) {
 				// now to backproject into drawing space
-				bestRho /= 2;
+				bestRho >>= 1;
 				bestRho -= Std.int(rhoMax); /// accumulator has rhoMax added
-
-				Console.log(bestTheta, bestRho);
 
 				var a = Math.cos(bestTheta * Math.PI / 180);
 				var b = Math.sin(bestTheta * Math.PI / 180);
@@ -137,7 +135,6 @@ class Hough {
 				var y1 = (b * bestRho + 1000 * (a));
 				var x2 = a * bestRho - 1000 * (-b);
 				var y2 = (b * bestRho - 1000 * (a));
-				Console.log(x1, y1, x2, y2);
 
 				var p1 = new Point2D(x1 + image.width / 2, y1 + image.height / 2);
 				var p2 = new Point2D(x2 + image.width / 2, y2 + image.height / 2);
@@ -146,7 +143,7 @@ class Hough {
 		}
 		
 		var loop = 0;
-		maximaCheckLoop = maximaCheckLoop != null ? maximaCheckLoop : Std.int((image.width + image.height) / 10);
+		maximaCheckLoop = maximaCheckLoop != null ? maximaCheckLoop : Std.int((image.width + image.height) / 20);
 
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
@@ -173,9 +170,17 @@ class Hough {
 					}
 				}
 				loop++;
-				if (loop == maximaCheckLoop && Math.abs(image.getPixel(i, j).red) == 255) {
+				if (loop >= maximaCheckLoop && Math.abs(image.getPixel(i, j).red) == 255) {
 					checkMaxima();
 					loop = 0;
+					if (numLocalMaxima != null) {
+						if (maximas.length >= numLocalMaxima) {
+							var space = new HoughSpace(accum, houghSpace);
+							space.rays = rays;
+							space.maximums = maximas;
+							return space;
+						}
+					}
 				}
 			}
 		}
@@ -183,6 +188,7 @@ class Hough {
 		var space = new HoughSpace(accum, houghSpace);
 		space.rays = rays;
 		space.maximums = maximas;
+		Console.log(space);
 		return space;
 	}
 }
