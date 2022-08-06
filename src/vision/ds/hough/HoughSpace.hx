@@ -16,6 +16,23 @@ class HoughSpace {
     **/
     public var image(default, null):Image;
 
+    /**
+        The "maximums" of the Hough space:
+
+        when a certine point in the accumulator is greater than a presuplied value,
+        the point is considered a maximum, and the value is added to the maximums array.
+    **/
+    public var maximums:Array<Point2D>;
+
+    /**
+        The rays detected from the accumulator.
+
+        Those are definded only when using the `getHoughSpaceWithRays` method.
+
+        @see getHoughSpaceWithRays()
+    **/
+    public var rays:Array<Ray2D>;
+
     public function new(accumulator:HoughAccumulator, image:Image) {
         this.accumulator = accumulator;
         this.image = image;

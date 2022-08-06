@@ -119,51 +119,12 @@ class Vision {
         @param minLineGap The minimum gap between two lines to be detected, lines with a gap smaller than this will make the second line ignored.
         @param maxLineGap The maximum gap between two lines to be detected, lines with a gap smaller then that will be merged.
     **/
-    public static function houghRay2DDetection(image:Image, threshold:Float = 100):Array<Ray2D> {
+    public static function houghRay2DDetection(image:Image, threshold:Int = 100, ?M):Array<Ray2D> {
         
         var edges = sobelEdgeDetection(image.clone(), threshold); //TODO: #3 switch to canny edge detection
-        var houghSpace = Hough.toHoughSpace(edges);
-        var indexImage = new Image(houghSpace.image.width, houghSpace.image.height, Color.WHITE);
+        var houghSpace = Hough.toHoughSpaceWithRays(edges, threshold);
        
-        function getNeighbors(x:Int, y:Int) {
-            var neighbors = [[], [], [], [], []];
-            for (X in -2...3) {
-                for (Y in -2...3) {
-                    if (x + X < 0 || x + X >= houghSpace.image.width || y + Y < 0 || y + Y >= houghSpace.image.height) {
-                        continue;
-                    }
-                    neighbors[X + 2][Y + 2] = houghSpace.accumulator[x + X] == null ? null : houghSpace.accumulator[x + X][y + Y];
-                }
-            }
-            return neighbors;
-        }
-        var points:Array<Point2D> = [];
-        for (x in 0...houghSpace.image.width) {
-            for (y in 0...houghSpace.image.height) {
-                var neighbors = getNeighbors(x, y);
-                var max = MathTools.max(...[for (n in neighbors) for (m in n) m]);
-                if (max > 150 && max == neighbors[2][2]) {
-                    indexImage.setPixel(x, y, houghSpace.image.getPixel(x, y));
-                    points.push(new Point2D(x, y));
-                    trace("max: " + max + " at " + x + ", " + y);
-                }
-
-            }
-        }
-        Main.printImage(indexImage);
-        var lines = [];
-        for (p in points) {
-            var theta = MathTools.degreesToRadians(p.x);
-            var rho = p.y;
-            var x1 = Math.cos(theta) * rho;
-            var y1 = Math.sin(theta) * rho;
-            var slope = -(-(x1 / y1));
-            lines.push(new Ray2D({x: x1, y: y1}, slope));
-        }
-        //find the peaks in the accumulator using a for loop
-        
-        //now, the peaks in hough space are inside the peaks array. extract the line segments from the peaks
-        return lines;
+        return null;
     }
 
     /**

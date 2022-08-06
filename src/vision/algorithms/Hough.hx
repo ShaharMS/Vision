@@ -82,5 +82,108 @@ class Hough {
 		return {accumulator: accum, image: houghSpace};
 	}
 
+	/**
+		Returns a `HoughSpace` object, containing
+		the accumulator, an image representation of the accumulator,
+		and all the local maximums found in the accumulator.
+
+		@param image The image to be transformed.
+		@param threshold The minimum value of an accumulator's cell to be considered a local maximum (or, a line). Defaults to 30.
+		@param numLocalMaxima A cap on the number of local maximums to return. When unset, all local maximums are returned. unless you have a good reason, you should'nt set this parameter.
+		@param maximaCheckLoop For performance reasons, the algorithm will only check the local maximums in the accumulator once every `maximaCheckLoop` iterations. **How does this work?** - a value of 10 will check for a maximum every 10 pixels. Setting this might be useful when working with very large images. By default, this parameter is set to `(image.width + image.height) / 10`.
+
+		@return A `HoughSpace` object, containing the accumulator, an image representation of the accumulator, and all the local maximums found in the accumulator.
+	**/
+	public static function toHoughSpaceWithRays(image:Image, threshold:Int = 30, ?numLocalMaxima:Int = null, ?maximaCheckLoop:Int = null):HoughSpace {
+		
+		var accum:HoughAccumulator = new HoughAccumulator();
+		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
+		var houghSpace = new Image(361, Std.int(rhoMax), Color.WHITE);
+
+		var maximas:Array<Point2D> = [];
+		var rays:Array<Ray2D> = [];
+
+		function checkMaxima() {
+			var max = 0;
+			var bestRho = 0.;
+			var bestTheta = 0;
+			for (i in 0...361) {
+				for (j in 0...accum[i].length) {
+					if (accum[i][j] > max) {
+						max = accum[i][j];
+						bestRho = j;
+						bestTheta = i;
+					}
+				}
+			}
+
+			if (max > threshold) {
+				// now to backproject into drawing space
+				bestRho /= 2;
+				bestRho -= Std.int(rhoMax); /// accumulator has rhoMax added
+
+				Console.log(bestTheta, bestRho);
+
+				var a = Math.cos(bestTheta * Math.PI / 180);
+				var b = Math.sin(bestTheta * Math.PI / 180);
+
+				var localMax:Point2D = {x: bestTheta, y: bestRho};
+
+				if (maximas.contains(localMax)) return;
+
+				maximas.push(localMax);
+
+				var x1 = a * bestRho + 1000 * (-b);
+				var y1 = (b * bestRho + 1000 * (a));
+				var x2 = a * bestRho - 1000 * (-b);
+				var y2 = (b * bestRho - 1000 * (a));
+				Console.log(x1, y1, x2, y2);
+
+				var p1 = new Point2D(x1 + image.width / 2, y1 + image.height / 2);
+				var p2 = new Point2D(x2 + image.width / 2, y2 + image.height / 2);
+				rays.push(Ray2D.from2Points(p1, p2));
+			}
+		}
+		
+		var loop = 0;
+		maximaCheckLoop = maximaCheckLoop != null ? maximaCheckLoop : Std.int((image.width + image.height) / 10);
+
+		for (i in 0...image.width) {
+			for (j in 0...image.height) {
+				if (Math.abs(image.getPixel(i, j).red) == 255) {
+					var rho:Float;
+					var theta = 0.;
+					var thetaIndex = 0;
+					var x = i - Std.int(image.width / 2);
+					var y = j - Std.int(image.height / 2);
+					while (thetaIndex < 360) {
+						rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
+						rho /= 2;
+						if (accum[thetaIndex] == null) {
+							accum[thetaIndex] = [];
+						} else if (accum[thetaIndex][Std.int(rho)] == null) {
+							accum[thetaIndex][Std.int(rho)] = 0;
+						} else {
+							accum[thetaIndex][Std.int(rho)] += 1;
+						}
+						houghSpace.paintPixel(thetaIndex, Std.int(rho), Color.fromRGBAFloat(0, 0, 0, 0.01));
+						
+						theta += Math.PI / 360;
+						thetaIndex++;
+					}
+				}
+				loop++;
+				if (loop == maximaCheckLoop && Math.abs(image.getPixel(i, j).red) == 255) {
+					checkMaxima();
+					loop = 0;
+				}
+			}
+		}
+
+		var space = new HoughSpace(accum, houghSpace);
+		space.rays = rays;
+		space.maximums = maximas;
+		return space;
+	}
 }
 	
