@@ -606,49 +606,50 @@ Main.main = function() {
 	vision_ds_Image.fillColor(image,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(200,225)),9127187);
 	vision_ds_Image.drawQuadraticBezier(image,new vision_ds_LineSegment2D(new vision_ds_Point2D(100,100),new vision_ds_Point2D(200,100)),vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(200,200)),1638655);
 	vision_ds_Image.drawCubicBezier(image,new vision_ds_LineSegment2D(new vision_ds_Point2D(10,10),new vision_ds_Point2D(50,100)),vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(150,200)),vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(200,75)),16711680);
+	vision_ds_Image.drawRay2D(image,new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1),65280);
 	Main.printImage(image);
 	var start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.blackAndWhite(vision_ds_Image.clone(image)));
 	var end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Black and white took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 48, className : "Main", methodName : "main"});
+	haxe_Log.trace("Black and white took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 49, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.grayscale(vision_ds_Image.clone(image)));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Grayscale took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 52, className : "Main", methodName : "main"});
+	haxe_Log.trace("Grayscale took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 53, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.sobelEdgeDetection(vision_ds_Image.clone(image)));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Sobel edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 56, className : "Main", methodName : "main"});
+	haxe_Log.trace("Sobel edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 57, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	var hough = vision_algorithms_Hough.toHoughSpace(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
 	Main.printImage(hough.image);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Hough transform took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 61, className : "Main", methodName : "main"});
+	haxe_Log.trace("Hough transform took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 62, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Perwitt edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 65, className : "Main", methodName : "main"});
+	haxe_Log.trace("Perwitt edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 66, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.nearestNeighborBlur(vision_ds_Image.clone(image),1));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Nearest neighbor blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 69, className : "Main", methodName : "main"});
+	haxe_Log.trace("Nearest neighbor blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 70, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.contrast(vision_ds_Image.clone(image)));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Contrast took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 73, className : "Main", methodName : "main"});
+	haxe_Log.trace("Contrast took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 74, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.gaussianBlur(vision_ds_Image.clone(image),2,15));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 77, className : "Main", methodName : "main"});
+	haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 78, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_ds_Image.clone(image));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Image Cloning took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 81, className : "Main", methodName : "main"});
+	haxe_Log.trace("Image Cloning took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 82, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	var canny = vision_Vision.cannyEdgeDetection(vision_ds_Image.clone(image));
 	Main.printImage(canny);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 86, className : "Main", methodName : "main"});
+	haxe_Log.trace("Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 87, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	var lines = vision_Vision.simpleLineSegment2DDetection(vision_ds_Image.clone(image),3,30);
 	var newI = vision_ds_Image.clone(image);
@@ -660,7 +661,7 @@ Main.main = function() {
 	}
 	Main.printImage(newI);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 95, className : "Main", methodName : "main"});
+	haxe_Log.trace("Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 96, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	var lines = vision_Vision.houghRay2DDetection(vision_ds_Image.clone(image));
 	var _g = 0;
@@ -671,7 +672,12 @@ Main.main = function() {
 	}
 	Main.printImage(image);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 103, className : "Main", methodName : "main"});
+	haxe_Log.trace("Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 104, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtX(8),{ fileName : "src/Main.hx", lineNumber : 106, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).slope,{ fileName : "src/Main.hx", lineNumber : 107, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).degrees,{ fileName : "src/Main.hx", lineNumber : 108, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).radians,{ fileName : "src/Main.hx", lineNumber : 109, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtY(8),{ fileName : "src/Main.hx", lineNumber : 110, className : "Main", methodName : "main"});
 };
 Main.printImage = function(image) {
 	var c = window.document.createElement("canvas");
@@ -1944,6 +1950,9 @@ vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocal
 		var _g = 0;
 		while(_g < 360) {
 			var i = _g++;
+			if(accum[i] == null) {
+				continue;
+			}
 			var _g1 = 0;
 			var _g2 = accum[i].length;
 			while(_g1 < _g2) {
@@ -2030,6 +2039,7 @@ vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocal
 			}
 			++loop;
 			if(loop >= maximaCheckLoop && Math.abs(vision_ds_Image.getPixel(image,i,j) >> 16 & 255) == 255) {
+				loop = 0;
 				checkMaxima();
 				loop = 0;
 				if(numLocalMaxima != null) {
@@ -4692,8 +4702,8 @@ vision_ds_LineSegment2D.prototype = {
 		return "\n (" + Std.string(this.start) + ".x, " + Std.string(this.start) + ".y) --> (" + Std.string(this.end) + ".x, " + Std.string(this.end) + ".y)";
 	}
 	,set_slope: function(value) {
-		this["degrees"] = 90 + Math.tan(value) * 180 / vision_tools_MathTools.get_PI();
-		this["radians"] = vision_tools_MathTools.PI_OVER_2 + Math.tan(value);
+		this["degrees"] = Math.atan(value) * 180 / Math.PI;
+		this["radians"] = Math.atan(value);
 		return this.slope = value;
 	}
 	,set_degrees: function(value) {
@@ -4727,8 +4737,8 @@ var vision_ds_Ray2D = function(point,m,degrees,radians) {
 	this.point = point;
 	if(m != null) {
 		this.set_slope(m);
-		this.set_degrees(90 + Math.tan(m) * 180 / vision_tools_MathTools.get_PI());
-		this.set_radians(vision_tools_MathTools.PI_OVER_2 + Math.tan(m));
+		this.set_degrees(Math.atan(m) * 180 / Math.PI);
+		this.set_radians(Math.atan(m));
 	} else if(degrees != null) {
 		this.set_degrees(degrees);
 		this.set_slope(Math.tan(degrees * vision_tools_MathTools.get_PI() / 180));
@@ -4746,8 +4756,8 @@ vision_ds_Ray2D.from2Points = function(point1,point2) {
 };
 vision_ds_Ray2D.prototype = {
 	set_slope: function(value) {
-		this.degrees = 90 + Math.tan(value) * 180 / vision_tools_MathTools.get_PI();
-		this.radians = vision_tools_MathTools.PI_OVER_2 + Math.tan(value);
+		this.degrees = Math.atan(value) * 180 / Math.PI;
+		this.radians = Math.atan(value);
 		return this.slope = value;
 	}
 	,set_degrees: function(value) {
@@ -4796,7 +4806,7 @@ vision_ds_Ray2D.prototype = {
 		return new vision_ds_Point2D(x,this.slope * x + this.get_yIntercept());
 	}
 	,getPointAtY: function(y) {
-		return new vision_ds_Point2D(y / this.slope,y);
+		return new vision_ds_Point2D((y - this.get_yIntercept()) / this.slope,y);
 	}
 };
 var vision_ds_hough_HoughSpace = function(accumulator,image) {
@@ -4914,10 +4924,10 @@ vision_tools_MathTools.boundFloat = function(value,min,max) {
 	return Math.min(Math.max(value,min),max);
 };
 vision_tools_MathTools.slopeToDegrees = function(slope) {
-	return 90 + Math.tan(slope) * 180 / vision_tools_MathTools.get_PI();
+	return Math.atan(slope) * 180 / Math.PI;
 };
 vision_tools_MathTools.slopeToRadians = function(slope) {
-	return vision_tools_MathTools.PI_OVER_2 + Math.tan(slope);
+	return Math.atan(slope);
 };
 vision_tools_MathTools.degreesToSlope = function(degrees) {
 	return Math.tan(degrees * vision_tools_MathTools.get_PI() / 180);

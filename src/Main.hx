@@ -41,6 +41,7 @@ class Main {
 		image.fillColor(new Point2D(200, 225), Color.BROWN);
 		image.drawQuadraticBezier(new LineSegment2D({x: 100, y: 100}, {x: 200, y: 100}), {x: 200, y: 200}, 0x1900ff);
 		image.drawCubicBezier(new LineSegment2D({x: 10, y: 10}, {x: 50, y: 100}), {x: 150, y: 200}, {x: 200, y: 75}, 0xff0000);
+		image.drawRay2D(new Ray2D({x: 0, y: 0}, 1), 0x00ff00);
 		printImage(image);
 		start = haxe.Timer.stamp();
 		printImage(Vision.blackAndWhite(image.clone()));
@@ -101,6 +102,12 @@ class Main {
 		printImage(image);
 		end = haxe.Timer.stamp();
 		trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+	
+		trace(new Ray2D({x: 0, y: 0}, 1).getPointAtX(8));
+		trace(new Ray2D({x: 0, y: 0}, 1).slope);
+		trace(new Ray2D({x: 0, y: 0}, 1).degrees);
+		trace(new Ray2D({x: 0, y: 0}, 1).radians);
+		trace(new Ray2D({x: 0, y: 0}, 1).getPointAtY(8));
 	}
 
 	public static function printImage(image:Image) {

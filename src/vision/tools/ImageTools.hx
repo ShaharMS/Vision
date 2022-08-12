@@ -142,16 +142,43 @@ class ImageTools {
         }
         return image;
     }
+
+    public static function toFlxSprite(image:Image):flixel.FlxSprite {
+        var sprite = new flixel.FlxSprite(0, 0);
+        sprite.makeGraphic(image.width, image.height, 0x00ffffff);
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                sprite.bitmapData.setPixel(x, y, image.getPixel(x, y));
+            }
+        }
+        return sprite;
+    }
+        
+    }
     #end
     #if (openfl || flash)
     public static function fromBitmapData(bitmapData:openfl.display.BitmapData):Image {
         var image = new Image(bitmapData.width, bitmapData.height);
+        bitmapData.lock();
         for (x in 0...bitmapData.width) {
             for (y in 0...bitmapData.height) {
                 image.setPixel(x, y, bitmapData.getPixel(x, y));
             }
         }
+        bitmapData.unlock();
         return image;
+    }
+
+    public static function toBitmapData(image:Image):openfl.display.BitmapData {
+        var bitmapData = new openfl.display.BitmapData(image.width, image.height, true, 0x00ffffff);
+        bitmapData.lock();
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                bitmapData.setPixel(x, y, image.getPixel(x, y));
+            }
+        }
+        bitmapData.unlock();
+        return bitmapData;
     }
 
     public static function fromSprite(sprite:openfl.display.Sprite):Image {
@@ -176,6 +203,16 @@ class ImageTools {
         }
         return image;
     }
+
+    public static function toLimeImage(image:Image):lime.graphics.Image {
+        var limeImage = new lime.graphics.Image(image.width, image.height);
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                limeImage.setPixel(x, y, image.getPixel(x, y));
+            }
+        }
+        return limeImage;
+    }
     #end
     #if kha
     public static function fromKhaImage(khaImage:kha.Image):Image {
@@ -188,14 +225,16 @@ class ImageTools {
         return image;
     }
     #end
-    #if (heaps && false)
-    public static function fromBitmap(bitmap:h2d.Bitmap):Image {
+    #if heaps
+    public static function fromHeapsBitmapData(bitmap:hxd.BitmapData):Image {
         var image = new Image(bitmap.width, bitmap.height);
+        bitmap.lock();
         for (x in 0...bitmap.width) {
             for (y in 0...bitmap.height) {
                 image.setPixel(x, y, bitmap.getPixel(x, y));
             }
         }
+        bitmap.unlock();
         return image;
     }
     #end

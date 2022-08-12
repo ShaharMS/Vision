@@ -133,15 +133,15 @@ class MathTools {
 	}
 
 	public static inline function slopeToDegrees(slope:Float) {
-		return 90 + tan(slope) * 180 / PI;
+		return atan(slope) * 180 / Math.PI;
 	}
 
 	public static inline function slopeToRadians(slope:Float) {
-		return PI_OVER_2 + tan(slope);
+		return atan(slope);
 	}
 
 	public static inline function degreesToSlope(degrees:Float) {
-		return Math.tan(degrees * PI / 180);
+		return tan(degrees * PI / 180);
 	}
 
 	public static inline function degreesToRadians(degrees:Float) {
@@ -153,7 +153,7 @@ class MathTools {
 	}
 
 	public static inline function radiansToSlope(radians:Float) {
-		return Math.tan(radians);
+		return tan(radians);
 	}
 
 	/**

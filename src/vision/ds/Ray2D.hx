@@ -101,6 +101,6 @@ class Ray2D {
 
     public function getPointAtY(y:Int):Point2D {
         //you have the slope, and the y value, find the x value
-        return new Point2D(y / slope, y);
+        return new Point2D((y - yIntercept) / slope, y);
     }
 }

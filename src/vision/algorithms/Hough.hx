@@ -108,6 +108,7 @@ class Hough {
 			var bestRho = 0;
 			var bestTheta = 0;
 			for (i in 0...360) {
+				if (accum[i] == null) continue;
 				for (j in 0...accum[i].length) {
 					if (accum[i][j] > max) {
 						max = accum[i][j];
@@ -171,6 +172,7 @@ class Hough {
 				}
 				loop++;
 				if (loop >= maximaCheckLoop && Math.abs(image.getPixel(i, j).red) == 255) {
+					loop = 0;
 					checkMaxima();
 					loop = 0;
 					if (numLocalMaxima != null) {
