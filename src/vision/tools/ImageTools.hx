@@ -127,4 +127,76 @@ class ImageTools {
         #end
         return image;
     }
+
+    #if flixel
+    public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
+        var image = new Image(sprite.width, sprite.height);
+        if (sprite.bitmapData == null) {
+            Log.warn("ImageTools.fromFlxSprite() - The supplied sprite's bitmapData is null. An empty image is returned");
+            return image;
+        }
+        for (x in 0...sprite.width) {
+            for (y in 0...sprite.height) {
+                image.setPixel(x, y, sprite.bitmapData.getPixel(x, y));
+            }
+        }
+        return image;
+    }
+    #end
+    #if (openfl || flash)
+    public static function fromBitmapData(bitmapData:openfl.display.BitmapData):Image {
+        var image = new Image(bitmapData.width, bitmapData.height);
+        for (x in 0...bitmapData.width) {
+            for (y in 0...bitmapData.height) {
+                image.setPixel(x, y, bitmapData.getPixel(x, y));
+            }
+        }
+        return image;
+    }
+
+    public static function fromSprite(sprite:openfl.display.Sprite):Image {
+        var bmp = new openfl.display.BitmapData(sprite.width, sprite.height);
+        bmp.draw(sprite);
+        return fromBitmapData(bmp);
+    }
+
+    public static function fromShape(shape:openfl.display.Shape):Image {
+        var bmp = new openfl.display.BitmapData(shape.width, shape.height);
+        bmp.draw(shape);
+        return fromBitmapData(bmp);
+    }
+    #end
+    #if lime
+    public static function fromLimeImage(limeImage:lime.graphics.Image):Image {
+        var image = new Image(limeImage.width, limeImage.height);
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                image.setPixel(x, y, limeImage.getPixel(x, y));
+            }
+        }
+        return image;
+    }
+    #end
+    #if kha
+    public static function fromKhaImage(khaImage:kha.Image):Image {
+        var image = new Image(khaImage.width, khaImage.height);
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                image.setPixel(x, y, khaImage.at(x, y));
+            }
+        }
+        return image;
+    }
+    #end
+    #if (heaps && false)
+    public static function fromBitmap(bitmap:h2d.Bitmap):Image {
+        var image = new Image(bitmap.width, bitmap.height);
+        for (x in 0...bitmap.width) {
+            for (y in 0...bitmap.height) {
+                image.setPixel(x, y, bitmap.getPixel(x, y));
+            }
+        }
+        return image;
+    }
+    #end
 }

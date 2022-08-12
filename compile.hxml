@@ -1,7 +1,6 @@
 --class-path src
 --main Main
 
---library formula
 --library format
 --library console.hx
 -debug
