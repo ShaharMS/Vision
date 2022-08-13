@@ -123,23 +123,17 @@ class Hough {
 				bestRho >>= 1;
 				bestRho -= Std.int(rhoMax); /// accumulator has rhoMax added
 
-				var a = Math.cos(bestTheta * Math.PI / 180);
-				var b = Math.sin(bestTheta * Math.PI / 180);
-
 				var localMax:Point2D = {x: bestTheta, y: bestRho};
 
 				if (maximas.contains(localMax)) return;
 
 				maximas.push(localMax);
 
-				var x1 = a * bestRho + 1000 * (-b);
-				var y1 = (b * bestRho + 1000 * (a));
-				var x2 = a * bestRho - 1000 * (-b);
-				var y2 = (b * bestRho - 1000 * (a));
+				var x1 = bestRho / Math.cos(bestTheta * Math.PI / 180);
+				var y1 = bestRho / Math.sin(bestTheta * Math.PI / 180);
+				var m = Math.tan(bestTheta * Math.PI / 180);
 
-				var p1 = new Point2D(x1 + image.width / 2, y1 + image.height / 2);
-				var p2 = new Point2D(x2 + image.width / 2, y2 + image.height / 2);
-				rays.push(Ray2D.from2Points(p1, p2));
+				rays.push(new Ray2D({x: x1, y: y1}, m));
 			}
 		}
 		
@@ -190,7 +184,6 @@ class Hough {
 		var space = new HoughSpace(accum, houghSpace);
 		space.rays = rays;
 		space.maximums = maximas;
-		Console.log(space);
 		return space;
 	}
 }

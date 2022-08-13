@@ -121,7 +121,7 @@ class Vision {
         
         var edges = sobelEdgeDetection(image.clone(), threshold); //TODO: #3 switch to canny edge detection
         var houghSpace = Hough.toHoughSpaceWithRays(edges, threshold, maxRayCount);
-
+        trace(houghSpace.rays);
         return houghSpace.rays;
     }
 
