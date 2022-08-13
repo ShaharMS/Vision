@@ -157,7 +157,7 @@ class ImageTools {
     }
     #end
     #if (openfl || flash)
-    public static function fromBitmapData(bitmapData:openfl.display.BitmapData):Image {
+    public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
         var image = new Image(bitmapData.width, bitmapData.height);
         bitmapData.lock();
         for (x in 0...bitmapData.width) {
@@ -169,7 +169,7 @@ class ImageTools {
         return image;
     }
 
-    public static function toBitmapData(image:Image):openfl.display.BitmapData {
+    public static function toBitmapData(image:Image):flash.display.BitmapData {
         var bitmapData = new openfl.display.BitmapData(image.width, image.height, true, 0x00ffffff);
         bitmapData.lock();
         for (x in 0...image.width) {
@@ -181,13 +181,13 @@ class ImageTools {
         return bitmapData;
     }
 
-    public static function fromSprite(sprite:openfl.display.Sprite):Image {
+    public static function fromSprite(sprite:flash.display.Sprite):Image {
         var bmp = new openfl.display.BitmapData(sprite.width, sprite.height);
         bmp.draw(sprite);
         return fromBitmapData(bmp);
     }
 
-    public static function fromShape(shape:openfl.display.Shape):Image {
+    public static function fromShape(shape:flash.display.Shape):Image {
         var bmp = new openfl.display.BitmapData(shape.width, shape.height);
         bmp.draw(shape);
         return fromBitmapData(bmp);

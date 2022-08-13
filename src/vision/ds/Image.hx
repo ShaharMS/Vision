@@ -1,11 +1,13 @@
 package vision.ds;
 
-import vision.exceptions.OutOfBounds;
 import haxe.ds.Vector;
 
 import vision.ds.Matrix;
 import vision.ds.Color;
 
+import vision.exceptions.OutOfBounds;
+
+import vision.tools.ImageTools;
 /**
     Represents a 2D image, as a matrix of Colors.
 **/
@@ -232,6 +234,11 @@ abstract Image(Matrix<Null<Color>>) {
     /**
         Draws an infine line specified by a Ray2D object.
 
+        **Notice** - The (0, 0) point is **not** the same is `image.getPixel(0, 0)`,
+        but rather the bottom left corner of the image - `image.getPixel(0, image.height - 1)`.
+
+        This "vertical flip" is done to match the way the ray is draw on the cartesian plane.
+
         @param line The line to draw.
         @param color The color to draw the line with.
 
@@ -259,6 +266,10 @@ abstract Image(Matrix<Null<Color>>) {
 
     /**
         Draws a `LineSegment2D` object using the given color.
+
+        If the line segment is not completely within the image, 
+        it doesnt throw an error, but just draws the part of the 
+        line segment that is within the image.
 
         @param line The line segment to draw.
         @param color The color to draw the line segment with.
@@ -330,7 +341,7 @@ abstract Image(Matrix<Null<Color>>) {
         @param line The line to draw.
         @param control1 The first control point of the curve.
         @param control2 The second control point of the curve.
-        @param color The color to draw the line with.
+        @param color The color to draw the curve with.
         @param accuracy The number of iterations to use when drawing the curve. the higher the number, the more iterations are used, and the more accurate the curve is. for example, accuracy of 100 will draw the curve with 100 iterations, and will draw 100 points on the curve. **default is 1000**
 
         @see LineSegment2D
@@ -369,6 +380,11 @@ abstract Image(Matrix<Null<Color>>) {
          - The center of the circle is at (X, Y)
          - The radius of the circle is r
          - Anti-aliasing will not be used.
+
+        @param x The x coordinate of the center of the circle.
+        @param y The y coordinate of the center of the circle.
+        @param r The radius of the circle.
+        @param color The color to draw the circle with.
     **/
     public function drawCircle(X:Int, Y:Int, r:Int, color:Color) {
         var x = -r, y = 0, err = 2 - 2 * r, startX = X, startY = Y;
@@ -387,6 +403,19 @@ abstract Image(Matrix<Null<Color>>) {
         } while (x < 0);
     }
 
+    /**
+        Fills a section of the image. the section filled has to match
+        `position`'s color.
+
+        when the fill encounters a color that is not `position`'s color, it
+        will stop filling in that direction.
+
+        **Warning** - this function is recursive. This function is not slow, but can trigger
+        a stack overflow if used on large images.
+
+        @param position The position to start filling at. you can use a Point2D or IntPoint2D.
+        @param color The color to fill with.
+    **/
     public function fillColor(position:IntPoint2D, color:Color) {
         var originalColor = getPixel(position.x, position.y);
 
@@ -455,4 +484,45 @@ abstract Image(Matrix<Null<Color>>) {
     //--------------------------------------------------------------------------
     // Framework-specific methods
     //--------------------------------------------------------------------------
+    #if flixel
+    @:to public function toFlxSprite():flixel.FlxSprite {
+        ImageTools.toFlxSprite(this);
+    }
+    @:from public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
+        return ImageTools.fromFlxSprite(sprite);
+    }
+    #end
+    #if openfl
+    @:to public function toBitmapData():flash.display.BitmapData {
+        return ImageTools.toBitmapData(this);
+    }
+    @:from public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
+        return ImageTools.fromBitmapData(bitmapData);
+    }
+    @:from public function fromShape(shape:flash.display.Shape):Image {
+        return ImageTools.fromShape(shape);
+    }
+    @:from public function fromSprite(sprite:flash.display.Sprite):Image {
+        return ImageTools.fromSprite(sprite);
+    }
+    #end
+    #if lime
+    @:to public function toLimeImage():lime.graphics.Image {
+        return ImageTools.toLimeImage(this);
+    }
+    @:from public static function fromLimeImage(image:lime.graphics.Image):Image {
+        return ImageTools.fromLimeImage(image);
+    }
+    #end
+    #if kha
+    @:from public function fromKhaImage(image:kha.Image):Image {
+        return ImageTools.fromKhaImage(image);
+    }
+    #end
+    #if heaps
+    @:from public function fromHeapsBitmapData(bitmapData:hxd.BitmapData):Image {
+        return ImageTools.fromHeapsBitmapData(bitmapData);
+    }
+    #end
+
 }
