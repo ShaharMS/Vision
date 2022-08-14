@@ -1,14 +1,15 @@
 package vision.ds;
 
+import haxe.ds.Vector;
 import vision.ds.Point2D;
 
-abstract IntPoint2D(Array<Int>) {
+abstract IntPoint2D(Vector<Int>) {
     public var x(get, set):Int;
 
     public var y(get, set):Int;
 
     public function new(X:Int, Y:Int) {
-        this = [X, Y];
+        this = Vector.fromArrayCopy([X, Y]);
     }
 
     function get_y() {

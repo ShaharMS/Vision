@@ -31,28 +31,32 @@ class LineSegment2D {
 	}
 
 	function set_slope(value:Float):Float {
-		Reflect.setField(this, "degrees", MathTools.slopeToDegrees(value));
-        Reflect.setField(this, "radians", MathTools.slopeToRadians(value));
+		@:bypassAccessor degrees = MathTools.slopeToDegrees(value);
+        @:bypassAccessor radians = MathTools.slopeToRadians(value);
         return slope = value;
 	}
 
 	function set_degrees(value:Float):Float {
-		Reflect.setField(this, "slope", MathTools.degreesToSlope(value));
-        Reflect.setField(this, "radians", MathTools.degreesToRadians(value));
+		@:bypassAccessor slope = MathTools.degreesToSlope(value);
+        @:bypassAccessor radians = MathTools.degreesToRadians(value);
         return degrees = value;
 	}
 
     function set_radians(value:Float):Float {
-        Reflect.setField(this, "slope", MathTools.radiansToSlope(value));
-        Reflect.setField(this, "degrees", MathTools.radiansToDegrees(value));
+        @:bypassAccessor slope = MathTools.radiansToSlope(value);
+        @:bypassAccessor degrees = MathTools.radiansToDegrees(value);
         return radians = value;
     }
 
-	public static function fromPointAndAngle(point:Point2D, angle:Float) {
-		var x:Float = point.x;
-		var y:Float = point.y;
+	public static function fromRay2D(ray:Ray2D):LineSegment2D {
+		var x:Float = ray.point.x;
+		var y:Float = ray.point.y;
 		var length:Float = 1;
-		var end:Point2D = new Point2D(Std.int(x + length * Math.cos(angle * (Math.PI / 180))), Std.int(y + length * Math.sin(angle * (Math.PI / 180))));
-		return new LineSegment2D(point, end);
+		var end:Point2D = new Point2D(Std.int(x + length * Math.cos(ray.radians)), Std.int(y + length * Math.sin(ray.radians)));
+		return new LineSegment2D(ray.point, end);
+	}
+
+	public function toRay2D():Ray2D {
+		return new Ray2D(this.start, this.slope);
 	}
 }
