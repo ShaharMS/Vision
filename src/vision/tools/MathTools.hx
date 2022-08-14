@@ -92,6 +92,35 @@ class MathTools {
 		return {x: Std.int(x), y: Std.int(y)};
 	}
 
+	public static function intersectionBetweenRays2D(ray:Ray2D, ray2:Ray2D):Point2D {
+		var line1StartX = ray.point.x;
+		var line1StartY = ray.point.y;
+		var line1EndX = ray.point.x + Math.cos(ray.radians) * 1000;
+		var line1EndY = ray.point.y + Math.sin(ray.radians) * 1000;
+		var line2StartX = ray2.point.x;
+		var line2StartY = ray2.point.y;
+		var line2EndX = ray2.point.x + Math.cos(ray2.radians) * 1000;
+		var line2EndY = ray2.point.y + Math.sin(ray2.radians) * 1000;
+		// if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
+		var denominator, a, b, numerator1, numerator2, result:Point2D = null;
+		denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
+		if (denominator == 0) {
+			return result;
+		}
+		a = line1StartY - line2StartY;
+		b = line1StartX - line2StartX;
+		numerator1 = ((line2EndX - line2StartX) * a) - ((line2EndY - line2StartY) * b);
+		numerator2 = ((line1EndX - line1StartX) * a) - ((line1EndY - line1StartY) * b);
+		a = numerator1 / denominator;
+		b = numerator2 / denominator;
+	
+		// if we cast these lines infinitely in both directions, they intersect here:
+		result = new Point2D();
+		result.x = line1StartX + (a * (line1EndX - line1StartX));
+		result.y = line1StartY + (a * (line1EndY - line1StartY));
+		return result;
+	}
+
 	/**
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.

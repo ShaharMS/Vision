@@ -59,33 +59,17 @@ class Ray2D {
     function get_yIntercept() {
         var px:Float = point.x, py:Float = point.y;
         if (px > 0) {
-            while (px > 0) {
-                px--;
-                py -= slope;
-            }
-        } else if (px < 0) {
-            while (px < 0) {
-                px++;
-                py += slope;
-            }
+            return py - (slope * px);
         }
-        return py;
+        return py + (slope * px);
     }
 
     function get_xIntercept() {
         var px:Float = point.x, py:Float = point.y;
         if (py > 0) {
-            while (py > 0) {
-                py--;
-                px -= 1 / slope;
-            }
-        } else if (py < 0) {
-            while (py < 0) {
-                py++;
-                px += 1 / slope;
-            }
+            return (py - (slope * px)) / slope;
         }
-        return px;
+        return (py + (slope * px)) / slope;
     }
 
 
@@ -102,5 +86,9 @@ class Ray2D {
     public function getPointAtY(y:Int):Point2D {
         //you have the slope, and the y value, find the x value
         return new Point2D((y - yIntercept) / slope, y);
+    }
+
+    public function intersect(ray:Ray2D):Point2D {
+        return MathTools.intersectionBetweenRays2D(this, ray);
     }
 }

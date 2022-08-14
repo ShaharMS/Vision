@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import vision.tools.MathTools;
 import haxe.ds.BalancedTree;
 import vision.ds.hough.HoughAccumulator;
 import haxe.Timer;
@@ -105,7 +106,7 @@ class Hough {
 
 		function checkMaxima() {
 			var max = 0;
-			var bestRho = 0;
+			var bestRho = 0.;
 			var bestTheta = 0;
 			for (i in 0...360) {
 				if (accum[i] == null) continue;
@@ -120,12 +121,17 @@ class Hough {
 
 			if (max > threshold) {
 				// now to backproject into drawing space
-				bestRho >>= 1;
-				bestRho -= Std.int(rhoMax); /// accumulator has rhoMax added
+				bestRho *= 2;
+				bestRho -= rhoMax; /// accumulator has rhoMax added
 
 				var localMax:Point2D = {x: bestTheta, y: bestRho};
 
-				if (maximas.contains(localMax)) return;
+				//deep equality check 
+				for (maxima in maximas) {
+					if (maxima.x == localMax.x && maxima.y == localMax.y) {
+						return;
+					}
+				}
 
 				maximas.push(localMax);
 
@@ -140,17 +146,16 @@ class Hough {
 		var loop = 0;
 		maximaCheckLoop = maximaCheckLoop != null ? maximaCheckLoop : Std.int((image.width + image.height) / 20);
 
-		for (i in 0...image.width) {
-			for (j in 0...image.height) {
-				if (Math.abs(image.getPixel(i, j).red) == 255) {
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				if (Math.abs(image.getPixel(x, y).red) == 255) {
 					var rho:Float;
 					var theta = 0.;
 					var thetaIndex = 0;
-					var x = i - Std.int(image.width / 2);
-					var y = j - Std.int(image.height / 2);
 					while (thetaIndex < 360) {
-						rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
-						rho /= 2;
+						var line1 = new Ray2D({x: x, y: y}, null, thetaIndex);
+						var line2 = new Ray2D({x: 0, y: 0}, null, thetaIndex + 90);
+						var rho = MathTools.distanceBetweenPoints({x: 0, y: 0}, line1.intersect(line2));
 						if (accum[thetaIndex] == null) {
 							accum[thetaIndex] = [];
 						} else if (accum[thetaIndex][Std.int(rho)] == null) {
@@ -165,7 +170,7 @@ class Hough {
 					}
 				}
 				loop++;
-				if (loop >= maximaCheckLoop && Math.abs(image.getPixel(i, j).red) == 255) {
+				if (loop >= maximaCheckLoop && Math.abs(image.getPixel(x, y).red) == 255) {
 					loop = 0;
 					checkMaxima();
 					loop = 0;

@@ -144,6 +144,8 @@ Main.main = function() {
 	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).degrees,{ fileName : "src/Main.hx", lineNumber : 108, className : "Main", methodName : "main"});
 	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).radians,{ fileName : "src/Main.hx", lineNumber : 109, className : "Main", methodName : "main"});
 	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtY(8),{ fileName : "src/Main.hx", lineNumber : 110, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_yIntercept(),{ fileName : "src/Main.hx", lineNumber : 111, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_xIntercept(),{ fileName : "src/Main.hx", lineNumber : 112, className : "Main", methodName : "main"});
 };
 Main.printImage = function(image) {
 	var c = window.document.createElement("canvas");
@@ -1412,7 +1414,7 @@ vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocal
 	var rays = [];
 	var checkMaxima = function() {
 		var max = 0;
-		var bestRho = 0;
+		var bestRho = 0.;
 		var bestTheta = 0;
 		var _g = 0;
 		while(_g < 360) {
@@ -1432,11 +1434,16 @@ vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocal
 			}
 		}
 		if(max > threshold) {
-			bestRho >>= 1;
-			bestRho -= rhoMax | 0;
+			bestRho *= 2;
+			bestRho -= rhoMax;
 			var localMax = new vision_ds_Point2D(bestTheta,bestRho);
-			if(maximas.indexOf(localMax) != -1) {
-				return;
+			var _g = 0;
+			while(_g < maximas.length) {
+				var maxima = maximas[_g];
+				++_g;
+				if(maxima.x == localMax.x && maxima.y == localMax.y) {
+					return;
+				}
 			}
 			maximas.push(localMax);
 			var x1 = bestRho / Math.cos(bestTheta * Math.PI / 180);
@@ -1452,26 +1459,25 @@ vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocal
 	var _g = 0;
 	var _g1 = vision_ds_Image.get_width(image);
 	while(_g < _g1) {
-		var i = _g++;
+		var x = _g++;
 		var _g2 = 0;
 		var _g3 = vision_ds_Image.get_height(image);
 		while(_g2 < _g3) {
-			var j = _g2++;
-			if(Math.abs(vision_ds_Image.getPixel(image,i,j) >> 16 & 255) == 255) {
+			var y = _g2++;
+			if(Math.abs(vision_ds_Image.getPixel(image,x,y) >> 16 & 255) == 255) {
 				var rho;
 				var theta = 0.;
 				var thetaIndex = 0;
-				var x = i - (vision_ds_Image.get_width(image) / 2 | 0);
-				var y = j - (vision_ds_Image.get_height(image) / 2 | 0);
 				while(thetaIndex < 360) {
-					rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
-					rho /= 2;
+					var line1 = new vision_ds_Ray2D(new vision_ds_Point2D(x,y),null,thetaIndex);
+					var line2 = new vision_ds_Ray2D(new vision_ds_Point2D(0,0),null,thetaIndex + 90);
+					var rho1 = vision_tools_MathTools.distanceBetweenPoints(new vision_ds_Point2D(0,0),line1.intersect(line2));
 					if(accum[thetaIndex] == null) {
 						accum[thetaIndex] = [];
-					} else if(accum[thetaIndex][rho | 0] == null) {
-						accum[thetaIndex][rho | 0] = 0;
+					} else if(accum[thetaIndex][rho1 | 0] == null) {
+						accum[thetaIndex][rho1 | 0] = 0;
 					} else {
-						accum[thetaIndex][rho | 0] += 1;
+						accum[thetaIndex][rho1 | 0] += 1;
 					}
 					var Alpha = 0.01;
 					if(Alpha == null) {
@@ -1494,13 +1500,13 @@ vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocal
 					var Value3 = Math.round(Alpha1 * 255);
 					color &= 16777215;
 					color |= (Value3 > 255 ? 255 : Value3 < 0 ? 0 : Value3) << 24;
-					vision_ds_Image.paintPixel(houghSpace,thetaIndex,rho | 0,color);
+					vision_ds_Image.paintPixel(houghSpace,thetaIndex,rho1 | 0,color);
 					theta += Math.PI / 360;
 					++thetaIndex;
 				}
 			}
 			++loop;
-			if(loop >= maximaCheckLoop && Math.abs(vision_ds_Image.getPixel(image,i,j) >> 16 & 255) == 255) {
+			if(loop >= maximaCheckLoop && Math.abs(vision_ds_Image.getPixel(image,x,y) >> 16 & 255) == 255) {
 				loop = 0;
 				checkMaxima();
 				loop = 0;
@@ -3940,6 +3946,7 @@ vision_ds_Image.drawLine = function(this1,x1,y1,x2,y2,color) {
 vision_ds_Image.drawRay2D = function(this1,line,color) {
 	var p1 = vision_ds_IntPoint2D.fromPoint2D(line.getPointAtY(0));
 	var p2 = vision_ds_IntPoint2D.fromPoint2D(line.getPointAtY(vision_ds_Image.get_height(this1) - 1));
+	haxe_Log.trace("drawRay2D: point1: " + Std.string(p1) + ", point2: " + Std.string(p2),{ fileName : "src/vision/ds/Image.hx", lineNumber : 250, className : "vision.ds._Image.Image_Impl_", methodName : "drawRay2D"});
 	var x1 = vision_ds_IntPoint2D.get_x(p1);
 	var y1 = vision_ds_IntPoint2D.get_y(p1);
 	var x2 = vision_ds_IntPoint2D.get_x(p2);
@@ -4110,7 +4117,7 @@ vision_ds_Image.image_array_write = function(this1,index,value) {
 };
 var vision_ds_IntPoint2D = {};
 vision_ds_IntPoint2D._new = function(X,Y) {
-	var this1 = [X,Y];
+	var this1 = [X,Y].slice(0);
 	return this1;
 };
 vision_ds_IntPoint2D.get_y = function(this1) {
@@ -4140,12 +4147,12 @@ var vision_ds_LineSegment2D = function(start,end) {
 	this.end.y = end.y;
 };
 vision_ds_LineSegment2D.__name__ = true;
-vision_ds_LineSegment2D.fromPointAndAngle = function(point,angle) {
-	var x = point.x;
-	var y = point.y;
+vision_ds_LineSegment2D.fromRay2D = function(ray) {
+	var x = ray.point.x;
+	var y = ray.point.y;
 	var length = 1;
-	var end = new vision_ds_Point2D(x + length * Math.cos(angle * (Math.PI / 180)) | 0,y + length * Math.sin(angle * (Math.PI / 180)) | 0);
-	return new vision_ds_LineSegment2D(point,end);
+	var end = new vision_ds_Point2D(x + length * Math.cos(ray.radians) | 0,y + length * Math.sin(ray.radians) | 0);
+	return new vision_ds_LineSegment2D(ray.point,end);
 };
 vision_ds_LineSegment2D.prototype = {
 	get_length: function() {
@@ -4155,19 +4162,22 @@ vision_ds_LineSegment2D.prototype = {
 		return "\n (" + Std.string(this.start) + ".x, " + Std.string(this.start) + ".y) --> (" + Std.string(this.end) + ".x, " + Std.string(this.end) + ".y)";
 	}
 	,set_slope: function(value) {
-		this["degrees"] = Math.atan(value) * 180 / Math.PI;
-		this["radians"] = Math.atan(value);
+		this.degrees = Math.atan(value) * 180 / Math.PI;
+		this.radians = Math.atan(value);
 		return this.slope = value;
 	}
 	,set_degrees: function(value) {
-		this["slope"] = Math.tan(value * vision_tools_MathTools.get_PI() / 180);
-		this["radians"] = value * Math.PI / 180;
+		this.slope = Math.tan(value * vision_tools_MathTools.get_PI() / 180);
+		this.radians = value * Math.PI / 180;
 		return this.degrees = value;
 	}
 	,set_radians: function(value) {
-		this["slope"] = Math.tan(value);
-		this["degrees"] = value * 180 / Math.PI;
+		this.slope = Math.tan(value);
+		this.degrees = value * 180 / Math.PI;
 		return this.radians = value;
+	}
+	,toRay2D: function() {
+		return new vision_ds_Ray2D(this.start,this.slope);
 	}
 };
 var vision_ds_Point2D = function(x,y) {
@@ -4227,39 +4237,26 @@ vision_ds_Ray2D.prototype = {
 		var px = this.point.x;
 		var py = this.point.y;
 		if(px > 0) {
-			while(px > 0) {
-				--px;
-				py -= this.slope;
-			}
-		} else if(px < 0) {
-			while(px < 0) {
-				++px;
-				py += this.slope;
-			}
+			return py - this.slope * px;
 		}
-		return py;
+		return py + this.slope * px;
 	}
 	,get_xIntercept: function() {
 		var px = this.point.x;
 		var py = this.point.y;
 		if(py > 0) {
-			while(py > 0) {
-				--py;
-				px -= 1 / this.slope;
-			}
-		} else if(py < 0) {
-			while(py < 0) {
-				++py;
-				px += 1 / this.slope;
-			}
+			return (py - this.slope * px) / this.slope;
 		}
-		return px;
+		return (py + this.slope * px) / this.slope;
 	}
 	,getPointAtX: function(x) {
 		return new vision_ds_Point2D(x,this.slope * x + this.get_yIntercept());
 	}
 	,getPointAtY: function(y) {
 		return new vision_ds_Point2D((y - this.get_yIntercept()) / this.slope,y);
+	}
+	,intersect: function(ray) {
+		return vision_tools_MathTools.intersectionBetweenRays2D(this,ray);
 	}
 };
 var vision_ds_hough_HoughSpace = function(accumulator,image) {
@@ -4285,6 +4282,83 @@ vision_exceptions_OutOfBounds.__name__ = true;
 vision_exceptions_OutOfBounds.__super__ = vision_exceptions_VisionException;
 vision_exceptions_OutOfBounds.prototype = $extend(vision_exceptions_VisionException.prototype,{
 });
+var vision_tools_ImageTools = function() { };
+vision_tools_ImageTools.__name__ = true;
+vision_tools_ImageTools.loadFromFile = function(image,path) {
+	var imgElement = window.document.createElement("img");
+	imgElement.src = path;
+	var canvas = window.document.createElement("canvas");
+	canvas.getContext("2d",null).drawImage(imgElement,0,0);
+	if(image == null) {
+		image = vision_ds_Image._new(imgElement.width,imgElement.height);
+	}
+	var imageData = canvas.getContext("2d",null).getImageData(0,0,vision_ds_Image.get_width(image),vision_ds_Image.get_height(image));
+	var data = imageData.data;
+	var _g = 0;
+	var _g1 = vision_ds_Image.get_width(image);
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = 0;
+		var _g3 = vision_ds_Image.get_height(image);
+		while(_g2 < _g3) {
+			var y = _g2++;
+			var i = (y * vision_ds_Image.get_width(image) + x) * 4;
+			var Red = data[i];
+			var Green = data[i + 1];
+			var Blue = data[i + 2];
+			var Alpha = data[i + 3];
+			if(Alpha == null) {
+				Alpha = 255;
+			}
+			var color = vision_ds_Color._new();
+			var Alpha1 = Alpha;
+			if(Alpha1 == null) {
+				Alpha1 = 255;
+			}
+			color &= -16711681;
+			color |= (Red > 255 ? 255 : Red < 0 ? 0 : Red) << 16;
+			color &= -65281;
+			color |= (Green > 255 ? 255 : Green < 0 ? 0 : Green) << 8;
+			color &= -256;
+			color |= Blue > 255 ? 255 : Blue < 0 ? 0 : Blue;
+			color &= 16777215;
+			color |= (Alpha1 > 255 ? 255 : Alpha1 < 0 ? 0 : Alpha1) << 24;
+			var color1 = color;
+			vision_ds_Image.setPixel(image,x,y,color1);
+		}
+	}
+	canvas.getContext("2d",null).putImageData(imageData,0,0);
+	return image;
+};
+vision_tools_ImageTools.addToScreen = function(image,x,y,units) {
+	var c = window.document.createElement("canvas");
+	c.width = vision_ds_Image.get_width(image);
+	c.height = vision_ds_Image.get_height(image);
+	var ctx = c.getContext("2d",null);
+	var imageData = ctx.getImageData(0,0,vision_ds_Image.get_width(image),vision_ds_Image.get_height(image));
+	var data = imageData.data;
+	var _g = 0;
+	var _g1 = vision_ds_Image.get_width(image);
+	while(_g < _g1) {
+		var x1 = _g++;
+		var _g2 = 0;
+		var _g3 = vision_ds_Image.get_height(image);
+		while(_g2 < _g3) {
+			var y1 = _g2++;
+			var i = (y1 * vision_ds_Image.get_width(image) + x1) * 4;
+			data[i] = vision_ds_Image.getPixel(image,x1,y1) >> 16 & 255;
+			data[i + 1] = vision_ds_Image.getPixel(image,x1,y1) >> 8 & 255;
+			data[i + 2] = vision_ds_Image.getPixel(image,x1,y1) & 255;
+			data[i + 3] = 255;
+		}
+	}
+	ctx.putImageData(imageData,0,0);
+	c.style.position = "absolute";
+	c.style.top = y + units.yUnits != null ? y + units.yUnits : y + "px";
+	c.style.left = x + units.xUnits != null ? x + units.xUnits : x + "px";
+	window.document.body.appendChild(c);
+	return image;
+};
 var vision_tools_MathTools = function() { };
 vision_tools_MathTools.__name__ = true;
 vision_tools_MathTools.distanceFromPointToRay2D = function(point,line) {
@@ -4355,6 +4429,31 @@ vision_tools_MathTools.intersectionBetweenLineSegments2D = function(line1,line2)
 	var x = x1 + ua * (x2 - x1);
 	var y = y1 + ua * (y2 - y1);
 	return new vision_ds_Point2D(x | 0,y | 0);
+};
+vision_tools_MathTools.intersectionBetweenRays2D = function(ray,ray2) {
+	var line1StartX = ray.point.x;
+	var line1StartY = ray.point.y;
+	var line1EndX = ray.point.x + Math.cos(ray.radians) * 1000;
+	var line1EndY = ray.point.y + Math.sin(ray.radians) * 1000;
+	var line2StartX = ray2.point.x;
+	var line2StartY = ray2.point.y;
+	var line2EndX = ray2.point.x + Math.cos(ray2.radians) * 1000;
+	var line2EndY = ray2.point.y + Math.sin(ray2.radians) * 1000;
+	var result = null;
+	var denominator = (line2EndY - line2StartY) * (line1EndX - line1StartX) - (line2EndX - line2StartX) * (line1EndY - line1StartY);
+	if(denominator == 0) {
+		return result;
+	}
+	var a = line1StartY - line2StartY;
+	var b = line1StartX - line2StartX;
+	var numerator1 = (line2EndX - line2StartX) * a - (line2EndY - line2StartY) * b;
+	var numerator2 = (line1EndX - line1StartX) * a - (line1EndY - line1StartY) * b;
+	a = numerator1 / denominator;
+	b = numerator2 / denominator;
+	result = new vision_ds_Point2D();
+	result.x = line1StartX + a * (line1EndX - line1StartX);
+	result.y = line1StartY + a * (line1EndY - line1StartY);
+	return result;
 };
 vision_tools_MathTools.wrapInt = function(value,min,max) {
 	var range = max - min + 1;

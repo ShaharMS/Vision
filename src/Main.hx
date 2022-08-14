@@ -108,6 +108,8 @@ class Main {
 		trace(new Ray2D({x: 0, y: 0}, 1).degrees);
 		trace(new Ray2D({x: 0, y: 0}, 1).radians);
 		trace(new Ray2D({x: 0, y: 0}, 1).getPointAtY(8));
+		trace(new Ray2D({x: 0, y: 0}, 1).yIntercept);
+		trace(new Ray2D({x: 0, y: 0}, 1).xIntercept);
 	}
 
 	public static function printImage(image:Image) {
