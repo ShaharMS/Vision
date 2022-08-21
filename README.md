@@ -68,6 +68,7 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `drawRay2D()`
    - [x] `drawRect()`
    - [x] `drawCircle()`
+   - [x] `drawEllipse()`
    - [ ] `drawCurve()`
    - [x] `drawQuadraticBezier()`
    - [x] `drawCubicBezier()`

@@ -405,6 +405,76 @@ abstract Image(Matrix<Null<Color>>) {
     }
 
     /**
+        Draws an ellipse of the given color:
+
+         - The center of the ellipse is at (X, Y)
+         - The radius of the ellipse is r
+         - Anti-aliasing will not be used.
+
+        @param centerX The x coordinate of the center of the ellipse.
+        @param centerY The y coordinate of the center of the ellipse.
+        @param radiusX The x radius of the ellipse.
+        @param radiusY The y radius of the ellipse.
+        @param color The color to draw the ellipse with.
+    **/
+    public function drawEllipse(centerX:Int, centerY:Int, radiusX:Int, radiusY:Int, color:Color) {
+        var x:Int, y:Int, xChange:Float, yChange:Float, ellipseError:Float, twoASquare:Float, twoBSquare:Float, stoppingX:Float, stoppingY:Float;
+        twoASquare = 2 * radiusX * radiusX;
+        twoBSquare = 2 * radiusY * radiusY;
+        x = radiusX;
+        y = 0;
+        xChange = radiusY * radiusY * (1 - 2 * radiusX);
+        yChange = radiusX * radiusX;
+        ellipseError = 0;
+        stoppingX = twoBSquare * radiusX;
+        stoppingY = 0;
+        while (stoppingX >= stoppingY) {
+            setPixel(centerX + x, centerY + y, color);
+            setPixel(centerX - x, centerY + y, color);
+            setPixel(centerX + x, centerY - y, color);
+            setPixel(centerX - x, centerY - y, color);
+            if (ellipseError <= 0) {
+                y++;
+                stoppingY += twoASquare;
+                ellipseError += yChange;
+                yChange += twoASquare;
+            }
+            if (ellipseError > 0) {
+                x--;
+                stoppingX -= twoBSquare;
+                ellipseError += xChange;
+                xChange += twoBSquare;
+            }
+        }
+        ellipseError = radiusY * radiusY / 4 - radiusX * radiusX * (radiusY - 0.5);
+        x = 0;
+        y = radiusY;
+        xChange = radiusY * radiusY;
+        yChange = radiusX * radiusX * (1 - 2 * radiusY);
+        stoppingX = 0;
+        stoppingY = twoASquare * radiusY;
+        while (stoppingX <= stoppingY) {
+            setPixel(centerX + x, centerY + y, color);
+            setPixel(centerX - x, centerY + y, color);
+            setPixel(centerX + x, centerY - y, color);
+            setPixel(centerX - x, centerY - y, color);
+            if (ellipseError <= 0) {
+                x++;
+                stoppingX += twoBSquare;
+                ellipseError += xChange;
+                xChange += twoBSquare;
+            }
+            if (ellipseError > 0) {
+                y--;
+                stoppingY -= twoASquare;
+                ellipseError += yChange;
+                yChange += twoASquare;
+            }
+        }
+        
+    }
+
+    /**
         Fills a section of the image. the section filled has to match
         `position`'s color.
 
