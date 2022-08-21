@@ -388,7 +388,7 @@ abstract Image(Matrix<Null<Color>>) {
         @param color The color to draw the circle with.
     **/
     public function drawCircle(X:Int, Y:Int, r:Int, color:Color) {
-        var x = -r, y = 0, err = 2 - 2 * r, startX = X, startY = Y;
+        var x = -r, y = 0, err = 2 - 2 * r;
         do {
             setPixel(X - x, Y + y, color);
             setPixel(X - y, Y - x, color);
