@@ -61,15 +61,15 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `setPixel()`
  - [x] `hasPixel()`
  - [x] `paintPixel()`
- - [x] matrix access
- - [x] floodfill
+ - [x] matrix access `image[x][y]`
  - Drawing:
+   - [x] `fillColor`
+   - [x] `fillColorRecursive`
    - [x] `drawLineSegment2D()`
    - [x] `drawRay2D()`
    - [x] `drawRect()`
    - [x] `drawCircle()`
    - [x] `drawEllipse()`
-   - [ ] `drawCurve()`
    - [x] `drawQuadraticBezier()`
    - [x] `drawCubicBezier()`
    - [x] `drawLineWithLerp()`
@@ -81,3 +81,8 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `getImagePortion()`
    - [x] `setImagePortion()`
    - [x] `copyPixel()`
+
+
+### Define List:
+
+ - `vision_fill_color_optimization`

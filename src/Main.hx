@@ -1,5 +1,6 @@
 package;
 
+import vision.ds.Queue;
 import vision.ds.LineSegment2D;
 import vision.tools.MathTools;
 import haxe.Timer;
@@ -111,6 +112,14 @@ class Main {
 		trace(new Ray2D({x: 0, y: 0}, 1).getPointAtY(8));
 		trace(new Ray2D({x: 0, y: 0}, 1).yIntercept);
 		trace(new Ray2D({x: 0, y: 0}, 1).xIntercept);
+		var queue = new Queue<Int>();
+		queue.push(0);
+		queue.push(1);
+		queue.push(2);
+		queue.push(3);
+		trace(queue);
+		trace(queue.extract());
+		trace(queue);
 	}
 
 	public static function printImage(image:Image) {

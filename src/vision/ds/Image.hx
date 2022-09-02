@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.Int64;
 import haxe.ds.Vector;
 
 import vision.ds.Matrix;
@@ -475,19 +476,19 @@ abstract Image(Matrix<Null<Color>>) {
     }
 
     /**
-        Fills a section of the image. the section filled has to match
+        Recursively fills a section of the image. the section filled has to match
         `position`'s color.
 
         when the fill encounters a color that is not `position`'s color, it
         will stop filling in that direction.
 
         **Warning** - this function is recursive. This function is not slow, but can trigger
-        a stack overflow if used on large images.
+        a stack overflow if used on large images. This is only here so an implementation will be available.
 
         @param position The position to start filling at. you can use a Point2D or IntPoint2D.
         @param color The color to fill with.
     **/
-    public function fillColor(position:IntPoint2D, color:Color) {
+    public function fillColorRecursive(position:IntPoint2D, color:Color) {
         var originalColor = getPixel(position.x, position.y);
 
         function expandFill(x:Int, y:Int) {
@@ -506,6 +507,38 @@ abstract Image(Matrix<Null<Color>>) {
         expandFill(position.x, position.y);
     }
 
+    /**
+        Fills a section of the image. the section filled has to match
+        `position`'s color.
+
+        This uses the BFS `Breadth First Search` algorithm
+
+        @param position The position to start filling at. you can use a Point2D or IntPoint2D.
+        @param color The color to fill with.
+    **/
+    public function fillColor(position:IntPoint2D, color:Color) {
+
+        var queue = new #if vision_fill_color_optimization Queue<IntPoint2D> #else Array<IntPoint2D> #end();
+        #if vision_fill_color_optimization queue.push #else queue.unshift #end({x: position.x, y: position.y});
+        var explored:Array<Int64> = [];
+
+        function fill(v:IntPoint2D) {
+            if (hasPixel(v.x, v.y) && getPixel(v.x, v.y) == color && !explored.contains(Int64.make(v.x, v.y))) {
+                #if vision_fill_color_optimization queue.push #else queue.unshift #end({x: v.x, y: v.y});
+                explored.push(Int64.make(v.x, v.y));
+                setPixel(v.x, v.y, color);
+            }
+        }
+
+        while (queue.length > 0) {
+            var v = #if vision_fill_color_optimization queue.extract #else queue.pop #end();
+            trace("fill",v.x, v.y, queue.length);
+            fill({x: v.x + 1, y: v.y    });
+            fill({x: v.x    , y: v.y + 1});
+            fill({x: v.x - 1, y: v.y    });
+            fill({x: v.x    , y: v.y - 1});
+        }
+    }
 
     /**
         Clones this image.
