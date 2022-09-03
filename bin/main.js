@@ -148,20 +148,15 @@ Main.main = function() {
 	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_yIntercept(),{ fileName : "src/Main.hx", lineNumber : 113, className : "Main", methodName : "main"});
 	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_xIntercept(),{ fileName : "src/Main.hx", lineNumber : 114, className : "Main", methodName : "main"});
 	var queue = new vision_ds_Queue();
-	haxe_Log.trace(1,{ fileName : "src/Main.hx", lineNumber : 116, className : "Main", methodName : "main"});
-	queue.push(0);
-	haxe_Log.trace(1,{ fileName : "src/Main.hx", lineNumber : 118, className : "Main", methodName : "main"});
-	queue.push(1);
-	haxe_Log.trace(1,{ fileName : "src/Main.hx", lineNumber : 120, className : "Main", methodName : "main"});
-	queue.push(2);
-	haxe_Log.trace(1,{ fileName : "src/Main.hx", lineNumber : 122, className : "Main", methodName : "main"});
-	queue.push(3);
-	haxe_Log.trace(1,{ fileName : "src/Main.hx", lineNumber : 124, className : "Main", methodName : "main"});
-	haxe_Log.trace(queue,{ fileName : "src/Main.hx", lineNumber : 125, className : "Main", methodName : "main"});
-	haxe_Log.trace(1,{ fileName : "src/Main.hx", lineNumber : 126, className : "Main", methodName : "main"});
-	haxe_Log.trace(queue.extract(),{ fileName : "src/Main.hx", lineNumber : 127, className : "Main", methodName : "main"});
-	haxe_Log.trace(1,{ fileName : "src/Main.hx", lineNumber : 128, className : "Main", methodName : "main"});
-	haxe_Log.trace(queue,{ fileName : "src/Main.hx", lineNumber : 129, className : "Main", methodName : "main"});
+	queue.enqueue(0);
+	queue.enqueue(1);
+	queue.enqueue(2);
+	queue.enqueue(3);
+	haxe_Log.trace(queue,{ fileName : "src/Main.hx", lineNumber : 120, className : "Main", methodName : "main"});
+	haxe_Log.trace(queue.dequeue(),{ fileName : "src/Main.hx", lineNumber : 121, className : "Main", methodName : "main"});
+	haxe_Log.trace(queue.dequeue(),{ fileName : "src/Main.hx", lineNumber : 122, className : "Main", methodName : "main"});
+	haxe_Log.trace(queue.dequeue(),{ fileName : "src/Main.hx", lineNumber : 123, className : "Main", methodName : "main"});
+	haxe_Log.trace(queue,{ fileName : "src/Main.hx", lineNumber : 124, className : "Main", methodName : "main"});
 };
 Main.printImage = function(image) {
 	var c = window.document.createElement("canvas");
@@ -4324,13 +4319,13 @@ vision_ds_Queue.prototype = {
 			return k.value;
 		}};
 	}
-	,extract: function() {
+	,dequeue: function() {
 		var v = this.get_last().value;
 		this.set_last(null);
 		this.length--;
 		return v;
 	}
-	,push: function(value) {
+	,enqueue: function(value) {
 		if(this.first == null) {
 			this.first = new vision_ds_QueueCell(value,null,null);
 			this.length++;
@@ -4358,6 +4353,7 @@ vision_ds_Queue.prototype = {
 			s += "" + Std.string(processed.value) + " -> ";
 			processed = processed.next;
 		}
+		s += "" + Std.string(processed.value);
 		return s;
 	}
 	,get_last: function() {
@@ -4367,8 +4363,13 @@ vision_ds_Queue.prototype = {
 	}
 	,set_last: function(value) {
 		var processed = this.first;
-		while(processed.next != null) processed = processed.next;
+		while(processed.next != null) {
+			processed = processed.next;
+			haxe_Log.trace(processed.value,{ fileName : "src/vision/ds/Queue.hx", lineNumber : 108, className : "vision.ds.Queue", methodName : "set_last"});
+		}
+		haxe_Log.trace(value,{ fileName : "src/vision/ds/Queue.hx", lineNumber : 110, className : "vision.ds.Queue", methodName : "set_last"});
 		processed = value;
+		haxe_Log.trace(processed,{ fileName : "src/vision/ds/Queue.hx", lineNumber : 112, className : "vision.ds.Queue", methodName : "set_last"});
 		return value;
 	}
 };

@@ -50,14 +50,14 @@ class Queue<T> {
     /**
         Gets the last cell's value in the queue, and removes it from the queue
     **/
-    public function extract():T {
+    public function dequeue():T {
         var v = last.value;
         last = null;
         length--;
         return v;
     }
 
-    public function push(value:T):T {
+    public function enqueue(value:T):T {
         if (first == null) {
             first = new QueueCell(value, null, null);
             length++;
@@ -87,6 +87,7 @@ class Queue<T> {
             s += '${processed.value} -> ';
             processed = processed.next;
         }
+        s += '${processed.value}';
         return s;
     }
 

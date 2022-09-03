@@ -113,12 +113,14 @@ class Main {
 		trace(new Ray2D({x: 0, y: 0}, 1).yIntercept);
 		trace(new Ray2D({x: 0, y: 0}, 1).xIntercept);
 		var queue = new Queue<Int>();
-		queue.push(0);
-		queue.push(1);
-		queue.push(2);
-		queue.push(3);
+		queue.enqueue(0);
+		queue.enqueue(1);
+		queue.enqueue(2);
+		queue.enqueue(3);
 		trace(queue);
-		trace(queue.extract());
+		trace(queue.dequeue());
+		trace(queue.dequeue());
+		trace(queue.dequeue());
 		trace(queue);
 	}
 
