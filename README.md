@@ -12,6 +12,10 @@ an image to process, or if youre using OpenFL you should be able to use bitmaps 
 
 One of the problems i have with Haxe is the lack of non-game utilities and libraries. my goal is to provide those utilities, and make app development in Haxe easier.
 
+### Contributions Are Welcomed.
+
+I'm not the best at *everything* I do, especially in fields like computer vision, with which im not the most familiar. That means there are bound to be mistakes/bugs. Because of that, every issue, pull request or code review is welcomed. **Help me make this library bigger and better for everyone :)**
+
 ### Roadmap
 
 Here is a roadmap of all features added/planned for the future:
