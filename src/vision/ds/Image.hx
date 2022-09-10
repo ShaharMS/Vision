@@ -519,18 +519,18 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function fillColor(position:IntPoint2D, color:Color) {
 
-        var queue = new #if vision_fill_color_optimization Queue<IntPoint2D> #else List<IntPoint2D> #end();
-        #if vision_fill_color_optimization queue.enqueue #else queue.push #end({x: position.x, y: position.y});
+        var queue = new List<IntPoint2D>();
+        queue.push({x: position.x, y: position.y});
         var explored:Array<Int64> = [];
         var originalColor = getPixel(position.x, position.y);
         function fill(v:IntPoint2D) {
             if (hasPixel(v.x, v.y) && getPixel(v.x, v.y) == originalColor && !explored.contains(Int64.make(v.x, v.y))) {
-                #if vision_fill_color_optimization queue.enqueue #else queue.push #end({x: v.x, y: v.y});
+                queue.push({x: v.x, y: v.y});
                 setPixel(v.x, v.y, color);
             }
         }
         while (queue.length > 0) {
-            var v = #if vision_fill_color_optimization queue.dequeue #else queue.pop #end();
+            var v = queue.pop();
             explored.push(Int64.make(v.x, v.y));
             fill({x: v.x + 1, y: v.y    });
             fill({x: v.x    , y: v.y + 1});

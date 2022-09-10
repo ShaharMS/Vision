@@ -89,4 +89,3 @@ Here is a roadmap of all features added/planned for the future:
 
 ### Define List:
 
- - `vision_fill_color_optimization`
