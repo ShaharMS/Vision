@@ -185,9 +185,7 @@ class MathTools {
 		return tan(radians);
 	}
 
-	/**
-		For fuck sake d not fuckin use this i will come to your house
-	**/
+	// For fuck sake do not fuckin use this i will come to your house
 	public static inline function cotan(radians:Float):Float {
 		return 1 / Math.tan(radians);
 	}

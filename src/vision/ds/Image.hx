@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.ds.List;
 import haxe.Int64;
 import haxe.ds.Vector;
 
@@ -518,21 +519,19 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function fillColor(position:IntPoint2D, color:Color) {
 
-        var queue = new #if vision_fill_color_optimization Queue<IntPoint2D> #else Array<IntPoint2D> #end();
-        #if vision_fill_color_optimization queue.push #else queue.unshift #end({x: position.x, y: position.y});
+        var queue = new #if vision_fill_color_optimization Queue<IntPoint2D> #else List<IntPoint2D> #end();
+        #if vision_fill_color_optimization queue.enqueue #else queue.push #end({x: position.x, y: position.y});
         var explored:Array<Int64> = [];
-
+        var originalColor = getPixel(position.x, position.y);
         function fill(v:IntPoint2D) {
-            if (hasPixel(v.x, v.y) && getPixel(v.x, v.y) == color && !explored.contains(Int64.make(v.x, v.y))) {
-                #if vision_fill_color_optimization queue.push #else queue.unshift #end({x: v.x, y: v.y});
-                explored.push(Int64.make(v.x, v.y));
+            if (hasPixel(v.x, v.y) && getPixel(v.x, v.y) == originalColor && !explored.contains(Int64.make(v.x, v.y))) {
+                #if vision_fill_color_optimization queue.enqueue #else queue.push #end({x: v.x, y: v.y});
                 setPixel(v.x, v.y, color);
             }
         }
-
         while (queue.length > 0) {
             var v = #if vision_fill_color_optimization queue.dequeue #else queue.pop #end();
-            trace("fill",v.x, v.y, queue.length);
+            explored.push(Int64.make(v.x, v.y));
             fill({x: v.x + 1, y: v.y    });
             fill({x: v.x    , y: v.y + 1});
             fill({x: v.x - 1, y: v.y    });
