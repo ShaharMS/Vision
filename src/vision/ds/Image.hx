@@ -557,6 +557,13 @@ abstract Image(Matrix<Null<Color>>) {
         return cast this;
     }
 
+    public function flip():Image {
+        for (x in 0...width) {
+            this[x].sort((e, f) -> 1);
+        }
+        return cast this;
+    }
+
 
     //--------------------------------------------------------------------------
     // Operators

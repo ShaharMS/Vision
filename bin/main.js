@@ -125,10 +125,18 @@ Main.main = function() {
 	end = HxOverrides.now() / 1000;
 	console.log("src/Main.hx:88:","Image Mirroring took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_ds_Image.flip(vision_ds_Image.clone(image)));
+	end = HxOverrides.now() / 1000;
+	console.log("src/Main.hx:92:","Image Flipping took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
+	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_ds_Image.flip(vision_ds_Image.mirror(vision_ds_Image.clone(image))));
+	end = HxOverrides.now() / 1000;
+	console.log("src/Main.hx:96:","Image Mirroring & Flipping took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
+	start = HxOverrides.now() / 1000;
 	var canny = vision_Vision.cannyEdgeDetection(vision_ds_Image.clone(image));
 	Main.printImage(canny);
 	end = HxOverrides.now() / 1000;
-	console.log("src/Main.hx:93:","Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
+	console.log("src/Main.hx:101:","Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	var lines = vision_Vision.simpleLineSegment2DDetection(vision_ds_Image.clone(image),3,30);
 	var newI = vision_ds_Image.clone(image);
@@ -140,7 +148,7 @@ Main.main = function() {
 	}
 	Main.printImage(newI);
 	end = HxOverrides.now() / 1000;
-	console.log("src/Main.hx:102:","Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
+	console.log("src/Main.hx:110:","Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	var lines = vision_Vision.houghRay2DDetection(vision_ds_Image.clone(image));
 	var _g = 0;
@@ -151,24 +159,24 @@ Main.main = function() {
 	}
 	Main.printImage(image);
 	end = HxOverrides.now() / 1000;
-	console.log("src/Main.hx:110:","Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
-	console.log("src/Main.hx:112:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtX(8));
-	console.log("src/Main.hx:113:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).slope);
-	console.log("src/Main.hx:114:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).degrees);
-	console.log("src/Main.hx:115:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).radians);
-	console.log("src/Main.hx:116:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtY(8));
-	console.log("src/Main.hx:117:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_yIntercept());
-	console.log("src/Main.hx:118:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_xIntercept());
+	console.log("src/Main.hx:118:","Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
+	console.log("src/Main.hx:120:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtX(8));
+	console.log("src/Main.hx:121:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).slope);
+	console.log("src/Main.hx:122:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).degrees);
+	console.log("src/Main.hx:123:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).radians);
+	console.log("src/Main.hx:124:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtY(8));
+	console.log("src/Main.hx:125:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_yIntercept());
+	console.log("src/Main.hx:126:",new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_xIntercept());
 	var queue = new vision_ds_Queue();
 	queue.enqueue(0);
 	queue.enqueue(1);
 	queue.enqueue(2);
 	queue.enqueue(3);
-	console.log("src/Main.hx:124:",queue);
-	console.log("src/Main.hx:125:",queue.dequeue());
-	console.log("src/Main.hx:126:",queue.dequeue());
-	console.log("src/Main.hx:127:",queue.dequeue());
-	console.log("src/Main.hx:128:",queue);
+	console.log("src/Main.hx:132:",queue);
+	console.log("src/Main.hx:133:",queue.dequeue());
+	console.log("src/Main.hx:134:",queue.dequeue());
+	console.log("src/Main.hx:135:",queue.dequeue());
+	console.log("src/Main.hx:136:",queue);
 };
 Main.printImage = function(image) {
 	var c = window.document.createElement("canvas");
@@ -1576,7 +1584,7 @@ vision_algorithms_Hough.__name__ = true;
 vision_algorithms_Hough.toHoughSpace = function(image) {
 	var rhoMax = Math.sqrt(vision_ds_Image.get_width(image) * vision_ds_Image.get_width(image) + vision_ds_Image.get_height(image) * vision_ds_Image.get_height(image));
 	var accum = vision_ds_hough_HoughAccumulator._new(rhoMax | 0);
-	var houghSpace = vision_ds_Image._new(361,rhoMax | 0,16777215);
+	var houghSpace = vision_ds_Image._new(181,rhoMax | 0,16777215);
 	var _g = 0;
 	var _g1 = vision_ds_Image.get_width(image);
 	while(_g < _g1) {
@@ -1628,7 +1636,7 @@ vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocal
 	}
 	var rhoMax = Math.sqrt(vision_ds_Image.get_width(image) * vision_ds_Image.get_width(image) + vision_ds_Image.get_height(image) * vision_ds_Image.get_height(image));
 	var accum = vision_ds_hough_HoughAccumulator._new(rhoMax | 0);
-	var houghSpace = vision_ds_Image._new(361,rhoMax | 0,16777215);
+	var houghSpace = vision_ds_Image._new(181,rhoMax | 0,16777215);
 	var maximas = [];
 	var rays = [];
 	var checkMaxima = function() {
@@ -4453,6 +4461,17 @@ vision_ds_Image.mirror = function(this1) {
 	this1.sort(function(e,f) {
 		return 1;
 	});
+	return this1;
+};
+vision_ds_Image.flip = function(this1) {
+	var _g = 0;
+	var _g1 = vision_ds_Image.get_width(this1);
+	while(_g < _g1) {
+		var x = _g++;
+		this1[x].sort(function(e,f) {
+			return 1;
+		});
+	}
 	return this1;
 };
 vision_ds_Image.image_array_read = function(this1,index) {

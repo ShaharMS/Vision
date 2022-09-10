@@ -53,7 +53,7 @@ class Hough {
 	public static function toHoughSpace(image:Image):HoughSpace {
 		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
 		var accum:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
-		var houghSpace = new Image(361, Std.int(rhoMax), Color.WHITE);
+		var houghSpace = new Image(181, Std.int(rhoMax), Color.WHITE);
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
 				if (Math.abs(image.getPixel(x, y).red) == 255) {
@@ -89,7 +89,7 @@ class Hough {
 		
 		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
 		var accum:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
-		var houghSpace = new Image(361, Std.int(rhoMax), Color.WHITE);
+		var houghSpace = new Image(181, Std.int(rhoMax), Color.WHITE);
 
 		var maximas:Array<Point2D> = [];
 		var rays:Array<Ray2D> = [];
