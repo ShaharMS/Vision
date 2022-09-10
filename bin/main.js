@@ -4343,6 +4343,7 @@ vision_ds_Image.drawEllipse = function(this1,centerX,centerY,radiusX,radiusY,col
 	var twoASquare = 2 * radiusX * radiusX;
 	var twoBSquare = 2 * radiusY * radiusY;
 	var x = radiusX;
+	var b = true;
 	var y = 0;
 	var xChange = radiusY * radiusY * (1 - 2 * radiusX);
 	var yChange = radiusX * radiusX;

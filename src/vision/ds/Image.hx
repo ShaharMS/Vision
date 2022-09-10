@@ -423,7 +423,9 @@ abstract Image(Matrix<Null<Color>>) {
         var x:Int, y:Int, xChange:Float, yChange:Float, ellipseError:Float, twoASquare:Float, twoBSquare:Float, stoppingX:Float, stoppingY:Float;
         twoASquare = 2 * radiusX * radiusX;
         twoBSquare = 2 * radiusY * radiusY;
-        x = radiusX;
+        x = radiusX - 1;
+        //weird fix for that one pixel bulging
+        var b = true;
         y = 0;
         xChange = radiusY * radiusY * (1 - 2 * radiusX);
         yChange = radiusX * radiusX;
@@ -435,6 +437,7 @@ abstract Image(Matrix<Null<Color>>) {
             setPixel(centerX - x, centerY + y, color);
             setPixel(centerX + x, centerY - y, color);
             setPixel(centerX - x, centerY - y, color);
+            if (b) {x++; b = false;}
             if (ellipseError <= 0) {
                 y++;
                 stoppingY += twoASquare;
