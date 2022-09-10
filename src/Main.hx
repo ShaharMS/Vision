@@ -129,11 +129,11 @@ class Main {
 		queue.enqueue(1);
 		queue.enqueue(2);
 		queue.enqueue(3);
-		trace(queue);
+		trace(queue.toString());
 		trace(queue.dequeue());
 		trace(queue.dequeue());
 		trace(queue.dequeue());
-		trace(queue);
+		trace(queue.toString());
 	}
 
 	public static function printImage(image:Image) {

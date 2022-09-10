@@ -66,10 +66,14 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
         var pointArray:Array<IntPoint2D> = [];
         for (x in 0...this.length) {
             for (y in 0...this[x].length) {
-                if (this[x][y] >= threshold) pointArray.push(new IntPoint2D(x, y));
+                if (this[x][y] >= threshold) pointArray.push(new IntPoint2D(x - rhoMax, y));
             }
         }
         return pointArray;
+    }
+
+    public function cellIterator(?threshold:Int = 0) {
+        return getMaximas(threshold).iterator();
     }
 
     @:op([]) function array_get_theta_array(index:Int):Array<Int> {

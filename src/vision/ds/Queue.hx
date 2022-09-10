@@ -52,7 +52,8 @@ class Queue<T> {
     **/
     public function dequeue():T {
         var v = last.value;
-        last = null;
+        //funny maneuver
+        last.previous.next = null;
         length--;
         return v;
     }
@@ -80,14 +81,14 @@ class Queue<T> {
     }
 
     public function toString():String {
-        var s = "";
+        var s = "[";
         var processed:QueueCell<T> = first;
 
         while (processed.next != null) {
             s += '${processed.value} -> ';
             processed = processed.next;
         }
-        s += '${processed.value}';
+        s += '${processed.value}]';
         return s;
     }
 

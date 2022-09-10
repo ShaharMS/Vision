@@ -249,7 +249,6 @@ abstract Image(Matrix<Null<Color>>) {
     public function drawRay2D(line:Ray2D, color:Color) {
         var p1 = IntPoint2D.fromPoint2D(line.getPointAtY(0));
         var p2 = IntPoint2D.fromPoint2D(line.getPointAtY(height - 1));
-        trace('drawRay2D: point1: $p1, point2: $p2');
         var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
         var dx = Math.abs(x2 - x1);
         var dy = Math.abs(y2 - y1);

@@ -13,6 +13,8 @@ import vision.ds.Ray2D;
 import vision.ds.LineSegment2D;
 import vision.ds.Image;
 
+using vision.tools.MathTools;
+import vision.tools.MathTools.*;
 /**
 	A Hough Transform implementation by [ShaharMS](https://www.github.com/ShaharMS).
 
@@ -81,93 +83,27 @@ class Hough {
 		@param image The image to be transformed.
 		@param threshold The minimum value of an accumulator's cell to be considered a local maximum (or, a line). Defaults to 30.
 		@param numLocalMaxima A cap on the number of local maximums to return. When unset, all local maximums are returned. unless you have a good reason, you should'nt set this parameter.
-		@param maximaCheckLoop For performance reasons, the algorithm will only check the local maximums in the accumulator once every `maximaCheckLoop` iterations. **How does this work?** - a value of 10 will check for a maximum every 10 pixels. Setting this might be useful when working with very large images. By default, this parameter is set to `(image.width + image.height) / 10`.
 
 		@return A `HoughSpace` object, containing the accumulator, an image representation of the accumulator, and all the local maximums found in the accumulator.
 	**/
-	public static function toHoughSpaceWithRays(image:Image, threshold:Int = 30, ?numLocalMaxima:Int = null, ?maximaCheckLoop:Int = null):HoughSpace {
+	public static function toHoughSpaceWithRays(image:Image, threshold:Int = 200, ?numLocalMaxima:Int = null):HoughSpace {
 		
 		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
-		var accum:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
-		var houghSpace = new Image(181, Std.int(rhoMax), Color.WHITE);
+		var space = toHoughSpace(image);
 
+		var accum = space.accumulator;
 		var maximas:Array<Point2D> = [];
 		var rays:Array<Ray2D> = [];
-
-		function checkMaxima() {
-			var max = 0;
-			var bestRho = 0.;
-			var bestTheta = 0;
-			for (i in 0...360) {
-				if (accum[i] == null) continue;
-				for (j in 0...accum[i].length) {
-					if (accum[i][j] > max) {
-						max = accum[i][j];
-						bestRho = j;
-						bestTheta = i;
-					}
-				}
-			}
-
-			if (max > threshold) {
-				// now to backproject into drawing space
-				bestRho *= 2;
-				bestRho -= rhoMax; /// accumulator has rhoMax added
-
-				var localMax:Point2D = {x: bestTheta, y: bestRho};
-
-				//deep equality check 
-				for (maxima in maximas) {
-					if (maxima.x == localMax.x && maxima.y == localMax.y) {
-						return;
-					}
-				}
-
-				maximas.push(localMax);
-
-				var x1 = bestRho / Math.cos(bestTheta * Math.PI / 180);
-				var y1 = bestRho / Math.sin(bestTheta * Math.PI / 180);
-				var m = Math.tan(bestTheta * Math.PI / 180);
-
-				rays.push(new Ray2D({x: x1, y: y1}, m));
-			}
-		}
-		
-		var loop = 0;
-		maximaCheckLoop = maximaCheckLoop != null ? maximaCheckLoop : Std.int((image.width + image.height) / 20);
-
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				if (Math.abs(image.getPixel(x, y).red) == 255) {
-					var rho:Float;
-					var theta = 0.;
-					var thetaIndex = 0;
-					while (thetaIndex < 180) {
-						rho = x * Math.cos(theta) + y * Math.sin(theta);
-						accum.incrementCell(Std.int(rho), thetaIndex);
-						houghSpace.paintPixel(thetaIndex, Std.int(rho), Color.fromRGBAFloat(0, 0, 0, 0.01));
-						theta += Math.PI / 360;
-						thetaIndex++;
-					}
-				}
-				loop++;
-				if (loop >= maximaCheckLoop && Math.abs(image.getPixel(x, y).red) == 255) {
-					loop = 0;
-					checkMaxima();
-					loop = 0;
-					if (numLocalMaxima != null) {
-						if (maximas.length >= numLocalMaxima) {
-							var space = new HoughSpace(accum, houghSpace);
-							space.rays = rays;
-							space.maximums = maximas;
-							return space;
-						}
-					}
-				}
-			}
+	
+		for (point in accum.cellIterator(threshold)) {
+			var theta = degreesToRadians(point.y);
+			var rho = point.x;
+			trace(rho, theta);
+			var m = -cotan(theta);
+			var b = rho * cosec(theta);
+			rays.push(new Ray2D({x: 0, y: b}, m));
 		}
 
-		var space = new HoughSpace(accum, houghSpace);
 		space.rays = rays;
 		space.maximums = maximas;
 		return space;
