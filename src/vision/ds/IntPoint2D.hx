@@ -1,31 +1,37 @@
 package vision.ds;
 
+import haxe.Int64;
 import haxe.ds.Vector;
 import vision.ds.Point2D;
 
-abstract IntPoint2D(Vector<Int>) {
+/**
+ * A 2D point represented by two, 32-bit integers.
+ */
+abstract IntPoint2D(Int64) {
     public var x(get, set):Int;
 
     public var y(get, set):Int;
 
     public function new(X:Int, Y:Int) {
-        this = Vector.fromArrayCopy([X, Y]);
+        this = Int64.make(X, Y);
     }
 
     function get_y() {
-        return this[1];
+        return this.low;
     }
 
     function get_x() {
-        return this[0];
+        return this.high;
     }
 
-    function set_y(y:Int) {
-        return this[1] = y;
+    inline function set_y(y:Int):Int {
+        this = Int64.make(x, y);
+        return y;
     }
 
-    function set_x(x:Int) {
-        return this[0] = x;
+    inline function set_x(x:Int) {
+        this = Int64.make(x, y);
+        return x;
     }
 
     @:to public function toPoint2D() {

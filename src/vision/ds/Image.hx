@@ -531,7 +531,7 @@ abstract Image(Matrix<Null<Color>>) {
         }
 
         while (queue.length > 0) {
-            var v = #if vision_fill_color_optimization queue.extract #else queue.pop #end();
+            var v = #if vision_fill_color_optimization queue.dequeue #else queue.pop #end();
             trace("fill",v.x, v.y, queue.length);
             fill({x: v.x + 1, y: v.y    });
             fill({x: v.x    , y: v.y + 1});
