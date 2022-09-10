@@ -54,26 +54,16 @@ class Hough {
 		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
 		var accum:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
 		var houghSpace = new Image(361, Std.int(rhoMax), Color.WHITE);
-		for (i in 0...image.width) {
-			for (j in 0...image.height) {
-				if (Math.abs(image.getPixel(i, j).red) == 255) {
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				if (Math.abs(image.getPixel(x, y).red) == 255) {
 					var rho:Float;
 					var theta = 0.;
 					var thetaIndex = 0;
-					var x = i - Std.int(image.width / 2);
-					var y = j - Std.int(image.height / 2);
-					while (thetaIndex < 360) {
-						rho = rhoMax + x * Math.cos(theta) + y * Math.sin(theta);
-						rho /= 2;
-						if (accum[thetaIndex] == null) {
-							accum[thetaIndex] = [];
-						} else if (accum[thetaIndex][Std.int(rho)] == null) {
-							accum[thetaIndex][Std.int(rho)] = 0;
-						} else {
-							accum[thetaIndex][Std.int(rho)] += 1;
-						}
+					while (thetaIndex < 180) {
+						rho = x * Math.cos(theta) + y * Math.sin(theta);
+						accum.incrementCell(Std.int(rho), thetaIndex);
 						houghSpace.paintPixel(thetaIndex, Std.int(rho), Color.fromRGBAFloat(0, 0, 0, 0.01));
-						
 						theta += Math.PI / 360;
 						thetaIndex++;
 					}
@@ -152,19 +142,10 @@ class Hough {
 					var rho:Float;
 					var theta = 0.;
 					var thetaIndex = 0;
-					while (thetaIndex < 360) {
-						var line1 = new Ray2D({x: x, y: y}, null, thetaIndex);
-						var line2 = new Ray2D({x: 0, y: 0}, null, thetaIndex + 90);
-						var rho = MathTools.distanceBetweenPoints({x: 0, y: 0}, line1.intersect(line2));
-						if (accum[thetaIndex] == null) {
-							accum[thetaIndex] = [];
-						} else if (accum[thetaIndex][Std.int(rho)] == null) {
-							accum[thetaIndex][Std.int(rho)] = 0;
-						} else {
-							accum[thetaIndex][Std.int(rho)] += 1;
-						}
+					while (thetaIndex < 180) {
+						rho = x * Math.cos(theta) + y * Math.sin(theta);
+						accum.incrementCell(Std.int(rho), thetaIndex);
 						houghSpace.paintPixel(thetaIndex, Std.int(rho), Color.fromRGBAFloat(0, 0, 0, 0.01));
-						
 						theta += Math.PI / 360;
 						thetaIndex++;
 					}

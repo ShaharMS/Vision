@@ -7,41 +7,76 @@ import vision.ds.Point2D;
 import vision.ds.LineSegment2D;
 import vision.ds.Image;
 
+using vision.tools.MathTools;
+
 class SimpleLineDetector {
 	
-	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float, preferTTB = false):LineSegment2D {
+	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float):LineSegment2D {
 		var startX = point.x, startY = point.y;
-		var yArr = preferTTB ? [0, 1, 2, 3] :[0, -1, 1, 2, -2];
-		var xArr = preferTTB ? [0, -1, 1, 2, -2] : [1, 2, 3, 0];
+		var yArr = [0, 1, -1, 2, -2];
+		var xArr = [0, 1, -1, 2, -2];
+		var preferredDirection:IntPoint2D = new IntPoint2D(0,0);
 		if (image[point.x] == null || image[point.x][point.y] == null || image[point.x][point.y] == 0) return null;
-		// first - basic check to see if this point is close to / on the line. if so, its probably detecting an
-		// already detected line.
-		
-		//now, were going to start looking for points around the point to find the entire line.
-		var prev:Point2D = null;
-		var prev2:Point2D = null;
-		function expand() {
-			for (X in xArr) {
-				for (Y in yArr) {
-					if (X == 0 && Y == 0 || image[point.x + X] == null || image[point.x + X][point.y + Y] == null) continue;
-					if (image.getPixel(point.x + X, point.y + Y).to24Bit() == Color.WHITE) {
-						point.x = point.x + X;
-						point.y = point.y + Y;
 
-						//used to prevent recursion
-						if (prev == null) {
-							prev = {x: point.x, y: point.y};
-						} else {
-							prev2 = {x: prev.x, y: prev.y};
-							prev = {x: point.x, y: point.y};
+		//first, were going to detect the general direction the line goes in - this is used to detect crossed lines.
+		function findPreference() {
+			for (prefX in xArr) {
+				for (prefY in yArr) {
+					if (prefX == 0 && prefY == 0) continue;
+					if (!image.hasPixel(point.x + prefX, point.y + prefY)) continue;
+					if (image.getPixel(point.x + prefX, point.y + prefY).to24Bit() == Color.WHITE) {
+						preferredDirection = new IntPoint2D(prefX, prefY);
+					}
+				}
+			}
+		}
+		findPreference();
+
+		var xs = xArr.copy();
+		var ys = yArr.copy();
+		xs.remove(2);
+		xs.remove(-2);
+		ys.remove(2);
+		ys.remove(-2);
+		if (preferredDirection.x > 0) {
+			xs.remove(-1);
+		} else if (preferredDirection.x < 0) {
+			xs.remove(1);
+		} else {
+			xs.remove(-1);
+		}
+
+		if (preferredDirection.y > 0) {
+			ys.remove(-1);
+		} else if (preferredDirection.y < 0) {
+			ys.remove(1);
+		} else {
+			ys.remove(-1);
+		}
+
+		var mightStop = false;
+		var lValue = 0.;
+		var lastValue = 0.;
+		function expand() {
+			final X = preferredDirection.x, Y = preferredDirection.y;
+			if (image[point.x + X] == null || image[point.x + X][point.y + Y] == null) {
+				return;
+			}
+			if (image.getPixel(point.x + X, point.y + Y).to24Bit() == Color.WHITE) {
+				point.x = point.x + X;
+				point.y = point.y + Y;
+				expand();
+			} else {
+				//check if the pixel's neighbors can continue the line, and keep the direction
+
+				for (x in xs) {
+					for (y in ys) {
+						if (x == 0 && y == 0) continue;
+						if (image.hasPixel(point.x + x, point.y + y) && image.getPixel(point.x + x, point.y + y).to24Bit() == Color.WHITE) {
+							point.x = point.x + x;
+							point.y = point.y + y;
+							expand();
 						}
-						if ((if (preferTTB) Y else X) == 0) {
-							if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
-								return;
-							}
-							trace(point, prev, prev2);
-						}
-						expand();
 					}
 				}
 			}

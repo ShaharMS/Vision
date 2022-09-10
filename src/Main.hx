@@ -83,6 +83,10 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Image Cloning took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
+		printImage(image.clone().mirror());
+		end = haxe.Timer.stamp();
+		trace("Image Mirroring took: " + MathTools.turnicate(end - start, 4) + " seconds");
+		start = haxe.Timer.stamp();
 		var canny = Vision.cannyEdgeDetection(image.clone());
 		printImage(canny);
 		end = haxe.Timer.stamp();

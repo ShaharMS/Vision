@@ -86,7 +86,14 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `getImagePortion()`
    - [x] `setImagePortion()`
    - [x] `copyPixel()`
+ - Manipulation:
+   - [x] `mirror()`  
+   - [x] `flip()`
+   - [ ] `resizeNearestNeighbor()`
+   - [ ] `resizeBilinear()`
+   - [ ] `resizeBicubic()`
 
 
 ### Define List:
 
+ - `vision_disable_point_alloc_optimization`

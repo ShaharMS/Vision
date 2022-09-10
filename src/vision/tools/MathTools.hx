@@ -57,7 +57,7 @@ class MathTools {
 		return angle2 - angle;
 	}
 
-	public static function angleFromPointToPoint(point1:Point2D, point2:Point2D) {
+	public static function radiansFromPointToPoint(point1:Point2D, point2:Point2D) {
 		var x:Float = point2.x - point1.x;
 		var y:Float = point2.y - point1.y;
 		return Math.atan2(y, x);

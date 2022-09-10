@@ -121,7 +121,6 @@ class Vision {
         
         var edges = sobelEdgeDetection(image.clone(), threshold); //TODO: #3 switch to canny edge detection
         var houghSpace = Hough.toHoughSpaceWithRays(edges, threshold, maxRayCount);
-        trace(houghSpace.rays);
         return houghSpace.rays;
     }
 
@@ -494,15 +493,15 @@ class Vision {
                     lines.push(line);
                 }
             }
-        }
+        } /*
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true);
+                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength);
                 if (line != null) {
                     lines.push(line);
                 }
             }
-        }
+        }*/
 
         var actualLines:Array<LineSegment2D> = [];
         for (l in lines) {

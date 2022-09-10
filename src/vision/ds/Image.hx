@@ -552,6 +552,11 @@ abstract Image(Matrix<Null<Color>>) {
         return clone;
     }
 
+    public function mirror():Image {
+        this.sort((e, f) -> 1);
+        return cast this;
+    }
+
 
     //--------------------------------------------------------------------------
     // Operators

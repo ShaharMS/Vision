@@ -71,4 +71,8 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
         }
         return pointArray;
     }
+
+    @:op([]) function array_get_theta_array(index:Int):Array<Int> {
+        return this[index + rhoMax];
+    }
 }
