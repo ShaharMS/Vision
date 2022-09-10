@@ -1,9 +1,9 @@
 package vision.ds.gaussian;
 
 enum abstract GaussianKernalSize(Int) from Int to Int{
-    var X1 = 1;
-    var X3 = 3;
-    var X5 = 5;
-    var X7 = 7;
-    var X9 = 9;
+    /**No blurring**/var X1 = 1;
+    /**Lower-quality blurring, best performance.**/var X3 = 3;
+    /**Medium-quality blurring, medium performance**/var X5 = 5;
+    /**High-quality blurring, slow-ish performance**/var X7 = 7;
+    /**Highest-quality blurring, worst performance**/var X9 = 9;
 }

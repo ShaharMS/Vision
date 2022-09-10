@@ -51,8 +51,8 @@ class Hough {
 		@return A `HoughSpace` object, containing the accumulator and an image representation of the accumulator.
 	**/
 	public static function toHoughSpace(image:Image):HoughSpace {
-		var accum:HoughAccumulator = new HoughAccumulator();
 		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
+		var accum:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
 		var houghSpace = new Image(361, Std.int(rhoMax), Color.WHITE);
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
@@ -97,8 +97,8 @@ class Hough {
 	**/
 	public static function toHoughSpaceWithRays(image:Image, threshold:Int = 30, ?numLocalMaxima:Int = null, ?maximaCheckLoop:Int = null):HoughSpace {
 		
-		var accum:HoughAccumulator = new HoughAccumulator();
 		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
+		var accum:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
 		var houghSpace = new Image(361, Std.int(rhoMax), Color.WHITE);
 
 		var maximas:Array<Point2D> = [];
