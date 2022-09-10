@@ -78,6 +78,7 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `drawCubicBezier()`
    - [x] `drawLineWithLerp()`
    - [x] `fillRect()`
+   - [x] `fillRectRecursive()` 
    - [ ] `fillCircle()`
    - [x] `callDrawSequence()`
  - Copying:
