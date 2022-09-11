@@ -1056,7 +1056,7 @@ vision_Vision.cannyEdgeDetection = function(image,sigma,lowThreshold,highThresho
 		sigma = 1;
 	}
 	var cannyObject = vision_ds_Image.clone(image);
-	return vision_algorithms_Canny.applyHysteresis(vision_algorithms_Canny.nonMaxSuppression(vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),3,sigma))),highThreshold,lowThreshold);
+	return vision_algorithms_Canny.applyHysteresis(vision_algorithms_Canny.nonMaxSuppression(vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),1,sigma))),highThreshold,lowThreshold);
 };
 vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLength) {
 	if(minLineLength == null) {

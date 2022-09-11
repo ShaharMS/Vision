@@ -221,6 +221,14 @@ class MathTools {
 		return max;
 	}
 
+	public static function average(...values:Float) {
+		var sum = 0.;
+		for (v in values) {
+			sum += v;
+		}
+		return sum / values.length;
+	}
+
 	public static function verifyInt(v:Float) {
 		return v == Std.int(v);
 	}

@@ -425,16 +425,16 @@ class Vision {
 
         @param image The image to be edge detected.
         @param sigma The sigma value to be used in the gaussian blur.
-        @param threshold The threshold value to be used in the hysteresis thresholding.
+        @param intialKernalSize This is used for the second step of the canny edge detection - gaussian blur. unless you want to improve performance, this should remain unchanged.
         @param lowThreshold The low threshold value to be used in the hysteresis thresholding.
         @param highThreshold The high threshold value to be used in the hysteresis thresholding.
 
         @return The edge detected image.
 
     **/
-    public static function cannyEdgeDetection(image:Image, sigma:Float = 1, lowThreshold:Float = 0.4, highThreshold:Float = 0.6):Image {
+    public static function cannyEdgeDetection(image:Image, sigma:Float = 1, initialKernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.4, highThreshold:Float = 0.6):Image {
         var cannyObject:CannyObject = image.clone();
-        return cannyObject.grayscale().applyGaussian(3, sigma).applySobelFilters().nonMaxSuppression().applyHysteresis(highThreshold, lowThreshold);
+        return cannyObject.grayscale().applyGaussian(initialKernalSize, sigma).applySobelFilters().nonMaxSuppression().applyHysteresis(highThreshold, lowThreshold);
     }
 
     /**

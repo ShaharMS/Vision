@@ -4,6 +4,7 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.canny.CannyObject;
 using vision.algorithms.Canny;
+using vision.tools.MathTools;
 
 
 /**
