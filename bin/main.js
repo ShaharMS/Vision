@@ -1045,21 +1045,18 @@ vision_Vision.gaussianBlur = function(image,sigma,kernalSize) {
 	}
 	return blurredImage;
 };
-vision_Vision.cannyEdgeDetection = function(image,sigma,threshold,lowThreshold,highThreshold) {
+vision_Vision.cannyEdgeDetection = function(image,sigma,lowThreshold,highThreshold) {
 	if(highThreshold == null) {
 		highThreshold = 0.6;
 	}
 	if(lowThreshold == null) {
 		lowThreshold = 0.4;
 	}
-	if(threshold == null) {
-		threshold = 0.5;
-	}
 	if(sigma == null) {
 		sigma = 1;
 	}
 	var cannyObject = vision_ds_Image.clone(image);
-	return vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),3,sigma));
+	return vision_algorithms_Canny.applyHysteresis(vision_algorithms_Canny.nonMaxSuppression(vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),3,sigma))),highThreshold,lowThreshold);
 };
 vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLength) {
 	if(minLineLength == null) {
@@ -1106,24 +1103,24 @@ vision_algorithms_Canny.applyGaussian = function(image,size,sigma) {
 };
 vision_algorithms_Canny.applySobelFilters = function(image) {
 	var filtered = vision_ds_Image._new(vision_ds_Image.get_width(image),vision_ds_Image.get_height(image));
-	var yFilter_0_0 = -1;
+	var yFilter_0_0 = -3;
 	var yFilter_0_1 = 0;
-	var yFilter_0_2 = 1;
-	var yFilter_1_0 = -2;
+	var yFilter_0_2 = 3;
+	var yFilter_1_0 = -10;
 	var yFilter_1_1 = 0;
-	var yFilter_1_2 = 2;
-	var yFilter_2_0 = -1;
+	var yFilter_1_2 = 10;
+	var yFilter_2_0 = -3;
 	var yFilter_2_1 = 0;
-	var yFilter_2_2 = 1;
-	var xFilter_0_0 = -1;
-	var xFilter_0_1 = -2;
-	var xFilter_0_2 = -1;
+	var yFilter_2_2 = 3;
+	var xFilter_0_0 = -3;
+	var xFilter_0_1 = -10;
+	var xFilter_0_2 = -3;
 	var xFilter_1_0 = 0;
 	var xFilter_1_1 = 0;
 	var xFilter_1_2 = 0;
-	var xFilter_2_0 = 1;
-	var xFilter_2_1 = 2;
-	var xFilter_2_2 = 1;
+	var xFilter_2_0 = 3;
+	var xFilter_2_1 = 10;
+	var xFilter_2_2 = 3;
 	var ghs = 0;
 	var gvs = 0;
 	var _g = 0;
@@ -1138,7 +1135,7 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			ghs = gvs;
 			var neighbors = vision_algorithms_Canny.getNeighbors(3,x,y,image);
 			var lhs = yFilter_0_0;
-			var rhs = neighbors[0][0];
+			var rhs = neighbors[0][0] & 16777215;
 			var Red = (lhs >> 16 & 255) / 255 * ((rhs >> 16 & 255) / 255);
 			var Green = (lhs >> 8 & 255) / 255 * ((rhs >> 8 & 255) / 255);
 			var Blue = (lhs & 255) / 255 * ((rhs & 255) / 255);
@@ -1186,7 +1183,7 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			color1 |= (Alpha3 > 255 ? 255 : Alpha3 < 0 ? 0 : Alpha3) << 24;
 			ghs = color1;
 			var lhs1 = xFilter_0_0;
-			var rhs2 = neighbors[0][0];
+			var rhs2 = neighbors[0][0] & 16777215;
 			var Red2 = (lhs1 >> 16 & 255) / 255 * ((rhs2 >> 16 & 255) / 255);
 			var Green2 = (lhs1 >> 8 & 255) / 255 * ((rhs2 >> 8 & 255) / 255);
 			var Blue2 = (lhs1 & 255) / 255 * ((rhs2 & 255) / 255);
@@ -1234,7 +1231,7 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			color3 |= (Alpha7 > 255 ? 255 : Alpha7 < 0 ? 0 : Alpha7) << 24;
 			gvs = color3;
 			var lhs2 = yFilter_0_1;
-			var rhs4 = neighbors[0][1];
+			var rhs4 = neighbors[0][1] & 16777215;
 			var Red4 = (lhs2 >> 16 & 255) / 255 * ((rhs4 >> 16 & 255) / 255);
 			var Green4 = (lhs2 >> 8 & 255) / 255 * ((rhs4 >> 8 & 255) / 255);
 			var Blue4 = (lhs2 & 255) / 255 * ((rhs4 & 255) / 255);
@@ -1282,7 +1279,7 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			color5 |= (Alpha11 > 255 ? 255 : Alpha11 < 0 ? 0 : Alpha11) << 24;
 			ghs = color5;
 			var lhs3 = xFilter_0_1;
-			var rhs6 = neighbors[0][1];
+			var rhs6 = neighbors[0][1] & 16777215;
 			var Red6 = (lhs3 >> 16 & 255) / 255 * ((rhs6 >> 16 & 255) / 255);
 			var Green6 = (lhs3 >> 8 & 255) / 255 * ((rhs6 >> 8 & 255) / 255);
 			var Blue6 = (lhs3 & 255) / 255 * ((rhs6 & 255) / 255);
@@ -1330,7 +1327,7 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			color7 |= (Alpha15 > 255 ? 255 : Alpha15 < 0 ? 0 : Alpha15) << 24;
 			gvs = color7;
 			var lhs4 = yFilter_1_0;
-			var rhs8 = neighbors[1][0];
+			var rhs8 = neighbors[1][0] & 16777215;
 			var Red8 = (lhs4 >> 16 & 255) / 255 * ((rhs8 >> 16 & 255) / 255);
 			var Green8 = (lhs4 >> 8 & 255) / 255 * ((rhs8 >> 8 & 255) / 255);
 			var Blue8 = (lhs4 & 255) / 255 * ((rhs8 & 255) / 255);
@@ -1378,7 +1375,7 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			color9 |= (Alpha19 > 255 ? 255 : Alpha19 < 0 ? 0 : Alpha19) << 24;
 			ghs = color9;
 			var lhs5 = xFilter_1_0;
-			var rhs10 = neighbors[1][0];
+			var rhs10 = neighbors[1][0] & 16777215;
 			var Red10 = (lhs5 >> 16 & 255) / 255 * ((rhs10 >> 16 & 255) / 255);
 			var Green10 = (lhs5 >> 8 & 255) / 255 * ((rhs10 >> 8 & 255) / 255);
 			var Blue10 = (lhs5 & 255) / 255 * ((rhs10 & 255) / 255);
@@ -1426,7 +1423,7 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			color11 |= (Alpha23 > 255 ? 255 : Alpha23 < 0 ? 0 : Alpha23) << 24;
 			gvs = color11;
 			var lhs6 = yFilter_1_1;
-			var rhs12 = neighbors[1][1];
+			var rhs12 = neighbors[1][1] & 16777215;
 			var Red12 = (lhs6 >> 16 & 255) / 255 * ((rhs12 >> 16 & 255) / 255);
 			var Green12 = (lhs6 >> 8 & 255) / 255 * ((rhs12 >> 8 & 255) / 255);
 			var Blue12 = (lhs6 & 255) / 255 * ((rhs12 & 255) / 255);
@@ -1474,7 +1471,7 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			color13 |= (Alpha27 > 255 ? 255 : Alpha27 < 0 ? 0 : Alpha27) << 24;
 			ghs = color13;
 			var lhs7 = xFilter_1_1;
-			var rhs14 = neighbors[1][1];
+			var rhs14 = neighbors[1][1] & 16777215;
 			var Red14 = (lhs7 >> 16 & 255) / 255 * ((rhs14 >> 16 & 255) / 255);
 			var Green14 = (lhs7 >> 8 & 255) / 255 * ((rhs14 >> 8 & 255) / 255);
 			var Blue14 = (lhs7 & 255) / 255 * ((rhs14 & 255) / 255);
@@ -1537,6 +1534,107 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 		}
 	}
 	return filtered;
+};
+vision_algorithms_Canny.nonMaxSuppression = function(image) {
+	var filtered = vision_ds_Image._new(vision_ds_Image.get_width(image),vision_ds_Image.get_height(image));
+	var _g = 0;
+	var _g1 = vision_ds_Image.get_width(image);
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = 0;
+		var _g3 = vision_ds_Image.get_height(image);
+		while(_g2 < _g3) {
+			var y = _g2++;
+			var n = vision_algorithms_Canny.getNeighbors(3,x,y,image);
+			if(n[1][1] > n[0][1] && n[1][1] > n[2][1]) {
+				vision_ds_Image.image_array_read(filtered,x)[y] = n[1][1];
+			} else {
+				vision_ds_Image.image_array_read(filtered,x)[y] = 0;
+			}
+			if(n[1][1] > n[0][2] && n[1][1] > n[2][0]) {
+				vision_ds_Image.image_array_read(filtered,x)[y] = n[1][1];
+			} else {
+				vision_ds_Image.image_array_read(filtered,x)[y] = 0;
+			}
+			if(n[1][1] > n[1][0] && n[1][1] > n[1][2]) {
+				vision_ds_Image.image_array_read(filtered,x)[y] = n[1][1];
+			} else {
+				vision_ds_Image.image_array_read(filtered,x)[y] = 0;
+			}
+			if(n[1][1] > n[0][0] && n[1][1] > n[2][2]) {
+				vision_ds_Image.image_array_read(filtered,x)[y] = n[1][1];
+			} else {
+				vision_ds_Image.image_array_read(filtered,x)[y] = 0;
+			}
+		}
+	}
+	return filtered;
+};
+vision_algorithms_Canny.applyHysteresis = function(image,ht,lt) {
+	var copy = vision_ds_Image.clone(image);
+	var isStrong = function(edge) {
+		return (edge >> 16 & 255) / 255 > ht;
+	};
+	var isCandidate = function(edge) {
+		if((edge >> 16 & 255) / 255 <= ht) {
+			return (edge >> 16 & 255) / 255 >= lt;
+		} else {
+			return false;
+		}
+	};
+	var isWeak = function(edge) {
+		return (edge >> 16 & 255) / 255 < lt;
+	};
+	var traverseEdge = null;
+	traverseEdge = function(x,y) {
+		if(x == 0 || y == 0 || x == vision_ds_Image.get_width(image) - 1 || y == vision_ds_Image.get_height(image) - 1) {
+			return;
+		}
+		if(isStrong(vision_ds_Image.image_array_read(copy,x)[y])) {
+			var neighbors = vision_algorithms_Canny.getNeighbors(3,x,y,copy);
+			if(isCandidate(neighbors[0][0])) {
+				vision_ds_Image.image_array_read(copy,x - 1)[y - 1] = 16777215;
+				traverseEdge(x - 1,y - 1);
+			}
+			if(isCandidate(neighbors[0][1])) {
+				vision_ds_Image.image_array_read(copy,x - 1)[y - 1 + 1] = 16777215;
+				traverseEdge(x - 1,y - 1 + 1);
+			}
+			if(isCandidate(neighbors[1][0])) {
+				vision_ds_Image.image_array_read(copy,x - 1 + 1)[y - 1] = 16777215;
+				traverseEdge(x - 1 + 1,y - 1);
+			}
+			if(isCandidate(neighbors[1][1])) {
+				vision_ds_Image.image_array_read(copy,x - 1 + 1)[y - 1 + 1] = 16777215;
+				traverseEdge(x - 1 + 1,y - 1 + 1);
+			}
+		}
+	};
+	var _g = 0;
+	var _g1 = vision_ds_Image.get_width(image);
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = 0;
+		var _g3 = vision_ds_Image.get_height(image);
+		while(_g2 < _g3) {
+			var y = _g2++;
+			traverseEdge(x,y);
+		}
+	}
+	var _g = 0;
+	var _g1 = vision_ds_Image.get_width(image);
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = 0;
+		var _g3 = vision_ds_Image.get_height(image);
+		while(_g2 < _g3) {
+			var y = _g2++;
+			if(!isStrong(vision_ds_Image.image_array_read(copy,x)[y])) {
+				vision_ds_Image.image_array_read(copy,x)[y] = 0;
+			}
+		}
+	}
+	return copy;
 };
 vision_algorithms_Canny.getNeighbors = function(kernalSize,x,y,image) {
 	var neighbors = [];

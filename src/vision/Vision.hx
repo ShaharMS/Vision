@@ -432,9 +432,9 @@ class Vision {
         @return The edge detected image.
 
     **/
-    public static function cannyEdgeDetection(image:Image, sigma:Float = 1, threshold:Float = 0.5, lowThreshold:Float = 0.4, highThreshold:Float = 0.6):Image {
+    public static function cannyEdgeDetection(image:Image, sigma:Float = 1, lowThreshold:Float = 0.4, highThreshold:Float = 0.6):Image {
         var cannyObject:CannyObject = image.clone();
-        return cannyObject.grayscale().applyGaussian(3, sigma).applySobelFilters();
+        return cannyObject.grayscale().applyGaussian(3, sigma).applySobelFilters().nonMaxSuppression().applyHysteresis(highThreshold, lowThreshold);
     }
 
     /**

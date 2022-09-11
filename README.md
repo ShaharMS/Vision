@@ -40,7 +40,7 @@ Here is a roadmap of all features added/planned for the future:
  - [ ] *Triangle detection (recursive method)*
  - [x] edge detection (perwitt method)
  - [x] edge detection (sobel method)
- - [ ] **edge detection (canny method)**
+ - [x] edge detection (canny method)
  - [x] nearest-neighbor style blur
  - [x] gaussian blur 
 
