@@ -32,6 +32,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] black and white
  - [x] inverting
  - [ ] sharpening
+ - [ ] **convolve**
  - [x] Contrast image (exaggerated colors) **needs fixing**
  - [ ] Line detection (hough method)
  - [x] Line detection (simple, recursive method)

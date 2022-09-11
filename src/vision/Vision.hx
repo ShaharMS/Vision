@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.Kernal2D;
 import vision.ds.canny.CannyObject;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.gaussian.GaussianKernalSize;
@@ -105,6 +106,19 @@ class Vision {
         }
 
         return image;
+    }
+
+    /**
+        manipulates the image's pixel data by passing the pixels' value through a kernal.
+
+        This is useful for many things, such as simple blurring, sharpening, noise maps, and more that comes to mind :).
+
+        There are a couple of prexisting matrices you can use, and also a custom tool to let you create your own kernals from scratch using enums.
+
+        @param image the image to be manipulated
+        @param kernal the type/value of the kernal. can
+    **/
+    public static function convolve(image:Image, kernal:Kernal2D) {
     }
 
     /**
@@ -458,15 +472,7 @@ class Vision {
                     lines.push(line);
                 }
             }
-        } /*
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength);
-                if (line != null) {
-                    lines.push(line);
-                }
-            }
-        }*/
+        }
 
         var actualLines:Array<LineSegment2D> = [];
         for (l in lines) {
