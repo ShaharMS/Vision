@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.canny.CannyObject;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.gaussian.GaussianKernalSize;
 import vision.ds.hough.HoughSpace;
@@ -13,6 +14,7 @@ import vision.ds.Image;
 import vision.tools.MathTools;
 
 using vision.tools.MathTools;
+using vision.algorithms.Canny;
 
 /**
     The class where all image manipulation functions are stored.
@@ -431,45 +433,8 @@ class Vision {
 
     **/
     public static function cannyEdgeDetection(image:Image, sigma:Float = 1, threshold:Float = 0.5, lowThreshold:Float = 0.4, highThreshold:Float = 0.6):Image {
-        var blurred = gaussianBlur(image, sigma);
-        var grayed = grayscale(blurred);
-        var edges = new Image(blurred.width, blurred.height, 0x00000000);
-
-        function getNeighbors(x:Int, y:Int) {
-            var neighbors = [[], [], []];
-            for (X in -1...2) {
-                for (Y in -1...2) {
-                    if (x + X < 0 || x + X >= grayed.width || y + Y < 0 || y + Y >= grayed.height) {
-                        continue;
-                    }
-                    neighbors[X + 1][Y + 1] = grayed.getPixel(x + X, y + Y);
-                }
-            }
-            return neighbors;
-        }
-
-        for (x in 1...blurred.width - 1) {
-            for (y in 1...blurred.height - 1) {
-                var neighbors = getNeighbors(x, y);
-                var gradient = (
-                    neighbors[0][0].redFloat * -1 + neighbors[0][2].redFloat * 1 +
-                    neighbors[1][0].redFloat * -2 + neighbors[1][2].redFloat * 2 +
-                    neighbors[2][0].redFloat * -1 + neighbors[2][2].redFloat * 1
-                ) / 9;
-                if (gradient > threshold) {
-                    edges.setPixel(x, y, Color.fromRGBAFloat(gradient, gradient, gradient));
-                } 
-                var gradient = (
-                    neighbors[0][0].redFloat * -1 + neighbors[0][1].redFloat * -2 + neighbors[0][2].redFloat * -1 +
-                    neighbors[2][0].redFloat * 1 + neighbors[2][1].redFloat * 2 + neighbors[2][2].redFloat * 1
-                ) / 9;
-                if (gradient > threshold) {
-                    edges.setPixel(x, y, Color.fromRGBAFloat(gradient, gradient, gradient));
-                }
-            }
-        }
-
-        return edges;
+        var cannyObject:CannyObject = image.clone();
+        return cannyObject.grayscale().applyGaussian(3, sigma).applySobelFilters();
     }
 
     /**

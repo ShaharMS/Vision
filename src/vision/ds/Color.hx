@@ -532,6 +532,11 @@ abstract Color(Int) from Int from UInt to Int to UInt
 		return this;
 	}
 
+	public inline function grayscale() {
+		var gray = Std.int((red + green + blue) / 3);
+		return this = setRGBA(gray, gray, gray);
+	}
+
 	public function new(Value:Int = 0)
 	{
 		this = Value;

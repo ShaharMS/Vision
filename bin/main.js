@@ -1058,79 +1058,8 @@ vision_Vision.cannyEdgeDetection = function(image,sigma,threshold,lowThreshold,h
 	if(sigma == null) {
 		sigma = 1;
 	}
-	var blurred = vision_Vision.gaussianBlur(image,sigma);
-	var grayed = vision_Vision.grayscale(blurred);
-	var edges = vision_ds_Image._new(vision_ds_Image.get_width(blurred),vision_ds_Image.get_height(blurred),0);
-	var getNeighbors = function(x,y) {
-		var neighbors = [[],[],[]];
-		var _g = -1;
-		while(_g < 2) {
-			var X = _g++;
-			var _g1 = -1;
-			while(_g1 < 2) {
-				var Y = _g1++;
-				if(x + X < 0 || x + X >= vision_ds_Image.get_width(grayed) || y + Y < 0 || y + Y >= vision_ds_Image.get_height(grayed)) {
-					continue;
-				}
-				neighbors[X + 1][Y + 1] = vision_ds_Image.getPixel(grayed,x + X,y + Y);
-			}
-		}
-		return neighbors;
-	};
-	var _g = 1;
-	var _g1 = vision_ds_Image.get_width(blurred) - 1;
-	while(_g < _g1) {
-		var x = _g++;
-		var _g2 = 1;
-		var _g3 = vision_ds_Image.get_height(blurred) - 1;
-		while(_g2 < _g3) {
-			var y = _g2++;
-			var neighbors = getNeighbors(x,y);
-			var gradient = ((neighbors[0][0] >> 16 & 255) / 255 * -1 + (neighbors[0][2] >> 16 & 255) / 255 + (neighbors[1][0] >> 16 & 255) / 255 * -2 + (neighbors[1][2] >> 16 & 255) / 255 * 2 + (neighbors[2][0] >> 16 & 255) / 255 * -1 + (neighbors[2][2] >> 16 & 255) / 255) / 9;
-			if(gradient > threshold) {
-				var color = vision_ds_Color._new();
-				var Alpha = 1;
-				if(Alpha == null) {
-					Alpha = 1;
-				}
-				var Value = Math.round(gradient * 255);
-				color &= -16711681;
-				color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
-				var Value1 = Math.round(gradient * 255);
-				color &= -65281;
-				color |= (Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1) << 8;
-				var Value2 = Math.round(gradient * 255);
-				color &= -256;
-				color |= Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2;
-				var Value3 = Math.round(Alpha * 255);
-				color &= 16777215;
-				color |= (Value3 > 255 ? 255 : Value3 < 0 ? 0 : Value3) << 24;
-				vision_ds_Image.setPixel(edges,x,y,color);
-			}
-			var gradient1 = ((neighbors[0][0] >> 16 & 255) / 255 * -1 + (neighbors[0][1] >> 16 & 255) / 255 * -2 + (neighbors[0][2] >> 16 & 255) / 255 * -1 + (neighbors[2][0] >> 16 & 255) / 255 + (neighbors[2][1] >> 16 & 255) / 255 * 2 + (neighbors[2][2] >> 16 & 255) / 255) / 9;
-			if(gradient1 > threshold) {
-				var color1 = vision_ds_Color._new();
-				var Alpha1 = 1;
-				if(Alpha1 == null) {
-					Alpha1 = 1;
-				}
-				var Value4 = Math.round(gradient1 * 255);
-				color1 &= -16711681;
-				color1 |= (Value4 > 255 ? 255 : Value4 < 0 ? 0 : Value4) << 16;
-				var Value5 = Math.round(gradient1 * 255);
-				color1 &= -65281;
-				color1 |= (Value5 > 255 ? 255 : Value5 < 0 ? 0 : Value5) << 8;
-				var Value6 = Math.round(gradient1 * 255);
-				color1 &= -256;
-				color1 |= Value6 > 255 ? 255 : Value6 < 0 ? 0 : Value6;
-				var Value7 = Math.round(Alpha1 * 255);
-				color1 &= 16777215;
-				color1 |= (Value7 > 255 ? 255 : Value7 < 0 ? 0 : Value7) << 24;
-				vision_ds_Image.setPixel(edges,x,y,color1);
-			}
-		}
-	}
-	return edges;
+	var cannyObject = vision_ds_Image.clone(image);
+	return vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),3,sigma));
 };
 vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLength) {
 	if(minLineLength == null) {
@@ -1166,6 +1095,475 @@ vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLe
 		}
 	}
 	return actualLines;
+};
+var vision_algorithms_Canny = function() { };
+vision_algorithms_Canny.__name__ = true;
+vision_algorithms_Canny.grayscale = function(image) {
+	return vision_Vision.grayscale(image);
+};
+vision_algorithms_Canny.applyGaussian = function(image,size,sigma) {
+	return vision_Vision.gaussianBlur(image,sigma,size);
+};
+vision_algorithms_Canny.applySobelFilters = function(image) {
+	var filtered = vision_ds_Image._new(vision_ds_Image.get_width(image),vision_ds_Image.get_height(image));
+	var yFilter_0_0 = -1;
+	var yFilter_0_1 = 0;
+	var yFilter_0_2 = 1;
+	var yFilter_1_0 = -2;
+	var yFilter_1_1 = 0;
+	var yFilter_1_2 = 2;
+	var yFilter_2_0 = -1;
+	var yFilter_2_1 = 0;
+	var yFilter_2_2 = 1;
+	var xFilter_0_0 = -1;
+	var xFilter_0_1 = -2;
+	var xFilter_0_2 = -1;
+	var xFilter_1_0 = 0;
+	var xFilter_1_1 = 0;
+	var xFilter_1_2 = 0;
+	var xFilter_2_0 = 1;
+	var xFilter_2_1 = 2;
+	var xFilter_2_2 = 1;
+	var ghs = 0;
+	var gvs = 0;
+	var _g = 0;
+	var _g1 = vision_ds_Image.get_width(image);
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = 0;
+		var _g3 = vision_ds_Image.get_height(image);
+		while(_g2 < _g3) {
+			var y = _g2++;
+			gvs = 0;
+			ghs = gvs;
+			var neighbors = vision_algorithms_Canny.getNeighbors(3,x,y,image);
+			var lhs = yFilter_0_0;
+			var rhs = neighbors[0][0];
+			var Red = (lhs >> 16 & 255) / 255 * ((rhs >> 16 & 255) / 255);
+			var Green = (lhs >> 8 & 255) / 255 * ((rhs >> 8 & 255) / 255);
+			var Blue = (lhs & 255) / 255 * ((rhs & 255) / 255);
+			var Alpha = (lhs >> 24 & 255) / 255 * ((rhs >> 24 & 255) / 255);
+			if(Alpha == null) {
+				Alpha = 1;
+			}
+			var color = vision_ds_Color._new();
+			var Alpha1 = Alpha;
+			if(Alpha1 == null) {
+				Alpha1 = 1;
+			}
+			var Value = Math.round(Red * 255);
+			color &= -16711681;
+			color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
+			var Value1 = Math.round(Green * 255);
+			color &= -65281;
+			color |= (Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1) << 8;
+			var Value2 = Math.round(Blue * 255);
+			color &= -256;
+			color |= Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2;
+			var Value3 = Math.round(Alpha1 * 255);
+			color &= 16777215;
+			color |= (Value3 > 255 ? 255 : Value3 < 0 ? 0 : Value3) << 24;
+			var rhs1 = color;
+			var Red1 = (ghs >> 16 & 255) + (rhs1 >> 16 & 255);
+			var Green1 = (ghs >> 8 & 255) + (rhs1 >> 8 & 255);
+			var Blue1 = (ghs & 255) + (rhs1 & 255);
+			var Alpha2 = (ghs >> 24 & 255) + (rhs1 >> 24 & 255);
+			if(Alpha2 == null) {
+				Alpha2 = 255;
+			}
+			var color1 = vision_ds_Color._new();
+			var Alpha3 = Alpha2;
+			if(Alpha3 == null) {
+				Alpha3 = 255;
+			}
+			color1 &= -16711681;
+			color1 |= (Red1 > 255 ? 255 : Red1 < 0 ? 0 : Red1) << 16;
+			color1 &= -65281;
+			color1 |= (Green1 > 255 ? 255 : Green1 < 0 ? 0 : Green1) << 8;
+			color1 &= -256;
+			color1 |= Blue1 > 255 ? 255 : Blue1 < 0 ? 0 : Blue1;
+			color1 &= 16777215;
+			color1 |= (Alpha3 > 255 ? 255 : Alpha3 < 0 ? 0 : Alpha3) << 24;
+			ghs = color1;
+			var lhs1 = xFilter_0_0;
+			var rhs2 = neighbors[0][0];
+			var Red2 = (lhs1 >> 16 & 255) / 255 * ((rhs2 >> 16 & 255) / 255);
+			var Green2 = (lhs1 >> 8 & 255) / 255 * ((rhs2 >> 8 & 255) / 255);
+			var Blue2 = (lhs1 & 255) / 255 * ((rhs2 & 255) / 255);
+			var Alpha4 = (lhs1 >> 24 & 255) / 255 * ((rhs2 >> 24 & 255) / 255);
+			if(Alpha4 == null) {
+				Alpha4 = 1;
+			}
+			var color2 = vision_ds_Color._new();
+			var Alpha5 = Alpha4;
+			if(Alpha5 == null) {
+				Alpha5 = 1;
+			}
+			var Value4 = Math.round(Red2 * 255);
+			color2 &= -16711681;
+			color2 |= (Value4 > 255 ? 255 : Value4 < 0 ? 0 : Value4) << 16;
+			var Value5 = Math.round(Green2 * 255);
+			color2 &= -65281;
+			color2 |= (Value5 > 255 ? 255 : Value5 < 0 ? 0 : Value5) << 8;
+			var Value6 = Math.round(Blue2 * 255);
+			color2 &= -256;
+			color2 |= Value6 > 255 ? 255 : Value6 < 0 ? 0 : Value6;
+			var Value7 = Math.round(Alpha5 * 255);
+			color2 &= 16777215;
+			color2 |= (Value7 > 255 ? 255 : Value7 < 0 ? 0 : Value7) << 24;
+			var rhs3 = color2;
+			var Red3 = (gvs >> 16 & 255) + (rhs3 >> 16 & 255);
+			var Green3 = (gvs >> 8 & 255) + (rhs3 >> 8 & 255);
+			var Blue3 = (gvs & 255) + (rhs3 & 255);
+			var Alpha6 = (gvs >> 24 & 255) + (rhs3 >> 24 & 255);
+			if(Alpha6 == null) {
+				Alpha6 = 255;
+			}
+			var color3 = vision_ds_Color._new();
+			var Alpha7 = Alpha6;
+			if(Alpha7 == null) {
+				Alpha7 = 255;
+			}
+			color3 &= -16711681;
+			color3 |= (Red3 > 255 ? 255 : Red3 < 0 ? 0 : Red3) << 16;
+			color3 &= -65281;
+			color3 |= (Green3 > 255 ? 255 : Green3 < 0 ? 0 : Green3) << 8;
+			color3 &= -256;
+			color3 |= Blue3 > 255 ? 255 : Blue3 < 0 ? 0 : Blue3;
+			color3 &= 16777215;
+			color3 |= (Alpha7 > 255 ? 255 : Alpha7 < 0 ? 0 : Alpha7) << 24;
+			gvs = color3;
+			var lhs2 = yFilter_0_1;
+			var rhs4 = neighbors[0][1];
+			var Red4 = (lhs2 >> 16 & 255) / 255 * ((rhs4 >> 16 & 255) / 255);
+			var Green4 = (lhs2 >> 8 & 255) / 255 * ((rhs4 >> 8 & 255) / 255);
+			var Blue4 = (lhs2 & 255) / 255 * ((rhs4 & 255) / 255);
+			var Alpha8 = (lhs2 >> 24 & 255) / 255 * ((rhs4 >> 24 & 255) / 255);
+			if(Alpha8 == null) {
+				Alpha8 = 1;
+			}
+			var color4 = vision_ds_Color._new();
+			var Alpha9 = Alpha8;
+			if(Alpha9 == null) {
+				Alpha9 = 1;
+			}
+			var Value8 = Math.round(Red4 * 255);
+			color4 &= -16711681;
+			color4 |= (Value8 > 255 ? 255 : Value8 < 0 ? 0 : Value8) << 16;
+			var Value9 = Math.round(Green4 * 255);
+			color4 &= -65281;
+			color4 |= (Value9 > 255 ? 255 : Value9 < 0 ? 0 : Value9) << 8;
+			var Value10 = Math.round(Blue4 * 255);
+			color4 &= -256;
+			color4 |= Value10 > 255 ? 255 : Value10 < 0 ? 0 : Value10;
+			var Value11 = Math.round(Alpha9 * 255);
+			color4 &= 16777215;
+			color4 |= (Value11 > 255 ? 255 : Value11 < 0 ? 0 : Value11) << 24;
+			var rhs5 = color4;
+			var Red5 = (ghs >> 16 & 255) + (rhs5 >> 16 & 255);
+			var Green5 = (ghs >> 8 & 255) + (rhs5 >> 8 & 255);
+			var Blue5 = (ghs & 255) + (rhs5 & 255);
+			var Alpha10 = (ghs >> 24 & 255) + (rhs5 >> 24 & 255);
+			if(Alpha10 == null) {
+				Alpha10 = 255;
+			}
+			var color5 = vision_ds_Color._new();
+			var Alpha11 = Alpha10;
+			if(Alpha11 == null) {
+				Alpha11 = 255;
+			}
+			color5 &= -16711681;
+			color5 |= (Red5 > 255 ? 255 : Red5 < 0 ? 0 : Red5) << 16;
+			color5 &= -65281;
+			color5 |= (Green5 > 255 ? 255 : Green5 < 0 ? 0 : Green5) << 8;
+			color5 &= -256;
+			color5 |= Blue5 > 255 ? 255 : Blue5 < 0 ? 0 : Blue5;
+			color5 &= 16777215;
+			color5 |= (Alpha11 > 255 ? 255 : Alpha11 < 0 ? 0 : Alpha11) << 24;
+			ghs = color5;
+			var lhs3 = xFilter_0_1;
+			var rhs6 = neighbors[0][1];
+			var Red6 = (lhs3 >> 16 & 255) / 255 * ((rhs6 >> 16 & 255) / 255);
+			var Green6 = (lhs3 >> 8 & 255) / 255 * ((rhs6 >> 8 & 255) / 255);
+			var Blue6 = (lhs3 & 255) / 255 * ((rhs6 & 255) / 255);
+			var Alpha12 = (lhs3 >> 24 & 255) / 255 * ((rhs6 >> 24 & 255) / 255);
+			if(Alpha12 == null) {
+				Alpha12 = 1;
+			}
+			var color6 = vision_ds_Color._new();
+			var Alpha13 = Alpha12;
+			if(Alpha13 == null) {
+				Alpha13 = 1;
+			}
+			var Value12 = Math.round(Red6 * 255);
+			color6 &= -16711681;
+			color6 |= (Value12 > 255 ? 255 : Value12 < 0 ? 0 : Value12) << 16;
+			var Value13 = Math.round(Green6 * 255);
+			color6 &= -65281;
+			color6 |= (Value13 > 255 ? 255 : Value13 < 0 ? 0 : Value13) << 8;
+			var Value14 = Math.round(Blue6 * 255);
+			color6 &= -256;
+			color6 |= Value14 > 255 ? 255 : Value14 < 0 ? 0 : Value14;
+			var Value15 = Math.round(Alpha13 * 255);
+			color6 &= 16777215;
+			color6 |= (Value15 > 255 ? 255 : Value15 < 0 ? 0 : Value15) << 24;
+			var rhs7 = color6;
+			var Red7 = (gvs >> 16 & 255) + (rhs7 >> 16 & 255);
+			var Green7 = (gvs >> 8 & 255) + (rhs7 >> 8 & 255);
+			var Blue7 = (gvs & 255) + (rhs7 & 255);
+			var Alpha14 = (gvs >> 24 & 255) + (rhs7 >> 24 & 255);
+			if(Alpha14 == null) {
+				Alpha14 = 255;
+			}
+			var color7 = vision_ds_Color._new();
+			var Alpha15 = Alpha14;
+			if(Alpha15 == null) {
+				Alpha15 = 255;
+			}
+			color7 &= -16711681;
+			color7 |= (Red7 > 255 ? 255 : Red7 < 0 ? 0 : Red7) << 16;
+			color7 &= -65281;
+			color7 |= (Green7 > 255 ? 255 : Green7 < 0 ? 0 : Green7) << 8;
+			color7 &= -256;
+			color7 |= Blue7 > 255 ? 255 : Blue7 < 0 ? 0 : Blue7;
+			color7 &= 16777215;
+			color7 |= (Alpha15 > 255 ? 255 : Alpha15 < 0 ? 0 : Alpha15) << 24;
+			gvs = color7;
+			var lhs4 = yFilter_1_0;
+			var rhs8 = neighbors[1][0];
+			var Red8 = (lhs4 >> 16 & 255) / 255 * ((rhs8 >> 16 & 255) / 255);
+			var Green8 = (lhs4 >> 8 & 255) / 255 * ((rhs8 >> 8 & 255) / 255);
+			var Blue8 = (lhs4 & 255) / 255 * ((rhs8 & 255) / 255);
+			var Alpha16 = (lhs4 >> 24 & 255) / 255 * ((rhs8 >> 24 & 255) / 255);
+			if(Alpha16 == null) {
+				Alpha16 = 1;
+			}
+			var color8 = vision_ds_Color._new();
+			var Alpha17 = Alpha16;
+			if(Alpha17 == null) {
+				Alpha17 = 1;
+			}
+			var Value16 = Math.round(Red8 * 255);
+			color8 &= -16711681;
+			color8 |= (Value16 > 255 ? 255 : Value16 < 0 ? 0 : Value16) << 16;
+			var Value17 = Math.round(Green8 * 255);
+			color8 &= -65281;
+			color8 |= (Value17 > 255 ? 255 : Value17 < 0 ? 0 : Value17) << 8;
+			var Value18 = Math.round(Blue8 * 255);
+			color8 &= -256;
+			color8 |= Value18 > 255 ? 255 : Value18 < 0 ? 0 : Value18;
+			var Value19 = Math.round(Alpha17 * 255);
+			color8 &= 16777215;
+			color8 |= (Value19 > 255 ? 255 : Value19 < 0 ? 0 : Value19) << 24;
+			var rhs9 = color8;
+			var Red9 = (ghs >> 16 & 255) + (rhs9 >> 16 & 255);
+			var Green9 = (ghs >> 8 & 255) + (rhs9 >> 8 & 255);
+			var Blue9 = (ghs & 255) + (rhs9 & 255);
+			var Alpha18 = (ghs >> 24 & 255) + (rhs9 >> 24 & 255);
+			if(Alpha18 == null) {
+				Alpha18 = 255;
+			}
+			var color9 = vision_ds_Color._new();
+			var Alpha19 = Alpha18;
+			if(Alpha19 == null) {
+				Alpha19 = 255;
+			}
+			color9 &= -16711681;
+			color9 |= (Red9 > 255 ? 255 : Red9 < 0 ? 0 : Red9) << 16;
+			color9 &= -65281;
+			color9 |= (Green9 > 255 ? 255 : Green9 < 0 ? 0 : Green9) << 8;
+			color9 &= -256;
+			color9 |= Blue9 > 255 ? 255 : Blue9 < 0 ? 0 : Blue9;
+			color9 &= 16777215;
+			color9 |= (Alpha19 > 255 ? 255 : Alpha19 < 0 ? 0 : Alpha19) << 24;
+			ghs = color9;
+			var lhs5 = xFilter_1_0;
+			var rhs10 = neighbors[1][0];
+			var Red10 = (lhs5 >> 16 & 255) / 255 * ((rhs10 >> 16 & 255) / 255);
+			var Green10 = (lhs5 >> 8 & 255) / 255 * ((rhs10 >> 8 & 255) / 255);
+			var Blue10 = (lhs5 & 255) / 255 * ((rhs10 & 255) / 255);
+			var Alpha20 = (lhs5 >> 24 & 255) / 255 * ((rhs10 >> 24 & 255) / 255);
+			if(Alpha20 == null) {
+				Alpha20 = 1;
+			}
+			var color10 = vision_ds_Color._new();
+			var Alpha21 = Alpha20;
+			if(Alpha21 == null) {
+				Alpha21 = 1;
+			}
+			var Value20 = Math.round(Red10 * 255);
+			color10 &= -16711681;
+			color10 |= (Value20 > 255 ? 255 : Value20 < 0 ? 0 : Value20) << 16;
+			var Value21 = Math.round(Green10 * 255);
+			color10 &= -65281;
+			color10 |= (Value21 > 255 ? 255 : Value21 < 0 ? 0 : Value21) << 8;
+			var Value22 = Math.round(Blue10 * 255);
+			color10 &= -256;
+			color10 |= Value22 > 255 ? 255 : Value22 < 0 ? 0 : Value22;
+			var Value23 = Math.round(Alpha21 * 255);
+			color10 &= 16777215;
+			color10 |= (Value23 > 255 ? 255 : Value23 < 0 ? 0 : Value23) << 24;
+			var rhs11 = color10;
+			var Red11 = (gvs >> 16 & 255) + (rhs11 >> 16 & 255);
+			var Green11 = (gvs >> 8 & 255) + (rhs11 >> 8 & 255);
+			var Blue11 = (gvs & 255) + (rhs11 & 255);
+			var Alpha22 = (gvs >> 24 & 255) + (rhs11 >> 24 & 255);
+			if(Alpha22 == null) {
+				Alpha22 = 255;
+			}
+			var color11 = vision_ds_Color._new();
+			var Alpha23 = Alpha22;
+			if(Alpha23 == null) {
+				Alpha23 = 255;
+			}
+			color11 &= -16711681;
+			color11 |= (Red11 > 255 ? 255 : Red11 < 0 ? 0 : Red11) << 16;
+			color11 &= -65281;
+			color11 |= (Green11 > 255 ? 255 : Green11 < 0 ? 0 : Green11) << 8;
+			color11 &= -256;
+			color11 |= Blue11 > 255 ? 255 : Blue11 < 0 ? 0 : Blue11;
+			color11 &= 16777215;
+			color11 |= (Alpha23 > 255 ? 255 : Alpha23 < 0 ? 0 : Alpha23) << 24;
+			gvs = color11;
+			var lhs6 = yFilter_1_1;
+			var rhs12 = neighbors[1][1];
+			var Red12 = (lhs6 >> 16 & 255) / 255 * ((rhs12 >> 16 & 255) / 255);
+			var Green12 = (lhs6 >> 8 & 255) / 255 * ((rhs12 >> 8 & 255) / 255);
+			var Blue12 = (lhs6 & 255) / 255 * ((rhs12 & 255) / 255);
+			var Alpha24 = (lhs6 >> 24 & 255) / 255 * ((rhs12 >> 24 & 255) / 255);
+			if(Alpha24 == null) {
+				Alpha24 = 1;
+			}
+			var color12 = vision_ds_Color._new();
+			var Alpha25 = Alpha24;
+			if(Alpha25 == null) {
+				Alpha25 = 1;
+			}
+			var Value24 = Math.round(Red12 * 255);
+			color12 &= -16711681;
+			color12 |= (Value24 > 255 ? 255 : Value24 < 0 ? 0 : Value24) << 16;
+			var Value25 = Math.round(Green12 * 255);
+			color12 &= -65281;
+			color12 |= (Value25 > 255 ? 255 : Value25 < 0 ? 0 : Value25) << 8;
+			var Value26 = Math.round(Blue12 * 255);
+			color12 &= -256;
+			color12 |= Value26 > 255 ? 255 : Value26 < 0 ? 0 : Value26;
+			var Value27 = Math.round(Alpha25 * 255);
+			color12 &= 16777215;
+			color12 |= (Value27 > 255 ? 255 : Value27 < 0 ? 0 : Value27) << 24;
+			var rhs13 = color12;
+			var Red13 = (ghs >> 16 & 255) + (rhs13 >> 16 & 255);
+			var Green13 = (ghs >> 8 & 255) + (rhs13 >> 8 & 255);
+			var Blue13 = (ghs & 255) + (rhs13 & 255);
+			var Alpha26 = (ghs >> 24 & 255) + (rhs13 >> 24 & 255);
+			if(Alpha26 == null) {
+				Alpha26 = 255;
+			}
+			var color13 = vision_ds_Color._new();
+			var Alpha27 = Alpha26;
+			if(Alpha27 == null) {
+				Alpha27 = 255;
+			}
+			color13 &= -16711681;
+			color13 |= (Red13 > 255 ? 255 : Red13 < 0 ? 0 : Red13) << 16;
+			color13 &= -65281;
+			color13 |= (Green13 > 255 ? 255 : Green13 < 0 ? 0 : Green13) << 8;
+			color13 &= -256;
+			color13 |= Blue13 > 255 ? 255 : Blue13 < 0 ? 0 : Blue13;
+			color13 &= 16777215;
+			color13 |= (Alpha27 > 255 ? 255 : Alpha27 < 0 ? 0 : Alpha27) << 24;
+			ghs = color13;
+			var lhs7 = xFilter_1_1;
+			var rhs14 = neighbors[1][1];
+			var Red14 = (lhs7 >> 16 & 255) / 255 * ((rhs14 >> 16 & 255) / 255);
+			var Green14 = (lhs7 >> 8 & 255) / 255 * ((rhs14 >> 8 & 255) / 255);
+			var Blue14 = (lhs7 & 255) / 255 * ((rhs14 & 255) / 255);
+			var Alpha28 = (lhs7 >> 24 & 255) / 255 * ((rhs14 >> 24 & 255) / 255);
+			if(Alpha28 == null) {
+				Alpha28 = 1;
+			}
+			var color14 = vision_ds_Color._new();
+			var Alpha29 = Alpha28;
+			if(Alpha29 == null) {
+				Alpha29 = 1;
+			}
+			var Value28 = Math.round(Red14 * 255);
+			color14 &= -16711681;
+			color14 |= (Value28 > 255 ? 255 : Value28 < 0 ? 0 : Value28) << 16;
+			var Value29 = Math.round(Green14 * 255);
+			color14 &= -65281;
+			color14 |= (Value29 > 255 ? 255 : Value29 < 0 ? 0 : Value29) << 8;
+			var Value30 = Math.round(Blue14 * 255);
+			color14 &= -256;
+			color14 |= Value30 > 255 ? 255 : Value30 < 0 ? 0 : Value30;
+			var Value31 = Math.round(Alpha29 * 255);
+			color14 &= 16777215;
+			color14 |= (Value31 > 255 ? 255 : Value31 < 0 ? 0 : Value31) << 24;
+			var rhs15 = color14;
+			var Red15 = (gvs >> 16 & 255) + (rhs15 >> 16 & 255);
+			var Green15 = (gvs >> 8 & 255) + (rhs15 >> 8 & 255);
+			var Blue15 = (gvs & 255) + (rhs15 & 255);
+			var Alpha30 = (gvs >> 24 & 255) + (rhs15 >> 24 & 255);
+			if(Alpha30 == null) {
+				Alpha30 = 255;
+			}
+			var color15 = vision_ds_Color._new();
+			var Alpha31 = Alpha30;
+			if(Alpha31 == null) {
+				Alpha31 = 255;
+			}
+			color15 &= -16711681;
+			color15 |= (Red15 > 255 ? 255 : Red15 < 0 ? 0 : Red15) << 16;
+			color15 &= -65281;
+			color15 |= (Green15 > 255 ? 255 : Green15 < 0 ? 0 : Green15) << 8;
+			color15 &= -256;
+			color15 |= Blue15 > 255 ? 255 : Blue15 < 0 ? 0 : Blue15;
+			color15 &= 16777215;
+			color15 |= (Alpha31 > 255 ? 255 : Alpha31 < 0 ? 0 : Alpha31) << 24;
+			gvs = color15;
+			var w = Math.sqrt(ghs * ghs + gvs * gvs) | 0;
+			var c = vision_ds_Color._new(w);
+			var gray = ((c >> 16 & 255) + (c >> 8 & 255) + (c & 255)) / 3 | 0;
+			c &= -16711681;
+			c |= (gray > 255 ? 255 : gray < 0 ? 0 : gray) << 16;
+			c &= -65281;
+			c |= (gray > 255 ? 255 : gray < 0 ? 0 : gray) << 8;
+			c &= -256;
+			c |= gray > 255 ? 255 : gray < 0 ? 0 : gray;
+			c &= 16777215;
+			c |= -16777216;
+			c = c;
+			vision_ds_Image.setPixel(filtered,x,y,c);
+		}
+	}
+	return filtered;
+};
+vision_algorithms_Canny.getNeighbors = function(kernalSize,x,y,image) {
+	var neighbors = [];
+	var _g = 0;
+	var _g1 = kernalSize + 1;
+	while(_g < _g1) {
+		var i = _g++;
+		neighbors[i] = [];
+	}
+	var roundedDown = (kernalSize - 1) / 2 | 0;
+	var _g = -roundedDown;
+	var _g1 = roundedDown + 1;
+	while(_g < _g1) {
+		var X = _g++;
+		var _g2 = -roundedDown;
+		var _g3 = roundedDown + 1;
+		while(_g2 < _g3) {
+			var Y = _g2++;
+			if(x + X < 0 || x + X >= vision_ds_Image.get_width(image) || y + Y < 0 || y + Y >= vision_ds_Image.get_height(image)) {
+				neighbors[X + roundedDown].push(0);
+				continue;
+			}
+			var tmp = vision_ds_Image.getPixel(image,x + X,y + Y);
+			neighbors[X + roundedDown].push(tmp);
+		}
+	}
+	return neighbors;
 };
 var vision_algorithms_Gaussian = function() { };
 vision_algorithms_Gaussian.__name__ = true;
