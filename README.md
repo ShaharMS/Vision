@@ -34,22 +34,24 @@ Here is a roadmap of all features added/planned for the future:
 
 #### class `Vision`:
  
- - [x] grayscaling
- - [x] black and white
- - [x] inverting
- - [ ] sharpening
- - [ ] **convolve**
- - [x] Contrast image (exaggerated colors) **needs fixing**
- - [ ] Line detection (hough method)
- - [x] Line detection (simple, recursive method)
+ - [x] `grayscale()`
+ - [x] `blackAndWhitd()`
+ - [x] `invert()`
+ - [ ] `sharpen()`
+ - [ ] **`convolve()`**
+ - [x] `contrast()` (exaggerated colors) **needs fixing**
+ - [ ] **`houghRay2DDetection()`**
+ - [ ] **`houghLineSegment2DDetection()`**
+ - [x] `simpleLineDetector()`!!+
  - [ ] *Circle detection (hough method)*
  - [ ] *Rectangle detection (recursive method)*
  - [ ] *Triangle detection (recursive method)*
- - [x] edge detection (perwitt method)
- - [x] edge detection (sobel method)
- - [x] edge detection (canny method)
- - [x] nearest-neighbor style blur
- - [x] gaussian blur 
+ - [x] `perwittEdgeDetection()`
+ - [x] `sobelEdgeDetection()`
+ - [x] `cannyEdgeDetection()`
+ - [x] `nearestNeighborBlur()`
+ - [x] `gaussianBlur()`
+ - [ ] `boxBlur()`
 
 #### algorithms:
 
@@ -65,6 +67,13 @@ Here is a roadmap of all features added/planned for the future:
    - [x] 7x7 kernal generation
    - [x] 9x9 kernal generation
    - [x] custom size kernal generation
+
+ - Canny
+   - [x] grayscale
+   - [x] gaussian blur
+   - [x] sobel filter (needs tweaking)
+   - [x] non-max suppression 
+   - [x] hysteresis
    
 #### class `Image`:
 
@@ -85,8 +94,9 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `drawCubicBezier()`
    - [x] `drawLineWithLerp()`
    - [x] `fillRect()`
-   - [x] `fillRectRecursive()` 
+   - [ ] `fillRectRecursive()` 
    - [ ] `fillCircle()`
+   - [ ] `fillCircleRecursive()`
    - [x] `callDrawSequence()`
  - Copying:
    - [x] `clone()`
@@ -103,4 +113,6 @@ Here is a roadmap of all features added/planned for the future:
 
 ### Define List:
 
- - `vision_disable_point_alloc_optimization`
+| Define | Meaning | Versions |
+| :---: | --- | :---: |
+| `vision_disable_point_alloc_optimization` | enabling this makes every `IntPoint2D` allocate two integers as a class instance instead of working as an abstract over a 64 bit integer. The allocation optimization is enabled by default to reduce allocations, but you can flip this flag if your'e capped to 32bit integers | 1.0.0 |
