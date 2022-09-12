@@ -6,3 +6,5 @@
 -debug
 --dce full
 --js bin/main.js
+
+--define convolve_tests=1

@@ -15,6 +15,7 @@ import vision.ds.Image;
 import vision.tools.MathTools;
 
 using vision.tools.MathTools;
+using vision.tools.ImageTools;
 using vision.algorithms.Canny;
 
 /**
@@ -116,7 +117,7 @@ class Vision {
         There are a couple of prexisting matrices you can use, and also a custom tool to let you create your own kernals from scratch using enums.
 
         @param image the image to be manipulated
-        @param kernal the type/value of the kernal. can
+        @param kernal the type/value of the kernal. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**, **`Custom`**.
     **/
     public static function convolve(image:Image, kernal:Kernal2D) {
 
@@ -157,16 +158,34 @@ class Vision {
                 [corner, edge, corner],
                 [edge, center, edge],
                 [corner, edge, corner]
-            ],
+            ];
             case Assemble5x5(farCorner, farEdge, edge, midCorner, midEdge, center): [
                 [farCorner, farEdge, edge, farEdge, farCorner],
                 [farEdge, midCorner, midEdge, midCorner, farEdge],
                 [edge, midEdge, center, midEdge, edge],
                 [farEdge, midCorner, midEdge, midCorner, farEdge],
                 [farCorner, farEdge, edge, farEdge, farCorner]
-            ]
+            ];
             case Custom(kernal): kernal;
         }
+        var convolved = new Image(image.width, image.height);
+        var maxLength = -1;
+        var items = 0;
+        for (array in matrix) {if (array.length > maxLength) maxLength = array.length; items += array.length;};
+        var flatMatrix:Array<Int> = cast matrix.flatten();
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                var neighbors:Array<Color> = cast image.getNeighborsOfPixel(x, y, maxLength).flatten();
+                var value = 0;
+                for (i in 0...neighbors.length) {
+                    value += flatMatrix[i] * neighbors[i];
+                }
+                convolved.setPixel(x, y, value);
+
+            }
+        }
+
+        return convolved;
     }
 
     /**

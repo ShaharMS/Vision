@@ -1,5 +1,6 @@
 package vision.tools;
 
+import vision.ds.IntPoint2D;
 import vision.ds.Color;
 import vision.ds.Image;
 
@@ -126,6 +127,55 @@ class ImageTools {
 		js.Browser.document.body.appendChild(c);
         #end
         return image;
+    }
+
+    public static function getNeighborsOfPixel(image:Image, x:Int, y:Int, radius:Int):Array<Array<Color>> {
+        var neighbors:Array<Array<Color>> = [];
+        for (i in 0...radius + 1) neighbors[i] = [];
+        var roundedDown = Std.int((radius - 1) / 2);
+
+        for (X in -roundedDown...roundedDown + 1) {
+            for (Y in -roundedDown...roundedDown + 1) {
+                if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
+                    //special case: we need to check where exactly is the coord outside of the image
+                    var gettable:IntPoint2D = new IntPoint2D(0, 0);
+                    var ox = x + X;
+                    var oy = y + Y;
+                    if (ox < 0 && oy < 0) gettable.x = gettable.y = 0;
+                    else if (ox < 0 && oy >= image.height) {gettable.x = 0; gettable.y = image.height;}
+                    else if (ox >= image.width && oy < 0) {gettable.x = image.width; gettable.y = 0;}
+                    else if (ox >= image.width && oy >= image.height) {gettable.x = image.width; gettable.y = image.height;}
+                    else if (ox < 0) {gettable.x = 0; gettable.y = oy;}
+                    else if (oy < 0) {gettable.x = ox;  gettable.y = 0;}
+                    else if (ox >= image.width) {gettable.x = image.width; gettable.y = oy;}
+                    else if (oy >= image.height) {gettable.x = ox;  gettable.y = image.height;}
+
+                    neighbors[X + roundedDown].push(image.getPixel(gettable.x, gettable.y));
+                    continue;
+                }
+                neighbors[X + roundedDown].push(image.getPixel(x + X, y + Y));
+            }
+        }
+        return neighbors;
+    }
+
+    /**
+     * Takes an array of `n` dimensions and flattens it to a regular, 1D array.
+     * @param array
+     * @return Array<T>
+     */
+    public static function flatten(array:Array<Dynamic>):Array<Dynamic> {
+        var flat = [];
+
+        for (item in array) {
+            if (!item is Array) flat.push(item);
+            else {
+                var flatChild = flatten(item);
+                flat = flat.concat(flatChild);
+            }
+        }
+
+        return flat;
     }
 
     #if flixel

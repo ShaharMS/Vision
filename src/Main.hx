@@ -45,6 +45,7 @@ class Main {
 		image.drawRay2D(new Ray2D({x: 0, y: 0}, 1), 0x00ff00);
 		image.drawEllipse(100, 100, 40, 21, 0x9fff9f);
 		printImage(image);
+		#if simple_tests
 		start = haxe.Timer.stamp();
 		printImage(Vision.blackAndWhite(image.clone()));
 		end = haxe.Timer.stamp();
@@ -53,6 +54,18 @@ class Main {
 		printImage(Vision.grayscale(image.clone()));
 		end = haxe.Timer.stamp();
 		trace("Grayscale took: " + MathTools.turnicate(end - start, 4) + " seconds");
+		start = haxe.Timer.stamp();
+		printImage(image.clone().contrast());
+		end = haxe.Timer.stamp();
+		trace("Contrast took: " + MathTools.turnicate(end - start, 4) + " seconds");
+		start = haxe.Timer.stamp();
+		printImage(image.clone());
+		end = haxe.Timer.stamp();
+		trace("Image Cloning took: " + MathTools.turnicate(end - start, 4) + " seconds");
+		#end
+		#if convolve_tests
+
+		#end
 		start = haxe.Timer.stamp();
 		printImage(image.clone().sobelEdgeDetection());
 		end = haxe.Timer.stamp();
@@ -71,20 +84,13 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Nearest neighbor blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printImage(image.clone().contrast());
-		end = haxe.Timer.stamp();
-		trace("Contrast took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
 		printImage(image.clone().gaussianBlur(2, 15));
 		end = haxe.Timer.stamp();
 		trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
-		printImage(image.clone());
-		end = haxe.Timer.stamp();
-		trace("Image Cloning took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
 		printImage(image.clone().mirror());
 		end = haxe.Timer.stamp();
+		#if mirror_flip_tests
 		trace("Image Mirroring took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		printImage(image.clone().flip());
@@ -94,6 +100,7 @@ class Main {
 		printImage(image.clone().mirror().flip());
 		end = haxe.Timer.stamp();
 		trace("Image Mirroring & Flipping took: " + MathTools.turnicate(end - start, 4) + " seconds");
+		#end
 		start = haxe.Timer.stamp();
 		var canny = Vision.cannyEdgeDetection(image.clone());
 		printImage(canny);
@@ -117,6 +124,7 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 	
+		#if simple_tests
 		trace(new Ray2D({x: 0, y: 0}, 1).getPointAtX(8));
 		trace(new Ray2D({x: 0, y: 0}, 1).slope);
 		trace(new Ray2D({x: 0, y: 0}, 1).degrees);
@@ -134,6 +142,7 @@ class Main {
 		trace(queue.dequeue());
 		trace(queue.dequeue());
 		trace(queue.toString());
+		#end
 	}
 
 	public static function printImage(image:Image) {
