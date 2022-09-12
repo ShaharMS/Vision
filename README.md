@@ -16,6 +16,12 @@ One of the problems i have with Haxe is the lack of non-game utilities and libra
 
 I'm not the best at *everything* I do, especially in fields like computer vision, with which im not the most familiar. That means there are bound to be mistakes/bugs. Because of that, every issue, pull request or code review is welcomed. **Help me make this library bigger and better for everyone :)**
 
+### About Documentation 
+
+One of the things I can't stand with libraries similar to this one is the lack of docs, and unclear, obfuscated code.
+
+If you see some code that you think is not understandable, or some place that lacks documentation, or even inaccurate/unclear documentation, please open an issue about it, and I'd try to resolve it asap ;).
+
 ### Roadmap
 
 Here is a roadmap of all features added/planned for the future:
