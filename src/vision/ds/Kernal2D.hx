@@ -137,7 +137,7 @@ enum Kernal2D {
      * 
      * 
      */
-    Assemble3x3(corner:Int, edge:Int, center:Int);
+    Assemble3x3(corner:Float, edge:Float, center:Float);
 
     /**
      * Makes a 5x5 kernal, following this structure:
@@ -145,15 +145,19 @@ enum Kernal2D {
      * |     |     1     |     2     |    3    |     4     |     5     |
      * |:---:|   :---:   |   :---:   |  :---:  |   :---:   |   :---:   |
      * |  1  |`farCorner`|`farEdge`  |`edge`   |`farEdge`  |`farCorner`|
+     * |&nbsp;||||||
      * |  2  |`farEdge`  |`midCorner`|`midEdge`|`midCorner`|`farEdge`  |
+     * |&nbsp;||||||
      * |  3  |`edge`     |`midEdge`  |`center` |`midEdge`  |`edge`     |
+     * |&nbsp;||||||
      * |  4  |`farEdge`  |`midCorner`|`midEdge`|`midCorner`|`farEdge`  |
+     * |&nbsp;||||||
      * |  5  |`farCorner`|`farEdge`  |`edge`   |`farEdge`  |`farCorner`|
      * 
      * 
      */
-    Assemble5x5(farCorner:Int, farEdge:Int, edge:Int, midCorner:Int, midEdge:Int, center:Int);
+    Assemble5x5(farCorner:Float, farEdge:Float, edge:Float, midCorner:Float, midEdge:Float, center:Float);
 
-    Custom(kernal:Array<Array<Int>>);
+    Custom(kernal:Array<Array<Float>>);
 
 }

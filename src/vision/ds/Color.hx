@@ -537,9 +537,9 @@ abstract Color(Int) from Int from UInt to Int to UInt
 		return this = setRGBA(gray, gray, gray);
 	}
 
-	public function new(Value:Int = 0)
+	public function new(value:Int = 0)
 	{
-		this = Value;
+		this = value;
 	}
 
 	inline function getThis():Int
@@ -598,60 +598,60 @@ abstract Color(Int) from Int from UInt to Int to UInt
 		return alpha / 255;
 	}
 
-	inline function set_red(Value:Int):Int
+	inline function set_red(value:Int):Int
 	{
 		validate();
 		this &= 0xff00ffff;
-		this |= boundChannel(Value) << 16;
-		return Value;
+		this |= boundChannel(value) << 16;
+		return value;
 	}
 
-	inline function set_green(Value:Int):Int
+	inline function set_green(value:Int):Int
 	{
 		validate();
 		this &= 0xffff00ff;
-		this |= boundChannel(Value) << 8;
-		return Value;
+		this |= boundChannel(value) << 8;
+		return value;
 	}
 
-	inline function set_blue(Value:Int):Int
+	inline function set_blue(value:Int):Int
 	{
 		validate();
 		this &= 0xffffff00;
-		this |= boundChannel(Value);
-		return Value;
+		this |= boundChannel(value);
+		return value;
 	}
 
-	inline function set_alpha(Value:Int):Int
+	inline function set_alpha(value:Int):Int
 	{
 		validate();
 		this &= 0x00ffffff;
-		this |= boundChannel(Value) << 24;
-		return Value;
+		this |= boundChannel(value) << 24;
+		return value;
 	}
 
-	inline function set_redFloat(Value:Float):Float
+	inline function set_redFloat(value:Float):Float
 	{
-		red = Math.round(Value * 255);
-		return Value;
+		red = Math.round(value * 255);
+		return value;
 	}
 
-	inline function set_greenFloat(Value:Float):Float
+	inline function set_greenFloat(value:Float):Float
 	{
-		green = Math.round(Value * 255);
-		return Value;
+		green = Math.round(value * 255);
+		return value;
 	}
 
-	inline function set_blueFloat(Value:Float):Float
+	inline function set_blueFloat(value:Float):Float
 	{
-		blue = Math.round(Value * 255);
-		return Value;
+		blue = Math.round(value * 255);
+		return value;
 	}
 
-	inline function set_alphaFloat(Value:Float):Float
+	inline function set_alphaFloat(value:Float):Float
 	{
-		alpha = Math.round(Value * 255);
-		return Value;
+		alpha = Math.round(value * 255);
+		return value;
 	}
 
 	inline function get_cyan():Float
@@ -674,28 +674,28 @@ abstract Color(Int) from Int from UInt to Int to UInt
 		return 1 - brightness;
 	}
 
-	inline function set_cyan(Value:Float):Float
+	inline function set_cyan(value:Float):Float
 	{
-		setCMYK(Value, magenta, yellow, black, alphaFloat);
-		return Value;
+		setCMYK(value, magenta, yellow, black, alphaFloat);
+		return value;
 	}
 
-	inline function set_magenta(Value:Float):Float
+	inline function set_magenta(value:Float):Float
 	{
-		setCMYK(cyan, Value, yellow, black, alphaFloat);
-		return Value;
+		setCMYK(cyan, value, yellow, black, alphaFloat);
+		return value;
 	}
 
-	inline function set_yellow(Value:Float):Float
+	inline function set_yellow(value:Float):Float
 	{
-		setCMYK(cyan, magenta, Value, black, alphaFloat);
-		return Value;
+		setCMYK(cyan, magenta, value, black, alphaFloat);
+		return value;
 	}
 
-	inline function set_black(Value:Float):Float
+	inline function set_black(value:Float):Float
 	{
-		setCMYK(cyan, magenta, yellow, Value, alphaFloat);
-		return Value;
+		setCMYK(cyan, magenta, yellow, value, alphaFloat);
+		return value;
 	}
 
 	function get_hue():Float
@@ -725,28 +725,28 @@ abstract Color(Int) from Int from UInt to Int to UInt
 		return (maxColor() + minColor()) / 2;
 	}
 
-	inline function set_hue(Value:Float):Float
+	inline function set_hue(value:Float):Float
 	{
-		setHSB(Value, saturation, brightness, alphaFloat);
-		return Value;
+		setHSB(value, saturation, brightness, alphaFloat);
+		return value;
 	}
 
-	inline function set_saturation(Value:Float):Float
+	inline function set_saturation(value:Float):Float
 	{
-		setHSB(hue, Value, brightness, alphaFloat);
-		return Value;
+		setHSB(hue, value, brightness, alphaFloat);
+		return value;
 	}
 
-	inline function set_brightness(Value:Float):Float
+	inline function set_brightness(value:Float):Float
 	{
-		setHSB(hue, saturation, Value, alphaFloat);
-		return Value;
+		setHSB(hue, saturation, value, alphaFloat);
+		return value;
 	}
 
-	inline function set_lightness(Value:Float):Float
+	inline function set_lightness(value:Float):Float
 	{
-		setHSL(hue, saturation, Value, alphaFloat);
-		return Value;
+		setHSL(hue, saturation, value, alphaFloat);
+		return value;
 	}
 
 	inline function set_rgb(value:Color):Color
@@ -771,9 +771,9 @@ abstract Color(Int) from Int from UInt to Int to UInt
 		return Math.min(redFloat, Math.min(greenFloat, blueFloat));
 	}
 
-	inline function boundChannel(Value:Int):Int
+	inline function boundChannel(value:Int):Int
 	{
-		return Value > 0xff ? 0xff : Value < 0 ? 0 : Value;
+		return value > 0xff ? 0xff : value < 0 ? 0 : value;
 	}
 
     public function toString() {

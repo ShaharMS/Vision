@@ -91,22 +91,7 @@ class Vision {
         @param image The image to be contrasted.
     **/
     public static function contrast(image:Image):Image {
-        function getContrasted(color:Color):Color {
-            var red = color.red > 127 ? 255 : 0;
-            var green = color.green > 127 ? 255 : 0;
-            var blue = color.blue > 127 ? 255 : 0;
-            return Color.fromRGBA(red, green, blue);
-        }
-        
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
-                var pixel = image.getPixel(x, y);
-                var contrasted = getContrasted(pixel);
-                image.setPixel(x, y, contrasted);
-            }
-        }
-
-        return image;
+        return convolve(image, UnsharpMasking);
     }
 
     /**
@@ -121,16 +106,16 @@ class Vision {
     **/
     public static function convolve(image:Image, kernal:Kernal2D) {
 
-        var matrix = switch kernal {
+        var matrix:Array<Array<Float>> = switch kernal {
             case Identity: [
                 [0, 0, 0],
                 [0, 1, 0],
                 [0, 0, 0],
             ];
             case BoxBlur: [
-                [1, 1, 1],
-                [1, 1, 1],
-                [1, 1, 1],
+                [1 / 9, 1 / 9, 1 / 9],
+                [1 / 9, 1 / 9, 1 / 9],
+                [1 / 9, 1 / 9, 1 / 9],
             ];
             case RidgeDetection: [
                 [-1, -1, -1],
@@ -139,7 +124,7 @@ class Vision {
             ];
             case RidgeDetectionAggresive: [
                 [-1, -1, -1],
-                [-1, 8, -1],
+                [-1, 1555, -1],
                 [-1, -1, -1],
             ];
             case Sharpen: [
@@ -172,15 +157,18 @@ class Vision {
         var maxLength = -1;
         var items = 0;
         for (array in matrix) {if (array.length > maxLength) maxLength = array.length; items += array.length;};
-        var flatMatrix:Array<Int> = cast matrix.flatten();
+        var flatMatrix = matrix.flatten();
+        trace(flatMatrix);
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                var neighbors:Array<Color> = cast image.getNeighborsOfPixel(x, y, maxLength).flatten();
-                var value = 0;
+                var neighbors:Array<Color> = image.getNeighborsOfPixel(x, y, maxLength).flatten();
+                var value:Color = 0;
                 for (i in 0...neighbors.length) {
-                    value += flatMatrix[i] * neighbors[i];
+                    value.red += cast flatMatrix[i] * neighbors[i].red;
+                    value.blue += cast flatMatrix[i] * neighbors[i].blue;
+                    value.green += cast flatMatrix[i] * neighbors[i].green;
                 }
-                convolved.setPixel(x, y, value);
+                convolved.setPixel(x, y, Std.int(value));
 
             }
         }

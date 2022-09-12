@@ -142,13 +142,13 @@ class ImageTools {
                     var ox = x + X;
                     var oy = y + Y;
                     if (ox < 0 && oy < 0) gettable.x = gettable.y = 0;
-                    else if (ox < 0 && oy >= image.height) {gettable.x = 0; gettable.y = image.height;}
-                    else if (ox >= image.width && oy < 0) {gettable.x = image.width; gettable.y = 0;}
-                    else if (ox >= image.width && oy >= image.height) {gettable.x = image.width; gettable.y = image.height;}
+                    else if (ox < 0 && oy >= image.height) {gettable.x = 0; gettable.y = image.height - 1;}
+                    else if (ox >= image.width && oy < 0) {gettable.x = image.width - 1; gettable.y = 0;}
+                    else if (ox >= image.width && oy >= image.height) {gettable.x = image.width - 1; gettable.y = image.height - 1;}
                     else if (ox < 0) {gettable.x = 0; gettable.y = oy;}
                     else if (oy < 0) {gettable.x = ox;  gettable.y = 0;}
-                    else if (ox >= image.width) {gettable.x = image.width; gettable.y = oy;}
-                    else if (oy >= image.height) {gettable.x = ox;  gettable.y = image.height;}
+                    else if (ox >= image.width) {gettable.x = image.width - 1; gettable.y = oy;}
+                    else if (oy >= image.height) {gettable.x = ox;  gettable.y = image.height - 1;}
 
                     neighbors[X + roundedDown].push(image.getPixel(gettable.x, gettable.y));
                     continue;
@@ -160,21 +160,13 @@ class ImageTools {
     }
 
     /**
-     * Takes an array of `n` dimensions and flattens it to a regular, 1D array.
+     * Takes a 2D array and flattens it to a regular, 1D array.
      * @param array
      * @return Array<T>
      */
-    public static function flatten(array:Array<Dynamic>):Array<Dynamic> {
+    @:generic public static function flatten<T>(array:Array<Array<T>>):Array<T> {
         var flat = [];
-
-        for (item in array) {
-            if (!item is Array) flat.push(item);
-            else {
-                var flatChild = flatten(item);
-                flat = flat.concat(flatChild);
-            }
-        }
-
+        for (item in array) flat = flat.concat(item);
         return flat;
     }
 

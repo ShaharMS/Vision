@@ -1,4 +1,5 @@
 (function ($global) { "use strict";
+var $estr = function() { return js_Boot.__string_rec(this,''); },$hxEnums = $hxEnums || {},$_;
 function $extend(from, fields) {
 	var proto = Object.create(from);
 	for (var name in fields) proto[name] = fields[name];
@@ -44,59 +45,58 @@ Main.main = function() {
 	vision_ds_Image.drawEllipse(image,100,100,40,21,10485663);
 	Main.printImage(image);
 	var start = HxOverrides.now() / 1000;
-	Main.printImage(vision_Vision.blackAndWhite(vision_ds_Image.clone(image)));
+	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.Identity));
 	var end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Black and white took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 51, className : "Main", methodName : "main"});
+	haxe_Log.trace("Identity Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 70, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
-	Main.printImage(vision_Vision.grayscale(vision_ds_Image.clone(image)));
+	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.BoxBlur));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Grayscale took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 55, className : "Main", methodName : "main"});
+	haxe_Log.trace("BoxBlur Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 74, className : "Main", methodName : "main"});
+	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.RidgeDetection));
+	end = HxOverrides.now() / 1000;
+	haxe_Log.trace("Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 78, className : "Main", methodName : "main"});
+	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.RidgeDetectionAggresive));
+	end = HxOverrides.now() / 1000;
+	haxe_Log.trace("Aggresive Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 82, className : "Main", methodName : "main"});
+	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.Sharpen));
+	end = HxOverrides.now() / 1000;
+	haxe_Log.trace("Shaprening Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 86, className : "Main", methodName : "main"});
+	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.UnsharpMasking));
+	end = HxOverrides.now() / 1000;
+	haxe_Log.trace("Unsharp Masking Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 90, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.sobelEdgeDetection(vision_ds_Image.clone(image)));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Sobel edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 59, className : "Main", methodName : "main"});
+	haxe_Log.trace("Sobel edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 95, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	var hough = vision_algorithms_Hough.toHoughSpace(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
 	Main.printImage(hough.image);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Hough transform took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 64, className : "Main", methodName : "main"});
+	haxe_Log.trace("Hough transform took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 100, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Perwitt edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 68, className : "Main", methodName : "main"});
-	start = HxOverrides.now() / 1000;
-	Main.printImage(vision_Vision.nearestNeighborBlur(vision_ds_Image.clone(image),1));
-	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Nearest neighbor blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 72, className : "Main", methodName : "main"});
-	start = HxOverrides.now() / 1000;
-	Main.printImage(vision_Vision.contrast(vision_ds_Image.clone(image)));
-	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Contrast took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 76, className : "Main", methodName : "main"});
-	start = HxOverrides.now() / 1000;
-	Main.printImage(vision_Vision.gaussianBlur(vision_ds_Image.clone(image),2,15));
-	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 80, className : "Main", methodName : "main"});
-	start = HxOverrides.now() / 1000;
-	Main.printImage(vision_ds_Image.clone(image));
-	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Image Cloning took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 84, className : "Main", methodName : "main"});
-	start = HxOverrides.now() / 1000;
-	Main.printImage(vision_ds_Image.mirror(vision_ds_Image.clone(image)));
-	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Image Mirroring took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 88, className : "Main", methodName : "main"});
-	start = HxOverrides.now() / 1000;
-	Main.printImage(vision_ds_Image.flip(vision_ds_Image.clone(image)));
-	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Image Flipping took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 92, className : "Main", methodName : "main"});
-	start = HxOverrides.now() / 1000;
-	Main.printImage(vision_ds_Image.flip(vision_ds_Image.mirror(vision_ds_Image.clone(image))));
-	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Image Mirroring & Flipping took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 96, className : "Main", methodName : "main"});
+	haxe_Log.trace("Perwitt edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 104, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	var canny = vision_Vision.cannyEdgeDetection(vision_ds_Image.clone(image));
 	Main.printImage(canny);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 101, className : "Main", methodName : "main"});
+	haxe_Log.trace("Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 109, className : "Main", methodName : "main"});
+	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_Vision.nearestNeighborBlur(vision_ds_Image.clone(image),1));
+	end = HxOverrides.now() / 1000;
+	haxe_Log.trace("Nearest neighbor blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 113, className : "Main", methodName : "main"});
+	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_Vision.gaussianBlur(vision_ds_Image.clone(image),2,15));
+	end = HxOverrides.now() / 1000;
+	haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 117, className : "Main", methodName : "main"});
+	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_ds_Image.mirror(vision_ds_Image.clone(image)));
+	end = HxOverrides.now() / 1000;
 	start = HxOverrides.now() / 1000;
 	var lines = vision_Vision.simpleLineSegment2DDetection(vision_ds_Image.clone(image),3,30);
 	var newI = vision_ds_Image.clone(image);
@@ -108,7 +108,7 @@ Main.main = function() {
 	}
 	Main.printImage(newI);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 110, className : "Main", methodName : "main"});
+	haxe_Log.trace("Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 140, className : "Main", methodName : "main"});
 	start = HxOverrides.now() / 1000;
 	var lines = vision_Vision.houghRay2DDetection(vision_ds_Image.clone(image));
 	var _g = 0;
@@ -119,24 +119,7 @@ Main.main = function() {
 	}
 	Main.printImage(image);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 118, className : "Main", methodName : "main"});
-	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtX(8),{ fileName : "src/Main.hx", lineNumber : 120, className : "Main", methodName : "main"});
-	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).slope,{ fileName : "src/Main.hx", lineNumber : 121, className : "Main", methodName : "main"});
-	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).degrees,{ fileName : "src/Main.hx", lineNumber : 122, className : "Main", methodName : "main"});
-	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).radians,{ fileName : "src/Main.hx", lineNumber : 123, className : "Main", methodName : "main"});
-	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtY(8),{ fileName : "src/Main.hx", lineNumber : 124, className : "Main", methodName : "main"});
-	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_yIntercept(),{ fileName : "src/Main.hx", lineNumber : 125, className : "Main", methodName : "main"});
-	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_xIntercept(),{ fileName : "src/Main.hx", lineNumber : 126, className : "Main", methodName : "main"});
-	var queue = new vision_ds_Queue();
-	queue.enqueue(0);
-	queue.enqueue(1);
-	queue.enqueue(2);
-	queue.enqueue(3);
-	haxe_Log.trace(queue.toString(),{ fileName : "src/Main.hx", lineNumber : 132, className : "Main", methodName : "main"});
-	haxe_Log.trace(queue.dequeue(),{ fileName : "src/Main.hx", lineNumber : 133, className : "Main", methodName : "main"});
-	haxe_Log.trace(queue.dequeue(),{ fileName : "src/Main.hx", lineNumber : 134, className : "Main", methodName : "main"});
-	haxe_Log.trace(queue.dequeue(),{ fileName : "src/Main.hx", lineNumber : 135, className : "Main", methodName : "main"});
-	haxe_Log.trace(queue.toString(),{ fileName : "src/Main.hx", lineNumber : 136, className : "Main", methodName : "main"});
+	haxe_Log.trace("Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 148, className : "Main", methodName : "main"});
 };
 Main.printImage = function(image) {
 	var c = window.document.createElement("canvas");
@@ -501,6 +484,34 @@ js_Boot.__string_rec = function(o,s) {
 	case "function":
 		return "<function>";
 	case "object":
+		if(o.__enum__) {
+			var e = $hxEnums[o.__enum__];
+			var con = e.__constructs__[o._hx_index];
+			var n = con._hx_name;
+			if(con.__params__) {
+				s = s + "\t";
+				return n + "(" + ((function($this) {
+					var $r;
+					var _g = [];
+					{
+						var _g1 = 0;
+						var _g2 = con.__params__;
+						while(true) {
+							if(!(_g1 < _g2.length)) {
+								break;
+							}
+							var p = _g2[_g1];
+							_g1 = _g1 + 1;
+							_g.push(js_Boot.__string_rec(o[p],s));
+						}
+					}
+					$r = _g;
+					return $r;
+				}(this))).join(",") + ")";
+			} else {
+				return n;
+			}
+		}
 		if(((o) instanceof Array)) {
 			var str = "[";
 			s += "\t";
@@ -604,26 +615,61 @@ vision_Vision.blackAndWhite = function(image,threshold) {
 	}
 	return image;
 };
-vision_Vision.contrast = function(image) {
-	var getContrasted = function(color) {
-		var red = (color >> 16 & 255) > 127 ? 255 : 0;
-		var green = (color >> 8 & 255) > 127 ? 255 : 0;
-		var blue = (color & 255) > 127 ? 255 : 0;
-		var color = vision_ds_Color._new();
-		var Alpha = 255;
-		if(Alpha == null) {
-			Alpha = 255;
+vision_Vision.convolve = function(image,kernal) {
+	var matrix;
+	switch(kernal._hx_index) {
+	case 0:
+		matrix = [[0,0,0],[0,1,0],[0,0,0]];
+		break;
+	case 1:
+		matrix = [[0.1111111111111111,0.1111111111111111,0.1111111111111111],[0.1111111111111111,0.1111111111111111,0.1111111111111111],[0.1111111111111111,0.1111111111111111,0.1111111111111111]];
+		break;
+	case 2:
+		matrix = [[-1,-1,-1],[-1,4,-1],[-1,-1,-1]];
+		break;
+	case 3:
+		matrix = [[-1,-1,-1],[-1,1555,-1],[-1,-1,-1]];
+		break;
+	case 4:
+		matrix = [[0,-1,0],[-1,5,-1],[0,-1,0]];
+		break;
+	case 5:
+		matrix = [[1,4,6,4,1],[4,16,24,16,4],[6,24,-476,24,6],[4,16,24,16,4],[1,4,6,4,1]];
+		break;
+	case 6:
+		var corner = kernal.corner;
+		var edge = kernal.edge;
+		var center = kernal.center;
+		matrix = [[corner,edge,corner],[edge,center,edge],[corner,edge,corner]];
+		break;
+	case 7:
+		var farCorner = kernal.farCorner;
+		var farEdge = kernal.farEdge;
+		var edge = kernal.edge;
+		var midCorner = kernal.midCorner;
+		var midEdge = kernal.midEdge;
+		var center = kernal.center;
+		matrix = [[farCorner,farEdge,edge,farEdge,farCorner],[farEdge,midCorner,midEdge,midCorner,farEdge],[edge,midEdge,center,midEdge,edge],[farEdge,midCorner,midEdge,midCorner,farEdge],[farCorner,farEdge,edge,farEdge,farCorner]];
+		break;
+	case 8:
+		var kernal1 = kernal.kernal;
+		matrix = kernal1;
+		break;
+	}
+	var convolved = vision_ds_Image._new(vision_ds_Image.get_width(image),vision_ds_Image.get_height(image));
+	var maxLength = -1;
+	var items = 0;
+	var _g = 0;
+	while(_g < matrix.length) {
+		var array = matrix[_g];
+		++_g;
+		if(array.length > maxLength) {
+			maxLength = array.length;
 		}
-		color &= -16711681;
-		color |= (red > 255 ? 255 : red < 0 ? 0 : red) << 16;
-		color &= -65281;
-		color |= (green > 255 ? 255 : green < 0 ? 0 : green) << 8;
-		color &= -256;
-		color |= blue > 255 ? 255 : blue < 0 ? 0 : blue;
-		color &= 16777215;
-		color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
-		return color;
-	};
+		items += array.length;
+	}
+	var flatMatrix = vision_tools_ImageTools.flatten_Float(matrix);
+	haxe_Log.trace(flatMatrix,{ fileName : "src/vision/Vision.hx", lineNumber : 161, className : "vision.Vision", methodName : "convolve"});
 	var _g = 0;
 	var _g1 = vision_ds_Image.get_width(image);
 	while(_g < _g1) {
@@ -632,12 +678,26 @@ vision_Vision.contrast = function(image) {
 		var _g3 = vision_ds_Image.get_height(image);
 		while(_g2 < _g3) {
 			var y = _g2++;
-			var pixel = vision_ds_Image.getPixel(image,x,y);
-			var contrasted = getContrasted(pixel);
-			vision_ds_Image.setPixel(image,x,y,contrasted);
+			var neighbors = vision_tools_ImageTools.flatten_vision_ds_Color(vision_tools_ImageTools.getNeighborsOfPixel(image,x,y,maxLength));
+			var value = 0;
+			var _g4 = 0;
+			var _g5 = neighbors.length;
+			while(_g4 < _g5) {
+				var i = _g4++;
+				var Value = (value >> 16 & 255) + flatMatrix[i] * (neighbors[i] >> 16 & 255);
+				value &= -16711681;
+				value |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
+				var Value1 = (value & 255) + flatMatrix[i] * (neighbors[i] & 255);
+				value &= -256;
+				value |= Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1;
+				var Value2 = (value >> 8 & 255) + flatMatrix[i] * (neighbors[i] >> 8 & 255);
+				value &= -65281;
+				value |= (Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2) << 8;
+			}
+			vision_ds_Image.setPixel(convolved,x,y,value | 0);
 		}
 	}
-	return image;
+	return convolved;
 };
 vision_Vision.houghRay2DDetection = function(image,threshold,maxRayCount) {
 	if(threshold == null) {
@@ -1045,18 +1105,21 @@ vision_Vision.gaussianBlur = function(image,sigma,kernalSize) {
 	}
 	return blurredImage;
 };
-vision_Vision.cannyEdgeDetection = function(image,sigma,lowThreshold,highThreshold) {
+vision_Vision.cannyEdgeDetection = function(image,sigma,initialKernalSize,lowThreshold,highThreshold) {
 	if(highThreshold == null) {
 		highThreshold = 0.6;
 	}
 	if(lowThreshold == null) {
 		lowThreshold = 0.4;
 	}
+	if(initialKernalSize == null) {
+		initialKernalSize = 5;
+	}
 	if(sigma == null) {
 		sigma = 1;
 	}
 	var cannyObject = vision_ds_Image.clone(image);
-	return vision_algorithms_Canny.applyHysteresis(vision_algorithms_Canny.nonMaxSuppression(vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),1,sigma))),highThreshold,lowThreshold);
+	return vision_algorithms_Canny.applyHysteresis(vision_algorithms_Canny.nonMaxSuppression(vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),initialKernalSize,sigma))),highThreshold,lowThreshold);
 };
 vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLength) {
 	if(minLineLength == null) {
@@ -2285,17 +2348,6 @@ vision_ds_Image.mirror = function(this1) {
 	});
 	return this1;
 };
-vision_ds_Image.flip = function(this1) {
-	var _g = 0;
-	var _g1 = vision_ds_Image.get_width(this1);
-	while(_g < _g1) {
-		var x = _g++;
-		this1[x].sort(function(e,f) {
-			return 1;
-		});
-	}
-	return this1;
-};
 vision_ds_Image.image_array_read = function(this1,index) {
 	return this1[index];
 };
@@ -2317,6 +2369,18 @@ vision_ds_IntPoint2D.toPoint2D = function(this1) {
 vision_ds_IntPoint2D.fromPoint2D = function(p) {
 	return vision_ds_IntPoint2D._new(p.x | 0,p.y | 0);
 };
+var vision_ds_Kernal2D = $hxEnums["vision.ds.Kernal2D"] = { __ename__:true,__constructs__:null
+	,Identity: {_hx_name:"Identity",_hx_index:0,__enum__:"vision.ds.Kernal2D",toString:$estr}
+	,BoxBlur: {_hx_name:"BoxBlur",_hx_index:1,__enum__:"vision.ds.Kernal2D",toString:$estr}
+	,RidgeDetection: {_hx_name:"RidgeDetection",_hx_index:2,__enum__:"vision.ds.Kernal2D",toString:$estr}
+	,RidgeDetectionAggresive: {_hx_name:"RidgeDetectionAggresive",_hx_index:3,__enum__:"vision.ds.Kernal2D",toString:$estr}
+	,Sharpen: {_hx_name:"Sharpen",_hx_index:4,__enum__:"vision.ds.Kernal2D",toString:$estr}
+	,UnsharpMasking: {_hx_name:"UnsharpMasking",_hx_index:5,__enum__:"vision.ds.Kernal2D",toString:$estr}
+	,Assemble3x3: ($_=function(corner,edge,center) { return {_hx_index:6,corner:corner,edge:edge,center:center,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="Assemble3x3",$_.__params__ = ["corner","edge","center"],$_)
+	,Assemble5x5: ($_=function(farCorner,farEdge,edge,midCorner,midEdge,center) { return {_hx_index:7,farCorner:farCorner,farEdge:farEdge,edge:edge,midCorner:midCorner,midEdge:midEdge,center:center,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="Assemble5x5",$_.__params__ = ["farCorner","farEdge","edge","midCorner","midEdge","center"],$_)
+	,Custom: ($_=function(kernal) { return {_hx_index:8,kernal:kernal,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="Custom",$_.__params__ = ["kernal"],$_)
+};
+vision_ds_Kernal2D.__constructs__ = [vision_ds_Kernal2D.Identity,vision_ds_Kernal2D.BoxBlur,vision_ds_Kernal2D.RidgeDetection,vision_ds_Kernal2D.RidgeDetectionAggresive,vision_ds_Kernal2D.Sharpen,vision_ds_Kernal2D.UnsharpMasking,vision_ds_Kernal2D.Assemble3x3,vision_ds_Kernal2D.Assemble5x5,vision_ds_Kernal2D.Custom];
 var vision_ds_LineSegment2D = function(start,end) {
 	this.end = new vision_ds_Point2D(0,0);
 	this.start = new vision_ds_Point2D(0,0);
@@ -2345,50 +2409,6 @@ vision_ds_Point2D.__name__ = true;
 vision_ds_Point2D.prototype = {
 	toString: function() {
 		return "(" + this.x + ", " + this.y + ")";
-	}
-};
-var vision_ds_QueueCell = function(value,next,previous) {
-	this.previous = previous;
-	this.value = value;
-	this.next = next;
-};
-vision_ds_QueueCell.__name__ = true;
-var vision_ds_Queue = function() {
-	this.length = 0;
-};
-vision_ds_Queue.__name__ = true;
-vision_ds_Queue.prototype = {
-	dequeue: function() {
-		var v = this.get_last().value;
-		this.get_last().previous.next = null;
-		this.length--;
-		return v;
-	}
-	,enqueue: function(value) {
-		if(this.first == null) {
-			this.first = new vision_ds_QueueCell(value,null,null);
-			this.length++;
-			return value;
-		}
-		this.first.previous = new vision_ds_QueueCell(value,this.first,null);
-		this.first = this.first.previous;
-		this.length++;
-		return value;
-	}
-	,toString: function() {
-		var s = "[";
-		var processed = this.first;
-		while(processed.next != null) {
-			s += "" + Std.string(processed.value) + " -> ";
-			processed = processed.next;
-		}
-		s += "" + Std.string(processed.value) + "]";
-		return s;
-	}
-	,get_last: function() {
-		var processed = this.first;
-		while(processed.next != null) processed = processed.next;
-		return processed;
 	}
 };
 var vision_ds_Ray2D = function(point,m,degrees,radians) {
@@ -2431,17 +2451,6 @@ vision_ds_Ray2D.prototype = {
 			return py - this.slope * px;
 		}
 		return py + this.slope * px;
-	}
-	,get_xIntercept: function() {
-		var px = this.point.x;
-		var py = this.point.y;
-		if(py > 0) {
-			return (py - this.slope * px) / this.slope;
-		}
-		return (py + this.slope * px) / this.slope;
-	}
-	,getPointAtX: function(x) {
-		return new vision_ds_Point2D(x,this.slope * x + this.get_yIntercept());
 	}
 	,getPointAtY: function(y) {
 		return new vision_ds_Point2D((y - this.get_yIntercept()) / this.slope,y);
@@ -2518,6 +2527,107 @@ vision_exceptions_OutOfBounds.__name__ = true;
 vision_exceptions_OutOfBounds.__super__ = vision_exceptions_VisionException;
 vision_exceptions_OutOfBounds.prototype = $extend(vision_exceptions_VisionException.prototype,{
 });
+var vision_tools_ImageTools = function() { };
+vision_tools_ImageTools.__name__ = true;
+vision_tools_ImageTools.flatten_vision_ds_Color = function(array) {
+	var flat = [];
+	var _g = 0;
+	while(_g < array.length) {
+		var item = array[_g];
+		++_g;
+		flat = flat.concat(item);
+	}
+	return flat;
+};
+vision_tools_ImageTools.flatten_Float = function(array) {
+	var flat = [];
+	var _g = 0;
+	while(_g < array.length) {
+		var item = array[_g];
+		++_g;
+		flat = flat.concat(item);
+	}
+	return flat;
+};
+vision_tools_ImageTools.getNeighborsOfPixel = function(image,x,y,radius) {
+	var neighbors = [];
+	var _g = 0;
+	var _g1 = radius + 1;
+	while(_g < _g1) {
+		var i = _g++;
+		neighbors[i] = [];
+	}
+	var roundedDown = (radius - 1) / 2 | 0;
+	var _g = -roundedDown;
+	var _g1 = roundedDown + 1;
+	while(_g < _g1) {
+		var X = _g++;
+		var _g2 = -roundedDown;
+		var _g3 = roundedDown + 1;
+		while(_g2 < _g3) {
+			var Y = _g2++;
+			if(x + X < 0 || x + X >= vision_ds_Image.get_width(image) || y + Y < 0 || y + Y >= vision_ds_Image.get_height(image)) {
+				var gettable = vision_ds_IntPoint2D._new(0,0);
+				var ox = x + X;
+				var oy = y + Y;
+				if(ox < 0 && oy < 0) {
+					var this1 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(gettable),0);
+					gettable = this1;
+					var x1 = 0;
+					var this2 = new haxe__$Int64__$_$_$Int64(x1,vision_ds_IntPoint2D.get_y(gettable));
+					gettable = this2;
+				} else if(ox < 0 && oy >= vision_ds_Image.get_height(image)) {
+					var this3 = new haxe__$Int64__$_$_$Int64(0,vision_ds_IntPoint2D.get_y(gettable));
+					gettable = this3;
+					var y1 = vision_ds_Image.get_height(image) - 1;
+					var this4 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(gettable),y1);
+					gettable = this4;
+				} else if(ox >= vision_ds_Image.get_width(image) && oy < 0) {
+					var x2 = vision_ds_Image.get_width(image) - 1;
+					var this5 = new haxe__$Int64__$_$_$Int64(x2,vision_ds_IntPoint2D.get_y(gettable));
+					gettable = this5;
+					var this6 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(gettable),0);
+					gettable = this6;
+				} else if(ox >= vision_ds_Image.get_width(image) && oy >= vision_ds_Image.get_height(image)) {
+					var x3 = vision_ds_Image.get_width(image) - 1;
+					var this7 = new haxe__$Int64__$_$_$Int64(x3,vision_ds_IntPoint2D.get_y(gettable));
+					gettable = this7;
+					var y2 = vision_ds_Image.get_height(image) - 1;
+					var this8 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(gettable),y2);
+					gettable = this8;
+				} else if(ox < 0) {
+					var this9 = new haxe__$Int64__$_$_$Int64(0,vision_ds_IntPoint2D.get_y(gettable));
+					gettable = this9;
+					var this10 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(gettable),oy);
+					gettable = this10;
+				} else if(oy < 0) {
+					var this11 = new haxe__$Int64__$_$_$Int64(ox,vision_ds_IntPoint2D.get_y(gettable));
+					gettable = this11;
+					var this12 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(gettable),0);
+					gettable = this12;
+				} else if(ox >= vision_ds_Image.get_width(image)) {
+					var x4 = vision_ds_Image.get_width(image) - 1;
+					var this13 = new haxe__$Int64__$_$_$Int64(x4,vision_ds_IntPoint2D.get_y(gettable));
+					gettable = this13;
+					var this14 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(gettable),oy);
+					gettable = this14;
+				} else if(oy >= vision_ds_Image.get_height(image)) {
+					var this15 = new haxe__$Int64__$_$_$Int64(ox,vision_ds_IntPoint2D.get_y(gettable));
+					gettable = this15;
+					var y3 = vision_ds_Image.get_height(image) - 1;
+					var this16 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(gettable),y3);
+					gettable = this16;
+				}
+				var tmp = vision_ds_Image.getPixel(image,vision_ds_IntPoint2D.get_x(gettable),vision_ds_IntPoint2D.get_y(gettable));
+				neighbors[X + roundedDown].push(tmp);
+				continue;
+			}
+			var tmp1 = vision_ds_Image.getPixel(image,x + X,y + Y);
+			neighbors[X + roundedDown].push(tmp1);
+		}
+	}
+	return neighbors;
+};
 var vision_tools_MathTools = function() { };
 vision_tools_MathTools.__name__ = true;
 vision_tools_MathTools.turnicate = function(num,numbersAfterDecimal) {
