@@ -119,6 +119,54 @@ class Vision {
         @param kernal the type/value of the kernal. can
     **/
     public static function convolve(image:Image, kernal:Kernal2D) {
+
+        var matrix = switch kernal {
+            case Identity: [
+                [0, 0, 0],
+                [0, 1, 0],
+                [0, 0, 0],
+            ];
+            case BoxBlur: [
+                [1, 1, 1],
+                [1, 1, 1],
+                [1, 1, 1],
+            ];
+            case RidgeDetection: [
+                [-1, -1, -1],
+                [-1, 4, -1],
+                [-1, -1, -1],
+            ];
+            case RidgeDetectionAggresive: [
+                [-1, -1, -1],
+                [-1, 8, -1],
+                [-1, -1, -1],
+            ];
+            case Sharpen: [
+                [0, -1, 0],
+                [-1, 5, -1],
+                [0, -1, 0],
+            ];
+            case UnsharpMasking:[
+                [1, 4, 6, 4, 1],
+                [4, 16,  24 , 16, 4],
+                [6, 24, -476, 24, 6],
+                [4, 16,  24 , 16, 4],
+                [1, 4, 6, 4, 1]
+            ];
+            case Assemble3x3(corner, edge, center): [
+                [corner, edge, corner],
+                [edge, center, edge],
+                [corner, edge, corner]
+            ],
+            case Assemble5x5(farCorner, farEdge, edge, midCorner, midEdge, center): [
+                [farCorner, farEdge, edge, farEdge, farCorner],
+                [farEdge, midCorner, midEdge, midCorner, farEdge],
+                [edge, midEdge, center, midEdge, edge],
+                [farEdge, midCorner, midEdge, midCorner, farEdge],
+                [farCorner, farEdge, edge, farEdge, farCorner]
+            ]
+            case Custom(kernal): kernal;
+        }
     }
 
     /**
