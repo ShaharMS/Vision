@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.Int32;
 import haxe.Int64;
 import haxe.ds.Vector;
 import vision.ds.Point2D;
@@ -7,6 +8,7 @@ import vision.ds.Point2D;
 /**
  * A 2D point represented by two, 32-bit integers.
  */
+@:structInit
 #if vision_disable_point_alloc_optimization
 class IntPoint2D {
     public var x:Int;

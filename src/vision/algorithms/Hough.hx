@@ -98,7 +98,6 @@ class Hough {
 		for (point in accum.cellIterator(threshold)) {
 			var theta = degreesToRadians(point.y);
 			var rho = point.x;
-			trace(rho, theta);
 			var m = -cotan(theta);
 			var b = rho * cosec(theta);
 			rays.push(new Ray2D({x: 0, y: b}, m));

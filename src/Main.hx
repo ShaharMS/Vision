@@ -1,5 +1,8 @@
 package;
 
+import vision.tools.ImageTools;
+using vision.tools.ImageTools;
+import format.tga.Data.ImageType;
 import vision.ds.Queue;
 import vision.ds.LineSegment2D;
 import vision.tools.MathTools;
@@ -23,6 +26,8 @@ class Main {
 	static function main() {
 		var start:Float, end:Float;
 
+		var i = new Image(369, 276).loadFromFile("https://i.stack.imgur.com/Bnxa6.jpg");
+		printImage(i);
 		var image = new Image(250, 250, 0x000000);
 		image.drawLine(12, 53, 54, 15, 0xbd0202);
 		image.drawLine(56, 248, 181, 95, 0x000355);
@@ -89,6 +94,10 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Unsharp Masking Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		#end
+		start = haxe.Timer.stamp();
+		printImage(image.clone().sobelEdgeDiffOperator());
+		end = haxe.Timer.stamp();
+		trace("Sobel Filter took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		start = haxe.Timer.stamp();
 		printImage(image.clone().sobelEdgeDetection());
 		end = haxe.Timer.stamp();

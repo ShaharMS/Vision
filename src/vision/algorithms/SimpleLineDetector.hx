@@ -11,11 +11,10 @@ using vision.tools.MathTools;
 
 class SimpleLineDetector {
 	
-	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float):LineSegment2D {
-		var startX = point.x, startY = point.y;
+	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float):Array<LineSegment2D> {
 		var yArr = [0, 1, -1, 2, -2];
 		var xArr = [0, 1, -1, 2, -2];
-		var preferredDirection:IntPoint2D = new IntPoint2D(0,0);
+		var lines:Array<LineSegment2D> = [];
 		if (image[point.x] == null || image[point.x][point.y] == null || image[point.x][point.y] == 0) return null;
 
 		//first, were going to detect the general direction the line goes in - this is used to detect crossed lines.
@@ -25,19 +24,20 @@ class SimpleLineDetector {
 					if (prefX == 0 && prefY == 0) continue;
 					if (!image.hasPixel(point.x + prefX, point.y + prefY)) continue;
 					if (image.getPixel(point.x + prefX, point.y + prefY).to24Bit() == Color.WHITE) {
-						preferredDirection = new IntPoint2D(prefX, prefY);
+						var line = spawnLineFinder(image, point, new IntPoint2D(prefX, prefY));
+						lines.push(line);
 					}
 				}
 			}
 		}
 		findPreference();
+		return lines;
+	}
 
-		var xs = xArr.copy();
-		var ys = yArr.copy();
-		xs.remove(2);
-		xs.remove(-2);
-		ys.remove(2);
-		ys.remove(-2);
+	public static function spawnLineFinder(image:Image, point:IntPoint2D, preferredDirection:IntPoint2D):LineSegment2D {
+		var startX = point.x, startY = point.y;
+		var xs = [0, -1, 1];
+		var ys = [0, -1, 1];
 		if (preferredDirection.x > 0) {
 			xs.remove(-1);
 		} else if (preferredDirection.x < 0) {
@@ -54,9 +54,6 @@ class SimpleLineDetector {
 			ys.remove(-1);
 		}
 
-		var mightStop = false;
-		var lValue = 0.;
-		var lastValue = 0.;
 		function expand() {
 			final X = preferredDirection.x, Y = preferredDirection.y;
 			if (image[point.x + X] == null || image[point.x + X][point.y + Y] == null) {
@@ -68,7 +65,6 @@ class SimpleLineDetector {
 				expand();
 			} else {
 				//check if the pixel's neighbors can continue the line, and keep the direction
-
 				for (x in xs) {
 					for (y in ys) {
 						if (x == 0 && y == 0) continue;
@@ -82,12 +78,8 @@ class SimpleLineDetector {
 			}
 		}
 		expand();
-		var line = new LineSegment2D({x: startX, y: startY}, point);
-		
-		if (line.length > minLineLength){
-			return line;
-		} 
-		return null;
+
+		return  new LineSegment2D(point, {x: startX, y: startY});
 	}
 
 	public static function getDistanceFromPointToLine(line:LineSegment2D, pointX:Int, pointY:Int):Float {

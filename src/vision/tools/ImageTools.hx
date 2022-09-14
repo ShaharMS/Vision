@@ -1,5 +1,7 @@
 package vision.tools;
 
+import haxe.ds.Vector;
+import vision.ds.Matrix;
 import vision.ds.IntPoint2D;
 import vision.ds.Color;
 import vision.ds.Image;
@@ -68,7 +70,7 @@ class ImageTools {
             image = new Image(imgElement.width, imgElement.height);
         }
         var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
-		var data = imageData.data;
+        var data = imageData.data;
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
 				var i = (y * image.width + x) * 4;
@@ -164,11 +166,82 @@ class ImageTools {
      * @param array
      * @return Array<T>
      */
-    @:generic public static function flatten<T>(array:Array<Array<T>>):Array<T> {
+    @:generic overload extern inline public static function flatten<T>(array:Array<Array<T>>):Array<T> {
         var flat = [];
         for (item in array) flat = flat.concat(item);
         return flat;
     }
+
+    /**
+     * Takes a Matrix and flattens it into a Vector.
+     * @param matrix
+     * @return Vector<T>
+     */
+    @:generic overload extern inline public static function flatten<T>(matrix:Matrix<T>):Vector<T> {
+        var flat = [];
+        for (item in matrix) flat = flat.concat(item.toArray());
+        return Vector.fromArrayCopy(flat);
+    }
+
+    public static function grayscalePixel(pixel:Color):Color {
+        var gray = Std.int((pixel.red + pixel.green + pixel.blue) / 3);
+        return Color.fromRGBA(gray, gray, gray, pixel.alpha);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     #if flixel
     public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {

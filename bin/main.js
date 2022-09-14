@@ -22,6 +22,8 @@ HxOverrides.now = function() {
 var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
+	var i = vision_tools_ImageTools.loadFromFile(vision_ds_Image._new(369,276),"https://i.stack.imgur.com/Bnxa6.jpg");
+	Main.printImage(i);
 	var image = vision_ds_Image._new(250,250,0);
 	vision_ds_Image.drawLine(image,12,53,54,15,12386818);
 	vision_ds_Image.drawLine(image,56,248,181,95,853);
@@ -47,53 +49,57 @@ Main.main = function() {
 	var start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.Identity));
 	var end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Identity Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 70, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:75:","Identity Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.BoxBlur));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("BoxBlur Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 74, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:79:","BoxBlur Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.RidgeDetection));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 78, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:83:","Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.RidgeDetectionAggresive));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Aggresive Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 82, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:87:","Aggresive Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.Sharpen));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Shaprening Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 86, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:91:","Shaprening Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.UnsharpMasking));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Unsharp Masking Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 90, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:95:","Unsharp Masking Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
+	start = HxOverrides.now() / 1000;
+	Main.printImage(vision_Vision.sobelEdgeDiffOperator(vision_ds_Image.clone(image)));
+	end = HxOverrides.now() / 1000;
+	console.log("src/Main.hx:100:","Sobel Filter took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.sobelEdgeDetection(vision_ds_Image.clone(image)));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Sobel edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 95, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:104:","Sobel edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	var hough = vision_algorithms_Hough.toHoughSpace(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
 	Main.printImage(hough.image);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Hough transform took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 100, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:109:","Hough transform took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Perwitt edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 104, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:113:","Perwitt edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	var canny = vision_Vision.cannyEdgeDetection(vision_ds_Image.clone(image));
 	Main.printImage(canny);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 109, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:118:","Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.nearestNeighborBlur(vision_ds_Image.clone(image),1));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Nearest neighbor blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 113, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:122:","Nearest neighbor blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_Vision.gaussianBlur(vision_ds_Image.clone(image),2,15));
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 117, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:126:","Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	Main.printImage(vision_ds_Image.mirror(vision_ds_Image.clone(image)));
 	end = HxOverrides.now() / 1000;
@@ -108,7 +114,7 @@ Main.main = function() {
 	}
 	Main.printImage(newI);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 140, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:149:","Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 	start = HxOverrides.now() / 1000;
 	var lines = vision_Vision.houghRay2DDetection(vision_ds_Image.clone(image));
 	var _g = 0;
@@ -119,7 +125,7 @@ Main.main = function() {
 	}
 	Main.printImage(image);
 	end = HxOverrides.now() / 1000;
-	haxe_Log.trace("Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 148, className : "Main", methodName : "main"});
+	console.log("src/Main.hx:157:","Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds");
 };
 Main.printImage = function(image) {
 	var c = window.document.createElement("canvas");
@@ -390,31 +396,6 @@ haxe__$Int64__$_$_$Int64.prototype = {
 		return haxe_Int64.toString(this);
 	}
 };
-var haxe_Log = function() { };
-haxe_Log.__name__ = true;
-haxe_Log.formatOutput = function(v,infos) {
-	var str = Std.string(v);
-	if(infos == null) {
-		return str;
-	}
-	var pstr = infos.fileName + ":" + infos.lineNumber;
-	if(infos.customParams != null) {
-		var _g = 0;
-		var _g1 = infos.customParams;
-		while(_g < _g1.length) {
-			var v = _g1[_g];
-			++_g;
-			str += ", " + Std.string(v);
-		}
-	}
-	return pstr + ": " + str;
-};
-haxe_Log.trace = function(v,infos) {
-	var str = haxe_Log.formatOutput(v,infos);
-	if(typeof(console) != "undefined" && console.log != null) {
-		console.log(str);
-	}
-};
 var haxe_ValueException = function(value,previous,native) {
 	haxe_Exception.call(this,String(value),previous,native);
 	this.value = value;
@@ -628,7 +609,7 @@ vision_Vision.convolve = function(image,kernal) {
 		matrix = [[-1,-1,-1],[-1,4,-1],[-1,-1,-1]];
 		break;
 	case 3:
-		matrix = [[-1,-1,-1],[-1,1555,-1],[-1,-1,-1]];
+		matrix = [[-1,-1,-1],[-1,8,-1],[-1,-1,-1]];
 		break;
 	case 4:
 		matrix = [[0,-1,0],[-1,5,-1],[0,-1,0]];
@@ -668,8 +649,15 @@ vision_Vision.convolve = function(image,kernal) {
 		}
 		items += array.length;
 	}
-	var flatMatrix = vision_tools_ImageTools.flatten_Float(matrix);
-	haxe_Log.trace(flatMatrix,{ fileName : "src/vision/Vision.hx", lineNumber : 161, className : "vision.Vision", methodName : "convolve"});
+	var flat = [];
+	var _g = 0;
+	while(_g < matrix.length) {
+		var item = matrix[_g];
+		++_g;
+		flat = flat.concat(item);
+	}
+	var flatMatrix = flat;
+	console.log("src/vision/Vision.hx:162:",flatMatrix);
 	var _g = 0;
 	var _g1 = vision_ds_Image.get_width(image);
 	while(_g < _g1) {
@@ -678,21 +666,29 @@ vision_Vision.convolve = function(image,kernal) {
 		var _g3 = vision_ds_Image.get_height(image);
 		while(_g2 < _g3) {
 			var y = _g2++;
-			var neighbors = vision_tools_ImageTools.flatten_vision_ds_Color(vision_tools_ImageTools.getNeighborsOfPixel(image,x,y,maxLength));
-			var value = 0;
+			var array = vision_tools_ImageTools.getNeighborsOfPixel(image,x,y,maxLength);
+			var flat = [];
 			var _g4 = 0;
-			var _g5 = neighbors.length;
-			while(_g4 < _g5) {
-				var i = _g4++;
-				var Value = (value >> 16 & 255) + flatMatrix[i] * (neighbors[i] >> 16 & 255);
+			while(_g4 < array.length) {
+				var item = array[_g4];
+				++_g4;
+				flat = flat.concat(item);
+			}
+			var neighbors = flat;
+			var value = 0;
+			var _g5 = 0;
+			var _g6 = neighbors.length;
+			while(_g5 < _g6) {
+				var i = _g5++;
+				var value1 = (value >> 16 & 255) + flatMatrix[i] * (neighbors[i] >> 16 & 255);
 				value &= -16711681;
-				value |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
-				var Value1 = (value & 255) + flatMatrix[i] * (neighbors[i] & 255);
+				value |= (value1 > 255 ? 255 : value1 < 0 ? 0 : value1) << 16;
+				var value2 = (value & 255) + flatMatrix[i] * (neighbors[i] & 255);
 				value &= -256;
-				value |= Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1;
-				var Value2 = (value >> 8 & 255) + flatMatrix[i] * (neighbors[i] >> 8 & 255);
+				value |= value2 > 255 ? 255 : value2 < 0 ? 0 : value2;
+				var value3 = (value >> 8 & 255) + flatMatrix[i] * (neighbors[i] >> 8 & 255);
 				value &= -65281;
-				value |= (Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2) << 8;
+				value |= (value3 > 255 ? 255 : value3 < 0 ? 0 : value3) << 8;
 			}
 			vision_ds_Image.setPixel(convolved,x,y,value | 0);
 		}
@@ -1089,15 +1085,15 @@ vision_Vision.gaussianBlur = function(image,sigma,kernalSize) {
 					var red = (neighbors[X][Y] >> 16 & 255) * kernal[X][Y];
 					var green = (neighbors[X][Y] >> 8 & 255) * kernal[X][Y];
 					var blue = (neighbors[X][Y] & 255) * kernal[X][Y];
-					var Value = (newColor >> 16 & 255) + (red | 0);
+					var value = (newColor >> 16 & 255) + (red | 0);
 					newColor &= -16711681;
-					newColor |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
-					var Value1 = (newColor >> 8 & 255) + (green | 0);
+					newColor |= (value > 255 ? 255 : value < 0 ? 0 : value) << 16;
+					var value1 = (newColor >> 8 & 255) + (green | 0);
 					newColor &= -65281;
-					newColor |= (Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1) << 8;
-					var Value2 = (newColor & 255) + (blue | 0);
+					newColor |= (value1 > 255 ? 255 : value1 < 0 ? 0 : value1) << 8;
+					var value2 = (newColor & 255) + (blue | 0);
 					newColor &= -256;
-					newColor |= Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2;
+					newColor |= value2 > 255 ? 255 : value2 < 0 ? 0 : value2;
 				}
 			}
 			vision_ds_Image.setPixel(blurredImage,x,y,newColor);
@@ -1139,11 +1135,10 @@ vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLe
 		while(_g2 < _g3) {
 			var y = _g2++;
 			var line = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineGap,minLineLength);
-			if(line != null) {
-				lines.push(line);
-			}
+			lines.concat(line);
 		}
 	}
+	console.log("src/vision/Vision.hx:530:",lines);
 	var actualLines = [];
 	var _g = 0;
 	while(_g < lines.length) {
@@ -1155,6 +1150,9 @@ vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLe
 		}
 	}
 	return actualLines;
+};
+vision_Vision.sobelEdgeDiffOperator = function(image) {
+	return vision_algorithms_Sobel.convolveWithSobelOperator(image);
 };
 var vision_algorithms_Canny = function() { };
 vision_algorithms_Canny.__name__ = true;
@@ -1211,18 +1209,18 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			if(Alpha1 == null) {
 				Alpha1 = 1;
 			}
-			var Value = Math.round(Red * 255);
+			var value = Math.round(Red * 255);
 			color &= -16711681;
-			color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
-			var Value1 = Math.round(Green * 255);
+			color |= (value > 255 ? 255 : value < 0 ? 0 : value) << 16;
+			var value1 = Math.round(Green * 255);
 			color &= -65281;
-			color |= (Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1) << 8;
-			var Value2 = Math.round(Blue * 255);
+			color |= (value1 > 255 ? 255 : value1 < 0 ? 0 : value1) << 8;
+			var value2 = Math.round(Blue * 255);
 			color &= -256;
-			color |= Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2;
-			var Value3 = Math.round(Alpha1 * 255);
+			color |= value2 > 255 ? 255 : value2 < 0 ? 0 : value2;
+			var value3 = Math.round(Alpha1 * 255);
 			color &= 16777215;
-			color |= (Value3 > 255 ? 255 : Value3 < 0 ? 0 : Value3) << 24;
+			color |= (value3 > 255 ? 255 : value3 < 0 ? 0 : value3) << 24;
 			var rhs1 = color;
 			var Red1 = (ghs >> 16 & 255) + (rhs1 >> 16 & 255);
 			var Green1 = (ghs >> 8 & 255) + (rhs1 >> 8 & 255);
@@ -1259,18 +1257,18 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			if(Alpha5 == null) {
 				Alpha5 = 1;
 			}
-			var Value4 = Math.round(Red2 * 255);
+			var value4 = Math.round(Red2 * 255);
 			color2 &= -16711681;
-			color2 |= (Value4 > 255 ? 255 : Value4 < 0 ? 0 : Value4) << 16;
-			var Value5 = Math.round(Green2 * 255);
+			color2 |= (value4 > 255 ? 255 : value4 < 0 ? 0 : value4) << 16;
+			var value5 = Math.round(Green2 * 255);
 			color2 &= -65281;
-			color2 |= (Value5 > 255 ? 255 : Value5 < 0 ? 0 : Value5) << 8;
-			var Value6 = Math.round(Blue2 * 255);
+			color2 |= (value5 > 255 ? 255 : value5 < 0 ? 0 : value5) << 8;
+			var value6 = Math.round(Blue2 * 255);
 			color2 &= -256;
-			color2 |= Value6 > 255 ? 255 : Value6 < 0 ? 0 : Value6;
-			var Value7 = Math.round(Alpha5 * 255);
+			color2 |= value6 > 255 ? 255 : value6 < 0 ? 0 : value6;
+			var value7 = Math.round(Alpha5 * 255);
 			color2 &= 16777215;
-			color2 |= (Value7 > 255 ? 255 : Value7 < 0 ? 0 : Value7) << 24;
+			color2 |= (value7 > 255 ? 255 : value7 < 0 ? 0 : value7) << 24;
 			var rhs3 = color2;
 			var Red3 = (gvs >> 16 & 255) + (rhs3 >> 16 & 255);
 			var Green3 = (gvs >> 8 & 255) + (rhs3 >> 8 & 255);
@@ -1307,18 +1305,18 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			if(Alpha9 == null) {
 				Alpha9 = 1;
 			}
-			var Value8 = Math.round(Red4 * 255);
+			var value8 = Math.round(Red4 * 255);
 			color4 &= -16711681;
-			color4 |= (Value8 > 255 ? 255 : Value8 < 0 ? 0 : Value8) << 16;
-			var Value9 = Math.round(Green4 * 255);
+			color4 |= (value8 > 255 ? 255 : value8 < 0 ? 0 : value8) << 16;
+			var value9 = Math.round(Green4 * 255);
 			color4 &= -65281;
-			color4 |= (Value9 > 255 ? 255 : Value9 < 0 ? 0 : Value9) << 8;
-			var Value10 = Math.round(Blue4 * 255);
+			color4 |= (value9 > 255 ? 255 : value9 < 0 ? 0 : value9) << 8;
+			var value10 = Math.round(Blue4 * 255);
 			color4 &= -256;
-			color4 |= Value10 > 255 ? 255 : Value10 < 0 ? 0 : Value10;
-			var Value11 = Math.round(Alpha9 * 255);
+			color4 |= value10 > 255 ? 255 : value10 < 0 ? 0 : value10;
+			var value11 = Math.round(Alpha9 * 255);
 			color4 &= 16777215;
-			color4 |= (Value11 > 255 ? 255 : Value11 < 0 ? 0 : Value11) << 24;
+			color4 |= (value11 > 255 ? 255 : value11 < 0 ? 0 : value11) << 24;
 			var rhs5 = color4;
 			var Red5 = (ghs >> 16 & 255) + (rhs5 >> 16 & 255);
 			var Green5 = (ghs >> 8 & 255) + (rhs5 >> 8 & 255);
@@ -1355,18 +1353,18 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			if(Alpha13 == null) {
 				Alpha13 = 1;
 			}
-			var Value12 = Math.round(Red6 * 255);
+			var value12 = Math.round(Red6 * 255);
 			color6 &= -16711681;
-			color6 |= (Value12 > 255 ? 255 : Value12 < 0 ? 0 : Value12) << 16;
-			var Value13 = Math.round(Green6 * 255);
+			color6 |= (value12 > 255 ? 255 : value12 < 0 ? 0 : value12) << 16;
+			var value13 = Math.round(Green6 * 255);
 			color6 &= -65281;
-			color6 |= (Value13 > 255 ? 255 : Value13 < 0 ? 0 : Value13) << 8;
-			var Value14 = Math.round(Blue6 * 255);
+			color6 |= (value13 > 255 ? 255 : value13 < 0 ? 0 : value13) << 8;
+			var value14 = Math.round(Blue6 * 255);
 			color6 &= -256;
-			color6 |= Value14 > 255 ? 255 : Value14 < 0 ? 0 : Value14;
-			var Value15 = Math.round(Alpha13 * 255);
+			color6 |= value14 > 255 ? 255 : value14 < 0 ? 0 : value14;
+			var value15 = Math.round(Alpha13 * 255);
 			color6 &= 16777215;
-			color6 |= (Value15 > 255 ? 255 : Value15 < 0 ? 0 : Value15) << 24;
+			color6 |= (value15 > 255 ? 255 : value15 < 0 ? 0 : value15) << 24;
 			var rhs7 = color6;
 			var Red7 = (gvs >> 16 & 255) + (rhs7 >> 16 & 255);
 			var Green7 = (gvs >> 8 & 255) + (rhs7 >> 8 & 255);
@@ -1403,18 +1401,18 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			if(Alpha17 == null) {
 				Alpha17 = 1;
 			}
-			var Value16 = Math.round(Red8 * 255);
+			var value16 = Math.round(Red8 * 255);
 			color8 &= -16711681;
-			color8 |= (Value16 > 255 ? 255 : Value16 < 0 ? 0 : Value16) << 16;
-			var Value17 = Math.round(Green8 * 255);
+			color8 |= (value16 > 255 ? 255 : value16 < 0 ? 0 : value16) << 16;
+			var value17 = Math.round(Green8 * 255);
 			color8 &= -65281;
-			color8 |= (Value17 > 255 ? 255 : Value17 < 0 ? 0 : Value17) << 8;
-			var Value18 = Math.round(Blue8 * 255);
+			color8 |= (value17 > 255 ? 255 : value17 < 0 ? 0 : value17) << 8;
+			var value18 = Math.round(Blue8 * 255);
 			color8 &= -256;
-			color8 |= Value18 > 255 ? 255 : Value18 < 0 ? 0 : Value18;
-			var Value19 = Math.round(Alpha17 * 255);
+			color8 |= value18 > 255 ? 255 : value18 < 0 ? 0 : value18;
+			var value19 = Math.round(Alpha17 * 255);
 			color8 &= 16777215;
-			color8 |= (Value19 > 255 ? 255 : Value19 < 0 ? 0 : Value19) << 24;
+			color8 |= (value19 > 255 ? 255 : value19 < 0 ? 0 : value19) << 24;
 			var rhs9 = color8;
 			var Red9 = (ghs >> 16 & 255) + (rhs9 >> 16 & 255);
 			var Green9 = (ghs >> 8 & 255) + (rhs9 >> 8 & 255);
@@ -1451,18 +1449,18 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			if(Alpha21 == null) {
 				Alpha21 = 1;
 			}
-			var Value20 = Math.round(Red10 * 255);
+			var value20 = Math.round(Red10 * 255);
 			color10 &= -16711681;
-			color10 |= (Value20 > 255 ? 255 : Value20 < 0 ? 0 : Value20) << 16;
-			var Value21 = Math.round(Green10 * 255);
+			color10 |= (value20 > 255 ? 255 : value20 < 0 ? 0 : value20) << 16;
+			var value21 = Math.round(Green10 * 255);
 			color10 &= -65281;
-			color10 |= (Value21 > 255 ? 255 : Value21 < 0 ? 0 : Value21) << 8;
-			var Value22 = Math.round(Blue10 * 255);
+			color10 |= (value21 > 255 ? 255 : value21 < 0 ? 0 : value21) << 8;
+			var value22 = Math.round(Blue10 * 255);
 			color10 &= -256;
-			color10 |= Value22 > 255 ? 255 : Value22 < 0 ? 0 : Value22;
-			var Value23 = Math.round(Alpha21 * 255);
+			color10 |= value22 > 255 ? 255 : value22 < 0 ? 0 : value22;
+			var value23 = Math.round(Alpha21 * 255);
 			color10 &= 16777215;
-			color10 |= (Value23 > 255 ? 255 : Value23 < 0 ? 0 : Value23) << 24;
+			color10 |= (value23 > 255 ? 255 : value23 < 0 ? 0 : value23) << 24;
 			var rhs11 = color10;
 			var Red11 = (gvs >> 16 & 255) + (rhs11 >> 16 & 255);
 			var Green11 = (gvs >> 8 & 255) + (rhs11 >> 8 & 255);
@@ -1499,18 +1497,18 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			if(Alpha25 == null) {
 				Alpha25 = 1;
 			}
-			var Value24 = Math.round(Red12 * 255);
+			var value24 = Math.round(Red12 * 255);
 			color12 &= -16711681;
-			color12 |= (Value24 > 255 ? 255 : Value24 < 0 ? 0 : Value24) << 16;
-			var Value25 = Math.round(Green12 * 255);
+			color12 |= (value24 > 255 ? 255 : value24 < 0 ? 0 : value24) << 16;
+			var value25 = Math.round(Green12 * 255);
 			color12 &= -65281;
-			color12 |= (Value25 > 255 ? 255 : Value25 < 0 ? 0 : Value25) << 8;
-			var Value26 = Math.round(Blue12 * 255);
+			color12 |= (value25 > 255 ? 255 : value25 < 0 ? 0 : value25) << 8;
+			var value26 = Math.round(Blue12 * 255);
 			color12 &= -256;
-			color12 |= Value26 > 255 ? 255 : Value26 < 0 ? 0 : Value26;
-			var Value27 = Math.round(Alpha25 * 255);
+			color12 |= value26 > 255 ? 255 : value26 < 0 ? 0 : value26;
+			var value27 = Math.round(Alpha25 * 255);
 			color12 &= 16777215;
-			color12 |= (Value27 > 255 ? 255 : Value27 < 0 ? 0 : Value27) << 24;
+			color12 |= (value27 > 255 ? 255 : value27 < 0 ? 0 : value27) << 24;
 			var rhs13 = color12;
 			var Red13 = (ghs >> 16 & 255) + (rhs13 >> 16 & 255);
 			var Green13 = (ghs >> 8 & 255) + (rhs13 >> 8 & 255);
@@ -1547,18 +1545,18 @@ vision_algorithms_Canny.applySobelFilters = function(image) {
 			if(Alpha29 == null) {
 				Alpha29 = 1;
 			}
-			var Value28 = Math.round(Red14 * 255);
+			var value28 = Math.round(Red14 * 255);
 			color14 &= -16711681;
-			color14 |= (Value28 > 255 ? 255 : Value28 < 0 ? 0 : Value28) << 16;
-			var Value29 = Math.round(Green14 * 255);
+			color14 |= (value28 > 255 ? 255 : value28 < 0 ? 0 : value28) << 16;
+			var value29 = Math.round(Green14 * 255);
 			color14 &= -65281;
-			color14 |= (Value29 > 255 ? 255 : Value29 < 0 ? 0 : Value29) << 8;
-			var Value30 = Math.round(Blue14 * 255);
+			color14 |= (value29 > 255 ? 255 : value29 < 0 ? 0 : value29) << 8;
+			var value30 = Math.round(Blue14 * 255);
 			color14 &= -256;
-			color14 |= Value30 > 255 ? 255 : Value30 < 0 ? 0 : Value30;
-			var Value31 = Math.round(Alpha29 * 255);
+			color14 |= value30 > 255 ? 255 : value30 < 0 ? 0 : value30;
+			var value31 = Math.round(Alpha29 * 255);
 			color14 &= 16777215;
-			color14 |= (Value31 > 255 ? 255 : Value31 < 0 ? 0 : Value31) << 24;
+			color14 |= (value31 > 255 ? 255 : value31 < 0 ? 0 : value31) << 24;
 			var rhs15 = color14;
 			var Red15 = (gvs >> 16 & 255) + (rhs15 >> 16 & 255);
 			var Green15 = (gvs >> 8 & 255) + (rhs15 >> 8 & 255);
@@ -1799,18 +1797,18 @@ vision_algorithms_Hough.toHoughSpace = function(image) {
 					if(Alpha1 == null) {
 						Alpha1 = 1;
 					}
-					var Value = Math.round(0);
+					var value = Math.round(0);
 					color &= -16711681;
-					color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
-					var Value1 = Math.round(0);
+					color |= (value > 255 ? 255 : value < 0 ? 0 : value) << 16;
+					var value1 = Math.round(0);
 					color &= -65281;
-					color |= (Value1 > 255 ? 255 : Value1 < 0 ? 0 : Value1) << 8;
-					var Value2 = Math.round(0);
+					color |= (value1 > 255 ? 255 : value1 < 0 ? 0 : value1) << 8;
+					var value2 = Math.round(0);
 					color &= -256;
-					color |= Value2 > 255 ? 255 : Value2 < 0 ? 0 : Value2;
-					var Value3 = Math.round(Alpha1 * 255);
+					color |= value2 > 255 ? 255 : value2 < 0 ? 0 : value2;
+					var value3 = Math.round(Alpha1 * 255);
 					color &= 16777215;
-					color |= (Value3 > 255 ? 255 : Value3 < 0 ? 0 : Value3) << 24;
+					color |= (value3 > 255 ? 255 : value3 < 0 ? 0 : value3) << 24;
 					vision_ds_Image.paintPixel(houghSpace,thetaIndex,rho | 0,color);
 					theta += Math.PI / 360;
 					++thetaIndex;
@@ -1834,7 +1832,6 @@ vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocal
 		var point = _g.array[_g.current++];
 		var theta = vision_ds_IntPoint2D.get_y(point) * Math.PI / 180;
 		var rho = vision_ds_IntPoint2D.get_x(point);
-		haxe_Log.trace(rho,{ fileName : "src/vision/algorithms/Hough.hx", lineNumber : 101, className : "vision.algorithms.Hough", methodName : "toHoughSpaceWithRays", customParams : [theta]});
 		var m = -(1 / Math.tan(theta));
 		var b = rho * (1 / Math.sin(theta));
 		rays.push(new vision_ds_Ray2D(new vision_ds_Point2D(0,b),m));
@@ -1846,11 +1843,9 @@ vision_algorithms_Hough.toHoughSpaceWithRays = function(image,threshold,numLocal
 var vision_algorithms_SimpleLineDetector = function() { };
 vision_algorithms_SimpleLineDetector.__name__ = true;
 vision_algorithms_SimpleLineDetector.findLineFromPoint = function(image,point,minLineGap,minLineLength) {
-	var startX = vision_ds_IntPoint2D.get_x(point);
-	var startY = vision_ds_IntPoint2D.get_y(point);
 	var yArr = [0,1,-1,2,-2];
 	var xArr = [0,1,-1,2,-2];
-	var preferredDirection = vision_ds_IntPoint2D._new(0,0);
+	var lines = [];
 	if(vision_ds_Image.image_array_read(image,vision_ds_IntPoint2D.get_x(point)) == null || vision_ds_Image.image_array_read(image,vision_ds_IntPoint2D.get_x(point))[vision_ds_IntPoint2D.get_y(point)] == null || vision_ds_Image.image_array_read(image,vision_ds_IntPoint2D.get_x(point))[vision_ds_IntPoint2D.get_y(point)] == 0) {
 		return null;
 	}
@@ -1870,18 +1865,20 @@ vision_algorithms_SimpleLineDetector.findLineFromPoint = function(image,point,mi
 					continue;
 				}
 				if((vision_ds_Image.getPixel(image,vision_ds_IntPoint2D.get_x(point) + prefX,vision_ds_IntPoint2D.get_y(point) + prefY) & 16777215) == 16777215) {
-					preferredDirection = vision_ds_IntPoint2D._new(prefX,prefY);
+					var line = vision_algorithms_SimpleLineDetector.spawnLineFinder(image,point,vision_ds_IntPoint2D._new(prefX,prefY));
+					lines.push(line);
 				}
 			}
 		}
 	};
 	findPreference();
-	var xs = xArr.slice();
-	var ys = yArr.slice();
-	HxOverrides.remove(xs,2);
-	HxOverrides.remove(xs,-2);
-	HxOverrides.remove(ys,2);
-	HxOverrides.remove(ys,-2);
+	return lines;
+};
+vision_algorithms_SimpleLineDetector.spawnLineFinder = function(image,point,preferredDirection) {
+	var startX = vision_ds_IntPoint2D.get_x(point);
+	var startY = vision_ds_IntPoint2D.get_y(point);
+	var xs = [0,-1,1];
+	var ys = [0,-1,1];
 	if(vision_ds_IntPoint2D.get_x(preferredDirection) > 0) {
 		HxOverrides.remove(xs,-1);
 	} else if(vision_ds_IntPoint2D.get_x(preferredDirection) < 0) {
@@ -1896,9 +1893,6 @@ vision_algorithms_SimpleLineDetector.findLineFromPoint = function(image,point,mi
 	} else {
 		HxOverrides.remove(ys,-1);
 	}
-	var mightStop = false;
-	var lValue = 0.;
-	var lastValue = 0.;
 	var expand = null;
 	expand = function() {
 		var X = vision_ds_IntPoint2D.get_x(preferredDirection);
@@ -1940,11 +1934,7 @@ vision_algorithms_SimpleLineDetector.findLineFromPoint = function(image,point,mi
 		}
 	};
 	expand();
-	var line = new vision_ds_LineSegment2D(new vision_ds_Point2D(startX,startY),vision_ds_IntPoint2D.toPoint2D(point));
-	if(line.get_length() > minLineLength) {
-		return line;
-	}
-	return null;
+	return new vision_ds_LineSegment2D(vision_ds_IntPoint2D.toPoint2D(point),new vision_ds_Point2D(startX,startY));
 };
 vision_algorithms_SimpleLineDetector.lineCoveragePercentage = function(image,line) {
 	var coveredPixels = 0;
@@ -1982,12 +1972,922 @@ vision_algorithms_SimpleLineDetector.lineCoveragePercentage = function(image,lin
 	}
 	return coveredPixels / totalPixels * 100;
 };
-var vision_ds_Color = {};
-vision_ds_Color._new = function(Value) {
-	if(Value == null) {
-		Value = 0;
+var vision_algorithms_Sobel = function() { };
+vision_algorithms_Sobel.__name__ = true;
+vision_algorithms_Sobel.convolveWithSobelOperator = function(image) {
+	var edge = vision_ds_Image._new(vision_ds_Image.get_width(image),vision_ds_Image.get_height(image));
+	var _g = 1;
+	var _g1 = vision_ds_Image.get_width(image) - 2;
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = 1;
+		var _g3 = vision_ds_Image.get_height(image) - 2;
+		while(_g2 < _g3) {
+			var y = _g2++;
+			var lhs = vision_algorithms_Sobel.sobelX[0][0];
+			var rhs = vision_ds_Image.getPixel(image,x - 1,y - 1);
+			var Red = (lhs >> 16 & 255) / 255 * ((rhs >> 16 & 255) / 255);
+			var Green = (lhs >> 8 & 255) / 255 * ((rhs >> 8 & 255) / 255);
+			var Blue = (lhs & 255) / 255 * ((rhs & 255) / 255);
+			var Alpha = (lhs >> 24 & 255) / 255 * ((rhs >> 24 & 255) / 255);
+			if(Alpha == null) {
+				Alpha = 1;
+			}
+			var color = vision_ds_Color._new();
+			var Alpha1 = Alpha;
+			if(Alpha1 == null) {
+				Alpha1 = 1;
+			}
+			var value = Math.round(Red * 255);
+			color &= -16711681;
+			color |= (value > 255 ? 255 : value < 0 ? 0 : value) << 16;
+			var value1 = Math.round(Green * 255);
+			color &= -65281;
+			color |= (value1 > 255 ? 255 : value1 < 0 ? 0 : value1) << 8;
+			var value2 = Math.round(Blue * 255);
+			color &= -256;
+			color |= value2 > 255 ? 255 : value2 < 0 ? 0 : value2;
+			var value3 = Math.round(Alpha1 * 255);
+			color &= 16777215;
+			color |= (value3 > 255 ? 255 : value3 < 0 ? 0 : value3) << 24;
+			var lhs1 = color;
+			var lhs2 = vision_algorithms_Sobel.sobelX[0][1];
+			var rhs1 = vision_ds_Image.getPixel(image,x,y - 1);
+			var Red1 = (lhs2 >> 16 & 255) / 255 * ((rhs1 >> 16 & 255) / 255);
+			var Green1 = (lhs2 >> 8 & 255) / 255 * ((rhs1 >> 8 & 255) / 255);
+			var Blue1 = (lhs2 & 255) / 255 * ((rhs1 & 255) / 255);
+			var Alpha2 = (lhs2 >> 24 & 255) / 255 * ((rhs1 >> 24 & 255) / 255);
+			if(Alpha2 == null) {
+				Alpha2 = 1;
+			}
+			var color1 = vision_ds_Color._new();
+			var Alpha3 = Alpha2;
+			if(Alpha3 == null) {
+				Alpha3 = 1;
+			}
+			var value4 = Math.round(Red1 * 255);
+			color1 &= -16711681;
+			color1 |= (value4 > 255 ? 255 : value4 < 0 ? 0 : value4) << 16;
+			var value5 = Math.round(Green1 * 255);
+			color1 &= -65281;
+			color1 |= (value5 > 255 ? 255 : value5 < 0 ? 0 : value5) << 8;
+			var value6 = Math.round(Blue1 * 255);
+			color1 &= -256;
+			color1 |= value6 > 255 ? 255 : value6 < 0 ? 0 : value6;
+			var value7 = Math.round(Alpha3 * 255);
+			color1 &= 16777215;
+			color1 |= (value7 > 255 ? 255 : value7 < 0 ? 0 : value7) << 24;
+			var rhs2 = color1;
+			var Red2 = (lhs1 >> 16 & 255) + (rhs2 >> 16 & 255);
+			var Green2 = (lhs1 >> 8 & 255) + (rhs2 >> 8 & 255);
+			var Blue2 = (lhs1 & 255) + (rhs2 & 255);
+			var Alpha4 = (lhs1 >> 24 & 255) + (rhs2 >> 24 & 255);
+			if(Alpha4 == null) {
+				Alpha4 = 255;
+			}
+			var color2 = vision_ds_Color._new();
+			var Alpha5 = Alpha4;
+			if(Alpha5 == null) {
+				Alpha5 = 255;
+			}
+			color2 &= -16711681;
+			color2 |= (Red2 > 255 ? 255 : Red2 < 0 ? 0 : Red2) << 16;
+			color2 &= -65281;
+			color2 |= (Green2 > 255 ? 255 : Green2 < 0 ? 0 : Green2) << 8;
+			color2 &= -256;
+			color2 |= Blue2 > 255 ? 255 : Blue2 < 0 ? 0 : Blue2;
+			color2 &= 16777215;
+			color2 |= (Alpha5 > 255 ? 255 : Alpha5 < 0 ? 0 : Alpha5) << 24;
+			var lhs3 = color2;
+			var lhs4 = vision_algorithms_Sobel.sobelX[0][2];
+			var rhs3 = vision_ds_Image.getPixel(image,x + 1,y - 1);
+			var Red3 = (lhs4 >> 16 & 255) / 255 * ((rhs3 >> 16 & 255) / 255);
+			var Green3 = (lhs4 >> 8 & 255) / 255 * ((rhs3 >> 8 & 255) / 255);
+			var Blue3 = (lhs4 & 255) / 255 * ((rhs3 & 255) / 255);
+			var Alpha6 = (lhs4 >> 24 & 255) / 255 * ((rhs3 >> 24 & 255) / 255);
+			if(Alpha6 == null) {
+				Alpha6 = 1;
+			}
+			var color3 = vision_ds_Color._new();
+			var Alpha7 = Alpha6;
+			if(Alpha7 == null) {
+				Alpha7 = 1;
+			}
+			var value8 = Math.round(Red3 * 255);
+			color3 &= -16711681;
+			color3 |= (value8 > 255 ? 255 : value8 < 0 ? 0 : value8) << 16;
+			var value9 = Math.round(Green3 * 255);
+			color3 &= -65281;
+			color3 |= (value9 > 255 ? 255 : value9 < 0 ? 0 : value9) << 8;
+			var value10 = Math.round(Blue3 * 255);
+			color3 &= -256;
+			color3 |= value10 > 255 ? 255 : value10 < 0 ? 0 : value10;
+			var value11 = Math.round(Alpha7 * 255);
+			color3 &= 16777215;
+			color3 |= (value11 > 255 ? 255 : value11 < 0 ? 0 : value11) << 24;
+			var rhs4 = color3;
+			var Red4 = (lhs3 >> 16 & 255) + (rhs4 >> 16 & 255);
+			var Green4 = (lhs3 >> 8 & 255) + (rhs4 >> 8 & 255);
+			var Blue4 = (lhs3 & 255) + (rhs4 & 255);
+			var Alpha8 = (lhs3 >> 24 & 255) + (rhs4 >> 24 & 255);
+			if(Alpha8 == null) {
+				Alpha8 = 255;
+			}
+			var color4 = vision_ds_Color._new();
+			var Alpha9 = Alpha8;
+			if(Alpha9 == null) {
+				Alpha9 = 255;
+			}
+			color4 &= -16711681;
+			color4 |= (Red4 > 255 ? 255 : Red4 < 0 ? 0 : Red4) << 16;
+			color4 &= -65281;
+			color4 |= (Green4 > 255 ? 255 : Green4 < 0 ? 0 : Green4) << 8;
+			color4 &= -256;
+			color4 |= Blue4 > 255 ? 255 : Blue4 < 0 ? 0 : Blue4;
+			color4 &= 16777215;
+			color4 |= (Alpha9 > 255 ? 255 : Alpha9 < 0 ? 0 : Alpha9) << 24;
+			var lhs5 = color4;
+			var lhs6 = vision_algorithms_Sobel.sobelX[1][0];
+			var rhs5 = vision_ds_Image.getPixel(image,x - 1,y);
+			var Red5 = (lhs6 >> 16 & 255) / 255 * ((rhs5 >> 16 & 255) / 255);
+			var Green5 = (lhs6 >> 8 & 255) / 255 * ((rhs5 >> 8 & 255) / 255);
+			var Blue5 = (lhs6 & 255) / 255 * ((rhs5 & 255) / 255);
+			var Alpha10 = (lhs6 >> 24 & 255) / 255 * ((rhs5 >> 24 & 255) / 255);
+			if(Alpha10 == null) {
+				Alpha10 = 1;
+			}
+			var color5 = vision_ds_Color._new();
+			var Alpha11 = Alpha10;
+			if(Alpha11 == null) {
+				Alpha11 = 1;
+			}
+			var value12 = Math.round(Red5 * 255);
+			color5 &= -16711681;
+			color5 |= (value12 > 255 ? 255 : value12 < 0 ? 0 : value12) << 16;
+			var value13 = Math.round(Green5 * 255);
+			color5 &= -65281;
+			color5 |= (value13 > 255 ? 255 : value13 < 0 ? 0 : value13) << 8;
+			var value14 = Math.round(Blue5 * 255);
+			color5 &= -256;
+			color5 |= value14 > 255 ? 255 : value14 < 0 ? 0 : value14;
+			var value15 = Math.round(Alpha11 * 255);
+			color5 &= 16777215;
+			color5 |= (value15 > 255 ? 255 : value15 < 0 ? 0 : value15) << 24;
+			var rhs6 = color5;
+			var Red6 = (lhs5 >> 16 & 255) + (rhs6 >> 16 & 255);
+			var Green6 = (lhs5 >> 8 & 255) + (rhs6 >> 8 & 255);
+			var Blue6 = (lhs5 & 255) + (rhs6 & 255);
+			var Alpha12 = (lhs5 >> 24 & 255) + (rhs6 >> 24 & 255);
+			if(Alpha12 == null) {
+				Alpha12 = 255;
+			}
+			var color6 = vision_ds_Color._new();
+			var Alpha13 = Alpha12;
+			if(Alpha13 == null) {
+				Alpha13 = 255;
+			}
+			color6 &= -16711681;
+			color6 |= (Red6 > 255 ? 255 : Red6 < 0 ? 0 : Red6) << 16;
+			color6 &= -65281;
+			color6 |= (Green6 > 255 ? 255 : Green6 < 0 ? 0 : Green6) << 8;
+			color6 &= -256;
+			color6 |= Blue6 > 255 ? 255 : Blue6 < 0 ? 0 : Blue6;
+			color6 &= 16777215;
+			color6 |= (Alpha13 > 255 ? 255 : Alpha13 < 0 ? 0 : Alpha13) << 24;
+			var lhs7 = color6;
+			var lhs8 = vision_algorithms_Sobel.sobelX[1][1];
+			var rhs7 = vision_ds_Image.getPixel(image,x,y);
+			var Red7 = (lhs8 >> 16 & 255) / 255 * ((rhs7 >> 16 & 255) / 255);
+			var Green7 = (lhs8 >> 8 & 255) / 255 * ((rhs7 >> 8 & 255) / 255);
+			var Blue7 = (lhs8 & 255) / 255 * ((rhs7 & 255) / 255);
+			var Alpha14 = (lhs8 >> 24 & 255) / 255 * ((rhs7 >> 24 & 255) / 255);
+			if(Alpha14 == null) {
+				Alpha14 = 1;
+			}
+			var color7 = vision_ds_Color._new();
+			var Alpha15 = Alpha14;
+			if(Alpha15 == null) {
+				Alpha15 = 1;
+			}
+			var value16 = Math.round(Red7 * 255);
+			color7 &= -16711681;
+			color7 |= (value16 > 255 ? 255 : value16 < 0 ? 0 : value16) << 16;
+			var value17 = Math.round(Green7 * 255);
+			color7 &= -65281;
+			color7 |= (value17 > 255 ? 255 : value17 < 0 ? 0 : value17) << 8;
+			var value18 = Math.round(Blue7 * 255);
+			color7 &= -256;
+			color7 |= value18 > 255 ? 255 : value18 < 0 ? 0 : value18;
+			var value19 = Math.round(Alpha15 * 255);
+			color7 &= 16777215;
+			color7 |= (value19 > 255 ? 255 : value19 < 0 ? 0 : value19) << 24;
+			var rhs8 = color7;
+			var Red8 = (lhs7 >> 16 & 255) + (rhs8 >> 16 & 255);
+			var Green8 = (lhs7 >> 8 & 255) + (rhs8 >> 8 & 255);
+			var Blue8 = (lhs7 & 255) + (rhs8 & 255);
+			var Alpha16 = (lhs7 >> 24 & 255) + (rhs8 >> 24 & 255);
+			if(Alpha16 == null) {
+				Alpha16 = 255;
+			}
+			var color8 = vision_ds_Color._new();
+			var Alpha17 = Alpha16;
+			if(Alpha17 == null) {
+				Alpha17 = 255;
+			}
+			color8 &= -16711681;
+			color8 |= (Red8 > 255 ? 255 : Red8 < 0 ? 0 : Red8) << 16;
+			color8 &= -65281;
+			color8 |= (Green8 > 255 ? 255 : Green8 < 0 ? 0 : Green8) << 8;
+			color8 &= -256;
+			color8 |= Blue8 > 255 ? 255 : Blue8 < 0 ? 0 : Blue8;
+			color8 &= 16777215;
+			color8 |= (Alpha17 > 255 ? 255 : Alpha17 < 0 ? 0 : Alpha17) << 24;
+			var lhs9 = color8;
+			var lhs10 = vision_algorithms_Sobel.sobelX[1][2];
+			var rhs9 = vision_ds_Image.getPixel(image,x + 1,y);
+			var Red9 = (lhs10 >> 16 & 255) / 255 * ((rhs9 >> 16 & 255) / 255);
+			var Green9 = (lhs10 >> 8 & 255) / 255 * ((rhs9 >> 8 & 255) / 255);
+			var Blue9 = (lhs10 & 255) / 255 * ((rhs9 & 255) / 255);
+			var Alpha18 = (lhs10 >> 24 & 255) / 255 * ((rhs9 >> 24 & 255) / 255);
+			if(Alpha18 == null) {
+				Alpha18 = 1;
+			}
+			var color9 = vision_ds_Color._new();
+			var Alpha19 = Alpha18;
+			if(Alpha19 == null) {
+				Alpha19 = 1;
+			}
+			var value20 = Math.round(Red9 * 255);
+			color9 &= -16711681;
+			color9 |= (value20 > 255 ? 255 : value20 < 0 ? 0 : value20) << 16;
+			var value21 = Math.round(Green9 * 255);
+			color9 &= -65281;
+			color9 |= (value21 > 255 ? 255 : value21 < 0 ? 0 : value21) << 8;
+			var value22 = Math.round(Blue9 * 255);
+			color9 &= -256;
+			color9 |= value22 > 255 ? 255 : value22 < 0 ? 0 : value22;
+			var value23 = Math.round(Alpha19 * 255);
+			color9 &= 16777215;
+			color9 |= (value23 > 255 ? 255 : value23 < 0 ? 0 : value23) << 24;
+			var rhs10 = color9;
+			var Red10 = (lhs9 >> 16 & 255) + (rhs10 >> 16 & 255);
+			var Green10 = (lhs9 >> 8 & 255) + (rhs10 >> 8 & 255);
+			var Blue10 = (lhs9 & 255) + (rhs10 & 255);
+			var Alpha20 = (lhs9 >> 24 & 255) + (rhs10 >> 24 & 255);
+			if(Alpha20 == null) {
+				Alpha20 = 255;
+			}
+			var color10 = vision_ds_Color._new();
+			var Alpha21 = Alpha20;
+			if(Alpha21 == null) {
+				Alpha21 = 255;
+			}
+			color10 &= -16711681;
+			color10 |= (Red10 > 255 ? 255 : Red10 < 0 ? 0 : Red10) << 16;
+			color10 &= -65281;
+			color10 |= (Green10 > 255 ? 255 : Green10 < 0 ? 0 : Green10) << 8;
+			color10 &= -256;
+			color10 |= Blue10 > 255 ? 255 : Blue10 < 0 ? 0 : Blue10;
+			color10 &= 16777215;
+			color10 |= (Alpha21 > 255 ? 255 : Alpha21 < 0 ? 0 : Alpha21) << 24;
+			var lhs11 = color10;
+			var lhs12 = vision_algorithms_Sobel.sobelX[2][0];
+			var rhs11 = vision_ds_Image.getPixel(image,x - 1,y + 1);
+			var Red11 = (lhs12 >> 16 & 255) / 255 * ((rhs11 >> 16 & 255) / 255);
+			var Green11 = (lhs12 >> 8 & 255) / 255 * ((rhs11 >> 8 & 255) / 255);
+			var Blue11 = (lhs12 & 255) / 255 * ((rhs11 & 255) / 255);
+			var Alpha22 = (lhs12 >> 24 & 255) / 255 * ((rhs11 >> 24 & 255) / 255);
+			if(Alpha22 == null) {
+				Alpha22 = 1;
+			}
+			var color11 = vision_ds_Color._new();
+			var Alpha23 = Alpha22;
+			if(Alpha23 == null) {
+				Alpha23 = 1;
+			}
+			var value24 = Math.round(Red11 * 255);
+			color11 &= -16711681;
+			color11 |= (value24 > 255 ? 255 : value24 < 0 ? 0 : value24) << 16;
+			var value25 = Math.round(Green11 * 255);
+			color11 &= -65281;
+			color11 |= (value25 > 255 ? 255 : value25 < 0 ? 0 : value25) << 8;
+			var value26 = Math.round(Blue11 * 255);
+			color11 &= -256;
+			color11 |= value26 > 255 ? 255 : value26 < 0 ? 0 : value26;
+			var value27 = Math.round(Alpha23 * 255);
+			color11 &= 16777215;
+			color11 |= (value27 > 255 ? 255 : value27 < 0 ? 0 : value27) << 24;
+			var rhs12 = color11;
+			var Red12 = (lhs11 >> 16 & 255) + (rhs12 >> 16 & 255);
+			var Green12 = (lhs11 >> 8 & 255) + (rhs12 >> 8 & 255);
+			var Blue12 = (lhs11 & 255) + (rhs12 & 255);
+			var Alpha24 = (lhs11 >> 24 & 255) + (rhs12 >> 24 & 255);
+			if(Alpha24 == null) {
+				Alpha24 = 255;
+			}
+			var color12 = vision_ds_Color._new();
+			var Alpha25 = Alpha24;
+			if(Alpha25 == null) {
+				Alpha25 = 255;
+			}
+			color12 &= -16711681;
+			color12 |= (Red12 > 255 ? 255 : Red12 < 0 ? 0 : Red12) << 16;
+			color12 &= -65281;
+			color12 |= (Green12 > 255 ? 255 : Green12 < 0 ? 0 : Green12) << 8;
+			color12 &= -256;
+			color12 |= Blue12 > 255 ? 255 : Blue12 < 0 ? 0 : Blue12;
+			color12 &= 16777215;
+			color12 |= (Alpha25 > 255 ? 255 : Alpha25 < 0 ? 0 : Alpha25) << 24;
+			var lhs13 = color12;
+			var lhs14 = vision_algorithms_Sobel.sobelX[2][1];
+			var rhs13 = vision_ds_Image.getPixel(image,x,y + 1);
+			var Red13 = (lhs14 >> 16 & 255) / 255 * ((rhs13 >> 16 & 255) / 255);
+			var Green13 = (lhs14 >> 8 & 255) / 255 * ((rhs13 >> 8 & 255) / 255);
+			var Blue13 = (lhs14 & 255) / 255 * ((rhs13 & 255) / 255);
+			var Alpha26 = (lhs14 >> 24 & 255) / 255 * ((rhs13 >> 24 & 255) / 255);
+			if(Alpha26 == null) {
+				Alpha26 = 1;
+			}
+			var color13 = vision_ds_Color._new();
+			var Alpha27 = Alpha26;
+			if(Alpha27 == null) {
+				Alpha27 = 1;
+			}
+			var value28 = Math.round(Red13 * 255);
+			color13 &= -16711681;
+			color13 |= (value28 > 255 ? 255 : value28 < 0 ? 0 : value28) << 16;
+			var value29 = Math.round(Green13 * 255);
+			color13 &= -65281;
+			color13 |= (value29 > 255 ? 255 : value29 < 0 ? 0 : value29) << 8;
+			var value30 = Math.round(Blue13 * 255);
+			color13 &= -256;
+			color13 |= value30 > 255 ? 255 : value30 < 0 ? 0 : value30;
+			var value31 = Math.round(Alpha27 * 255);
+			color13 &= 16777215;
+			color13 |= (value31 > 255 ? 255 : value31 < 0 ? 0 : value31) << 24;
+			var rhs14 = color13;
+			var Red14 = (lhs13 >> 16 & 255) + (rhs14 >> 16 & 255);
+			var Green14 = (lhs13 >> 8 & 255) + (rhs14 >> 8 & 255);
+			var Blue14 = (lhs13 & 255) + (rhs14 & 255);
+			var Alpha28 = (lhs13 >> 24 & 255) + (rhs14 >> 24 & 255);
+			if(Alpha28 == null) {
+				Alpha28 = 255;
+			}
+			var color14 = vision_ds_Color._new();
+			var Alpha29 = Alpha28;
+			if(Alpha29 == null) {
+				Alpha29 = 255;
+			}
+			color14 &= -16711681;
+			color14 |= (Red14 > 255 ? 255 : Red14 < 0 ? 0 : Red14) << 16;
+			color14 &= -65281;
+			color14 |= (Green14 > 255 ? 255 : Green14 < 0 ? 0 : Green14) << 8;
+			color14 &= -256;
+			color14 |= Blue14 > 255 ? 255 : Blue14 < 0 ? 0 : Blue14;
+			color14 &= 16777215;
+			color14 |= (Alpha29 > 255 ? 255 : Alpha29 < 0 ? 0 : Alpha29) << 24;
+			var lhs15 = color14;
+			var lhs16 = vision_algorithms_Sobel.sobelX[2][2];
+			var rhs15 = vision_ds_Image.getPixel(image,x + 1,y + 1);
+			var Red15 = (lhs16 >> 16 & 255) / 255 * ((rhs15 >> 16 & 255) / 255);
+			var Green15 = (lhs16 >> 8 & 255) / 255 * ((rhs15 >> 8 & 255) / 255);
+			var Blue15 = (lhs16 & 255) / 255 * ((rhs15 & 255) / 255);
+			var Alpha30 = (lhs16 >> 24 & 255) / 255 * ((rhs15 >> 24 & 255) / 255);
+			if(Alpha30 == null) {
+				Alpha30 = 1;
+			}
+			var color15 = vision_ds_Color._new();
+			var Alpha31 = Alpha30;
+			if(Alpha31 == null) {
+				Alpha31 = 1;
+			}
+			var value32 = Math.round(Red15 * 255);
+			color15 &= -16711681;
+			color15 |= (value32 > 255 ? 255 : value32 < 0 ? 0 : value32) << 16;
+			var value33 = Math.round(Green15 * 255);
+			color15 &= -65281;
+			color15 |= (value33 > 255 ? 255 : value33 < 0 ? 0 : value33) << 8;
+			var value34 = Math.round(Blue15 * 255);
+			color15 &= -256;
+			color15 |= value34 > 255 ? 255 : value34 < 0 ? 0 : value34;
+			var value35 = Math.round(Alpha31 * 255);
+			color15 &= 16777215;
+			color15 |= (value35 > 255 ? 255 : value35 < 0 ? 0 : value35) << 24;
+			var rhs16 = color15;
+			var Red16 = (lhs15 >> 16 & 255) + (rhs16 >> 16 & 255);
+			var Green16 = (lhs15 >> 8 & 255) + (rhs16 >> 8 & 255);
+			var Blue16 = (lhs15 & 255) + (rhs16 & 255);
+			var Alpha32 = (lhs15 >> 24 & 255) + (rhs16 >> 24 & 255);
+			if(Alpha32 == null) {
+				Alpha32 = 255;
+			}
+			var color16 = vision_ds_Color._new();
+			var Alpha33 = Alpha32;
+			if(Alpha33 == null) {
+				Alpha33 = 255;
+			}
+			color16 &= -16711681;
+			color16 |= (Red16 > 255 ? 255 : Red16 < 0 ? 0 : Red16) << 16;
+			color16 &= -65281;
+			color16 |= (Green16 > 255 ? 255 : Green16 < 0 ? 0 : Green16) << 8;
+			color16 &= -256;
+			color16 |= Blue16 > 255 ? 255 : Blue16 < 0 ? 0 : Blue16;
+			color16 &= 16777215;
+			color16 |= (Alpha33 > 255 ? 255 : Alpha33 < 0 ? 0 : Alpha33) << 24;
+			var pixel_x = color16;
+			var lhs17 = vision_algorithms_Sobel.sobelY[0][0];
+			var rhs17 = vision_ds_Image.getPixel(image,x - 1,y - 1);
+			var Red17 = (lhs17 >> 16 & 255) / 255 * ((rhs17 >> 16 & 255) / 255);
+			var Green17 = (lhs17 >> 8 & 255) / 255 * ((rhs17 >> 8 & 255) / 255);
+			var Blue17 = (lhs17 & 255) / 255 * ((rhs17 & 255) / 255);
+			var Alpha34 = (lhs17 >> 24 & 255) / 255 * ((rhs17 >> 24 & 255) / 255);
+			if(Alpha34 == null) {
+				Alpha34 = 1;
+			}
+			var color17 = vision_ds_Color._new();
+			var Alpha35 = Alpha34;
+			if(Alpha35 == null) {
+				Alpha35 = 1;
+			}
+			var value36 = Math.round(Red17 * 255);
+			color17 &= -16711681;
+			color17 |= (value36 > 255 ? 255 : value36 < 0 ? 0 : value36) << 16;
+			var value37 = Math.round(Green17 * 255);
+			color17 &= -65281;
+			color17 |= (value37 > 255 ? 255 : value37 < 0 ? 0 : value37) << 8;
+			var value38 = Math.round(Blue17 * 255);
+			color17 &= -256;
+			color17 |= value38 > 255 ? 255 : value38 < 0 ? 0 : value38;
+			var value39 = Math.round(Alpha35 * 255);
+			color17 &= 16777215;
+			color17 |= (value39 > 255 ? 255 : value39 < 0 ? 0 : value39) << 24;
+			var lhs18 = color17;
+			var lhs19 = vision_algorithms_Sobel.sobelY[0][1];
+			var rhs18 = vision_ds_Image.getPixel(image,x,y - 1);
+			var Red18 = (lhs19 >> 16 & 255) / 255 * ((rhs18 >> 16 & 255) / 255);
+			var Green18 = (lhs19 >> 8 & 255) / 255 * ((rhs18 >> 8 & 255) / 255);
+			var Blue18 = (lhs19 & 255) / 255 * ((rhs18 & 255) / 255);
+			var Alpha36 = (lhs19 >> 24 & 255) / 255 * ((rhs18 >> 24 & 255) / 255);
+			if(Alpha36 == null) {
+				Alpha36 = 1;
+			}
+			var color18 = vision_ds_Color._new();
+			var Alpha37 = Alpha36;
+			if(Alpha37 == null) {
+				Alpha37 = 1;
+			}
+			var value40 = Math.round(Red18 * 255);
+			color18 &= -16711681;
+			color18 |= (value40 > 255 ? 255 : value40 < 0 ? 0 : value40) << 16;
+			var value41 = Math.round(Green18 * 255);
+			color18 &= -65281;
+			color18 |= (value41 > 255 ? 255 : value41 < 0 ? 0 : value41) << 8;
+			var value42 = Math.round(Blue18 * 255);
+			color18 &= -256;
+			color18 |= value42 > 255 ? 255 : value42 < 0 ? 0 : value42;
+			var value43 = Math.round(Alpha37 * 255);
+			color18 &= 16777215;
+			color18 |= (value43 > 255 ? 255 : value43 < 0 ? 0 : value43) << 24;
+			var rhs19 = color18;
+			var Red19 = (lhs18 >> 16 & 255) + (rhs19 >> 16 & 255);
+			var Green19 = (lhs18 >> 8 & 255) + (rhs19 >> 8 & 255);
+			var Blue19 = (lhs18 & 255) + (rhs19 & 255);
+			var Alpha38 = (lhs18 >> 24 & 255) + (rhs19 >> 24 & 255);
+			if(Alpha38 == null) {
+				Alpha38 = 255;
+			}
+			var color19 = vision_ds_Color._new();
+			var Alpha39 = Alpha38;
+			if(Alpha39 == null) {
+				Alpha39 = 255;
+			}
+			color19 &= -16711681;
+			color19 |= (Red19 > 255 ? 255 : Red19 < 0 ? 0 : Red19) << 16;
+			color19 &= -65281;
+			color19 |= (Green19 > 255 ? 255 : Green19 < 0 ? 0 : Green19) << 8;
+			color19 &= -256;
+			color19 |= Blue19 > 255 ? 255 : Blue19 < 0 ? 0 : Blue19;
+			color19 &= 16777215;
+			color19 |= (Alpha39 > 255 ? 255 : Alpha39 < 0 ? 0 : Alpha39) << 24;
+			var lhs20 = color19;
+			var lhs21 = vision_algorithms_Sobel.sobelY[0][2];
+			var rhs20 = vision_ds_Image.getPixel(image,x + 1,y - 1);
+			var Red20 = (lhs21 >> 16 & 255) / 255 * ((rhs20 >> 16 & 255) / 255);
+			var Green20 = (lhs21 >> 8 & 255) / 255 * ((rhs20 >> 8 & 255) / 255);
+			var Blue20 = (lhs21 & 255) / 255 * ((rhs20 & 255) / 255);
+			var Alpha40 = (lhs21 >> 24 & 255) / 255 * ((rhs20 >> 24 & 255) / 255);
+			if(Alpha40 == null) {
+				Alpha40 = 1;
+			}
+			var color20 = vision_ds_Color._new();
+			var Alpha41 = Alpha40;
+			if(Alpha41 == null) {
+				Alpha41 = 1;
+			}
+			var value44 = Math.round(Red20 * 255);
+			color20 &= -16711681;
+			color20 |= (value44 > 255 ? 255 : value44 < 0 ? 0 : value44) << 16;
+			var value45 = Math.round(Green20 * 255);
+			color20 &= -65281;
+			color20 |= (value45 > 255 ? 255 : value45 < 0 ? 0 : value45) << 8;
+			var value46 = Math.round(Blue20 * 255);
+			color20 &= -256;
+			color20 |= value46 > 255 ? 255 : value46 < 0 ? 0 : value46;
+			var value47 = Math.round(Alpha41 * 255);
+			color20 &= 16777215;
+			color20 |= (value47 > 255 ? 255 : value47 < 0 ? 0 : value47) << 24;
+			var rhs21 = color20;
+			var Red21 = (lhs20 >> 16 & 255) + (rhs21 >> 16 & 255);
+			var Green21 = (lhs20 >> 8 & 255) + (rhs21 >> 8 & 255);
+			var Blue21 = (lhs20 & 255) + (rhs21 & 255);
+			var Alpha42 = (lhs20 >> 24 & 255) + (rhs21 >> 24 & 255);
+			if(Alpha42 == null) {
+				Alpha42 = 255;
+			}
+			var color21 = vision_ds_Color._new();
+			var Alpha43 = Alpha42;
+			if(Alpha43 == null) {
+				Alpha43 = 255;
+			}
+			color21 &= -16711681;
+			color21 |= (Red21 > 255 ? 255 : Red21 < 0 ? 0 : Red21) << 16;
+			color21 &= -65281;
+			color21 |= (Green21 > 255 ? 255 : Green21 < 0 ? 0 : Green21) << 8;
+			color21 &= -256;
+			color21 |= Blue21 > 255 ? 255 : Blue21 < 0 ? 0 : Blue21;
+			color21 &= 16777215;
+			color21 |= (Alpha43 > 255 ? 255 : Alpha43 < 0 ? 0 : Alpha43) << 24;
+			var lhs22 = color21;
+			var lhs23 = vision_algorithms_Sobel.sobelY[1][0];
+			var rhs22 = vision_ds_Image.getPixel(image,x - 1,y);
+			var Red22 = (lhs23 >> 16 & 255) / 255 * ((rhs22 >> 16 & 255) / 255);
+			var Green22 = (lhs23 >> 8 & 255) / 255 * ((rhs22 >> 8 & 255) / 255);
+			var Blue22 = (lhs23 & 255) / 255 * ((rhs22 & 255) / 255);
+			var Alpha44 = (lhs23 >> 24 & 255) / 255 * ((rhs22 >> 24 & 255) / 255);
+			if(Alpha44 == null) {
+				Alpha44 = 1;
+			}
+			var color22 = vision_ds_Color._new();
+			var Alpha45 = Alpha44;
+			if(Alpha45 == null) {
+				Alpha45 = 1;
+			}
+			var value48 = Math.round(Red22 * 255);
+			color22 &= -16711681;
+			color22 |= (value48 > 255 ? 255 : value48 < 0 ? 0 : value48) << 16;
+			var value49 = Math.round(Green22 * 255);
+			color22 &= -65281;
+			color22 |= (value49 > 255 ? 255 : value49 < 0 ? 0 : value49) << 8;
+			var value50 = Math.round(Blue22 * 255);
+			color22 &= -256;
+			color22 |= value50 > 255 ? 255 : value50 < 0 ? 0 : value50;
+			var value51 = Math.round(Alpha45 * 255);
+			color22 &= 16777215;
+			color22 |= (value51 > 255 ? 255 : value51 < 0 ? 0 : value51) << 24;
+			var rhs23 = color22;
+			var Red23 = (lhs22 >> 16 & 255) + (rhs23 >> 16 & 255);
+			var Green23 = (lhs22 >> 8 & 255) + (rhs23 >> 8 & 255);
+			var Blue23 = (lhs22 & 255) + (rhs23 & 255);
+			var Alpha46 = (lhs22 >> 24 & 255) + (rhs23 >> 24 & 255);
+			if(Alpha46 == null) {
+				Alpha46 = 255;
+			}
+			var color23 = vision_ds_Color._new();
+			var Alpha47 = Alpha46;
+			if(Alpha47 == null) {
+				Alpha47 = 255;
+			}
+			color23 &= -16711681;
+			color23 |= (Red23 > 255 ? 255 : Red23 < 0 ? 0 : Red23) << 16;
+			color23 &= -65281;
+			color23 |= (Green23 > 255 ? 255 : Green23 < 0 ? 0 : Green23) << 8;
+			color23 &= -256;
+			color23 |= Blue23 > 255 ? 255 : Blue23 < 0 ? 0 : Blue23;
+			color23 &= 16777215;
+			color23 |= (Alpha47 > 255 ? 255 : Alpha47 < 0 ? 0 : Alpha47) << 24;
+			var lhs24 = color23;
+			var lhs25 = vision_algorithms_Sobel.sobelY[1][1];
+			var rhs24 = vision_ds_Image.getPixel(image,x,y);
+			var Red24 = (lhs25 >> 16 & 255) / 255 * ((rhs24 >> 16 & 255) / 255);
+			var Green24 = (lhs25 >> 8 & 255) / 255 * ((rhs24 >> 8 & 255) / 255);
+			var Blue24 = (lhs25 & 255) / 255 * ((rhs24 & 255) / 255);
+			var Alpha48 = (lhs25 >> 24 & 255) / 255 * ((rhs24 >> 24 & 255) / 255);
+			if(Alpha48 == null) {
+				Alpha48 = 1;
+			}
+			var color24 = vision_ds_Color._new();
+			var Alpha49 = Alpha48;
+			if(Alpha49 == null) {
+				Alpha49 = 1;
+			}
+			var value52 = Math.round(Red24 * 255);
+			color24 &= -16711681;
+			color24 |= (value52 > 255 ? 255 : value52 < 0 ? 0 : value52) << 16;
+			var value53 = Math.round(Green24 * 255);
+			color24 &= -65281;
+			color24 |= (value53 > 255 ? 255 : value53 < 0 ? 0 : value53) << 8;
+			var value54 = Math.round(Blue24 * 255);
+			color24 &= -256;
+			color24 |= value54 > 255 ? 255 : value54 < 0 ? 0 : value54;
+			var value55 = Math.round(Alpha49 * 255);
+			color24 &= 16777215;
+			color24 |= (value55 > 255 ? 255 : value55 < 0 ? 0 : value55) << 24;
+			var rhs25 = color24;
+			var Red25 = (lhs24 >> 16 & 255) + (rhs25 >> 16 & 255);
+			var Green25 = (lhs24 >> 8 & 255) + (rhs25 >> 8 & 255);
+			var Blue25 = (lhs24 & 255) + (rhs25 & 255);
+			var Alpha50 = (lhs24 >> 24 & 255) + (rhs25 >> 24 & 255);
+			if(Alpha50 == null) {
+				Alpha50 = 255;
+			}
+			var color25 = vision_ds_Color._new();
+			var Alpha51 = Alpha50;
+			if(Alpha51 == null) {
+				Alpha51 = 255;
+			}
+			color25 &= -16711681;
+			color25 |= (Red25 > 255 ? 255 : Red25 < 0 ? 0 : Red25) << 16;
+			color25 &= -65281;
+			color25 |= (Green25 > 255 ? 255 : Green25 < 0 ? 0 : Green25) << 8;
+			color25 &= -256;
+			color25 |= Blue25 > 255 ? 255 : Blue25 < 0 ? 0 : Blue25;
+			color25 &= 16777215;
+			color25 |= (Alpha51 > 255 ? 255 : Alpha51 < 0 ? 0 : Alpha51) << 24;
+			var lhs26 = color25;
+			var lhs27 = vision_algorithms_Sobel.sobelY[1][2];
+			var rhs26 = vision_ds_Image.getPixel(image,x + 1,y);
+			var Red26 = (lhs27 >> 16 & 255) / 255 * ((rhs26 >> 16 & 255) / 255);
+			var Green26 = (lhs27 >> 8 & 255) / 255 * ((rhs26 >> 8 & 255) / 255);
+			var Blue26 = (lhs27 & 255) / 255 * ((rhs26 & 255) / 255);
+			var Alpha52 = (lhs27 >> 24 & 255) / 255 * ((rhs26 >> 24 & 255) / 255);
+			if(Alpha52 == null) {
+				Alpha52 = 1;
+			}
+			var color26 = vision_ds_Color._new();
+			var Alpha53 = Alpha52;
+			if(Alpha53 == null) {
+				Alpha53 = 1;
+			}
+			var value56 = Math.round(Red26 * 255);
+			color26 &= -16711681;
+			color26 |= (value56 > 255 ? 255 : value56 < 0 ? 0 : value56) << 16;
+			var value57 = Math.round(Green26 * 255);
+			color26 &= -65281;
+			color26 |= (value57 > 255 ? 255 : value57 < 0 ? 0 : value57) << 8;
+			var value58 = Math.round(Blue26 * 255);
+			color26 &= -256;
+			color26 |= value58 > 255 ? 255 : value58 < 0 ? 0 : value58;
+			var value59 = Math.round(Alpha53 * 255);
+			color26 &= 16777215;
+			color26 |= (value59 > 255 ? 255 : value59 < 0 ? 0 : value59) << 24;
+			var rhs27 = color26;
+			var Red27 = (lhs26 >> 16 & 255) + (rhs27 >> 16 & 255);
+			var Green27 = (lhs26 >> 8 & 255) + (rhs27 >> 8 & 255);
+			var Blue27 = (lhs26 & 255) + (rhs27 & 255);
+			var Alpha54 = (lhs26 >> 24 & 255) + (rhs27 >> 24 & 255);
+			if(Alpha54 == null) {
+				Alpha54 = 255;
+			}
+			var color27 = vision_ds_Color._new();
+			var Alpha55 = Alpha54;
+			if(Alpha55 == null) {
+				Alpha55 = 255;
+			}
+			color27 &= -16711681;
+			color27 |= (Red27 > 255 ? 255 : Red27 < 0 ? 0 : Red27) << 16;
+			color27 &= -65281;
+			color27 |= (Green27 > 255 ? 255 : Green27 < 0 ? 0 : Green27) << 8;
+			color27 &= -256;
+			color27 |= Blue27 > 255 ? 255 : Blue27 < 0 ? 0 : Blue27;
+			color27 &= 16777215;
+			color27 |= (Alpha55 > 255 ? 255 : Alpha55 < 0 ? 0 : Alpha55) << 24;
+			var lhs28 = color27;
+			var lhs29 = vision_algorithms_Sobel.sobelY[2][0];
+			var rhs28 = vision_ds_Image.getPixel(image,x - 1,y + 1);
+			var Red28 = (lhs29 >> 16 & 255) / 255 * ((rhs28 >> 16 & 255) / 255);
+			var Green28 = (lhs29 >> 8 & 255) / 255 * ((rhs28 >> 8 & 255) / 255);
+			var Blue28 = (lhs29 & 255) / 255 * ((rhs28 & 255) / 255);
+			var Alpha56 = (lhs29 >> 24 & 255) / 255 * ((rhs28 >> 24 & 255) / 255);
+			if(Alpha56 == null) {
+				Alpha56 = 1;
+			}
+			var color28 = vision_ds_Color._new();
+			var Alpha57 = Alpha56;
+			if(Alpha57 == null) {
+				Alpha57 = 1;
+			}
+			var value60 = Math.round(Red28 * 255);
+			color28 &= -16711681;
+			color28 |= (value60 > 255 ? 255 : value60 < 0 ? 0 : value60) << 16;
+			var value61 = Math.round(Green28 * 255);
+			color28 &= -65281;
+			color28 |= (value61 > 255 ? 255 : value61 < 0 ? 0 : value61) << 8;
+			var value62 = Math.round(Blue28 * 255);
+			color28 &= -256;
+			color28 |= value62 > 255 ? 255 : value62 < 0 ? 0 : value62;
+			var value63 = Math.round(Alpha57 * 255);
+			color28 &= 16777215;
+			color28 |= (value63 > 255 ? 255 : value63 < 0 ? 0 : value63) << 24;
+			var rhs29 = color28;
+			var Red29 = (lhs28 >> 16 & 255) + (rhs29 >> 16 & 255);
+			var Green29 = (lhs28 >> 8 & 255) + (rhs29 >> 8 & 255);
+			var Blue29 = (lhs28 & 255) + (rhs29 & 255);
+			var Alpha58 = (lhs28 >> 24 & 255) + (rhs29 >> 24 & 255);
+			if(Alpha58 == null) {
+				Alpha58 = 255;
+			}
+			var color29 = vision_ds_Color._new();
+			var Alpha59 = Alpha58;
+			if(Alpha59 == null) {
+				Alpha59 = 255;
+			}
+			color29 &= -16711681;
+			color29 |= (Red29 > 255 ? 255 : Red29 < 0 ? 0 : Red29) << 16;
+			color29 &= -65281;
+			color29 |= (Green29 > 255 ? 255 : Green29 < 0 ? 0 : Green29) << 8;
+			color29 &= -256;
+			color29 |= Blue29 > 255 ? 255 : Blue29 < 0 ? 0 : Blue29;
+			color29 &= 16777215;
+			color29 |= (Alpha59 > 255 ? 255 : Alpha59 < 0 ? 0 : Alpha59) << 24;
+			var lhs30 = color29;
+			var lhs31 = vision_algorithms_Sobel.sobelY[2][1];
+			var rhs30 = vision_ds_Image.getPixel(image,x,y + 1);
+			var Red30 = (lhs31 >> 16 & 255) / 255 * ((rhs30 >> 16 & 255) / 255);
+			var Green30 = (lhs31 >> 8 & 255) / 255 * ((rhs30 >> 8 & 255) / 255);
+			var Blue30 = (lhs31 & 255) / 255 * ((rhs30 & 255) / 255);
+			var Alpha60 = (lhs31 >> 24 & 255) / 255 * ((rhs30 >> 24 & 255) / 255);
+			if(Alpha60 == null) {
+				Alpha60 = 1;
+			}
+			var color30 = vision_ds_Color._new();
+			var Alpha61 = Alpha60;
+			if(Alpha61 == null) {
+				Alpha61 = 1;
+			}
+			var value64 = Math.round(Red30 * 255);
+			color30 &= -16711681;
+			color30 |= (value64 > 255 ? 255 : value64 < 0 ? 0 : value64) << 16;
+			var value65 = Math.round(Green30 * 255);
+			color30 &= -65281;
+			color30 |= (value65 > 255 ? 255 : value65 < 0 ? 0 : value65) << 8;
+			var value66 = Math.round(Blue30 * 255);
+			color30 &= -256;
+			color30 |= value66 > 255 ? 255 : value66 < 0 ? 0 : value66;
+			var value67 = Math.round(Alpha61 * 255);
+			color30 &= 16777215;
+			color30 |= (value67 > 255 ? 255 : value67 < 0 ? 0 : value67) << 24;
+			var rhs31 = color30;
+			var Red31 = (lhs30 >> 16 & 255) + (rhs31 >> 16 & 255);
+			var Green31 = (lhs30 >> 8 & 255) + (rhs31 >> 8 & 255);
+			var Blue31 = (lhs30 & 255) + (rhs31 & 255);
+			var Alpha62 = (lhs30 >> 24 & 255) + (rhs31 >> 24 & 255);
+			if(Alpha62 == null) {
+				Alpha62 = 255;
+			}
+			var color31 = vision_ds_Color._new();
+			var Alpha63 = Alpha62;
+			if(Alpha63 == null) {
+				Alpha63 = 255;
+			}
+			color31 &= -16711681;
+			color31 |= (Red31 > 255 ? 255 : Red31 < 0 ? 0 : Red31) << 16;
+			color31 &= -65281;
+			color31 |= (Green31 > 255 ? 255 : Green31 < 0 ? 0 : Green31) << 8;
+			color31 &= -256;
+			color31 |= Blue31 > 255 ? 255 : Blue31 < 0 ? 0 : Blue31;
+			color31 &= 16777215;
+			color31 |= (Alpha63 > 255 ? 255 : Alpha63 < 0 ? 0 : Alpha63) << 24;
+			var lhs32 = color31;
+			var lhs33 = vision_algorithms_Sobel.sobelY[2][2];
+			var rhs32 = vision_ds_Image.getPixel(image,x + 1,y + 1);
+			var Red32 = (lhs33 >> 16 & 255) / 255 * ((rhs32 >> 16 & 255) / 255);
+			var Green32 = (lhs33 >> 8 & 255) / 255 * ((rhs32 >> 8 & 255) / 255);
+			var Blue32 = (lhs33 & 255) / 255 * ((rhs32 & 255) / 255);
+			var Alpha64 = (lhs33 >> 24 & 255) / 255 * ((rhs32 >> 24 & 255) / 255);
+			if(Alpha64 == null) {
+				Alpha64 = 1;
+			}
+			var color32 = vision_ds_Color._new();
+			var Alpha65 = Alpha64;
+			if(Alpha65 == null) {
+				Alpha65 = 1;
+			}
+			var value68 = Math.round(Red32 * 255);
+			color32 &= -16711681;
+			color32 |= (value68 > 255 ? 255 : value68 < 0 ? 0 : value68) << 16;
+			var value69 = Math.round(Green32 * 255);
+			color32 &= -65281;
+			color32 |= (value69 > 255 ? 255 : value69 < 0 ? 0 : value69) << 8;
+			var value70 = Math.round(Blue32 * 255);
+			color32 &= -256;
+			color32 |= value70 > 255 ? 255 : value70 < 0 ? 0 : value70;
+			var value71 = Math.round(Alpha65 * 255);
+			color32 &= 16777215;
+			color32 |= (value71 > 255 ? 255 : value71 < 0 ? 0 : value71) << 24;
+			var rhs33 = color32;
+			var Red33 = (lhs32 >> 16 & 255) + (rhs33 >> 16 & 255);
+			var Green33 = (lhs32 >> 8 & 255) + (rhs33 >> 8 & 255);
+			var Blue33 = (lhs32 & 255) + (rhs33 & 255);
+			var Alpha66 = (lhs32 >> 24 & 255) + (rhs33 >> 24 & 255);
+			if(Alpha66 == null) {
+				Alpha66 = 255;
+			}
+			var color33 = vision_ds_Color._new();
+			var Alpha67 = Alpha66;
+			if(Alpha67 == null) {
+				Alpha67 = 255;
+			}
+			color33 &= -16711681;
+			color33 |= (Red33 > 255 ? 255 : Red33 < 0 ? 0 : Red33) << 16;
+			color33 &= -65281;
+			color33 |= (Green33 > 255 ? 255 : Green33 < 0 ? 0 : Green33) << 8;
+			color33 &= -256;
+			color33 |= Blue33 > 255 ? 255 : Blue33 < 0 ? 0 : Blue33;
+			color33 &= 16777215;
+			color33 |= (Alpha67 > 255 ? 255 : Alpha67 < 0 ? 0 : Alpha67) << 24;
+			var pixel_y = color33;
+			var Red34 = (pixel_x >> 16 & 255) / 255 * ((pixel_x >> 16 & 255) / 255);
+			var Green34 = (pixel_x >> 8 & 255) / 255 * ((pixel_x >> 8 & 255) / 255);
+			var Blue34 = (pixel_x & 255) / 255 * ((pixel_x & 255) / 255);
+			var Alpha68 = (pixel_x >> 24 & 255) / 255 * ((pixel_x >> 24 & 255) / 255);
+			if(Alpha68 == null) {
+				Alpha68 = 1;
+			}
+			var color34 = vision_ds_Color._new();
+			var Alpha69 = Alpha68;
+			if(Alpha69 == null) {
+				Alpha69 = 1;
+			}
+			var value72 = Math.round(Red34 * 255);
+			color34 &= -16711681;
+			color34 |= (value72 > 255 ? 255 : value72 < 0 ? 0 : value72) << 16;
+			var value73 = Math.round(Green34 * 255);
+			color34 &= -65281;
+			color34 |= (value73 > 255 ? 255 : value73 < 0 ? 0 : value73) << 8;
+			var value74 = Math.round(Blue34 * 255);
+			color34 &= -256;
+			color34 |= value74 > 255 ? 255 : value74 < 0 ? 0 : value74;
+			var value75 = Math.round(Alpha69 * 255);
+			color34 &= 16777215;
+			color34 |= (value75 > 255 ? 255 : value75 < 0 ? 0 : value75) << 24;
+			var lhs34 = color34;
+			var Red35 = (pixel_y >> 16 & 255) / 255 * ((pixel_y >> 16 & 255) / 255);
+			var Green35 = (pixel_y >> 8 & 255) / 255 * ((pixel_y >> 8 & 255) / 255);
+			var Blue35 = (pixel_y & 255) / 255 * ((pixel_y & 255) / 255);
+			var Alpha70 = (pixel_y >> 24 & 255) / 255 * ((pixel_y >> 24 & 255) / 255);
+			if(Alpha70 == null) {
+				Alpha70 = 1;
+			}
+			var color35 = vision_ds_Color._new();
+			var Alpha71 = Alpha70;
+			if(Alpha71 == null) {
+				Alpha71 = 1;
+			}
+			var value76 = Math.round(Red35 * 255);
+			color35 &= -16711681;
+			color35 |= (value76 > 255 ? 255 : value76 < 0 ? 0 : value76) << 16;
+			var value77 = Math.round(Green35 * 255);
+			color35 &= -65281;
+			color35 |= (value77 > 255 ? 255 : value77 < 0 ? 0 : value77) << 8;
+			var value78 = Math.round(Blue35 * 255);
+			color35 &= -256;
+			color35 |= value78 > 255 ? 255 : value78 < 0 ? 0 : value78;
+			var value79 = Math.round(Alpha71 * 255);
+			color35 &= 16777215;
+			color35 |= (value79 > 255 ? 255 : value79 < 0 ? 0 : value79) << 24;
+			var rhs34 = color35;
+			var Red36 = (lhs34 >> 16 & 255) + (rhs34 >> 16 & 255);
+			var Green36 = (lhs34 >> 8 & 255) + (rhs34 >> 8 & 255);
+			var Blue36 = (lhs34 & 255) + (rhs34 & 255);
+			var Alpha72 = (lhs34 >> 24 & 255) + (rhs34 >> 24 & 255);
+			if(Alpha72 == null) {
+				Alpha72 = 255;
+			}
+			var color36 = vision_ds_Color._new();
+			var Alpha73 = Alpha72;
+			if(Alpha73 == null) {
+				Alpha73 = 255;
+			}
+			color36 &= -16711681;
+			color36 |= (Red36 > 255 ? 255 : Red36 < 0 ? 0 : Red36) << 16;
+			color36 &= -65281;
+			color36 |= (Green36 > 255 ? 255 : Green36 < 0 ? 0 : Green36) << 8;
+			color36 &= -256;
+			color36 |= Blue36 > 255 ? 255 : Blue36 < 0 ? 0 : Blue36;
+			color36 &= 16777215;
+			color36 |= (Alpha73 > 255 ? 255 : Alpha73 < 0 ? 0 : Alpha73) << 24;
+			var val = Math.ceil(Math.sqrt(color36));
+			vision_ds_Image.image_array_read(edge,x)[y] = vision_tools_ImageTools.grayscalePixel(val);
+		}
 	}
-	var this1 = Value;
+	return edge;
+};
+var vision_ds_Color = {};
+vision_ds_Color._new = function(value) {
+	if(value == null) {
+		value = 0;
+	}
+	var this1 = value;
 	return this1;
 };
 var vision_ds_Image = {};
@@ -2055,18 +2955,18 @@ vision_ds_Image.paintPixel = function(this1,x,y,color) {
 	if(Alpha1 == null) {
 		Alpha1 = 1;
 	}
-	var Value = Math.round(Red * 255);
+	var value = Math.round(Red * 255);
 	color &= -16711681;
-	color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 16;
-	var Value = Math.round(Green * 255);
+	color |= (value > 255 ? 255 : value < 0 ? 0 : value) << 16;
+	var value = Math.round(Green * 255);
 	color &= -65281;
-	color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 8;
-	var Value = Math.round(Blue * 255);
+	color |= (value > 255 ? 255 : value < 0 ? 0 : value) << 8;
+	var value = Math.round(Blue * 255);
 	color &= -256;
-	color |= Value > 255 ? 255 : Value < 0 ? 0 : Value;
-	var Value = Math.round(Alpha1 * 255);
+	color |= value > 255 ? 255 : value < 0 ? 0 : value;
+	var value = Math.round(Alpha1 * 255);
 	color &= 16777215;
-	color |= (Value > 255 ? 255 : Value < 0 ? 0 : Value) << 24;
+	color |= (value > 255 ? 255 : value < 0 ? 0 : value) << 24;
 	var newColor = color;
 	vision_ds_Image.setPixel(this1,x,y,newColor);
 };
@@ -2390,11 +3290,6 @@ var vision_ds_LineSegment2D = function(start,end) {
 	this.end.y = end.y;
 };
 vision_ds_LineSegment2D.__name__ = true;
-vision_ds_LineSegment2D.prototype = {
-	get_length: function() {
-		return Math.sqrt(Math.pow(this.end.x - this.start.x,2) + Math.pow(this.end.y - this.start.y,2));
-	}
-};
 var vision_ds_Point2D = function(x,y) {
 	if(y == null) {
 		y = 0;
@@ -2529,25 +3424,51 @@ vision_exceptions_OutOfBounds.prototype = $extend(vision_exceptions_VisionExcept
 });
 var vision_tools_ImageTools = function() { };
 vision_tools_ImageTools.__name__ = true;
-vision_tools_ImageTools.flatten_vision_ds_Color = function(array) {
-	var flat = [];
-	var _g = 0;
-	while(_g < array.length) {
-		var item = array[_g];
-		++_g;
-		flat = flat.concat(item);
+vision_tools_ImageTools.loadFromFile = function(image,path) {
+	var imgElement = window.document.createElement("img");
+	imgElement.src = path;
+	var canvas = window.document.createElement("canvas");
+	canvas.getContext("2d",null).drawImage(imgElement,0,0);
+	if(image == null) {
+		image = vision_ds_Image._new(imgElement.width,imgElement.height);
 	}
-	return flat;
-};
-vision_tools_ImageTools.flatten_Float = function(array) {
-	var flat = [];
+	var imageData = canvas.getContext("2d",null).getImageData(0,0,vision_ds_Image.get_width(image),vision_ds_Image.get_height(image));
+	var data = imageData.data;
 	var _g = 0;
-	while(_g < array.length) {
-		var item = array[_g];
-		++_g;
-		flat = flat.concat(item);
+	var _g1 = vision_ds_Image.get_width(image);
+	while(_g < _g1) {
+		var x = _g++;
+		var _g2 = 0;
+		var _g3 = vision_ds_Image.get_height(image);
+		while(_g2 < _g3) {
+			var y = _g2++;
+			var i = (y * vision_ds_Image.get_width(image) + x) * 4;
+			var Red = data[i];
+			var Green = data[i + 1];
+			var Blue = data[i + 2];
+			var Alpha = data[i + 3];
+			if(Alpha == null) {
+				Alpha = 255;
+			}
+			var color = vision_ds_Color._new();
+			var Alpha1 = Alpha;
+			if(Alpha1 == null) {
+				Alpha1 = 255;
+			}
+			color &= -16711681;
+			color |= (Red > 255 ? 255 : Red < 0 ? 0 : Red) << 16;
+			color &= -65281;
+			color |= (Green > 255 ? 255 : Green < 0 ? 0 : Green) << 8;
+			color &= -256;
+			color |= Blue > 255 ? 255 : Blue < 0 ? 0 : Blue;
+			color &= 16777215;
+			color |= (Alpha1 > 255 ? 255 : Alpha1 < 0 ? 0 : Alpha1) << 24;
+			var color1 = color;
+			vision_ds_Image.setPixel(image,x,y,color1);
+		}
 	}
-	return flat;
+	canvas.getContext("2d",null).putImageData(imageData,0,0);
+	return image;
 };
 vision_tools_ImageTools.getNeighborsOfPixel = function(image,x,y,radius) {
 	var neighbors = [];
@@ -2628,6 +3549,27 @@ vision_tools_ImageTools.getNeighborsOfPixel = function(image,x,y,radius) {
 	}
 	return neighbors;
 };
+vision_tools_ImageTools.grayscalePixel = function(pixel) {
+	var gray = ((pixel >> 16 & 255) + (pixel >> 8 & 255) + (pixel & 255)) / 3 | 0;
+	var Alpha = pixel >> 24 & 255;
+	if(Alpha == null) {
+		Alpha = 255;
+	}
+	var color = vision_ds_Color._new();
+	var Alpha1 = Alpha;
+	if(Alpha1 == null) {
+		Alpha1 = 255;
+	}
+	color &= -16711681;
+	color |= (gray > 255 ? 255 : gray < 0 ? 0 : gray) << 16;
+	color &= -65281;
+	color |= (gray > 255 ? 255 : gray < 0 ? 0 : gray) << 8;
+	color &= -256;
+	color |= gray > 255 ? 255 : gray < 0 ? 0 : gray;
+	color &= 16777215;
+	color |= (Alpha1 > 255 ? 255 : Alpha1 < 0 ? 0 : Alpha1) << 24;
+	return color;
+};
 var vision_tools_MathTools = function() { };
 vision_tools_MathTools.__name__ = true;
 vision_tools_MathTools.turnicate = function(num,numbersAfterDecimal) {
@@ -2643,6 +3585,8 @@ if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : 
 String.__name__ = true;
 Array.__name__ = true;
 js_Boot.__toStr = ({ }).toString;
+vision_algorithms_Sobel.sobelX = [[-1,0,1],[-2,0,2],[-1,0,1]];
+vision_algorithms_Sobel.sobelY = [[-1,-2,-1],[0,0,0],[1,2,1]];
 Main.main();
 })({});
 

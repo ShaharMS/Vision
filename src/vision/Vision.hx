@@ -1,5 +1,6 @@
 package vision;
 
+import vision.algorithms.Sobel;
 import vision.ds.Kernal2D;
 import vision.ds.canny.CannyObject;
 import vision.algorithms.SimpleLineDetector;
@@ -124,7 +125,7 @@ class Vision {
             ];
             case RidgeDetectionAggresive: [
                 [-1, -1, -1],
-                [-1, 1555, -1],
+                [-1, 8, -1],
                 [-1, -1, -1],
             ];
             case Sharpen: [
@@ -523,17 +524,37 @@ class Vision {
         for (x in 0...image.width) {
             for (y in 0...image.height) {
                 var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength);
-                if (line != null) {
-                    lines.push(line);
-                }
+                lines.concat(line);
             }
         }
-
+        trace(lines);
         var actualLines:Array<LineSegment2D> = [];
         for (l in lines) {
             var coverage = SimpleLineDetector.lineCoveragePercentage(edgeDetected, l);
             if (coverage > 90) actualLines.push(l);
         }
         return actualLines;
+    }
+
+    /**
+     * Applies the sobel filter to an image.
+     * 
+     * The image doesnt have to get grayscaled before being passed 
+     * to this function.
+     * 
+     * It is different from the `sobelEdgeDetection` function, since
+     * it doesnt try to threshold the resulting image to extract the strong edges,
+     * and leaves that information in. example of this filter in action:
+     * 
+     * |Status|Image|
+     * |---|---|
+     * |before filtering: |![Pre-Processed](https://i.stack.imgur.com/Bnxa6.jpg)|
+     * |after filtering:|![Post-Processed](https://i.stack.imgur.com/WUOen.jpg)|
+     * 
+     * @param image The image to be operated on
+     * @return A new image, containing the gradients of the edges as whitened pixels.
+     */
+    public static function sobelEdgeDiffOperator(image:Image) {
+        return Sobel.convolveWithSobelOperator(image);   
     }
 }
