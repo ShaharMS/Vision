@@ -197,20 +197,6 @@ abstract Image(Matrix<Null<Color>>) {
         }
     }
 
-    /**
-        Gets the image as a string.
-    **/
-    public function toString():String {
-        var s = "\n";
-        for (i in 0...this.length) {
-            for (j in 0...this[i].length) {
-                s += this[i][j].toString();
-            }
-            s += "\n";
-        }
-        return s;
-    }
-
     //--------------------------------------------------------------------------
     // Graphics Drawing Methods
     //--------------------------------------------------------------------------
@@ -566,6 +552,29 @@ abstract Image(Matrix<Null<Color>>) {
         return cast this;
     }
 
+    //--------------------------------------------------------------------------
+    // Convinience
+    //--------------------------------------------------------------------------
+
+     /**
+        Gets the image as a string.
+
+        @param special When using the `Console.hx` haxelib, images can be prined to the console
+        with color. set this to false if you dont want this to happen. Set to `true` by default.
+    **/
+    public function toString(?special:Bool = true):String {
+        if (!special) {
+            return Std.string(this);
+        }
+        var s = "\n";
+        for (i in 0...this.length) {
+            for (j in 0...this[i].length) {
+                s += this[i][j].toString();
+            }
+            s += "\n";
+        }
+        return s;
+    }
 
     //--------------------------------------------------------------------------
     // Operators
@@ -616,10 +625,10 @@ abstract Image(Matrix<Null<Color>>) {
     @:from public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
         return ImageTools.fromBitmapData(bitmapData);
     }
-    @:from public function fromShape(shape:flash.display.Shape):Image {
+    @:from public static function fromShape(shape:flash.display.Shape):Image {
         return ImageTools.fromShape(shape);
     }
-    @:from public function fromSprite(sprite:flash.display.Sprite):Image {
+    @:from public static function fromSprite(sprite:flash.display.Sprite):Image {
         return ImageTools.fromSprite(sprite);
     }
     #end
@@ -632,14 +641,31 @@ abstract Image(Matrix<Null<Color>>) {
     }
     #end
     #if kha
-    @:from public function fromKhaImage(image:kha.Image):Image {
+    @:from public static function fromKhaImage(image:kha.Image):Image {
         return ImageTools.fromKhaImage(image);
     }
     #end
     #if heaps
-    @:from public function fromHeapsBitmapData(bitmapData:hxd.BitmapData):Image {
+    @:from public static function fromHeapsBitmapData(bitmapData:hxd.BitmapData):Image {
         return ImageTools.fromHeapsBitmapData(bitmapData);
     }
     #end
 
+    //--------------------------------------------------------------------------
+    // Other From/Tos
+    //--------------------------------------------------------------------------
+
+    @:from public static function from2DArray(array:Array<Array<Color>>):Image {
+        var maxLength = 0;
+        for (arr in array) {
+            if (arr.length > maxLength) maxLength = arr.length;
+        }
+
+        var image = new Image(array.length, maxLength);
+        for (i in 0...array.length) {
+            image[i] = Vector.fromArrayCopy(array[i]);
+        }
+
+        return image;
+    }    
 }

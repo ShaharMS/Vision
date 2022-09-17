@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import vision.ds.Color;
 import vision.tools.ImageTools;
 import vision.ds.Image;
 
@@ -24,24 +25,52 @@ class Sobel {
     ];
 
     public static function convolveWithSobelOperator(image:Image) {
-        var edge = new Image(image.width, image.height);
+        var filtered = new Image(image.width, image.height);
+        
+        final yFilter = [
+            [-3, 0, 3],
+            [-10, 0, 10],
+            [-3, 0, 3]
+        ], xFilter = [
+            [-3, -10, -3],
+            [ 0,  0,  0],
+            [3, 10, 3]
+        ];
 
-        for (x in 1...image.width - 2) {
-            for (y in 1...image.height - 2) {
-                var pixel_x = (sobelX[0][0] * image.getPixel(x-1,y-1)) + (sobelX[0][1] * image.getPixel(x,y-1)) + (sobelX[0][2] * image.getPixel(x+1,y-1)) +
-                        (sobelX[1][0] * image.getPixel(x-1,y))   + (sobelX[1][1] * image.getPixel(x,y))   + (sobelX[1][2] * image.getPixel(x+1,y)) +
-                        (sobelX[2][0] * image.getPixel(x-1,y+1)) + (sobelX[2][1] * image.getPixel(x,y+1)) + (sobelX[2][2] * image.getPixel(x+1,y+1));
-          
-                var pixel_y = (sobelY[0][0] * image.getPixel(x-1,y-1)) + (sobelY[0][1] * image.getPixel(x,y-1)) + (sobelY[0][2] * image.getPixel(x+1,y-1)) +
-                        (sobelY[1][0] * image.getPixel(x-1,y))   + (sobelY[1][1] * image.getPixel(x,y))   + (sobelY[1][2] * image.getPixel(x+1,y)) +
-                        (sobelY[2][0] * image.getPixel(x-1,y+1)) + (sobelY[2][1] * image.getPixel(x,y+1)) + (sobelY[2][2] * image.getPixel(x+1,y+1));
-          
-                final val = Math.sqrt((pixel_x * pixel_x) + (pixel_y * pixel_y)).ceil();
-              edge[x][y] = ImageTools.grayscalePixel(val);
-    
+        var ghs = 0., gvs = 0.;
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                ghs = gvs = 0;
+                var neighbors = getNeighbors(3, x, y, image);
+                for (i in 0...2) {
+                    for (j in 0...2) {
+                        ghs += yFilter[i][j] * neighbors[i][j].to24Bit();
+                        gvs += xFilter[i][j] * neighbors[i][j].to24Bit();
+                    }
+                } 
+                var w = Std.int(Math.sqrt(ghs*ghs+gvs*gvs));
+                var c = new Color(w);
+                filtered.setPixel(x, y, c.grayscale());
             }
         }
 
-        return edge;
-    }    
+        return filtered;
+    }
+
+    static function getNeighbors(kernalSize:Int, x:Int, y:Int, image:Image):Array<Array<Color>> {
+        var neighbors:Array<Array<Color>> = [];
+        for (i in 0...kernalSize + 1) neighbors[i] = [];
+        var roundedDown = Std.int((kernalSize - 1) / 2);
+
+        for (X in -roundedDown...roundedDown + 1) {
+            for (Y in -roundedDown...roundedDown + 1) {
+                if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
+                    neighbors[X + roundedDown].push(0);
+                    continue;
+                }
+                neighbors[X + roundedDown].push(image.getPixel(x + X, y + Y));
+            }
+        }
+        return neighbors;
+    }
 }

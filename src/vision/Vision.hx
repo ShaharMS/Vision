@@ -96,6 +96,20 @@ class Vision {
     }
 
     /**
+        Returns a sharpened version of the provided image.
+
+        When an image is sharpened. it's color differences are exaggerated. The more times
+        the image is sharpened, the more "deepfried" it'll look.
+
+        @param image The image to be contrasted.
+        @return The shaprened image
+    **/
+    public static function sharpen(image:Image):Image {
+        return convolve(image, Sharpen);
+    }
+
+
+    /**
         manipulates the image's pixel data by passing the pixels' value through a kernal.
 
         This is useful for many things, such as simple blurring, sharpening, noise maps, and more that comes to mind :).
@@ -104,8 +118,10 @@ class Vision {
 
         @param image the image to be manipulated
         @param kernal the type/value of the kernal. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**, **`Custom`**.
+        @param denominator Whith certain kernals, sometimes you want to reduce the "colorfulness" of the image to get the correct result. This is dont by setting the denominator. for example,
+        when using `BoxBlur`, `denominator` is automatically set to `9`. When you set `denominator`, you override the defaults of the kernals that auto-set `denominator`.
     **/
-    public static function convolve(image:Image, kernal:Kernal2D) {
+    public static function convolve(image:Image, kernal:Kernal2D, ?denominator:Float = null) {
 
         var matrix:Array<Array<Float>> = switch kernal {
             case Identity: [
@@ -114,9 +130,9 @@ class Vision {
                 [0, 0, 0],
             ];
             case BoxBlur: [
-                [1 / 9, 1 / 9, 1 / 9],
-                [1 / 9, 1 / 9, 1 / 9],
-                [1 / 9, 1 / 9, 1 / 9],
+                [1, 1, 1],
+                [1, 1, 1],
+                [1, 1, 1],
             ];
             case RidgeDetection: [
                 [-1, -1, -1],
@@ -125,7 +141,7 @@ class Vision {
             ];
             case RidgeDetectionAggresive: [
                 [-1, -1, -1],
-                [-1, 8, -1],
+                [-1, 6, -1],
                 [-1, -1, -1],
             ];
             case Sharpen: [
@@ -154,26 +170,39 @@ class Vision {
             ];
             case Custom(kernal): kernal;
         }
+
+        if (denominator == null) {
+            denominator = switch kernal {
+                case BoxBlur: 9;
+                case UnsharpMasking: 256;
+                default: 1;
+            }
+        }
+
         var convolved = new Image(image.width, image.height);
         var maxLength = -1;
         var items = 0;
         for (array in matrix) {if (array.length > maxLength) maxLength = array.length; items += array.length;};
         var flatMatrix = matrix.flatten();
-        trace(flatMatrix);
+        var denominator = 0.;
+        for (number in flatMatrix) denominator += number;
         for (x in 0...image.width) {
             for (y in 0...image.height) {
                 var neighbors:Array<Color> = image.getNeighborsOfPixel(x, y, maxLength).flatten();
-                var value:Color = 0;
+                var red = 0., green = 0., blue = 0.;
                 for (i in 0...neighbors.length) {
-                    value.red += cast flatMatrix[i] * neighbors[i].red;
-                    value.blue += cast flatMatrix[i] * neighbors[i].blue;
-                    value.green += cast flatMatrix[i] * neighbors[i].green;
+                    red += flatMatrix[i] * neighbors[i].red;
+                    blue += flatMatrix[i] * neighbors[i].blue;
+                    green += flatMatrix[i] * neighbors[i].green;
                 }
-                convolved.setPixel(x, y, Std.int(value));
+                red /= denominator;
+                green /= denominator;
+                blue /= denominator;
+                convolved.setPixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
 
             }
         }
-
+        trace(flatMatrix.length);
         return convolved;
     }
 

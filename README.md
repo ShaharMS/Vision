@@ -37,9 +37,9 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `grayscale()`
  - [x] `blackAndWhitd()`
  - [x] `invert()`
- - [ ] `sharpen()`
- - [ ] **`convolve()`**
- - [x] `contrast()` (exaggerated colors) **needs tweaking**
+ - [x] `sharpen()`
+ - [x] `convolve()`
+ - [x] `contrast()`
  - [ ] **`houghRay2DDetection()`**
  - [ ] **`houghLineSegment2DDetection()`**
  - [ ] `simpleLineDetector()` **needs fixing**
@@ -51,7 +51,6 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `cannyEdgeDetection()`
  - [x] `nearestNeighborBlur()`
  - [x] `gaussianBlur()`
- - [ ] `boxBlur()`
 
 #### algorithms:
 

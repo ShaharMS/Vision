@@ -1,5 +1,7 @@
 package;
 
+import js.html.File;
+import js.html.FileSystem;
 import vision.tools.ImageTools;
 using vision.tools.ImageTools;
 import format.tga.Data.ImageType;
@@ -26,31 +28,9 @@ class Main {
 	static function main() {
 		var start:Float, end:Float;
 
-		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", i -> printImage(i));
-		#if false
-		var image = new Image(250, 250, 0x000000);
-		image.drawLine(12, 53, 54, 15, 0xbd0202);
-		image.drawLine(56, 248, 181, 95, 0x000355);
-		image.drawLine(110, 15, 121, 131, 0x31f300);
-		image.drawLine(248, 53, 15, 231, 0xffffff);
-		image.drawRect(34, 12, 33, 53, 0xf0ff46);
-		image.fillRect(12, 53, 33, 53, 0xffffff);
-		image.drawCircle(100, 100, 50, 0x3c896e);
-		image.drawCircle(100, 100, 30, 0xff00d4);
-		image.drawCircle(200, 200, 40, Color.YELLOW);
-		image.fillColor(new Point2D(200, 200), Color.YELLOW);
-		image.drawCircle(180, 190, 5, Color.BROWN);
-		image.fillColor(new Point2D(180, 190), Color.BROWN);
-		image.drawCircle(220, 190, 5, Color.BROWN);
-		image.fillColor(new Point2D(220, 190), Color.BROWN);
-		image.drawCircle(200, 225, 8, Color.BROWN);
-		image.fillColor(new Point2D(200, 225), Color.BROWN);
-		image.drawQuadraticBezier(new LineSegment2D({x: 100, y: 100}, {x: 200, y: 100}), {x: 200, y: 200}, 0x1900ff);
-		image.drawCubicBezier(new LineSegment2D({x: 10, y: 10}, {x: 50, y: 100}), {x: 150, y: 200}, {x: 200, y: 75}, 0xff0000);
-		image.drawRay2D(new Ray2D({x: 0, y: 0}, 1), 0x00ff00);
-		image.drawEllipse(100, 100, 40, 21, 0x9fff9f);
-		printImage(image);
-		#if simple_tests
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			printImage(image);
+			#if simple_tests
 		start = haxe.Timer.stamp();
 		printImage(Vision.blackAndWhite(image.clone()));
 		end = haxe.Timer.stamp();
@@ -138,6 +118,7 @@ class Main {
 		end = haxe.Timer.stamp();
 		trace("Image Mirroring & Flipping took: " + MathTools.turnicate(end - start, 4) + " seconds");
 		#end
+		#if feature_detection_tests
 		start = haxe.Timer.stamp();
 		var lines = Vision.simpleLineSegment2DDetection(image.clone(), 3, 30);
 		var newI = image.clone();
@@ -155,7 +136,34 @@ class Main {
 		printImage(image);
 		end = haxe.Timer.stamp();
 		trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
-	
+		#end
+		});
+		
+		#if draw_tests
+		var image = new Image(250, 250, 0x000000);
+		image.drawLine(12, 53, 54, 15, 0xbd0202);
+		image.drawLine(56, 248, 181, 95, 0x000355);
+		image.drawLine(110, 15, 121, 131, 0x31f300);
+		image.drawLine(248, 53, 15, 231, 0xffffff);
+		image.drawRect(34, 12, 33, 53, 0xf0ff46);
+		image.fillRect(12, 53, 33, 53, 0xffffff);
+		image.drawCircle(100, 100, 50, 0x3c896e);
+		image.drawCircle(100, 100, 30, 0xff00d4);
+		image.drawCircle(200, 200, 40, Color.YELLOW);
+		image.fillColor(new Point2D(200, 200), Color.YELLOW);
+		image.drawCircle(180, 190, 5, Color.BROWN);
+		image.fillColor(new Point2D(180, 190), Color.BROWN);
+		image.drawCircle(220, 190, 5, Color.BROWN);
+		image.fillColor(new Point2D(220, 190), Color.BROWN);
+		image.drawCircle(200, 225, 8, Color.BROWN);
+		image.fillColor(new Point2D(200, 225), Color.BROWN);
+		image.drawQuadraticBezier(new LineSegment2D({x: 100, y: 100}, {x: 200, y: 100}), {x: 200, y: 200}, 0x1900ff);
+		image.drawCubicBezier(new LineSegment2D({x: 10, y: 10}, {x: 50, y: 100}), {x: 150, y: 200}, {x: 200, y: 75}, 0xff0000);
+		image.drawRay2D(new Ray2D({x: 0, y: 0}, 1), 0x00ff00);
+		image.drawEllipse(100, 100, 40, 21, 0x9fff9f);
+		printImage(image);
+		#end
+		
 		#if simple_tests
 		trace(new Ray2D({x: 0, y: 0}, 1).getPointAtX(8));
 		trace(new Ray2D({x: 0, y: 0}, 1).slope);
@@ -174,7 +182,6 @@ class Main {
 		trace(queue.dequeue());
 		trace(queue.dequeue());
 		trace(queue.toString());
-		#end
 		#end
 	}
 
