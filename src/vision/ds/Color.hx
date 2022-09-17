@@ -778,7 +778,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 
     public function toString() {
         #if console.hx
-        return '<bg${toWebString()}>   </>';
+        return '<bg${toWebString()}>  </>';
         #else
         return toHexString(true, true);
         #end

@@ -39,10 +39,10 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `invert()`
  - [ ] `sharpen()`
  - [ ] **`convolve()`**
- - [x] `contrast()` (exaggerated colors) **needs fixing**
+ - [x] `contrast()` (exaggerated colors) **needs tweaking**
  - [ ] **`houghRay2DDetection()`**
  - [ ] **`houghLineSegment2DDetection()`**
- - [x] `simpleLineDetector()`!!+
+ - [ ] `simpleLineDetector()` **needs fixing**
  - [ ] *Circle detection (hough method)*
  - [ ] *Rectangle detection (recursive method)*
  - [ ] *Triangle detection (recursive method)*
@@ -74,6 +74,10 @@ Here is a roadmap of all features added/planned for the future:
    - [x] sobel filter (needs tweaking)
    - [x] non-max suppression 
    - [x] hysteresis
+  
+ - Sobel
+    - [ ] sobel filter
+    - [x] sobel edge detection
    
 #### class `Image`:
 

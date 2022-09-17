@@ -26,8 +26,8 @@ class Main {
 	static function main() {
 		var start:Float, end:Float;
 
-		var i = new Image(369, 276).loadFromFile("https://i.stack.imgur.com/Bnxa6.jpg");
-		printImage(i);
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", i -> printImage(i));
+		#if false
 		var image = new Image(250, 250, 0x000000);
 		image.drawLine(12, 53, 54, 15, 0xbd0202);
 		image.drawLine(56, 248, 181, 95, 0x000355);
@@ -174,6 +174,7 @@ class Main {
 		trace(queue.dequeue());
 		trace(queue.dequeue());
 		trace(queue.toString());
+		#end
 		#end
 	}
 
