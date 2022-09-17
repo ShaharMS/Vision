@@ -1,36 +1,116 @@
 package vision.ds;
 
+import haxe.io.Bytes;
 import vision.tools.MathTools;
 
 abstract Color(Int) from Int from UInt to Int to UInt
 {
-	public static inline var TRANSPARENT:Color = 0x000000;
+	/**
+	  &nbsp;  
+	  &nbsp;  
+	  &nbsp;  
+	  &nbsp;  
+	  &nbsp;  
+	  &nbsp;  
+	  &nbsp;  
+	  &nbsp;  
+	  &nbsp;  
+	  &nbsp;  
+	  &nbsp;  
+	**/
+	public static inline var TRANSPARENT:Color = 0x00000000;
+	/**
+	 * ![color](https://www.colorhexa.com/ffffff.png)![color](https://www.colorhexa.com/ffffff.png)
+	 */
 	public static inline var WHITE:Color = 0xFFFFFF;
+	/**
+	 * ![color](https://www.colorhexa.com/808080.png)![color](https://www.colorhexa.com/808080.png)
+	 */
 	public static inline var GRAY:Color = 0x808080;
+	/**
+	 * ![color](https://www.colorhexa.com/000000.png)![color](https://www.colorhexa.com/000000.png)
+	 */
 	public static inline var BLACK:Color = 0x000000;
-
+	/**
+	 * ![color](https://www.colorhexa.com/00ff00.png)![color](https://www.colorhexa.com/00ff00.png)
+	 */
 	public static inline var GREEN:Color = 0x00FF00;
+	/**
+	 * ![color](https://www.colorhexa.com/FFFF00.png)![color](https://www.colorhexa.com/FFFF00.png)
+	 */
 	public static inline var YELLOW:Color = 0xFFFF00;
+	/**
+	 * ![color](https://www.colorhexa.com/FFA500.png)![color](https://www.colorhexa.com/FFA500.png)
+	 */
 	public static inline var ORANGE:Color = 0xFFA500;
+	/**
+	 * ![color](https://www.colorhexa.com/FF0000.png)![color](https://www.colorhexa.com/FF0000.png)
+	 */
 	public static inline var RED:Color = 0xFF0000;
+	/**
+	 * ![color](https://www.colorhexa.com/800080.png)![color](https://www.colorhexa.com/800080.png)
+	 */
 	public static inline var PURPLE:Color = 0x800080;
+	/**
+	 * ![color](https://www.colorhexa.com/0000ff.png)![color](https://www.colorhexa.com/0000ff.png)
+	 */
 	public static inline var BLUE:Color = 0x0000FF;
+	/**
+	 * ![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)
+	 */
 	public static inline var BROWN:Color = 0x8B4513;
+	/**
+	 * ![color](https://www.colorhexa.com/FFC0CB.png)![color](https://www.colorhexa.com/FFC0CB.png)
+	 */
 	public static inline var PINK:Color = 0xFFC0CB;
+	/**
+	 * ![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)
+	 */
 	public static inline var MAGENTA:Color = 0xFF00FF;
+	/**
+	 * ![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)
+	 */
 	public static inline var CYAN:Color = 0x00FFFF;
+	/**
+	 * ![color](https://www.colorhexa.com/C0C0C0.png)![color](https://www.colorhexa.com/C0C0C0.png)
+	 */
 	public static inline var SILVER:Color = 0xC0C0C0;
+	/**
+	 * ![color](https://www.colorhexa.com/FFD700.png)![color](https://www.colorhexa.com/FFD700.png)
+	 */
 	public static inline var GOLD:Color = 0xFFD700;
+	/**
+	 * ![color](https://www.colorhexa.com/808000.png)![color](https://www.colorhexa.com/808000.png)
+	 */
 	public static inline var OLIVE:Color = 0x808000;
+	/**
+	 * ![color](https://www.colorhexa.com/800000.png)![color](https://www.colorhexa.com/800000.png)
+	 */
 	public static inline var MAROON:Color = 0x800000;
+	/**
+	 * ![color](https://www.colorhexa.com/000080.png)![color](https://www.colorhexa.com/000080.png)
+	 */
 	public static inline var NAVY:Color = 0x000080;
+	/**
+	 * ![color](https://www.colorhexa.com/008080.png)![color](https://www.colorhexa.com/008080.png)
+	 */
 	public static inline var TEAL:Color = 0x008080;
+	/**
+	 * ![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)
+	 */
 	public static inline var FUCHSIA:Color = 0xFF00FF;
+	/**
+	 * ![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)
+	 */
 	public static inline var AQUA:Color = 0x00FFFF;
+	/**
+	 * ![color](https://www.colorhexa.com/32CD32.png)![color](https://www.colorhexa.com/32CD32.png)
+	 */
 	public static inline var LIME:Color = 0x32CD32;
+	/**
+	 * ![color](https://www.colorhexa.com/4169E1.png)![color](https://www.colorhexa.com/4169E1.png)
+	 */
 	public static inline var ROYAL_BLUE:Color = 0x4169E1;
-
-	
 
 	public var red(get, set):Int;
 	public var blue(get, set):Int;
@@ -77,7 +157,7 @@ abstract Color(Int) from Int from UInt to Int to UInt
 	/**
 	 * Create a color from the least significant four bytes of an Int
 	 *
-	 * @param	value And Int with bytes in the format 0xAARRGGBB
+	 * @param value Int with bytes in the format 0xAARRGGBB
 	 * @return	The color as a Color
 	 */
 	public static inline function fromInt(value:Int):Color
