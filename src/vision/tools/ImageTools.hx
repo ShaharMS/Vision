@@ -69,7 +69,6 @@ class ImageTools {
             canvas.width = imgElement.width;
             canvas.height = imgElement.height;
 			canvas.getContext2d().drawImage(imgElement, 0, 0);
-            Browser.document.body.appendChild(canvas);
 			trace(imgElement.width, imgElement.height, imgElement.naturalWidth, imgElement.naturalHeight);
 			if (image == null) image = new Image(imgElement.width, imgElement.height);
 			var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
@@ -85,9 +84,6 @@ class ImageTools {
                 var y = Math.floor((i/4) / imageData.width);
                 image.setPixel(x, y, Color.fromRGBA(r,g,b,a));
                 i += 4;
-                if (x == 0) {
-                    Console.log(image.getPixel(0, y).toString());
-                }
             }
             onComplete(image);
 		}
