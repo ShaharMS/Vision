@@ -208,7 +208,7 @@ class ImageTools {
 	}
 
 	public static function grayscalePixel(pixel:Color):Color {
-		var gray = Std.int((pixel.red + pixel.green + pixel.blue) / 3);
+		var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red + pixel.green + pixel.blue) / 3) #end;
 		return Color.fromRGBA(gray, gray, gray, pixel.alpha);
 	}
 

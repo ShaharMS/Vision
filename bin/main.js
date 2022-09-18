@@ -19,6 +19,22 @@ Main.main = function() {
 	vision_tools_ImageTools.loadFromFile(null,"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG",function(image) {
 		Main.printImage(image);
 		start = HxOverrides.now() / 1000;
+		Main.printImage(vision_Vision.blackAndWhite(vision_ds_Image.clone(image)));
+		end = HxOverrides.now() / 1000;
+		haxe_Log.trace("Black and white took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 41, className : "Main", methodName : "main"});
+		start = HxOverrides.now() / 1000;
+		Main.printImage(vision_Vision.grayscale(vision_ds_Image.clone(image)));
+		end = HxOverrides.now() / 1000;
+		haxe_Log.trace("Grayscale took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 45, className : "Main", methodName : "main"});
+		start = HxOverrides.now() / 1000;
+		Main.printImage(vision_Vision.contrast(vision_ds_Image.clone(image)));
+		end = HxOverrides.now() / 1000;
+		haxe_Log.trace("Contrast took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 49, className : "Main", methodName : "main"});
+		start = HxOverrides.now() / 1000;
+		Main.printImage(vision_ds_Image.clone(image));
+		end = HxOverrides.now() / 1000;
+		haxe_Log.trace("Image Cloning took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 53, className : "Main", methodName : "main"});
+		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.Identity));
 		end = HxOverrides.now() / 1000;
 		haxe_Log.trace("Identity Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 59, className : "Main", methodName : "main"});
@@ -80,6 +96,23 @@ Main.main = function() {
 		Main.printImage(vision_ds_Image.mirror(vision_ds_Image.clone(image)));
 		end = HxOverrides.now() / 1000;
 	});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtX(8),{ fileName : "src/Main.hx", lineNumber : 176, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).slope,{ fileName : "src/Main.hx", lineNumber : 177, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).degrees,{ fileName : "src/Main.hx", lineNumber : 178, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).radians,{ fileName : "src/Main.hx", lineNumber : 179, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).getPointAtY(8),{ fileName : "src/Main.hx", lineNumber : 180, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_yIntercept(),{ fileName : "src/Main.hx", lineNumber : 181, className : "Main", methodName : "main"});
+	haxe_Log.trace(new vision_ds_Ray2D(new vision_ds_Point2D(0,0),1).get_xIntercept(),{ fileName : "src/Main.hx", lineNumber : 182, className : "Main", methodName : "main"});
+	var queue = new vision_ds_Queue();
+	queue.enqueue(0);
+	queue.enqueue(1);
+	queue.enqueue(2);
+	queue.enqueue(3);
+	haxe_Log.trace(queue.toString(),{ fileName : "src/Main.hx", lineNumber : 188, className : "Main", methodName : "main"});
+	haxe_Log.trace(queue.dequeue(),{ fileName : "src/Main.hx", lineNumber : 189, className : "Main", methodName : "main"});
+	haxe_Log.trace(queue.dequeue(),{ fileName : "src/Main.hx", lineNumber : 190, className : "Main", methodName : "main"});
+	haxe_Log.trace(queue.dequeue(),{ fileName : "src/Main.hx", lineNumber : 191, className : "Main", methodName : "main"});
+	haxe_Log.trace(queue.toString(),{ fileName : "src/Main.hx", lineNumber : 192, className : "Main", methodName : "main"});
 };
 Main.printImage = function(image) {
 	var c = window.document.createElement("canvas");
@@ -520,6 +553,32 @@ vision_Vision.grayscale = function(image) {
 		}
 	}
 	return image;
+};
+vision_Vision.blackAndWhite = function(image,threshold) {
+	if(threshold == null) {
+		threshold = 64;
+	}
+	var _g = 0;
+	var _g1 = vision_ds_Image.get_width(image);
+	while(_g < _g1) {
+		var i = _g++;
+		var _g2 = 0;
+		var _g3 = vision_ds_Image.get_height(image);
+		while(_g2 < _g3) {
+			var j = _g2++;
+			var pixel = vision_ds_Image.getPixel(image,i,j);
+			var average = ((pixel >> 16 & 255) + (pixel >> 8 & 255) + (pixel & 255)) / 3;
+			if(average > threshold) {
+				vision_ds_Image.setPixel(image,i,j,-1);
+			} else {
+				vision_ds_Image.setPixel(image,i,j,vision_ds_Color._new(0));
+			}
+		}
+	}
+	return image;
+};
+vision_Vision.contrast = function(image) {
+	return vision_Vision.convolve(image,vision_ds_Kernal2D.UnsharpMasking);
 };
 vision_Vision.sharpen = function(image) {
 	return vision_Vision.convolve(image,vision_ds_Kernal2D.Sharpen);
@@ -2194,6 +2253,106 @@ vision_ds_Point2D.prototype = {
 		return "(" + this.x + ", " + this.y + ")";
 	}
 };
+var vision_ds_QueueCell = function(value,next,previous) {
+	this.previous = previous;
+	this.value = value;
+	this.next = next;
+};
+vision_ds_QueueCell.__name__ = true;
+var vision_ds_Queue = function() {
+	this.length = 0;
+};
+vision_ds_Queue.__name__ = true;
+vision_ds_Queue.prototype = {
+	dequeue: function() {
+		var v = this.get_last().value;
+		this.get_last().previous.next = null;
+		this.length--;
+		return v;
+	}
+	,enqueue: function(value) {
+		if(this.first == null) {
+			this.first = new vision_ds_QueueCell(value,null,null);
+			this.length++;
+			return value;
+		}
+		this.first.previous = new vision_ds_QueueCell(value,this.first,null);
+		this.first = this.first.previous;
+		this.length++;
+		return value;
+	}
+	,toString: function() {
+		var s = "[";
+		var processed = this.first;
+		while(processed.next != null) {
+			s += "" + Std.string(processed.value) + " -> ";
+			processed = processed.next;
+		}
+		s += "" + Std.string(processed.value) + "]";
+		return s;
+	}
+	,get_last: function() {
+		var processed = this.first;
+		while(processed.next != null) processed = processed.next;
+		return processed;
+	}
+};
+var vision_ds_Ray2D = function(point,m,degrees,radians) {
+	this.point = point;
+	if(m != null) {
+		this.set_slope(m);
+		this.set_degrees(Math.atan(m) * 180 / Math.PI);
+		this.set_radians(Math.atan(m));
+	} else if(degrees != null) {
+		this.set_degrees(degrees);
+		this.set_slope(Math.tan(degrees * vision_tools_MathTools.get_PI() / 180));
+		this.set_radians(degrees * Math.PI / 180);
+	} else if(radians != null) {
+		this.set_radians(radians);
+		this.set_slope(Math.tan(radians));
+		this.set_degrees(radians * 180 / Math.PI);
+	}
+};
+vision_ds_Ray2D.__name__ = true;
+vision_ds_Ray2D.prototype = {
+	set_slope: function(value) {
+		this.degrees = Math.atan(value) * 180 / Math.PI;
+		this.radians = Math.atan(value);
+		return this.slope = value;
+	}
+	,set_degrees: function(value) {
+		this.slope = Math.tan(value * vision_tools_MathTools.get_PI() / 180);
+		this.radians = value * Math.PI / 180;
+		return this.degrees = value;
+	}
+	,set_radians: function(value) {
+		this.slope = Math.tan(value);
+		this.degrees = value * 180 / Math.PI;
+		return this.radians = value;
+	}
+	,get_yIntercept: function() {
+		var px = this.point.x;
+		var py = this.point.y;
+		if(px > 0) {
+			return py - this.slope * px;
+		}
+		return py + this.slope * px;
+	}
+	,get_xIntercept: function() {
+		var px = this.point.x;
+		var py = this.point.y;
+		if(py > 0) {
+			return (py - this.slope * px) / this.slope;
+		}
+		return (py + this.slope * px) / this.slope;
+	}
+	,getPointAtX: function(x) {
+		return new vision_ds_Point2D(x,this.slope * x + this.get_yIntercept());
+	}
+	,getPointAtY: function(y) {
+		return new vision_ds_Point2D((y - this.get_yIntercept()) / this.slope,y);
+	}
+};
 var vision_ds_hough_HoughAccumulator = {};
 vision_ds_hough_HoughAccumulator.get_rhoMax = function(this1) {
 	return this1.length / 2 | 0;
@@ -2375,6 +2534,9 @@ vision_tools_MathTools.__name__ = true;
 vision_tools_MathTools.turnicate = function(num,numbersAfterDecimal) {
 	var multiplier = Math.pow(10,numbersAfterDecimal);
 	return Math.round(num * multiplier) / multiplier;
+};
+vision_tools_MathTools.get_PI = function() {
+	return Math.PI;
 };
 if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
 	HxOverrides.now = performance.now.bind(performance);

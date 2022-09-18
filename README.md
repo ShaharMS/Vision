@@ -44,10 +44,8 @@ Here is a roadmap of all features added/planned for the future:
  - [ ] **`houghRay2DDetection()`**
  - [ ] **`houghLineSegment2DDetection()`**
  - [ ] `simpleLineDetector()` **needs fixing**
- - [ ] *Circle detection (hough method)*
- - [ ] *Rectangle detection (recursive method)*
- - [ ] *Triangle detection (recursive method)*
  - [x] `perwittEdgeDetection()`
+ - [x] `sobelEdgeDiffOperator()`
  - [x] `sobelEdgeDetection()`
  - [x] `cannyEdgeDetection()`
  - [x] `nearestNeighborBlur()`
@@ -120,3 +118,4 @@ Here is a roadmap of all features added/planned for the future:
 | Define | Meaning | Versions |
 | :---: | --- | :---: |
 | `vision_disable_point_alloc_optimization` | enabling this makes every `IntPoint2D` allocate two integers as a class instance instead of working as an abstract over a 64 bit integer. The allocation optimization is enabled by default to reduce allocations, but you can flip this flag if your'e capped to 32bit integers | 1.0.0 |
+| `vision_better_grayscale` | When enabled, grayscaling is done a bit differently to get an image that more closely resembles the original image. If you're noticing problems with grayscaling, turn this off. | 1.0.0 |

@@ -7,4 +7,5 @@
 --dce full
 --js bin/main.js
 
---define convolve_tests=1
+--define convolve_tests
+--define simple_tests

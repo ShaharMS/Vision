@@ -35,7 +35,7 @@ class Vision {
         for (i in 0...image.width) {
             for (j in 0...image.height) {
                 var pixel = image.getPixel(i, j);
-                var gray = Std.int((pixel.red + pixel.green + pixel.blue) / 3);
+                var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red + pixel.green + pixel.blue) / 3) #end;
                 image.setPixel(i, j, Color.fromRGBA(gray, gray, gray));
             }
         }
