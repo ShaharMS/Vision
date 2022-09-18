@@ -158,6 +158,17 @@ enum Kernal2D {
      */
     Assemble5x5(farCorner:Float, farEdge:Float, edge:Float, midCorner:Float, midEdge:Float, center:Float);
 
+    /**
+     * make a kernal without any special tools.
+     * 
+     * Usage:
+     * 
+     *      Custom([
+     *          [0, 1, 0],
+     *          [0, 1, 0],
+     *          [0, 1, 0],
+     *      ])
+     */
     Custom(kernal:Array<Array<Float>>);
 
 }

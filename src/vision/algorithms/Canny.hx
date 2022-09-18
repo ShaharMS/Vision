@@ -69,11 +69,11 @@ class Canny {
         return filtered;
     }
 
-    public static function applyHysteresis(image:CannyObject, ht:Float, lt:Float):CannyObject {
+    public static function applyHysteresis(image:CannyObject, highThreshold:Float, lowThreshold:Float):CannyObject {
         var copy = image.clone();
-        final isStrong = (edge:Color) -> edge.redFloat > ht;
-        final isCandidate = (edge:Color) -> edge.redFloat <= ht && edge.redFloat >= lt;
-        final isWeak = (edge:Color) -> edge.redFloat < lt;
+        final isStrong = (edge:Color) -> edge.redFloat > highThreshold;
+        final isCandidate = (edge:Color) -> edge.redFloat <= highThreshold && edge.redFloat >= lowThreshold;
+        final isWeak = (edge:Color) -> edge.redFloat < lowThreshold;
         function traverseEdge(x, y) {
             if (x == 0 || y == 0 || x == image.width - 1 || y == image.height - 1) return;
             if (isStrong(copy[x][y])) {

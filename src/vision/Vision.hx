@@ -20,7 +20,13 @@ using vision.tools.ImageTools;
 using vision.algorithms.Canny;
 
 /**
-    The class where all image manipulation functions are stored.
+    The class where all image manipulation & computer vision functions are stored.
+
+    If you're going to make extensive use of this class, it is recommanded to use this as a static extension:
+
+    ```haxe
+    using vision.Vision;
+    ```
 **/
 class Vision {
     
@@ -109,13 +115,13 @@ class Vision {
     }
 
     /**
-     * Deepdries an image by running to through a sharpening filter `iterations` times.
-     * 
-     * The higher the value, the more deepfried the imae will look.
-     * @param image The image to be deepfried
-     * @param iterations The amount of times the image gets sharpened. default is `2`
-     * @return The deepfried image. the original copy is not preserved.
-     */
+       Deepdries an image by running to through a sharpening filter `iterations` times.
+       
+       The higher the value, the more deepfried the imae will look.
+       @param image The image to be deepfried
+       @param iterations The amount of times the image gets sharpened. default is `2`
+       @return The deepfried image. the original copy is not preserved.
+    **/
     public static function deepfry(image:Image, iterations:Int = 2):Image {
         for (i in 0...iterations) image = sharpen(image);
         return image;
@@ -128,6 +134,20 @@ class Vision {
         This is useful for many things, such as simple blurring, sharpening, noise maps, and more that comes to mind :).
 
         There are a couple of prexisting matrices you can use, and also a custom tool to let you create your own kernals from scratch using enums.
+
+        ### How does this work?
+
+        simply put, it takes each pixel, and multiples its surrounding pixels by the values you give the matrix.
+
+        In the following demo, you can see how convolution works for the `Sharpen` matrix:
+
+        ![Sharpen Convolution](https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/2D_Convolution_Animation.gif/220px-2D_Convolution_Animation.gif)
+
+        1. multiply the current pixel's value by the value of the center of the marix
+        1. multiply the current pixel's immidiate neighbors (vertical/horizontal) by the matching value on the matrix 
+        (the pixel to the right of the current pixel will be multiplied by the value to the right of the center of the matrix)
+        1. do the same thing with the other neighbors
+        1. enjoy your convolved image :)
 
         @param image the image to be manipulated
         @param kernal the type/value of the kernal. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**, **`Custom`**.
@@ -218,6 +238,7 @@ class Vision {
         trace(flatMatrix.length);
         return image = convolved;
     }
+
 
     /**
         Uses the hough transform to detect lines inside an image.  

@@ -2,6 +2,9 @@ package vision.algorithms;
 
 import vision.exceptions.InvalidGaussianKernalSize;
 
+/**
+ * An implementation of 
+ */
 class Gaussian {
 
     public static function create1x1Kernal(sigma:Float):Array<Array<Float>> {
@@ -23,7 +26,7 @@ class Gaussian {
             }
         }
     
-        // normalising the Kernel
+        // normalizing the kernel
         for (i in 0...3) {
             for (j in 0...3) {
                 kernal[i][j] /= sum;
@@ -47,7 +50,7 @@ class Gaussian {
             }
         }
     
-        // normalising the Kernel
+        // normalizing the Kernel
         for (i in 0...5) {
             for (j in 0...5) {
                 kernal[i][j] /= sum;
@@ -71,7 +74,7 @@ class Gaussian {
             }
         }
     
-        // normalising the Kernel
+        // normalizing the Kernel
         for (i in 0...7) {
             for (j in 0...7) {
                 kernal[i][j] /= sum;
@@ -95,7 +98,7 @@ class Gaussian {
             }
         }
     
-        // normalising the Kernel
+        // normalizing the Kernel
         for (i in 0...9) {
             for (j in 0...9) {
                 kernal[i][j] /= sum;
@@ -123,7 +126,7 @@ class Gaussian {
             }
         }
 
-        //normalise the kernal
+        //normalize the kernal
         for (i in 0...size) {
             for (j in 0...size) {
                 kernal[i][j] /= sum;
