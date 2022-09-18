@@ -7,12 +7,12 @@ import vision.ds.Image;
 using vision.tools.MathTools;
 
 /**
- * An implementation of both the sobel operator & edge detection algorithms
+ * An implementation of both the perwitt operator & edge detection algorithms
  * by [Shahar Marcus](https://www.github.com/ShaharMS)
  */
-class Sobel {
+class Perwitt {
 
-    public static function convolveWithSobelOperator(image:Image) {
+    public static function convolveWithPerwittOperator(image:Image) {
 
         var x = image.width;
         var y = image.height;
@@ -34,13 +34,13 @@ class Sobel {
                 var val21 = ImageTools.grayscalePixel(image.getPixel(i + 1, j)).red;
                 var val22 = ImageTools.grayscalePixel(image.getPixel(i + 1, j + 1)).red;
 
-                var gx =  ((-3 * val00) + (0 * val01) + (3 * val02)) 
-                        + ((-10 * val10) + (0 * val11) + (10 * val12))
-                        + ((-3 * val20) + (0 * val21) + (3 * val22));
+                var gx =  ((-1 * val00) + (0 * val01) + (1 * val02)) 
+                        + ((-2 * val10) + (0 * val11) + (2 * val12))
+                        + ((-1 * val20) + (0 * val21) + (1 * val22));
 
-                var gy =  ((-3 * val00) + (-10 * val01) + (-3 * val02))
+                var gy =  ((-1 * val00) + (-2 * val01) + (-1 * val02))
                         + ((0 * val10) + (0 * val11) + (0 * val12))
-                        + ((3 * val20) + (10 * val21) + (3 * val22));
+                        + ((1 * val20) + (2 * val21) + (1 * val22));
 
                 var gval = Math.sqrt((gx * gx) + (gy * gy));
                 var g = Std.int(gval);

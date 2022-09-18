@@ -87,6 +87,10 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Sobel Filter took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
+				printImage(image.clone().perwittEdgeDiffOperator());
+				end = haxe.Timer.stamp();
+				trace("Perwitt Filter took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
 				printImage(image.clone().sobelEdgeDetection());
 				end = haxe.Timer.stamp();
 				trace("Sobel edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");

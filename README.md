@@ -45,6 +45,7 @@ Here is a roadmap of all features added/planned for the future:
  - [ ] **`houghLineSegment2DDetection()`**
  - [ ] `simpleLineDetector()` **needs fixing**
  - [x] `perwittEdgeDetection()`
+ - [x] `perwittEdgeDiffOperator()`
  - [x] `sobelEdgeDiffOperator()`
  - [x] `sobelEdgeDetection()`
  - [x] `cannyEdgeDetection()`
@@ -69,13 +70,17 @@ Here is a roadmap of all features added/planned for the future:
  - Canny
    - [x] grayscale
    - [x] gaussian blur
-   - [x] sobel filter (needs tweaking)
+   - [x] Sobel filter (needs tweaking)
    - [x] non-max suppression 
    - [x] hysteresis
   
  - Sobel
-    - [ ] sobel filter
-    - [x] sobel edge detection
+    - [x] Sobel filter
+    - [x] Sobel edge detection
+
+ - Perwitt
+    - [x] Perwitt filter
+    - [x] Perwitt edge detection
    
 #### class `Image`:
 

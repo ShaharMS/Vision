@@ -1,5 +1,6 @@
 package vision;
 
+import vision.algorithms.Perwitt;
 import vision.algorithms.Sobel;
 import vision.ds.Kernal2D;
 import vision.ds.canny.CannyObject;
@@ -174,7 +175,7 @@ class Vision {
             ];
             case RidgeDetectionAggresive: [
                 [-1, -1, -1],
-                [-1, 6, -1],
+                [-1, 7, -1],
                 [-1, -1, -1],
             ];
             case Sharpen: [
@@ -619,5 +620,27 @@ class Vision {
      */
     public static function sobelEdgeDiffOperator(image:Image) {
         return Sobel.convolveWithSobelOperator(grayscale(image.clone()));   
+    }
+
+    /**
+     * Applies the perwitt filter to an image.
+     * 
+     * The image doesnt have to get grayscaled before being passed 
+     * to this function.
+     * 
+     * It is different from the `perwittEdgeDetection` function, since
+     * it doesnt try to threshold the resulting image to extract the strong edges,
+     * and leaves that information in. example of this filter in action:
+     * 
+     * |Status|Image|
+     * |---|---|
+     * |before filtering: |![Pre-Processed](https://i.stack.imgur.com/Bnxa6.jpg)|
+     * |after filtering:|![Post-Processed](https://i.stack.imgur.com/o54O0.png)|
+     * 
+     * @param image The image to be operated on
+     * @return A new image, containing the gradients of the edges as whitened pixels.
+     */
+     public static function perwittEdgeDiffOperator(image:Image) {
+        return Perwitt.convolveWithPerwittOperator(grayscale(image.clone()));   
     }
 }
