@@ -102,10 +102,23 @@ class Vision {
         the image is sharpened, the more "deepfried" it'll look.
 
         @param image The image to be contrasted.
-        @return The shaprened image
+        @return The shaprened image. The original copy is not preserved.
     **/
     public static function sharpen(image:Image):Image {
         return convolve(image, Sharpen);
+    }
+
+    /**
+     * Deepdries an image by running to through a sharpening filter `iterations` times.
+     * 
+     * The higher the value, the more deepfried the imae will look.
+     * @param image The image to be deepfried
+     * @param iterations The amount of times the image gets sharpened. default is `2`
+     * @return The deepfried image. the original copy is not preserved.
+     */
+    public static function deepfry(image:Image, iterations:Int = 2):Image {
+        for (i in 0...iterations) image = sharpen(image);
+        return image;
     }
 
 
@@ -203,7 +216,7 @@ class Vision {
             }
         }
         trace(flatMatrix.length);
-        return convolved;
+        return image = convolved;
     }
 
     /**
@@ -584,6 +597,6 @@ class Vision {
      * @return A new image, containing the gradients of the edges as whitened pixels.
      */
     public static function sobelEdgeDiffOperator(image:Image) {
-        return Sobel.convolveWithSobelOperator(image);   
+        return Sobel.convolveWithSobelOperator(grayscale(image.clone()));   
     }
 }

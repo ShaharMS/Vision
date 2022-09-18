@@ -3,7 +3,9 @@ package;
 import js.html.File;
 import js.html.FileSystem;
 import vision.tools.ImageTools;
+
 using vision.tools.ImageTools;
+
 import format.tga.Data.ImageType;
 import vision.ds.Queue;
 import vision.ds.LineSegment2D;
@@ -22,123 +24,129 @@ import js.Browser;
 #end
 import vision.algorithms.Hough;
 import vision.ds.Image;
+
 using vision.Vision;
 
 class Main {
 	static function main() {
 		var start:Float, end:Float;
 
-		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
-			printImage(image);
-			#if simple_tests
-		start = haxe.Timer.stamp();
-		printImage(Vision.blackAndWhite(image.clone()));
-		end = haxe.Timer.stamp();
-		trace("Black and white took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(Vision.grayscale(image.clone()));
-		end = haxe.Timer.stamp();
-		trace("Grayscale took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().contrast());
-		end = haxe.Timer.stamp();
-		trace("Contrast took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone());
-		end = haxe.Timer.stamp();
-		trace("Image Cloning took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		#end
-		#if convolve_tests
-		start = haxe.Timer.stamp();
-		printImage(image.clone().convolve(Identity));
-		end = haxe.Timer.stamp();
-		trace("Identity Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().convolve(BoxBlur));
-		end = haxe.Timer.stamp();
-		trace("BoxBlur Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().convolve(RidgeDetection));
-		end = haxe.Timer.stamp();
-		trace("Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().convolve(RidgeDetectionAggresive));
-		end = haxe.Timer.stamp();
-		trace("Aggresive Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().convolve(Sharpen));
-		end = haxe.Timer.stamp();
-		trace("Shaprening Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().convolve(UnsharpMasking));
-		end = haxe.Timer.stamp();
-		trace("Unsharp Masking Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		#end
-		start = haxe.Timer.stamp();
-		printImage(image.clone().sobelEdgeDiffOperator());
-		end = haxe.Timer.stamp();
-		trace("Sobel Filter took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().sobelEdgeDetection());
-		end = haxe.Timer.stamp();
-		trace("Sobel edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		var hough = Hough.toHoughSpace(Vision.perwittEdgeDetection(image.clone()));
-		printImage(hough.image);
-		end = haxe.Timer.stamp();
-		trace("Hough transform took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(Vision.perwittEdgeDetection(image.clone()));
-		end = haxe.Timer.stamp();
-		trace("Perwitt edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		var canny = Vision.cannyEdgeDetection(image.clone());
-		printImage(canny);
-		end = haxe.Timer.stamp();
-		trace("Canny edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(Vision.nearestNeighborBlur(image.clone(), 1));
-		end = haxe.Timer.stamp();
-		trace("Nearest neighbor blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().gaussianBlur(2, 15));
-		end = haxe.Timer.stamp();
-		trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().mirror());
-		end = haxe.Timer.stamp();
-		#if mirror_flip_tests
-		trace("Image Mirroring took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().flip());
-		end = haxe.Timer.stamp();
-		trace("Image Flipping took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		printImage(image.clone().mirror().flip());
-		end = haxe.Timer.stamp();
-		trace("Image Mirroring & Flipping took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		#end
-		#if feature_detection_tests
-		start = haxe.Timer.stamp();
-		var lines = Vision.simpleLineSegment2DDetection(image.clone(), 3, 30);
-		var newI = image.clone();
-		for (l in lines) {
-			newI.drawLineSegment2D(l, 0x00FFD5);
-		}
-		printImage(newI);
-		end = haxe.Timer.stamp();
-		trace("Simple line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		start = haxe.Timer.stamp();
-		var lines = Vision.houghRay2DDetection(image.clone());
-		for (l in lines) {
-			image.drawRay2D(l, 0x00FFD5);
-		}
-		printImage(image);
-		end = haxe.Timer.stamp();
-		trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		#end
-		});
-		
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG",
+			image -> {
+				printImage(image);
+				#if simple_tests
+				start = haxe.Timer.stamp();
+				printImage(Vision.blackAndWhite(image.clone()));
+				end = haxe.Timer.stamp();
+				trace("Black and white took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(Vision.grayscale(image.clone()));
+				end = haxe.Timer.stamp();
+				trace("Grayscale took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().contrast());
+				end = haxe.Timer.stamp();
+				trace("Contrast took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone());
+				end = haxe.Timer.stamp();
+				trace("Image Cloning took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				#end
+				#if convolve_tests
+				start = haxe.Timer.stamp();
+				printImage(image.clone().convolve(Identity));
+				end = haxe.Timer.stamp();
+				trace("Identity Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().convolve(BoxBlur));
+				end = haxe.Timer.stamp();
+				trace("BoxBlur Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().convolve(RidgeDetection));
+				end = haxe.Timer.stamp();
+				trace("Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().convolve(RidgeDetectionAggresive));
+				end = haxe.Timer.stamp();
+				trace("Aggresive Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().convolve(Sharpen));
+				end = haxe.Timer.stamp();
+				trace("Shaprening Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().convolve(UnsharpMasking));
+				end = haxe.Timer.stamp();
+				trace("Unsharp Masking Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().deepfry());
+				end = haxe.Timer.stamp();
+				trace("Deepfrying took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				#end
+				start = haxe.Timer.stamp();
+				printImage(image.clone().sobelEdgeDiffOperator());
+				end = haxe.Timer.stamp();
+				trace("Sobel Filter took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().sobelEdgeDetection());
+				end = haxe.Timer.stamp();
+				trace("Sobel edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				var hough = Hough.toHoughSpace(Vision.perwittEdgeDetection(image.clone()));
+				printImage(hough.image);
+				end = haxe.Timer.stamp();
+				trace("Hough transform took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(Vision.perwittEdgeDetection(image.clone()));
+				end = haxe.Timer.stamp();
+				trace("Perwitt edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				var canny = Vision.cannyEdgeDetection(image.clone());
+				printImage(canny);
+				end = haxe.Timer.stamp();
+				trace("Canny edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(Vision.nearestNeighborBlur(image.clone(), 1));
+				end = haxe.Timer.stamp();
+				trace("Nearest neighbor blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().gaussianBlur(2, 15));
+				end = haxe.Timer.stamp();
+				trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().mirror());
+				end = haxe.Timer.stamp();
+				#if mirror_flip_tests
+				trace("Image Mirroring took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().flip());
+				end = haxe.Timer.stamp();
+				trace("Image Flipping took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().mirror().flip());
+				end = haxe.Timer.stamp();
+				trace("Image Mirroring & Flipping took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				#end
+				#if feature_detection_tests
+				start = haxe.Timer.stamp();
+				var lines = Vision.simpleLineSegment2DDetection(image.clone(), 3, 30);
+				var newI = image.clone();
+				for (l in lines) {
+					newI.drawLineSegment2D(l, 0x00FFD5);
+				}
+				printImage(newI);
+				end = haxe.Timer.stamp();
+				trace("Simple line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				var lines = Vision.houghRay2DDetection(image.clone());
+				for (l in lines) {
+					image.drawRay2D(l, 0x00FFD5);
+				}
+				printImage(image);
+				end = haxe.Timer.stamp();
+				trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				#end
+			});
+
 		#if draw_tests
 		var image = new Image(250, 250, 0x000000);
 		image.drawLine(12, 53, 54, 15, 0xbd0202);
@@ -163,7 +171,7 @@ class Main {
 		image.drawEllipse(100, 100, 40, 21, 0x9fff9f);
 		printImage(image);
 		#end
-		
+
 		#if simple_tests
 		trace(new Ray2D({x: 0, y: 0}, 1).getPointAtX(8));
 		trace(new Ray2D({x: 0, y: 0}, 1).slope);

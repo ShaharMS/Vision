@@ -38,6 +38,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `blackAndWhitd()`
  - [x] `invert()`
  - [x] `sharpen()`
+ - [x] `deepfry()` 
  - [x] `convolve()`
  - [x] `contrast()`
  - [ ] **`houghRay2DDetection()`**

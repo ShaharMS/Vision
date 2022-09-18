@@ -21,57 +21,61 @@ Main.main = function() {
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.Identity));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Identity Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 55, className : "Main", methodName : "main"});
+		haxe_Log.trace("Identity Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 59, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.BoxBlur));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("BoxBlur Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 59, className : "Main", methodName : "main"});
+		haxe_Log.trace("BoxBlur Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 63, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.RidgeDetection));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 63, className : "Main", methodName : "main"});
+		haxe_Log.trace("Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 67, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.RidgeDetectionAggresive));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Aggresive Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 67, className : "Main", methodName : "main"});
+		haxe_Log.trace("Aggresive Ridge Detection Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 71, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.Sharpen));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Shaprening Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 71, className : "Main", methodName : "main"});
+		haxe_Log.trace("Shaprening Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 75, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.UnsharpMasking));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Unsharp Masking Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 75, className : "Main", methodName : "main"});
+		haxe_Log.trace("Unsharp Masking Convolution took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 79, className : "Main", methodName : "main"});
+		start = HxOverrides.now() / 1000;
+		Main.printImage(vision_Vision.deepfry(vision_ds_Image.clone(image)));
+		end = HxOverrides.now() / 1000;
+		haxe_Log.trace("Deepfrying took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 83, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.sobelEdgeDiffOperator(vision_ds_Image.clone(image)));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Sobel Filter took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 80, className : "Main", methodName : "main"});
+		haxe_Log.trace("Sobel Filter took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 88, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.sobelEdgeDetection(vision_ds_Image.clone(image)));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Sobel edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 84, className : "Main", methodName : "main"});
+		haxe_Log.trace("Sobel edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 92, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		var hough = vision_algorithms_Hough.toHoughSpace(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
 		Main.printImage(hough.image);
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Hough transform took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 89, className : "Main", methodName : "main"});
+		haxe_Log.trace("Hough transform took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 97, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.perwittEdgeDetection(vision_ds_Image.clone(image)));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Perwitt edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 93, className : "Main", methodName : "main"});
+		haxe_Log.trace("Perwitt edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 101, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		var canny = vision_Vision.cannyEdgeDetection(vision_ds_Image.clone(image));
 		Main.printImage(canny);
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 98, className : "Main", methodName : "main"});
+		haxe_Log.trace("Canny edge detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 106, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.nearestNeighborBlur(vision_ds_Image.clone(image),1));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Nearest neighbor blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 102, className : "Main", methodName : "main"});
+		haxe_Log.trace("Nearest neighbor blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 110, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_Vision.gaussianBlur(vision_ds_Image.clone(image),2,15));
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 106, className : "Main", methodName : "main"});
+		haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 114, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		Main.printImage(vision_ds_Image.mirror(vision_ds_Image.clone(image)));
 		end = HxOverrides.now() / 1000;
@@ -517,6 +521,21 @@ vision_Vision.grayscale = function(image) {
 	}
 	return image;
 };
+vision_Vision.sharpen = function(image) {
+	return vision_Vision.convolve(image,vision_ds_Kernal2D.Sharpen);
+};
+vision_Vision.deepfry = function(image,iterations) {
+	if(iterations == null) {
+		iterations = 2;
+	}
+	var _g = 0;
+	var _g1 = iterations;
+	while(_g < _g1) {
+		var i = _g++;
+		image = vision_Vision.sharpen(image);
+	}
+	return image;
+};
 vision_Vision.convolve = function(image,kernal,denominator) {
 	var matrix;
 	switch(kernal._hx_index) {
@@ -647,8 +666,9 @@ vision_Vision.convolve = function(image,kernal,denominator) {
 			vision_ds_Image.setPixel(convolved,x,y,color);
 		}
 	}
-	haxe_Log.trace(flatMatrix.length,{ fileName : "src/vision/Vision.hx", lineNumber : 205, className : "vision.Vision", methodName : "convolve"});
-	return convolved;
+	haxe_Log.trace(flatMatrix.length,{ fileName : "src/vision/Vision.hx", lineNumber : 218, className : "vision.Vision", methodName : "convolve"});
+	image = convolved;
+	return image;
 };
 vision_Vision.sobelEdgeDetection = function(image,threshold) {
 	if(threshold == null) {
@@ -1065,7 +1085,7 @@ vision_Vision.cannyEdgeDetection = function(image,sigma,initialKernalSize,lowThr
 	return vision_algorithms_Canny.applyHysteresis(vision_algorithms_Canny.nonMaxSuppression(vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),initialKernalSize,sigma))),highThreshold,lowThreshold);
 };
 vision_Vision.sobelEdgeDiffOperator = function(image) {
-	return vision_algorithms_Sobel.convolveWithSobelOperator(image);
+	return vision_algorithms_Sobel.convolveWithSobelOperator(vision_Vision.grayscale(vision_ds_Image.clone(image)));
 };
 var vision_algorithms_Canny = function() { };
 vision_algorithms_Canny.__name__ = true;
