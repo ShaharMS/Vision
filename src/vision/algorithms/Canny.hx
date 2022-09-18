@@ -35,37 +35,7 @@ class Canny {
     }
 
     public static function applySobelFilters(image:CannyObject):CannyObject {
-        var filtered = new Image(image.width, image.height);
-        
-        final yFilter = [
-            [-3, 0, 3],
-            [-10, 0, 10],
-            [-3, 0, 3]
-        ], xFilter = [
-            [-3, -10, -3],
-            [ 0,  0,  0],
-            [3, 10, 3]
-        ];
-
-        var ghs = 0, gvs = 0;
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
-                ghs = gvs = 0;
-                var neighbors = getNeighbors(3, x, y, image);
-                for (i in 0...2) {
-                    for (j in 0...2) {
-                        ghs += yFilter[i][j] * neighbors[i][j].to24Bit();
-                        gvs += xFilter[i][j] * neighbors[i][j].to24Bit();
-                    }
-                } 
-                var w = Std.int(Math.sqrt(ghs*ghs+gvs*gvs));
-                var c = new Color(w);
-                filtered.setPixel(x, y, c.grayscale());
-            }
-        }
-
-        return filtered;
-
+        return Vision.sobelEdgeDiffOperator(image);
     }
 
     public static function nonMaxSuppression(image:CannyObject):CannyObject {

@@ -544,7 +544,7 @@ class Vision {
         @return The edge detected image.
 
     **/
-    public static function cannyEdgeDetection(image:Image, sigma:Float = 1, initialKernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.4, highThreshold:Float = 0.6):Image {
+    public static function cannyEdgeDetection(image:Image, sigma:Float = 1, initialKernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05, highThreshold:Float = 0.2):Image {
         var cannyObject:CannyObject = image.clone();
         return cannyObject.grayscale().applyGaussian(initialKernalSize, sigma).applySobelFilters().nonMaxSuppression().applyHysteresis(highThreshold, lowThreshold);
     }
@@ -591,7 +591,7 @@ class Vision {
      * |Status|Image|
      * |---|---|
      * |before filtering: |![Pre-Processed](https://i.stack.imgur.com/Bnxa6.jpg)|
-     * |after filtering:|![Post-Processed](https://i.stack.imgur.com/WUOen.jpg)|
+     * |after filtering:|![Post-Processed](https://i.stack.imgur.com/o54O0.png)|
      * 
      * @param image The image to be operated on
      * @return A new image, containing the gradients of the edges as whitened pixels.

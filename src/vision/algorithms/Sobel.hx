@@ -11,52 +11,66 @@ using vision.tools.MathTools;
  * by [Shahar Marcus](https://www.github.com/ShaharMS)
  */
 class Sobel {
-    
-    public static final sobelX = [
-        [-1,0,1],
-        [-2,0,2],
-        [-1,0,1]
-    ];
-
-    public static final sobelY = [
-        [-1,-2,-1],
-        [0,0,0],
-        [1,2,1]
-    ];
 
     public static function convolveWithSobelOperator(image:Image) {
-        var filtered = new Image(image.width, image.height);
-        
-        final yFilter = [
-            [-3, 0, 3],
-            [-10, 0, 10],
-            [-3, 0, 3]
-        ], xFilter = [
-            [-3, -10, -3],
-            [ 0,  0,  0],
-            [3, 10, 3]
-        ];
 
-        var ghs = 0., gvs = 0.;
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
-                ghs = gvs = 0;
-                var neighbors = getNeighbors(3, x, y, image);
-                for (i in 0...2) {
-                    for (j in 0...2) {
-                        ghs += yFilter[i][j] * neighbors[i][j].to24Bit();
-                        gvs += xFilter[i][j] * neighbors[i][j].to24Bit();
-                    }
-                } 
-                var w = Std.int(Math.sqrt(ghs*ghs+gvs*gvs));
-                var c = new Color(w);
-                filtered.setPixel(x, y, c.grayscale());
+        var x = image.width;
+        var y = image.height;
+
+        var  maxGval = 0;
+        var edgeColors:Array<Array<Int>> = [];
+        var  maxGradient = -1;
+
+        for (i in 1...x - 1) {
+            for (j in 1...y - 1) {
+
+                var val00 = ImageTools.grayscalePixel(image.getPixel(i - 1, j - 1)).red;
+                var val01 = ImageTools.grayscalePixel(image.getPixel(i - 1, j)).red;
+                var val02 = ImageTools.grayscalePixel(image.getPixel(i - 1, j + 1)).red;
+                var val10 = ImageTools.grayscalePixel(image.getPixel(i, j - 1)).red;
+                var val11 = ImageTools.grayscalePixel(image.getPixel(i, j)).red;
+                var val12 = ImageTools.grayscalePixel(image.getPixel(i, j + 1)).red;
+                var val20 = ImageTools.grayscalePixel(image.getPixel(i + 1, j - 1)).red;
+                var val21 = ImageTools.grayscalePixel(image.getPixel(i + 1, j)).red;
+                var val22 = ImageTools.grayscalePixel(image.getPixel(i + 1, j + 1)).red;
+
+                var gx =  ((-3 * val00) + (0 * val01) + (3 * val02)) 
+                        + ((-10 * val10) + (0 * val11) + (10 * val12))
+                        + ((-3 * val20) + (0 * val21) + (3 * val22));
+
+                var gy =  ((-3 * val00) + (-10 * val01) + (-3 * val02))
+                        + ((0 * val10) + (0 * val11) + (0 * val12))
+                        + ((3 * val20) + (10 * val21) + (3 * val22));
+
+                var gval = Math.sqrt((gx * gx) + (gy * gy));
+                var g = Std.int(gval);
+
+                if(maxGradient < g) {
+                    maxGradient = g;
+                }
+
+                if (edgeColors[i] == null) edgeColors[i] = [];
+                edgeColors[i][j] = g;
             }
         }
 
-        return filtered;
+        var scale = 255.0 / maxGradient;
+
+        var edgeImage = new Image(image.width, image.height);
+        for (i in 1...x - 1) {
+            for (j in 1...y - 1) {
+                var edgeColor = edgeColors[i][j];
+                edgeColor = Std.int(edgeColor * scale);
+                edgeColor = 0xff000000 | (edgeColor << 16) | (edgeColor << 8) | edgeColor;
+
+                edgeImage.setPixel(i, j, edgeColor);
+            }
+        }
+
+        return edgeImage;
     }
 
+    
     static function getNeighbors(kernalSize:Int, x:Int, y:Int, image:Image):Array<Array<Color>> {
         var neighbors:Array<Array<Color>> = [];
         for (i in 0...kernalSize + 1) neighbors[i] = [];
