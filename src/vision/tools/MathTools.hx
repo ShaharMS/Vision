@@ -16,14 +16,14 @@ class MathTools {
 	public static var PI_OVER_2(default, never):Float = Math.PI / 2;
 
 	public static function distanceFromPointToRay2D(point:Point2D, line:Ray2D) {
-		var cos:Float = Math.cos(line.radians);
-		var sin:Float = Math.sin(line.radians);
+		var cos:Float = cos(line.radians);
+		var sin:Float = sin(line.radians);
 		var x0:Float = line.point.x;
 		var y0:Float = line.point.y;
 		var x1:Float = point.x;
 		var y1:Float = point.y;
 		var numerator:Float = (x0 - x1) * cos + (y0 - y1) * sin;
-		var denominator:Float = Math.sqrt(Math.pow(x0 - x1, 2) + Math.pow(y0 - y1, 2));
+		var denominator:Float = sqrt(pow(x0 - x1, 2) + pow(y0 - y1, 2));
 		var distance:Float = numerator / denominator;
 		return distance;
 	}
@@ -32,7 +32,7 @@ class MathTools {
 	{
 	
 	  var ch = (line.start.y - line.end.y) * point.x + (line.end.x - line.start.x) * point.y + (line.start.x * line.end.y - line.end.x * line.start.y);
-	  var del = Math.sqrt(Math.pow(line.end.x - line.start.x, 2) + Math.pow(line.end.y - line.start.y, 2));
+	  var del = sqrt(pow(line.end.x - line.start.x, 2) + pow(line.end.y - line.start.y, 2));
 	  var d = ch / del;
 	  return d;
 	}
@@ -46,27 +46,27 @@ class MathTools {
 		var distance3:Float = distanceFromPointToLineSegment2D(line2, line1.start);
 		var distance4:Float = distanceFromPointToLineSegment2D(line2, line1.end);
 
-		var distance:Float = MathTools.min(distance1, distance2, distance3, distance4);
+		var distance:Float = min(distance1, distance2, distance3, distance4);
 		return distance;
 
 	}
 
 	public static function angleFromPointToLine(point:Point2D, line:LineSegment2D):Float {
-		var angle:Float = Math.atan2(line.end.y - line.start.y, line.end.x - line.start.x);
-		var angle2:Float = Math.atan2(point.y - line.start.y, point.x - line.start.x);
+		var angle:Float = atan2(line.end.y - line.start.y, line.end.x - line.start.x);
+		var angle2:Float = atan2(point.y - line.start.y, point.x - line.start.x);
 		return angle2 - angle;
 	}
 
 	public static function radiansFromPointToPoint(point1:Point2D, point2:Point2D) {
 		var x:Float = point2.x - point1.x;
 		var y:Float = point2.y - point1.y;
-		return Math.atan2(y, x);
+		return atan2(y, x);
 	}
 
 	public static function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
 		var x:Float = point2.x - point1.x;
 		var y:Float = point2.y - point1.y;
-		return Math.sqrt(x * x + y * y);
+		return sqrt(x * x + y * y);
 	}
 
 	public static function intersectionBetweenLineSegments2D(line1:LineSegment2D, line2:LineSegment2D):Point2D {
@@ -95,12 +95,12 @@ class MathTools {
 	public static function intersectionBetweenRays2D(ray:Ray2D, ray2:Ray2D):Point2D {
 		var line1StartX = ray.point.x;
 		var line1StartY = ray.point.y;
-		var line1EndX = ray.point.x + Math.cos(ray.radians) * 1000;
-		var line1EndY = ray.point.y + Math.sin(ray.radians) * 1000;
+		var line1EndX = ray.point.x + cos(ray.radians) * 1000;
+		var line1EndY = ray.point.y + sin(ray.radians) * 1000;
 		var line2StartX = ray2.point.x;
 		var line2StartY = ray2.point.y;
-		var line2EndX = ray2.point.x + Math.cos(ray2.radians) * 1000;
-		var line2EndY = ray2.point.y + Math.sin(ray2.radians) * 1000;
+		var line2EndX = ray2.point.x + cos(ray2.radians) * 1000;
+		var line2EndY = ray2.point.y + sin(ray2.radians) * 1000;
 		// if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
 		var denominator, a, b, numerator1, numerator2, result:Point2D = null;
 		denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
@@ -162,7 +162,7 @@ class MathTools {
 	}
 
 	public static inline function slopeToDegrees(slope:Float) {
-		return atan(slope) * 180 / Math.PI;
+		return atan(slope) * 180 / PI;
 	}
 
 	public static inline function slopeToRadians(slope:Float) {
@@ -174,11 +174,11 @@ class MathTools {
 	}
 
 	public static inline function degreesToRadians(degrees:Float) {
-		return degrees * Math.PI / 180;
+		return degrees * PI / 180;
 	}
 
 	public static inline function radiansToDegrees(radians:Float) {
-		return radians * 180 / Math.PI;
+		return radians * 180 / PI;
 	}
 
 	public static inline function radiansToSlope(radians:Float) {
@@ -187,20 +187,20 @@ class MathTools {
 
 	// For fuck sake do not fuckin use this i will come to your house
 	public static inline function cotan(radians:Float):Float {
-		return 1 / Math.tan(radians);
+		return 1 / tan(radians);
 	}
 
 	public static inline function cosec(radians:Float):Float {
-		return 1 / Math.sin(radians);
+		return 1 / sin(radians);
 	}
 
 	public static inline function sec(radians:Float):Float {
-		return 1 / Math.cos(radians);
+		return 1 / cos(radians);
 	}
 
 	public static function turnicate(num:Float, numbersAfterDecimal:Int):Float {
-		var multiplier:Float = Math.pow(10, numbersAfterDecimal);
-		return Math.round(num * multiplier) / multiplier;
+		var multiplier:Float = pow(10, numbersAfterDecimal);
+		return round(num * multiplier) / multiplier;
 	}
 
 	public static function min(...values:Float) {
