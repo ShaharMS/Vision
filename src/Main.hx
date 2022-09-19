@@ -140,6 +140,7 @@ class Main {
 				printImage(newI);
 				end = haxe.Timer.stamp();
 				trace("Simple line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				#if true
 				start = haxe.Timer.stamp();
 				var lines = Vision.houghRay2DDetection(image.clone());
 				for (l in lines) {
@@ -148,6 +149,7 @@ class Main {
 				printImage(image);
 				end = haxe.Timer.stamp();
 				trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				#end
 				#end
 			});
 

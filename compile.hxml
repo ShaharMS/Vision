@@ -7,5 +7,4 @@
 --dce full
 --js bin/main.js
 
---define convolve_tests
---define simple_tests
+--define feature_detection_tests

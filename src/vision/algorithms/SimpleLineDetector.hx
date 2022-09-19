@@ -11,75 +11,48 @@ using vision.tools.MathTools;
 
 class SimpleLineDetector {
 	
-	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float):Array<LineSegment2D> {
-		var yArr = [0, 1, -1, 2, -2];
-		var xArr = [0, 1, -1, 2, -2];
-		var lines:Array<LineSegment2D> = [];
-		if (image[point.x] == null || image[point.x][point.y] == null || image[point.x][point.y] == 0) return null;
-
-		//first, were going to detect the general direction the line goes in - this is used to detect crossed lines.
-		function findPreference() {
-			for (prefX in xArr) {
-				for (prefY in yArr) {
-					if (prefX == 0 && prefY == 0) continue;
-					if (!image.hasPixel(point.x + prefX, point.y + prefY)) continue;
-					if (image.getPixel(point.x + prefX, point.y + prefY).to24Bit() == Color.WHITE) {
-						var line = spawnLineFinder(image, point, new IntPoint2D(prefX, prefY));
-						lines.push(line);
-					}
-				}
-			}
-		}
-		findPreference();
-		return lines;
-	}
-
-	public static function spawnLineFinder(image:Image, point:IntPoint2D, preferredDirection:IntPoint2D):LineSegment2D {
+	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float, preferTTB = false, preferRTL = false):LineSegment2D {
 		var startX = point.x, startY = point.y;
-		var xs = [0, -1, 1];
-		var ys = [0, -1, 1];
-		if (preferredDirection.x > 0) {
-			xs.remove(-1);
-		} else if (preferredDirection.x < 0) {
-			xs.remove(1);
-		} else {
-			xs.remove(-1);
-		}
-
-		if (preferredDirection.y > 0) {
-			ys.remove(-1);
-		} else if (preferredDirection.y < 0) {
-			ys.remove(1);
-		} else {
-			ys.remove(-1);
-		}
-
+		var yArr = preferTTB ? [0, 1, 2, 3] :[0, -1, -2, -3];
+		var xArr = preferRTL ? [0, -1, -2, -3] : [0, 1, 2, 3];
+		if (image[point.x] == null || image[point.x][point.y] == null || image[point.x][point.y] == 0) return null;
+		
+		//now, were going to start looking for points around the point to find the entire line.
+		var prev:Point2D = null;
+		var prev2:Point2D = null;
 		function expand() {
-			final X = preferredDirection.x, Y = preferredDirection.y;
-			if (image[point.x + X] == null || image[point.x + X][point.y + Y] == null) {
-				return;
-			}
-			if (image.getPixel(point.x + X, point.y + Y).to24Bit() == Color.WHITE) {
-				point.x = point.x + X;
-				point.y = point.y + Y;
-				expand();
-			} else {
-				//check if the pixel's neighbors can continue the line, and keep the direction
-				for (x in xs) {
-					for (y in ys) {
-						if (x == 0 && y == 0) continue;
-						if (image.hasPixel(point.x + x, point.y + y) && image.getPixel(point.x + x, point.y + y).to24Bit() == Color.WHITE) {
-							point.x = point.x + x;
-							point.y = point.y + y;
-							expand();
+			for (X in xArr) {
+				for (Y in yArr) {
+					if (X == 0 && Y == 0 || image[point.x + X] == null || image[point.x + X][point.y + Y] == null) continue;
+					if (image.getPixel(point.x + X, point.y + Y).to24Bit() == Color.WHITE) {
+						point.x = point.x + X;
+						point.y = point.y + Y;
+
+						//used to prevent recursion
+						if (prev == null) {
+							prev = {x: point.x, y: point.y};
+						} else {
+							prev2 = {x: prev.x, y: prev.y};
+							prev = {x: point.x, y: point.y};
 						}
+						if ((if (preferTTB) Y else X) == 0) {
+							if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
+								return;
+							}
+							trace(point, prev, prev2);
+						}
+						expand();
 					}
 				}
 			}
 		}
 		expand();
-
-		return  new LineSegment2D(point, {x: startX, y: startY});
+		var line = new LineSegment2D({x: startX, y: startY}, point);
+		
+		if (line.length > minLineLength){
+			return line;
+		} 
+		return null;
 	}
 
 	public static function getDistanceFromPointToLine(line:LineSegment2D, pointX:Int, pointY:Int):Float {
@@ -94,8 +67,9 @@ class SimpleLineDetector {
 		Returns the percentage of the line that covers an actual line in the given,
 		**Black And White** image.
 	**/
-	public static function lineCoveragePercentage(image:Image, line:LineSegment2D) {
+	public static function lineCoveragePercentage(image:Image, line:LineSegment2D):Float {
 		var coveredPixels = 0, totalPixels = 0;
+		if (line == null) return 0;
 		var p1 = IntPoint2D.fromPoint2D(line.start);
         var p2 = IntPoint2D.fromPoint2D(line.end);
         var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;

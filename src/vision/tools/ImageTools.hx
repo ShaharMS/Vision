@@ -24,7 +24,7 @@ import vision.ds.Image;
 		- `darkenPixel()`
 		- `lightenPixel()`
 		- `invertPixel()`
-		- `grayscalePixel()`
+		- [x] `grayscalePixel()`
 		- `blurPixel()`
 		- `blurPixels()`
 		- `replaceColor()`
@@ -72,7 +72,6 @@ class ImageTools {
 			trace(imgElement.width, imgElement.height, imgElement.naturalWidth, imgElement.naturalHeight);
 			if (image == null) image = new Image(imgElement.width, imgElement.height);
 			var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
-			var data = imageData.data;
 			var i = 0;
             while (i < imageData.data.length) {
                 var r = imageData.data[i + 0];

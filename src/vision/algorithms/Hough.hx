@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import format.agal.Data.RegType;
 import vision.tools.MathTools;
 import haxe.ds.BalancedTree;
 import vision.ds.hough.HoughAccumulator;
@@ -86,23 +87,24 @@ class Hough {
 
 		@return A `HoughSpace` object, containing the accumulator, an image representation of the accumulator, and all the local maximums found in the accumulator.
 	**/
-	public static function toHoughSpaceWithRays(image:Image, threshold:Int = 200, ?numLocalMaxima:Int = null):HoughSpace {
+	public static function toHoughSpaceWithRays(image:Image, threshold:Int = 35, ?numLocalMaxima:Int = null):HoughSpace {
 		
-		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
 		var space = toHoughSpace(image);
 
 		var accum = space.accumulator;
+		trace(accum);
 		var maximas:Array<Point2D> = [];
 		var rays:Array<Ray2D> = [];
 	
-		for (point in accum.cellIterator(threshold)) {
+		for (point in accum.cellIterator(50)) {
+			trace(point);
 			var theta = degreesToRadians(point.y);
 			var rho = point.x;
-			var m = -cotan(theta);
 			var b = rho * cosec(theta);
-			rays.push(new Ray2D({x: 0, y: b}, m));
+			rays.push(new Ray2D({x: 0, y: b}, -cotan(theta)));
 		}
 
+		trace(rays);
 		space.rays = rays;
 		space.maximums = maximas;
 		return space;

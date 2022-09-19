@@ -299,7 +299,7 @@ class Vision {
     **/
     public static function houghRay2DDetection(image:Image, threshold:Int = 200, ?maxRayCount:Null<Int> = null):Array<Ray2D> {
         
-        var edges = sobelEdgeDetection(image.clone(), threshold); //TODO: #3 switch to canny edge detection
+        var edges = cannyEdgeDetection(image.clone());
         var houghSpace = Hough.toHoughSpaceWithRays(edges, threshold, maxRayCount);
         return houghSpace.rays;
     }
@@ -612,7 +612,7 @@ class Vision {
     **/
     public static function cannyEdgeDetection(image:Image, sigma:Float = 1, initialKernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05, highThreshold:Float = 0.2):Image {
         var cannyObject:CannyObject = image.clone();
-        return cannyObject.grayscale().applyGaussian(initialKernalSize, sigma).applySobelFilters().nonMaxSuppression().applyHysteresis(highThreshold, lowThreshold);
+        return blackAndWhite(cannyObject.grayscale().applyGaussian(initialKernalSize, sigma).applySobelFilters().nonMaxSuppression().applyHysteresis(highThreshold, lowThreshold), 40);
     }
 
     /**
@@ -627,19 +627,26 @@ class Vision {
     **/
     public static function simpleLineSegment2DDetection(image:Image, minLineGap:Int = 2, minLineLength:Float = 10):Array<LineSegment2D> {
         var lines:Array<LineSegment2D> = [];
-        var edgeDetected = blackAndWhite(image.clone(), 1);
+        var edgeDetected = cannyEdgeDetection(image);
 
         for (x in 0...image.width) {
             for (y in 0...image.height) {
                 var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength);
-                lines.concat(line);
+                lines.push(line);
+                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true);
+                lines.push(line2);
+                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, false, true);
+                lines.push(line3);
+                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true, true);
+                lines.push(line4);
             }
         }
         trace(lines);
         var actualLines:Array<LineSegment2D> = [];
         for (l in lines) {
-            var coverage = SimpleLineDetector.lineCoveragePercentage(edgeDetected, l);
-            if (coverage > 90) actualLines.push(l);
+            if (l == null) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 40) continue;
+            actualLines.push(l);
         }
         return actualLines;
     }
