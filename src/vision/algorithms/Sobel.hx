@@ -17,9 +17,9 @@ class Sobel {
         var x = image.width;
         var y = image.height;
 
-        var  maxGval = 0;
+        var maxGval = 0;
         var edgeColors:Array<Array<Int>> = [];
-        var  maxGradient = -1;
+        var maxGradient = -1;
 
         for (i in 1...x - 1) {
             for (j in 1...y - 1) {

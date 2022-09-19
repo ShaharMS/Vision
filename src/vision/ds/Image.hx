@@ -576,6 +576,24 @@ abstract Image(Matrix<Null<Color>>) {
         return s;
     }
 
+    public function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
+        for (x in 0...this.length) {
+            for (y in 0...this[x].length) {
+                callback(x, y, getPixel(x, y));
+            }
+        }        
+    }
+
+    public function iterator():Iterator<Pixel> {
+        var pixels:Array<Pixel> = [];
+        for (x in 0...this.length) {
+            for (y in 0...this[x].length) {
+                pixels.push({x: x, y: y, color: getPixel(x, y)});
+            }
+        } 
+        return pixels.iterator();
+    }
+
     //--------------------------------------------------------------------------
     // Operators
     //--------------------------------------------------------------------------

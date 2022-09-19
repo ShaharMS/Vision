@@ -128,6 +128,50 @@ class Vision {
         return image;
     }
 
+    /**
+     * Limits the range of colors on an image, by resizing the range of a given color channel, according to the values
+     * of `rangeStart`'s and `rangeEnd`'s color chanels.
+     * 
+     * ### How Does this work?
+     * 
+     * 1. before calculating anything, you get the min & max values of each color channel from the two given colors.
+     * For example, if `rangeStart` is `0xFF05F243` and `rangeEnd` is `0x239A6262`, the min/max values of the `red` channel 
+     * will be set to (`0x05`, `0x9A`), the min/max values of the green channel will be set to (`0x62`, `0xF2`)...
+     * 2. Loop over the pixels, and calculate the ratios between the the pixel's color channel's and the values (`0x00`, `0xFF`)
+     * 3. Now, calculate the step between each color value of the new range, by dividing each channel's (`max` - `min`) by `255`. the
+     * default step between each color value is `1` by default (`(0xFF - 0x00) / 0xFF = 1`).
+     * 4. Loop over the channels, and multiply their value by the value of the new `step` (for example, 4
+     * `newStep = (0x88 - 0x00) / 0xFF = 0.5`, `color.red = color.red * newStep`);
+     * 5. enjoy your normalized image :)
+     * 
+     * 
+     * @param image The image to be normalized
+     * @param rangeStart The start of the range of channels. By default, this value is `0x00000000`
+     * @param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
+     * @return The normalized image. The original copy is not preserved.
+     */
+    public static function normalize(image:Image, rangeStart:Color, rangeEnd:Color) {
+        var max:Color = 0x0;
+        var min:Color = 0x0;
+        var step:Color = 0x0;
+        max.red = cast Math.max(rangeStart.red, rangeEnd.red);
+        min.red = cast Math.min(rangeStart.red, rangeEnd.red);
+        max.green = cast Math.max(rangeStart.green, rangeEnd.green);
+        min.green = cast Math.min(rangeStart.green, rangeEnd.green);
+        max.blue = cast Math.max(rangeStart.blue, rangeEnd.blue);
+        min.blue = cast Math.min(rangeStart.blue, rangeEnd.blue);
+        step.redFloat = (max.red - min.red) / 0xFF;
+        step.blueFloat = (max.blue - min.blue) / 0xFF;
+        step.greenFloat = (max.green - min.green) / 0xFF;
+
+        image.forEachPixel((x, y, color) -> {
+            color.redFloat *= step.redFloat;
+            color.blueFloat *= step.blueFloat;
+            color.greenFloat *= step.greenFloat;
+            image.setPixel(x, y, color);
+        });
+        return image;
+    }
 
     /**
         manipulates the image's pixel data by passing the pixels' value through a kernal.

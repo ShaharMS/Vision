@@ -41,6 +41,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `deepfry()` 
  - [x] `convolve()`
  - [x] `contrast()`
+ - [x] `normalize()`
  - [ ] **`houghRay2DDetection()`**
  - [ ] **`houghLineSegment2DDetection()`**
  - [ ] `simpleLineDetector()` **needs fixing**
@@ -61,18 +62,18 @@ Here is a roadmap of all features added/planned for the future:
     - [ ] *Circle finder*
 
  - Gaussian
-   - [x] 3x3 kernal generation
-   - [x] 5x5 kernal generation
-   - [x] 7x7 kernal generation
-   - [x] 9x9 kernal generation
-   - [x] custom size kernal generation
+    - [x] 3x3 kernal generation
+    - [x] 5x5 kernal generation
+    - [x] 7x7 kernal generation
+    - [x] 9x9 kernal generation
+    - [x] custom size kernal generation
 
  - Canny
-   - [x] grayscale
-   - [x] gaussian blur
-   - [x] Sobel filter (needs tweaking)
-   - [x] non-max suppression 
-   - [x] hysteresis
+    - [x] grayscale
+    - [x] gaussian blur
+    - [x] Sobel filter (needs tweaking)
+    - [x] non-max suppression 
+    - [x] hysteresis
   
  - Sobel
     - [x] Sobel filter
@@ -111,6 +112,8 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `setImagePortion()`
    - [x] `copyPixel()`
  - Manipulation:
+   - [x] `forEachPixel()`
+   - [x] `iterator()`
    - [x] `mirror()`  
    - [x] `flip()`
    - [ ] `resizeNearestNeighbor()`
