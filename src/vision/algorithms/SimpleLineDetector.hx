@@ -28,7 +28,7 @@ class SimpleLineDetector {
 						point.x = point.x + X;
 						point.y = point.y + Y;
 
-						//used to prevent recursion
+						//used to prevent infinite recursion
 						if (prev == null) {
 							prev = {x: point.x, y: point.y};
 						} else {

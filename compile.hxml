@@ -7,5 +7,5 @@
 --dce full
 --js bin/main.js
 
-#--define feature_detection_tests
---define simple-tests
+--define feature_detection_tests
+#--define simple-tests

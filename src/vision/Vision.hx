@@ -297,7 +297,7 @@ class Vision {
         @param threshold The threshold for detecting lines. This exists because we need to detect edges before applying the transformation, and this threshold will be used as the argument for the Perwitt edge detector.
         @param maxRayCount The maximum number of rays to be detected. Unless you have a very large image, or a good reason, this should remain unset.
     **/
-    public static function houghRay2DDetection(image:Image, threshold:Int = 200, ?maxRayCount:Null<Int> = null):Array<Ray2D> {
+    public static function houghRay2DDetection(image:Image, threshold:Int = 70, ?maxRayCount:Null<Int> = null):Array<Ray2D> {
         
         var edges = cannyEdgeDetection(image.clone());
         var houghSpace = Hough.toHoughSpaceWithRays(edges, threshold, maxRayCount);

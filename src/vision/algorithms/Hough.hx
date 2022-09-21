@@ -96,12 +96,12 @@ class Hough {
 		var maximas:Array<Point2D> = [];
 		var rays:Array<Ray2D> = [];
 	
-		for (point in accum.cellIterator(50)) {
-			trace(point);
-			var theta = degreesToRadians(point.y);
+		for (point in accum.cellIterator(threshold)) {
+			var thetaDeg = point.y;
 			var rho = point.x;
-			var b = rho * cosec(theta);
-			rays.push(new Ray2D({x: 0, y: b}, -cotan(theta)));
+			var tempRay = new Ray2D({x: 0, y: 0}, null, thetaDeg);
+			var p = tempRay.findPointWithDistance(0, rho);
+			rays.push(new Ray2D(p, null, thetaDeg + 90));
 		}
 
 		trace(rays);
