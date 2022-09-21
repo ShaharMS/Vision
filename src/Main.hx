@@ -186,6 +186,8 @@ class Main {
 		trace(new Ray2D({x: 0, y: 0}, 1).getPointAtY(8));
 		trace(new Ray2D({x: 0, y: 0}, 1).yIntercept);
 		trace(new Ray2D({x: 0, y: 0}, 1).xIntercept);
+		trace(new Ray2D({x: 0, y: 0}, 1).findPointWithDistance(0, Math.sqrt(2) * 5, true));
+		trace(new Ray2D({x: 0, y: 0}, 1).findPointWithDistance(0, Math.sqrt(2) * 5, false));
 		var queue = new Queue<Int>();
 		queue.enqueue(0);
 		queue.enqueue(1);

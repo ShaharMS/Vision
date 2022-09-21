@@ -78,17 +78,41 @@ class Ray2D {
         return new Ray2D(point1, s);
     }
 
-    public function getPointAtX(x:Int):Point2D {
+    public function getPointAtX(x:Float):Point2D {
         //you have the slope, and the x value, find the y value
         return new Point2D(x, slope * x + yIntercept);
     }
 
-    public function getPointAtY(y:Int):Point2D {
+    public function getPointAtY(y:Float):Point2D {
         //you have the slope, and the y value, find the x value
         return new Point2D((y - yIntercept) / slope, y);
     }
 
     public function intersect(ray:Ray2D):Point2D {
         return MathTools.intersectionBetweenRays2D(this, ray);
+    }
+
+    /**
+     * Gets the point on `this` ray, which is `distance` points away
+     * from `start`.
+     * 
+     * In order to avoid returning two points (since
+     * any point on the ray has 2 points with the exact same distance from it),
+     * you have the `goPositive` value.
+     * 
+     * 
+     * @param startXPos The `x` position to start from.
+     * @param distance The distance from `start` to the resulting point.
+     * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
+     */
+    public function findPointWithDistance(startXPos:Float, distance:Float, goPositive:Bool = true) {
+        // Were going to step one point to the right, and chek how much distance was covered.
+        // After checking, were going to devide distance with the distance between start to start(y + 1)
+        // Make sure to not surpass `distance`
+        distance = MathTools.abs(distance);
+        var start = getPointAtX(startXPos);
+        var step = MathTools.distanceBetweenPoints(getPointAtX(start.y + 1), start);
+        var diff = distance / step;
+        return getPointAtY(start.y + if (goPositive) diff else -diff);
     }
 }
