@@ -3,14 +3,14 @@ Cross framework, cross platform computer vision library for Haxe.
 
 The goal of this library is to provide computer vision functionality to Haxe projects, but naturally:
 
- - [Usage](https://github.com/ShaharMS/Vision/edit/main/README.md#usage)
+ - [Structure](https://github.com/ShaharMS/Vision/edit/main/README.md#structure)
  - [Tutorials](https://github.com/ShaharMS/Vision/edit/main/README.md#tutorials)
  - [About](https://github.com/ShaharMS/Vision/edit/main/README.md#about)
  - [Roadmap](https://github.com/ShaharMS/Vision/edit/main/README.md#roadmap)
  - [Define List](https://github.com/ShaharMS/Vision/edit/main/README.md#define-list)
 
 
-## Usage
+## Structure
 
 This Library is organized into 4 subfolders, and one important file:
 
