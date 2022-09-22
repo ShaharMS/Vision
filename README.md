@@ -3,6 +3,11 @@ Cross framework, cross platform computer vision library for Haxe.
 
 The goal of this library is to provide computer vision functionality to Haxe projects, but naturally:
 
+ - [Usage](https://github.com/ShaharMS/Vision/edit/main/README.md#usage)
+ - [Tutorials](https://github.com/ShaharMS/Vision/edit/main/README.md#tutorials)
+ - [About](https://github.com/ShaharMS/Vision/edit/main/README.md#about)
+ - [Roadmap](https://github.com/ShaharMS/Vision/edit/main/README.md#roadmap)
+
 ### What Does That Mean?
 
 Basically, if you're using HaxeFlixel for example, you should be able to easily use an FlxSprite as
