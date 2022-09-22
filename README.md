@@ -31,6 +31,31 @@ rid of them, define `vision_quiet`.**
 
 ## Tutorials
 
+For more tutorials (or further details abput the tutorials here) check out the links below:
+
+ - [`Vision` Tutorials On The Haxe Learning Center](spacebubble.io/haxe/?name=Vision)
+
+#### Creating an image
+
+Create a blank image for drawing:
+```haxe
+var image = new Image(200, 300, Color.WHITE); //creates a new, 200x300 image with a white background
+```
+
+Drawing:
+```haxe
+image.setPixel(10, 35, 0xff3204);
+image.drawLine(1,1, 34, 67, Color.LIME);
+```
+
+Add that image to the screen (available in platforms & libraries that support drawing on screen):
+```haxe
+using vision.tools.ImageTools;
+
+//...
+
+image.addToScreen(); //alternatively, you can do - ImageTools.addToScreen(image)
+```
 
 
 ## About 
