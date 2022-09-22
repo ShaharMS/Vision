@@ -7,6 +7,23 @@ The goal of this library is to provide computer vision functionality to Haxe pro
  - [Tutorials](https://github.com/ShaharMS/Vision/edit/main/README.md#tutorials)
  - [About](https://github.com/ShaharMS/Vision/edit/main/README.md#about)
  - [Roadmap](https://github.com/ShaharMS/Vision/edit/main/README.md#roadmap)
+ - [Define List](https://github.com/ShaharMS/Vision/edit/main/README.md#define-list)
+
+
+## Usage
+
+This Library is organized into 4 subfolders, and one important file:
+
+ - **`ds`** - contains Vision's data types. Some functions &
+Features require different return types which aren't basic - such as lines, rays or points.
+Those can be found inside this folder.
+ - **`tools`** - contains classes that extend the functionality of certain aspects of the library.
+For example, `MathTools` is a superset of the `Math` class from the standard library, and also adds many features related to finding data related to lines, rays and points.
+ - **`algorithms`** - contains every complex algorithm this library uses. They're all contained in one folder to help you learn from them :). **If you feel like some algorithms 
+are lacking/have unclear documentation, please open an issue about it**
+ - **`exceptions`** - contains the errors usually thrown by Vision. **Notice - those errors are present just to let you know if you did something unexpected. If you want to get 
+rid of them, define `vision_quiet`.**
+ - **`Vision.hx`** - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the algorithms class, since those are less likely to break compatibility, and are usually more concise.
 
 ### What Does That Mean?
 
