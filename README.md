@@ -1,4 +1,5 @@
 # Vision
+
 Cross framework, cross platform computer vision library for Haxe.
 
 The goal of this library is to provide computer vision functionality to Haxe projects, but naturally:
@@ -8,6 +9,7 @@ The goal of this library is to provide computer vision functionality to Haxe pro
  - [About](https://github.com/ShaharMS/Vision/edit/main/README.md#about)
  - [Roadmap](https://github.com/ShaharMS/Vision/edit/main/README.md#roadmap)
  - [Define List](https://github.com/ShaharMS/Vision/edit/main/README.md#define-list)
+
 
 
 ## Structure
@@ -24,6 +26,16 @@ are lacking/have unclear documentation, please open an issue about it**
  - **`exceptions`** - contains the errors usually thrown by Vision. **Notice - those errors are present just to let you know if you did something unexpected. If you want to get 
 rid of them, define `vision_quiet`.**
  - **`Vision.hx`** - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the algorithms class, since those are less likely to break compatibility, and are usually more concise.
+
+
+
+## Tutorials
+
+
+
+## About 
+
+Lorem ipsum Dolor sit amet
 
 ### What Does That Mean?
 
@@ -44,7 +56,9 @@ One of the things I can't stand with libraries similar to this one is the lack o
 
 If you see some code that you think is not understandable, or some place that lacks documentation, or even inaccurate/unclear documentation, please open an issue about it, and I'd try to resolve it asap ;).
 
-### Roadmap
+
+
+## Roadmap
 
 Here is a roadmap of all features added/planned for the future:
 
@@ -143,7 +157,8 @@ Here is a roadmap of all features added/planned for the future:
    - [ ] `resizeBicubic()`
 
 
-### Define List:
+
+## Define List:
 
 | Define | Meaning | Versions |
 | :---: | --- | :---: |
