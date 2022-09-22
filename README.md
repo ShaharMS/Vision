@@ -35,7 +35,7 @@ rid of them, define `vision_quiet`.**
 
 ## About 
 
-Lorem ipsum Dolor sit amet
+The goal of this library is to provide computer vision functionality to Haxe projects, but naturally:
 
 ### What Does That Mean?
 
