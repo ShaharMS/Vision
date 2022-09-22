@@ -52,9 +52,6 @@ Main.main = function() {
 		end = HxOverrides.now() / 1000;
 		haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 118, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
-		Main.printImage(vision_ds_Image.mirror(vision_ds_Image.clone(image)));
-		end = HxOverrides.now() / 1000;
-		start = HxOverrides.now() / 1000;
 		var lines = vision_Vision.simpleLineSegment2DDetection(vision_ds_Image.clone(image),3,30);
 		var newI = vision_ds_Image.clone(image);
 		var _g = 0;
@@ -65,7 +62,19 @@ Main.main = function() {
 		}
 		Main.printImage(newI);
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 142, className : "Main", methodName : "main"});
+		haxe_Log.trace("Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 139, className : "Main", methodName : "main"});
+		start = HxOverrides.now() / 1000;
+		var lines = vision_Vision.simpleLineSegment2DDetection(vision_ds_Image.mirror(vision_ds_Image.clone(image)),3,30);
+		var newI = vision_ds_Image.mirror(vision_ds_Image.clone(image));
+		var _g = 0;
+		while(_g < lines.length) {
+			var l = lines[_g];
+			++_g;
+			vision_ds_Image.drawLineSegment2D(newI,l,65493);
+		}
+		Main.printImage(newI);
+		end = HxOverrides.now() / 1000;
+		haxe_Log.trace("Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 148, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
 		var lines = vision_Vision.houghRay2DDetection(vision_ds_Image.clone(image));
 		var _g = 0;
@@ -76,7 +85,7 @@ Main.main = function() {
 		}
 		Main.printImage(image);
 		end = HxOverrides.now() / 1000;
-		haxe_Log.trace("Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 151, className : "Main", methodName : "main"});
+		haxe_Log.trace("Hough line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 157, className : "Main", methodName : "main"});
 	});
 };
 Main.printImage = function(image) {

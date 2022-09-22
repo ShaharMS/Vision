@@ -59,4 +59,13 @@ class LineSegment2D {
 	public function toRay2D():Ray2D {
 		return new Ray2D(this.start, this.slope);
 	}
+
+	public function mirrorInsideRectangle(rect:Rectangle):LineSegment2D {
+		final diffSX = start.x - rect.x;
+		final diffEX = end.x - rect.x;
+
+		start.x = rect.x + rect.width - diffSX;
+		end.x = rect.x + rect.width - diffEX;
+		return this;
+	}
 }

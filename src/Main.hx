@@ -116,9 +116,6 @@ class Main {
 				printImage(image.clone().gaussianBlur(2, 15));
 				end = haxe.Timer.stamp();
 				trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				start = haxe.Timer.stamp();
-				printImage(image.clone().mirror());
-				end = haxe.Timer.stamp();
 				#if mirror_flip_tests
 				trace("Image Mirroring took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
@@ -134,6 +131,15 @@ class Main {
 				start = haxe.Timer.stamp();
 				var lines = Vision.simpleLineSegment2DDetection(image.clone(), 3, 30);
 				var newI = image.clone();
+				for (l in lines) {
+					newI.drawLineSegment2D(l, 0x00FFD5);
+				}
+				printImage(newI);
+				end = haxe.Timer.stamp();
+				trace("Simple line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				var lines = Vision.simpleLineSegment2DDetection(image.clone().mirror(), 3, 30);
+				var newI = image.clone().mirror();
 				for (l in lines) {
 					newI.drawLineSegment2D(l, 0x00FFD5);
 				}
