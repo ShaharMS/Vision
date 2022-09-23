@@ -15,6 +15,22 @@ class LineSegment2D {
 
 	public var end(default, null):Point2D = {x: 0, y: 0};
 
+	public var middle(get, set):Point2D;
+
+	/**
+	   When editing the slope/degrees/radians of `this` line,
+	   the `start`,`end` or `middle` points will change according to this setting:
+	   
+	   
+	   | Name | Explanation | Modifies Start | Modifies End | Modifies Middle |
+	   | --- | --- | :---:| :---:| :---: |
+	   | `Line2DModifyingPoint.START` | On edit, the `start` point should remain the same, but the `end` point will be modified. | ❌ | ✅ | ✅ |
+	   | `Line2DModifyingPoint.END` | On edit, the `end` point should remain the same, but the `start` point will be modified. | ✅ | ❌ | ✅ |
+	   | `Line2DMOdifyingPoint.MIDDLE` | On edit, the `middle` point of the "previous" line should remain the same. `start` and `end` should be modified. | ✅ | ✅ | ❌ |
+	  
+	**/
+	public var modificationMode:Line2DModifyingPoint = START;
+
 	public function new(start:Point2D, end:Point2D) {
 		this.start.x = start.x;
 		this.start.y = start.y;
@@ -60,6 +76,23 @@ class LineSegment2D {
 		return new Ray2D(this.start, this.slope);
 	}
 
+	function get_middle():Point2D {
+		return {x: (start.x + end.x) / 2, y: (start.y + end.y) / 2};
+	}
+
+	function set_middle(value:Point2D):Point2D {
+		var previousMiddle = get_middle();
+		final diffX = value.x - previousMiddle.x;
+		final diffY = value.y - previousMiddle.y;
+
+		start.y += diffY;
+		end.y += diffY;
+		start.x += diffX;
+		end.x += diffX;
+
+		return get_middle();
+	}
+
 	public function mirrorInsideRectangle(rect:Rectangle):LineSegment2D {
 		final diffSX = start.x - rect.x;
 		final diffEX = end.x - rect.x;
@@ -67,5 +100,17 @@ class LineSegment2D {
 		start.x = rect.x + rect.width - diffSX;
 		end.x = rect.x + rect.width - diffEX;
 		return this;
+	}
+
+	function recalc() {
+		var tempRay:Ray2D;
+		switch modificationMode {
+			case START: {
+				var dist = length;
+				
+			}
+			case MIDDLE: {}
+			case END: {}
+		}
 	}
 }
