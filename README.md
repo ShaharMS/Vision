@@ -1,6 +1,6 @@
 # Vision
 
-Cross framework, cross platform computer vision library for Haxe.
+### Cross framework, cross platform computer vision library for Haxe.
 
 The goal of this library is to provide computer vision functionality to Haxe projects, but naturally:
 
@@ -12,7 +12,7 @@ The goal of this library is to provide computer vision functionality to Haxe pro
 
 
 
-## Structure
+# Structure
 
 This Library is organized into 4 subfolders, and one important file:
 
@@ -29,13 +29,14 @@ rid of them, define `vision_quiet`.**
 
 
 
-## Tutorials
+# Tutorials
 
 For more tutorials (or further details abput the tutorials here) check out the links below:
 
  - [`Vision` Tutorials On The Haxe Learning Center](spacebubble.io/haxe/?name=Vision)
 
-#### Creating an image
+---
+### Creating an image
 
 Create a blank image for drawing:
 ```haxe
@@ -48,6 +49,16 @@ image.setPixel(10, 35, 0xff3204);
 image.drawLine(1,1, 34, 67, Color.LIME);
 ```
 
+Create an image from a URL (right now, JS only):
+```haxe
+var image:Image;
+ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG",
+    data -> {
+        image = data;
+    }
+);
+```
+
 Add that image to the screen (available in platforms & libraries that support drawing on screen):
 ```haxe
 using vision.tools.ImageTools;
@@ -56,11 +67,29 @@ using vision.tools.ImageTools;
 
 image.addToScreen(); //alternatively, you can do - ImageTools.addToScreen(image)
 ```
+---
+### Basic Image Manipulation
+
+```haxe
+Vision.grayscale(image);
+Vision.sharpen(image);
+Vision.convolve(image, BoxBlur);
+```
+OR
+```haxe
+using vision.Vision;
+
+image.grayscale();
+image.sharpen();
+image.convolve(BoxBlur);
+```
+---
 
 
-## About 
+# About 
 
-The goal of this library is to provide computer vision functionality to Haxe projects, but naturally:
+**Vision** is a cross framework, cross platform Computer Vision & Image Manipulation library for [Haxe](https://haxe.org/).  
+This library exists to provide CV & IM capabilities to Haxe projects, naturally:
 
 ### What Does That Mean?
 
@@ -83,7 +112,7 @@ If you see some code that you think is not understandable, or some place that la
 
 
 
-## Roadmap
+# Roadmap
 
 Here is a roadmap of all features added/planned for the future:
 
