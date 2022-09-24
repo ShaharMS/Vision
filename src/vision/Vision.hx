@@ -151,9 +151,7 @@ class Vision {
      * @return The normalized image. The original copy is not preserved.
      */
     public static function normalize(image:Image, rangeStart:Color, rangeEnd:Color) {
-        var max:Color = 0x0;
-        var min:Color = 0x0;
-        var step:Color = 0x0;
+        var max:Color = 0x0, min:Color = 0x0, step:Color = 0x0;
         max.red = cast Math.max(rangeStart.red, rangeEnd.red);
         min.red = cast Math.min(rangeStart.red, rangeEnd.red);
         max.green = cast Math.max(rangeStart.green, rangeEnd.green);
@@ -202,6 +200,7 @@ class Vision {
     public static function convolve(image:Image, kernal:Kernal2D, ?denominator:Float = null) {
 
         var matrix:Array<Array<Float>> = switch kernal {
+            case GaussianKernal(size, sigma): Gaussian.createKernalOfSize(size, sigma);
             case Identity: [
                 [0, 0, 0],
                 [0, 1, 0],
@@ -553,45 +552,7 @@ class Vision {
         ![gaussian disdribution at different sigma values](https://i.stack.imgur.com/B33AE.png)
     **/
     public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
-        var kernal = Gaussian.createKernalOfSize(kernalSize, sigma);
-        var blurredImage = image.clone();
-        function getNeighbors(x:Int, y:Int):Array<Array<Color>> {
-            var neighbors:Array<Array<Color>> = [];
-            for (i in 0...kernalSize + 1) neighbors[i] = [];
-            var roundedDown = Std.int((kernalSize - 1) / 2);
-
-            for (X in -roundedDown...roundedDown + 1) {
-                for (Y in -roundedDown...roundedDown + 1) {
-                    if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
-                        neighbors[X + roundedDown].push(null);
-                        continue;
-                    }
-                    neighbors[X + roundedDown].push(image.getPixel(x + X, y + Y));
-                }
-            }
-            return neighbors;
-        }
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
-                var neighbors = getNeighbors(x, y);
-                var newColor = Color.fromRGBA(0, 0, 0);
-                for (X in 0...kernalSize) {
-                    for (Y in 0...kernalSize) {
-                        if (neighbors[X][Y] == null) {
-                            continue;
-                        }
-                        var red = neighbors[X][Y].red * kernal[X][Y];
-                        var green = neighbors[X][Y].green * kernal[X][Y];
-                        var blue = neighbors[X][Y].blue * kernal[X][Y];
-                        newColor.red += Std.int(red);
-                        newColor.green += Std.int(green);
-                        newColor.blue += Std.int(blue);
-                    }
-                }
-                blurredImage.setPixel(x, y, newColor);
-            }
-        }
-        return blurredImage;
+        return convolve(image, GaussianKernal(kernalSize, sigma));
     }
 
     /**

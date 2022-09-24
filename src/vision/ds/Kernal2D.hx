@@ -1,5 +1,7 @@
 package vision.ds;
 
+import vision.ds.gaussian.GaussianKernalSize;
+
 enum Kernal2D {
 
     /**
@@ -115,7 +117,7 @@ enum Kernal2D {
      * 4 16  24  16 4
      * 1  4  6   4  1
      * ```
-     * * 
+     * 
      * Original:
      * 
      * ![Pre-processed](https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png)
@@ -170,5 +172,7 @@ enum Kernal2D {
      *      ])
      */
     Custom(kernal:Array<Array<Float>>);
+
+    GaussianKernal(size:GaussianKernalSize, sigma:Float);
 
 }

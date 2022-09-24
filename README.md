@@ -129,9 +129,9 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `convolve()`
  - [x] `contrast()`
  - [x] `normalize()`
- - [ ] **`houghRay2DDetection()`**
- - [ ] **`houghLineSegment2DDetection()`**
- - [ ] `simpleLineDetector()` **needs fixing**
+ - [ ] `houghRay2DDetection()`
+ - [ ] `houghLineSegment2DDetection()`
+ - [ ] `simpleLineDetector()`
  - [x] `perwittEdgeDetection()`
  - [x] `perwittEdgeDiffOperator()`
  - [x] `sobelEdgeDiffOperator()`
@@ -145,7 +145,7 @@ Here is a roadmap of all features added/planned for the future:
  - Hough Transform
     - [x] hough space generation
     - [ ] *adaptive hough space generation*
-    - [ ] line segment finder
+    - [ ] *line segment finder*
     - [ ] *Circle finder*
 
  - Gaussian

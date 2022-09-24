@@ -14,15 +14,12 @@ class Sobel {
 
     public static function convolveWithSobelOperator(image:Image) {
 
-        var x = image.width;
-        var y = image.height;
 
-        var maxGval = 0;
         var edgeColors:Array<Array<Int>> = [];
         var maxGradient = -1;
 
-        for (i in 1...x - 1) {
-            for (j in 1...y - 1) {
+        for (i in 1...image.width - 1) {
+            for (j in 1...image.height - 1) {
 
                 var val00 = ImageTools.grayscalePixel(image.getPixel(i - 1, j - 1)).red;
                 var val01 = ImageTools.grayscalePixel(image.getPixel(i - 1, j)).red;
@@ -57,8 +54,8 @@ class Sobel {
         var scale = 255.0 / maxGradient;
 
         var edgeImage = new Image(image.width, image.height);
-        for (i in 1...x - 1) {
-            for (j in 1...y - 1) {
+        for (i in 1...image.width - 1) {
+            for (j in 1...image.height - 1) {
                 var edgeColor = edgeColors[i][j];
                 edgeColor = Std.int(edgeColor * scale);
                 edgeColor = 0xff000000 | (edgeColor << 16) | (edgeColor << 8) | edgeColor;
@@ -87,4 +84,28 @@ class Sobel {
         }
         return neighbors;
     }
+            /**
+            What does this algorithm do?
+            Basically, it takes 9 pixels chunks each time it performs a calculation, and tries to see how different the
+            colors of the pixels from the left are from the right. for example, lets say this is the chunk:
+
+                 0 ,  0 , 112
+                 0 , 112, 112
+                121, 112, 112
+            
+            With the naked eye, we can see that the pixels are very different from each other, and therefore, are edges.
+            The way the algorithm knows it, is: its multiplying the left side by -1, the middle by 0 and the right by 1.
+            Then, it multiplies each edge by 10 and each corner by 3, 
+            and then adding them together:
+
+                 0  *-3 +  0  *-10 + 121 *-3 = -363  |
+                 0  * 0 + 112 * 0 + 112 * 0 =   0    | + = 1483
+                112 * 3 + 112 * 10 + 112 * 3 =  1846 |
+
+            If this value is greater than the threshold, then we declare it an edge. now, were gonna do the same thing
+            for all chunks of the image, and from top to bottom too if needed.
+        **/
+        function name() {
+            
+        }
 }

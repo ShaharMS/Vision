@@ -98,6 +98,8 @@ class Hough {
 	
 		for (point in accum.cellIterator(threshold)) {
 			var thetaDeg = point.y;
+
+			MathTools.wrapInt(thetaDeg, -90, 90);
 			var rho = point.x;
 			var tempRay = new Ray2D({x: 0, y: 0}, null, thetaDeg);
 			var p = tempRay.findPointWithDistance(0, rho);
