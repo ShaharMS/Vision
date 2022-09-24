@@ -2,11 +2,11 @@
 
 ### Cross framework, cross platform computer vision library for Haxe.
   
- - [**Structure**](https://github.com/ShaharMS/Vision/README.md#structure)
- - [**Tutorials**](https://github.com/ShaharMS/Vision/README.md#tutorials)
- - [**About**](https://github.com/ShaharMS/Vision/README.md#about)
- - [**Roadmap**](https://github.com/ShaharMS/Vision/README.md#roadmap)
- - [**Define List**](https://github.com/ShaharMS/Vision/README.md#define-list)
+ - [**Structure**](https://github.com/ShaharMS/Vision/blob/main/README.md#structure)
+ - [**Tutorials**](https://github.com/ShaharMS/Vision/blob/main/README.md#tutorials)
+ - [**About**](https://github.com/ShaharMS/Vision/blob/main/README.md#about)
+ - [**Roadmap**](https://github.com/ShaharMS/Vision/blob/main/README.md#roadmap)
+ - [**Define List**](https://github.com/ShaharMS/Vision/blob/main/README.md#define-list)
 
 
 # Structure
