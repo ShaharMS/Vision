@@ -65,7 +65,7 @@ class Hough {
 					var thetaIndex = 0;
 					while (thetaIndex < 180) {
 						rho = x * Math.cos(theta) + y * Math.sin(theta);
-						accum.incrementCell(Std.int(rho), thetaIndex);
+						accum.incrementCell(rho, thetaIndex);
 						houghSpace.paintPixel(thetaIndex, Std.int(rho), Color.fromRGBAFloat(0, 0, 0, 0.01));
 						theta += Math.PI / 360;
 						thetaIndex++;

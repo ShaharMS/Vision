@@ -641,12 +641,30 @@ class Vision {
                 lines.push(line4);
             }
         }
-        trace(lines);
         var actualLines:Array<LineSegment2D> = [];
         for (l in lines) {
             if (l == null) continue;
             if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 40) continue;
             actualLines.push(l);
+        }
+        //now, get a mirrored version
+        var edgeDetected = cannyEdgeDetection(image.mirror());
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength);
+                lines.push(line);
+                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true);
+                lines.push(line2);
+                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, false, true);
+                lines.push(line3);
+                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true, true);
+                lines.push(line4);
+            }
+        }
+        for (l in lines) {
+            if (l == null) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 40) continue;
+            actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
         }
         return actualLines;
     }

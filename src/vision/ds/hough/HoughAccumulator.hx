@@ -34,8 +34,8 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
      * 
      * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.
      */
-    public function incrementCell(rho:Int, thetaIndex:Int) {
-        this[rho + rhoMax][thetaIndex]++;
+    public function incrementCell(rho:Float, thetaIndex:Int) {
+        this[Std.int(rho) + rhoMax][thetaIndex]++;
     }
 
     /**
@@ -43,8 +43,8 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
      * 
      * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.
      */
-     public function decrementCell(rho:Int, thetaIndex:Int) {
-        this[rho + rhoMax][thetaIndex]--;
+     public function decrementCell(rho:Float, thetaIndex:Int) {
+        this[Std.int(rho) + rhoMax][thetaIndex]--;
     }
 
     /**
@@ -52,8 +52,8 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
      * 
      * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.
      */
-    public function setCell(rho:Int, thetaIndex:Int, value:Int) {
-        this[rho + rhoMax][thetaIndex] = value;
+    public function setCell(rho:Float, thetaIndex:Int, value:Int) {
+        this[Std.int(rho) + rhoMax][thetaIndex] = value;
     }
 
     /**
@@ -74,9 +74,5 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
 
     public function cellIterator(?threshold:Int = 0) {
         return getMaximas(threshold).iterator();
-    }
-
-    @:op([]) function array_get_theta_array(index:Int):Array<Int> {
-        return this[index + rhoMax];
     }
 }

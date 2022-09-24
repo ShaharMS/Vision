@@ -28,6 +28,10 @@ class MathTools {
 		return distance;
 	}
 
+	public static function distanceFromRayToPoint2D(ray:Ray2D, point:Point2D) {
+		return distanceFromPointToRay2D(point, ray);
+	}
+
 	public static function distanceFromPointToLineSegment2D(line:LineSegment2D, point:Point2D):Float
 	{
 	

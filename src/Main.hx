@@ -138,16 +138,6 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Simple line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
-				var lines = Vision.simpleLineSegment2DDetection(image.clone().mirror(), 3, 30);
-				var newI = image.clone().mirror();
-				for (l in lines) {
-					newI.drawLineSegment2D(l, 0x00FFD5);
-				}
-				printImage(newI);
-				end = haxe.Timer.stamp();
-				trace("Simple line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				#if true
-				start = haxe.Timer.stamp();
 				var lines = Vision.houghRay2DDetection(image.clone());
 				for (l in lines) {
 					image.drawRay2D(l, 0x00FFD5);
@@ -155,7 +145,6 @@ class Main {
 				printImage(image);
 				end = haxe.Timer.stamp();
 				trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				#end
 				#end
 			});
 
