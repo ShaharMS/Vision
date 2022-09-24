@@ -1,7 +1,7 @@
 # Vision
 
 ### Cross framework, cross platform computer vision library for Haxe.
-
+  
  - [**Structure**](https://github.com/ShaharMS/Vision/main/README.md#structure)
  - [**Tutorials**](https://github.com/ShaharMS/Vision/main/README.md#tutorials)
  - [**About**](https://github.com/ShaharMS/Vision/main/README.md#about)
@@ -9,12 +9,11 @@
  - [**Define List**](https://github.com/ShaharMS/Vision/main/README.md#define-list)
 
 
-
 # Structure
 
 This Library is organized into 4 subfolders, and one important file:
 
- - **`ds`** - contains Vision's data types. Some functions &
+ - **`ds`** - contains Vision's data structures & types. Some functions &
 Features require different return types which aren't basic - such as lines, rays or points.
 Those can be found inside this folder.
  - **`tools`** - contains classes that extend the functionality of certain aspects of the library.
