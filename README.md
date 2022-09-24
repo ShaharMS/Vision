@@ -1,7 +1,92 @@
 # Vision
-Cross framework, cross platform computer vision library for Haxe.
 
-The goal of this library is to provide computer vision functionality to Haxe projects, but naturally:
+### Cross framework, cross platform computer vision library for Haxe.
+  
+ - [**Structure**](https://github.com/ShaharMS/Vision/main/README.md#structure)
+ - [**Tutorials**](https://github.com/ShaharMS/Vision/main/README.md#tutorials)
+ - [**About**](https://github.com/ShaharMS/Vision/main/README.md#about)
+ - [**Roadmap**](https://github.com/ShaharMS/Vision/main/README.md#roadmap)
+ - [**Define List**](https://github.com/ShaharMS/Vision/main/README.md#define-list)
+
+
+# Structure
+
+This Library is organized into 4 subfolders, and one important file:
+
+ - **`ds`** - contains Vision's data structures & types. Some functions &
+Features require different return types which aren't basic - such as lines, rays or points.
+Those can be found inside this folder.
+ - **`tools`** - contains classes that extend the functionality of certain aspects of the library.
+For example, `MathTools` is a superset of the `Math` class from the standard library, and also adds many features related to finding data related to lines, rays and points.
+ - **`algorithms`** - contains every complex algorithm this library uses. They're all contained in one folder to help you learn from them :). **If you feel like some algorithms 
+are lacking/have unclear documentation, please open an issue about it**
+ - **`exceptions`** - contains the errors usually thrown by Vision. **Notice - those errors are present just to let you know if you did something unexpected. If you want to get 
+rid of them, define `vision_quiet`.**
+ - **`Vision.hx`** - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the algorithms class, since those are less likely to break compatibility, and are usually more concise.
+
+
+
+# Tutorials
+
+For more tutorials (or further details abput the tutorials here) check out the links below:
+
+ - [`Vision` Tutorials On The Haxe Learning Center](spacebubble.io/haxe/?name=Vision)
+
+---
+### Creating an image
+
+Create a blank image for drawing:
+```haxe
+var image = new Image(200, 300, Color.WHITE); //creates a new, 200x300 image with a white background
+```
+
+Drawing:
+```haxe
+image.setPixel(10, 35, 0xff3204);
+image.drawLine(1,1, 34, 67, Color.LIME);
+```
+
+Create an image from a URL (right now, JS only):
+```haxe
+var image:Image;
+ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG",
+    data -> {
+        image = data;
+    }
+);
+```
+
+Add that image to the screen (available in platforms & libraries that support drawing on screen):
+```haxe
+using vision.tools.ImageTools;
+
+//...
+
+image.addToScreen(); //alternatively, you can do - ImageTools.addToScreen(image)
+```
+---
+### Basic Image Manipulation
+
+```haxe
+Vision.grayscale(image);
+Vision.sharpen(image);
+Vision.convolve(image, BoxBlur);
+```
+OR
+```haxe
+using vision.Vision;
+
+image.grayscale();
+image.sharpen();
+image.convolve(BoxBlur);
+```
+---
+
+
+# About 
+
+**Vision** is a cross framework, cross platform Computer Vision & Image Manipulation library for [Haxe](https://haxe.org/).  
+This library exists to provide CV & IM capabilities to Haxe projects, naturally:
 
 ### What Does That Mean?
 
@@ -22,7 +107,9 @@ One of the things I can't stand with libraries similar to this one is the lack o
 
 If you see some code that you think is not understandable, or some place that lacks documentation, or even inaccurate/unclear documentation, please open an issue about it, and I'd try to resolve it asap ;).
 
-### Roadmap
+
+
+# Roadmap
 
 Here is a roadmap of all features added/planned for the future:
 
@@ -121,7 +208,8 @@ Here is a roadmap of all features added/planned for the future:
    - [ ] `resizeBicubic()`
 
 
-### Define List:
+
+## Define List:
 
 | Define | Meaning | Versions |
 | :---: | --- | :---: |
