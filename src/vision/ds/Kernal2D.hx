@@ -52,7 +52,7 @@ enum Kernal2D {
      * -1  +4  -1
      * -1  -1  -1
      * ```
-     * * 
+     *
      * Original:
      * 
      * ![Pre-processed](https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png)
@@ -73,7 +73,7 @@ enum Kernal2D {
      * -1  +7  -1
      * -1  -1  -1
      * ```
-     * * 
+     *
      * Original:
      * 
      * ![Pre-processed](https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png)
@@ -173,6 +173,27 @@ enum Kernal2D {
      */
     Custom(kernal:Array<Array<Float>>);
 
-    GaussianKernal(size:GaussianKernalSize, sigma:Float);
+    /**
+     * Generates a gaussian kernal of size `size`x`size`, and uses `sigma` for the distribtion factor.
+     * 
+     * Example of an (approximated) 5x5 gaussian kernal:
+     * 
+     * ```
+     * 1  4  6  4  1
+     * 4 16  24 16 4
+     * 6 24  36 24 6
+     * 4 16  24 16 4
+     * 1  4  6  4  1
+     * ```
+     * 
+     * Original:
+     * 
+     * ![Pre-Processed](https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png)
+     * 
+     * `GaussianBlur(X3, 1)`, `GaussianBlur(X5, 1)`:
+     * 
+     * ![Post-Processed](https://upload.wikimedia.org/wikipedia/commons/2/28/Vd-Blur1.png)&nbsp;,&nbsp;![Post-Processed](https://upload.wikimedia.org/wikipedia/commons/0/04/Vd-Blur_Gaussian_5x5.png)
+     */
+    GaussianBlur(size:GaussianKernalSize, sigma:Float);
 
 }

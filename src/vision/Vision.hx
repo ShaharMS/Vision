@@ -200,7 +200,6 @@ class Vision {
     public static function convolve(image:Image, kernal:Kernal2D, ?denominator:Float = null) {
 
         var matrix:Array<Array<Float>> = switch kernal {
-            case GaussianKernal(size, sigma): Gaussian.createKernalOfSize(size, sigma);
             case Identity: [
                 [0, 0, 0],
                 [0, 1, 0],
@@ -246,6 +245,7 @@ class Vision {
                 [farCorner, farEdge, edge, farEdge, farCorner]
             ];
             case Custom(kernal): kernal;
+            case GaussianBlur(size, sigma): Gaussian.createKernalOfSize(size, sigma);
         }
 
         if (denominator == null) {
@@ -552,7 +552,7 @@ class Vision {
         ![gaussian disdribution at different sigma values](https://i.stack.imgur.com/B33AE.png)
     **/
     public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
-        return convolve(image, GaussianKernal(kernalSize, sigma));
+        return convolve(image, GaussianBlur(kernalSize, sigma));
     }
 
     /**

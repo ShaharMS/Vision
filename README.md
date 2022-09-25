@@ -28,7 +28,7 @@ rid of them, define `vision_quiet`.**
 
 # Tutorials
 
-For more tutorials (or further details abput the tutorials here) check out the links below:
+For more tutorials (or further details about the tutorials here) check out the links below:
 
  - [`Vision` Tutorials On The Haxe Learning Center](https://spacebubble.io/haxe/?name=Vision)
 
@@ -91,7 +91,7 @@ This library exists to provide CV & IM capabilities to Haxe projects, naturally:
 ### What Does That Mean?
 
 Basically, if you're using HaxeFlixel for example, you should be able to easily use an FlxSprite as
-an image to process, or if youre using OpenFL you should be able to use bitmaps and sprites to process.
+an image to process, or if you're using OpenFL you should be able to use bitmaps and sprites to process.
 
 ### Why Does This Library Exist?
 
