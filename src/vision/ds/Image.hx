@@ -55,9 +55,98 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function getPixel(x:Int, y:Int):Color {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+            #if !vision_quiet
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
+            #else
+            var gettable:IntPoint2D = new IntPoint2D(0, 0);
+			var ox = x + X;
+			var oy = y + Y;
+			if (ox < 0 && oy < 0)
+				gettable.x = gettable.y = 0;
+			else if (ox < 0 && oy >= height) {
+				gettable.x = 0;
+				gettable.y = height - 1;
+			} else if (ox >= width && oy < 0) {
+				gettable.x = width - 1;
+				gettable.y = 0;
+			} else if (ox >= width && oy >= height) {
+				gettable.x = width - 1;
+				gettable.y = height - 1;
+			} else if (ox < 0) {
+				gettable.x = 0;
+				gettable.y = oy;
+			} else if (oy < 0) {
+				gettable.x = ox;
+				gettable.y = 0;
+			} else if (ox >= width) {
+				gettable.x = width - 1;
+				gettable.y = oy;
+			} else if (oy >= height) {
+				gettable.x = ox;
+				gettable.y = height - 1;
+			}
+            return this[gettable.x][gettable.y];
+            #end
         }
         return this[x][y];
+    }
+
+    /**
+        Gets the color of the pixel at the given coordinates.
+        These coordinates can also be of type `Float`, in which case
+        the value returned should be an interpolation of the surrounding, physical pixels:
+
+        ### How Does This Work?
+
+        Lets say we want the pixel at `(0.5, 0.5)`:
+        ```
+        (0,0)   (1,0)                                     
+                                                         
+              ·     < Y (0.5)                      
+                                                         
+        (0,1)   (1,1)                                     
+              ^                                           
+            X (0.5)                                        
+        ```
+
+        First, we're going to calculate the actual fraction - the means, extracting the numbetrs after the decimal point:
+
+            final xFraction = x - Std.int(x);
+            final yFraction = y - Std.int(y);
+
+
+        Then, we just multiply each of the surrounding pixel's value by it's distance from the initial X value (using `xFraction` and `yFraction`):
+
+            final pixelsBeforeYMultiplier = 1 - yFraction, pixelsAfterYMultiplier = yFraction;
+            final pixelsBeforeXMultiplier = 1 - xFraction, pixelsAfterXMultiplier = xFraction;
+            final bottomLayer = pixelsBeforeYMultiplier * (pixelsBeforeXMultiplier * getPixel(Std.int(x), Std.int(y)) + pixelsAfterXMultiplier * getPixel(Std.int(x) + 1, Std.int(y)));
+            final topLayer = pixelsAfterYMultiplier * (pixelsBeforeXMultiplier * getPixel(Std.int(x), Std.int(y) + 1) + pixelsAfterXMultiplier * getPixel(Std.int(x) + 1, Std.int(y) + 1));
+
+
+        And add the two layers to get the result:
+
+        
+            var finalColor:Color = Std.int(bottomLayer + topLayer);
+        
+
+        @param x The x coordinate of the pixel.
+        @param y The y coordinate of the pixel.
+
+        @throws OutOfBounds if the coordinates are out of bounds.
+        @return The color of the pixel at the given coordinates.
+    **/
+    public function getFloatingPixel(x:Float, y:Float):Color {
+        final yfrac = y - Std.int(y), xfrac = x - Std.int(x);
+        return Std.int(
+            (1 - yfrac) * (
+                (1 - xfrac) * getPixel(Std.int(x), Std.int(y)) + 
+                xfrac * getPixel(Std.int(x) + 1, Std.int(y))
+            ) + 
+            yfrac * (
+                (1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1) + 
+                xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1)
+            )
+        );
     }
 
     /**

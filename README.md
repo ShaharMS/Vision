@@ -173,6 +173,7 @@ Here is a roadmap of all features added/planned for the future:
 #### class `Image`:
 
  - [x] `getPixel()`
+ - [x] `getFloatingPixel()`
  - [x] `setPixel()`
  - [x] `hasPixel()`
  - [x] `paintPixel()`
@@ -215,3 +216,4 @@ Here is a roadmap of all features added/planned for the future:
 | :---: | --- | :---: |
 | `vision_disable_point_alloc_optimization` | enabling this makes every `IntPoint2D` allocate two integers as a class instance instead of working as an abstract over a 64 bit integer. The allocation optimization is enabled by default to reduce allocations, but you can flip this flag if your'e capped to 32bit integers | 1.0.0 |
 | `vision_better_grayscale` | When enabled, grayscaling is done a bit differently to get an image that more closely resembles the original image. If you're noticing problems with grayscaling, turn this off. | 1.0.0 |
+| `vision_quiet` | When enabled, no errors are thrown from this library's components, and an effort is made to return the "expected" value. For example, gaussian kernal's size would be incremented if even, and a `getPixel` call outside the bounds of the image should return the closest pixel to that point. | 1.0.0 |

@@ -108,7 +108,12 @@ class Gaussian {
     }
 
     public static function createKernalOfSize(size:Int, sigma:Float) {
+        #if vision_quiet
+        if (size <= 0) size = -size;
+        if (size % 2 == 0) size++;
+        #else
         if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernalSize(size);
+        #end
         var r, s = 2.0 * sigma * sigma, sum = 0.;
         var kernal:Array<Array<Float>> = [];
         for (i in 0...size) {
