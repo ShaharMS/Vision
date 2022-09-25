@@ -55,14 +55,6 @@ class SimpleLineDetector {
 		return null;
 	}
 
-	public static function getDistanceFromPointToLine(line:LineSegment2D, pointX:Int, pointY:Int):Float {
-		var a:Float = line.end.y - line.start.y;
-		var b:Float = line.start.x - line.end.x;
-		var c:Float = a * (line.start.x) + b * (line.start.y);
-		var d:Float = a * (pointX) + b * (pointY) - c;
-		return Math.abs(d / Math.sqrt(a * a + b * b));
-	}
-
 	/**
 		Returns the percentage of the line that covers an actual line in the given,
 		**Black And White** image.
