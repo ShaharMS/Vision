@@ -131,7 +131,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `normalize()`
  - [ ] `houghRay2DDetection()`
  - [ ] `houghLineSegment2DDetection()`
- - [ ] `simpleLineDetector()`
+ - [x] `simpleLineDetector()`
  - [x] `perwittEdgeDetection()`
  - [x] `perwittEdgeDiffOperator()`
  - [x] `sobelEdgeDiffOperator()`
@@ -158,7 +158,7 @@ Here is a roadmap of all features added/planned for the future:
  - Canny
     - [x] grayscale
     - [x] gaussian blur
-    - [x] Sobel filter (needs tweaking)
+    - [x] Sobel filter
     - [x] non-max suppression 
     - [x] hysteresis
   
