@@ -225,6 +225,20 @@ class MathTools {
 		return max;
 	}
 
+	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
+		var between = false;
+		for (range in ranges) {
+			if (range.end < range.start) {
+				var temp = range.start;
+				range.start = range.end;
+				range.end = temp;
+			}
+			between = (value > range.start) && (value > range.end);
+			if (between) return true;
+		}
+		return false;
+	}
+
 	public static function average(...values:Float) {
 		var sum = 0.;
 		for (v in values) {

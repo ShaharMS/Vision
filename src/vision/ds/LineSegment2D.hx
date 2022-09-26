@@ -55,7 +55,7 @@ class LineSegment2D {
 	function set_degrees(value:Float):Float {
 		@:bypassAccessor slope = MathTools.degreesToSlope(value);
         @:bypassAccessor radians = MathTools.degreesToRadians(value);
-        return degrees = value;
+        return degrees = MathTools.wrapFloat(value, -180, 180);
 	}
 
     function set_radians(value:Float):Float {
@@ -107,10 +107,19 @@ class LineSegment2D {
 		switch modificationMode {
 			case START: {
 				var dist = length;
-				
+				var s = start.copy();
+				var a = degrees;
+				var ray = new Ray2D(s, null, a);
+				end = ray.findPointWithDistance(s.x, dist, MathTools.isBetweenRanges(a, {start: -90, end: 90}));
 			}
 			case MIDDLE: {}
-			case END: {}
+			case END: {
+				var dist = length;
+				var s = end.copy();
+				var a = degrees;
+				var ray = new Ray2D(s, null, a);
+				start = ray.findPointWithDistance(s.x, dist, MathTools.isBetweenRanges(a, {start: 90, end: 180}, {start: -90, end: -180}));
+			}
 		}
 	}
 }

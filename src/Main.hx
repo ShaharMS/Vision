@@ -113,7 +113,7 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Nearest neighbor blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(GaussianKernal(9, 15)));
+				printImage(image.clone().convolve(GaussianBlur(9, 10)));
 				end = haxe.Timer.stamp();
 				trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				#if mirror_flip_tests

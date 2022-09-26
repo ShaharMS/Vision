@@ -29,4 +29,8 @@ class Point2D {
     public function toString() {
         return '($x, $y)';
     }
+
+    public function copy():Point2D {
+        return {x: x, y: y};
+    }
 }

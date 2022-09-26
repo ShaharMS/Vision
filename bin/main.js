@@ -49,7 +49,7 @@ Main.main = function() {
 		end = HxOverrides.now() / 1000;
 		haxe_Log.trace("Nearest neighbor blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 114, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
-		Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.GaussianKernal(9,15)));
+		Main.printImage(vision_Vision.convolve(vision_ds_Image.clone(image),vision_ds_Kernal2D.GaussianBlur(9,10)));
 		end = HxOverrides.now() / 1000;
 		haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 118, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
@@ -1003,7 +1003,7 @@ vision_Vision.gaussianBlur = function(image,sigma,kernalSize) {
 	if(sigma == null) {
 		sigma = 1;
 	}
-	return vision_Vision.convolve(image,vision_ds_Kernal2D.GaussianKernal(kernalSize,sigma));
+	return vision_Vision.convolve(image,vision_ds_Kernal2D.GaussianBlur(kernalSize,sigma));
 };
 vision_Vision.cannyEdgeDetection = function(image,sigma,initialKernalSize,lowThreshold,highThreshold) {
 	if(highThreshold == null) {
@@ -1770,9 +1770,9 @@ var vision_ds_Kernal2D = $hxEnums["vision.ds.Kernal2D"] = { __ename__:true,__con
 	,Assemble3x3: ($_=function(corner,edge,center) { return {_hx_index:6,corner:corner,edge:edge,center:center,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="Assemble3x3",$_.__params__ = ["corner","edge","center"],$_)
 	,Assemble5x5: ($_=function(farCorner,farEdge,edge,midCorner,midEdge,center) { return {_hx_index:7,farCorner:farCorner,farEdge:farEdge,edge:edge,midCorner:midCorner,midEdge:midEdge,center:center,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="Assemble5x5",$_.__params__ = ["farCorner","farEdge","edge","midCorner","midEdge","center"],$_)
 	,Custom: ($_=function(kernal) { return {_hx_index:8,kernal:kernal,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="Custom",$_.__params__ = ["kernal"],$_)
-	,GaussianKernal: ($_=function(size,sigma) { return {_hx_index:9,size:size,sigma:sigma,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="GaussianKernal",$_.__params__ = ["size","sigma"],$_)
+	,GaussianBlur: ($_=function(size,sigma) { return {_hx_index:9,size:size,sigma:sigma,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="GaussianBlur",$_.__params__ = ["size","sigma"],$_)
 };
-vision_ds_Kernal2D.__constructs__ = [vision_ds_Kernal2D.Identity,vision_ds_Kernal2D.BoxBlur,vision_ds_Kernal2D.RidgeDetection,vision_ds_Kernal2D.RidgeDetectionAggresive,vision_ds_Kernal2D.Sharpen,vision_ds_Kernal2D.UnsharpMasking,vision_ds_Kernal2D.Assemble3x3,vision_ds_Kernal2D.Assemble5x5,vision_ds_Kernal2D.Custom,vision_ds_Kernal2D.GaussianKernal];
+vision_ds_Kernal2D.__constructs__ = [vision_ds_Kernal2D.Identity,vision_ds_Kernal2D.BoxBlur,vision_ds_Kernal2D.RidgeDetection,vision_ds_Kernal2D.RidgeDetectionAggresive,vision_ds_Kernal2D.Sharpen,vision_ds_Kernal2D.UnsharpMasking,vision_ds_Kernal2D.Assemble3x3,vision_ds_Kernal2D.Assemble5x5,vision_ds_Kernal2D.Custom,vision_ds_Kernal2D.GaussianBlur];
 var vision_ds_LineSegment2D = function(start,end) {
 	this.end = new vision_ds_Point2D(0,0);
 	this.start = new vision_ds_Point2D(0,0);
