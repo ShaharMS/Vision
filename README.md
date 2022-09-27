@@ -204,9 +204,10 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `iterator()`
    - [x] `mirror()`  
    - [x] `flip()`
-   - [ ] `resizeNearestNeighbor()`
-   - [ ] `resizeBilinear()`
-   - [ ] `resizeBicubic()`
+   - [ ] `resize()`:
+     - [x] `NearestNeighbor`
+     - [x] `BilinearInterpolation`
+     - [ ] `BicubicInterpolation`
 
 
 
