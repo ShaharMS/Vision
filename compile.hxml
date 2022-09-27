@@ -6,6 +6,6 @@
 -debug
 --dce full
 --js bin/main.js
-
+#--interp
 --define feature_detection_tests
-#--define simple-tests
+--define vision_multithread

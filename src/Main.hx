@@ -1,5 +1,6 @@
 package;
 
+import vision.exceptions.MultithreadFaliure;
 import js.html.File;
 import js.html.FileSystem;
 import vision.tools.ImageTools;
@@ -137,6 +138,7 @@ class Main {
 				printImage(newI);
 				end = haxe.Timer.stamp();
 				trace("Simple line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				#if false
 				start = haxe.Timer.stamp();
 				var lines = Vision.houghRay2DDetection(image.clone());
 				for (l in lines) {
@@ -146,6 +148,11 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				#end
+				#end
+				//new Image(100, 100).getPixel(200, 200);
+				throw "Exception - Pixel Coordinates Out Of Bounds:
+
+				pixel (200, 200) is outside the bounds of the image (size: 100x100, position: (200, 200))";
 			});
 
 		#if draw_tests
