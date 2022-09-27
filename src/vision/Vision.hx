@@ -571,9 +571,10 @@ class Vision {
             }
         }
         var actualLines:Array<Line2D> = [];
+        trace(accuracy);
         for (l in lines) {
             if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 50) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
             actualLines.push(l);
         }
         //now, get a mirrored version
@@ -592,7 +593,7 @@ class Vision {
         }
         for (l in lines) {
             if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 50) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
             actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
         }
         return actualLines;

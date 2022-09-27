@@ -4,8 +4,5 @@
         "deepfried",
         "Haxe",
         "kernal"
-    ],
-    "cSpell.enableFiletypes": [
-        "haxe"
     ]
 }

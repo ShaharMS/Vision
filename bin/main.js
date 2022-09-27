@@ -53,7 +53,7 @@ Main.main = function() {
 		end = HxOverrides.now() / 1000;
 		haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 118, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
-		var lines = vision_Vision.simpleLine2DDetection(vision_ds_Image.clone(image),3,30);
+		var lines = vision_Vision.simpleLine2DDetection(vision_ds_Image.clone(image),50,30);
 		var newI = vision_ds_Image.clone(image);
 		var _g = 0;
 		while(_g < lines.length) {
@@ -980,12 +980,12 @@ vision_Vision.cannyEdgeDetection = function(image,sigma,initialKernalSize,lowThr
 	var cannyObject = vision_ds_Image.clone(image);
 	return vision_Vision.blackAndWhite(vision_algorithms_Canny.applyHysteresis(vision_algorithms_Canny.nonMaxSuppression(vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),initialKernalSize,sigma))),highThreshold,lowThreshold),40);
 };
-vision_Vision.simpleLine2DDetection = function(image,minLineGap,minLineLength) {
+vision_Vision.simpleLine2DDetection = function(image,accuracy,minLineLength) {
 	if(minLineLength == null) {
 		minLineLength = 10;
 	}
-	if(minLineGap == null) {
-		minLineGap = 2;
+	if(accuracy == null) {
+		accuracy = 50;
 	}
 	var lines = [];
 	var edgeDetected = vision_Vision.cannyEdgeDetection(image,1,5,0.05,0.16);
@@ -997,17 +997,18 @@ vision_Vision.simpleLine2DDetection = function(image,minLineGap,minLineLength) {
 		var _g3 = vision_ds_Image.get_height(image);
 		while(_g2 < _g3) {
 			var y = _g2++;
-			var line = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineGap,minLineLength);
+			var line = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength);
 			lines.push(line);
-			var line2 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineGap,minLineLength,true);
+			var line2 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true);
 			lines.push(line2);
-			var line3 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineGap,minLineLength,false,true);
+			var line3 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,false,true);
 			lines.push(line3);
-			var line4 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineGap,minLineLength,true,true);
+			var line4 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true,true);
 			lines.push(line4);
 		}
 	}
 	var actualLines = [];
+	haxe_Log.trace(accuracy,{ fileName : "src/vision/Vision.hx", lineNumber : 574, className : "vision.Vision", methodName : "simpleLine2DDetection"});
 	var _g = 0;
 	while(_g < lines.length) {
 		var l = lines[_g];
@@ -1015,7 +1016,7 @@ vision_Vision.simpleLine2DDetection = function(image,minLineGap,minLineLength) {
 		if(l == null) {
 			continue;
 		}
-		if(vision_algorithms_SimpleLineDetector.lineCoveragePercentage(edgeDetected,l) < 40) {
+		if(vision_algorithms_SimpleLineDetector.lineCoveragePercentage(edgeDetected,l) < accuracy) {
 			continue;
 		}
 		actualLines.push(l);
@@ -1029,13 +1030,13 @@ vision_Vision.simpleLine2DDetection = function(image,minLineGap,minLineLength) {
 		var _g3 = vision_ds_Image.get_height(image);
 		while(_g2 < _g3) {
 			var y = _g2++;
-			var line = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineGap,minLineLength);
+			var line = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength);
 			lines.push(line);
-			var line2 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineGap,minLineLength,true);
+			var line2 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true);
 			lines.push(line2);
-			var line3 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineGap,minLineLength,false,true);
+			var line3 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,false,true);
 			lines.push(line3);
-			var line4 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineGap,minLineLength,true,true);
+			var line4 = vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true,true);
 			lines.push(line4);
 		}
 	}
@@ -1046,7 +1047,7 @@ vision_Vision.simpleLine2DDetection = function(image,minLineGap,minLineLength) {
 		if(l == null) {
 			continue;
 		}
-		if(vision_algorithms_SimpleLineDetector.lineCoveragePercentage(edgeDetected,l) < 40) {
+		if(vision_algorithms_SimpleLineDetector.lineCoveragePercentage(edgeDetected,l) < accuracy) {
 			continue;
 		}
 		actualLines.push(l.mirrorInsideRectangle({ x : 0, y : 0, width : vision_ds_Image.get_width(image), height : vision_ds_Image.get_height(image)}));
@@ -1374,7 +1375,7 @@ vision_algorithms_Perwitt.convolveWithPerwittOperator = function(image) {
 };
 var vision_algorithms_SimpleLineDetector = function() { };
 vision_algorithms_SimpleLineDetector.__name__ = true;
-vision_algorithms_SimpleLineDetector.findLineFromPoint = function(image,point,minLineGap,minLineLength,preferTTB,preferRTL) {
+vision_algorithms_SimpleLineDetector.findLineFromPoint = function(image,point,minLineLength,preferTTB,preferRTL) {
 	if(preferRTL == null) {
 		preferRTL = false;
 	}
@@ -1723,7 +1724,7 @@ var vision_ds_Kernal2D = $hxEnums["vision.ds.Kernal2D"] = { __ename__:true,__con
 	,Identity: {_hx_name:"Identity",_hx_index:0,__enum__:"vision.ds.Kernal2D",toString:$estr}
 	,BoxBlur: {_hx_name:"BoxBlur",_hx_index:1,__enum__:"vision.ds.Kernal2D",toString:$estr}
 	,RidgeDetection: {_hx_name:"RidgeDetection",_hx_index:2,__enum__:"vision.ds.Kernal2D",toString:$estr}
-	,RidgeDetectionAggresive: {_hx_name:"RidgeDetectionAggresive",_hx_index:3,__enum__:"vision.ds.Kernal2D",toString:$estr}
+	,RidgeDetectionAggressive: {_hx_name:"RidgeDetectionAggressive",_hx_index:3,__enum__:"vision.ds.Kernal2D",toString:$estr}
 	,Sharpen: {_hx_name:"Sharpen",_hx_index:4,__enum__:"vision.ds.Kernal2D",toString:$estr}
 	,UnsharpMasking: {_hx_name:"UnsharpMasking",_hx_index:5,__enum__:"vision.ds.Kernal2D",toString:$estr}
 	,Assemble3x3: ($_=function(corner,edge,center) { return {_hx_index:6,corner:corner,edge:edge,center:center,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="Assemble3x3",$_.__params__ = ["corner","edge","center"],$_)
@@ -1731,7 +1732,7 @@ var vision_ds_Kernal2D = $hxEnums["vision.ds.Kernal2D"] = { __ename__:true,__con
 	,Custom: ($_=function(kernal) { return {_hx_index:8,kernal:kernal,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="Custom",$_.__params__ = ["kernal"],$_)
 	,GaussianBlur: ($_=function(size,sigma) { return {_hx_index:9,size:size,sigma:sigma,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="GaussianBlur",$_.__params__ = ["size","sigma"],$_)
 };
-vision_ds_Kernal2D.__constructs__ = [vision_ds_Kernal2D.Identity,vision_ds_Kernal2D.BoxBlur,vision_ds_Kernal2D.RidgeDetection,vision_ds_Kernal2D.RidgeDetectionAggresive,vision_ds_Kernal2D.Sharpen,vision_ds_Kernal2D.UnsharpMasking,vision_ds_Kernal2D.Assemble3x3,vision_ds_Kernal2D.Assemble5x5,vision_ds_Kernal2D.Custom,vision_ds_Kernal2D.GaussianBlur];
+vision_ds_Kernal2D.__constructs__ = [vision_ds_Kernal2D.Identity,vision_ds_Kernal2D.BoxBlur,vision_ds_Kernal2D.RidgeDetection,vision_ds_Kernal2D.RidgeDetectionAggressive,vision_ds_Kernal2D.Sharpen,vision_ds_Kernal2D.UnsharpMasking,vision_ds_Kernal2D.Assemble3x3,vision_ds_Kernal2D.Assemble5x5,vision_ds_Kernal2D.Custom,vision_ds_Kernal2D.GaussianBlur];
 var vision_ds_Line2D = function(start,end) {
 	this.end = new vision_ds_Point2D(0,0);
 	this.start = new vision_ds_Point2D(0,0);
