@@ -9,7 +9,6 @@
  - [**Define List**](https://github.com/ShaharMS/Vision/blob/main/README.md#define-list)
 
 
-
 # Structure
 
 This Library is organized into 4 subfolders, and one important file:
