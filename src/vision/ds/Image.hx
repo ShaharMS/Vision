@@ -21,14 +21,24 @@ abstract Image(Matrix<Null<Color>>) {
     /**
         The width of the image.
     **/
-    public var width(get, never):Int;
+    public var width(get, #if vision_allow_resize set #else never #end):Int;
     function get_width() return this.length;
+    #if vision_allow_resize
+    function set_width(value:Int) {
+        resize(value, height);
+    }
+    #end
 
     /**
         The height of the image.
     **/
-    public var height(get, never):Int;
+    public var height(get, #if vision_allow_resize set #else never #end):Int;
     function get_height() return this[0].length;
+    #if vision_allow_resize
+    function set_height(value:Int) {
+        resize(width, value);
+    }
+    #end
 
     /**
         Creates a new image of the given size. Onces created, the image cannot be resized.
