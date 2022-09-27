@@ -1,5 +1,8 @@
 package vision.ds;
 
+import vision.exceptions.Unimplemented;
+import vision.tools.MathTools;
+import vision.algorithms.BilinearInterpolation;
 import haxe.ds.List;
 import haxe.Int64;
 import haxe.ds.Vector;
@@ -629,6 +632,10 @@ abstract Image(Matrix<Null<Color>>) {
         return clone;
     }
 
+    //--------------------------------------------------------------------------
+    // General Manipuation
+    //--------------------------------------------------------------------------
+
     public function mirror():Image {
         this.sort((e, f) -> 1);
         return cast this;
@@ -638,6 +645,25 @@ abstract Image(Matrix<Null<Color>>) {
         for (x in 0...width) {
             this[x].sort((e, f) -> 1);
         }
+        return cast this;
+    }
+
+    public inline function resize(newWidth:Int, newHeight:Int, ?algorithm:ImageResizeAlgorithm):Image {
+        if (algorithm == null) algorithm = ImageTools.defaultResizeAlgorithm;
+        switch algorithm {
+            case BilinearInterpolation: this = cast BilinearInterpolation.interpolate(cast this, newWidth, newHeight);
+            case BicubicInterpolation: throw new Unimplemented("Bicubic Interpolation");
+            case NearestNeighbor: {
+                var image = new Image(newWidth, newHeight);
+                var xMulitiplier = image.width / width;
+                var yMulitiplier = image.height / height;
+                forEachPixel((x, y, color) -> {
+                    var color = image.getPixel(MathTools.floor(x * xMulitiplier), MathTools.floor(y * yMulitiplier));
+                    image.setPixel(x, y, color);
+                });
+            }
+        }
+
         return cast this;
     }
 

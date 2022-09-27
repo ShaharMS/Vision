@@ -1,5 +1,6 @@
 package vision.tools;
 
+import vision.ds.ImageResizeAlgorithm;
 import js.lib.Promise;
 import js.Browser;
 import haxe.ds.Vector;
@@ -37,6 +38,8 @@ import vision.ds.Image;
 		- `copyPixelRectTo()`
 **/
 class ImageTools {
+
+	public static var defaultResizeAlgorithm:ImageResizeAlgorithm = BilinearInterpolation;
 	/**
 		Gets an image from a file.
 		the supplied path can be an absolute path or a relative path.
