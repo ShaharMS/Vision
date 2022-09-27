@@ -45,7 +45,7 @@ enum Kernal2D {
     /**
      * This kernal is often used to detect changes of surface level in an image.
      * 
-     * For a more aggresive kernal, see `RidgeDetectionAggresive`
+     * For a more aggressive kernal, see `RidgeDetectionAggressive`
      * 
      * ```
      * -1  -1  -1
@@ -82,7 +82,7 @@ enum Kernal2D {
      * 
      * ![Post-processed](https://upload.wikimedia.org/wikipedia/commons/0/0b/Vd-Rige2.png)
      */
-    RidgeDetectionAggresive;
+    RidgeDetectionAggressive;
 
 
      /**
@@ -106,7 +106,7 @@ enum Kernal2D {
     Sharpen;
 
      /**
-     * Based on the `Gaussian Blur`, this kernal doesnt actually blur the image, but
+     * Based on the `Gaussian Blur`, this kernal does'nt actually blur the image, but
      * uses a similar filter to slightly sharpen the image, while retaining the image's
      * quality.
      * 
@@ -174,7 +174,7 @@ enum Kernal2D {
     Custom(kernal:Array<Array<Float>>);
 
     /**
-     * Generates a gaussian kernal of size `size`x`size`, and uses `sigma` for the distribtion factor.
+     * Generates a gaussian kernal of size `size`x`size`, and uses `sigma` for the distribution factor.
      * 
      * Example of an (approximated) 5x5 gaussian kernal:
      * 

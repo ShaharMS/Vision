@@ -23,7 +23,7 @@ using vision.algorithms.Canny;
 /**
     The class where all image manipulation & computer vision functions are stored.
 
-    If you're going to make extensive use of this class, it is recommanded to use this as a static extension:
+    If you're going to make extensive use of this class, it is recommended to use this as a static extension:
 
     ```haxe
     using vision.Vision;
@@ -109,16 +109,16 @@ class Vision {
         the image is sharpened, the more "deepfried" it'll look.
 
         @param image The image to be contrasted.
-        @return The shaprened image. The original copy is not preserved.
+        @return The sharpened image. The original copy is not preserved.
     **/
     public static function sharpen(image:Image):Image {
         return convolve(image, Sharpen);
     }
 
     /**
-       Deepdries an image by running to through a sharpening filter `iterations` times.
+       Deepfries an image by running to through a sharpening filter `iterations` times.
        
-       The higher the value, the more deepfried the imae will look.
+       The higher the value, the more deepfried the image will look.
        @param image The image to be deepfried
        @param iterations The amount of times the image gets sharpened. default is `2`
        @return The deepfried image. the original copy is not preserved.
@@ -130,7 +130,7 @@ class Vision {
 
     /**
      * Limits the range of colors on an image, by resizing the range of a given color channel, according to the values
-     * of `rangeStart`'s and `rangeEnd`'s color chanels.
+     * of `rangeStart`'s and `rangeEnd`'s color channels.
      * 
      * ### How Does this work?
      * 
@@ -176,7 +176,7 @@ class Vision {
 
         This is useful for many things, such as simple blurring, sharpening, noise maps, and more that comes to mind :).
 
-        There are a couple of prexisting matrices you can use, and also a custom tool to let you create your own kernals from scratch using enums.
+        There are a couple of preexisting matrices you can use, and also a custom tool to let you create your own kernals from scratch using enums.
 
         ### How does this work?
 
@@ -186,18 +186,19 @@ class Vision {
 
         ![Sharpen Convolution](https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/2D_Convolution_Animation.gif/220px-2D_Convolution_Animation.gif)
 
-        1. multiply the current pixel's value by the value of the center of the marix
-        1. multiply the current pixel's immidiate neighbors (vertical/horizontal) by the matching value on the matrix 
+        1. multiply the current pixel's value by the value of the center of the matrix
+        1. multiply the current pixel's immediate neighbors (vertical/horizontal) by the matching value on the matrix 
         (the pixel to the right of the current pixel will be multiplied by the value to the right of the center of the matrix)
         1. do the same thing with the other neighbors
         1. enjoy your convolved image :)
 
         @param image the image to be manipulated
         @param kernal the type/value of the kernal. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**, **`Custom`**.
-        @param denominator Whith certain kernals, sometimes you want to reduce the "colorfulness" of the image to get the correct result. This is dont by setting the denominator. for example,
+        @param denominator With certain kernals, sometimes you want to reduce the "colorfulness" of the image to get the correct result. This is don't by setting the denominator. for example,
         when using `BoxBlur`, `denominator` is automatically set to `9`. When you set `denominator`, you override the defaults of the kernals that auto-set `denominator`.
+        @return A convolved version of the image. The original image is not preserved
     **/
-    public static function convolve(image:Image, kernal:Kernal2D, ?denominator:Float = null) {
+    public static function convolve(image:Image, kernal:Kernal2D, ?denominator:Float = null):Image {
 
         var matrix:Array<Array<Float>> = switch kernal {
             case Identity: [
@@ -215,7 +216,7 @@ class Vision {
                 [-1, 4, -1],
                 [-1, -1, -1],
             ];
-            case RidgeDetectionAggresive: [
+            case RidgeDetectionAggressive: [
                 [-1, -1, -1],
                 [-1, 7, -1],
                 [-1, -1, -1],
@@ -493,44 +494,8 @@ class Vision {
         @return The blurred image.
     **/
     public static function nearestNeighborBlur(image:Image, iterations:Int = 1):Image {
-        var blurredImage = image.clone();
-        var imageClone = image.clone();
-        for (i in 0...iterations) {
-            for (x in 1...blurredImage.width - 1) {
-                for (y in 1...blurredImage.height - 1) {
-                    var neighbors = [
-                        imageClone.getPixel(x - 1, y - 1), 
-                        imageClone.getPixel(x, y - 1), 
-                        imageClone.getPixel(x + 1, y - 1),
-                        imageClone.getPixel(x - 1, y), 
-                        imageClone.getPixel(x, y),
-                        imageClone.getPixel(x + 1, y),
-                        imageClone.getPixel(x - 1, y + 1), 
-                        imageClone.getPixel(x, y + 1), 
-                        imageClone.getPixel(x + 1, y + 1)
-                    ];
-                    var averageRed = (
-                        neighbors[0].red + neighbors[1].red + neighbors[2].red +
-                        neighbors[3].red + neighbors[4].red + neighbors[5].red +
-                        neighbors[6].red + neighbors[7].red + neighbors[8].red
-                    ) / 9;
-                    var averageGreen = (
-                        neighbors[0].green + neighbors[1].green + neighbors[2].green +
-                        neighbors[3].green + neighbors[4].green + neighbors[5].green +
-                        neighbors[6].green + neighbors[7].green + neighbors[8].green
-                    ) / 9;
-                    var averageBlue = (
-                        neighbors[0].blue + neighbors[1].blue + neighbors[2].blue +
-                        neighbors[3].blue + neighbors[4].blue + neighbors[5].blue +
-                        neighbors[6].blue + neighbors[7].blue + neighbors[8].blue
-                    ) / 9;
-                    blurredImage.setPixel(x, y, Color.fromRGBA(Std.int(averageRed), Std.int(averageGreen), Std.int(averageBlue)));
-                }
-            }
-            imageClone = blurredImage.clone();
-        }
-
-        return blurredImage;
+        for (i in 0...iterations) convolve(image, BoxBlur);
+        return image;
     }
 
     /**
@@ -549,7 +514,7 @@ class Vision {
         \
         \
         \
-        ![gaussian disdribution at different sigma values](https://i.stack.imgur.com/B33AE.png)
+        ![gaussian distribution at different sigma values](https://i.stack.imgur.com/B33AE.png)
     **/
     public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
         return convolve(image, GaussianBlur(kernalSize, sigma));
@@ -564,7 +529,7 @@ class Vision {
 
         @param image The image to be edge detected.
         @param sigma The sigma value to be used in the gaussian blur.
-        @param intialKernalSize This is used for the second step of the canny edge detection - gaussian blur. unless you want to improve performance, this should remain unchanged.
+        @param initialKernalSize This is used for the second step of the canny edge detection - gaussian blur. unless you want to improve performance, this should remain unchanged.
         @param lowThreshold The low threshold value to be used in the hysteresis thresholding.
         @param highThreshold The high threshold value to be used in the hysteresis thresholding.
 
@@ -579,52 +544,55 @@ class Vision {
     /**
         Uses a simple, partially recursive algorithm to detect line segments in an image.
 
-        those lines can be curved/partially incomplete, but they will be detected as lines.
+        those lines can be partially incomplete, but they will be detected as lines.
 
         @param image The image to be line detected.
+        @param accuracy When a line is detected, the algorithm checks how much of the line actually covers a 
+        "line portion" of the image. `accuracy` is set to `50` by default - at least half of the line has to match with the image.
+        To optimize for line count, `40` and below is recommended. otherwise, `50` to `60` should be fine.
         @param minLineLength The minimum length of a line segment to be detected.
 
         @return The line detected image.
     **/
-    public static function simpleLine2DDetection(image:Image, minLineGap:Int = 2, minLineLength:Float = 10):Array<Line2D> {
+    public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10):Array<Line2D> {
         var lines:Array<Line2D> = [];
-        var edgeDetected = cannyEdgeDetection(image);
+        var edgeDetected = cannyEdgeDetection(image, 1, X5, 0.05, 0.16);
 
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength);
+                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
                 lines.push(line);
-                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true);
+                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
                 lines.push(line2);
-                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, false, true);
+                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
                 lines.push(line3);
-                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true, true);
+                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
                 lines.push(line4);
             }
         }
         var actualLines:Array<Line2D> = [];
         for (l in lines) {
             if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 40) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 50) continue;
             actualLines.push(l);
         }
         //now, get a mirrored version
         var edgeDetected = cannyEdgeDetection(image.mirror());
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength);
+                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
                 lines.push(line);
-                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true);
+                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
                 lines.push(line2);
-                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, false, true);
+                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
                 lines.push(line3);
-                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineGap, minLineLength, true, true);
+                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
                 lines.push(line4);
             }
         }
         for (l in lines) {
             if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 40) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 50) continue;
             actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
         }
         return actualLines;
@@ -633,11 +601,11 @@ class Vision {
     /**
      * Applies the sobel filter to an image.
      * 
-     * The image doesnt have to get grayscaled before being passed 
+     * The image doesn't have to get grayscaled before being passed 
      * to this function.
      * 
      * It is different from the `sobelEdgeDetection` function, since
-     * it doesnt try to threshold the resulting image to extract the strong edges,
+     * it doesn't try to threshold the resulting image to extract the strong edges,
      * and leaves that information in. example of this filter in action:
      * 
      * |Status|Image|

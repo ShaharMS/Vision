@@ -53,13 +53,13 @@ Main.main = function() {
 		end = HxOverrides.now() / 1000;
 		haxe_Log.trace("Gaussian blur took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 118, className : "Main", methodName : "main"});
 		start = HxOverrides.now() / 1000;
-		var lines = vision_Vision.simpleLineSegment2DDetection(vision_ds_Image.clone(image),3,30);
+		var lines = vision_Vision.simpleLine2DDetection(vision_ds_Image.clone(image),3,30);
 		var newI = vision_ds_Image.clone(image);
 		var _g = 0;
 		while(_g < lines.length) {
 			var l = lines[_g];
 			++_g;
-			vision_ds_Image.drawLineSegment2D(newI,l,65493);
+			vision_ds_Image.drawLine2D(newI,l,65493);
 		}
 		Main.printImage(newI);
 		end = HxOverrides.now() / 1000;
@@ -675,7 +675,7 @@ vision_Vision.convolve = function(image,kernal,denominator) {
 			vision_ds_Image.setPixel(convolved,x,y,color);
 		}
 	}
-	haxe_Log.trace(flatMatrix.length,{ fileName : "src/vision/Vision.hx", lineNumber : 282, className : "vision.Vision", methodName : "convolve"});
+	haxe_Log.trace(flatMatrix.length,{ fileName : "src/vision/Vision.hx", lineNumber : 283, className : "vision.Vision", methodName : "convolve"});
 	image = convolved;
 	return image;
 };
@@ -947,54 +947,13 @@ vision_Vision.nearestNeighborBlur = function(image,iterations) {
 	if(iterations == null) {
 		iterations = 1;
 	}
-	var blurredImage = vision_ds_Image.clone(image);
-	var imageClone = vision_ds_Image.clone(image);
 	var _g = 0;
 	var _g1 = iterations;
 	while(_g < _g1) {
 		var i = _g++;
-		var _g2 = 1;
-		var _g3 = vision_ds_Image.get_width(blurredImage) - 1;
-		while(_g2 < _g3) {
-			var x = _g2++;
-			var _g4 = 1;
-			var _g5 = vision_ds_Image.get_height(blurredImage) - 1;
-			while(_g4 < _g5) {
-				var y = _g4++;
-				var neighbors_0 = vision_ds_Image.getPixel(imageClone,x - 1,y - 1);
-				var neighbors_1 = vision_ds_Image.getPixel(imageClone,x,y - 1);
-				var neighbors_2 = vision_ds_Image.getPixel(imageClone,x + 1,y - 1);
-				var neighbors_3 = vision_ds_Image.getPixel(imageClone,x - 1,y);
-				var neighbors_4 = vision_ds_Image.getPixel(imageClone,x,y);
-				var neighbors_5 = vision_ds_Image.getPixel(imageClone,x + 1,y);
-				var neighbors_6 = vision_ds_Image.getPixel(imageClone,x - 1,y + 1);
-				var neighbors_7 = vision_ds_Image.getPixel(imageClone,x,y + 1);
-				var neighbors_8 = vision_ds_Image.getPixel(imageClone,x + 1,y + 1);
-				var averageRed = ((neighbors_0 >> 16 & 255) + (neighbors_1 >> 16 & 255) + (neighbors_2 >> 16 & 255) + (neighbors_3 >> 16 & 255) + (neighbors_4 >> 16 & 255) + (neighbors_5 >> 16 & 255) + (neighbors_6 >> 16 & 255) + (neighbors_7 >> 16 & 255) + (neighbors_8 >> 16 & 255)) / 9;
-				var averageGreen = ((neighbors_0 >> 8 & 255) + (neighbors_1 >> 8 & 255) + (neighbors_2 >> 8 & 255) + (neighbors_3 >> 8 & 255) + (neighbors_4 >> 8 & 255) + (neighbors_5 >> 8 & 255) + (neighbors_6 >> 8 & 255) + (neighbors_7 >> 8 & 255) + (neighbors_8 >> 8 & 255)) / 9;
-				var averageBlue = ((neighbors_0 & 255) + (neighbors_1 & 255) + (neighbors_2 & 255) + (neighbors_3 & 255) + (neighbors_4 & 255) + (neighbors_5 & 255) + (neighbors_6 & 255) + (neighbors_7 & 255) + (neighbors_8 & 255)) / 9;
-				var Red = averageRed | 0;
-				var Green = averageGreen | 0;
-				var Blue = averageBlue | 0;
-				var color = vision_ds_Color._new();
-				var Alpha = 255;
-				if(Alpha == null) {
-					Alpha = 255;
-				}
-				color &= -16711681;
-				color |= (Red > 255 ? 255 : Red < 0 ? 0 : Red) << 16;
-				color &= -65281;
-				color |= (Green > 255 ? 255 : Green < 0 ? 0 : Green) << 8;
-				color &= -256;
-				color |= Blue > 255 ? 255 : Blue < 0 ? 0 : Blue;
-				color &= 16777215;
-				color |= (Alpha > 255 ? 255 : Alpha < 0 ? 0 : Alpha) << 24;
-				vision_ds_Image.setPixel(blurredImage,x,y,color);
-			}
-		}
-		imageClone = vision_ds_Image.clone(blurredImage);
+		vision_Vision.convolve(image,vision_ds_Kernal2D.BoxBlur);
 	}
-	return blurredImage;
+	return image;
 };
 vision_Vision.gaussianBlur = function(image,sigma,kernalSize) {
 	if(kernalSize == null) {
@@ -1021,7 +980,7 @@ vision_Vision.cannyEdgeDetection = function(image,sigma,initialKernalSize,lowThr
 	var cannyObject = vision_ds_Image.clone(image);
 	return vision_Vision.blackAndWhite(vision_algorithms_Canny.applyHysteresis(vision_algorithms_Canny.nonMaxSuppression(vision_algorithms_Canny.applySobelFilters(vision_algorithms_Canny.applyGaussian(vision_algorithms_Canny.grayscale(cannyObject),initialKernalSize,sigma))),highThreshold,lowThreshold),40);
 };
-vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLength) {
+vision_Vision.simpleLine2DDetection = function(image,minLineGap,minLineLength) {
 	if(minLineLength == null) {
 		minLineLength = 10;
 	}
@@ -1029,7 +988,7 @@ vision_Vision.simpleLineSegment2DDetection = function(image,minLineGap,minLineLe
 		minLineGap = 2;
 	}
 	var lines = [];
-	var edgeDetected = vision_Vision.cannyEdgeDetection(image);
+	var edgeDetected = vision_Vision.cannyEdgeDetection(image,1,5,0.05,0.16);
 	var _g = 0;
 	var _g1 = vision_ds_Image.get_width(image);
 	while(_g < _g1) {
@@ -1424,8 +1383,8 @@ vision_algorithms_SimpleLineDetector.findLineFromPoint = function(image,point,mi
 	}
 	var startX = vision_ds_IntPoint2D.get_x(point);
 	var startY = vision_ds_IntPoint2D.get_y(point);
-	var yArr = preferTTB ? [0,1,2,3] : [0,-1,-2,-3];
-	var xArr = preferRTL ? [0,-1,-2,-3] : [0,1,2,3];
+	var yArr = preferTTB ? [0,1,2] : [0,-1,-2];
+	var xArr = preferRTL ? [0,-1,-2] : [0,1,2];
 	if(vision_ds_Image.image_array_read(image,vision_ds_IntPoint2D.get_x(point)) == null || vision_ds_Image.image_array_read(image,vision_ds_IntPoint2D.get_x(point))[vision_ds_IntPoint2D.get_y(point)] == null || vision_ds_Image.image_array_read(image,vision_ds_IntPoint2D.get_x(point))[vision_ds_IntPoint2D.get_y(point)] == 0) {
 		return null;
 	}
@@ -1469,7 +1428,7 @@ vision_algorithms_SimpleLineDetector.findLineFromPoint = function(image,point,mi
 		}
 	};
 	expand();
-	var line = new vision_ds_LineSegment2D(new vision_ds_Point2D(startX,startY),vision_ds_IntPoint2D.toPoint2D(point));
+	var line = new vision_ds_Line2D(new vision_ds_Point2D(startX,startY),vision_ds_IntPoint2D.toPoint2D(point));
 	if(line.get_length() > minLineLength) {
 		return line;
 	}
@@ -1685,7 +1644,7 @@ vision_ds_Image.drawRay2D = function(this1,line,color) {
 		}
 	}
 };
-vision_ds_Image.drawLineSegment2D = function(this1,line,color) {
+vision_ds_Image.drawLine2D = function(this1,line,color) {
 	var p1 = vision_ds_IntPoint2D.fromPoint2D(line.start);
 	var p2 = vision_ds_IntPoint2D.fromPoint2D(line.end);
 	var x1 = vision_ds_IntPoint2D.get_x(p1);
@@ -1773,18 +1732,24 @@ var vision_ds_Kernal2D = $hxEnums["vision.ds.Kernal2D"] = { __ename__:true,__con
 	,GaussianBlur: ($_=function(size,sigma) { return {_hx_index:9,size:size,sigma:sigma,__enum__:"vision.ds.Kernal2D",toString:$estr}; },$_._hx_name="GaussianBlur",$_.__params__ = ["size","sigma"],$_)
 };
 vision_ds_Kernal2D.__constructs__ = [vision_ds_Kernal2D.Identity,vision_ds_Kernal2D.BoxBlur,vision_ds_Kernal2D.RidgeDetection,vision_ds_Kernal2D.RidgeDetectionAggresive,vision_ds_Kernal2D.Sharpen,vision_ds_Kernal2D.UnsharpMasking,vision_ds_Kernal2D.Assemble3x3,vision_ds_Kernal2D.Assemble5x5,vision_ds_Kernal2D.Custom,vision_ds_Kernal2D.GaussianBlur];
-var vision_ds_LineSegment2D = function(start,end) {
+var vision_ds_Line2D = function(start,end) {
 	this.end = new vision_ds_Point2D(0,0);
 	this.start = new vision_ds_Point2D(0,0);
 	this.start.x = start.x;
 	this.start.y = start.y;
 	this.end.x = end.x;
 	this.end.y = end.y;
+	this.set_radians(vision_tools_MathTools.radiansFromPointToPoint(start,end));
 };
-vision_ds_LineSegment2D.__name__ = true;
-vision_ds_LineSegment2D.prototype = {
+vision_ds_Line2D.__name__ = true;
+vision_ds_Line2D.prototype = {
 	get_length: function() {
 		return Math.sqrt(Math.pow(this.end.x - this.start.x,2) + Math.pow(this.end.y - this.start.y,2));
+	}
+	,set_radians: function(value) {
+		this.slope = Math.tan(value);
+		this.degrees = value * 180 / vision_tools_MathTools.get_PI();
+		return this.radians = value;
 	}
 	,mirrorInsideRectangle: function(rect) {
 		var diffSX = this.start.x - rect.x;
@@ -1950,7 +1915,7 @@ vision_tools_ImageTools.loadFromFile = function(image,path,onComplete) {
 		canvas.width = imgElement.width;
 		canvas.height = imgElement.height;
 		canvas.getContext("2d",null).drawImage(imgElement,0,0);
-		haxe_Log.trace(imgElement.width,{ fileName : "src/vision/tools/ImageTools.hx", lineNumber : 72, className : "vision.tools.ImageTools", methodName : "loadFromFile", customParams : [imgElement.height,imgElement.naturalWidth,imgElement.naturalHeight]});
+		haxe_Log.trace(imgElement.width,{ fileName : "src/vision/tools/ImageTools.hx", lineNumber : 75, className : "vision.tools.ImageTools", methodName : "loadFromFile", customParams : [imgElement.height,imgElement.naturalWidth,imgElement.naturalHeight]});
 		if(image == null) {
 			image = vision_ds_Image._new(imgElement.width,imgElement.height);
 		}
@@ -2089,6 +2054,11 @@ vision_tools_ImageTools.grayscalePixel = function(pixel) {
 };
 var vision_tools_MathTools = function() { };
 vision_tools_MathTools.__name__ = true;
+vision_tools_MathTools.radiansFromPointToPoint = function(point1,point2) {
+	var x = point2.x - point1.x;
+	var y = point2.y - point1.y;
+	return Math.atan2(x,y);
+};
 vision_tools_MathTools.distanceBetweenPoints = function(point1,point2) {
 	var x = point2.x - point1.x;
 	var y = point2.y - point1.y;

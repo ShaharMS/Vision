@@ -1,7 +1,11 @@
 {
     "liveServer.settings.port": 5501,
     "cSpell.words": [
+        "deepfried",
         "Haxe",
         "kernal"
+    ],
+    "cSpell.enableFiletypes": [
+        "haxe"
     ]
 }

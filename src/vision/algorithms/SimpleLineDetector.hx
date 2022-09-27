@@ -11,10 +11,10 @@ using vision.tools.MathTools;
 
 class SimpleLineDetector {
 	
-	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float, preferTTB = false, preferRTL = false):Line2D {
+	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineLength:Float, preferTTB = false, preferRTL = false):Line2D {
 		var startX = point.x, startY = point.y;
-		var yArr = preferTTB ? [0, 1, 2, 3] :[0, -1, -2, -3];
-		var xArr = preferRTL ? [0, -1, -2, -3] : [0, 1, 2, 3];
+		var yArr = preferTTB ? [0, 1, 2] :[0, -1, -2];
+		var xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
 		if (image[point.x] == null || image[point.x][point.y] == null || image[point.x][point.y] == 0) return null;
 		
 		//now, were going to start looking for points around the point to find the entire line.
