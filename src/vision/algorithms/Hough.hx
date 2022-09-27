@@ -11,7 +11,7 @@ import vision.ds.Point2D;
 import vision.ds.Color;
 import haxe.ds.Vector;
 import vision.ds.Ray2D;
-import vision.ds.LineSegment2D;
+import vision.ds.Line2D;
 import vision.ds.Image;
 
 using vision.tools.MathTools;

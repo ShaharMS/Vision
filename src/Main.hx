@@ -8,7 +8,7 @@ using vision.tools.ImageTools;
 
 import format.tga.Data.ImageType;
 import vision.ds.Queue;
-import vision.ds.LineSegment2D;
+import vision.ds.Line2D;
 import vision.tools.MathTools;
 import haxe.Timer;
 import vision.algorithms.Gaussian;
@@ -129,10 +129,10 @@ class Main {
 				#end
 				#if feature_detection_tests
 				start = haxe.Timer.stamp();
-				var lines = Vision.simpleLineSegment2DDetection(image.clone(), 3, 30);
+				var lines = Vision.simpleLine2DDetection(image.clone(), 3, 30);
 				var newI = image.clone();
 				for (l in lines) {
-					newI.drawLineSegment2D(l, 0x00FFD5);
+					newI.drawLine2D(l, 0x00FFD5);
 				}
 				printImage(newI);
 				end = haxe.Timer.stamp();
@@ -166,8 +166,8 @@ class Main {
 		image.fillColor(new Point2D(220, 190), Color.BROWN);
 		image.drawCircle(200, 225, 8, Color.BROWN);
 		image.fillColor(new Point2D(200, 225), Color.BROWN);
-		image.drawQuadraticBezier(new LineSegment2D({x: 100, y: 100}, {x: 200, y: 100}), {x: 200, y: 200}, 0x1900ff);
-		image.drawCubicBezier(new LineSegment2D({x: 10, y: 10}, {x: 50, y: 100}), {x: 150, y: 200}, {x: 200, y: 75}, 0xff0000);
+		image.drawQuadraticBezier(new Line2D({x: 100, y: 100}, {x: 200, y: 100}), {x: 200, y: 200}, 0x1900ff);
+		image.drawCubicBezier(new Line2D({x: 10, y: 10}, {x: 50, y: 100}), {x: 150, y: 200}, {x: 200, y: 75}, 0xff0000);
 		image.drawRay2D(new Ray2D({x: 0, y: 0}, 1), 0x00ff00);
 		image.drawEllipse(100, 100, 40, 21, 0x9fff9f);
 		printImage(image);

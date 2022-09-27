@@ -1,7 +1,7 @@
 package vision.tools;
 
 import vision.ds.Ray2D;
-import vision.ds.LineSegment2D;
+import vision.ds.Line2D;
 import vision.ds.Point2D;
 
 /**
@@ -32,7 +32,7 @@ class MathTools {
 		return distanceFromPointToRay2D(point, ray);
 	}
 
-	public static function distanceFromPointToLineSegment2D(line:LineSegment2D, point:Point2D):Float
+	public static function distanceFromPointToLine2D(line:Line2D, point:Point2D):Float
 	{
 	
 	  var ch = (line.start.y - line.end.y) * point.x + (line.end.x - line.start.x) * point.y + (line.start.x * line.end.y - line.end.x * line.start.y);
@@ -41,21 +41,21 @@ class MathTools {
 	  return d;
 	}
 
-	public static function distanceBetweenlineSegments2D(line1:LineSegment2D, line2:LineSegment2D):Float {
+	public static function distanceBetweenlineSegments2D(line1:Line2D, line2:Line2D):Float {
 		if (intersectionBetweenLineSegments2D(line1, line2) != null) {
 			return 0;
 		}
-		var distance1:Float = distanceFromPointToLineSegment2D(line1, line2.start);
-		var distance2:Float = distanceFromPointToLineSegment2D(line1, line2.end);
-		var distance3:Float = distanceFromPointToLineSegment2D(line2, line1.start);
-		var distance4:Float = distanceFromPointToLineSegment2D(line2, line1.end);
+		var distance1:Float = distanceFromPointToLine2D(line1, line2.start);
+		var distance2:Float = distanceFromPointToLine2D(line1, line2.end);
+		var distance3:Float = distanceFromPointToLine2D(line2, line1.start);
+		var distance4:Float = distanceFromPointToLine2D(line2, line1.end);
 
 		var distance:Float = min(distance1, distance2, distance3, distance4);
 		return distance;
 
 	}
 
-	public static function angleFromPointToLine(point:Point2D, line:LineSegment2D):Float {
+	public static function angleFromPointToLine(point:Point2D, line:Line2D):Float {
 		var angle:Float = atan2(line.end.y - line.start.y, line.end.x - line.start.x);
 		var angle2:Float = atan2(point.y - line.start.y, point.x - line.start.x);
 		return angle2 - angle;
@@ -73,7 +73,7 @@ class MathTools {
 		return sqrt(x * x + y * y);
 	}
 
-	public static function intersectionBetweenLineSegments2D(line1:LineSegment2D, line2:LineSegment2D):Point2D {
+	public static function intersectionBetweenLineSegments2D(line1:Line2D, line2:Line2D):Point2D {
 		var x1 = line1.start.x, y1 = line1.start.y;
 		var x2 = line1.end.x, y2 = line1.end.y;
 		var x3 = line2.start.x, y3 = line2.start.y;

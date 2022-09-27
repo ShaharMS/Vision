@@ -4,14 +4,14 @@ import vision.ds.IntPoint2D;
 import vision.tools.MathTools;
 import vision.ds.Color;
 import vision.ds.Point2D;
-import vision.ds.LineSegment2D;
+import vision.ds.Line2D;
 import vision.ds.Image;
 
 using vision.tools.MathTools;
 
 class SimpleLineDetector {
 	
-	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float, preferTTB = false, preferRTL = false):LineSegment2D {
+	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineGap:Float, minLineLength:Float, preferTTB = false, preferRTL = false):Line2D {
 		var startX = point.x, startY = point.y;
 		var yArr = preferTTB ? [0, 1, 2, 3] :[0, -1, -2, -3];
 		var xArr = preferRTL ? [0, -1, -2, -3] : [0, 1, 2, 3];
@@ -47,7 +47,7 @@ class SimpleLineDetector {
 			}
 		}
 		expand();
-		var line = new LineSegment2D({x: startX, y: startY}, point);
+		var line = new Line2D({x: startX, y: startY}, point);
 		
 		if (line.length > minLineLength){
 			return line;
@@ -59,7 +59,7 @@ class SimpleLineDetector {
 		Returns the percentage of the line that covers an actual line in the given,
 		**Black And White** image.
 	**/
-	public static function lineCoveragePercentage(image:Image, line:LineSegment2D):Float {
+	public static function lineCoveragePercentage(image:Image, line:Line2D):Float {
 		var coveredPixels = 0, totalPixels = 0;
 		if (line == null) return 0;
 		var p1 = IntPoint2D.fromPoint2D(line.start);

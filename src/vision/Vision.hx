@@ -11,7 +11,7 @@ import vision.ds.Ray2D;
 import vision.algorithms.Gaussian;
 import vision.algorithms.Hough;
 import vision.ds.Point2D;
-import vision.ds.LineSegment2D;
+import vision.ds.Line2D;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.tools.MathTools;
@@ -586,8 +586,8 @@ class Vision {
 
         @return The line detected image.
     **/
-    public static function simpleLineSegment2DDetection(image:Image, minLineGap:Int = 2, minLineLength:Float = 10):Array<LineSegment2D> {
-        var lines:Array<LineSegment2D> = [];
+    public static function simpleLine2DDetection(image:Image, minLineGap:Int = 2, minLineLength:Float = 10):Array<Line2D> {
+        var lines:Array<Line2D> = [];
         var edgeDetected = cannyEdgeDetection(image);
 
         for (x in 0...image.width) {
@@ -602,7 +602,7 @@ class Vision {
                 lines.push(line4);
             }
         }
-        var actualLines:Array<LineSegment2D> = [];
+        var actualLines:Array<Line2D> = [];
         for (l in lines) {
             if (l == null) continue;
             if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < 40) continue;

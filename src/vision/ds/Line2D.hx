@@ -2,7 +2,7 @@ package vision.ds;
 
 import vision.tools.MathTools;
 
-class LineSegment2D {
+class Line2D {
 	public var length(get, null):Float;
 
 	public var slope(default, set):Float;
@@ -75,12 +75,12 @@ class LineSegment2D {
 		return end = value;
 	}
 
-	public static function fromRay2D(ray:Ray2D):LineSegment2D {
+	public static function fromRay2D(ray:Ray2D):Line2D {
 		var x:Float = ray.point.x;
 		var y:Float = ray.point.y;
 		var length:Float = 1;
 		var end:Point2D = new Point2D(Std.int(x + length * Math.cos(ray.radians)), Std.int(y + length * Math.sin(ray.radians)));
-		return new LineSegment2D(ray.point, end);
+		return new Line2D(ray.point, end);
 	}
 
 	public function toRay2D():Ray2D {
@@ -104,7 +104,7 @@ class LineSegment2D {
 		return get_middle();
 	}
 
-	public function mirrorInsideRectangle(rect:Rectangle):LineSegment2D {
+	public function mirrorInsideRectangle(rect:Rectangle):Line2D {
 		final diffSX = start.x - rect.x;
 		final diffEX = end.x - rect.x;
 

@@ -342,7 +342,7 @@ abstract Image(Matrix<Null<Color>>) {
     }
 
     /**
-        Draws a `LineSegment2D` object using the given color.
+        Draws a `Line2D` object using the given color.
 
         If the line segment is not completely within the image, 
         it doesnt throw an error, but just draws the part of the 
@@ -351,9 +351,9 @@ abstract Image(Matrix<Null<Color>>) {
         @param line The line segment to draw.
         @param color The color to draw the line segment with.
 
-        @see LineSegment2D
+        @see Line2D
     **/
-    public function drawLineSegment2D(line:LineSegment2D, color:Color) {
+    public function drawLine2D(line:Line2D, color:Color) {
         var p1 = IntPoint2D.fromPoint2D(line.start);
         var p2 = IntPoint2D.fromPoint2D(line.end);
         var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
@@ -383,9 +383,9 @@ abstract Image(Matrix<Null<Color>>) {
         @param color The color to draw the line with.
         @param accuracy The number of iterations to use when drawing the curve. the higher the number, the more iterations are used, and the more accurate the curve is. for example, accuracy of 100 will draw the curve with 100 iterations, and will draw 100 points on the curve. **default is 1000**
 
-        @see LineSegment2D
+        @see Line2D
     **/
-    public function drawQuadraticBezier(line:LineSegment2D, control:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
+    public function drawQuadraticBezier(line:Line2D, control:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
         
         function bezier(t:Float, p0:IntPoint2D, p1:IntPoint2D, p2:IntPoint2D):IntPoint2D {
             var t2 = t * t;
@@ -421,9 +421,9 @@ abstract Image(Matrix<Null<Color>>) {
         @param color The color to draw the curve with.
         @param accuracy The number of iterations to use when drawing the curve. the higher the number, the more iterations are used, and the more accurate the curve is. for example, accuracy of 100 will draw the curve with 100 iterations, and will draw 100 points on the curve. **default is 1000**
 
-        @see LineSegment2D
+        @see Line2D
     **/
-    public function drawCubicBezier(line:LineSegment2D, control1:IntPoint2D, control2:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
+    public function drawCubicBezier(line:Line2D, control1:IntPoint2D, control2:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
         
         function bezier(t:Float, p0:IntPoint2D, p1:IntPoint2D, p2:IntPoint2D, p3:IntPoint2D):IntPoint2D {
             var cX = 3 * (p1.x - p0.x),
