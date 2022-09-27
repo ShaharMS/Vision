@@ -11,9 +11,9 @@ class LineSegment2D {
 
     public var radians(default, set):Float;
 
-	public var start(default, null):Point2D = {x: 0, y: 0};
+	public var start(default, set):Point2D = {x: 0, y: 0};
 
-	public var end(default, null):Point2D = {x: 0, y: 0};
+	public var end(default, set):Point2D = {x: 0, y: 0};
 
 	public var middle(get, set):Point2D;
 
@@ -36,6 +36,7 @@ class LineSegment2D {
 		this.start.y = start.y;
 		this.end.x = end.x;
 		this.end.y = end.y;
+		radians = MathTools.radiansFromPointToPoint(start, end);
 	}
 
 	function get_length():Float {
@@ -63,6 +64,16 @@ class LineSegment2D {
         @:bypassAccessor degrees = MathTools.radiansToDegrees(value);
         return radians = value;
     }
+
+	function set_start(value:Point2D) {
+		radians = MathTools.radiansFromPointToPoint(value, end);
+		return start = value;
+	}
+
+	function set_end(value:Point2D) {
+		radians = MathTools.radiansFromPointToPoint(start, value);
+		return end = value;
+	}
 
 	public static function fromRay2D(ray:Ray2D):LineSegment2D {
 		var x:Float = ray.point.x;
@@ -103,7 +114,6 @@ class LineSegment2D {
 	}
 
 	function recalc() {
-		var tempRay:Ray2D;
 		switch modificationMode {
 			case START: {
 				var dist = length;
@@ -112,7 +122,14 @@ class LineSegment2D {
 				var ray = new Ray2D(s, null, a);
 				end = ray.findPointWithDistance(s.x, dist, MathTools.isBetweenRanges(a, {start: -90, end: 90}));
 			}
-			case MIDDLE: {}
+			case MIDDLE: {
+				var dist = length;
+				var s = middle; //not a real var, no need to copy
+				var a = degrees;
+				var ray = new Ray2D(s, null, a);
+				start = ray.findPointWithDistance(s.x, dist / 2, !MathTools.isBetweenRanges(a, {start: -90, end: 90}));
+				end = ray.findPointWithDistance(s.x, dist / 2, MathTools.isBetweenRanges(a, {start: -90, end: 90}));
+			}
 			case END: {
 				var dist = length;
 				var s = end.copy();
