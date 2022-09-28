@@ -582,11 +582,9 @@ class Vision {
         threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[5].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength, true)));flag6 = true;}));
         threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[6].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength, false, true)));flag7 = true;}));
         threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[7].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength, true, true)));flag8 = true;}));
-        trace("threads started");
         for (i in 0...8) {
             threads[i].relaunchEvents = true;
             threads[i].onDone = () -> {
-                trace("done");
                 for (l in lines[i]) {
                     if (l == null) continue;
                     if (i < 4) {
@@ -623,7 +621,7 @@ class Vision {
             actualLines.push(l);
         }
         //now, get a mirrored version
-        var edgeDetected = cannyEdgeDetection(image.mirror(), 1, X5, 0.05, 0.16);
+        var edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
         for (x in 0...image.width) {
             for (y in 0...image.height) {
                 var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);

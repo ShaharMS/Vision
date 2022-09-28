@@ -1,5 +1,7 @@
 package vision.tools;
 
+import flash.display.Bitmap;
+import haxe.ui.components.Canvas;
 import vision.ds.ImageResizeAlgorithm;
 #if js
 import js.lib.Promise;
@@ -40,8 +42,8 @@ import vision.ds.Image;
 		- `copyPixelRectTo()`
 **/
 class ImageTools {
-
 	public static var defaultResizeAlgorithm:ImageResizeAlgorithm = BilinearInterpolation;
+
 	/**
 		Gets an image from a file.
 		the supplied path can be an absolute path or a relative path.
@@ -57,7 +59,7 @@ class ImageTools {
 
 		@returns the image object.
 	**/
-	public static function loadFromFile(?image:Image, path:String, onComplete:Image -> Void) {
+	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
 		#if sys
 		if (path.split(".")[-1] == "png") {
 			// var bytes = sys.io.File.getBytes(path);
@@ -71,25 +73,26 @@ class ImageTools {
 		imgElement.crossOrigin = "Anonymus";
 		imgElement.onload = () -> {
 			var canvas = js.Browser.document.createCanvasElement();
-            canvas.width = imgElement.width;
-            canvas.height = imgElement.height;
+			canvas.width = imgElement.width;
+			canvas.height = imgElement.height;
 			canvas.getContext2d().drawImage(imgElement, 0, 0);
 			trace(imgElement.width, imgElement.height, imgElement.naturalWidth, imgElement.naturalHeight);
-			if (image == null) image = new Image(imgElement.width, imgElement.height);
+			if (image == null)
+				image = new Image(imgElement.width, imgElement.height);
 			var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
 			var i = 0;
-            while (i < imageData.data.length) {
-                var r = imageData.data[i + 0];
-                var g = imageData.data[i + 1];
-                var b = imageData.data[i + 2];
-                var a = imageData.data[i + 3];
+			while (i < imageData.data.length) {
+				var r = imageData.data[i + 0];
+				var g = imageData.data[i + 1];
+				var b = imageData.data[i + 2];
+				var a = imageData.data[i + 3];
 
-                var x = Math.floor((i/4) % imageData.width);  
-                var y = Math.floor((i/4) / imageData.width);
-                image.setPixel(x, y, Color.fromRGBA(r,g,b,a));
-                i += 4;
-            }
-            onComplete(image);
+				var x = Math.floor((i / 4) % imageData.width);
+				var y = Math.floor((i / 4) / imageData.width);
+				image.setPixel(x, y, Color.fromRGBA(r, g, b, a));
+				i += 4;
+			}
+			onComplete(image);
 		}
 		#end
 	}
@@ -212,120 +215,135 @@ class ImageTools {
 	}
 
 	public static function grayscalePixel(pixel:Color):Color {
-		var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red + pixel.green + pixel.blue) / 3) #end;
+		var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
+			+ pixel.green + pixel.blue) / 3) #end;
 		return Color.fromRGBA(gray, gray, gray, pixel.alpha);
 	}
 
-#if flixel
-public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
-	var image = new Image(sprite.width, sprite.height);
-	if (sprite.bitmapData == null) {
-		Log.warn("ImageTools.fromFlxSprite() - The supplied sprite's bitmapData is null. An empty image is returned");
+	#if flixel
+	public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
+		var image = new Image(sprite.width, sprite.height);
+		if (sprite.bitmapData == null) {
+			Log.warn("ImageTools.fromFlxSprite() - The supplied sprite's bitmapData is null. An empty image is returned");
+			return image;
+		}
+		for (x in 0...sprite.width) {
+			for (y in 0...sprite.height) {
+				image.setPixel(x, y, sprite.bitmapData.getPixel(x, y));
+			}
+		}
 		return image;
 	}
-	for (x in 0...sprite.width) {
-		for (y in 0...sprite.height) {
-			image.setPixel(x, y, sprite.bitmapData.getPixel(x, y));
-		}
-	}
-	return image;
-}
 
-public static function toFlxSprite(image:Image):flixel.FlxSprite {
-	var sprite = new flixel.FlxSprite(0, 0);
-	sprite.makeGraphic(image.width, image.height, 0x00ffffff);
-	for (x in 0...image.width) {
-		for (y in 0...image.height) {
-			sprite.bitmapData.setPixel(x, y, image.getPixel(x, y));
+	public static function toFlxSprite(image:Image):flixel.FlxSprite {
+		var sprite = new flixel.FlxSprite(0, 0);
+		sprite.makeGraphic(image.width, image.height, 0x00ffffff);
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				sprite.bitmapData.setPixel(x, y, image.getPixel(x, y));
+			}
 		}
+		return sprite;
 	}
-	return sprite;
-}
-}
-#end
-#if (openfl || flash)
-public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
-	var image = new Image(bitmapData.width, bitmapData.height);
-	bitmapData.lock();
-	for (x in 0...bitmapData.width) {
-		for (y in 0...bitmapData.height) {
-			image.setPixel(x, y, bitmapData.getPixel(x, y));
+	#end
+
+	#if (openfl || flash)
+	public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
+		var image = new Image(bitmapData.width, bitmapData.height);
+		bitmapData.lock();
+		for (x in 0...bitmapData.width) {
+			for (y in 0...bitmapData.height) {
+				image.setPixel(x, y, bitmapData.getPixel(x, y));
+			}
 		}
+		bitmapData.unlock();
+		return image;
 	}
-	bitmapData.unlock();
-	return image;
-}
 
-public static function toBitmapData(image:Image):flash.display.BitmapData {
-	var bitmapData = new openfl.display.BitmapData(image.width, image.height, true, 0x00ffffff);
-	bitmapData.lock();
-	for (x in 0...image.width) {
-		for (y in 0...image.height) {
-			bitmapData.setPixel(x, y, image.getPixel(x, y));
+	public static function toBitmapData(image:Image):flash.display.BitmapData {
+		var bitmapData = new flash.display.BitmapData(image.width, image.height, true, 0x00ffffff);
+		bitmapData.lock();
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				bitmapData.setPixel(x, y, image.getPixel(x, y));
+			}
 		}
+		bitmapData.unlock();
+		return bitmapData;
 	}
-	bitmapData.unlock();
-	return bitmapData;
-}
 
-public static function fromSprite(sprite:flash.display.Sprite):Image {
-	var bmp = new openfl.display.BitmapData(sprite.width, sprite.height);
-	bmp.draw(sprite);
-	return fromBitmapData(bmp);
-}
+	public static function fromSprite(sprite:flash.display.Sprite):Image {
+		var bmp = new flash.display.BitmapData(Std.int(sprite.width), Std.int(sprite.height));
+		bmp.draw(sprite);
+		return fromBitmapData(bmp);
+	}
 
-public static function fromShape(shape:flash.display.Shape):Image {
-	var bmp = new openfl.display.BitmapData(shape.width, shape.height);
-	bmp.draw(shape);
-	return fromBitmapData(bmp);
-}
-#end
+	public static function toSprite(image:Image):flash.display.Sprite {
+		var bmp = toBitmapData(image);
+		var s = new flash.display.Sprite();
+		s.addChild(new flash.display.Bitmap(bmp));
+		return s;
+	}
 
-#if lime
-public static function fromLimeImage(limeImage:lime.graphics.Image):Image {
-	var image = new Image(limeImage.width, limeImage.height);
-	for (x in 0...image.width) {
-		for (y in 0...image.height) {
-			image.setPixel(x, y, limeImage.getPixel(x, y));
+	public static function fromShape(shape:flash.display.Shape):Image {
+		var bmp = new flash.display.BitmapData(Std.int(shape.width), Std.int(shape.height));
+		bmp.draw(shape);
+		return fromBitmapData(bmp);
+	}
+
+	public static function toShape(image:Image):flash.display.Shape {
+		var s = toSprite(image);
+		var sh = new flash.display.Shape();
+		#if openfl sh.graphics.drawGraphicsData(s.graphics.readGraphicsData()); #end
+		return sh;
+	}
+	#end
+
+	#if lime
+	public static function fromLimeImage(limeImage:lime.graphics.Image):Image {
+		var image = new Image(limeImage.width, limeImage.height);
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				image.setPixel(x, y, limeImage.getPixel(x, y));
+			}
 		}
+		return image;
 	}
-	return image;
-}
 
-public static function toLimeImage(image:Image):lime.graphics.Image {
-	var limeImage = new lime.graphics.Image(image.width, image.height);
-	for (x in 0...image.width) {
-		for (y in 0...image.height) {
-			limeImage.setPixel(x, y, image.getPixel(x, y));
+	public static function toLimeImage(image:Image):lime.graphics.Image {
+		var limeImage = new lime.graphics.Image(image.width, image.height);
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				limeImage.setPixel(x, y, image.getPixel(x, y));
+			}
 		}
+		return limeImage;
 	}
-	return limeImage;
-}
-#end
+	#end
 
-#if kha
-public static function fromKhaImage(khaImage:kha.Image):Image {
-	var image = new Image(khaImage.width, khaImage.height);
-	for (x in 0...image.width) {
-		for (y in 0...image.height) {
-			image.setPixel(x, y, khaImage.at(x, y));
+	#if kha
+	public static function fromKhaImage(khaImage:kha.Image):Image {
+		var image = new Image(khaImage.width, khaImage.height);
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				image.setPixel(x, y, khaImage.at(x, y));
+			}
 		}
+		return image;
 	}
-	return image;
-}
-#end
+	#end
 
-#if heaps
-public static function fromHeapsBitmapData(bitmap:hxd.BitmapData):Image {
-	var image = new Image(bitmap.width, bitmap.height);
-	bitmap.lock();
-	for (x in 0...bitmap.width) {
-		for (y in 0...bitmap.height) {
-			image.setPixel(x, y, bitmap.getPixel(x, y));
+	#if heaps
+	public static function fromHeapsBitmapData(bitmap:hxd.BitmapData):Image {
+		var image = new Image(bitmap.width, bitmap.height);
+		bitmap.lock();
+		for (x in 0...bitmap.width) {
+			for (y in 0...bitmap.height) {
+				image.setPixel(x, y, bitmap.getPixel(x, y));
+			}
 		}
+		bitmap.unlock();
+		return image;
 	}
-	bitmap.unlock();
-	return image;
-}
-#end
+	#end
 }

@@ -755,7 +755,7 @@ abstract Image(Matrix<Null<Color>>) {
     //--------------------------------------------------------------------------
     #if flixel
     @:to public function toFlxSprite():flixel.FlxSprite {
-        ImageTools.toFlxSprite(this);
+        ImageTools.toFlxSprite(cast this);
     }
     @:from public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
         return ImageTools.fromFlxSprite(sprite);
@@ -763,13 +763,19 @@ abstract Image(Matrix<Null<Color>>) {
     #end
     #if openfl
     @:to public function toBitmapData():flash.display.BitmapData {
-        return ImageTools.toBitmapData(this);
+        return ImageTools.toBitmapData(cast this);
     }
     @:from public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
         return ImageTools.fromBitmapData(bitmapData);
     }
+    @:to public function toShape():flash.display.Shape {
+        return ImageTools.toShape(cast this);
+    }
     @:from public static function fromShape(shape:flash.display.Shape):Image {
         return ImageTools.fromShape(shape);
+    }
+    @:to public function toSprite():flash.display.Sprite {
+        return ImageTools.toSprite(cast this);
     }
     @:from public static function fromSprite(sprite:flash.display.Sprite):Image {
         return ImageTools.fromSprite(sprite);
@@ -777,7 +783,7 @@ abstract Image(Matrix<Null<Color>>) {
     #end
     #if lime
     @:to public function toLimeImage():lime.graphics.Image {
-        return ImageTools.toLimeImage(this);
+        return ImageTools.toLimeImage(cast this);
     }
     @:from public static function fromLimeImage(image:lime.graphics.Image):Image {
         return ImageTools.fromLimeImage(image);
