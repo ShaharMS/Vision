@@ -1,8 +1,6 @@
 package;
 
 import vision.exceptions.MultithreadFaliure;
-import js.html.File;
-import js.html.FileSystem;
 import vision.tools.ImageTools;
 
 using vision.tools.ImageTools;
@@ -20,6 +18,8 @@ import vision.ds.Point2D;
 import vision.ds.Ray2D;
 import haxe.display.Display.Package;
 #if js
+import js.html.File;
+import js.html.FileSystem;
 import js.html.Document;
 import js.Browser;
 #end
@@ -149,10 +149,6 @@ class Main {
 				trace("Hough line detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				#end
 				#end
-				//new Image(100, 100).getPixel(200, 200);
-				throw "Exception - Pixel Coordinates Out Of Bounds:
-
-				pixel (200, 200) is outside the bounds of the image (size: 100x100, position: (200, 200))";
 			});
 
 		#if draw_tests

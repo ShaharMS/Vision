@@ -64,7 +64,6 @@ Main.main = function() {
 		Main.printImage(newI);
 		end = HxOverrides.now() / 1000;
 		haxe_Log.trace("Simple line detection took: " + vision_tools_MathTools.turnicate(end - start,4) + " seconds",{ fileName : "src/Main.hx", lineNumber : 140, className : "Main", methodName : "main"});
-		throw haxe_Exception.thrown("Exception - Pixel Coordinates Out Of Bounds:\r\n\r\n\t\t\t\tpixel (200, 200) is outside the bounds of the image (size: 100x100, position: (200, 200))");
 	});
 };
 Main.printImage = function(image) {
@@ -118,7 +117,13 @@ haxe_Exception.thrown = function(value) {
 };
 haxe_Exception.__super__ = Error;
 haxe_Exception.prototype = $extend(Error.prototype,{
-	get_native: function() {
+	toString: function() {
+		return this.get_message();
+	}
+	,get_message: function() {
+		return this.message;
+	}
+	,get_native: function() {
 		return this.__nativeException;
 	}
 });
@@ -969,92 +974,101 @@ vision_Vision.simpleLine2DDetection = function(image,accuracy,minLineLength) {
 	if(accuracy == null) {
 		accuracy = 50;
 	}
-	var lines = [];
 	var edgeDetected = vision_Vision.cannyEdgeDetection(image,1,5,0.05,0.16);
+	var actualLines = [];
+	var edgeDetectedMirrored = vision_Vision.cannyEdgeDetection(vision_ds_Image.mirror(image),1,5,0.05,0.16);
+	Main.printImage(edgeDetected);
+	Main.printImage(edgeDetectedMirrored);
+	var lines = [[],[],[],[],[],[],[],[]];
+	var threads = [];
 	var flag1 = false;
 	var flag2 = false;
 	var flag3 = false;
 	var flag4 = false;
-	vision_helpers_VisionThread.create(function() {
+	var flag5 = false;
+	var flag6 = false;
+	var flag7 = false;
+	var flag8 = false;
+	threads.push(vision_helpers_VisionThread.create(function() {
 		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines.push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength));
+			lines[0].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength));
 		});
 		flag1 = true;
-	});
-	vision_helpers_VisionThread.create(function() {
+	}));
+	threads.push(vision_helpers_VisionThread.create(function() {
 		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines.push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true));
+			lines[1].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true));
 		});
 		flag2 = true;
-	});
-	vision_helpers_VisionThread.create(function() {
+	}));
+	threads.push(vision_helpers_VisionThread.create(function() {
 		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines.push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,false,true));
+			lines[2].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,false,true));
 		});
 		flag3 = true;
-	});
-	vision_helpers_VisionThread.create(function() {
+	}));
+	threads.push(vision_helpers_VisionThread.create(function() {
 		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines.push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true,true));
+			lines[3].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true,true));
 		});
 		flag4 = true;
-	});
-	while(!(flag1 && flag2 && flag3 && flag4)) haxe_Log.trace(flag1,{ fileName : "src/vision/Vision.hx", lineNumber : 569, className : "vision.Vision", methodName : "simpleLine2DDetection", customParams : [flag2,flag3,flag4]});
-	var actualLines = [];
-	haxe_Log.trace(accuracy,{ fileName : "src/vision/Vision.hx", lineNumber : 571, className : "vision.Vision", methodName : "simpleLine2DDetection"});
+	}));
+	threads.push(vision_helpers_VisionThread.create(function() {
+		vision_ds_Image.forEachPixel(image,function(x,y,color) {
+			lines[4].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength));
+		});
+		flag5 = true;
+	}));
+	threads.push(vision_helpers_VisionThread.create(function() {
+		vision_ds_Image.forEachPixel(image,function(x,y,color) {
+			lines[5].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true));
+		});
+		flag6 = true;
+	}));
+	threads.push(vision_helpers_VisionThread.create(function() {
+		vision_ds_Image.forEachPixel(image,function(x,y,color) {
+			lines[6].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,false,true));
+		});
+		flag7 = true;
+	}));
+	threads.push(vision_helpers_VisionThread.create(function() {
+		vision_ds_Image.forEachPixel(image,function(x,y,color) {
+			lines[7].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true,true));
+		});
+		flag8 = true;
+	}));
+	haxe_Log.trace("threads started",{ fileName : "src/vision/Vision.hx", lineNumber : 577, className : "vision.Vision", methodName : "simpleLine2DDetection"});
 	var _g = 0;
-	while(_g < lines.length) {
-		var l = lines[_g];
-		++_g;
-		if(l == null) {
-			continue;
-		}
-		if(vision_algorithms_SimpleLineDetector.lineCoveragePercentage(edgeDetected,l) < accuracy) {
-			continue;
-		}
-		actualLines.push(l);
+	while(_g < 8) {
+		var i = [_g++];
+		threads[i[0]].relaunchEvents = true;
+		threads[i[0]].set_onDone((function(i) {
+			return function() {
+				haxe_Log.trace("done",{ fileName : "src/vision/Vision.hx", lineNumber : 581, className : "vision.Vision", methodName : "simpleLine2DDetection"});
+				var _g = 0;
+				var _g1 = lines[i[0]];
+				while(_g < _g1.length) {
+					var l = _g1[_g];
+					++_g;
+					if(l == null) {
+						continue;
+					}
+					if(i[0] < 4) {
+						if(vision_algorithms_SimpleLineDetector.lineCoveragePercentage(edgeDetected,l) < accuracy) {
+							continue;
+						}
+						actualLines.push(l);
+					} else {
+						if(vision_algorithms_SimpleLineDetector.lineCoveragePercentage(edgeDetectedMirrored,l) < accuracy) {
+							continue;
+						}
+						actualLines.push(l.mirrorInsideRectangle({ x : 0, y : 0, width : vision_ds_Image.get_width(image), height : vision_ds_Image.get_height(image)}));
+					}
+				}
+			};
+		})(i));
 	}
-	edgeDetected = vision_Vision.cannyEdgeDetection(vision_ds_Image.mirror(image));
-	var flag11 = false;
-	var flag21 = false;
-	var flag31 = false;
-	var flag41 = false;
-	vision_helpers_VisionThread.create(function() {
-		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines.push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength));
-		});
-		flag11 = true;
-	});
-	vision_helpers_VisionThread.create(function() {
-		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines.push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true));
-		});
-		flag21 = true;
-	});
-	vision_helpers_VisionThread.create(function() {
-		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines.push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,false,true));
-		});
-		flag31 = true;
-	});
-	vision_helpers_VisionThread.create(function() {
-		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines.push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true,true));
-		});
-		flag41 = true;
-	});
-	while(!(flag11 && flag21 && flag31 && flag41)) haxe_Log.trace(flag11,{ fileName : "src/vision/Vision.hx", lineNumber : 584, className : "vision.Vision", methodName : "simpleLine2DDetection", customParams : [flag21,flag31,flag41]});
-	var _g = 0;
-	while(_g < lines.length) {
-		var l = lines[_g];
-		++_g;
-		if(l == null) {
-			continue;
-		}
-		if(vision_algorithms_SimpleLineDetector.lineCoveragePercentage(edgeDetected,l) < accuracy) {
-			continue;
-		}
-		actualLines.push(l.mirrorInsideRectangle({ x : 0, y : 0, width : vision_ds_Image.get_width(image), height : vision_ds_Image.get_height(image)}));
+	while(!(flag1 && flag2 && flag3 && flag4 && flag5 && flag6 && flag7 && flag8)) {
 	}
 	return actualLines;
 };
@@ -1795,21 +1809,37 @@ vision_exceptions_OutOfBounds.__super__ = vision_exceptions_VisionException;
 vision_exceptions_OutOfBounds.prototype = $extend(vision_exceptions_VisionException.prototype,{
 });
 var vision_helpers_VisionThread = function(job) {
+	this.relaunchEvents = false;
 	var _gthis = this;
 	this.count = vision_helpers_VisionThread.COUNT++;
-	this.onFailed = function(d) {
+	this.set_onFailed(function(d) {
 		throw haxe_Exception.thrown(new vision_exceptions_MultithreadFaliure(_gthis.count,d));
-	};
-	this.onDone = function() {
-		haxe_Log.trace("done",{ fileName : "src/vision/helpers/VisionThread.hx", lineNumber : 21, className : "vision.helpers.VisionThread", methodName : "new"});
-	};
-	this.thread = new Promise(function(onDone,onFailed) {
+	});
+	this.set_onDone(function() {
+		haxe_Log.trace("done",{ fileName : "src/vision/helpers/VisionThread.hx", lineNumber : 34, className : "vision.helpers.VisionThread", methodName : "new"});
+	});
+	this.underlying = new Promise(function(onDone,onFailed) {
 		job();
+		_gthis.jobDone = true;
 	});
 };
 vision_helpers_VisionThread.__name__ = true;
 vision_helpers_VisionThread.create = function(job) {
-	new vision_helpers_VisionThread(job);
+	return new vision_helpers_VisionThread(job);
+};
+vision_helpers_VisionThread.prototype = {
+	set_onFailed: function(value) {
+		if(this.relaunchEvents && this.jobDone != null) {
+			value(null);
+		}
+		return this.onFailed = value;
+	}
+	,set_onDone: function(value) {
+		if(this.relaunchEvents && this.jobDone != null) {
+			value();
+		}
+		return this.onDone = value;
+	}
 };
 var vision_tools_ImageTools = function() { };
 vision_tools_ImageTools.__name__ = true;
@@ -1822,7 +1852,7 @@ vision_tools_ImageTools.loadFromFile = function(image,path,onComplete) {
 		canvas.width = imgElement.width;
 		canvas.height = imgElement.height;
 		canvas.getContext("2d",null).drawImage(imgElement,0,0);
-		haxe_Log.trace(imgElement.width,{ fileName : "src/vision/tools/ImageTools.hx", lineNumber : 75, className : "vision.tools.ImageTools", methodName : "loadFromFile", customParams : [imgElement.height,imgElement.naturalWidth,imgElement.naturalHeight]});
+		haxe_Log.trace(imgElement.width,{ fileName : "src/vision/tools/ImageTools.hx", lineNumber : 77, className : "vision.tools.ImageTools", methodName : "loadFromFile", customParams : [imgElement.height,imgElement.naturalWidth,imgElement.naturalHeight]});
 		if(image == null) {
 			image = vision_ds_Image._new(imgElement.width,imgElement.height);
 		}

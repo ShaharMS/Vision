@@ -1,8 +1,10 @@
 package vision.tools;
 
 import vision.ds.ImageResizeAlgorithm;
+#if js
 import js.lib.Promise;
 import js.Browser;
+#end
 import haxe.ds.Vector;
 import vision.ds.Matrix;
 import vision.ds.IntPoint2D;
