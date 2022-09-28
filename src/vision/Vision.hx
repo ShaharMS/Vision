@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.simple.AlgorithmSettings;
 import haxe.Timer;
 import vision.helpers.VisionThread;
 import vision.algorithms.Perwitt;
@@ -261,8 +262,7 @@ class Vision {
 
         var convolved = new Image(image.width, image.height);
         var maxLength = -1;
-        var items = 0;
-        for (array in matrix) {if (array.length > maxLength) maxLength = array.length; items += array.length;};
+        for (array in matrix) {if (array.length > maxLength) maxLength = array.length;};
         var flatMatrix = matrix.flatten();
         var denominator = 0.;
         for (number in flatMatrix) denominator += number;
@@ -553,14 +553,22 @@ class Vision {
         "line portion" of the image. `accuracy` is set to `50` by default - at least half of the line has to match with the image.
         To optimize for line count, `40` and below is recommended. otherwise, `50` to `60` should be fine.
         @param minLineLength The minimum length of a line segment to be detected.
+        @param speedToAccuracyRatio  If the algorithm is too slow/too inaccurate for you, you can change this setting.
 
         @return The line detected image.
     **/
-    public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10):Array<Line2D> {
-        var edgeDetected = cannyEdgeDetection(image, 1, X5, 0.05, 0.16);
+    public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermidiate):Array<Line2D> {
+        final kernalSize = switch speedToAccuracyRatio {
+            case VeryLow_VeryFast: X1;
+            case Low_Fast: X3;
+            case Medium_Intermidiate: X5;
+            case High_Slow: X7;
+            case VeryHigh_VerySlow: X9;
+        }
+        var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
         #if vision_multithread
         var actualLines:Array<Line2D> = [];
-        var edgeDetectedMirrored = cannyEdgeDetection(image.mirror(), 1, X5, 0.05, 0.16);
+        var edgeDetectedMirrored = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
         Main.printImage(edgeDetected);
         Main.printImage(edgeDetectedMirrored);
         var lines:Array<Array<Line2D>> = [[], [], [], [], [], [], [], []];
@@ -570,10 +578,10 @@ class Vision {
         threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[1].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true)));flag2 = true;}));
         threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[2].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true)));flag3 = true;}));
         threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[3].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true)));flag4 = true;}));
-        threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[4].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength)));flag5 = true;}));
-        threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[5].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true)));flag6 = true;}));
-        threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[6].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true)));flag7 = true;}));
-        threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[7].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true)));flag8 = true;}));
+        threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[4].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength)));flag5 = true;}));
+        threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[5].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength, true)));flag6 = true;}));
+        threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[6].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength, false, true)));flag7 = true;}));
+        threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[7].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength, true, true)));flag8 = true;}));
         trace("threads started");
         for (i in 0...8) {
             threads[i].relaunchEvents = true;

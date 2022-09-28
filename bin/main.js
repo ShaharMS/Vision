@@ -595,7 +595,6 @@ vision_Vision.convolve = function(image,kernal,denominator) {
 	}
 	var convolved = vision_ds_Image._new(vision_ds_Image.get_width(image),vision_ds_Image.get_height(image));
 	var maxLength = -1;
-	var items = 0;
 	var _g = 0;
 	while(_g < matrix.length) {
 		var array = matrix[_g];
@@ -603,7 +602,6 @@ vision_Vision.convolve = function(image,kernal,denominator) {
 		if(array.length > maxLength) {
 			maxLength = array.length;
 		}
-		items += array.length;
 	}
 	var flat = [];
 	var _g = 0;
@@ -670,7 +668,7 @@ vision_Vision.convolve = function(image,kernal,denominator) {
 			vision_ds_Image.setPixel(convolved,x,y,color);
 		}
 	}
-	haxe_Log.trace(flatMatrix.length,{ fileName : "src/vision/Vision.hx", lineNumber : 285, className : "vision.Vision", methodName : "convolve"});
+	haxe_Log.trace(flatMatrix.length,{ fileName : "src/vision/Vision.hx", lineNumber : 284, className : "vision.Vision", methodName : "convolve"});
 	image = convolved;
 	return image;
 };
@@ -1015,36 +1013,36 @@ vision_Vision.simpleLine2DDetection = function(image,accuracy,minLineLength) {
 	}));
 	threads.push(vision_helpers_VisionThread.create(function() {
 		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines[4].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength));
+			lines[4].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength));
 		});
 		flag5 = true;
 	}));
 	threads.push(vision_helpers_VisionThread.create(function() {
 		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines[5].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true));
+			lines[5].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true));
 		});
 		flag6 = true;
 	}));
 	threads.push(vision_helpers_VisionThread.create(function() {
 		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines[6].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,false,true));
+			lines[6].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,false,true));
 		});
 		flag7 = true;
 	}));
 	threads.push(vision_helpers_VisionThread.create(function() {
 		vision_ds_Image.forEachPixel(image,function(x,y,color) {
-			lines[7].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetected,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true,true));
+			lines[7].push(vision_algorithms_SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored,vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(x,y)),minLineLength,true,true));
 		});
 		flag8 = true;
 	}));
-	haxe_Log.trace("threads started",{ fileName : "src/vision/Vision.hx", lineNumber : 577, className : "vision.Vision", methodName : "simpleLine2DDetection"});
+	haxe_Log.trace("threads started",{ fileName : "src/vision/Vision.hx", lineNumber : 576, className : "vision.Vision", methodName : "simpleLine2DDetection"});
 	var _g = 0;
 	while(_g < 8) {
 		var i = [_g++];
 		threads[i[0]].relaunchEvents = true;
 		threads[i[0]].set_onDone((function(i) {
 			return function() {
-				haxe_Log.trace("done",{ fileName : "src/vision/Vision.hx", lineNumber : 581, className : "vision.Vision", methodName : "simpleLine2DDetection"});
+				haxe_Log.trace("done",{ fileName : "src/vision/Vision.hx", lineNumber : 580, className : "vision.Vision", methodName : "simpleLine2DDetection"});
 				var _g = 0;
 				var _g1 = lines[i[0]];
 				while(_g < _g1.length) {
