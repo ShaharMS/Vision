@@ -72,8 +72,8 @@ abstract Image(Matrix<Null<Color>>) {
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
             #else
             var gettable:IntPoint2D = new IntPoint2D(0, 0);
-			var ox = x + X;
-			var oy = y + Y;
+			var ox = x;
+			var oy = y;
 			if (ox < 0 && oy < 0)
 				gettable.x = gettable.y = 0;
 			else if (ox < 0 && oy >= height) {
@@ -100,6 +100,50 @@ abstract Image(Matrix<Null<Color>>) {
 			}
             return this[gettable.x][gettable.y];
             #end
+        }
+        return this[x][y];
+    }
+
+    /**
+        Gets the color of the pixel at the given coordinates.
+
+        Coordinates outside the bounds of the image are allowed.
+
+        @param x The x coordinate of the pixel.
+        @param y The y coordinate of the pixel.
+
+        @return The color of the pixel at the given coordinates.
+    **/
+    public function getSafePixel(x:Int, y:Int):Color {
+        if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+            var gettable:IntPoint2D = new IntPoint2D(0, 0);
+			var ox = x;
+			var oy = y;
+			if (ox < 0 && oy < 0)
+				gettable.x = gettable.y = 0;
+			else if (ox < 0 && oy >= height) {
+				gettable.x = 0;
+				gettable.y = height - 1;
+			} else if (ox >= width && oy < 0) {
+				gettable.x = width - 1;
+				gettable.y = 0;
+			} else if (ox >= width && oy >= height) {
+				gettable.x = width - 1;
+				gettable.y = height - 1;
+			} else if (ox < 0) {
+				gettable.x = 0;
+				gettable.y = oy;
+			} else if (oy < 0) {
+				gettable.x = ox;
+				gettable.y = 0;
+			} else if (ox >= width) {
+				gettable.x = width - 1;
+				gettable.y = oy;
+			} else if (oy >= height) {
+				gettable.x = ox;
+				gettable.y = height - 1;
+			}
+            return this[gettable.x][gettable.y];
         }
         return this[x][y];
     }

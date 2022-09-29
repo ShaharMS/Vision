@@ -139,6 +139,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `cannyEdgeDetection()`
  - [x] `nearestNeighborBlur()`
  - [x] `gaussianBlur()`
+ - [ ] `medianBlur()` 
 
 #### algorithms:
 

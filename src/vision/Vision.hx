@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.Histogram;
 import vision.ds.simple.AlgorithmSettings;
 import haxe.Timer;
 import vision.helpers.VisionThread;
@@ -504,7 +505,7 @@ class Vision {
         Uses the gaussian blur algorithm to blur an image.
 
         This algorithm works by creating a 5x5 (thats the default size) matrix, and then applying
-        the gaussiann distribution function to that matrix.
+        the gaussian distribution function to that matrix.
 
         That matrix will go over each pixel and decide it's color based on the values of 
         the pixels covered by the 5x5 matrix, and the [gaussian distribution function](https://en.wikipedia.org/wiki/Gaussian_function).
@@ -520,6 +521,27 @@ class Vision {
     **/
     public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
         return convolve(image, GaussianBlur(kernalSize, sigma));
+    }
+
+    /**
+     * Applies a median filter to an image to reduce the amount of noise in that image.
+     * @param image 
+     * @param kernalRadius 
+     * @return Image
+     */
+    public static function medianBlur(image:Image, kernalRadius:Int):Image {
+        var medianed = new Image(image.width, image.height);
+        var histogram = new Histogram();
+
+        image.forEachPixel((x, y, color) -> {
+            for (k in -kernalRadius...kernalRadius + 1) {
+                histogram.decrement(image.getSafePixel(x + k, y - kernalRadius - 1), true);
+                histogram.increment(image.getSafePixel(x + k, y + kernalRadius));
+            }
+            medianed.setPixel(x, y, histogram.getMedian());
+        });
+
+        return image = medianed;
     }
 
     /**

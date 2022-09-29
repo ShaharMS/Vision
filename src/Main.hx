@@ -1,5 +1,6 @@
 package;
 
+import vision.ds.Histogram;
 import vision.exceptions.MultithreadFaliure;
 import vision.tools.ImageTools;
 
@@ -117,6 +118,10 @@ class Main {
 				printImage(image.clone().convolve(GaussianBlur(9, 10)));
 				end = haxe.Timer.stamp();
 				trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(image.clone().medianBlur(5));
+				end = haxe.Timer.stamp();
+				trace("Median blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				#if mirror_flip_tests
 				trace("Image Mirroring took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
@@ -186,6 +191,7 @@ class Main {
 		trace(new Ray2D({x: 0, y: 0}, 1).xIntercept);
 		trace(new Ray2D({x: 0, y: 0}, 1).findPointWithDistance(0, Math.sqrt(2) * 5, true));
 		trace(new Ray2D({x: 0, y: 0}, 1).findPointWithDistance(0, Math.sqrt(2) * 5, false));
+		var h = new Histogram();
 		var queue = new Queue<Int>();
 		queue.enqueue(0);
 		queue.enqueue(1);
