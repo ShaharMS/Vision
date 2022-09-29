@@ -1,7 +1,5 @@
 package vision.tools;
 
-import flash.display.Bitmap;
-import haxe.ui.components.Canvas;
 import vision.ds.ImageResizeAlgorithm;
 #if js
 import js.lib.Promise;

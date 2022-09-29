@@ -3,10 +3,6 @@
 
 --library format
 --library console.hx
---library haxeui-core
---library haxeui-openfl
---library openfl
---library lime
 -debug
 --dce full
 --js bin/main.js
