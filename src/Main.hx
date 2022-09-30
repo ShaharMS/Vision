@@ -115,7 +115,7 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Nearest neighbor blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(GaussianBlur(9, 10)));
+				printImage(image.clone().gaussianBlur(1, X9));
 				end = haxe.Timer.stamp();
 				trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();

@@ -5,7 +5,7 @@ import vision.ds.Line2D;
 import vision.ds.Point2D;
 
 /**
-	A class consistin of a b u n c h of static methods for manipulating values,
+	A class consisting of a **b u n c h** of static methods for manipulating values,
 	calculating distances, intersections, etc.
 
 	This class is fully compatible with haxe's `Math` class. That means you don't have to use
@@ -41,8 +41,8 @@ class MathTools {
 	  return d;
 	}
 
-	public static function distanceBetweenlineSegments2D(line1:Line2D, line2:Line2D):Float {
-		if (intersectionBetweenLineSegments2D(line1, line2) != null) {
+	public static function distanceBetweenLines2D(line1:Line2D, line2:Line2D):Float {
+		if (intersectionBetweenLines2D(line1, line2) != null) {
 			return 0;
 		}
 		var distance1:Float = distanceFromPointToLine2D(line1, line2.start);
@@ -55,7 +55,7 @@ class MathTools {
 
 	}
 
-	public static function angleFromPointToLine(point:Point2D, line:Line2D):Float {
+	public static function radiansFromPointToLine(point:Point2D, line:Line2D):Float {
 		var angle:Float = atan2(line.end.y - line.start.y, line.end.x - line.start.x);
 		var angle2:Float = atan2(point.y - line.start.y, point.x - line.start.x);
 		return angle2 - angle;
@@ -73,7 +73,7 @@ class MathTools {
 		return sqrt(x * x + y * y);
 	}
 
-	public static function intersectionBetweenLineSegments2D(line1:Line2D, line2:Line2D):Point2D {
+	public static function intersectionBetweenLines2D(line1:Line2D, line2:Line2D):Point2D {
 		var x1 = line1.start.x, y1 = line1.start.y;
 		var x2 = line1.end.x, y2 = line1.end.y;
 		var x3 = line2.start.x, y3 = line2.start.y;

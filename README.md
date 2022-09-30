@@ -139,7 +139,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `cannyEdgeDetection()`
  - [x] `nearestNeighborBlur()`
  - [x] `gaussianBlur()`
- - [ ] `medianBlur()` 
+ - [x] `medianBlur()` 
 
 #### algorithms:
 
@@ -180,8 +180,9 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `paintPixel()`
  - [x] matrix access `image[x][y]`
  - Drawing:
-   - [x] `fillColor`
-   - [x] `fillColorRecursive`
+   - [x] `fillColor()`
+   - [x] `fillColorRecursive()`
+   - [x] `fillUntilColor()`
    - [x] `drawLine2D()`
    - [x] `drawRay2D()`
    - [x] `drawRect()`
@@ -191,7 +192,6 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `drawCubicBezier()`
    - [x] `drawLineWithLerp()`
    - [x] `fillRect()`
-   - [ ] `fillRectRecursive()` 
    - [ ] `fillCircle()`
    - [ ] `fillCircleRecursive()`
    - [x] `callDrawSequence()`

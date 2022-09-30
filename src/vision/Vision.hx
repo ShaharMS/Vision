@@ -1,5 +1,7 @@
 package vision;
 
+import vision.algorithms.Radix;
+import haxe.ds.ArraySort;
 import vision.ds.Histogram;
 import vision.ds.simple.AlgorithmSettings;
 import haxe.Timer;
@@ -531,14 +533,12 @@ class Vision {
      */
     public static function medianBlur(image:Image, kernalRadius:Int):Image {
         var medianed = new Image(image.width, image.height);
-        var histogram = new Histogram();
 
         image.forEachPixel((x, y, color) -> {
-            for (k in -kernalRadius...kernalRadius + 1) {
-                histogram.decrement(image.getSafePixel(x + k, y - kernalRadius - 1), true);
-                histogram.increment(image.getSafePixel(x + k, y + kernalRadius));
-            }
-            medianed.setPixel(x, y, histogram.getMedian());
+            var neighbors:Array<UInt> = image.getNeighborsOfPixel(x, y, kernalRadius).flatten();
+            //Radix.sort(neighbors);
+            ArraySort.sort(neighbors, (a, b) -> a - b);
+            medianed.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
         });
 
         return image = medianed;
@@ -591,8 +591,6 @@ class Vision {
         #if vision_multithread
         var actualLines:Array<Line2D> = [];
         var edgeDetectedMirrored = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
-        Main.printImage(edgeDetected);
-        Main.printImage(edgeDetectedMirrored);
         var lines:Array<Array<Line2D>> = [[], [], [], [], [], [], [], []];
         var threads:Array<VisionThread> = [];
         var flag1 = false, flag2 = false, flag3 = false, flag4 = false, flag5 = false, flag6 = false, flag7 = false, flag8 = false;
