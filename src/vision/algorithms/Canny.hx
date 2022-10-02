@@ -45,24 +45,24 @@ class Canny {
             for (y in 0...image.height) {
                 var n = getNeighbors(3, x, y, image);
                 if (n[1][1] > n[0][1] && n[1][1] > n[2][1])
-                    filtered[x][y] = n[1][1];
+                    filtered.setPixel(x, y, n[1][1]);
                 else
-                    filtered[x][y] = 0;
+                    filtered.setPixel(x, y, 0);
 
                 if (n[1][1] > n[0][2] && n[1][1] > n[2][0])
-                    filtered[x][y] = n[1][1];
+                    filtered.setPixel(x, y, n[1][1]);
                 else
-                    filtered[x][y] = 0;
+                    filtered.setPixel(x, y, 0);
 
                 if (n[1][1] > n[1][0] && n[1][1] > n[1][2])
-                    filtered[x][y] = n[1][1];
+                    filtered.setPixel(x, y, n[1][1]);
                 else
-                    filtered[x][y] = 0;
+                    filtered.setPixel(x, y, 0);
 
                 if (n[1][1] > n[0][0] && n[1][1] > n[2][2])
-                    filtered[x][y] = n[1][1];
+                    filtered.setPixel(x, y, n[1][1]);
                 else
-                    filtered[x][y] = 0;
+                    filtered.setPixel(x, y, 0);
             }
         }
 
@@ -76,12 +76,12 @@ class Canny {
         final isWeak = (edge:Color) -> edge.redFloat < lowThreshold;
         function traverseEdge(x, y) {
             if (x == 0 || y == 0 || x == image.width - 1 || y == image.height - 1) return;
-            if (isStrong(copy[x][y])) {
+            if (isStrong(copy.getPixel(x, y))) {
                 var neighbors = getNeighbors(3, x, y, copy);
                 for (i in 0...2) {
                     for (j in 0...2) {
                         if (isCandidate(neighbors[i][j])) {
-                           copy[x - 1 + i][y - 1 + j] = 0xFFFFFF;
+                           copy.setPixel(x - 1 + i, y - 1 + j, 0xFFFFFF);
                            traverseEdge(x - 1 + i, y - 1 + j);
                         }
                     }
@@ -98,7 +98,7 @@ class Canny {
         //second iteration
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                if (!isStrong(copy[x][y])) copy[x][y] = 0;                 
+                if (!isStrong(copy.getPixel(x, y))) copy.setPixel(x, y, 0);                 
             }
         }
 

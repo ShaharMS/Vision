@@ -540,6 +540,11 @@ haxe_ds_List.prototype = {
 		this.length--;
 		return x;
 	}
+	,clear: function() {
+		this.h = null;
+		this.q = null;
+		this.length = 0;
+	}
 	,__class__: haxe_ds_List
 };
 var haxe_ds__$List_ListNode = function(item,next) {
@@ -1298,24 +1303,24 @@ vision_algorithms_Canny.nonMaxSuppression = function(image) {
 			var y = _g2++;
 			var n = vision_algorithms_Canny.getNeighbors(3,x,y,image);
 			if(n[1][1] > n[0][1] && n[1][1] > n[2][1]) {
-				vision_ds_Image.image_array_read(filtered,x)[y] = n[1][1];
+				vision_ds_Image.setPixel(filtered,x,y,n[1][1]);
 			} else {
-				vision_ds_Image.image_array_read(filtered,x)[y] = 0;
+				vision_ds_Image.setPixel(filtered,x,y,0);
 			}
 			if(n[1][1] > n[0][2] && n[1][1] > n[2][0]) {
-				vision_ds_Image.image_array_read(filtered,x)[y] = n[1][1];
+				vision_ds_Image.setPixel(filtered,x,y,n[1][1]);
 			} else {
-				vision_ds_Image.image_array_read(filtered,x)[y] = 0;
+				vision_ds_Image.setPixel(filtered,x,y,0);
 			}
 			if(n[1][1] > n[1][0] && n[1][1] > n[1][2]) {
-				vision_ds_Image.image_array_read(filtered,x)[y] = n[1][1];
+				vision_ds_Image.setPixel(filtered,x,y,n[1][1]);
 			} else {
-				vision_ds_Image.image_array_read(filtered,x)[y] = 0;
+				vision_ds_Image.setPixel(filtered,x,y,0);
 			}
 			if(n[1][1] > n[0][0] && n[1][1] > n[2][2]) {
-				vision_ds_Image.image_array_read(filtered,x)[y] = n[1][1];
+				vision_ds_Image.setPixel(filtered,x,y,n[1][1]);
 			} else {
-				vision_ds_Image.image_array_read(filtered,x)[y] = 0;
+				vision_ds_Image.setPixel(filtered,x,y,0);
 			}
 		}
 	}
@@ -1341,22 +1346,22 @@ vision_algorithms_Canny.applyHysteresis = function(image,highThreshold,lowThresh
 		if(x == 0 || y == 0 || x == vision_ds_Image.get_width(image) - 1 || y == vision_ds_Image.get_height(image) - 1) {
 			return;
 		}
-		if(isStrong(vision_ds_Image.image_array_read(copy,x)[y])) {
+		if(isStrong(vision_ds_Image.getPixel(copy,x,y))) {
 			var neighbors = vision_algorithms_Canny.getNeighbors(3,x,y,copy);
 			if(isCandidate(neighbors[0][0])) {
-				vision_ds_Image.image_array_read(copy,x - 1)[y - 1] = 16777215;
+				vision_ds_Image.setPixel(copy,x - 1,y - 1,16777215);
 				traverseEdge(x - 1,y - 1);
 			}
 			if(isCandidate(neighbors[0][1])) {
-				vision_ds_Image.image_array_read(copy,x - 1)[y - 1 + 1] = 16777215;
+				vision_ds_Image.setPixel(copy,x - 1,y - 1 + 1,16777215);
 				traverseEdge(x - 1,y - 1 + 1);
 			}
 			if(isCandidate(neighbors[1][0])) {
-				vision_ds_Image.image_array_read(copy,x - 1 + 1)[y - 1] = 16777215;
+				vision_ds_Image.setPixel(copy,x - 1 + 1,y - 1,16777215);
 				traverseEdge(x - 1 + 1,y - 1);
 			}
 			if(isCandidate(neighbors[1][1])) {
-				vision_ds_Image.image_array_read(copy,x - 1 + 1)[y - 1 + 1] = 16777215;
+				vision_ds_Image.setPixel(copy,x - 1 + 1,y - 1 + 1,16777215);
 				traverseEdge(x - 1 + 1,y - 1 + 1);
 			}
 		}
@@ -1380,8 +1385,8 @@ vision_algorithms_Canny.applyHysteresis = function(image,highThreshold,lowThresh
 		var _g3 = vision_ds_Image.get_height(image);
 		while(_g2 < _g3) {
 			var y = _g2++;
-			if(!isStrong(vision_ds_Image.image_array_read(copy,x)[y])) {
-				vision_ds_Image.image_array_read(copy,x)[y] = 0;
+			if(!isStrong(vision_ds_Image.getPixel(copy,x,y))) {
+				vision_ds_Image.setPixel(copy,x,y,0);
 			}
 		}
 	}
@@ -1627,57 +1632,81 @@ vision_ds_Color._new = function(value) {
 };
 var vision_ds_Image = {};
 vision_ds_Image.get_width = function(this1) {
-	return this1.length;
+	return this1[0] | this1[1] << 8 | this1[2] << 16 | this1[3] << 24;
 };
 vision_ds_Image.get_height = function(this1) {
-	return this1[0].length;
+	return Math.ceil((this1.length - vision_ds_Image.OFFSET) / vision_ds_Image.get_width(this1));
 };
 vision_ds_Image._new = function(width,height,color) {
 	if(color == null) {
 		color = 0;
 	}
-	var this1 = new Array(width);
+	var this1 = new Uint8Array(width * height * 4 + vision_ds_Image.OFFSET);
 	var this2 = this1;
-	var _g = 0;
-	var _g1 = this2.length;
-	while(_g < _g1) {
-		var i = _g++;
-		var this1 = new Array(height);
-		this2[i] = this1;
-		var _g2 = 0;
-		var _g3 = this2[i].length;
-		while(_g2 < _g3) {
-			var j = _g2++;
-			var val = vision_ds_Color._new(color);
-			this2[i][j] = val;
-		}
+	this2[0] = width & 255;
+	this2[1] = width >> 8 & 255;
+	this2[2] = width >> 16 & 255;
+	this2[3] = width >> 24 & 255;
+	var i = 4;
+	while(i < this2.length) {
+		this2[i] = color >> 24 & 255;
+		this2[i + 1] = color >> 16 & 255;
+		this2[i + 2] = color >> 8 & 255;
+		this2[i + 3] = color & 255;
+		i += 4;
 	}
 	return this2;
 };
+vision_ds_Image.getColorFromStartingBytePos = function(this1,position) {
+	position += vision_ds_Image.OFFSET;
+	var c = vision_ds_Color._new();
+	var value = this1[position];
+	c &= 16777215;
+	c |= (value > 255 ? 255 : value < 0 ? 0 : value) << 24;
+	var value = this1[position + 1];
+	c &= -16711681;
+	c |= (value > 255 ? 255 : value < 0 ? 0 : value) << 16;
+	var value = this1[position + 2];
+	c &= -65281;
+	c |= (value > 255 ? 255 : value < 0 ? 0 : value) << 8;
+	var value = this1[position + 3];
+	c &= -256;
+	c |= value > 255 ? 255 : value < 0 ? 0 : value;
+	return c;
+};
+vision_ds_Image.setColorFromStartingBytePos = function(this1,position,c) {
+	position += vision_ds_Image.OFFSET;
+	var c = vision_ds_Color._new();
+	this1[position] = c >> 24 & 255;
+	this1[position + 1] = c >> 16 & 255;
+	this1[position + 2] = c >> 8 & 255;
+	this1[position + 3] = c & 255;
+	return c;
+};
 vision_ds_Image.getPixel = function(this1,x,y) {
-	if(x < 0 || x >= this1.length || y < 0 || y >= this1[x].length) {
+	if(!vision_ds_Image.hasPixel(this1,x,y)) {
 		throw haxe_Exception.thrown(new vision_exceptions_OutOfBounds(this1,vision_ds_IntPoint2D.toPoint2D(vision_ds_IntPoint2D._new(x,y))));
 	}
-	return this1[x][y];
+	return vision_ds_Image.getColorFromStartingBytePos(this1,x * y * 4);
 };
 vision_ds_Image.setPixel = function(this1,x,y,color) {
-	if(x < 0 || x >= this1.length || y < 0 || y >= this1[x].length) {
+	if(!vision_ds_Image.hasPixel(this1,x,y)) {
 		throw haxe_Exception.thrown(new vision_exceptions_OutOfBounds(this1,vision_ds_IntPoint2D.toPoint2D(vision_ds_IntPoint2D._new(x,y))));
 	}
-	this1[x][y] = color;
+	vision_ds_Image.setColorFromStartingBytePos(this1,x * y * 4,color);
 };
 vision_ds_Image.hasPixel = function(this1,x,y) {
-	if(x >= 0 && x < this1.length && y >= 0) {
-		return y < this1[x].length;
+	if(x >= 0 && y >= 0) {
+		return x * y * 4 + vision_ds_Image.OFFSET <= this1.length;
 	} else {
 		return false;
 	}
 };
 vision_ds_Image.paintPixel = function(this1,x,y,color) {
-	if(x < 0 || x >= this1.length || y < 0 || y >= this1[x].length) {
+	if(x < 0 || x >= vision_ds_Image.get_width(this1) || y < 0 || y >= vision_ds_Image.get_height(this1)) {
 		throw haxe_Exception.thrown(new vision_exceptions_OutOfBounds(this1,vision_ds_IntPoint2D.toPoint2D(vision_ds_IntPoint2D._new(x,y))));
 	}
-	var oldColor = this1[x][y];
+	var oldColor = vision_ds_Image.getPixel(this1,x,y);
 	var Red = (color >> 16 & 255) / 255 * ((color >> 24 & 255) / 255) + (oldColor >> 16 & 255) / 255 * (1 - (color >> 24 & 255) / 255);
 	var Green = (color >> 8 & 255) / 255 * ((color >> 24 & 255) / 255) + (oldColor >> 8 & 255) / 255 * (1 - (color >> 24 & 255) / 255);
 	var Blue = (color & 255) / 255 * ((color >> 24 & 255) / 255) + (oldColor & 255) / 255 * (1 - (color >> 24 & 255) / 255);
@@ -1908,7 +1937,13 @@ vision_ds_Image.fillColor = function(this1,position,color) {
 	queue.push(vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(vision_ds_IntPoint2D.get_x(position),vision_ds_IntPoint2D.get_y(position))));
 	var explored = [];
 	var originalColor = vision_ds_Image.getPixel(this1,vision_ds_IntPoint2D.get_x(position),vision_ds_IntPoint2D.get_y(position));
+	var pc = 0;
 	var fill = function(v) {
+		if(pc >= 100000) {
+			haxe_Log.trace("fillColor: too much iterations",{ fileName : "src/vision/ds/Image.hx", lineNumber : 735, className : "vision.ds._Image.Image_Impl_", methodName : "fillColor"});
+			queue.clear();
+			return;
+		}
 		var fill;
 		if(vision_ds_Image.hasPixel(this1,vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v)) && vision_ds_Image.getPixel(this1,vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v)) == originalColor) {
 			var this2 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v));
@@ -1917,6 +1952,7 @@ vision_ds_Image.fillColor = function(this1,position,color) {
 			fill = false;
 		}
 		if(fill) {
+			pc += 1;
 			queue.push(vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v))));
 			vision_ds_Image.setPixel(this1,vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v),color);
 		}
@@ -1936,28 +1972,27 @@ vision_ds_Image.fillUntilColor = function(this1,position,color,borderColor) {
 	var queue = new haxe_ds_List();
 	queue.push(vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(vision_ds_IntPoint2D.get_x(position),vision_ds_IntPoint2D.get_y(position))));
 	var explored = [];
-	var originalColor = vision_ds_Image.getPixel(this1,vision_ds_IntPoint2D.get_x(position),vision_ds_IntPoint2D.get_y(position));
+	var pc = 0;
 	var fill = function(v) {
-		var fill;
-		if(vision_ds_Image.hasPixel(this1,vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v))) {
-			var this2 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v));
-			fill = explored.indexOf(this2) != -1;
-		} else {
-			fill = false;
-		}
-		if(fill) {
+		if(pc >= 100000) {
+			haxe_Log.trace("fillColor: too much iterations",{ fileName : "src/vision/ds/Image.hx", lineNumber : 772, className : "vision.ds._Image.Image_Impl_", methodName : "fillUntilColor"});
+			queue.clear();
 			return;
 		}
-		haxe_Log.trace("not yet explored",{ fileName : "src/vision/ds/Image.hx", lineNumber : 693, className : "vision.ds._Image.Image_Impl_", methodName : "fillUntilColor"});
+		if(!vision_ds_Image.hasPixel(this1,vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v))) {
+			return;
+		}
+		var this2 = new haxe__$Int64__$_$_$Int64(vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v));
+		if(explored.indexOf(this2) != -1) {
+			return;
+		}
 		if(vision_ds_Image.getPixel(this1,vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v)) == color) {
 			return;
 		}
-		haxe_Log.trace("color is different from org",{ fileName : "src/vision/ds/Image.hx", lineNumber : 695, className : "vision.ds._Image.Image_Impl_", methodName : "fillUntilColor"});
 		if(vision_ds_Image.getPixel(this1,vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v)) != borderColor) {
+			pc += 1;
 			queue.push(vision_ds_IntPoint2D.fromPoint2D(new vision_ds_Point2D(vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v))));
 			vision_ds_Image.setPixel(this1,vision_ds_IntPoint2D.get_x(v),vision_ds_IntPoint2D.get_y(v),color);
-		} else {
-			haxe_Log.trace("color is border color",{ fileName : "src/vision/ds/Image.hx", lineNumber : 699, className : "vision.ds._Image.Image_Impl_", methodName : "fillUntilColor"});
 		}
 	};
 	while(queue.length > 0) {
@@ -1974,33 +2009,26 @@ vision_ds_Image.fillUntilColor = function(this1,position,color,borderColor) {
 vision_ds_Image.clone = function(this1) {
 	var clone = vision_ds_Image._new(vision_ds_Image.get_width(this1),vision_ds_Image.get_height(this1),0);
 	var _g = 0;
-	var _g1 = this1.length;
+	var _g1 = vision_ds_Image.get_width(this1);
 	while(_g < _g1) {
 		var i = _g++;
 		var _g2 = 0;
-		var _g3 = this1[i].length;
+		var _g3 = vision_ds_Image.get_height(this1);
 		while(_g2 < _g3) {
 			var j = _g2++;
-			vision_ds_Image.setPixel(clone,i,j,this1[i][j]);
+			vision_ds_Image.setPixel(clone,i,j,vision_ds_Image.getPixel(this1,i,j));
 		}
 	}
 	return clone;
 };
 vision_ds_Image.forEachPixel = function(this1,callback) {
-	var _g = 0;
-	var _g1 = this1.length;
-	while(_g < _g1) {
-		var x = _g++;
-		var _g2 = 0;
-		var _g3 = this1[x].length;
-		while(_g2 < _g3) {
-			var y = _g2++;
-			callback(x,y,vision_ds_Image.getPixel(this1,x,y));
-		}
+	var i = 4;
+	while(i < this1.length) {
+		var x = i % vision_ds_Image.get_width(this1);
+		var y = Math.floor(i / vision_ds_Image.get_width(this1));
+		callback(x,y,vision_ds_Image.getPixel(this1,x,y));
+		i += 4;
 	}
-};
-vision_ds_Image.image_array_read = function(this1,index) {
-	return this1[index];
 };
 var vision_ds_IntPoint2D = {};
 vision_ds_IntPoint2D._new = function(X,Y) {
@@ -2345,6 +2373,7 @@ var Bool = Boolean;
 var Class = { };
 var Enum = { };
 js_Boot.__toStr = ({ }).toString;
+vision_ds_Image.OFFSET = 4;
 Main.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
 

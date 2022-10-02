@@ -15,7 +15,7 @@ class SimpleLineDetector {
 		var startX = point.x, startY = point.y;
 		var yArr = preferTTB ? [0, 1, 2] :[0, -1, -2];
 		var xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
-		if (image[point.x] == null || image[point.x][point.y] == null || image[point.x][point.y] == 0) return null;
+		if (!image.hasPixel(point.x, point.y) || image.getPixel(point.x, point.y) == 0) return null;
 		
 		//now, were going to start looking for points around the point to find the entire line.
 		var prev:Point2D = null;
@@ -23,7 +23,7 @@ class SimpleLineDetector {
 		function expand() {
 			for (X in xArr) {
 				for (Y in yArr) {
-					if (X == 0 && Y == 0 || image[point.x + X] == null || image[point.x + X][point.y + Y] == null) continue;
+					if (X == 0 && Y == 0 || !image.hasPixel(point.x + X, point.y + Y)) continue;
 					if (image.getPixel(point.x + X, point.y + Y).to24Bit() == Color.WHITE) {
 						point.x = point.x + X;
 						point.y = point.y + Y;

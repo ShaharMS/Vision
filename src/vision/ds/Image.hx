@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.io.UInt8Array;
 import vision.exceptions.Unimplemented;
 import vision.tools.MathTools;
 import vision.algorithms.BilinearInterpolation;
@@ -16,20 +17,25 @@ import vision.tools.ImageTools;
 /**
     Represents a 2D image, as a matrix of Colors.
 **/
-abstract Image(Matrix<Null<Color>>) {
+abstract Image(UInt8Array) {
     
+    /**
+     * the first 4 bytes represent width.
+     */
+    static var OFFSET = 4;
+
     /**
         Returns the underlying type of this abstract.
     **/
-    public var underlying(get, #if vision_allow_resize set #else never #end):Matrix<Null<Color>>;
+    public var underlying(get, #if vision_allow_resize set #else never #end):UInt8Array;
 
     function get_underlying() {
         return this;
     }
 
     #if vision_allow_resize
-    inline function set_underlying(matrix:Matrix<Null<Color>>) {
-        return this = matrix;
+    inline function set_underlying(bytes:UInt8Array) {
+        return this = bytes;
     }
     #end
 
@@ -37,7 +43,9 @@ abstract Image(Matrix<Null<Color>>) {
         The width of the image.
     **/
     public var width(get, #if vision_allow_resize set #else never #end):Int;
-    function get_width() return this.length;
+    function get_width() {
+        return this[0] | this[1] << 8 | this[2] << 16 | this[3] << 24;
+    }
     #if vision_allow_resize
     function set_width(value:Int) {
         resize(value, height);
@@ -48,7 +56,7 @@ abstract Image(Matrix<Null<Color>>) {
         The height of the image.
     **/
     public var height(get, #if vision_allow_resize set #else never #end):Int;
-    function get_height() return this[0].length;
+    function get_height() return Math.ceil((this.length - OFFSET) / width);
     #if vision_allow_resize
     function set_height(value:Int) {
         resize(width, value);
@@ -62,14 +70,42 @@ abstract Image(Matrix<Null<Color>>) {
         @param height The height of the image.
         @param color The color to fill the image with. if unspecified, the image is transparent.
     **/
-    public function new(width:Int, height:Int, ?color:Int = 0x00000000) {
-        this = new Matrix<Null<Color>>(width);
-        for (i in 0...this.length) {
-            this[i] = new Vector<Null<Color>>(height);
-            for (j in 0...this[i].length) {
-                this[i][j] = Color.fromInt(color);
-            }
+    public function new(width:Int, height:Int, ?color:Color = 0x00000000) {
+        this = new UInt8Array(width * height * 4 + OFFSET);
+        this[0] = width & 0xFF;
+        this[1] = width >> 8 & 0xFF;
+        this[2] = width >> 16 & 0xFF;
+        this[3] = width >> 24 & 0xFF;
+        var i = 4;
+        while (i < this.length) {
+            this[i] = color.alpha;
+            this[i + 1] = color.red;
+            this[i + 2] = color.green;
+            this[i + 3] = color.blue;
+            i += 4;
         }
+    }
+
+    function getColorFromStartingBytePos(position:Int):Color {
+        position += OFFSET;
+        var c = new Color();
+        c.alpha = this[position];
+        c.red = this[position + 1];
+        c.green = this[position + 2];
+        c.blue = this[position + 3];
+
+        return c;
+    }
+
+    function setColorFromStartingBytePos(position:Int, c:Color) {
+        position += OFFSET;
+        var c = new Color();
+        this[position] = c.alpha;
+        this[position + 1] = c.red;
+        this[position + 2] = c.green;
+        this[position + 3] = c.blue;
+
+        return c;
     }
 
     /**
@@ -82,7 +118,7 @@ abstract Image(Matrix<Null<Color>>) {
         @return The color of the pixel at the given coordinates.
     **/
     public function getPixel(x:Int, y:Int):Color {
-        if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+        if (!hasPixel(x, y)) {
             #if !vision_quiet
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
             #else
@@ -113,10 +149,11 @@ abstract Image(Matrix<Null<Color>>) {
 				gettable.x = ox;
 				gettable.y = height - 1;
 			}
-            return this[gettable.x][gettable.y];
+            x = gettable.x;
+            y = gettable.y;
             #end
         }
-        return this[x][y];
+        return getColorFromStartingBytePos(x * y * 4);
     }
 
     /**
@@ -130,7 +167,7 @@ abstract Image(Matrix<Null<Color>>) {
         @return The color of the pixel at the given coordinates.
     **/
     public function getSafePixel(x:Int, y:Int):Color {
-        if (x < 0 || x >= width || y < 0 || y >= height) {
+        if (!hasPixel(x, y)) {
             var gettable:IntPoint2D = new IntPoint2D(0, 0);
 			var ox = x;
 			var oy = y;
@@ -208,6 +245,9 @@ abstract Image(Matrix<Null<Color>>) {
         @return The color of the pixel at the given coordinates.
     **/
     public function getFloatingPixel(x:Float, y:Float):Color {
+        #if !visiin_quiet
+        if (!hasPixel(Math.ceil(x), Math.ceil(y))) throw new OutOfBounds(cast this, {x: x, y: y});
+        #end
         final yfrac = y - Std.int(y), xfrac = x - Std.int(x);
         return Std.int(
             (1 - yfrac) * (
@@ -231,14 +271,14 @@ abstract Image(Matrix<Null<Color>>) {
         @throws OutOfBounds if the pixel is out of bounds.
     **/
     public function setPixel(x:Int, y:Int, color:Color) {
-        if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+        if (!hasPixel(x, y)) {
             #if vision_quiet
             return;
             #else
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
             #end
         }
-        this[x][y] = color;
+        setColorFromStartingBytePos(x * y * 4, color);
     }
 
     /**
@@ -250,7 +290,7 @@ abstract Image(Matrix<Null<Color>>) {
         @return True if the coordinates are within the bounds of the image.
     **/
     public function hasPixel(x:Int, y:Int):Bool {
-        return x >= 0 && x < width && y >= 0 && y < height;
+        return (x >= 0 && y >= 0 && x * y * 4 + OFFSET <= this.length);
     }
 
     /**
@@ -301,7 +341,7 @@ abstract Image(Matrix<Null<Color>>) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
         }
-        var oldColor = this[x][y];
+        var oldColor = getPixel(x, y);
         var newColor = Color.fromRGBAFloat(
             color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
             color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat),
@@ -684,12 +724,20 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function fillColor(position:IntPoint2D, color:Color) {
 
+
         var queue = new List<IntPoint2D>();
         queue.push({x: position.x, y: position.y});
         var explored:Array<Int64> = [];
         var originalColor = getPixel(position.x, position.y);
+        var pc = 0;
         function fill(v:IntPoint2D) {
+            if (pc >= 100000) {
+                trace("fillColor: too much iterations");
+                queue.clear();
+                return;
+            }
             if (hasPixel(v.x, v.y) && getPixel(v.x, v.y) == originalColor && !explored.contains(Int64.make(v.x, v.y))) {
+                pc++;
                 queue.push({x: v.x, y: v.y});
                 setPixel(v.x, v.y, color);
             }
@@ -718,10 +766,18 @@ abstract Image(Matrix<Null<Color>>) {
         var queue = new List<IntPoint2D>();
         queue.push({x: position.x, y: position.y});
         var explored:Array<Int64> = [];
+        var pc = 0;
         function fill(v:IntPoint2D) {
-            if (hasPixel(v.x, v.y) && explored.contains(Int64.make(v.x, v.y))) return;
+            if (pc >= 100000) {
+                trace("fillColor: too much iterations");
+                queue.clear();
+                return;
+            }
+            if (!hasPixel(v.x, v.y)) return;
+            if (explored.contains(Int64.make(v.x, v.y))) return;
             if (getPixel(v.x, v.y) == color) return;
             if (getPixel(v.x, v.y) != borderColor) {
+                pc++;
                 queue.push({x: v.x, y: v.y});
                 setPixel(v.x, v.y, color);
             }
@@ -754,14 +810,17 @@ abstract Image(Matrix<Null<Color>>) {
     //--------------------------------------------------------------------------
 
     public function mirror():Image {
-        this.sort((e, f) -> 1);
+        var inter = clone();
+        forEachPixel((x, y, color) -> {
+            setPixel(x, y, inter.getPixel(inter.width - x - 1, inter.height - y - 1));
+        });
         return cast this;
     }
 
     public function flip():Image {
-        for (x in 0...width) {
-            this[x].sort((e, f) -> 1);
-        }
+        var array:Array<Int> = cast this;
+        array.reverse();
+        for (i in 4...array.length) this[i] = array[i - 4];
         return cast this;
     }
 
@@ -799,46 +858,38 @@ abstract Image(Matrix<Null<Color>>) {
             return Std.string(this);
         }
         var s = "\n";
-        for (i in 0...this.length) {
-            for (j in 0...this[i].length) {
-                s += this[i][j].toString();
+        var prevY = 0;
+        forEachPixel((x, y, color) -> {
+            if (prevY != y) {
+                prevY = y;
+                s += "\n";
             }
-            s += "\n";
-        }
+            s += color.toString();
+        });
         return s;
     }
 
     public function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
-        for (x in 0...this.length) {
-            for (y in 0...this[x].length) {
-                callback(x, y, getPixel(x, y));
-            }
-        }        
+        var i = 4;
+        while (i < this.length) {
+            final x = i % width;
+            final y = Math.floor(i / width);
+            callback(x, y, getPixel(x, y));
+            i += 4;
+        }
     }
 
     public function iterator():Iterator<Pixel> {
         var pixels:Array<Pixel> = [];
-        for (x in 0...this.length) {
-            for (y in 0...this[x].length) {
-                pixels.push({x: x, y: y, color: getPixel(x, y)});
-            }
-        } 
+        var i = 4;
+        while (i < this.length) {
+            final x = i % width;
+            final y = Math.floor(i / width);
+            pixels.push({x: x, y: y, color: getPixel(x, y)});
+            i += 4;
+        }
         return pixels.iterator();
     }
-
-    //--------------------------------------------------------------------------
-    // Operators
-    //--------------------------------------------------------------------------
-
-    @:op([]) @:noCompletion function image_array_read(index:Int) {
-        return this[index];
-    }
-        
-    @:op([]) @:noCompletion function image_array_write(index:Int, value:Vector<Null<Color>>) {
-        this[index] = value;
-    }
-
-
 
 
 
@@ -918,8 +969,10 @@ abstract Image(Matrix<Null<Color>>) {
         }
 
         var image = new Image(array.length, maxLength);
-        for (i in 0...array.length) {
-            image[i] = Vector.fromArrayCopy(array[i]);
+        for (x in 0...array.length) {
+            for (y in 0...array[x].length) {
+                image.setPixel(x, y, array[x][y]);
+            }
         }
 
         return image;
