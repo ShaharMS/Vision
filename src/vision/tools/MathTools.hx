@@ -12,7 +12,6 @@ import vision.ds.Point2D;
 	both at the same time.
 **/
 class MathTools {
-
 	public static var PI_OVER_2(default, never):Float = Math.PI / 2;
 
 	public static inline function distanceFromPointToRay2D(point:Point2D, line:Ray2D) {
@@ -32,13 +31,14 @@ class MathTools {
 		return distanceFromPointToRay2D(point, ray);
 	}
 
-	public static inline function distanceFromPointToLine2D(line:Line2D, point:Point2D):Float
-	{
-	
-	  var ch = (line.start.y - line.end.y) * point.x + (line.end.x - line.start.x) * point.y + (line.start.x * line.end.y - line.end.x * line.start.y);
-	  var del = sqrt(pow(line.end.x - line.start.x, 2) + pow(line.end.y - line.start.y, 2));
-	  var d = ch / del;
-	  return d;
+	public static inline function distanceFromPointToLine2D(line:Line2D, point:Point2D):Float {
+		var ch = (line.start.y
+			- line.end.y) * point.x
+			+ (line.end.x - line.start.x) * point.y
+			+ (line.start.x * line.end.y - line.end.x * line.start.y);
+		var del = sqrt(pow(line.end.x - line.start.x, 2) + pow(line.end.y - line.start.y, 2));
+		var d = ch / del;
+		return d;
 	}
 
 	public static inline function distanceBetweenLines2D(line1:Line2D, line2:Line2D):Float {
@@ -52,7 +52,6 @@ class MathTools {
 
 		var distance:Float = min(distance1, distance2, distance3, distance4);
 		return distance;
-
 	}
 
 	public static inline function radiansFromPointToLine(point:Point2D, line:Line2D):Float {
@@ -78,16 +77,19 @@ class MathTools {
 		var x2 = line1.end.x, y2 = line1.end.y;
 		var x3 = line2.start.x, y3 = line2.start.y;
 		var x4 = line2.end.x, y4 = line2.end.y;
-		var denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)); 
+		var denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
 
-		if ((x1 == x2 && y1 == y2) || (x3 == x4 && y3 == y4)) return null;
-		if (denominator == 0) return null; //if the denominator is 0, the lines are parallel
-			
+		if ((x1 == x2 && y1 == y2) || (x3 == x4 && y3 == y4))
+			return null;
+		if (denominator == 0)
+			return null; // if the denominator is 0, the lines are parallel
+
 		var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
 		var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
 
 		// is the intersection along the segments?
-		if (ua < 0 || ua > 1 || ub < 0 || ub > 1) return null;
+		if (ua < 0 || ua > 1 || ub < 0 || ub > 1)
+			return null;
 
 		// Return a object with the x and y coordinates of the intersection
 		var x = x1 + ua * (x2 - x1);
@@ -117,7 +119,7 @@ class MathTools {
 		numerator2 = ((line1EndX - line1StartX) * a) - ((line1EndY - line1StartY) * b);
 		a = numerator1 / denominator;
 		b = numerator2 / denominator;
-	
+
 		// if we cast these lines infinitely in both directions, they intersect here:
 		result = new Point2D();
 		result.x = line1StartX + (a * (line1EndX - line1StartX));
@@ -210,7 +212,8 @@ class MathTools {
 	public static function min(...values:Float) {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
-			if (values[i] < min) min = values[i];
+			if (values[i] < min)
+				min = values[i];
 		}
 		return min;
 	}
@@ -218,7 +221,8 @@ class MathTools {
 	public static inline function max(...values:Float) {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
-			if (values[i] > max) max = values[i];
+			if (values[i] > max)
+				max = values[i];
 		}
 		return max;
 	}
@@ -232,7 +236,8 @@ class MathTools {
 				range.end = temp;
 			}
 			between = (value > range.start) && (value > range.end);
-			if (between) return true;
+			if (between)
+				return true;
 		}
 		return false;
 	}
@@ -252,38 +257,86 @@ class MathTools {
 	//---------------------
 	// Math.hx compatibility
 	//---------------------
-
 	public static var NEGATIVE_INFINITY(get, null):Float;
-	@:noCompletion static inline function get_NEGATIVE_INFINITY() return Math.NEGATIVE_INFINITY;
+
+	@:noCompletion static inline function get_NEGATIVE_INFINITY()
+		return Math.NEGATIVE_INFINITY;
 
 	public static var POSITIVE_INFINITY(get, null):Float;
-	@:noCompletion static inline function get_POSITIVE_INFINITY() return Math.POSITIVE_INFINITY;
+
+	@:noCompletion static inline function get_POSITIVE_INFINITY()
+		return Math.POSITIVE_INFINITY;
 
 	public static var NaN(get, null):Float;
-	@:noCompletion static inline function get_NaN() return Math.NaN;
+
+	@:noCompletion static inline function get_NaN()
+		return Math.NaN;
 
 	public static var PI(get, null):Float;
-	@:noCompletion static inline function get_PI() return Math.PI;
 
-	public static inline function abs(v:Float):Float return Math.abs(v);
-	public static inline function acos(v:Float):Float return Math.acos(v);
-	public static inline function asin(v:Float):Float return Math.asin(v);
-	public static inline function atan(v:Float):Float return Math.atan(v);
-	public static inline function atan2(y:Float, x:Float):Float return Math.atan2(x, y);
-	public static inline function ceil(v:Float):Int return Math.ceil(v);
-	public static inline function cos(v:Float):Float return Math.cos(v);
-	public static inline function exp(v:Float):Float return Math.exp(v);
-	public static inline function floor(v:Float):Int return Math.floor(v);
-	public static inline function log(v:Float):Float return Math.log(v);
-	public static inline function pow(v:Float, exp:Float):Float return Math.pow(v, exp);
-	public static inline function random():Float return Math.random();
-	public static inline function round(v:Float):Int return Math.round(v);
-	public static inline function sin(v:Float):Float return Math.sin(v);
-	public static inline function sqrt(v:Float):Float return Math.sqrt(v);
-	public static inline function tan(v:Float):Float return Math.tan(v);
-	public static inline function ffloor(v:Float):Float return floor(v);
-	public static inline function fceil(v:Float):Float return ceil(v);
-	public static inline function fround(v:Float):Float return round(v);
-	public static inline function isFinite(f:Float):Bool return Math.isFinite(f);
-	public static inline function isNaN(f:Float):Bool return Math.isNaN(f);
+	@:noCompletion static inline function get_PI()
+		return Math.PI;
+
+	public static inline function abs(v:Float):Float
+		return Math.abs(v);
+
+	public static inline function acos(v:Float):Float
+		return Math.acos(v);
+
+	public static inline function asin(v:Float):Float
+		return Math.asin(v);
+
+	public static inline function atan(v:Float):Float
+		return Math.atan(v);
+
+	public static inline function atan2(y:Float, x:Float):Float
+		return Math.atan2(x, y);
+
+	public static inline function ceil(v:Float):Int
+		return Math.ceil(v);
+
+	public static inline function cos(v:Float):Float
+		return Math.cos(v);
+
+	public static inline function exp(v:Float):Float
+		return Math.exp(v);
+
+	public static inline function floor(v:Float):Int
+		return Math.floor(v);
+
+	public static inline function log(v:Float):Float
+		return Math.log(v);
+
+	public static inline function pow(v:Float, exp:Float):Float
+		return Math.pow(v, exp);
+
+	public static inline function random():Float
+		return Math.random();
+
+	public static inline function round(v:Float):Int
+		return Math.round(v);
+
+	public static inline function sin(v:Float):Float
+		return Math.sin(v);
+
+	public static inline function sqrt(v:Float):Float
+		return Math.sqrt(v);
+
+	public static inline function tan(v:Float):Float
+		return Math.tan(v);
+
+	public static inline function ffloor(v:Float):Float
+		return floor(v);
+
+	public static inline function fceil(v:Float):Float
+		return ceil(v);
+
+	public static inline function fround(v:Float):Float
+		return round(v);
+
+	public static inline function isFinite(f:Float):Bool
+		return Math.isFinite(f);
+
+	public static inline function isNaN(f:Float):Bool
+		return Math.isNaN(f);
 }

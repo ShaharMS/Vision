@@ -7,9 +7,9 @@ class Line2D {
 
 	public var slope(default, set):Float;
 
-    public var degrees(default, set):Float;
+	public var degrees(default, set):Float;
 
-    public var radians(default, set):Float;
+	public var radians(default, set):Float;
 
 	public var start(default, set):Point2D = {x: 0, y: 0};
 
@@ -18,16 +18,16 @@ class Line2D {
 	public var middle(get, set):Point2D;
 
 	/**
-	   When editing the slope/degrees/radians of `this` line,
-	   the `start`,`end` or `middle` points will change according to this setting:
-	   
-	   
-	   | Name | Explanation | Modifies Start | Modifies End | Modifies Middle |
-	   | --- | --- | :---:| :---:| :---: |
-	   | `Line2DModifyingPoint.START` | On edit, the `start` point should remain the same, but the `end` point will be modified. | ❌ | ✅ | ✅ |
-	   | `Line2DModifyingPoint.END` | On edit, the `end` point should remain the same, but the `start` point will be modified. | ✅ | ❌ | ✅ |
-	   | `Line2DMOdifyingPoint.MIDDLE` | On edit, the `middle` point of the "previous" line should remain the same. `start` and `end` should be modified. | ✅ | ✅ | ❌ |
-	  
+		 When editing the slope/degrees/radians of `this` line,
+		 the `start`,`end` or `middle` points will change according to this setting:
+		 
+		 
+		 | Name | Explanation | Modifies Start | Modifies End | Modifies Middle |
+		 | --- | --- | :---:| :---:| :---: |
+		 | `Line2DModifyingPoint.START` | On edit, the `start` point should remain the same, but the `end` point will be modified. | ❌ | ✅ | ✅ |
+		 | `Line2DModifyingPoint.END` | On edit, the `end` point should remain the same, but the `start` point will be modified. | ✅ | ❌ | ✅ |
+		 | `Line2DMOdifyingPoint.MIDDLE` | On edit, the `middle` point of the "previous" line should remain the same. `start` and `end` should be modified. | ✅ | ✅ | ❌ |
+
 	**/
 	public var modificationMode:Line2DModifyingPoint = START;
 
@@ -50,21 +50,21 @@ class Line2D {
 
 	inline function set_slope(value:Float):Float {
 		@:bypassAccessor degrees = MathTools.slopeToDegrees(value);
-        @:bypassAccessor radians = MathTools.slopeToRadians(value);
-        return slope = value;
+		@:bypassAccessor radians = MathTools.slopeToRadians(value);
+		return slope = value;
 	}
 
 	inline function set_degrees(value:Float):Float {
 		@:bypassAccessor slope = MathTools.degreesToSlope(value);
-        @:bypassAccessor radians = MathTools.degreesToRadians(value);
-        return degrees = MathTools.wrapFloat(value, -180, 180);
+		@:bypassAccessor radians = MathTools.degreesToRadians(value);
+		return degrees = MathTools.wrapFloat(value, -180, 180);
 	}
 
 	inline function set_radians(value:Float):Float {
-        @:bypassAccessor slope = MathTools.radiansToSlope(value);
-        @:bypassAccessor degrees = MathTools.radiansToDegrees(value);
-        return radians = value;
-    }
+		@:bypassAccessor slope = MathTools.radiansToSlope(value);
+		@:bypassAccessor degrees = MathTools.radiansToDegrees(value);
+		return radians = value;
+	}
 
 	inline function set_start(value:Point2D) {
 		radians = MathTools.radiansFromPointToPoint(value, end);
@@ -105,8 +105,7 @@ class Line2D {
 		return get_middle();
 	}
 
-	public
-	inline function mirrorInsideRectangle(rect:Rectangle):Line2D {
+	public inline function mirrorInsideRectangle(rect:Rectangle):Line2D {
 		final diffSX = start.x - rect.x;
 		final diffEX = end.x - rect.x;
 
@@ -117,28 +116,31 @@ class Line2D {
 
 	inline function recalc() {
 		switch modificationMode {
-			case START: {
-				var dist = length;
-				var s = start.copy();
-				var a = degrees;
-				var ray = new Ray2D(s, null, a);
-				end = ray.findPointWithDistance(s.x, dist, MathTools.isBetweenRanges(a, {start: -90, end: 90}));
-			}
-			case MIDDLE: {
-				var dist = length;
-				var s = middle; //not a real var, no need to copy
-				var a = degrees;
-				var ray = new Ray2D(s, null, a);
-				start = ray.findPointWithDistance(s.x, dist / 2, !MathTools.isBetweenRanges(a, {start: -90, end: 90}));
-				end = ray.findPointWithDistance(s.x, dist / 2, MathTools.isBetweenRanges(a, {start: -90, end: 90}));
-			}
-			case END: {
-				var dist = length;
-				var s = end.copy();
-				var a = degrees;
-				var ray = new Ray2D(s, null, a);
-				start = ray.findPointWithDistance(s.x, dist, MathTools.isBetweenRanges(a, {start: 90, end: 180}, {start: -90, end: -180}));
-			}
+			case START:
+				{
+					var dist = length;
+					var s = start.copy();
+					var a = degrees;
+					var ray = new Ray2D(s, null, a);
+					end = ray.findPointWithDistance(s.x, dist, MathTools.isBetweenRanges(a, {start: -90, end: 90}));
+				}
+			case MIDDLE:
+				{
+					var dist = length;
+					var s = middle; // not a real var, no need to copy
+					var a = degrees;
+					var ray = new Ray2D(s, null, a);
+					start = ray.findPointWithDistance(s.x, dist / 2, !MathTools.isBetweenRanges(a, {start: -90, end: 90}));
+					end = ray.findPointWithDistance(s.x, dist / 2, MathTools.isBetweenRanges(a, {start: -90, end: 90}));
+				}
+			case END:
+				{
+					var dist = length;
+					var s = end.copy();
+					var a = degrees;
+					var ray = new Ray2D(s, null, a);
+					start = ray.findPointWithDistance(s.x, dist, MathTools.isBetweenRanges(a, {start: 90, end: 180}, {start: -90, end: -180}));
+				}
 		}
 	}
 }
