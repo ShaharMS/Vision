@@ -839,8 +839,11 @@ abstract Image(Matrix<Null<Color>>) {
     }
     #end
     #if heaps
-    @:from public static function fromHeapsBitmapData(bitmapData:hxd.BitmapData):Image {
-        return ImageTools.fromHeapsBitmapData(bitmapData);
+    @:from public static function fromHeapsPixels(pixels:hxd.Pixels):Image {
+        return ImageTools.fromHeapsPixels(pixels);
+    }
+    @:to public function toHeapsPixels():hxd.Pixels {
+        return ImageTools.toHeapsPixels(cast this);
     }
     #end
 

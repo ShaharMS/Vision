@@ -332,16 +332,28 @@ class ImageTools {
 	#end
 
 	#if heaps
-	public static function fromHeapsBitmapData(bitmap:hxd.BitmapData):Image {
-		var image = new Image(bitmap.width, bitmap.height);
-		bitmap.lock();
-		for (x in 0...bitmap.width) {
-			for (y in 0...bitmap.height) {
-				image.setPixel(x, y, bitmap.getPixel(x, y));
+	public static function fromHeapsPixels(pixels:hxd.Pixels):Image {
+		var image = new Image(pixels.width, pixels.height);
+		switch pixels.format {
+			case RGBA:
+			default:
+				throw "pixels format must be RGBA, currently: " + pixels.format;
+		}
+		for (x in 0...pixels.width) {
+			for (y in 0...pixels.height) {
+				image.setPixel(x, y, pixels.getPixel(x, y));
 			}
 		}
-		bitmap.unlock();
 		return image;
+	}
+	public static function toHeapsPixels(image:Image):hxd.Pixels {
+		var pixels = hxd.Pixels.alloc(image.width,image.height,RGBA);
+		for (x in 0...image.width) {
+			for (y in 0...pixels.height) {
+				pixels.setPixel(x,y,image.getPixel(x,y));
+			}
+		}
+		return pixels;
 	}
 	#end
 }
