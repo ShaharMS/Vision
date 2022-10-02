@@ -210,7 +210,6 @@ class MathTools {
 	public static function min(...values:Float) {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
-			if (values[i] == null) continue;
 			if (values[i] < min) min = values[i];
 		}
 		return min;
@@ -219,7 +218,6 @@ class MathTools {
 	public static function max(...values:Float) {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
-			if (values[i] == null) continue;
 			if (values[i] > max) max = values[i];
 		}
 		return max;
