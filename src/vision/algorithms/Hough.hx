@@ -15,7 +15,9 @@ import vision.ds.Line2D;
 import vision.ds.Image;
 
 using vision.tools.MathTools;
+
 import vision.tools.MathTools.*;
+
 /**
 	A Hough Transform implementation by [ShaharMS](https://www.github.com/ShaharMS).
 
@@ -88,14 +90,13 @@ class Hough {
 		@return A `HoughSpace` object, containing the accumulator, an image representation of the accumulator, and all the local maximums found in the accumulator.
 	**/
 	public static function toHoughSpaceWithRays(image:Image, threshold:Int = 35, ?numLocalMaxima:Int = null):HoughSpace {
-		
 		var space = toHoughSpace(image);
 
 		var accum = space.accumulator;
 		trace(accum);
 		var maximas:Array<Point2D> = [];
 		var rays:Array<Ray2D> = [];
-	
+
 		for (point in accum.cellIterator(threshold)) {
 			var thetaDeg = point.y;
 
@@ -112,4 +113,3 @@ class Hough {
 		return space;
 	}
 }
-	

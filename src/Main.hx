@@ -179,7 +179,7 @@ class Main {
 		image.drawRay2D(new Ray2D({x: 0, y: 0}, 1), 0x00ff00);
 		image.drawEllipse(100, 100, 40, 21, 0x9fff9f);
 		image.drawRect(20, 200, 60, 40, 0xFF5432);
-		image.fillUntilColor({x: 25, y:205}, 0xFF48FF, 0xFF5432);
+		image.fillUntilColor({x: 25, y: 205}, 0xFF48FF, 0xFF5432);
 		printImage(image);
 		#end
 

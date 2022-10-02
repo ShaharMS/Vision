@@ -149,40 +149,7 @@ class ImageTools {
 
 		for (X in -roundedDown...roundedDown + 1) {
 			for (Y in -roundedDown...roundedDown + 1) {
-				if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
-					// special case: we need to check where exactly is the coord outside of the image
-					var gettable:IntPoint2D = new IntPoint2D(0, 0);
-					var ox = x + X;
-					var oy = y + Y;
-					if (ox < 0 && oy < 0)
-						gettable.x = gettable.y = 0;
-					else if (ox < 0 && oy >= image.height) {
-						gettable.x = 0;
-						gettable.y = image.height - 1;
-					} else if (ox >= image.width && oy < 0) {
-						gettable.x = image.width - 1;
-						gettable.y = 0;
-					} else if (ox >= image.width && oy >= image.height) {
-						gettable.x = image.width - 1;
-						gettable.y = image.height - 1;
-					} else if (ox < 0) {
-						gettable.x = 0;
-						gettable.y = oy;
-					} else if (oy < 0) {
-						gettable.x = ox;
-						gettable.y = 0;
-					} else if (ox >= image.width) {
-						gettable.x = image.width - 1;
-						gettable.y = oy;
-					} else if (oy >= image.height) {
-						gettable.x = ox;
-						gettable.y = image.height - 1;
-					}
-
-					neighbors[X + roundedDown].push(image.getPixel(gettable.x, gettable.y));
-					continue;
-				}
-				neighbors[X + roundedDown].push(image.getPixel(x + X, y + Y));
+				neighbors[X + roundedDown].push(image.getSafePixel(x + X, y + Y));
 			}
 		}
 		return neighbors;

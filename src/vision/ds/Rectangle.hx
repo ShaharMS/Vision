@@ -1,8 +1,9 @@
 package vision.ds;
 
-typedef Rectangle = {
-    x:Int,
-    y:Int,
-    width:Int,
-    height:Int
+@:structInit
+class Rectangle {
+	public var x:Int;
+	public var y:Int;
+	public var width:Int;
+	public var height:Int;
 }

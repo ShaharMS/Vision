@@ -5,8 +5,7 @@ import haxe.ds.IntMap;
 /**
  * A 2D graph, usually representing a distribution of numerical values.
  */
- class Histogram {
-
+class Histogram {
 	var underlying:Array<Int>;
 
 	public var length(get, null):Int = 0;
@@ -15,7 +14,7 @@ import haxe.ds.IntMap;
 
 	public function new() {
 		underlying = [];
-    }
+	}
 
 	public function increment(cell:Int):Histogram {
 		underlying.insert(cell, cell);
