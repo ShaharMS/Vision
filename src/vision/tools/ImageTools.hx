@@ -335,7 +335,7 @@ class ImageTools {
 	public static function fromHeapsPixels(pixels:hxd.Pixels):Image {
 		var image = new Image(pixels.width, pixels.height);
 		switch pixels.format {
-			case RGBA:
+			case ARGB:
 			default:
 				throw "pixels format must be RGBA, currently: " + pixels.format;
 		}
@@ -347,7 +347,7 @@ class ImageTools {
 		return image;
 	}
 	public static function toHeapsPixels(image:Image):hxd.Pixels {
-		var pixels = hxd.Pixels.alloc(image.width,image.height,RGBA);
+		var pixels = hxd.Pixels.alloc(image.width,image.height,ARGB);
 		for (x in 0...image.width) {
 			for (y in 0...pixels.height) {
 				pixels.setPixel(x,y,image.getPixel(x,y));
