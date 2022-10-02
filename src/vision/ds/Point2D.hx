@@ -21,16 +21,16 @@ class Point2D {
         var point:Point2D = {x: 10, y: 20};
         ```    
     **/
-    public function new(x:Float = 0, y:Float = 0) {
+    public inline function new(x:Float = 0, y:Float = 0) {
         this.x = x;
         this.y = y;
     }
 
-    public function toString() {
+    public inline function toString() {
         return '($x, $y)';
     }
 
-    public function copy():Point2D {
+    public inline function copy():Point2D {
         return {x: x, y: y};
     }
 }

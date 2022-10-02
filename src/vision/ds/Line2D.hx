@@ -31,7 +31,7 @@ class Line2D {
 	**/
 	public var modificationMode:Line2DModifyingPoint = START;
 
-	public function new(start:Point2D, end:Point2D) {
+	public inline function new(start:Point2D, end:Point2D) {
 		this.start.x = start.x;
 		this.start.y = start.y;
 		this.end.x = end.x;
@@ -39,43 +39,44 @@ class Line2D {
 		radians = MathTools.radiansFromPointToPoint(start, end);
 	}
 
-	function get_length():Float {
+	inline function get_length():Float {
 		return Math.sqrt(Math.pow(this.end.x - this.start.x, 2) + Math.pow(this.end.y - this.start.y, 2));
 	}
 
-	public function toString() {
+	@:keep
+	public inline function toString() {
 		return '\n ($start.x, $start.y) --> ($end.x, $end.y)';
 	}
 
-	function set_slope(value:Float):Float {
+	inline function set_slope(value:Float):Float {
 		@:bypassAccessor degrees = MathTools.slopeToDegrees(value);
         @:bypassAccessor radians = MathTools.slopeToRadians(value);
         return slope = value;
 	}
 
-	function set_degrees(value:Float):Float {
+	inline function set_degrees(value:Float):Float {
 		@:bypassAccessor slope = MathTools.degreesToSlope(value);
         @:bypassAccessor radians = MathTools.degreesToRadians(value);
         return degrees = MathTools.wrapFloat(value, -180, 180);
 	}
 
-    function set_radians(value:Float):Float {
+	inline function set_radians(value:Float):Float {
         @:bypassAccessor slope = MathTools.radiansToSlope(value);
         @:bypassAccessor degrees = MathTools.radiansToDegrees(value);
         return radians = value;
     }
 
-	function set_start(value:Point2D) {
+	inline function set_start(value:Point2D) {
 		radians = MathTools.radiansFromPointToPoint(value, end);
 		return start = value;
 	}
 
-	function set_end(value:Point2D) {
+	inline function set_end(value:Point2D) {
 		radians = MathTools.radiansFromPointToPoint(start, value);
 		return end = value;
 	}
 
-	public static function fromRay2D(ray:Ray2D):Line2D {
+	public static inline function fromRay2D(ray:Ray2D):Line2D {
 		var x:Float = ray.point.x;
 		var y:Float = ray.point.y;
 		var length:Float = 1;
@@ -83,15 +84,15 @@ class Line2D {
 		return new Line2D(ray.point, end);
 	}
 
-	public function toRay2D():Ray2D {
+	public inline function toRay2D():Ray2D {
 		return new Ray2D(this.start, this.slope);
 	}
 
-	function get_middle():Point2D {
+	inline function get_middle():Point2D {
 		return {x: (start.x + end.x) / 2, y: (start.y + end.y) / 2};
 	}
 
-	function set_middle(value:Point2D):Point2D {
+	inline function set_middle(value:Point2D):Point2D {
 		var previousMiddle = get_middle();
 		final diffX = value.x - previousMiddle.x;
 		final diffY = value.y - previousMiddle.y;
@@ -104,7 +105,8 @@ class Line2D {
 		return get_middle();
 	}
 
-	public function mirrorInsideRectangle(rect:Rectangle):Line2D {
+	public
+	inline function mirrorInsideRectangle(rect:Rectangle):Line2D {
 		final diffSX = start.x - rect.x;
 		final diffEX = end.x - rect.x;
 
@@ -113,7 +115,7 @@ class Line2D {
 		return this;
 	}
 
-	function recalc() {
+	inline function recalc() {
 		switch modificationMode {
 			case START: {
 				var dist = length;

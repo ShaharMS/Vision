@@ -21,7 +21,7 @@ class Ray2D {
         @param angle the angle of the line, optional - you can pass the slope/radians instead, and set this to null
         @param radians the radians of the line, optional - you can pass the slope/angle instead, and not set this
     **/
-    public function new(point:Point2D, ?m:Float, ?degrees:Float, ?radians:Float) {
+	public inline function new(point:Point2D, ?m:Float, ?degrees:Float, ?radians:Float) {
         this.point = point;
         if (m != null) {
             this.slope = m;
@@ -38,25 +38,25 @@ class Ray2D {
         }
     }
 
-	function set_slope(value:Float):Float {
+	inline function set_slope(value:Float):Float {
 		@:bypassAccessor degrees = MathTools.slopeToDegrees(value);
         @:bypassAccessor radians = MathTools.slopeToRadians(value);
         return slope = value;
 	}
 
-	function set_degrees(value:Float):Float {
+	inline function set_degrees(value:Float):Float {
 		@:bypassAccessor slope = MathTools.degreesToSlope(value);
         @:bypassAccessor radians = MathTools.degreesToRadians(value);
         return degrees = value;
 	}
 
-    function set_radians(value:Float):Float {
+    inline function set_radians(value:Float):Float {
         @:bypassAccessor slope = MathTools.radiansToSlope(value);
         @:bypassAccessor degrees = MathTools.radiansToDegrees(value);
         return radians = value;
     }
 
-    function get_yIntercept() {
+    inline function get_yIntercept() {
         var px:Float = point.x, py:Float = point.y;
         if (px > 0) {
             return py - (slope * px);
@@ -64,7 +64,7 @@ class Ray2D {
         return py + (slope * px);
     }
 
-    function get_xIntercept() {
+    inline function get_xIntercept() {
         var px:Float = point.x, py:Float = point.y;
         if (py > 0) {
             return (py - (slope * px)) / slope;
@@ -73,22 +73,22 @@ class Ray2D {
     }
 
 
-    public static function from2Points(point1:Point2D, point2:Point2D) {
+	public static inline function from2Points(point1:Point2D, point2:Point2D) {
         var s = (point2.y - point1.y) / (point2.x - point1.x);
         return new Ray2D(point1, s);
     }
 
-    public function getPointAtX(x:Float):Point2D {
+	public inline function getPointAtX(x:Float):Point2D {
         //you have the slope, and the x value, find the y value
         return new Point2D(x, slope * x + yIntercept);
     }
 
-    public function getPointAtY(y:Float):Point2D {
+    public inline function getPointAtY(y:Float):Point2D {
         //you have the slope, and the y value, find the x value
         return new Point2D((y - yIntercept) / slope, y);
     }
 
-    public function intersect(ray:Ray2D):Point2D {
+    public inline function intersect(ray:Ray2D):Point2D {
         return MathTools.intersectionBetweenRays2D(this, ray);
     }
 
@@ -105,7 +105,7 @@ class Ray2D {
      * @param distance The distance from `start` to the resulting point.
      * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
      */
-    public function findPointWithDistance(startXPos:Float, distance:Float, goPositive:Bool = true) {
+	public inline function findPointWithDistance(startXPos:Float, distance:Float, goPositive:Bool = true) {
         // Were going to step one point to the right, and chek how much distance was covered.
         // After checking, were going to devide distance with the distance between start to start(y + 1)
         // Make sure to not surpass `distance`

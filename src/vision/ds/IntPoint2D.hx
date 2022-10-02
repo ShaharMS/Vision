@@ -5,79 +5,80 @@ import haxe.Int64;
 import haxe.ds.Vector;
 import vision.ds.Point2D;
 
+#if ((hl_ver >= 1.12 && !hl_legacy32) || cpp || cs)
+private typedef Impl = haxe.Int64;
+#else
+@:structInit
+private class Impl {
+    public var x:Int;
+    public var y:Int;
+}
+#end
 /**
  * A 2D point represented by two, 32-bit integers.
  */
 @:structInit
-#if vision_disable_point_alloc_optimization
-class IntPoint2D {
-    public var x:Int;
-
-    public var y:Int;
-
-    public function new(X:Int, Y:Int) {
-        x = X;
-        y = Y;
-    }
-
-    @:to public function toPoint2D() {
-        return new Point2D(x, y);
-    }
-
-    @:from public static function fromPoint2D(p:Point2D) {
-        return new IntPoint2D(Std.int(p.x), Std.int(p.y));
-    }
-
-    public function toString() {
-        return '($x, $y)';
-    }
-
-    public function clone() {
-        return new IntPoint2D(x, y);
-    }
-}
-#else
-abstract IntPoint2D(Int64) {
+abstract IntPoint2D(Impl) {
     public var x(get, set):Int;
 
     public var y(get, set):Int;
 
-    public function new(X:Int, Y:Int) {
-        this = Int64.make(X, Y);
+    public inline function new(x:Int, y:Int) {
+		#if ((hl_ver >= 1.12 && !hl_legacy32) || cpp || cs)
+		this = Int64.make(x, y);
+		#else
+		this = ({x:x,y:y}:Impl);
+		#end
+        
     }
 
-    function get_y() {
-        return this.low;
+    inline function get_y() {
+		#if ((hl_ver >= 1.12 && !hl_legacy32) || cpp || cs)
+		return this.low;
+		#else
+		return this.y;
+		#end
     }
 
-    function get_x() {
-        return this.high;
+    inline function get_x() {
+		#if ((hl_ver >= 1.12 && !hl_legacy32) || cpp || cs)
+		return this.y;
+		#else
+		return this.x;
+		#end
     }
 
     inline function set_y(y:Int):Int {
-        this = Int64.make(x, y);
+		#if ((hl_ver >= 1.12 && !hl_legacy32) || cpp || cs)
+		this = Int64.make(x, y);
+		#else
+		this = ({x: x, y: y} : Impl);
+		#end
         return y;
     }
 
     inline function set_x(x:Int) {
-        this = Int64.make(x, y);
+		#if ((hl_ver >= 1.12 && !hl_legacy32) || cpp || cs)
+		this = Int64.make(x, y);
+		#else
+		this = ({x: x, y: y} : Impl);
+		#end
         return x;
     }
 
-    @:to public function toPoint2D() {
+    @:to public inline function toPoint2D() {
         return new Point2D(x, y);
     }
 
-    @:from public static function fromPoint2D(p:Point2D) {
+    @:from public static inline function fromPoint2D(p:Point2D) {
         return new IntPoint2D(Std.int(p.x), Std.int(p.y));
     }
 
-    public function toString() {
+    public inline function toString() {
         return '($x, $y)';
     }
     
-    public function clone() {
+    public inline function clone() {
         return new IntPoint2D(x, y);
     }
 }
-#end

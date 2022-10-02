@@ -29,7 +29,7 @@ abstract Image(UInt8Array) {
     **/
     public var underlying(get, #if vision_allow_resize set #else never #end):UInt8Array;
 
-    function get_underlying() {
+	inline function get_underlying() {
         return this;
     }
 
@@ -43,11 +43,11 @@ abstract Image(UInt8Array) {
         The width of the image.
     **/
     public var width(get, #if vision_allow_resize set #else never #end):Int;
-    function get_width() {
+	inline function get_width() {
         return this[0] | this[1] << 8 | this[2] << 16 | this[3] << 24;
     }
     #if vision_allow_resize
-    function set_width(value:Int) {
+    inline function set_width(value:Int) {
         resize(value, height);
     }
     #end
@@ -56,9 +56,9 @@ abstract Image(UInt8Array) {
         The height of the image.
     **/
     public var height(get, #if vision_allow_resize set #else never #end):Int;
-    function get_height() return Math.ceil((this.length - OFFSET) / (width * 4));
+    inline function get_height() return Math.ceil((this.length - OFFSET) / (width * 4));
     #if vision_allow_resize
-    function set_height(value:Int) {
+    inline function set_height(value:Int) {
         resize(width, value);
     }
     #end
@@ -70,7 +70,7 @@ abstract Image(UInt8Array) {
         @param height The height of the image.
         @param color The color to fill the image with. if unspecified, the image is transparent.
     **/
-    public function new(width:Int, height:Int, ?color:Color = 0x00000000) {
+    public inline function new(width:Int, height:Int, ?color:Color = 0x00000000) {
         this = new UInt8Array(width * height * 4 + OFFSET);
         this[0] = width & 0xFF;
         this[1] = width >> 8 & 0xFF;
@@ -86,7 +86,7 @@ abstract Image(UInt8Array) {
         }
     }
 
-    function getColorFromStartingBytePos(position:Int):Color {
+    inline function getColorFromStartingBytePos(position:Int):Color {
         position += OFFSET;
         var c = new Color();
         c.alpha = this[position];
@@ -97,7 +97,7 @@ abstract Image(UInt8Array) {
         return c;
     }
 
-    function setColorFromStartingBytePos(position:Int, c:Color) {
+    inline function setColorFromStartingBytePos(position:Int, c:Color) {
         position += OFFSET;
         this[position] = c.alpha;
         this[position + 1] = c.red;
@@ -116,7 +116,7 @@ abstract Image(UInt8Array) {
         @throws OutOfBounds if the coordinates are out of bounds.
         @return The color of the pixel at the given coordinates.
     **/
-    public function getPixel(x:Int, y:Int):Color {
+    public inline function getPixel(x:Int, y:Int):Color {
         if (!hasPixel(x, y)) {
             #if !vision_quiet
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
@@ -165,7 +165,7 @@ abstract Image(UInt8Array) {
 
         @return The color of the pixel at the given coordinates.
     **/
-    public function getSafePixel(x:Int, y:Int):Color {
+    public inline function getSafePixel(x:Int, y:Int):Color {
         if (!hasPixel(x, y)) {
             var gettable:IntPoint2D = new IntPoint2D(0, 0);
 			var ox = x;
@@ -243,7 +243,7 @@ abstract Image(UInt8Array) {
         @throws OutOfBounds if the coordinates are out of bounds.
         @return The color of the pixel at the given coordinates.
     **/
-    public function getFloatingPixel(x:Float, y:Float):Color {
+    public inline function getFloatingPixel(x:Float, y:Float):Color {
         #if !visiin_quiet
         if (!hasPixel(Math.ceil(x), Math.ceil(y))) throw new OutOfBounds(cast this, {x: x, y: y});
         #end
@@ -269,7 +269,7 @@ abstract Image(UInt8Array) {
 
         @throws OutOfBounds if the pixel is out of bounds.
     **/
-    public function setPixel(x:Int, y:Int, color:Color) {
+    public inline function setPixel(x:Int, y:Int, color:Color) {
         if (!hasPixel(x, y)) {
             #if vision_quiet
             return;
@@ -288,7 +288,7 @@ abstract Image(UInt8Array) {
 
         @return True if the coordinates are within the bounds of the image.
     **/
-    public function hasPixel(x:Int, y:Int):Bool {
+    public inline function hasPixel(x:Int, y:Int):Bool {
         return (x >= 0 && y >= 0 && x < width && y < height);
     }
 
@@ -302,7 +302,7 @@ abstract Image(UInt8Array) {
         @throws OutOfBounds if the given coordinates are outside the bounds of one or both of the images
         @return The color of the pixel at the given coordinates.
     **/
-    public function copyPixelFrom(image:Image, x:Int, y:Int):Color {
+    public inline function copyPixelFrom(image:Image, x:Int, y:Int):Color {
         final c = image.getPixel(x, y);
         setPixel(x, y, c);
         return c;
@@ -318,7 +318,7 @@ abstract Image(UInt8Array) {
         @throws OutOfBounds if the given coordinates are outside the bounds of one or both of the images
         @return The color of the pixel at the given coordinates.
     **/
-    public function copyPixelTo(image:Image, x:Int, y:Int):Color {
+    public inline function copyPixelTo(image:Image, x:Int, y:Int):Color {
         final c = getPixel(x, y);
         image.setPixel(x, y, c);
         return c;
@@ -336,7 +336,7 @@ abstract Image(UInt8Array) {
         @param y The y coordinate of the pixel.
         @param color The color to set the pixel to. pay attention to the alpha value.
     **/
-    public function paintPixel(x:Int, y:Int, color:Color) {
+    public inline function paintPixel(x:Int, y:Int, color:Color) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
         }
@@ -355,7 +355,7 @@ abstract Image(UInt8Array) {
         @param rect The rectangle to fill: The fill starts at (x, y) and extends to (x + width, y + height), not including the endpoints.
         @param color The color to fill that rectangular portion with.
     **/
-    public function fillRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
+    public inline function fillRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
         for (X in x...x + width) {
             for (Y in y...y + height) {
                 setPixel(X, Y, color);
@@ -371,7 +371,7 @@ abstract Image(UInt8Array) {
         @param rect The rectangle to draw the outline of.
         @param color The color to draw the outline with.
     **/
-    public function drawRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
+    public inline function drawRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
         drawLine(x, y, x + width, y, color);
         drawLine(x + width, y, x + width, y + height, color);
         drawLine(x + width, y + height, x, y + height, color);
@@ -387,7 +387,7 @@ abstract Image(UInt8Array) {
         @throws OutOfBounds if the portion of the image to get is outside the bounds of the original image.
         @return A new image containing the specified portion of the original image.
     **/
-    public function getImagePortion(rect:Rectangle):Image {
+    public inline function getImagePortion(rect:Rectangle):Image {
         var subImage = new Image(rect.width, rect.height, 0);
         for (x in rect.x...rect.x + rect.width) {
             for (y in rect.y...rect.y + rect.height) {
@@ -405,7 +405,7 @@ abstract Image(UInt8Array) {
 
         @throws OutOfBounds if the portion of the image to set is outside the bounds of the original image.
     **/
-    public function setImagePortion(rect:Rectangle, image:Image) {
+    public inline function setImagePortion(rect:Rectangle, image:Image) {
         for (x in rect.x...rect.x + rect.width) {
             for (y in rect.y...rect.y + rect.height) {
                 setPixel(x, y, image.getPixel(x - rect.x, y - rect.y));
@@ -420,7 +420,7 @@ abstract Image(UInt8Array) {
     /**
         Draws a line from (x1, y1) to (x2, y2) using the given color.
     **/
-    public function drawLine(x1:Int, y1:Int, x2:Int, y2:Int, color:Color) {
+    public inline function drawLine(x1:Int, y1:Int, x2:Int, y2:Int, color:Color) {
         var dx = Math.abs(x2 - x1);
         var dy = Math.abs(y2 - y1);
         var sx = (x1 < x2) ? 1 : -1;
@@ -448,7 +448,7 @@ abstract Image(UInt8Array) {
 
         @see Ray2D
     **/
-    public function drawRay2D(line:Ray2D, color:Color) {
+    public inline function drawRay2D(line:Ray2D, color:Color) {
         var p1 = IntPoint2D.fromPoint2D(line.getPointAtY(0));
         var p2 = IntPoint2D.fromPoint2D(line.getPointAtY(height - 1));
         var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
@@ -480,7 +480,7 @@ abstract Image(UInt8Array) {
 
         @see Line2D
     **/
-    public function drawLine2D(line:Line2D, color:Color) {
+    public inline function drawLine2D(line:Line2D, color:Color) {
         var p1 = IntPoint2D.fromPoint2D(line.start);
         var p2 = IntPoint2D.fromPoint2D(line.end);
         var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
@@ -512,7 +512,7 @@ abstract Image(UInt8Array) {
 
         @see Line2D
     **/
-    public function drawQuadraticBezier(line:Line2D, control:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
+    public inline function drawQuadraticBezier(line:Line2D, control:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
         
         function bezier(t:Float, p0:IntPoint2D, p1:IntPoint2D, p2:IntPoint2D):IntPoint2D {
             var t2 = t * t;
@@ -550,9 +550,9 @@ abstract Image(UInt8Array) {
 
         @see Line2D
     **/
-    public function drawCubicBezier(line:Line2D, control1:IntPoint2D, control2:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
+    public inline function drawCubicBezier(line:Line2D, control1:IntPoint2D, control2:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
         
-        function bezier(t:Float, p0:IntPoint2D, p1:IntPoint2D, p2:IntPoint2D, p3:IntPoint2D):IntPoint2D {
+        inline function bezier(t:Float, p0:IntPoint2D, p1:IntPoint2D, p2:IntPoint2D, p3:IntPoint2D):IntPoint2D {
             var cX = 3 * (p1.x - p0.x),
                 bX = 3 * (p2.x - p1.x) - cX,
                 aX = p3.x - p0.x - cX - bX;
@@ -570,7 +570,7 @@ abstract Image(UInt8Array) {
         var i = 0.;
         var step = 1 / accuracy;
         while (i < 1) {
-            var p = bezier(i, line.start, line.end, control1, control2);
+            var p = inline bezier(i, line.start, line.end, control1, control2);
             if (hasPixel(p.x, p.y)) {
                 setPixel(p.x, p.y, color);
             }
@@ -590,7 +590,7 @@ abstract Image(UInt8Array) {
         @param r The radius of the circle.
         @param color The color to draw the circle with.
     **/
-    public function drawCircle(X:Int, Y:Int, r:Int, color:Color) {
+    public inline function drawCircle(X:Int, Y:Int, r:Int, color:Color) {
         var x = -r, y = 0, err = 2 - 2 * r;
         do {
             setPixel(X - x, Y + y, color);
@@ -620,7 +620,7 @@ abstract Image(UInt8Array) {
         @param radiusY The y radius of the ellipse.
         @param color The color to draw the ellipse with.
     **/
-    public function drawEllipse(centerX:Int, centerY:Int, radiusX:Int, radiusY:Int, color:Color) {
+    public inline function drawEllipse(centerX:Int, centerY:Int, radiusX:Int, radiusY:Int, color:Color) {
         var x:Int, y:Int, xChange:Float, yChange:Float, ellipseError:Float, twoASquare:Float, twoBSquare:Float, stoppingX:Float, stoppingY:Float;
         twoASquare = 2 * radiusX * radiusX;
         twoBSquare = 2 * radiusY * radiusY;
@@ -729,7 +729,7 @@ abstract Image(UInt8Array) {
         var explored:Array<Int64> = [];
         var originalColor = getPixel(position.x, position.y);
         var pc = 0;
-        function fill(v:IntPoint2D) {
+        inline function fill(v:IntPoint2D) {
             if (pc >= 100000) {
                 trace("fillColor: too much iterations");
                 queue.clear();
@@ -868,7 +868,7 @@ abstract Image(UInt8Array) {
         return s;
     }
 
-    public function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
+    public inline function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
         for (x in 0...width) {
             for (y in 0...height) {
                 callback(x, y, getPixel(x, y));
@@ -876,16 +876,8 @@ abstract Image(UInt8Array) {
         }
     }
 
-    public function iterator():Iterator<Pixel> {
-        var pixels:Array<Pixel> = [];
-        var i = 4;
-        while (i < this.length) {
-            final x = i % width;
-            final y = Math.floor(i / width);
-            pixels.push({x: x, y: y, color: getPixel(x, y)});
-            i += 4;
-        }
-        return pixels.iterator();
+    public inline function iterator():Iterator<Pixel> {
+        return new PixelIterator(cast this);
     }
 
 
@@ -974,4 +966,24 @@ abstract Image(UInt8Array) {
 
         return image;
     }    
+}
+
+private class PixelIterator {
+    var i = 4;
+	var img:Image;
+	public inline function new(img:Image) {
+        this.img = img;
+    }
+
+    public inline function next():Pixel {
+		final x = i % img.width;
+		final y = Math.floor(i / img.width);
+		var pixel:Pixel = {x: x, y: y, color: img.getPixel(x, y)};
+		i += 4;
+        return pixel;
+    }
+
+    public inline function hasNext():Bool {
+        return i < (cast img:UInt8Array).length;
+    }
 }
