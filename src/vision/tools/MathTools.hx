@@ -15,7 +15,7 @@ class MathTools {
 
 	public static var PI_OVER_2(default, never):Float = Math.PI / 2;
 
-	public static function distanceFromPointToRay2D(point:Point2D, line:Ray2D) {
+	public static inline function distanceFromPointToRay2D(point:Point2D, line:Ray2D) {
 		var cos:Float = cos(line.radians);
 		var sin:Float = sin(line.radians);
 		var x0:Float = line.point.x;
@@ -28,11 +28,11 @@ class MathTools {
 		return distance;
 	}
 
-	public static function distanceFromRayToPoint2D(ray:Ray2D, point:Point2D) {
+	public static inline function distanceFromRayToPoint2D(ray:Ray2D, point:Point2D) {
 		return distanceFromPointToRay2D(point, ray);
 	}
 
-	public static function distanceFromPointToLine2D(line:Line2D, point:Point2D):Float
+	public static inline function distanceFromPointToLine2D(line:Line2D, point:Point2D):Float
 	{
 	
 	  var ch = (line.start.y - line.end.y) * point.x + (line.end.x - line.start.x) * point.y + (line.start.x * line.end.y - line.end.x * line.start.y);
@@ -41,7 +41,7 @@ class MathTools {
 	  return d;
 	}
 
-	public static function distanceBetweenLines2D(line1:Line2D, line2:Line2D):Float {
+	public static inline function distanceBetweenLines2D(line1:Line2D, line2:Line2D):Float {
 		if (intersectionBetweenLines2D(line1, line2) != null) {
 			return 0;
 		}
@@ -55,25 +55,25 @@ class MathTools {
 
 	}
 
-	public static function radiansFromPointToLine(point:Point2D, line:Line2D):Float {
+	public static inline function radiansFromPointToLine(point:Point2D, line:Line2D):Float {
 		var angle:Float = atan2(line.end.y - line.start.y, line.end.x - line.start.x);
 		var angle2:Float = atan2(point.y - line.start.y, point.x - line.start.x);
 		return angle2 - angle;
 	}
 
-	public static function radiansFromPointToPoint(point1:Point2D, point2:Point2D) {
+	public static inline function radiansFromPointToPoint(point1:Point2D, point2:Point2D) {
 		var x:Float = point2.x - point1.x;
 		var y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	public static function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
+	public static inline function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
 		var x:Float = point2.x - point1.x;
 		var y:Float = point2.y - point1.y;
 		return sqrt(x * x + y * y);
 	}
 
-	public static function intersectionBetweenLines2D(line1:Line2D, line2:Line2D):Point2D {
+	public static inline function intersectionBetweenLines2D(line1:Line2D, line2:Line2D):Point2D {
 		var x1 = line1.start.x, y1 = line1.start.y;
 		var x2 = line1.end.x, y2 = line1.end.y;
 		var x3 = line2.start.x, y3 = line2.start.y;
@@ -96,7 +96,7 @@ class MathTools {
 		return {x: Std.int(x), y: Std.int(y)};
 	}
 
-	public static function intersectionBetweenRays2D(ray:Ray2D, ray2:Ray2D):Point2D {
+	public inline static function intersectionBetweenRays2D(ray:Ray2D, ray2:Ray2D):Point2D {
 		var line1StartX = ray.point.x;
 		var line1StartY = ray.point.y;
 		var line1EndX = ray.point.x + cos(ray.radians) * 1000;
@@ -129,7 +129,7 @@ class MathTools {
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public static function wrapInt(value:Int, min:Int, max:Int) {
+	public inline static function wrapInt(value:Int, min:Int, max:Int) {
 		var range = max - min + 1;
 
 		if (value < min)
@@ -142,7 +142,7 @@ class MathTools {
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public static function wrapFloat(value:Float, min:Float, max:Float) {
+	public inline static function wrapFloat(value:Float, min:Float, max:Float) {
 		var range = max - min;
 
 		if (value < min)
@@ -215,7 +215,7 @@ class MathTools {
 		return min;
 	}
 
-	public static function max(...values:Float) {
+	public static inline function max(...values:Float) {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max) max = values[i];
@@ -237,7 +237,7 @@ class MathTools {
 		return false;
 	}
 
-	public static function average(...values:Float) {
+	public static inline function average(...values:Float) {
 		var sum = 0.;
 		for (v in values) {
 			sum += v;
@@ -245,7 +245,7 @@ class MathTools {
 		return sum / values.length;
 	}
 
-	public static function verifyInt(v:Float) {
+	public static inline function verifyInt(v:Float) {
 		return v == Std.int(v);
 	}
 
@@ -254,16 +254,16 @@ class MathTools {
 	//---------------------
 
 	public static var NEGATIVE_INFINITY(get, null):Float;
-	@:noCompletion static function get_NEGATIVE_INFINITY() return Math.NEGATIVE_INFINITY;
+	@:noCompletion static inline function get_NEGATIVE_INFINITY() return Math.NEGATIVE_INFINITY;
 
 	public static var POSITIVE_INFINITY(get, null):Float;
-	@:noCompletion static function get_POSITIVE_INFINITY() return Math.POSITIVE_INFINITY;
+	@:noCompletion static inline function get_POSITIVE_INFINITY() return Math.POSITIVE_INFINITY;
 
 	public static var NaN(get, null):Float;
-	@:noCompletion static function get_NaN() return Math.NaN;
+	@:noCompletion static inline function get_NaN() return Math.NaN;
 
 	public static var PI(get, null):Float;
-	@:noCompletion static function get_PI() return Math.PI;
+	@:noCompletion static inline function get_PI() return Math.PI;
 
 	public static inline function abs(v:Float):Float return Math.abs(v);
 	public static inline function acos(v:Float):Float return Math.acos(v);
