@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.IntPoint2D;
 import haxe.extern.EitherType;
 import vision.algorithms.Radix;
 import haxe.ds.ArraySort;
@@ -600,13 +601,13 @@ class Vision {
         var lines:Array<Line2D> = [];
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
+                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, new IntPoint2D(x,y), minLineLength);
                 lines.push(line);
-                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
+                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, new IntPoint2D(x,y), minLineLength, true);
                 lines.push(line2);
-                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
+                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, new IntPoint2D(x,y), minLineLength, false, true);
                 lines.push(line3);
-                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
+                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, new IntPoint2D(x,y), minLineLength, true, true);
                 lines.push(line4);
             }
         }
