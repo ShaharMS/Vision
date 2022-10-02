@@ -19,6 +19,21 @@ import vision.tools.ImageTools;
 abstract Image(Matrix<Null<Color>>) {
     
     /**
+        Returns the underlying type of this abstract.
+    **/
+    public var underlying(get, #if vision_allow_resize set #else never #end):Matrix<Null<Color>>;
+
+    function get_underlying() {
+        return this;
+    }
+
+    #if vision_allow_resize
+    inline function set_underlying(matrix:Matrix<Null<Color>>) {
+        return this = matrix;
+    }
+    #end
+
+    /**
         The width of the image.
     **/
     public var width(get, #if vision_allow_resize set #else never #end):Int;
@@ -115,7 +130,7 @@ abstract Image(Matrix<Null<Color>>) {
         @return The color of the pixel at the given coordinates.
     **/
     public function getSafePixel(x:Int, y:Int):Color {
-        if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
             var gettable:IntPoint2D = new IntPoint2D(0, 0);
 			var ox = x;
 			var oy = y;
@@ -143,9 +158,9 @@ abstract Image(Matrix<Null<Color>>) {
 				gettable.x = ox;
 				gettable.y = height - 1;
 			}
-            return this[gettable.x][gettable.y];
+            return getPixel(gettable.x, gettable.y);
         }
-        return this[x][y];
+        return getPixel(x, y);
     }
 
     /**
@@ -217,7 +232,11 @@ abstract Image(Matrix<Null<Color>>) {
     **/
     public function setPixel(x:Int, y:Int, color:Color) {
         if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+            #if vision_quiet
+            return;
+            #else
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
+            #end
         }
         this[x][y] = color;
     }
@@ -231,25 +250,39 @@ abstract Image(Matrix<Null<Color>>) {
         @return True if the coordinates are within the bounds of the image.
     **/
     public function hasPixel(x:Int, y:Int):Bool {
-        return x >= 0 && x < this.length && y >= 0 && y < this[x].length;
+        return x >= 0 && x < width && y >= 0 && y < height;
     }
 
     /**
         Copies a pixel from the given image to this image.
 
+        @param image The image to copy the pixel from.
         @param x The x coordinate of the pixel.
         @param y The y coordinate of the pixel.
-        @param image The image to copy the pixel from.
 
-        @throws OutOfBounds if the given coordinates are outside the bounds of the image.
+        @throws OutOfBounds if the given coordinates are outside the bounds of one or both of the images
         @return The color of the pixel at the given coordinates.
     **/
-    public function copyPixel(x:Int, y:Int, image:Image):Color {
-        if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
-            throw new OutOfBounds(cast this, new IntPoint2D(x, y));
-        }
-        this[x][y] = image[x][y];
-        return this[x][y];
+    public function copyPixelFrom(image:Image, x:Int, y:Int):Color {
+        final c = image.getPixel(x, y);
+        setPixel(x, y, c);
+        return c;
+    }
+
+    /**
+        Copies a pixel from the given image to this image.
+
+        @param image The image to copy the pixel to.
+        @param x The x coordinate of the pixel.
+        @param y The y coordinate of the pixel.
+
+        @throws OutOfBounds if the given coordinates are outside the bounds of one or both of the images
+        @return The color of the pixel at the given coordinates.
+    **/
+    public function copyPixelTo(image:Image, x:Int, y:Int):Color {
+        final c = getPixel(x, y);
+        image.setPixel(x, y, c);
+        return c;
     }
 
     /**
@@ -265,7 +298,7 @@ abstract Image(Matrix<Null<Color>>) {
         @param color The color to set the pixel to. pay attention to the alpha value.
     **/
     public function paintPixel(x:Int, y:Int, color:Color) {
-        if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
         }
         var oldColor = this[x][y];
@@ -312,6 +345,7 @@ abstract Image(Matrix<Null<Color>>) {
 
         @param rect The rectangle specifying the portion of the image to return.
 
+        @throws OutOfBounds if the portion of the image to get is outside the bounds of the original image.
         @return A new image containing the specified portion of the original image.
     **/
     public function getImagePortion(rect:Rectangle):Image {
@@ -333,9 +367,6 @@ abstract Image(Matrix<Null<Color>>) {
         @throws OutOfBounds if the portion of the image to set is outside the bounds of the original image.
     **/
     public function setImagePortion(rect:Rectangle, image:Image) {
-        if (rect.x < 0 || rect.x + rect.width > this.length || rect.y < 0 || rect.y + rect.height > this[0].length) {
-            throw new OutOfBounds(cast this, {x: rect.x, y: rect.y});
-        }
         for (x in rect.x...rect.x + rect.width) {
             for (y in rect.y...rect.y + rect.height) {
                 setPixel(x, y, image.getPixel(x - rect.x, y - rect.y));
@@ -627,7 +658,7 @@ abstract Image(Matrix<Null<Color>>) {
         var originalColor = getPixel(position.x, position.y);
 
         function expandFill(x:Int, y:Int) {
-            if (x < 0 || x >= this.length || y < 0 || y >= this[x].length) {
+            if (x < 0 || x >= height || y < 0 || y >= width) {
                 return;
             }
             if (getPixel(x, y) == color) return;
@@ -674,13 +705,45 @@ abstract Image(Matrix<Null<Color>>) {
     }
 
     /**
+        Fills a section of the image. the section filled has to be bordered by pixels of color `borderColor`.
+
+        This uses the BFS `Breadth First Search` algorithm
+
+        @param position The position to start filling at. you can use a Point2D or IntPoint2D.
+        @param color The color to fill with.
+        @param borderColor The color upon which to stop filling.
+    **/
+    public function fillUntilColor(position:IntPoint2D, color:Color, borderColor:Color) {
+
+        var queue = new List<IntPoint2D>();
+        queue.push({x: position.x, y: position.y});
+        var explored:Array<Int64> = [];
+        function fill(v:IntPoint2D) {
+            if (hasPixel(v.x, v.y) && explored.contains(Int64.make(v.x, v.y))) return;
+            if (getPixel(v.x, v.y) == color) return;
+            if (getPixel(v.x, v.y) != borderColor) {
+                queue.push({x: v.x, y: v.y});
+                setPixel(v.x, v.y, color);
+            }
+        }
+        while (queue.length > 0) {
+            var v = queue.pop();
+            explored.push(Int64.make(v.x, v.y));
+            fill({x: v.x + 1, y: v.y    });
+            fill({x: v.x    , y: v.y + 1});
+            fill({x: v.x - 1, y: v.y    });
+            fill({x: v.x    , y: v.y - 1});
+        }
+    }
+
+    /**
         Clones this image.
     **/
     public function clone():Image {
         var clone = new Image(width, height, 0);
-        for (i in 0...this.length) {
-            for (j in 0...this[i].length) {
-                clone.setPixel(i, j, this[i][j]);
+        for (i in 0...width) {
+            for (j in 0...height) {
+                clone.setPixel(i, j, getPixel(i, j));
             }
         }
         return clone;

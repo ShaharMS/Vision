@@ -1,5 +1,6 @@
 package vision;
 
+import haxe.extern.EitherType;
 import vision.algorithms.Radix;
 import haxe.ds.ArraySort;
 import vision.ds.Histogram;
@@ -199,67 +200,63 @@ class Vision {
         1. enjoy your convolved image :)
 
         @param image the image to be manipulated
-        @param kernal the type/value of the kernal. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**, **`Custom`**.
-        @param denominator With certain kernals, sometimes you want to reduce the "colorfulness" of the image to get the correct result. This is don't by setting the denominator. for example,
-        when using `BoxBlur`, `denominator` is automatically set to `9`. When you set `denominator`, you override the defaults of the kernals that auto-set `denominator`.
+        @param kernal the type/value of the kernal. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**,
+        or just a matrix: both `convolve(image, BoxBlur)` and `convolve(image, [[1,1,1],[1,1,1],[1,1,1]])` are valid ways to represent a box blur.
         @return A convolved version of the image. The original image is not preserved
     **/
-    public static function convolve(image:Image, kernal:Kernal2D, ?denominator:Float = null):Image {
+    public static function convolve(image:Image, kernal:EitherType<Kernal2D, Array<Array<Float>>>):Image {
 
-        var matrix:Array<Array<Float>> = switch kernal {
-            case Identity: [
-                [0, 0, 0],
-                [0, 1, 0],
-                [0, 0, 0],
-            ];
-            case BoxBlur: [
-                [1, 1, 1],
-                [1, 1, 1],
-                [1, 1, 1],
-            ];
-            case RidgeDetection: [
-                [-1, -1, -1],
-                [-1, 4, -1],
-                [-1, -1, -1],
-            ];
-            case RidgeDetectionAggressive: [
-                [-1, -1, -1],
-                [-1, 7, -1],
-                [-1, -1, -1],
-            ];
-            case Sharpen: [
-                [0, -1, 0],
-                [-1, 5, -1],
-                [0, -1, 0],
-            ];
-            case UnsharpMasking:[
-                [1, 4, 6, 4, 1],
-                [4, 16,  24 , 16, 4],
-                [6, 24, -476, 24, 6],
-                [4, 16,  24 , 16, 4],
-                [1, 4, 6, 4, 1]
-            ];
-            case Assemble3x3(corner, edge, center): [
-                [corner, edge, corner],
-                [edge, center, edge],
-                [corner, edge, corner]
-            ];
-            case Assemble5x5(farCorner, farEdge, edge, midCorner, midEdge, center): [
-                [farCorner, farEdge, edge, farEdge, farCorner],
-                [farEdge, midCorner, midEdge, midCorner, farEdge],
-                [edge, midEdge, center, midEdge, edge],
-                [farEdge, midCorner, midEdge, midCorner, farEdge],
-                [farCorner, farEdge, edge, farEdge, farCorner]
-            ];
-            case Custom(kernal): kernal;
-            case GaussianBlur(size, sigma): Gaussian.createKernalOfSize(size, sigma);
-        }
-
-        if (denominator == null) {
-            denominator = switch kernal {
-                case BoxBlur: 9;
-                case UnsharpMasking: 256;
-                default: 1;
+        var matrix:Array<Array<Float>>;
+        if (kernal is Array) {
+            matrix = cast kernal;
+        } else {
+            matrix = switch cast (kernal, Kernal2D) {
+                case Identity: [
+                    [0, 0, 0],
+                    [0, 1, 0],
+                    [0, 0, 0],
+                ];
+                case BoxBlur: [
+                    [1, 1, 1],
+                    [1, 1, 1],
+                    [1, 1, 1],
+                ];
+                case RidgeDetection: [
+                    [-1, -1, -1],
+                    [-1, 4, -1],
+                    [-1, -1, -1],
+                ];
+                case RidgeDetectionAggressive: [
+                    [-1, -1, -1],
+                    [-1, 7, -1],
+                    [-1, -1, -1],
+                ];
+                case Sharpen: [
+                    [0, -1, 0],
+                    [-1, 5, -1],
+                    [0, -1, 0],
+                ];
+                case UnsharpMasking:[
+                    [1, 4, 6, 4, 1],
+                    [4, 16,  24 , 16, 4],
+                    [6, 24, -476, 24, 6],
+                    [4, 16,  24 , 16, 4],
+                    [1, 4, 6, 4, 1]
+                ];
+                case Assemble3x3(corner, edge, center): [
+                    [corner, edge, corner],
+                    [edge, center, edge],
+                    [corner, edge, corner]
+                ];
+                case Assemble5x5(farCorner, farEdge, edge, midCorner, midEdge, center): [
+                    [farCorner, farEdge, edge, farEdge, farCorner],
+                    [farEdge, midCorner, midEdge, midCorner, farEdge],
+                    [edge, midEdge, center, midEdge, edge],
+                    [farEdge, midCorner, midEdge, midCorner, farEdge],
+                    [farCorner, farEdge, edge, farEdge, farCorner]
+                ];
+                case Custom(kernal): kernal;
+                case GaussianBlur(size, sigma): Gaussian.createKernalOfSize(size, sigma);
             }
         }
 
@@ -287,26 +284,6 @@ class Vision {
         }
         trace(flatMatrix.length);
         return image = convolved;
-    }
-
-
-    /**
-        Uses the hough transform to detect lines inside an image.  
-
-        NOTICE - unlike the `houghLines` function in OpenCV, this function returns line **segments**, and not line equations.
-        
-        ANOTHER NOTICE - this function doesn't require pre-processing of the image. just throw your image on it and 
-        it will do the rest. (ie. it doesn't need to be edge detected/grayscaled)
-    
-        @param image The image to be processed.H
-        @param threshold The threshold for detecting lines. This exists because we need to detect edges before applying the transformation, and this threshold will be used as the argument for the Perwitt edge detector.
-        @param maxRayCount The maximum number of rays to be detected. Unless you have a very large image, or a good reason, this should remain unset.
-    **/
-    public static function houghRay2DDetection(image:Image, threshold:Int = 70, ?maxRayCount:Null<Int> = null):Array<Ray2D> {
-        
-        var edges = cannyEdgeDetection(image.clone());
-        var houghSpace = Hough.toHoughSpaceWithRays(edges, threshold, maxRayCount);
-        return houghSpace.rays;
     }
 
     /**

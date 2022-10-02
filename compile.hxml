@@ -7,6 +7,7 @@
 --dce full
 --js bin/main.js
 #--interp
---define feature_detection_tests
+#--define feature_detection_tests
 --define vision_multithread
 --define vision_faster_line_detection
+--define draw_tests

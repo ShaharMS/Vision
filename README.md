@@ -193,13 +193,11 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `drawLineWithLerp()`
    - [x] `fillRect()`
    - [ ] `fillCircle()`
-   - [ ] `fillCircleRecursive()`
-   - [x] `callDrawSequence()`
  - Copying:
    - [x] `clone()`
    - [x] `getImagePortion()`
    - [x] `setImagePortion()`
-   - [x] `copyPixel()`
+   - [x] `copyPixelFrom()`
  - Manipulation:
    - [x] `forEachPixel()`
    - [x] `iterator()`
