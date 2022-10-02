@@ -56,7 +56,7 @@ abstract Image(UInt8Array) {
         The height of the image.
     **/
     public var height(get, #if vision_allow_resize set #else never #end):Int;
-    function get_height() return Math.ceil((this.length - OFFSET) / width);
+    function get_height() return Math.ceil((this.length - OFFSET) / (width * 4));
     #if vision_allow_resize
     function set_height(value:Int) {
         resize(width, value);
@@ -99,7 +99,6 @@ abstract Image(UInt8Array) {
 
     function setColorFromStartingBytePos(position:Int, c:Color) {
         position += OFFSET;
-        var c = new Color();
         this[position] = c.alpha;
         this[position + 1] = c.red;
         this[position + 2] = c.green;
@@ -153,7 +152,7 @@ abstract Image(UInt8Array) {
             y = gettable.y;
             #end
         }
-        return getColorFromStartingBytePos(x * y * 4);
+        return getColorFromStartingBytePos((y * width + x) * 4);
     }
 
     /**
@@ -278,7 +277,7 @@ abstract Image(UInt8Array) {
             throw new OutOfBounds(cast this, new IntPoint2D(x, y));
             #end
         }
-        setColorFromStartingBytePos(x * y * 4, color);
+        setColorFromStartingBytePos((y * width + x) * 4, color);
     }
 
     /**
@@ -290,7 +289,7 @@ abstract Image(UInt8Array) {
         @return True if the coordinates are within the bounds of the image.
     **/
     public function hasPixel(x:Int, y:Int):Bool {
-        return (x >= 0 && y >= 0 && x * y * 4 + OFFSET <= this.length);
+        return (x >= 0 && y >= 0 && x < width && y < height);
     }
 
     /**
@@ -870,12 +869,10 @@ abstract Image(UInt8Array) {
     }
 
     public function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
-        var i = 4;
-        while (i < this.length) {
-            final x = i % width;
-            final y = Math.floor(i / width);
-            callback(x, y, getPixel(x, y));
-            i += 4;
+        for (x in 0...width) {
+            for (y in 0...height) {
+                callback(x, y, getPixel(x, y));
+            }
         }
     }
 
