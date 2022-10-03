@@ -122,7 +122,11 @@ class Main {
 				printImage(image.clone().medianBlur(5));
 				end = haxe.Timer.stamp();
 				trace("Median blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
+
 				#if mirror_flip_tests
+				start = haxe.Timer.stamp();
+				printImage(image.clone().mirror());
+				end = haxe.Timer.stamp();
 				trace("Image Mirroring took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
 				printImage(image.clone().flip());
@@ -133,6 +137,7 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Image Mirroring & Flipping took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				#end
+
 				#if feature_detection_tests
 				start = haxe.Timer.stamp();
 				var lines = Vision.simpleLine2DDetection(image.clone(), 50, 30);

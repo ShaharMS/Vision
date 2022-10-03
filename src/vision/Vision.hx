@@ -537,99 +537,56 @@ class Vision {
 
 		@return The line detected image.
 	**/
-	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10,
-			?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermidiate):Array<Line2D> {
-		final kernalSize = switch speedToAccuracyRatio {
-			case VeryLow_VeryFast: X1;
-			case Low_Fast: X3;
-			case Medium_Intermidiate: X5;
-			case High_Slow: X7;
-			case VeryHigh_VerySlow: X9;
-		}
-		var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
-		// #if vision_multithread
-		// var actualLines:Array<Line2D> = [];
-		// var edgeDetectedMirrored = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
-		// var lines:Array<Array<Line2D>> = [[], [], [], [], [], [], [], []];
-		// var threads:Array<VisionThread> = [];
-		// var flag1 = false, flag2 = false, flag3 = false, flag4 = false, flag5 = false, flag6 = false, flag7 = false, flag8 = false;
-		// threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[0].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength)));flag1 = true;}));
-		// threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[1].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true)));flag2 = true;}));
-		// threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[2].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true)));flag3 = true;}));
-		// threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[3].push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true)));flag4 = true;}));
-		// threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[4].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength)));flag5 = true;}));
-		// threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[5].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength, true)));flag6 = true;}));
-		// threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[6].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength, false, true)));flag7 = true;}));
-		// threads.push(VisionThread.create(() -> {image.forEachPixel((x, y, color) -> lines[7].push(SimpleLineDetector.findLineFromPoint(edgeDetectedMirrored, {x: x, y: y}, minLineLength, true, true)));flag8 = true;}));
-		// for (i in 0...8) {
-		//     threads[i].relaunchEvents = true;
-		//     threads[i].onDone = () -> {
-		//         for (l in lines[i]) {
-		//             if (l == null) continue;
-		//             if (i < 4) {
-		//                 if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
-		//                 actualLines.push(l);
-		//             } else {
-		//                 if (SimpleLineDetector.lineCoveragePercentage(edgeDetectedMirrored, l) < accuracy) continue;
-		//                 actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
-		//             }
-		//         }
-		//     };
-		// }
-
-		// while (!(flag1 && flag2 && flag3 && flag4 && flag5 && flag6 && flag7 && flag8)) {}
-		// #else
-		var lines:Array<Line2D> = [];
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				var line = SimpleLineDetector.findLineFromPoint(edgeDetected, new IntPoint2D(x, y), minLineLength);
-				lines.push(line);
-				var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, new IntPoint2D(x, y), minLineLength, true);
-				lines.push(line2);
-				var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, new IntPoint2D(x, y), minLineLength, false, true);
-				lines.push(line3);
-				var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, new IntPoint2D(x, y), minLineLength, true, true);
-				lines.push(line4);
-			}
-		}
-		var actualLines:Array<Line2D> = [];
-		trace(accuracy);
-		for (l in lines) {
-			if (l == null)
-				continue;
-			if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy)
-				continue;
-			actualLines.push(l);
-		}
-		// now, get a mirrored version
-		var edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
-				lines.push(line);
-				var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
-				lines.push(line2);
-				var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
-				lines.push(line3);
-				var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
-				lines.push(line4);
-			}
-		}
-		for (l in lines) {
-			if (l == null)
-				continue;
-			if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy)
-				continue;
-			actualLines.push(l.mirrorInsideRectangle({
-				x: 0,
-				y: 0,
-				width: image.width,
-				height: image.height
-			}));
-		}
-		// #end
-		return actualLines;
-	}
+	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermidiate):Array<Line2D> {
+        final kernalSize = switch speedToAccuracyRatio {
+            case VeryLow_VeryFast: X1;
+            case Low_Fast: X3;
+            case Medium_Intermidiate: X5;
+            case High_Slow: X7;
+            case VeryHigh_VerySlow: X9;
+        }
+        var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
+        var lines:Array<Line2D> = [];
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
+                lines.push(line);
+                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
+                lines.push(line2);
+                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
+                lines.push(line3);
+                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
+                lines.push(line4);
+            }
+        }
+        var actualLines:Array<Line2D> = [];
+        trace(accuracy);
+        for (l in lines) {
+            if (l == null) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
+            actualLines.push(l);
+        }
+        //now, get a mirrored version
+        var edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
+                lines.push(line);
+                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
+                lines.push(line2);
+                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
+                lines.push(line3);
+                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
+                lines.push(line4);
+            }
+        }
+        for (l in lines) {
+            if (l == null) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
+            actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
+        }
+        return actualLines;
+    }
 
 	/**
 	 * Applies the sobel filter to an image.

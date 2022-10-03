@@ -114,6 +114,28 @@ class Line2D {
 		return this;
 	}
 
+	public inline function flipInsideRectangle(rect:Rectangle):Line2D {
+		final diffSY = start.y - rect.y;
+		final diffEY = end.y - rect.y;
+
+		start.y = rect.y + rect.width - diffSY;
+		end.y = rect.y + rect.width - diffEY;
+		return this;
+	}
+
+	public inline function invertInsideRectangle(rect:Rectangle):Line2D {
+		final diffSY = start.y - rect.y;
+		final diffEY = end.y - rect.y;
+		final diffSX = start.x - rect.x;
+		final diffEX = end.x - rect.x;
+
+		start.x = rect.x + rect.width - diffSX;
+		end.x = rect.x + rect.width - diffEX;
+		start.y = rect.y + rect.width - diffSY;
+		end.y = rect.y + rect.width - diffEY;
+		return this;
+	}
+
 	inline function recalc() {
 		switch modificationMode {
 			case START:

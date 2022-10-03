@@ -839,16 +839,16 @@ abstract Image(UInt8Array) {
 	public function mirror():Image {
 		var inter = clone();
 		forEachPixel((x, y, color) -> {
-			setPixel(x, y, inter.getPixel(inter.width - x - 1, inter.height - y - 1));
+			setPixel(x, y, inter.getPixel(inter.width - x - 1, y));
 		});
 		return cast this;
 	}
 
 	public function flip():Image {
-		var array:Array<Int> = cast this;
-		array.reverse();
-		for (i in 4...array.length)
-			this[i] = array[i - 4];
+		var inter = clone();
+		forEachPixel((x, y, color) -> {
+			setPixel(x, y, inter.getPixel(x, inter.height - y - 1));
+		});
 		return cast this;
 	}
 
