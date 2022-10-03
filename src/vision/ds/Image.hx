@@ -935,7 +935,7 @@ abstract Image(UInt8Array) {
 		return ImageTools.fromBitmapData(bitmapData);
 	}
 
-	@:to public function toShape():flash.display.Shape {
+	@:to public function toShape():openfl.display.Shape {
 		return ImageTools.toShape(cast this);
 	}
 

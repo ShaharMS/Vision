@@ -22,67 +22,67 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	/**
 	 * ![color](https://www.colorhexa.com/ffffff.png)![color](https://www.colorhexa.com/ffffff.png)
 	 */
-	public static inline var WHITE:Color = 0xFFFFFF;
+	public static inline var WHITE:Color = 0xFFFFFFFF;
 
 	/**
 	 * ![color](https://www.colorhexa.com/808080.png)![color](https://www.colorhexa.com/808080.png)
 	 */
-	public static inline var GRAY:Color = 0x808080;
+	public static inline var GRAY:Color = 0xFF808080;
 
 	/**
 	 * ![color](https://www.colorhexa.com/000000.png)![color](https://www.colorhexa.com/000000.png)
 	 */
-	public static inline var BLACK:Color = 0x000000;
+	public static inline var BLACK:Color = 0xFF000000;
 
 	/**
 	 * ![color](https://www.colorhexa.com/00ff00.png)![color](https://www.colorhexa.com/00ff00.png)
 	 */
-	public static inline var GREEN:Color = 0x00FF00;
+	public static inline var GREEN:Color = 0xFF00FF00;
 
 	/**
 	 * ![color](https://www.colorhexa.com/FFFF00.png)![color](https://www.colorhexa.com/FFFF00.png)
 	 */
-	public static inline var YELLOW:Color = 0xFFFF00;
+	public static inline var YELLOW:Color = 0xFFFFFF00;
 
 	/**
 	 * ![color](https://www.colorhexa.com/FFA500.png)![color](https://www.colorhexa.com/FFA500.png)
 	 */
-	public static inline var ORANGE:Color = 0xFFA500;
+	public static inline var ORANGE:Color = 0xFFFFA500;
 
 	/**
 	 * ![color](https://www.colorhexa.com/FF0000.png)![color](https://www.colorhexa.com/FF0000.png)
 	 */
-	public static inline var RED:Color = 0xFF0000;
+	public static inline var RED:Color = 0xFFFF0000;
 
 	/**
 	 * ![color](https://www.colorhexa.com/800080.png)![color](https://www.colorhexa.com/800080.png)
 	 */
-	public static inline var PURPLE:Color = 0x800080;
+	public static inline var PURPLE:Color = 0xFF800080;
 
 	/**
 	 * ![color](https://www.colorhexa.com/0000ff.png)![color](https://www.colorhexa.com/0000ff.png)
 	 */
-	public static inline var BLUE:Color = 0x0000FF;
+	public static inline var BLUE:Color = 0xFF0000FF;
 
 	/**
 	 * ![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)
 	 */
-	public static inline var BROWN:Color = 0x8B4513;
+	public static inline var BROWN:Color = 0xFF8B4513;
 
 	/**
 	 * ![color](https://www.colorhexa.com/FFC0CB.png)![color](https://www.colorhexa.com/FFC0CB.png)
 	 */
-	public static inline var PINK:Color = 0xFFC0CB;
+	public static inline var PINK:Color = 0xFFFFC0CB;
 
 	/**
 	 * ![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)
 	 */
-	public static inline var MAGENTA:Color = 0xFF00FF;
+	public static inline var MAGENTA:Color = 0xFFFF00FF;
 
 	/**
 	 * ![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)
 	 */
-	public static inline var CYAN:Color = 0x00FFFF;
+	public static inline var CYAN:Color = 0xFF00FFFF;
 
 	/**
 	 * ![color](https://www.colorhexa.com/C0C0C0.png)![color](https://www.colorhexa.com/C0C0C0.png)
@@ -92,47 +92,47 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	/**
 	 * ![color](https://www.colorhexa.com/FFD700.png)![color](https://www.colorhexa.com/FFD700.png)
 	 */
-	public static inline var GOLD:Color = 0xFFD700;
+	public static inline var GOLD:Color = 0xFFFFD700;
 
 	/**
 	 * ![color](https://www.colorhexa.com/808000.png)![color](https://www.colorhexa.com/808000.png)
 	 */
-	public static inline var OLIVE:Color = 0x808000;
+	public static inline var OLIVE:Color = 0xFF808000;
 
 	/**
 	 * ![color](https://www.colorhexa.com/800000.png)![color](https://www.colorhexa.com/800000.png)
 	 */
-	public static inline var MAROON:Color = 0x800000;
+	public static inline var MAROON:Color = 0xFF800000;
 
 	/**
 	 * ![color](https://www.colorhexa.com/000080.png)![color](https://www.colorhexa.com/000080.png)
 	 */
-	public static inline var NAVY:Color = 0x000080;
+	public static inline var NAVY:Color = 0xFF000080;
 
 	/**
 	 * ![color](https://www.colorhexa.com/008080.png)![color](https://www.colorhexa.com/008080.png)
 	 */
-	public static inline var TEAL:Color = 0x008080;
+	public static inline var TEAL:Color = 0xFF008080;
 
 	/**
 	 * ![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)
 	 */
-	public static inline var FUCHSIA:Color = 0xFF00FF;
+	public static inline var FUCHSIA:Color = 0xFFFF00FF;
 
 	/**
 	 * ![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)
 	 */
-	public static inline var AQUA:Color = 0x00FFFF;
+	public static inline var AQUA:Color = 0xFF00FFFF;
 
 	/**
 	 * ![color](https://www.colorhexa.com/32CD32.png)![color](https://www.colorhexa.com/32CD32.png)
 	 */
-	public static inline var LIME:Color = 0x32CD32;
+	public static inline var LIME:Color = 0xFF32CD32;
 
 	/**
 	 * ![color](https://www.colorhexa.com/4169E1.png)![color](https://www.colorhexa.com/4169E1.png)
 	 */
-	public static inline var ROYAL_BLUE:Color = 0x4169E1;
+	public static inline var ROYAL_BLUE:Color = 0xFF4169E1;
 
 	public var red(get, set):Int;
 	public var blue(get, set):Int;
