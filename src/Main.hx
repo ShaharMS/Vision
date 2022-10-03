@@ -1,5 +1,6 @@
 package;
 
+import haxe.ds.ArraySort;
 import vision.algorithms.Radix;
 import vision.ds.Histogram;
 import vision.exceptions.MultithreadFaliure;
@@ -212,7 +213,40 @@ class Main {
 		trace(queue.toString());
 		#end
 
-		trace(Radix.sort([0,4,2,6,8,4,7,3,12,23523,234,246,4543,2,124,25,63,66]));
+		#if radix_test
+
+		function enrich(arr:Array<Int>) {
+			var sa:Array<Int> = [];
+			for (i in 0...arr.length - 1) {
+				sa.push(arr[i]);
+				sa.push(Std.int((arr[i] + arr[i + 1]) / 2));
+			}
+
+			return sa;
+		}
+		function sts(f:Float) {
+			return if (f == 0) "0.000s" else "" + f + "s";
+		}
+
+		var arr = [2,3,41,54,67456,456,34512,34123,667,562,23,124,26,785234,1234,12352,7656,834,5,456,215,76,35,235,745,7568,235234,126,4575,87,6,34,51234,236457,34561345,535,12,45123];
+		trace("Radix \t\t\t\t\t| ArraySort.sort");
+		trace("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+		for (i in 0...16) {
+			var s = " \t\t| ";
+			var st = "";
+			
+			start = haxe.Timer.stamp();
+			Radix.sort(arr.copy());
+			end = haxe.Timer.stamp();
+			st += 'length: ${arr.length}, time: ${sts(MathTools.turnicate(end - start, 4))}' + if (i == 15) " \t| " else s;
+			start = haxe.Timer.stamp();
+			ArraySort.sort(arr.copy(), (a, b) -> a - b);
+			end = haxe.Timer.stamp();
+			st += 'length: ${arr.length}, time: ${sts(MathTools.turnicate(end - start, 4))}';
+			trace(st);
+			arr = enrich(arr);
+		}
+		#end
 	}
 
 	public static function printImage(image:Image) {
