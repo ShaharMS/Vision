@@ -1,5 +1,6 @@
 package;
 
+import vision.algorithms.Radix;
 import vision.ds.Histogram;
 import vision.exceptions.MultithreadFaliure;
 import vision.tools.ImageTools;
@@ -210,6 +211,8 @@ class Main {
 		trace(queue.dequeue());
 		trace(queue.toString());
 		#end
+
+		trace(Radix.sort([0,4,2,6,8,4,7,3,12,23523,234,246,4543,2,124,25,63,66]));
 	}
 
 	public static function printImage(image:Image) {

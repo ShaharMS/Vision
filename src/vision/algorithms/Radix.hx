@@ -26,32 +26,34 @@ class Radix {
 	static function countSort<T:Int, UInt, Int64>(array:Array<T>, exp:Int, ?endIndex:Int) {
 		if (endIndex == null)
 			endIndex = array.length;
+
 		var output:Array<T> = [];
-		var i:Int = 0;
+		var i:Int = -1;
 		var count = [for (i in 0...10) 0];
 
 		// Store count of occurrences in `count`
-		while (i++ < endIndex)
+		while (++i < endIndex)
 			count[Std.int(array[i] / exp) % 10]++;
 
-		i = 1;
+		i = 0;
 
 		// Change `count[i]` so that `count[i]` now contains
 		// actual position of this digit in `output`
-		while (i++ < 10)
+		while (++i < 10)
 			count[i] += count[i - 1];
 
-		i = endIndex - 1;
+		i = endIndex;
+		
 		// Build the output array
-		while (i-- >= 0) {
+		while (--i >= 0) {
 			output[count[Std.int(array[i] / exp) % 10] - 1] = array[i];
 			count[Std.int(array[i] / exp) % 10]--;
 		}
 
-		i = 0;
+		i = -1;
 		// Copy `output` to `array`, so that `array` now
 		// contains sorted numbers according to current digit
-		while (i++ < endIndex)
+		while (++i < endIndex)
 			array[i] = output[i];
 
 		return output;
@@ -61,13 +63,13 @@ class Radix {
 	// size n using Radix Sort
 	public static function sort<T:Int, UInt, Int64>(array:Array<T>) {
 		// Find the maximum number to know number of digits
-		var m = getMax(array, array.length);
+		var max = getMax(array, array.length);
 		var exp = 1;
 
 		// Do counting sort for every digit. Note that
 		// instead of passing digit number, exp is passed.
 		// exp is 10^i where i is current digit number
-		while (m / exp > 0) {
+		while (max / exp > 0) {
 			array = countSort(array, exp, array.length);
 			exp *= 10;
 		}
