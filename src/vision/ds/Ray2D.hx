@@ -88,7 +88,7 @@ class Ray2D {
 	}
 
 	public inline function intersect(ray:Ray2D):Point2D {
-		return MathTools.intersectionBetweenRays2D(this, ray);
+		return MathTools.intersectionBetweenRay2Ds(this, ray);
 	}
 
 	/**
