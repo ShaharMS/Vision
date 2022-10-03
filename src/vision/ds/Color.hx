@@ -150,7 +150,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public var black(get, set):Float;
 
 	/**
-	 * The red, green and blue channels of this color as a 24 bit integer (from 0 to 0xFFFFFF)
+	 * The red, green and blue channels of this color as a 24 bit integer (from 0 to 0xFFFFFF, does not include alpha values)
 	 */
 	public var rgb(get, set):Color;
 
