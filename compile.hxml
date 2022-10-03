@@ -3,6 +3,8 @@
 
 --library format
 --library console.hx
+--library lime
+--library openfl
 -debug
 --dce full
 --js bin/main.js

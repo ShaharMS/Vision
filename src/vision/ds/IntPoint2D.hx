@@ -5,7 +5,7 @@ import haxe.Int64;
 import haxe.ds.Vector;
 import vision.ds.Point2D;
 
-#if ((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs)
+#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 private typedef Impl = haxe.Int64;
 #else
 @:structInit
@@ -24,7 +24,7 @@ abstract IntPoint2D(Impl) {
 	public var y(get, set):Int;
 
 	public inline function new(x:Int, y:Int) {
-		#if ((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs)
+		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		this = Int64.make(x, y);
 		#else
 		this = ({x: x, y: y} : Impl);
@@ -32,7 +32,7 @@ abstract IntPoint2D(Impl) {
 	}
 
 	inline function get_y() {
-		#if ((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs)
+		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		return this.low;
 		#else
 		return this.y;
@@ -40,7 +40,7 @@ abstract IntPoint2D(Impl) {
 	}
 
 	inline function get_x() {
-		#if ((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs)
+		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		return this.high;
 		#else
 		return this.x;
@@ -48,7 +48,7 @@ abstract IntPoint2D(Impl) {
 	}
 
 	inline function set_y(y:Int):Int {
-		#if ((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs)
+		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		this = Int64.make(x, y);
 		#else
 		this = ({x: x, y: y} : Impl);
@@ -57,7 +57,7 @@ abstract IntPoint2D(Impl) {
 	}
 
 	inline function set_x(x:Int) {
-		#if ((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs)
+		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		this = Int64.make(x, y);
 		#else
 		this = ({x: x, y: y} : Impl);

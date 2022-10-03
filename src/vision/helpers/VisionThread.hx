@@ -14,6 +14,7 @@ class VisionThread {
 	static var COUNT:Int = 0;
 
 	var underlying:#if js Promise<Void> #else Thread #end;
+	var job:Void -> Void;
 
 	public var onFailed(default, set):Exception->Void;
 	public var onDone(default, set):Void->Void;
@@ -26,16 +27,18 @@ class VisionThread {
 
 	public final count:Int;
 
-	function new(job:Void->Void) {
+	public function new(job:Void->Void) {
+		this.job = job;
 		count = COUNT++;
 		onFailed = (d:Exception) -> {
 			throw new MultithreadFaliure(count, d);
 		};
-		onDone = () -> {
-			trace("done");
-		};
+		onDone = () -> {};
+	}
+
+	public function start() {
 		#if js
-		underlying = new Promise((onDone, onFailed) -> {
+		underlying = new Promise((onDone, onFailedWrapper) -> {
 			job();
 			jobDone = true;
 		});
@@ -46,15 +49,21 @@ class VisionThread {
 				onDone();
 				jobDone = true;
 			} catch (e) {
-				onFailed(e);
-				jobDone = false;
+				onFailedWrapper(e);
 			}
 		});
 		#end
 	}
 
+	function onFailedWrapper(d) {
+		jobDone = false;
+		onFailed(d);
+	}
+
 	public static function create(job:Void->Void):VisionThread {
-		return new VisionThread(job);
+		var t = new VisionThread(job);
+		t.start();
+		return t;
 	}
 
 	function set_onFailed(value:Exception->Void):Exception->Void {

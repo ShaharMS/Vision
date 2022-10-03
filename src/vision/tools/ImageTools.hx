@@ -215,25 +215,21 @@ class ImageTools {
 	#if (openfl || flash)
 	public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
 		var image = new Image(bitmapData.width, bitmapData.height);
-		bitmapData.lock();
 		for (x in 0...bitmapData.width) {
 			for (y in 0...bitmapData.height) {
-				image.setPixel(x, y, bitmapData.getPixel(x, y));
+				image.setPixel(x, y, bitmapData.getPixel32(x, y));
 			}
 		}
-		bitmapData.unlock();
 		return image;
 	}
 
 	public static function toBitmapData(image:Image):flash.display.BitmapData {
-		var bitmapData = new flash.display.BitmapData(image.width, image.height, true, 0x00ffffff);
-		bitmapData.lock();
+		var bitmapData = new flash.display.BitmapData(image.width, image.height, true, 0x00000000);
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
-				bitmapData.setPixel(x, y, image.getPixel(x, y));
+				bitmapData.setPixel32(x, y, image.getPixel(x, y));
 			}
 		}
-		bitmapData.unlock();
 		return bitmapData;
 	}
 
@@ -255,14 +251,16 @@ class ImageTools {
 		bmp.draw(shape);
 		return fromBitmapData(bmp);
 	}
-
-	public static function toShape(image:Image):flash.display.Shape {
-		var s = toSprite(image);
-		var sh = new flash.display.Shape();
-		#if openfl sh.graphics.drawGraphicsData(s.graphics.readGraphicsData()); #end
+	#end
+	#if openfl
+	public static function toShape(image:Image):openfl.display.Shape {
+		var s:openfl.display.Shape = cast toSprite(image);
+		var sh = new openfl.display.Shape();
+		sh.graphics.drawGraphicsData(s.graphics.readGraphicsData());
 		return sh;
 	}
 	#end
+	
 
 	#if lime
 	public static function fromLimeImage(limeImage:lime.graphics.Image):Image {

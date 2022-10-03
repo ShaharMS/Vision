@@ -51,19 +51,26 @@ class Line2D {
 	inline function set_slope(value:Float):Float {
 		@:bypassAccessor degrees = MathTools.slopeToDegrees(value);
 		@:bypassAccessor radians = MathTools.slopeToRadians(value);
-		return slope = value;
+		slope = value;
+		recalc();
+		return value;
 	}
 
 	inline function set_degrees(value:Float):Float {
 		@:bypassAccessor slope = MathTools.degreesToSlope(value);
 		@:bypassAccessor radians = MathTools.degreesToRadians(value);
-		return degrees = MathTools.wrapFloat(value, -180, 180);
+		degrees = MathTools.wrapFloat(value, -180, 180);
+		recalc();
+		return degrees;
+
 	}
 
 	inline function set_radians(value:Float):Float {
 		@:bypassAccessor slope = MathTools.radiansToSlope(value);
 		@:bypassAccessor degrees = MathTools.radiansToDegrees(value);
-		return radians = value;
+		radians = value;
+		recalc();
+		return value;
 	}
 
 	inline function set_start(value:Point2D) {
