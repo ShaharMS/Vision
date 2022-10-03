@@ -509,8 +509,8 @@ class Vision {
 		@param lowThreshold The low threshold value to be used in the hysteresis thresholding.
 		@param highThreshold The high threshold value to be used in the hysteresis thresholding.
 
+		@throws InvalidGaussianKernalSize thrown if the `initialKernalSize` is negative/divisible by `2`.
 		@return The edge detected image.
-
 	**/
 	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, initialKernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05,
 			highThreshold:Float = 0.2):Image {
