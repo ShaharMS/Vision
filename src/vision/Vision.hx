@@ -446,7 +446,7 @@ class Vision {
 		@param image The image to be blurred.
 		@param iterations The number of times the algorithm will be run. the more iterations, the more blurry the image will be, and the higher the "blur range". for example: a value of 3 will produce a blur range of 3 pixels on each object.
 
-		@return The blurred image.
+		@return A blurred version of the image. The original image is not preserved
 	**/
 	public static function nearestNeighborBlur(image:Image, iterations:Int = 1):Image {
 		for (i in 0...iterations)
@@ -471,6 +471,12 @@ class Vision {
 		\
 		\
 		![gaussian distribution at different sigma values](https://i.stack.imgur.com/B33AE.png)
+		
+		@param image The image to be blurred
+		@param sigma The sigma value to use for the gaussian distribution on the kernal. a lower value will focus more on the center pixel, while a higher value will shift focus to the surrounding pixels more, effectively blurring it better.
+		@param kernalSize The size of the kernal (`width` & `height`)
+		@throws InvalidGaussianKernalSize if the kernal size is even, negative or `0`, this error is thrown.
+		@return A blurred version of the image. The original image is not preserved
 	**/
 	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
 		return convolve(image, GaussianBlur(kernalSize, sigma));
@@ -478,17 +484,17 @@ class Vision {
 
 	/**
 	 * Applies a median filter to an image to reduce the amount of noise in that image.
-	 * @param image 
-	 * @param kernalRadius 
-	 * @return Image
+	 * @param image The image to apply median blurring to.
+	 * @param kernalRadius the radius around the pixels in which we should search for the median. a radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
+	 * @param forceRadix Force usage of the radix sorting algorithm when finding the median in each "neighborhood" of pixels.
+	 * @return A filtered version of the image, using median blurring. The original image is not preserved
 	 */
-	public static function medianBlur(image:Image, kernalRadius:Int):Image {
+	public static function medianBlur(image:Image, kernalRadius:Int, ?forceRadix:Bool):Image {
 		var medianed = new Image(image.width, image.height);
-
+		final useRadix = forceRadix || image.getNeighborsOfPixel(0, 0, kernalRadius).flatten().length > 1000;
 		image.forEachPixel((x, y, color) -> {
-			var neighbors:Array<UInt> = image.getNeighborsOfPixel(x, y, kernalRadius).flatten();
-			// Radix.sort(neighbors);
-			ArraySort.sort(neighbors, (a, b) -> a - b);
+			var neighbors = image.getNeighborsOfPixel(x, y, kernalRadius).flatten();
+			if (useRadix) Radix.sort(neighbors) else ArraySort.sort(neighbors, (a, b) -> a - b);
 			medianed.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
 
