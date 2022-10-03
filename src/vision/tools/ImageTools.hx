@@ -187,14 +187,14 @@ class ImageTools {
 
 	#if flixel
 	public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
-		var image = new Image(sprite.width, sprite.height);
-		if (sprite.bitmapData == null) {
-			Log.warn("ImageTools.fromFlxSprite() - The supplied sprite's bitmapData is null. An empty image is returned");
+		var image = new Image(Std.int(sprite.width), Std.int(sprite.height));
+		if (sprite.pixels == null) {
+			lime.utils.Log.warn("ImageTools.fromFlxSprite() - The supplied sprite's bitmapData is null. An empty image is returned");
 			return image;
 		}
-		for (x in 0...sprite.width) {
-			for (y in 0...sprite.height) {
-				image.setPixel(x, y, sprite.bitmapData.getPixel(x, y));
+		for (x in 0...Std.int(sprite.width)) {
+			for (y in 0...Std.int(sprite.height)) {
+				image.setPixel(x, y, sprite.pixels.getPixel(x, y));
 			}
 		}
 		return image;
@@ -205,7 +205,7 @@ class ImageTools {
 		sprite.makeGraphic(image.width, image.height, 0x00ffffff);
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
-				sprite.bitmapData.setPixel(x, y, image.getPixel(x, y));
+				sprite.pixels.setPixel(x, y, image.getPixel(x, y));
 			}
 		}
 		return sprite;

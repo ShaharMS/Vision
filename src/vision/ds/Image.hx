@@ -918,7 +918,7 @@ abstract Image(UInt8Array) {
 	//--------------------------------------------------------------------------
 	#if flixel
 	@:to public function toFlxSprite():flixel.FlxSprite {
-		ImageTools.toFlxSprite(cast this);
+		return ImageTools.toFlxSprite(cast this);
 	}
 
 	@:from public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {

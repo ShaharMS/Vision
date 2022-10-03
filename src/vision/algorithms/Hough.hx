@@ -1,10 +1,6 @@
 package vision.algorithms;
 
-import format.agal.Data.RegType;
-import vision.tools.MathTools;
-import haxe.ds.BalancedTree;
 import vision.ds.hough.HoughAccumulator;
-import haxe.Timer;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Matrix;
 import vision.ds.Point2D;

@@ -262,7 +262,6 @@ class Vision {
 				convolved.setPixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
 			}
 		}
-		trace(flatMatrix.length);
 		return image = convolved;
 	}
 
