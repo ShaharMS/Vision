@@ -246,7 +246,7 @@ abstract Image(UInt8Array) {
 		@return The color of the pixel at the given coordinates.
 	**/
 	public inline function getFloatingPixel(x:Float, y:Float):Color {
-		#if !visiin_quiet
+		#if !vision_quiet
 		if (!hasPixel(Math.ceil(x), Math.ceil(y)))
 			throw new OutOfBounds(cast this, {x: x, y: y});
 		#end
