@@ -15,17 +15,17 @@ class Sobel {
 		var edgeColors:Array<Array<Int>> = [];
 		var maxGradient = -1;
 
-		for (i in 1...image.width - 1) {
-			for (j in 1...image.height - 1) {
-				var val00 = ImageTools.grayscalePixel(image.getPixel(i - 1, j - 1)).red;
-				var val01 = ImageTools.grayscalePixel(image.getPixel(i - 1, j)).red;
-				var val02 = ImageTools.grayscalePixel(image.getPixel(i - 1, j + 1)).red;
-				var val10 = ImageTools.grayscalePixel(image.getPixel(i, j - 1)).red;
-				var val11 = ImageTools.grayscalePixel(image.getPixel(i, j)).red;
-				var val12 = ImageTools.grayscalePixel(image.getPixel(i, j + 1)).red;
-				var val20 = ImageTools.grayscalePixel(image.getPixel(i + 1, j - 1)).red;
-				var val21 = ImageTools.grayscalePixel(image.getPixel(i + 1, j)).red;
-				var val22 = ImageTools.grayscalePixel(image.getPixel(i + 1, j + 1)).red;
+		for (i in 0...image.width) {
+			for (j in 0...image.height) {
+				var val00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
+				var val01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
+				var val02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
+				var val10 = ImageTools.grayscalePixel(image.getSafePixel(i, j - 1)).red;
+				var val11 = ImageTools.grayscalePixel(image.getSafePixel(i, j)).red;
+				var val12 = ImageTools.grayscalePixel(image.getSafePixel(i, j + 1)).red;
+				var val20 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j - 1)).red;
+				var val21 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j)).red;
+				var val22 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j + 1)).red;
 
 				var gx = ((-3 * val00) + (0 * val01) + (3 * val02)) + ((-10 * val10) + (0 * val11) + (10 * val12)) + ((-3 * val20) + (0 * val21) + (3 * val22));
 
@@ -34,7 +34,7 @@ class Sobel {
 				var gval = Math.sqrt((gx * gx) + (gy * gy));
 				var g = Std.int(gval);
 
-				if (maxGradient < g) {
+				if (g > maxGradient) {
 					maxGradient = g;
 				}
 
@@ -47,8 +47,8 @@ class Sobel {
 		var scale = 255.0 / maxGradient;
 
 		var edgeImage = new Image(image.width, image.height);
-		for (i in 1...image.width - 1) {
-			for (j in 1...image.height - 1) {
+		for (i in 0...image.width) {
+			for (j in 0...image.height) {
 				var edgeColor = edgeColors[i][j];
 				edgeColor = Std.int(edgeColor * scale);
 				edgeColor = 0xff000000 | (edgeColor << 16) | (edgeColor << 8) | edgeColor;
@@ -68,11 +68,7 @@ class Sobel {
 
 		for (X in -roundedDown...roundedDown + 1) {
 			for (Y in -roundedDown...roundedDown + 1) {
-				if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
-					neighbors[X + roundedDown].push(0);
-					continue;
-				}
-				neighbors[X + roundedDown].push(image.getPixel(x + X, y + Y));
+				neighbors[X + roundedDown].push(image.getSafePixel(x + X, y + Y));
 			}
 		}
 		return neighbors;
@@ -99,5 +95,67 @@ class Sobel {
 		If this value is greater than the threshold, then we declare it an edge. now, were gonna do the same thing
 		for all chunks of the image, and from top to bottom too if needed.
 	**/
-	function name() {}
+	public static function detectEdges(image:Image, threshold:Float) {
+		var edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
+		var blacknwhite = Vision.grayscale(image.clone());
+		for (x in 0...blacknwhite.width) {
+			for (y in 0...blacknwhite.height) {
+				var neighbors = [
+					blacknwhite.getSafePixel(x - 1, y - 1),
+					blacknwhite.getSafePixel(x, y - 1),
+					blacknwhite.getSafePixel(x + 1, y - 1),
+					blacknwhite.getSafePixel(x - 1, y),
+					blacknwhite.getSafePixel(x, y),
+					blacknwhite.getSafePixel(x + 1, y),
+					blacknwhite.getSafePixel(x - 1, y + 1),
+					blacknwhite.getSafePixel(x, y + 1),
+					blacknwhite.getSafePixel(x + 1, y + 1)
+				];
+				final sobelCalculationIterationLTR = neighbors[0].red * -3
+					+ neighbors[3].red * -10 + neighbors[6].red * -3 + neighbors[2].red * 3 + neighbors[5].red * 10 + neighbors[8].red * 3;
+				if (Math.abs(sobelCalculationIterationLTR) > threshold) {
+					edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
+					continue;
+				}
+				final sobelCalculationIterationTTB = neighbors[0].red * -3
+					+ neighbors[1].red * -10 + neighbors[2].red * -3 + neighbors[6].red * 3 + neighbors[7].red * 10 + neighbors[8].red * 3;
+				if (Math.abs(sobelCalculationIterationTTB) > threshold) {
+					edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
+					continue;
+				}
+			}
+		}
+
+		var intermediate = edges.clone();
+
+		for (x in 1...intermediate.width - 1) {
+			for (y in 1...intermediate.height - 1) {
+				if (edges.getPixel(x, y).red == 0) {
+					var candidate = false, X = false, Y = false;
+					if (image.getPixel(x + 1, y).red == 255 && image.getPixel(x - 1, y).red == 255) {
+						candidate = true;
+						X = true;
+					}
+					if (image.getPixel(x, y + 1).red == 255 && image.getPixel(x, y - 1).red == 255) {
+						candidate = true;
+						Y = true;
+					}
+
+					if (candidate) {
+						intermediate.setPixel(x, y, Color.fromRGBA(255, 255, 255));
+						if (X) {
+							intermediate.setPixel(x + 1, y, Color.fromRGBA(0, 0, 0));
+							intermediate.setPixel(x - 1, y, Color.fromRGBA(0, 0, 0));
+						}
+						if (Y) {
+							intermediate.setPixel(x, y + 1, Color.fromRGBA(0, 0, 0));
+							intermediate.setPixel(x, y - 1, Color.fromRGBA(0, 0, 0));
+						}
+					}
+				}
+			}
+		}
+
+		return intermediate;
+	}
 }

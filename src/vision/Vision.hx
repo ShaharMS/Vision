@@ -81,7 +81,7 @@ class Vision {
 		@param threshold The threshold for converting to black and white: 
 		`threshold` is the maximum average of the three color components.
 		that will still be considered black. `threshold` is a value between 0 and 255.
-		The higher the value, the more "sensitive" the conversion. The default value is 128.
+		The higher the value, the more "sensitive" the conversion. The default value is 64.
 
 		@return The converted image.
 	**/
@@ -159,7 +159,7 @@ class Vision {
 	 * @param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
 	 * @return The normalized image. The original copy is not preserved.
 	 */
-	public static function normalize(image:Image, rangeStart:Color, rangeEnd:Color) {
+	public static function normalize(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
 		var max:Color = 0x0, min:Color = 0x0, step:Color = 0x0;
 		max.red = cast Math.max(rangeStart.red, rangeEnd.red);
 		min.red = cast Math.min(rangeStart.red, rangeEnd.red);
@@ -177,6 +177,51 @@ class Vision {
 			color.greenFloat *= step.greenFloat;
 			image.setPixel(x, y, color);
 		});
+		return image;
+	}
+
+	/**
+	 * Limits the range of colors on an image, by limiting the range of a given color channel, according to the values
+	 * of `rangeStart`'s and `rangeEnd`'s color channels.
+	 * 
+	 * @param image The image to be li processed
+	 * @param rangeStart The start of the range of channels. By default, this value is `0x00000000`
+	 * @param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
+	 * @return The normalized image. The original copy is not preserved.
+	 */
+	public static function limitColorRanges(image:Image, rangeStart:Color, rangeEnd:Color):Image {
+		image.forEachPixel((x, y, color) -> {
+			color.red = MathTools.boundInt(color.red, rangeStart.red, rangeEnd.red);
+			color.blue = MathTools.boundInt(color.blue, rangeStart.blue, rangeEnd.blue);
+			color.green = MathTools.boundInt(color.green, rangeStart.green, rangeEnd.green);
+			image.setPixel(x, y, color);
+		});
+		return image;
+	}
+
+	/**
+	 * Replaces the colors inside each range with the given color inside that range object:  
+	 * 
+	 * 		[{rangeStart: 0x00000000, rangeEnd = 0x88888888, replacement: 0xFFFFFFFF}] 
+	 * 
+	 * will replace every pixel inside the given color range with the color `0xFFFFFFFF`
+	 * 
+	 * @param image The image process
+	 * @param .An array of color ranges & replacement colors.
+	 * @return A processed version of the image. The original image is not preserved
+	 */
+	public static function replaceColorRanges(image:Image, ranges:Array<{rangeStart:Color, rangeEnd:Color, replacement:Color}>):Image {
+		for (range in ranges) {
+			final rangeStart = range.rangeStart;
+			final rangeEnd = range.rangeEnd;
+			final with = range.replacement;
+			image.forEachPixel((x, y, color) -> {
+				color.red = !MathTools.isBetweenRanges(color.red, {start: rangeStart.red, end: rangeEnd.red}) ? color.red : with.red;
+				color.blue = !MathTools.isBetweenRanges(color.blue, {start: rangeStart.blue, end: rangeEnd.blue}) ? color.blue : with.blue;
+				color.green = !MathTools.isBetweenRanges(color.green, {start: rangeStart.green, end: rangeEnd.green}) ? color.green : with.green;
+				image.setPixel(x, y, color);
+			});
+		}
 		return image;
 	}
 
@@ -282,90 +327,7 @@ class Vision {
 		@return The image with edges detected. This image is returned as a new, black and white image.
 	**/
 	public static function sobelEdgeDetection(image:Image, threshold:Float = 100):Image {
-		// If you came here for the explanation of the algorithm, Congrats! learning is fun :D
-		/*
-			What does this algorithm do?
-			Basically, it takes 9 pixels chunks each time it performs a calculation, and tries to see how different the
-			colors of the pixels from the left are from the right. for example, lets say this is the chunk:
-
-				 0 ,  0 , 112
-				 0 , 112, 112
-				121, 112, 112
-
-			With the naked eye, we can see that the pixels are very different from each other, and therefore, are edges.
-			The way the algorithm knows it, is: its multiplying the left side by -1, the middle by 0 and the right by 1.
-			Then, it multiplies each edge by 10 and each corner by 3, 
-			and then adding them together:
-
-				 0  *-3 +  0  *-10 + 121 *-3 = -363 |
-				 0  * 0 + 112 * 0 + 112 * 0 =   0  | + = 1483
-				112 * 3 + 112 * 10 + 112 * 3 =  1846 |
-
-			If this value is greater than the threshold, then we declare it an edge. now, were gonna do the same thing
-			for all chunks of the image, and from top to bottom too if needed.
-		 */
-
-		var edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
-		var blacknwhite = grayscale(image.clone());
-		for (x in 1...blacknwhite.width - 1) {
-			for (y in 1...blacknwhite.height - 1) {
-				var neighbors = [
-					blacknwhite.getPixel(x - 1, y - 1),
-					blacknwhite.getPixel(x, y - 1),
-					blacknwhite.getPixel(x + 1, y - 1),
-					blacknwhite.getPixel(x - 1, y),
-					blacknwhite.getPixel(x, y),
-					blacknwhite.getPixel(x + 1, y),
-					blacknwhite.getPixel(x - 1, y + 1),
-					blacknwhite.getPixel(x, y + 1),
-					blacknwhite.getPixel(x + 1, y + 1)
-				];
-				final sobelCalculationIterationLTR = neighbors[0].red * -3
-					+ neighbors[3].red * -10 + neighbors[6].red * -3 + neighbors[2].red * 3 + neighbors[5].red * 10 + neighbors[8].red * 3;
-				if (Math.abs(sobelCalculationIterationLTR) > threshold) {
-					edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
-					continue;
-				}
-				final sobelCalculationIterationTTB = neighbors[0].red * -3
-					+ neighbors[1].red * -10 + neighbors[2].red * -3 + neighbors[6].red * 3 + neighbors[7].red * 10 + neighbors[8].red * 3;
-				if (Math.abs(sobelCalculationIterationTTB) > threshold) {
-					edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
-					continue;
-				}
-			}
-		}
-
-		var intermediate = edges.clone();
-
-		for (x in 1...intermediate.width - 1) {
-			for (y in 1...intermediate.height - 1) {
-				if (edges.getPixel(x, y).red == 0) {
-					var candidate = false, X = false, Y = false;
-					if (image.getPixel(x + 1, y).red == 255 && image.getPixel(x - 1, y).red == 255) {
-						candidate = true;
-						X = true;
-					}
-					if (image.getPixel(x, y + 1).red == 255 && image.getPixel(x, y - 1).red == 255) {
-						candidate = true;
-						Y = true;
-					}
-
-					if (candidate) {
-						intermediate.setPixel(x, y, Color.fromRGBA(255, 255, 255));
-						if (X) {
-							intermediate.setPixel(x + 1, y, Color.fromRGBA(0, 0, 0));
-							intermediate.setPixel(x - 1, y, Color.fromRGBA(0, 0, 0));
-						}
-						if (Y) {
-							intermediate.setPixel(x, y + 1, Color.fromRGBA(0, 0, 0));
-							intermediate.setPixel(x, y - 1, Color.fromRGBA(0, 0, 0));
-						}
-					}
-				}
-			}
-		}
-
-		return intermediate;
+		return Sobel.detectEdges(image, threshold);
 	}
 
 	/**
@@ -382,58 +344,7 @@ class Vision {
 		@return The image with edges detected. This image is returned as a new, black and white image.
 	**/
 	public static function perwittEdgeDetection(image:Image, threshold:Float = 100):Image {
-		// If you came here for the explanation of the algorithm, Congrats! learning is fun :D
-		/*
-			What does this algorithm do?
-			Basically, it takes 9 pixels chunks each time it performs a calculation, and tries to see how different the
-			colors of the pixels from the left are from the right. for example, lets say this is the chunk:
-
-				 0 ,  0 , 112
-				 0 , 112, 112
-				121, 112, 112
-
-			With the naked eye, we can see that the pixels are very different from each other, and therefore, are edges.
-			The way the algorithm knows it, is: its multiplying the left side by -1, the middle by 0 and the right by 1, 
-			and then adding them together:
-
-				 0  *-1 +  0  *-1 + 121 *-1 = -121 |
-				 0  * 0 + 112 * 0 + 112 * 0 =   0  | + = 215
-				112 * 1 + 112 * 1 + 112 * 1 =  336 |
-
-			Now, if this value is greater than the threshold, then we declare it an edge. now, were gonna do the same thing
-			for all chunks of the image, and from top to bottom too if needed.
-		 */
-
-		var edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
-		var blacknwhite = grayscale(image.clone());
-		for (x in 1...blacknwhite.width - 1) {
-			for (y in 1...blacknwhite.height - 1) {
-				var neighbors = [
-					blacknwhite.getPixel(x - 1, y - 1),
-					blacknwhite.getPixel(x, y - 1),
-					blacknwhite.getPixel(x + 1, y - 1),
-					blacknwhite.getPixel(x - 1, y),
-					blacknwhite.getPixel(x, y),
-					blacknwhite.getPixel(x + 1, y),
-					blacknwhite.getPixel(x - 1, y + 1),
-					blacknwhite.getPixel(x, y + 1),
-					blacknwhite.getPixel(x + 1, y + 1)
-				];
-				final perwittCalculationIterationLTR = neighbors[0].red * -1
-					+ neighbors[3].red * -1 + neighbors[6].red * -1 + neighbors[2].red * 1 + neighbors[5].red * 1 + neighbors[8].red * 1;
-				if (Math.abs(perwittCalculationIterationLTR) > threshold) {
-					edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
-					continue;
-				}
-				final perwittCalculationIterationTTB = neighbors[0].red * -1
-					+ neighbors[1].red * -1 + neighbors[2].red * -1 + neighbors[6].red * 1 + neighbors[7].red * 1 + neighbors[8].red * 1;
-				if (Math.abs(perwittCalculationIterationTTB) > threshold) {
-					edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
-					continue;
-				}
-			}
-		}
-		return edges;
+		return Perwitt.detectEdges(image, threshold);
 	}
 
 	/**
@@ -496,7 +407,7 @@ class Vision {
 		}
 		image.forEachPixel((x, y, color) -> {
 			var neighbors:Array<Int> = MathTools.flatten(image.getNeighborsOfPixel(x, y, kernalRadius));
-			if (useRadix) Radix.sort (neighbors) else ArraySort.sort(neighbors, (a, b) -> a - b);
+			if (useRadix) Radix.sort(neighbors) else ArraySort.sort(neighbors, (a, b) -> a - b);
 			medianed.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
 

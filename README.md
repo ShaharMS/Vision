@@ -155,6 +155,8 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `convolve()`
  - [x] `contrast()`
  - [x] `normalize()`
+ - [x] `limitColorRanges()` 
+ - [x] `replaceColorRanges()` 
  - [ ] `houghRay2DDetection()`
  - [ ] `houghLine2DDetection()`
  - [x] `simpleLineDetector()`

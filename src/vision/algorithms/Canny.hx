@@ -71,7 +71,7 @@ class Canny {
 		var copy = image.clone();
 		final isStrong = (edge:Color) -> edge.redFloat > highThreshold;
 		final isCandidate = (edge:Color) -> edge.redFloat <= highThreshold && edge.redFloat >= lowThreshold;
-		final isWeak = (edge:Color) -> edge.redFloat < lowThreshold;
+
 		function traverseEdge(x, y) {
 			if (x == 0 || y == 0 || x == image.width - 1 || y == image.height - 1)
 				return;
@@ -112,11 +112,7 @@ class Canny {
 
 		for (X in -roundedDown...roundedDown + 1) {
 			for (Y in -roundedDown...roundedDown + 1) {
-				if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
-					neighbors[X + roundedDown].push(0);
-					continue;
-				}
-				neighbors[X + roundedDown].push(image.getPixel(x + X, y + Y));
+				neighbors[X + roundedDown].push(image.getSafePixel(x + X, y + Y));
 			}
 		}
 		return neighbors;
