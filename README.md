@@ -82,6 +82,32 @@ image.convolve(BoxBlur);
 ```
 ---
 
+### Implicit Conversions From/To Framework Specific Graphical Types
+
+```haxe
+import openfl.display.BitmapData;
+import vision.ds.Image;
+
+var future = BitmapData.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG");
+future.onComplete(bitmapdata -> {
+	var image:Image = bitmapdata; // converts the given openfl.display.BitmapData to vision.ds.Image
+   // The conversions are lossless, so you never lose data.
+	addChild(new Bitmap(image)); //converts back to a BitmapData.
+});
+```
+---
+
+### Using `MathTools`
+
+```haxe
+import vision.tools.MathTools;
+using vision.tools.MathTools;
+
+var ray = new Ray2D({x: 0, y: 0}, 1); //f(x) = x
+trace(ray.distanceFromRayToPoint2D({1, 0}) /* function from MathTools */); // sqrt(2) / 2
+trace(MathTools.median([[12,123,321,4,333], [12,123,145,321,4], [12,123,264,321,4], [12,123,234,321,4]].flatten())); //123;
+```
+
 
 # About 
 
@@ -170,6 +196,13 @@ Here is a roadmap of all features added/planned for the future:
  - Perwitt
     - [x] Perwitt filter
     - [x] Perwitt edge detection
+
+ - Radix
+   - [x] Counting sort
+   - [x] Radix sort 
+ 
+ - Bilinear
+   - [x] interpolate 
    
 #### class `Image`:
 
@@ -179,7 +212,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `hasPixel()`
  - [x] `paintPixel()`
  - [x] matrix access `image[x][y]`
- - Drawing:
+ - [x] Drawing:
    - [x] `fillColor()`
    - [x] `fillColorRecursive()`
    - [x] `fillUntilColor()`
@@ -192,13 +225,13 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `drawCubicBezier()`
    - [x] `drawLineWithLerp()`
    - [x] `fillRect()`
-   - [ ] `fillCircle()`
- - Copying:
+   - [x] `fillCircle()`
+ - [x] Copying:
    - [x] `clone()`
    - [x] `getImagePortion()`
    - [x] `setImagePortion()`
    - [x] `copyPixelFrom()`
- - Manipulation:
+ - [ ] Manipulation:
    - [x] `forEachPixel()`
    - [x] `iterator()`
    - [x] `mirror()`  

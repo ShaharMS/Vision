@@ -449,8 +449,7 @@ class Vision {
 		@return A blurred version of the image. The original image is not preserved
 	**/
 	public static function nearestNeighborBlur(image:Image, iterations:Int = 1):Image {
-		for (i in 0...iterations)
-			convolve(image, BoxBlur);
+		for (i in 0...iterations) image = convolve(image, BoxBlur);
 		return image;
 	}
 
@@ -486,15 +485,18 @@ class Vision {
 	 * Applies a median filter to an image to reduce the amount of noise in that image.
 	 * @param image The image to apply median blurring to.
 	 * @param kernalRadius the radius around the pixels in which we should search for the median. a radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
-	 * @param forceRadix Force usage of the radix sorting algorithm when finding the median in each "neighborhood" of pixels.
+	 * @param forceRadix Force enabling/disabling of the radix sorting algorithm when finding the median in each "neighborhood" of pixels. Radix is automatically used when `kernalRadius >= 5`.
 	 * @return A filtered version of the image, using median blurring. The original image is not preserved
 	 */
-	public static function medianBlur(image:Image, kernalRadius:Int, ?forceRadix:Bool):Image {
+	public static function medianBlur(image:Image, kernalRadius:Int, ?forceRadix:Bool = null):Image {
 		var medianed = new Image(image.width, image.height);
-		final useRadix = forceRadix || image.getNeighborsOfPixel(0, 0, kernalRadius).flatten().length > 1000;
+		final useRadix = switch forceRadix {
+			case null: image.getNeighborsOfPixel(0, 0, kernalRadius).flatten().length > 100;
+			default: forceRadix;
+		}
 		image.forEachPixel((x, y, color) -> {
-			var neighbors = image.getNeighborsOfPixel(x, y, kernalRadius).flatten();
-			if (useRadix) Radix.sort(neighbors) else ArraySort.sort(neighbors, (a, b) -> a - b);
+			var neighbors:Array<Int> = MathTools.flatten(image.getNeighborsOfPixel(x, y, kernalRadius));
+			if (useRadix) Radix.sort (neighbors) else ArraySort.sort(neighbors, (a, b) -> a - b);
 			medianed.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
 

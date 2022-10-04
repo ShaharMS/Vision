@@ -1,5 +1,7 @@
 package vision.tools;
 
+import haxe.ds.Vector;
+import vision.ds.Matrix;
 import vision.algorithms.Radix;
 import haxe.Int64;
 import haxe.ds.ArraySort;
@@ -251,6 +253,30 @@ class MathTools {
 		return Math.min(Math.max(value, min), max);
 	}
 
+	/**
+	 * Takes a 2D array and flattens it to a regular, 1D array.
+	 * @param array
+	 * @return Array<T>
+	 */
+	overload extern inline public static function flatten<T>(array:Array<Array<T>>):Array<T> {
+		var flat = [];
+		for (item in array)
+			flat = flat.concat(item);
+		return flat;
+	}
+
+	/**
+	 * Takes a Matrix and flattens it into a Vector.
+	 * @param matrix
+	 * @return Vector<T>
+	 */
+	overload extern inline public static function flatten<T>(matrix:Matrix<T>):Vector<T> {
+		var flat = [];
+		for (item in matrix)
+			flat = flat.concat(item.toArray());
+		return Vector.fromArrayCopy(flat);
+	}
+
 
 	//-----------------------------------------------------------------------------------------
 	// Conversions
@@ -298,7 +324,7 @@ class MathTools {
 		return round(num * multiplier) / multiplier;
 	}
 
-	public static function min(...values:Float) {
+	overload extern inline public static function min(...values:Float) {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -307,8 +333,62 @@ class MathTools {
 		return min;
 	}
 
-	public static inline function max(...values:Float) {
+	overload extern inline public static function min(values:Array<Float>) {
+		var min:Float = values[0];
+		for (i in 0...values.length) {
+			if (values[i] < min)
+				min = values[i];
+		}
+		return min;
+	}
+
+	overload extern inline public static function min(...values:Int) {
+		var min:Int = values[0];
+		for (i in 0...values.length) {
+			if (values[i] < min)
+				min = values[i];
+		}
+		return min;
+	}
+
+	overload extern inline public static function min(values:Array<Int>) {
+		var min:Int = values[0];
+		for (i in 0...values.length) {
+			if (values[i] < min)
+				min = values[i];
+		}
+		return min;
+	}
+
+	overload extern inline public static function max(...values:Float) {
 		var max:Float = values[0];
+		for (i in 0...values.length) {
+			if (values[i] > max)
+				max = values[i];
+		}
+		return max;
+	}
+
+	overload extern inline public static function max(values:Array<Float>) {
+		var max:Float = values[0];
+		for (i in 0...values.length) {
+			if (values[i] > max)
+				max = values[i];
+		}
+		return max;
+	}
+
+	overload extern inline public static function max(...values:Int) {
+		var max:Int = values[0];
+		for (i in 0...values.length) {
+			if (values[i] > max)
+				max = values[i];
+		}
+		return max;
+	}
+
+	overload extern inline public static function max(values:Array<Int>) {
+		var max:Int = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
 				max = values[i];

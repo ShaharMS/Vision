@@ -596,6 +596,49 @@ abstract Image(UInt8Array) {
 	}
 
 	/**
+	 	Fills a circle with the given color:
+
+		 - The center of the circle is at (X, Y)
+		 - The radius of the circle is r
+		 - Anti-aliasing will not be used.
+
+		@param x The x coordinate of the center of the circle.
+		@param y The y coordinate of the center of the circle.
+		@param r The radius of the circle.
+		@param color The color to draw the circle with.
+	**/
+	public inline function fillCircle(X:Int, Y:Int, r:Int, color:Color) {
+		var points:Array<IntPoint2D> = [];
+		var x = -r, y = 0, err = 2 - 2 * r;
+		do {
+			points.push({x: X + x, y: Y - y});
+			points.push({x: X - x, y: Y + y});
+			points.push({x: X - y, y: Y - x});
+			points.push({x: X + y, y: Y + x});
+			r = err;
+			if (r <= y) {
+				err += ++y * 2 + 1;
+			}
+			if (r > x || err > y) {
+				err += ++x * 2 + 1;
+			}
+		} while (x < 0);
+
+		var values:Array<Array<Int>> = [];
+		for (p in points) {
+			if (values[p.x] == null) values[p.x] = [];
+			values[p.x].push(p.y);
+		}
+
+		for (y in 0...values.length) {
+			if (values[y] == null) continue;
+			var min = MathTools.min(values[y]);
+			var max = MathTools.max(values[y]);
+			for (i in min...max + 1) setPixel(i, y, color);
+		}
+	}
+
+	/**
 		Draws a circle of the given color:
 
 		 - The center of the circle is at (X, Y)
@@ -610,9 +653,9 @@ abstract Image(UInt8Array) {
 	public inline function drawCircle(X:Int, Y:Int, r:Int, color:Color) {
 		var x = -r, y = 0, err = 2 - 2 * r;
 		do {
+			setPixel(X + x, Y - y, color);
 			setPixel(X - x, Y + y, color);
 			setPixel(X - y, Y - x, color);
-			setPixel(X + x, Y - y, color);
 			setPixel(X + y, Y + x, color);
 			r = err;
 			if (r <= y) {

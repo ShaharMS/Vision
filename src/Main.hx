@@ -113,7 +113,7 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Canny edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
-				printImage(Vision.nearestNeighborBlur(image.clone(), 1));
+				printImage(Vision.nearestNeighborBlur(image.clone(), 4));
 				end = haxe.Timer.stamp();
 				trace("Nearest neighbor blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
@@ -121,7 +121,7 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
-				printImage(image.clone().medianBlur(5));
+				printImage(image.clone().medianBlur(7));
 				end = haxe.Timer.stamp();
 				trace("Median blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 
@@ -163,8 +163,7 @@ class Main {
 		image.fillRect(12, 53, 33, 53, 0xffffff);
 		image.drawCircle(100, 100, 50, 0x3c896e);
 		image.drawCircle(100, 100, 30, 0xff00d4);
-		image.drawCircle(200, 200, 40, Color.YELLOW);
-		image.fillColor(new Point2D(200, 200), Color.YELLOW);
+		image.fillCircle(200, 200, 40, Color.YELLOW);
 		image.drawCircle(180, 190, 5, Color.BROWN);
 		image.fillColor(new Point2D(180, 190), Color.BROWN);
 		image.drawCircle(220, 190, 5, Color.BROWN);

@@ -155,30 +155,6 @@ class ImageTools {
 		return neighbors;
 	}
 
-	/**
-	 * Takes a 2D array and flattens it to a regular, 1D array.
-	 * @param array
-	 * @return Array<T>
-	 */
-	@:generic overload extern inline public static function flatten<T>(array:Array<Array<T>>):Array<T> {
-		var flat = [];
-		for (item in array)
-			flat = flat.concat(item);
-		return flat;
-	}
-
-	/**
-	 * Takes a Matrix and flattens it into a Vector.
-	 * @param matrix
-	 * @return Vector<T>
-	 */
-	@:generic overload extern inline public static function flatten<T>(matrix:Matrix<T>):Vector<T> {
-		var flat = [];
-		for (item in matrix)
-			flat = flat.concat(item.toArray());
-		return Vector.fromArrayCopy(flat);
-	}
-
 	public static function grayscalePixel(pixel:Color):Color {
 		var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
 			+ pixel.green + pixel.blue) / 3) #end;
