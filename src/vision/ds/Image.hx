@@ -123,35 +123,7 @@ abstract Image(UInt8Array) {
 			#if !vision_quiet
 			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
 			#else
-			var gettable:IntPoint2D = new IntPoint2D(0, 0);
-			var ox = x;
-			var oy = y;
-			if (ox < 0 && oy < 0)
-				gettable.x = gettable.y = 0;
-			else if (ox < 0 && oy >= height) {
-				gettable.x = 0;
-				gettable.y = height - 1;
-			} else if (ox >= width && oy < 0) {
-				gettable.x = width - 1;
-				gettable.y = 0;
-			} else if (ox >= width && oy >= height) {
-				gettable.x = width - 1;
-				gettable.y = height - 1;
-			} else if (ox < 0) {
-				gettable.x = 0;
-				gettable.y = oy;
-			} else if (oy < 0) {
-				gettable.x = ox;
-				gettable.y = 0;
-			} else if (ox >= width) {
-				gettable.x = width - 1;
-				gettable.y = oy;
-			} else if (oy >= height) {
-				gettable.x = ox;
-				gettable.y = height - 1;
-			}
-			x = gettable.x;
-			y = gettable.y;
+			return getSafePixel(x, y);
 			#end
 		}
 		return getColorFromStartingBytePos((y * width + x) * 4);
@@ -864,6 +836,10 @@ abstract Image(UInt8Array) {
 
 	/**
 		Clones this image.
+
+		Useful if you want to operate on `this` image, without modifying it:
+
+			var blurred = Vision.gaussianBlur(image.clone());
 	**/
 	public function clone():Image {
 		var clone = new Image(width, height, 0);
