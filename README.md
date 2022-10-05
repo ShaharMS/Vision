@@ -106,6 +106,8 @@ using vision.tools.MathTools;
 var ray = new Ray2D({x: 0, y: 0}, 1); //f(x) = x
 trace(ray.distanceFromRayToPoint2D({1, 0}) /* function from MathTools */); // sqrt(2) / 2
 trace(MathTools.median([[12,123,321,4,333], [12,123,145,321,4], [12,123,264,321,4], [12,123,234,321,4]].flatten())); //123;
+//you can even chain calls
+trace([[[[[1, 2, 3, 4],[5, 6, 7]]]]].flatten().flatten().flatten().flatten().median()); // 4
 ```
 
 
