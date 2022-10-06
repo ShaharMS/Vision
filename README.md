@@ -13,16 +13,16 @@
 
 This Library is organized into 4 subfolders, and one important file:
 
- - **`ds`** - contains Vision's data structures & types. Some functions &
+ - [**`ds`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/ds) - contains Vision's data structures & types. Some functions &
 Features require different return types which aren't basic - such as lines, rays or points.
 Those can be found inside this folder.
- - **`tools`** - contains classes that extend the functionality of certain aspects of the library.
+ - [**`tools`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/tools) - contains classes that extend the functionality of certain aspects of the library.
 For example, `MathTools` is a superset of the `Math` class from the standard library, and also adds many features related to finding data related to lines, rays and points.
- - **`algorithms`** - contains every complex algorithm this library uses. They're all contained in one folder to help you learn from them :). **If you feel like some algorithms 
+ - [**`algorithms`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/algorithms) - contains every complex algorithm this library uses. They're all contained in one folder to help you learn from them :). **If you feel like some algorithms 
 are lacking/have unclear documentation, please open an issue about it**
- - **`exceptions`** - contains the errors usually thrown by Vision. **Notice - those errors are present just to let you know if you did something unexpected. If you want to get 
+ - [**`exceptions`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/exceptions) - contains the errors usually thrown by Vision. **Notice - those errors are present just to let you know if you did something unexpected. If you want to get 
 rid of them, define `vision_quiet`.**
- - **`Vision.hx`** - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the algorithms class, since those are less likely to break compatibility, and are usually more concise.
+ - [**`Vision.hx`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/Vision.hx) - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the algorithms class, since those are less likely to break compatibility, and are usually more concise.
 
 
 
@@ -105,9 +105,9 @@ using vision.tools.MathTools;
 
 var ray = new Ray2D({x: 0, y: 0}, 1); //f(x) = x
 trace(ray.distanceFromRayToPoint2D({1, 0}) /* function from MathTools */); // sqrt(2) / 2
-trace(MathTools.median([[12,123,321,4,333], [12,123,145,321,4], [12,123,264,321,4], [12,123,234,321,4]].flatten())); //123;
+trace(MathTools.median([[12, 123, 321, 4, 333], [12, 123, 145, 321, 4], [12, 123, 264, 321, 4], [12, 123, 234, 321, 4]].flatten())); //123;
 //you can even chain calls
-trace([[[[[1, 2, 3, 4],[5, 6, 7]]]]].flatten().flatten().flatten().flatten().median()); // 4
+trace([[[[[1, 2, 3, 4], [5, 6, 7]]]]].flatten().flatten().flatten().flatten().median()); // 4
 ```
 
 
@@ -141,6 +141,7 @@ If you see some code that you think is not understandable, or some place that la
 
 Here is a roadmap of all features added/planned for the future:
 
+<!--> ***Bold & Italic*** means **higher** priority,-->
 > **Bold** means high priority,  
 > Regular means medium priority,  
 > *Italic* means low priority.  
