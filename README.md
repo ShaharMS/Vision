@@ -141,7 +141,6 @@ If you see some code that you think is not understandable, or some place that la
 
 Here is a roadmap of all features added/planned for the future:
 
-<!--> ***Bold & Italic*** means **higher** priority,-->
 > **Bold** means high priority,  
 > Regular means medium priority,  
 > *Italic* means low priority.  
