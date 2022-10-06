@@ -6,8 +6,6 @@ import vision.tools.MathTools;
 import vision.algorithms.BilinearInterpolation;
 import haxe.ds.List;
 import haxe.Int64;
-import haxe.ds.Vector;
-import vision.ds.Matrix;
 import vision.ds.Color;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;

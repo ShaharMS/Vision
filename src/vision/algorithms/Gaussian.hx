@@ -3,7 +3,7 @@ package vision.algorithms;
 import vision.exceptions.InvalidGaussianKernalSize;
 
 /**
- * An implementation of 
+ * Gaussian kernal creation implementation, ported to Haxe by [Shahar Marcus](https://www.github.com/ShaharMS).
  */
 class Gaussian {
 	public static function create1x1Kernal(sigma:Float):Array<Array<Float>> {

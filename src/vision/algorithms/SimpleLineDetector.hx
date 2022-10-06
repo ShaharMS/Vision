@@ -9,6 +9,9 @@ import vision.ds.Image;
 
 using vision.tools.MathTools;
 
+/**
+ * An iterative, partially recursive line detection implementation by [Shahar Marcus](https://www.github.com/ShaharMS).
+ */
 class SimpleLineDetector {
 	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineLength:Float, preferTTB = false, preferRTL = false):Line2D {
 		final startX = point.x, startY = point.y;

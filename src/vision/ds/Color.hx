@@ -1,6 +1,5 @@
 package vision.ds;
 
-import haxe.io.Bytes;
 import vision.tools.MathTools;
 
 abstract Color(Int) from Int from UInt to Int to UInt {

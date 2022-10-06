@@ -1,10 +1,8 @@
 package vision.helpers;
 
-import haxe.macro.Expr.Catch;
 import vision.exceptions.MultithreadFaliure;
 import haxe.Exception;
 #if js
-import format.png.Reader;
 import js.lib.Promise;
 #else
 import sys.thread.Thread;
@@ -14,10 +12,29 @@ class VisionThread {
 	static var COUNT:Int = 0;
 
 	var underlying:#if js Promise<Void> #else Thread #end;
-	var job:Void -> Void;
 
+	/**
+	 * The currently assigned job. should be a function with 0 parameters and no return type (`Void` `->` `Void`)
+	 */
+	public var job:Void -> Void;
+
+	/**
+	 * Dispatches when the job fails
+	 */
 	public var onFailed(default, set):Exception->Void;
+
+	/**
+	 * Dispatches when the job is done
+	 */
 	public var onDone(default, set):Void->Void;
+
+	/**
+	 * |Value|Status|
+	 * |---|:---:|
+	 * |`true`|After the job is done|
+	 * |`false`|After the job has failed|
+	 * |`null`|Before/During the job|
+	 */
 	public var jobDone(default, null):Null<Bool>;
 
 	/**
@@ -25,6 +42,9 @@ class VisionThread {
 	 */
 	public var relaunchEvents:Bool = false;
 
+	/**
+	 * The `ID` of the thread. useful for debugging when the thread fails.
+	 */
 	public final count:Int;
 
 	public function new(job:Void->Void) {
@@ -46,8 +66,8 @@ class VisionThread {
 		underlying = Thread.create(() -> {
 			try {
 				job();
-				onDone();
 				jobDone = true;
+				onDone();
 			} catch (e) {
 				onFailedWrapper(e);
 			}

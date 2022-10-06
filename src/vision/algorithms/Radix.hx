@@ -1,5 +1,8 @@
 package vision.algorithms;
 
+/**
+ * An implementation of radix sort in Haxe, by [Shahar Marcus](https://www.github.com/ShaharMS).
+ */
 class Radix {
 	/**
 	 * Gets the maximum in array `array`.

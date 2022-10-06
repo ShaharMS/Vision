@@ -3,7 +3,7 @@ package vision.ds;
 import haxe.ds.IntMap;
 
 /**
- * A 2D graph, usually representing a distribution of numerical values.
+ * A 2D graph, usually represens a sorted distribution of numerical values.
  */
 class Histogram {
 	var underlying:Array<Int>;

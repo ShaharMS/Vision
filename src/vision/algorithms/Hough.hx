@@ -2,20 +2,16 @@ package vision.algorithms;
 
 import vision.ds.hough.HoughAccumulator;
 import vision.ds.hough.HoughSpace;
-import vision.ds.Matrix;
 import vision.ds.Point2D;
 import vision.ds.Color;
-import haxe.ds.Vector;
 import vision.ds.Ray2D;
-import vision.ds.Line2D;
 import vision.ds.Image;
 
 using vision.tools.MathTools;
-
 import vision.tools.MathTools.*;
 
 /**
-	A Hough Transform implementation by [ShaharMS](https://www.github.com/ShaharMS).
+	A Hough Transform implementation by [Shahar Marcus](https://www.github.com/ShaharMS).
 
 	## What is The Hough Transform?
 

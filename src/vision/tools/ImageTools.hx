@@ -1,5 +1,6 @@
 package vision.tools;
 
+import vision.exceptions.Unimplemented;
 import vision.ds.ImageResizeAlgorithm;
 #if js
 import js.lib.Promise;
@@ -19,34 +20,19 @@ import vision.ds.Image;
 	to use those utilities, use this class at the top of you file:
 
 		using vision.tools.ImageTools;
-
-	This class contains the following utilities:
-
-	 - getting images from files (**Requires the `format` library**)
-	 - extra pixels manipulation functions:
-		- `darkenPixel()`
-		- `lightenPixel()`
-		- `invertPixel()`
-		- [x] `grayscalePixel()`
-		- `blurPixel()`
-		- `blurPixels()`
-		- `replaceColor()`
-		- `replaceColorsInRange()`
-
-	 - copying utilities:
-		- `copyPixelsFromImage()`
-		- `copyPixelsFromFile()`
-		- `copyPixelsTo()`
-		- `copyPixelRectTo()`
 **/
 class ImageTools {
+	
+	/**
+	 * The default algorithm to use when resizing an image by "brute force" (setting its `width`/`height` when `vision_allow_resize` is defined)
+	 */
 	public static var defaultResizeAlgorithm:ImageResizeAlgorithm = BilinearInterpolation;
 
 	/**
 		Gets an image from a file.
 		the supplied path can be an absolute path or a relative path.
 
-		**Note: this function requires the `format` library.**
+		**Note: On `sys` targets, this function requires the `format` library.**
 
 		To install:\
 		\
@@ -59,12 +45,29 @@ class ImageTools {
 	**/
 	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
 		#if sys
-		if (path.split(".")[-1] == "png") {
-			// var bytes = sys.io.File.getBytes(path);
-			// var pngData = new format.png.Data();
-			// var brgaBytes = format.png.Tools.extract32(new format.png.Reader(new haxe.io.BytesInput(pngBytes)));
-			// format.png.Tools.reverseBytes(brgaBytes);
+		if (path.split(".").pop() == "png") {
+			try {
+				var handle = sys.io.File.getBytes(path);
+				var reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
+				var data = reader.read();
+				var header = format.png.Tools.getHeader(data);
+				var bytes = format.png.Tools.extract32(data);
+				format.png.Tools.reverseBytes(bytes);
+				var image = new Image(header.width, header.height);
+				
+				onComplete(image);
+			} catch (e:haxe.Exception) {
+				#if vision_quiet
+				onComplete(new Image(100, 100));
+				#else
+				throw "Png Loading Failed.";
+				#end
+			}
 		}
+		#if vision_quiet
+		#else
+		throw new Unimplemented(path.split(".").pop().toUpperCase() + "Decoding");
+		#end
 		#else
 		var imgElement = js.Browser.document.createImageElement();
 		imgElement.src = path;
@@ -93,6 +96,25 @@ class ImageTools {
 			onComplete(image);
 		}
 		#end
+	}
+
+	/**
+		Saves an image to the file system. On JS, the saved image should be immidiatelly downloaded
+		without a file dialog. On sys, the file should be saved
+
+		**Note: On `sys` targets, this function requires the `format` library.**
+
+		To install:\
+		\
+		`haxelib install format`
+
+		@param image optional, used for chaining purposes. (eg. `image.fromFile("path/to/image.png")`)
+		@param path the path to the image file. on js, it can only be a relative path.
+
+		@returns the image object.
+	**/
+	public static function encode(image:Image, format:String) {
+		
 	}
 
 	/**
