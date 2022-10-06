@@ -1,12 +1,14 @@
 {
     "name": "vision",
     "license": "MIT",
-    "version": "1.0.0-beta",   
+    "version": "1.0.0",   
     "description": "Vision is a simple, powerful and flexible computer vision & image processing library for Haxe.",
-    "contributors": ["ShaharMS"],
+    "contributors": ["ShaharMS", "Zeta", "PXShadow"],
     "releasenote": "Vision is a simple, powerful and flexible computer vision & image processing library for Haxe.",
     "tags": ["cv", "computer-vision", "im", "image-manipulation", "cross", "cross-framework", "image", "hough"],
     "classPath": "src",
-    "dependencies": {},
+    "dependencies": {
+        "gridge": ""
+    },
     "url": "https://github.com/ShaharMS/Vision"
 }

@@ -5,11 +5,7 @@ import haxe.ds.ArraySort;
 import vision.algorithms.Radix;
 import vision.ds.Histogram;
 import vision.exceptions.MultithreadFaliure;
-import vision.tools.ImageTools;
 
-using vision.tools.ImageTools;
-
-import format.tga.Data.ImageType;
 import vision.ds.Queue;
 import vision.ds.Line2D;
 import vision.tools.MathTools;
@@ -20,7 +16,6 @@ import vision.ds.Color;
 import vision.ds.Rectangle;
 import vision.ds.Point2D;
 import vision.ds.Ray2D;
-import haxe.display.Display.Package;
 #if js
 import js.html.File;
 import js.html.FileSystem;
@@ -28,7 +23,7 @@ import js.html.Document;
 import js.Browser;
 #end
 import vision.algorithms.Hough;
-import vision.ds.Image;
+import Image;
 
 using vision.Vision;
 using vision.tools.MathTools;
@@ -36,7 +31,6 @@ using vision.tools.MathTools;
 class Main {
 	static function main() {
 		var start:Float, end:Float;
-
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG",
 			image -> {
 				printImage(image);

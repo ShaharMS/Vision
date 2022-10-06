@@ -1,7 +1,7 @@
 package vision.algorithms;
 
 import vision.ds.Color;
-import vision.ds.Image;
+import Image;
 import vision.ds.canny.CannyObject;
 
 using vision.algorithms.Canny;

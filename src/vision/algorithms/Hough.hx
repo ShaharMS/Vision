@@ -5,7 +5,7 @@ import vision.ds.hough.HoughSpace;
 import vision.ds.Point2D;
 import vision.ds.Color;
 import vision.ds.Ray2D;
-import vision.ds.Image;
+import Image;
 
 using vision.tools.MathTools;
 import vision.tools.MathTools.*;
