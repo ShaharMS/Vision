@@ -1,7 +1,7 @@
 package vision.algorithms;
 
 import vision.ds.Color;
-import vision.tools.ImageTools;
+import ImageTools;
 import Image;
 
 using vision.tools.MathTools;
