@@ -157,6 +157,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `convolve()`
  - [x] `contrast()`
  - [x] `normalize()`
+ - [x] `highlightRidges()`
  - [x] `limitColorRanges()` 
  - [x] `replaceColorRanges()` 
  - [ ] `houghRay2DDetection()`

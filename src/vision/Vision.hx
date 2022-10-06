@@ -138,6 +138,24 @@ class Vision {
 	}
 
 	/**
+	 * Uses a fast, convolution-based method to highlight ridges within an image.
+	 * 
+	 * It does the highlighting by grayscaling & normalizing the image, and then
+	 * convolving it with a ridge detection kernal.
+	 * 
+	 * @param image the image to be ridge detected on
+	 * @param normalizationRangeStart Optional, if you want to change the normalization range's start color. `0x44444444` by default.
+	 * @param normalizationRangeEnd Optional, if you want to change the normalization range's end color `0xBBBBBBBB` by default.
+	 * @return The ridge-highlighted version of the image. **The original copy is preserved**
+	 */
+	public static function highlightRidges(image:Image, normalizationRangeStart:Color = 0x44444444, normalizationRangeEnd:Color = 0xBBBBBBBB):Image {
+		final clone = image.clone();
+		Vision.grayscale(clone);
+		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
+		return Vision.convolve(clone, RidgeDetectionAggressive);
+	}
+
+	/**
 	 * Limits the range of colors on an image, by resizing the range of a given color channel, according to the values
 	 * of `rangeStart`'s and `rangeEnd`'s color channels.
 	 * 
@@ -216,9 +234,9 @@ class Vision {
 			final rangeEnd = range.rangeEnd;
 			final with = range.replacement;
 			image.forEachPixel((x, y, color) -> {
-				color.red = !MathTools.isBetweenRanges(color.red, {start: rangeStart.red, end: rangeEnd.red}) ? color.red : with.red;
-				color.blue = !MathTools.isBetweenRanges(color.blue, {start: rangeStart.blue, end: rangeEnd.blue}) ? color.blue : with.blue;
-				color.green = !MathTools.isBetweenRanges(color.green, {start: rangeStart.green, end: rangeEnd.green}) ? color.green : with.green;
+				color.red = MathTools.isBetweenRanges(color.red, {start: rangeStart.red, end: rangeEnd.red}) ? color.red : with.red;
+				color.blue = MathTools.isBetweenRanges(color.blue, {start: rangeStart.blue, end: rangeEnd.blue}) ? color.blue : with.blue;
+				color.green = MathTools.isBetweenRanges(color.green, {start: rangeStart.green, end: rangeEnd.green}) ? color.green : with.green;
 				image.setPixel(x, y, color);
 			});
 		}
@@ -260,7 +278,7 @@ class Vision {
 				case Identity: [[0, 0, 0], [0, 1, 0], [0, 0, 0],];
 				case BoxBlur: [[1, 1, 1], [1, 1, 1], [1, 1, 1],];
 				case RidgeDetection: [[-1, -1, -1], [-1, 4, -1], [-1, -1, -1],];
-				case RidgeDetectionAggressive: [[-1, -1, -1], [-1, 7, -1], [-1, -1, -1],];
+				case RidgeDetectionAggressive: [[-1, -1, -1], [-1, 7.75, -1], [-1, -1, -1],];
 				case Sharpen: [[0, -1, 0], [-1, 5, -1], [0, -1, 0],];
 				case UnsharpMasking: [
 						[1, 4, 6, 4, 1],

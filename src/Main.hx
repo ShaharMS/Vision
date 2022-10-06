@@ -31,6 +31,7 @@ import vision.algorithms.Hough;
 import vision.ds.Image;
 
 using vision.Vision;
+using vision.tools.MathTools;
 
 class Main {
 	static function main() {
@@ -129,11 +130,6 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Median blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				#end
-
-				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(Kernal2D.RidgeDetectionAggressive).replaceColorRanges([{rangeStart: Color.fromRGBA(55, 55, 55, 0), rangeEnd: Color.fromRGBA(200, 200, 200, 255), replacement: 0x88888888}]).grayscale());
-				end = haxe.Timer.stamp();
-				trace("Ridge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 
 				#if feature_detection_tests
 				start = haxe.Timer.stamp();
