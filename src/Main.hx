@@ -72,7 +72,7 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(RidgeDetectionAggresive));
+				printImage(image.clone().convolve(RidgeDetectionAggressive));
 				end = haxe.Timer.stamp();
 				trace("Aggresive Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
@@ -146,11 +146,6 @@ class Main {
 				end = haxe.Timer.stamp();
 				trace("Sobel edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				start = haxe.Timer.stamp();
-				var hough = Hough.toHoughSpace(Vision.perwittEdgeDetection(image.clone()));
-				printImage(hough.image);
-				end = haxe.Timer.stamp();
-				trace("Hough transform took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				start = haxe.Timer.stamp();
 				printImage(Vision.perwittEdgeDetection(image.clone()));
 				end = haxe.Timer.stamp();
 				trace("Perwitt edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
@@ -159,6 +154,11 @@ class Main {
 				printImage(canny);
 				end = haxe.Timer.stamp();
 				trace("Canny edge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				start = haxe.Timer.stamp();
+				printImage(Vision.highlightRidges(image.clone()));
+				end = haxe.Timer.stamp();
+				trace("Ridge detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
+				
 				#end
 			});
 
