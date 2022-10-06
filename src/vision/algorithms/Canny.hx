@@ -37,7 +37,7 @@ class Canny {
 	}
 
 	public static function nonMaxSuppression(image:CannyObject):CannyObject {
-		var filtered = new Image(image.width, image.height);
+		final filtered = new Image(image.width, image.height);
 
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
@@ -68,7 +68,7 @@ class Canny {
 	}
 
 	public static function applyHysteresis(image:CannyObject, highThreshold:Float, lowThreshold:Float):CannyObject {
-		var copy = image.clone();
+		final copy = image.clone();
 		final isStrong = (edge:Color) -> edge.redFloat > highThreshold;
 		final isCandidate = (edge:Color) -> edge.redFloat <= highThreshold && edge.redFloat >= lowThreshold;
 
@@ -76,7 +76,7 @@ class Canny {
 			if (x == 0 || y == 0 || x == image.width - 1 || y == image.height - 1)
 				return;
 			if (isStrong(copy.getPixel(x, y))) {
-				var neighbors = getNeighbors(3, x, y, copy);
+				final neighbors = getNeighbors(3, x, y, copy);
 				for (i in 0...2) {
 					for (j in 0...2) {
 						if (isCandidate(neighbors[i][j])) {
@@ -108,7 +108,7 @@ class Canny {
 		var neighbors:Array<Array<Color>> = [];
 		for (i in 0...kernalSize + 1)
 			neighbors[i] = [];
-		var roundedDown = Std.int((kernalSize - 1) / 2);
+		final roundedDown = Std.int((kernalSize - 1) / 2);
 
 		for (X in -roundedDown...roundedDown + 1) {
 			for (Y in -roundedDown...roundedDown + 1) {

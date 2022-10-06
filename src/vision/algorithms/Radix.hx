@@ -63,7 +63,7 @@ class Radix {
 	// size n using Radix Sort
 	public static function sort<T:Int, UInt, Int64>(array:Array<T>) {
 		// Find the maximum number to know number of digits
-		var max = getMax(array, array.length);
+		final max = getMax(array, array.length);
 		var exp = 1;
 
 		// Do counting sort for every digit. Note that

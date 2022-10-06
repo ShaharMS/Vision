@@ -93,7 +93,7 @@ class Line2D {
 	}
 
 	inline function set_middle(value:Point2D):Point2D {
-		var previousMiddle = get_middle();
+		final previousMiddle = get_middle();
 		final diffX = value.x - previousMiddle.x;
 		final diffY = value.y - previousMiddle.y;
 

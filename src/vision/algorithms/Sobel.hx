@@ -17,22 +17,22 @@ class Sobel {
 
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
-				var val00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
-				var val01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
-				var val02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
-				var val10 = ImageTools.grayscalePixel(image.getSafePixel(i, j - 1)).red;
-				var val11 = ImageTools.grayscalePixel(image.getSafePixel(i, j)).red;
-				var val12 = ImageTools.grayscalePixel(image.getSafePixel(i, j + 1)).red;
-				var val20 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j - 1)).red;
-				var val21 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j)).red;
-				var val22 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j + 1)).red;
+				final val00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
+				final val01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
+				final val02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
+				final val10 = ImageTools.grayscalePixel(image.getSafePixel(i, j - 1)).red;
+				final val11 = ImageTools.grayscalePixel(image.getSafePixel(i, j)).red;
+				final val12 = ImageTools.grayscalePixel(image.getSafePixel(i, j + 1)).red;
+				final val20 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j - 1)).red;
+				final val21 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j)).red;
+				final val22 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j + 1)).red;
 
-				var gx = ((-3 * val00) + (0 * val01) + (3 * val02)) + ((-10 * val10) + (0 * val11) + (10 * val12)) + ((-3 * val20) + (0 * val21) + (3 * val22));
+				final gx = ((-3 * val00) + (0 * val01) + (3 * val02)) + ((-10 * val10) + (0 * val11) + (10 * val12)) + ((-3 * val20) + (0 * val21) + (3 * val22));
 
-				var gy = ((-3 * val00) + (-10 * val01) + (-3 * val02)) + ((0 * val10) + (0 * val11) + (0 * val12)) + ((3 * val20) + (10 * val21) + (3 * val22));
+				final gy = ((-3 * val00) + (-10 * val01) + (-3 * val02)) + ((0 * val10) + (0 * val11) + (0 * val12)) + ((3 * val20) + (10 * val21) + (3 * val22));
 
-				var gval = Math.sqrt((gx * gx) + (gy * gy));
-				var g = Std.int(gval);
+				final gval = Math.sqrt((gx * gx) + (gy * gy));
+				final g = Std.int(gval);
 
 				if (g > maxGradient) {
 					maxGradient = g;
@@ -44,9 +44,9 @@ class Sobel {
 			}
 		}
 
-		var scale = 255.0 / maxGradient;
+		final scale = 255.0 / maxGradient;
 
-		var edgeImage = new Image(image.width, image.height);
+		final edgeImage = new Image(image.width, image.height);
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
 				var edgeColor = edgeColors[i][j];
@@ -64,7 +64,7 @@ class Sobel {
 		var neighbors:Array<Array<Color>> = [];
 		for (i in 0...kernalSize + 1)
 			neighbors[i] = [];
-		var roundedDown = Std.int((kernalSize - 1) / 2);
+		final roundedDown = Std.int((kernalSize - 1) / 2);
 
 		for (X in -roundedDown...roundedDown + 1) {
 			for (Y in -roundedDown...roundedDown + 1) {
@@ -96,11 +96,11 @@ class Sobel {
 		for all chunks of the image, and from top to bottom too if needed.
 	**/
 	public static function detectEdges(image:Image, threshold:Float) {
-		var edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
-		var blacknwhite = Vision.grayscale(image.clone());
+		final edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
+		final blacknwhite = Vision.grayscale(image.clone());
 		for (x in 0...blacknwhite.width) {
 			for (y in 0...blacknwhite.height) {
-				var neighbors = [
+				final neighbors = [
 					blacknwhite.getSafePixel(x - 1, y - 1),
 					blacknwhite.getSafePixel(x, y - 1),
 					blacknwhite.getSafePixel(x + 1, y - 1),

@@ -52,9 +52,9 @@ class Hough {
 		@return A `HoughSpace` object, containing the accumulator and an image representation of the accumulator.
 	**/
 	public static function toHoughSpace(image:Image):HoughSpace {
-		var rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
-		var accum:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
-		var houghSpace = new Image(181, Std.int(rhoMax), Color.WHITE);
+		final rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
+		final accum:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
+		final houghSpace = new Image(181, Std.int(rhoMax), Color.WHITE);
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
 				if (Math.abs(image.getPixel(x, y).red) == 255) {
@@ -86,12 +86,12 @@ class Hough {
 		@return A `HoughSpace` object, containing the accumulator, an image representation of the accumulator, and all the local maximums found in the accumulator.
 	**/
 	public static function toHoughSpaceWithRays(image:Image, threshold:Int = 35, ?numLocalMaxima:Int = null):HoughSpace {
-		var space = toHoughSpace(image);
+		final space = toHoughSpace(image);
 
-		var accum = space.accumulator;
+		final accum = space.accumulator;
 		trace(accum);
-		var maximas:Array<Point2D> = [];
-		var rays:Array<Ray2D> = [];
+		final maximas:Array<Point2D> = [];
+		final rays:Array<Ray2D> = [];
 
 		for (point in accum.cellIterator(threshold)) {
 			var thetaDeg = point.y;

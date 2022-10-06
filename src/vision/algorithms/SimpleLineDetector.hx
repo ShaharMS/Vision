@@ -11,9 +11,9 @@ using vision.tools.MathTools;
 
 class SimpleLineDetector {
 	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineLength:Float, preferTTB = false, preferRTL = false):Line2D {
-		var startX = point.x, startY = point.y;
-		var yArr = preferTTB ? [0, 1, 2] : [0, -1, -2];
-		var xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
+		final startX = point.x, startY = point.y;
+		final yArr = preferTTB ? [0, 1, 2] : [0, -1, -2];
+		final xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
 		if (!image.hasPixel(point.x, point.y) || image.getPixel(point.x, point.y) == 0)
 			return null;
 
@@ -64,8 +64,8 @@ class SimpleLineDetector {
 		var coveredPixels = 0, totalPixels = 0;
 		if (line == null)
 			return 0;
-		var p1 = IntPoint2D.fromPoint2D(line.start);
-		var p2 = IntPoint2D.fromPoint2D(line.end);
+		final p1 = IntPoint2D.fromPoint2D(line.start);
+		final p2 = IntPoint2D.fromPoint2D(line.end);
 		var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
 		var dx = Math.abs(x2 - x1);
 		var dy = Math.abs(y2 - y1);
