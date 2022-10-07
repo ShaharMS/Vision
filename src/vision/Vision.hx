@@ -85,7 +85,8 @@ class Vision {
 
 		@return The converted image.
 	**/
-	public static function blackAndWhite(image:Image, threshold:Int = 64):Image {
+	public static function blackAndWhite(image:Image, threshold:Int = 64):Image
+	{
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
 				var pixel = image.getPixel(i, j);
@@ -106,9 +107,8 @@ class Vision {
 
 		@param image The image to be contrasted.
 	**/
-	public static function contrast(image:Image):Image {
+	public static function contrast(image:Image):Image
 		return convolve(image, UnsharpMasking);
-	}
 
 	/**
 		Returns a sharpened version of the provided image.
@@ -119,9 +119,8 @@ class Vision {
 		@param image The image to be contrasted.
 		@return The sharpened image. The original copy is not preserved.
 	**/
-	public static function sharpen(image:Image):Image {
+	public static function sharpen(image:Image):Image
 		return convolve(image, Sharpen);
-	}
 
 	/**
 		Deepfries an image by running to through a sharpening filter `iterations` times.
@@ -131,7 +130,8 @@ class Vision {
 		@param iterations The amount of times the image gets sharpened. default is `2`
 		@return The deepfried image. the original copy is not preserved.
 	**/
-	public static function deepfry(image:Image, iterations:Int = 2):Image {
+	public static function deepfry(image:Image, iterations:Int = 2):Image
+	{
 		for (i in 0...iterations)
 			image = sharpen(image);
 		return image;
@@ -148,7 +148,8 @@ class Vision {
 	 * @param normalizationRangeEnd Optional, if you want to change the normalization range's end color `0xBBBBBBBB` by default.
 	 * @return The ridge-highlighted version of the image. **The original copy is preserved**
 	 */
-	public static function highlightRidges(image:Image, normalizationRangeStart:Color = 0x44444444, normalizationRangeEnd:Color = 0xBBBBBBBB):Image {
+	public static function highlightRidges(image:Image, normalizationRangeStart:Color = 0x44444444, normalizationRangeEnd:Color = 0xBBBBBBBB):Image
+	{
 		final clone = image.clone();
 		Vision.grayscale(clone);
 		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
@@ -177,7 +178,8 @@ class Vision {
 	 * @param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
 	 * @return The normalized image. The original copy is not preserved.
 	 */
-	public static function normalize(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
+	public static function normalize(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image
+	{
 		var max:Color = 0x0, min:Color = 0x0, step:Color = 0x0;
 		max.red = cast Math.max(rangeStart.red, rangeEnd.red);
 		min.red = cast Math.min(rangeStart.red, rangeEnd.red);
@@ -275,26 +277,29 @@ class Vision {
 			matrix = cast kernal;
 		} else {
 			matrix = switch cast(kernal, Kernal2D) {
-				case Identity: [[0, 0, 0], [0, 1, 0], [0, 0, 0],];
-				case BoxBlur: [[1, 1, 1], [1, 1, 1], [1, 1, 1],];
-				case RidgeDetection: [[-1, -1, -1], [-1, 4, -1], [-1, -1, -1],];
-				case RidgeDetectionAggressive: [[-1, -1, -1], [-1, 7.75, -1], [-1, -1, -1],];
-				case Sharpen: [[0, -1, 0], [-1, 5, -1], [0, -1, 0],];
+				case Identity: [[0, 0, 0], [0, 1, 0], [0, 0, 0]];
+				case BoxBlur: [[1, 1, 1], [1, 1, 1], [1, 1, 1]];
+				case RidgeDetection: [[-1, -1, -1], [-1, 4, -1], [-1, -1, -1]];
+				case RidgeDetectionAggressive: [[-1, -1, -1], [-1, 7.75, -1], [-1, -1, -1]];
+				case Sharpen: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]];
 				case UnsharpMasking: [
-						[1, 4, 6, 4, 1],
-						[4, 16, 24, 16, 4],
-						[6, 24, -476, 24, 6],
-						[4, 16, 24, 16, 4],
-						[1, 4, 6, 4, 1]
-					];
-				case Assemble3x3(corner, edge, center): [[corner, edge, corner], [edge, center, edge], [corner, edge, corner]];
+					[1, 4, 6, 4, 1],
+					[4, 16, 24, 16, 4],
+					[6, 24, -476, 24, 6],
+					[4, 16, 24, 16, 4],
+					[1, 4, 6, 4, 1]
+				];
+				case Assemble3x3(corner, edge, center): [
+					[corner, edge, corner],
+					[edge, center, edge],
+					[corner, edge, corner]];
 				case Assemble5x5(farCorner, farEdge, edge, midCorner, midEdge, center): [
-						[farCorner, farEdge, edge, farEdge, farCorner],
-						[farEdge, midCorner, midEdge, midCorner, farEdge],
-						[edge, midEdge, center, midEdge, edge],
-						[farEdge, midCorner, midEdge, midCorner, farEdge],
-						[farCorner, farEdge, edge, farEdge, farCorner]
-					];
+					[farCorner, farEdge, edge, farEdge, farCorner],
+					[farEdge, midCorner, midEdge, midCorner, farEdge],
+					[edge, midEdge, center, midEdge, edge],
+					[farEdge, midCorner, midEdge, midCorner, farEdge],
+					[farCorner, farEdge, edge, farEdge, farCorner]
+				];
 				case Custom(kernal): kernal;
 				case GaussianBlur(size, sigma): Gaussian.createKernalOfSize(size, sigma);
 			}
@@ -344,9 +349,8 @@ class Vision {
 
 		@return The image with edges detected. This image is returned as a new, black and white image.
 	**/
-	public static function sobelEdgeDetection(image:Image, threshold:Float = 100):Image {
+	public static function sobelEdgeDetection(image:Image, threshold:Float = 100):Image
 		return Sobel.detectEdges(image, threshold);
-	}
 
 	/**
 		Detects edges within an image.
@@ -361,9 +365,8 @@ class Vision {
 
 		@return The image with edges detected. This image is returned as a new, black and white image.
 	**/
-	public static function perwittEdgeDetection(image:Image, threshold:Float = 100):Image {
+	public static function perwittEdgeDetection(image:Image, threshold:Float = 100):Image
 		return Perwitt.detectEdges(image, threshold);
-	}
 
 	/**
 		Uses an iterative, nearest-neighbor style algorithm to blur an image.
@@ -406,9 +409,8 @@ class Vision {
 		@throws InvalidGaussianKernalSize if the kernal size is even, negative or `0`, this error is thrown.
 		@return A blurred version of the image. The original image is not preserved
 	**/
-	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
+	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image
 		return convolve(image, GaussianBlur(kernalSize, sigma));
-	}
 
 	/**
 	 * Applies a median filter to an image to reduce the amount of noise in that image.
@@ -449,7 +451,8 @@ class Vision {
 		@return The edge detected image.
 	**/
 	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, initialKernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05,
-			highThreshold:Float = 0.2):Image {
+			highThreshold:Float = 0.2):Image
+	{
 		var cannyObject:CannyObject = image.clone();
 		return blackAndWhite(cannyObject.grayscale()
 			.applyGaussian(initialKernalSize, sigma)
@@ -473,56 +476,56 @@ class Vision {
 
 		@return The line detected image.
 	**/
-	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermidiate):Array<Line2D> {
-        final kernalSize = switch speedToAccuracyRatio {
-            case VeryLow_VeryFast: X1;
-            case Low_Fast: X3;
-            case Medium_Intermidiate: X5;
-            case High_Slow: X7;
-            case VeryHigh_VerySlow: X9;
-        }
-        var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
-        var lines:Array<Line2D> = [];
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
-                lines.push(line);
-                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
-                lines.push(line2);
-                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
-                lines.push(line3);
-                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
-                lines.push(line4);
-            }
-        }
-        var actualLines:Array<Line2D> = [];
-        trace(accuracy);
-        for (l in lines) {
-            if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
-            actualLines.push(l);
-        }
-        //now, get a mirrored version
-        var edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
-                lines.push(line);
-                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
-                lines.push(line2);
-                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
-                lines.push(line3);
-                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
-                lines.push(line4);
-            }
-        }
-        for (l in lines) {
-            if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
-            actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
-        }
-        return actualLines;
-    }
+	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermidiate):Array<Line2D>
+	{
+		final kernalSize = switch speedToAccuracyRatio {
+			case VeryLow_VeryFast: X1;
+			case Low_Fast: X3;
+			case Medium_Intermidiate: X5;
+			case High_Slow: X7;
+			case VeryHigh_VerySlow: X9;
+		};
+		var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
+		var lines:Array<Line2D> = [];
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
+				lines.push(line);
+				var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
+				lines.push(line2);
+				var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
+				lines.push(line3);
+				var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
+				lines.push(line4);
+			}
+		}
+		var actualLines:Array<Line2D> = [];
+		trace(accuracy);
+		for (l in lines) {
+			if (l == null || SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
+            		actualLines.push(l);
+        	}
+        	//now, get a mirrored version
+        	var edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
+        	for (x in 0...image.width) {
+            		for (y in 0...image.height) {
+                		var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
+                		lines.push(line);
+                		var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
+                		lines.push(line2);
+                		var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
+                		lines.push(line3);
+                		var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
+                		lines.push(line4);
+            		}
+        	}
+        	for (l in lines) {
+            		if (l == null) continue;
+            		if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
+            		actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
+        	}
+        	return actualLines;
+    	}
 
 	/**
 	 * Applies the sobel filter to an image.
@@ -542,9 +545,8 @@ class Vision {
 	 * @param image The image to be operated on
 	 * @return A new image, containing the gradients of the edges as whitened pixels.
 	 */
-	public static function sobelEdgeDiffOperator(image:Image) {
+	public static function sobelEdgeDiffOperator(image:Image)
 		return Sobel.convolveWithSobelOperator(grayscale(image.clone()));
-	}
 
 	/**
 	 * Applies the perwitt filter to an image.
@@ -564,7 +566,6 @@ class Vision {
 	 * @param image The image to be operated on
 	 * @return A new image, containing the gradients of the edges as whitened pixels.
 	 */
-	public static function perwittEdgeDiffOperator(image:Image) {
+	public static function perwittEdgeDiffOperator(image:Image)
 		return Perwitt.convolveWithPerwittOperator(grayscale(image.clone()));
-	}
 }
