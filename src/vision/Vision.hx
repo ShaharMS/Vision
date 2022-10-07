@@ -21,11 +21,11 @@ import vision.algorithms.Hough;
 import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Color;
-import Image;
+import vision.ds.Image;
 import vision.tools.MathTools;
 
 using vision.tools.MathTools;
-using ImageTools;
+using vision.tools.ImageTools;
 using vision.algorithms.Canny;
 
 /**

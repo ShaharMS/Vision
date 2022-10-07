@@ -1,6 +1,7 @@
 package vision.algorithms;
 
 import vision.ds.Color;
+<<<<<<< HEAD
 import ImageTools;
 import Image;
 

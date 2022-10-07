@@ -86,11 +86,11 @@ image.convolve(BoxBlur);
 
 ```haxe
 import openfl.display.BitmapData;
-import Image;
+import vision.ds.Image;
 
 var future = BitmapData.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG");
 future.onComplete(bitmapdata -> {
-	var image:Image = bitmapdata; // converts the given openfl.display.BitmapData to Image
+	var image:Image = bitmapdata; // converts the given openfl.display.BitmapData to vision.ds.Image
    // The conversions are lossless, so you never lose data.
 	addChild(new Bitmap(image)); //converts back to a BitmapData.
 });

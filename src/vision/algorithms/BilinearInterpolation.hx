@@ -1,6 +1,6 @@
 package vision.algorithms;
 
-import Image;
+import vision.ds.Image;
 
 class BilinearInterpolation {
 	public static function interpolate(image:Image, width:Int, height:Int):Image {

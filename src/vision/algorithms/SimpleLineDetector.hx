@@ -5,7 +5,7 @@ import vision.tools.MathTools;
 import vision.ds.Color;
 import vision.ds.Point2D;
 import vision.ds.Line2D;
-import Image;
+import vision.ds.Image;
 
 using vision.tools.MathTools;
 

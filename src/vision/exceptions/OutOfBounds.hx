@@ -1,7 +1,7 @@
 package vision.exceptions;
 
 import vision.ds.Point2D;
-import Image;
+import vision.ds.Image;
 import haxe.Exception;
 
 class OutOfBounds extends VisionException {
