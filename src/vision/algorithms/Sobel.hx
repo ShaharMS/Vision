@@ -51,6 +51,7 @@ class Sobel {
 			for (j in 0...image.height) {
 				var edgeColor = edgeColors[i][j];
 				edgeColor = Std.int(edgeColor * scale);
+				// RGB -> ARGB
 				edgeColor = 0xff000000 | (edgeColor << 16) | (edgeColor << 8) | edgeColor;
 
 				edgeImage.setPixel(i, j, edgeColor);

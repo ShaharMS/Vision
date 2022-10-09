@@ -12,15 +12,11 @@ using vision.tools.MathTools;
  */
 class Perwitt {
 	public static function convolveWithPerwittOperator(image:Image) {
-		var x = image.width;
-		var y = image.height;
-
-		var maxGval = 0;
-		var edgeColors:Array<Array<Int>> = [];
+		var edgeColors:Array<Array<Color>> = [];
 		var maxGradient = -1;
 
-		for (i in 0...x) {
-			for (j in 0...y) {
+		for (i in 0...image.width) {
+			for (j in 0...image.height) {
 				var val00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
 				var val01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
 				var val02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
@@ -59,10 +55,11 @@ class Perwitt {
 		var scale = 255.0 / maxGradient;
 
 		var edgeImage = new Image(image.width, image.height);
-		for (i in 0...x) {
-			for (j in 0...y) {
+		for (i in 0...image.width) {
+			for (j in 0...image.height) {
 				var edgeColor = edgeColors[i][j];
 				edgeColor = Std.int(edgeColor * scale);
+				//RGB -> ARGB
 				edgeColor = 0xff000000 | (edgeColor << 16) | (edgeColor << 8) | edgeColor;
 
 				edgeImage.setPixel(i, j, edgeColor);

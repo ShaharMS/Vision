@@ -13,7 +13,7 @@ using vision.tools.MathTools;
  * An iterative, partially recursive line detection implementation by [Shahar Marcus](https://www.github.com/ShaharMS).
  */
 class SimpleLineDetector {
-	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineLength:Float, preferTTB = false, preferRTL = false):Line2D {
+	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineLength:Float, preferTTB:Bool = false, preferRTL:Bool = false):Line2D {
 		final startX = point.x, startY = point.y;
 		final yArr = preferTTB ? [0, 1, 2] : [0, -1, -2];
 		final xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
@@ -43,7 +43,6 @@ class SimpleLineDetector {
 							if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
 								return;
 							}
-							trace(point, prev, prev2);
 						}
 						expand();
 					}
@@ -77,7 +76,7 @@ class SimpleLineDetector {
 		var err = dx - dy;
 		while (true) {
 			if (image.hasPixel(x1, y1)) {
-				if (image.getPixel(Std.int(x1), Std.int(y1)).to24Bit() == Color.WHITE) {
+				if (image.getPixel(Std.int(x1), Std.int(y1)).red == 255) {
 					coveredPixels++;
 				}
 			}

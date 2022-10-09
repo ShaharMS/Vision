@@ -26,7 +26,7 @@ class Radix {
 	 * @param exp Represents the digit's "place" on which were going to count - `10` will count on the last digit, `100` will count on the second-to-last, etc.
 	 * @param endIndex optional, an index after which we stop sorting
 	 */
-	static function countSort<T:Int, UInt, Int64>(array:Array<T>, exp:Int, ?endIndex:Int) {
+	static function countingSort<T:Int, UInt, Int64>(array:Array<T>, exp:Int, ?endIndex:Int) {
 		if (endIndex == null)
 			endIndex = array.length;
 
@@ -73,7 +73,7 @@ class Radix {
 		// instead of passing digit number, exp is passed.
 		// exp is 10^i where i is current digit number
 		while (max / exp > 0) {
-			array = countSort(array, exp, array.length);
+			array = countingSort(array, exp, array.length);
 			exp *= 10;
 		}
 

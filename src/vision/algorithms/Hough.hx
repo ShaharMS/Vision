@@ -69,39 +69,4 @@ class Hough {
 		}
 		return {accumulator: accum, image: houghSpace};
 	}
-
-	/**
-		Returns a `HoughSpace` object, containing
-		the accumulator, an image representation of the accumulator,
-		and all the local maximums found in the accumulator.
-
-		@param image The image to be transformed.
-		@param threshold The minimum value of an accumulator's cell to be considered a local maximum (or, a line). Defaults to 30.
-		@param numLocalMaxima A cap on the number of local maximums to return. When unset, all local maximums are returned. unless you have a good reason, you should'nt set this parameter.
-
-		@return A `HoughSpace` object, containing the accumulator, an image representation of the accumulator, and all the local maximums found in the accumulator.
-	**/
-	public static function toHoughSpaceWithRays(image:Image, threshold:Int = 35, ?numLocalMaxima:Int = null):HoughSpace {
-		final space = toHoughSpace(image);
-
-		final accum = space.accumulator;
-		trace(accum);
-		final maximas:Array<Point2D> = [];
-		final rays:Array<Ray2D> = [];
-
-		for (point in accum.cellIterator(threshold)) {
-			var thetaDeg = point.y;
-
-			MathTools.wrapInt(thetaDeg, -90, 90);
-			var rho = point.x;
-			var tempRay = new Ray2D({x: 0, y: 0}, null, thetaDeg);
-			var p = tempRay.findPointWithDistance(0, rho);
-			rays.push(new Ray2D(p, null, thetaDeg + 90));
-		}
-
-		trace(rays);
-		space.rays = rays;
-		space.maximums = maximas;
-		return space;
-	}
 }

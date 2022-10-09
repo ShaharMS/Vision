@@ -768,16 +768,16 @@ abstract Image(UInt8Array) {
 		var explored:Array<Int64> = [];
 		var originalColor = getPixel(position.x, position.y);
 		var pc = 0;
-		inline function fill(v:IntPoint2D) {
+		inline function fill(point:IntPoint2D) {
 			if (pc >= 100000) {
 				trace("fillColor: too much iterations");
 				queue.clear();
 				return;
 			}
-			if (hasPixel(v.x, v.y) && getPixel(v.x, v.y) == originalColor && !explored.contains(Int64.make(v.x, v.y))) {
+			if (hasPixel(point.x, point.y) && getPixel(point.x, point.y) == originalColor && !explored.contains(Int64.make(point.x, point.y))) {
 				pc++;
-				queue.push({x: v.x, y: v.y});
-				setPixel(v.x, v.y, color);
+				queue.push({x: point.x, y: point.y});
+				setPixel(point.x, point.y, color);
 			}
 		}
 		while (queue.length > 0) {
@@ -804,22 +804,22 @@ abstract Image(UInt8Array) {
 		queue.push({x: position.x, y: position.y});
 		var explored:Array<Int64> = [];
 		var pc = 0;
-		function fill(v:IntPoint2D) {
+		inline function fill(point:IntPoint2D) {
 			if (pc >= 100000) {
 				trace("fillColor: too much iterations");
 				queue.clear();
 				return;
 			}
-			if (!hasPixel(v.x, v.y))
+			if (!hasPixel(point.x, point.y))
 				return;
-			if (explored.contains(Int64.make(v.x, v.y)))
+			if (explored.contains(Int64.make(point.x, point.y)))
 				return;
-			if (getPixel(v.x, v.y) == color)
+			if (getPixel(point.x, point.y) == color)
 				return;
-			if (getPixel(v.x, v.y) != borderColor) {
+			if (getPixel(point.x, point.y) != borderColor) {
 				pc++;
-				queue.push({x: v.x, y: v.y});
-				setPixel(v.x, v.y, color);
+				queue.push({x: point.x, y: point.y});
+				setPixel(point.x, point.y, color);
 			}
 		}
 		while (queue.length > 0) {
