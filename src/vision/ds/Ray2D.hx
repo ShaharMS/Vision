@@ -17,12 +17,24 @@ class Ray2D {
 	**/
 	public var slope(default, set):Float;
 
+	/**
+		The direction of this `Ray2D`, in degrees
+	**/
 	public var degrees(default, set):Float;
 
+	/**
+		The direction of this `Ray2D`, in radians
+	**/
 	public var radians(default, set):Float;
 
+	/**
+		The `y` position in which `x = 0`
+	**/
 	public var yIntercept(get, never):Float;
 
+	/**
+		The `x` position in which `y = 0`
+	**/
 	public var xIntercept(get, never):Float;
 
 	/**
@@ -47,6 +59,43 @@ class Ray2D {
 			this.degrees = MathTools.radiansToDegrees(radians);
 		}
 	}
+
+	/**
+		Constructs a `Ray2D` from 2 `Point2D`s
+	**/
+	public static inline function from2Points(point1:Point2D, point2:Point2D) {
+		var s = (point2.y - point1.y) / (point2.x - point1.x);
+		return new Ray2D(point1, s);
+	}
+
+	/**
+		Gets the point on this `Ray2D` at `(x, y)` when `x` is given.
+	**/
+	public inline function getPointAtX(x:Float):Point2D {
+		return new Point2D(x, slope * x + yIntercept);
+	}
+
+	/**
+		Gets the point on this `Ray2D` at `(x, y)` when `y` is given.
+	**/
+	public inline function getPointAtY(y:Float):Point2D {
+		return new Point2D((y - yIntercept) / slope, y);
+	}
+
+	/**
+		Gets the intersection point between `this` and `ray`.
+
+		If `this` and `ray` don't intersect, `null` is returned.
+
+		@param ray The second ray to intersect with
+		@return A `Point2D` instance, `null` if `this` and `ray` don't intersect
+	**/
+	public inline function intersect(ray:Ray2D):Point2D {
+		return MathTools.intersectionBetweenRay2Ds(this, ray);
+	}
+
+
+
 
 	inline function set_slope(value:Float):Float {
 		@:bypassAccessor degrees = MathTools.slopeToDegrees(value);
@@ -80,48 +129,5 @@ class Ray2D {
 			return (py - (slope * px)) / slope;
 		}
 		return (py + (slope * px)) / slope;
-	}
-
-	public static inline function from2Points(point1:Point2D, point2:Point2D) {
-		var s = (point2.y - point1.y) / (point2.x - point1.x);
-		return new Ray2D(point1, s);
-	}
-
-	public inline function getPointAtX(x:Float):Point2D {
-		// you have the slope, and the x value, find the y value
-		return new Point2D(x, slope * x + yIntercept);
-	}
-
-	public inline function getPointAtY(y:Float):Point2D {
-		// you have the slope, and the y value, find the x value
-		return new Point2D((y - yIntercept) / slope, y);
-	}
-
-	public inline function intersect(ray:Ray2D):Point2D {
-		return MathTools.intersectionBetweenRay2Ds(this, ray);
-	}
-
-	/**
-	 * Gets the point on `this` ray, which is `distance` points away
-	 * from `start`.
-	 * 
-	 * In order to avoid returning two points (since
-	 * any point on the ray has 2 points with the exact same distance from it),
-	 * you have the `goPositive` value.
-	 * 
-	 * 
-	 * @param startXPos The `x` position to start from.
-	 * @param distance The distance from `start` to the resulting point.
-	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
-	 */
-	public inline function findPointWithDistance(startXPos:Float, distance:Float, goPositive:Bool = true) {
-		// Were going to step one point to the right, and chek how much distance was covered.
-		// After checking, were going to devide distance with the distance between start to start(y + 1)
-		// Make sure to not surpass `distance`
-		distance = MathTools.abs(distance);
-		var start = getPointAtX(startXPos);
-		var step = MathTools.distanceBetweenPoints(getPointAtX(start.y + 1), start);
-		var diff = distance / step;
-		return getPointAtY(start.y + if (goPositive) diff else -diff);
 	}
 }

@@ -1,5 +1,6 @@
 package vision.ds;
 
+import vision.ds.ByteArray;
 import haxe.io.UInt8Array;
 import vision.exceptions.Unimplemented;
 import vision.tools.MathTools;
@@ -13,7 +14,7 @@ import vision.tools.ImageTools;
 /**
 	Represents a 2D image, as a matrix of Colors.
 **/
-abstract Image(UInt8Array) {
+abstract Image(ByteArray) {
 	/**
 	 * the first 4 bytes represent width.
 	 */
@@ -22,7 +23,7 @@ abstract Image(UInt8Array) {
 	/**
 		Returns the underlying type of this abstract.
 	**/
-	public var underlying(get, #if vision_allow_resize set #else never #end):UInt8Array;
+	public var underlying(get, #if vision_allow_resize set #else never #end):ByteArray;
 
 	inline function get_underlying() {
 		return this;
@@ -71,7 +72,7 @@ abstract Image(UInt8Array) {
 		@param color The color to fill the image with. if unspecified, the image is transparent.
 	**/
 	public inline function new(width:Int, height:Int, ?color:Color = 0x00000000) {
-		this = new UInt8Array(width * height * 4 + OFFSET);
+		this = new ByteArray(width * height * 4 + OFFSET);
 		this[0] = width & 0xFF;
 		this[1] = width >> 8 & 0xFF;
 		this[2] = width >> 16 & 0xFF;

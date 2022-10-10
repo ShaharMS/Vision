@@ -42,6 +42,9 @@ class Line2D {
 	**/
 	public var middle(get, set):Point2D;
 
+	/**
+		Constructs a new `Line2D` from two `Point2D`s
+	**/
 	public inline function new(start:Point2D, end:Point2D) {
 		this.start.x = start.x;
 		this.start.y = start.y;
@@ -64,6 +67,11 @@ class Line2D {
 		return '\n ($start.x, $start.y) --> ($end.x, $end.y)';
 	}
 
+	/**
+		Takes an instance of `Ray2D`, and returns a new `Line2D` with the same direction.
+
+		The `start` & `end` point may not be consistent. Set them manually if you need to.
+	**/
 	public static inline function fromRay2D(ray:Ray2D):Line2D {
 		var x:Float = ray.point.x;
 		var y:Float = ray.point.y;
@@ -72,6 +80,9 @@ class Line2D {
 		return new Line2D(ray.point, end);
 	}
 
+	/**
+		Constructs a new `Ray2D` using this `Line2D`'s start point and slope.
+	**/
 	public inline function toRay2D():Ray2D {
 		return new Ray2D(this.start, this.slope);
 	}

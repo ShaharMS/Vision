@@ -19,12 +19,20 @@ class QueueCell<T> {
 	}
 }
 
+/**
+	Represents a queue, as a doubly linked list.
+**/
 #if (flash || cpp) @:generic #end
 class Queue<T> {
 	public var length(default, null):Int = 0;
 	public var first:QueueCell<T>;
 	public var last(get, set):QueueCell<T>;
 
+	/**
+		Creates a new `Queue` with 0 elements. 
+		
+		use `enqueue()`/`dequeue()` to add/remove elements.
+	**/
 	public function new() {}
 
 	/**

@@ -19,8 +19,15 @@ private class Impl {
  * A 2D point represented by two, 32-bit integers.
  */
 abstract IntPoint2D(Impl) {
+
+	/**
+		The `x` position of this `IntPoint2D`
+	**/
 	public var x(get, set):Int;
 
+	/**
+		The `y` position of this `IntPoint2D`
+	**/
 	public var y(get, set):Int;
 
 	public inline function new(x:Int, y:Int) {
@@ -73,11 +80,17 @@ abstract IntPoint2D(Impl) {
 		return new IntPoint2D(Std.int(p.x), Std.int(p.y));
 	}
 
+	/**
+		Returns a `String` representations of this `IntPoint2D`.
+	**/
 	public inline function toString() {
 		return '($x, $y)';
 	}
 
-	public inline function clone() {
+	/**
+		Returns a new `IntPoint2D` instance, similar to this one.
+	**/
+	public inline function copy() {
 		return new IntPoint2D(x, y);
 	}
 }

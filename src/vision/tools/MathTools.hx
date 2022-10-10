@@ -66,6 +66,54 @@ class MathTools {
 		return result;
 	}
 
+	/**
+	 * Gets the point on `ray` , which is `distance` points away
+	 * from `startXPos`.
+	 * 
+	 * In order to avoid returning two points (since
+	 * any point on the ray has 2 points with the exact same distance from it),
+	 * you have the `goPositive` value.
+	 * 
+	 * 
+	 * @param startXPos The `x` position to start from.
+	 * @param distance The distance from `start` to the resulting point.
+	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
+	 */
+	public static inline function findPointAtDistanceUsingX(ray:Ray2D, startXPos:Float, distance:Float, goPositive:Bool = true) {
+		// Were going to step one point to the right, and chek how much distance was covered.
+		// After checking, were going to devide distance with the distance between start to start(y + 1)
+		// Make sure to not surpass `distance`
+		distance = MathTools.abs(distance);
+		var start = ray.getPointAtX(startXPos);
+		var step = MathTools.distanceBetweenPoints(ray.getPointAtX(start.y + 1), start);
+		var diff = distance / step;
+		return ray.getPointAtY(start.y + if (goPositive) diff else -diff);
+	}
+
+	/**
+	 * Gets the point on `ray` , which is `distance` points away
+	 * from `startYPos`.
+	 * 
+	 * In order to avoid returning two points (since
+	 * any point on the ray has 2 points with the exact same distance from it),
+	 * you have the `goPositive` value.
+	 * 
+	 * 
+	 * @param startYPos The `y` position to start from.
+	 * @param distance The distance from `start` to the resulting point.
+	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
+	 */
+	 public static inline function findPointAtDistanceUsingY(ray:Ray2D, startYPos:Float, distance:Float, goPositive:Bool = true) {
+		// Were going to step one point to the right, and chek how much distance was covered.
+		// After checking, were going to devide distance with the distance between start to start(y + 1)
+		// Make sure to not surpass `distance`
+		distance = MathTools.abs(distance);
+		var start = ray.getPointAtY(startYPos);
+		var step = MathTools.distanceBetweenPoints(ray.getPointAtY(start.x + 1), start);
+		var diff = distance / step;
+		return ray.getPointAtX(start.x + if (goPositive) diff else -diff);
+	}
+
 	//-----------------------------------------------------------------------------------------
 	// Line2D Extensions
 	//-----------------------------------------------------------------------------------------
@@ -260,6 +308,13 @@ class MathTools {
 	**/
 	public static function boundFloat(value:Float, min:Float, max:Float) {
 		return Math.min(Math.max(value, min), max);
+	}
+
+	/**
+	 	Returns `true` if `number` is positive, `false` if negative
+	**/
+	@:generic public static inline function isPositive<T:Int, Float, Int64>(number:T):Bool {
+		return (abs(number) / number) > 0;
 	}
 
 	/**
