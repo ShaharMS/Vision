@@ -5,11 +5,11 @@ import vision.tools.MathTools;
 class Line2D {
 	public var length(get, null):Float;
 
-	public var slope(default, set):Float;
+	public var slope(default, null):Float;
 
-	public var degrees(default, set):Float;
+	public var degrees(default, null):Float;
 
-	public var radians(default, set):Float;
+	public var radians(default, null):Float;
 
 	public var start(default, set):Point2D = {x: 0, y: 0};
 
@@ -36,7 +36,7 @@ class Line2D {
 		this.start.y = start.y;
 		this.end.x = end.x;
 		this.end.y = end.y;
-		radians = MathTools.radiansFromPointToPoint(start, end);
+		radians = MathTools.radiansFromPointToPoint2D(start, end);
 	}
 
 	inline function get_length():Float {
@@ -48,31 +48,17 @@ class Line2D {
 		return '\n ($start.x, $start.y) --> ($end.x, $end.y)';
 	}
 
-	inline function set_slope(value:Float):Float {
-		@:bypassAccessor degrees = MathTools.slopeToDegrees(value);
-		@:bypassAccessor radians = MathTools.slopeToRadians(value);
-		return slope = value;
-	}
-
-	inline function set_degrees(value:Float):Float {
-		@:bypassAccessor slope = MathTools.degreesToSlope(value);
-		@:bypassAccessor radians = MathTools.degreesToRadians(value);
-		return degrees = MathTools.wrapFloat(value, -180, 180);
-	}
-
-	inline function set_radians(value:Float):Float {
-		@:bypassAccessor slope = MathTools.radiansToSlope(value);
-		@:bypassAccessor degrees = MathTools.radiansToDegrees(value);
-		return radians = value;
-	}
-
 	inline function set_start(value:Point2D) {
-		radians = MathTools.radiansFromPointToPoint(value, end);
+		radians = MathTools.radiansFromPointToPoint2D(value, end);
+		slope = MathTools.radiansToSlope(radians);
+		degrees = MathTools.radiansToDegrees(radians);
 		return start = value;
 	}
 
 	inline function set_end(value:Point2D) {
-		radians = MathTools.radiansFromPointToPoint(start, value);
+		radians = MathTools.radiansFromPointToPoint2D(value, end);
+		slope = MathTools.radiansToSlope(radians);
+		degrees = MathTools.radiansToDegrees(radians);
 		return end = value;
 	}
 
@@ -103,37 +89,5 @@ class Line2D {
 		end.x += diffX;
 
 		return get_middle();
-	}
-
-	
-
-	inline function recalc() {
-		switch modificationMode {
-			case START:
-				{
-					var dist = length;
-					var s = start.copy();
-					var a = degrees;
-					var ray = new Ray2D(s, null, a);
-					end = ray.findPointWithDistance(s.x, dist, MathTools.isBetweenRanges(a, {start: -90, end: 90}));
-				}
-			case MIDDLE:
-				{
-					var dist = length;
-					var s = middle; // not a real var, no need to copy
-					var a = degrees;
-					var ray = new Ray2D(s, null, a);
-					start = ray.findPointWithDistance(s.x, dist / 2, !MathTools.isBetweenRanges(a, {start: -90, end: 90}));
-					end = ray.findPointWithDistance(s.x, dist / 2, MathTools.isBetweenRanges(a, {start: -90, end: 90}));
-				}
-			case END:
-				{
-					var dist = length;
-					var s = end.copy();
-					var a = degrees;
-					var ray = new Ray2D(s, null, a);
-					start = ray.findPointWithDistance(s.x, dist, MathTools.isBetweenRanges(a, {start: 90, end: 180}, {start: -90, end: -180}));
-				}
-		}
 	}
 }

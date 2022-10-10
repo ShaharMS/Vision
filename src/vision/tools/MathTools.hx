@@ -196,11 +196,20 @@ class MathTools {
 		return angle2 - angle;
 	}
 
-	public static inline function radiansFromPointToPoint(point1:Point2D, point2:Point2D) {
+	public static inline function radiansFromPointToPoint2D(point1:Point2D, point2:Point2D) {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
+
+	public static inline function degreesFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
+	}
+
+	public static inline function slopeFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
+	}
+
 
 	public static inline function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
