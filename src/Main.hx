@@ -40,6 +40,9 @@ class Main {
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG",
 			image -> {
 				printImage(image);
+
+				image = image.resize(150, 112, BilinearInterpolation);
+				printImage(image);
 				#if simple_tests
 				start = haxe.Timer.stamp();
 				printImage(Vision.blackAndWhite(image.clone()));

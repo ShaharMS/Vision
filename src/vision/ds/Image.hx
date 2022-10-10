@@ -222,8 +222,11 @@ abstract Image(ByteArray) {
 			throw new OutOfBounds(cast this, {x: x, y: y});
 		#end
 		final yfrac = y - Std.int(y), xfrac = x - Std.int(x);
-		return Std.int((1 - yfrac) * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y)) + xfrac * getPixel(Std.int(x) + 1, Std.int(y)))
-			+ yfrac * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1) + xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1)));
+		final red =  Std.int((1 - yfrac) * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y)).red + xfrac * getPixel(Std.int(x) + 1, Std.int(y)).red) + yfrac * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1).red + xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1).red));
+		final green =  Std.int((1 - yfrac) * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y)).green + xfrac * getPixel(Std.int(x) + 1, Std.int(y)).green) + yfrac * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1).green + xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1).green));
+		final blue =  Std.int((1 - yfrac) * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y)).blue + xfrac * getPixel(Std.int(x) + 1, Std.int(y)).blue) + yfrac * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1).blue + xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1).blue));
+		final alpha =  Std.int((1 - yfrac) * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y)).alpha + xfrac * getPixel(Std.int(x) + 1, Std.int(y)).alpha) + yfrac * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1).alpha + xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1).alpha));
+		return Color.fromRGBA(red, green, blue, alpha);
 	}
 
 	/**
