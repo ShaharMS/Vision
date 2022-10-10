@@ -25,10 +25,16 @@ class Point2D {
 		this.y = y;
 	}
 
+	/**
+		Returns a `String` representations of this `Point2D`.
+	**/
 	public inline function toString() {
 		return '($x, $y)';
 	}
 
+	/**
+		Returns a new `Point2D` instance, similar to this one.
+	**/
 	public inline function copy():Point2D {
 		return {x: x, y: y};
 	}

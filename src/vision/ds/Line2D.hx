@@ -2,34 +2,45 @@ package vision.ds;
 
 import vision.tools.MathTools;
 
+/**
+	Represents a 2-dimensional line, by `start` & `end` point
+**/
 class Line2D {
-	public var length(get, null):Float;
-
-	public var slope(default, null):Float;
-
-	public var degrees(default, null):Float;
-
-	public var radians(default, null):Float;
-
-	public var start(default, set):Point2D = {x: 0, y: 0};
-
-	public var end(default, set):Point2D = {x: 0, y: 0};
-
-	public var middle(get, set):Point2D;
 
 	/**
-		 When editing the slope/degrees/radians of `this` line,
-		 the `start`,`end` or `middle` points will change according to this setting:
-		 
-		 
-		 | Name | Explanation | Modifies Start | Modifies End | Modifies Middle |
-		 | --- | --- | :---:| :---:| :---: |
-		 | `Line2DModifyingPoint.START` | On edit, the `start` point should remain the same, but the `end` point will be modified. | ❌ | ✅ | ✅ |
-		 | `Line2DModifyingPoint.END` | On edit, the `end` point should remain the same, but the `start` point will be modified. | ✅ | ❌ | ✅ |
-		 | `Line2DMOdifyingPoint.MIDDLE` | On edit, the `middle` point of the "previous" line should remain the same. `start` and `end` should be modified. | ✅ | ✅ | ❌ |
-
+		The distance between `start` and `end`
 	**/
-	public var modificationMode:Line2DModifyingPoint = START;
+	public var length(get, null):Float;
+
+	/**
+		The slope of the line streched from `start` to `end`
+	**/
+	public var slope(default, null):Float;
+
+	/**
+		The degrees of the line streched from `start` to `end`
+	**/
+	public var degrees(default, null):Float;
+
+	/**
+		The radians of the line streched from `start` to `end`
+	**/
+	public var radians(default, null):Float;
+
+	/**
+		The starting point of this `Line2D`.
+	**/
+	public var start(default, set):Point2D = {x: 0, y: 0};
+
+	/**
+		The ending point of this `Line2D`.
+	**/
+	public var end(default, set):Point2D = {x: 0, y: 0};
+
+	/**
+		The middle point of this `Line2D`
+	**/
+	public var middle(get, set):Point2D;
 
 	public inline function new(start:Point2D, end:Point2D) {
 		this.start.x = start.x;
@@ -37,15 +48,32 @@ class Line2D {
 		this.end.x = end.x;
 		this.end.y = end.y;
 		radians = MathTools.radiansFromPointToPoint2D(start, end);
+		slope = MathTools.radiansToSlope(radians);
+		degrees = MathTools.radiansToDegrees(radians);
 	}
 
 	inline function get_length():Float {
 		return Math.sqrt(Math.pow(this.end.x - this.start.x, 2) + Math.pow(this.end.y - this.start.y, 2));
 	}
 
+	/**
+		Returns a `String` representation of this `Line2D`.
+	**/
 	@:keep
 	public inline function toString() {
 		return '\n ($start.x, $start.y) --> ($end.x, $end.y)';
+	}
+
+	public static inline function fromRay2D(ray:Ray2D):Line2D {
+		var x:Float = ray.point.x;
+		var y:Float = ray.point.y;
+		var length:Float = 1;
+		var end:Point2D = new Point2D(Std.int(x + length * Math.cos(ray.radians)), Std.int(y + length * Math.sin(ray.radians)));
+		return new Line2D(ray.point, end);
+	}
+
+	public inline function toRay2D():Ray2D {
+		return new Ray2D(this.start, this.slope);
 	}
 
 	inline function set_start(value:Point2D) {
@@ -60,18 +88,6 @@ class Line2D {
 		slope = MathTools.radiansToSlope(radians);
 		degrees = MathTools.radiansToDegrees(radians);
 		return end = value;
-	}
-
-	public static inline function fromRay2D(ray:Ray2D):Line2D {
-		var x:Float = ray.point.x;
-		var y:Float = ray.point.y;
-		var length:Float = 1;
-		var end:Point2D = new Point2D(Std.int(x + length * Math.cos(ray.radians)), Std.int(y + length * Math.sin(ray.radians)));
-		return new Line2D(ray.point, end);
-	}
-
-	public inline function toRay2D():Ray2D {
-		return new Ray2D(this.start, this.slope);
 	}
 
 	inline function get_middle():Point2D {

@@ -45,7 +45,9 @@ class Queue<T> {
 	}
 
 	/**
-		Gets the last cell's value in the queue, and removes it from the queue
+		Gets the value of the first item in the queue, and removes it from the queue.
+
+		(`last` `->` `...` `->` `first`)
 	**/
 	public function dequeue():T {
 		var v = last.value;
@@ -55,6 +57,11 @@ class Queue<T> {
 		return v;
 	}
 
+	/**
+		Adds a value to the end of the queue, and returns it.
+
+		@param value The value to push to the end of the queue
+	**/
 	public function enqueue(value:T):T {
 		if (first == null) {
 			first = new QueueCell(value, null, null);
@@ -67,6 +74,15 @@ class Queue<T> {
 		return value;
 	}
 
+	/**
+		Whether or not this `Queue` contains `value`.
+
+		This function iterates over the elements from the end of the queue to the start,
+		and checks for equality using standart equality (`==`).
+
+		@param value the value to check with
+		@returns Whether or not `value` is present in this `Queue`.
+	**/
 	public function has(value:T):Bool {
 		var processed:QueueCell<T> = first;
 
@@ -78,6 +94,9 @@ class Queue<T> {
 		return false;
 	}
 
+	/**
+		Returns a `String` representation of this `Queue`.
+	**/
 	public function toString():String {
 		var s = "[";
 		var processed:QueueCell<T> = first;

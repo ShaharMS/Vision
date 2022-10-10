@@ -2,9 +2,19 @@ package vision.ds;
 
 import vision.tools.MathTools;
 
+/**
+	Represents a 2-dimensional ray on the cartesian coordinate sysetm
+**/
 class Ray2D {
-	public var point:Point2D;
 
+	/**
+		The `Point2D` used in the constructor 
+	**/
+	@:noCompletion public var point:Point2D;
+
+	/**
+		The direction of this `Ray2D`, in a rise-over-run format.
+	**/
 	public var slope(default, set):Float;
 
 	public var degrees(default, set):Float;

@@ -1,9 +1,24 @@
 package vision.ds;
 
+/**
+	A structure useful for representing a pixel in an image.
+**/
 @:structInit
 class Pixel {
+
+	/**
+		The row on which the pixel is on 
+	**/
 	public var x:Int;
+
+	/**
+		The column on which the pixel is on 
+	**/
 	public var y:Int;
+
+	/**
+		The color of the pixel, in `ARGB` format.
+	**/
 	public var color:Color;
 
 	public inline function new(x:Int, y:Int, color:Color) {
