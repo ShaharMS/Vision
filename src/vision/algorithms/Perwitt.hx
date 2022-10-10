@@ -73,15 +73,11 @@ class Perwitt {
 		var neighbors:Array<Array<Color>> = [];
 		for (i in 0...kernalSize + 1)
 			neighbors[i] = [];
-		var roundedDown = Std.int((kernalSize - 1) / 2);
+		final roundedDown = Std.int((kernalSize - 1) / 2);
 
 		for (X in -roundedDown...roundedDown + 1) {
 			for (Y in -roundedDown...roundedDown + 1) {
-				if (x + X < 0 || x + X >= image.width || y + Y < 0 || y + Y >= image.height) {
-					neighbors[X + roundedDown].push(0);
-					continue;
-				}
-				neighbors[X + roundedDown].push(image.getPixel(x + X, y + Y));
+				neighbors[X + roundedDown].push(image.getSafePixel(x + X, y + Y));
 			}
 		}
 		return neighbors;

@@ -7,7 +7,8 @@ class Radix {
 	/**
 	 * Gets the maximum in array `array`.
 	 * @param array an array of type `Int`, `Int64` or `UInt`
-	 * @param endIndex optional, an index after which we stop checking for a maximum
+	 * @param endIndex optional, an index after which we stop checking for a maximum 
+	 * (useful if the range in which the maximum value is present is known)
 	 */
 	static function getMax<T:Int, UInt, Int64>(array:Array<T>, ?endIndex:Int) {
 		if (endIndex == null)
@@ -17,6 +18,7 @@ class Radix {
 		for (i in 1...endIndex)
 			if (array[i] > potential)
 				potential = array[i];
+
 		return potential;
 	}
 
@@ -62,8 +64,9 @@ class Radix {
 		return output;
 	}
 
-	// The main function to that sorts array[] of
-	// size n using Radix Sort
+	/**
+		Sorts an array of `Int`s / `UInt`s / `Int64` using **Radix Sort**.
+	**/
 	public static function sort<T:Int, UInt, Int64>(array:Array<T>) {
 		// Find the maximum number to know number of digits
 		final max = getMax(array, array.length);

@@ -99,25 +99,6 @@ class ImageTools {
 	}
 
 	/**
-		Saves an image to the file system. On JS, the saved image should be immidiatelly downloaded
-		without a file dialog. On sys, the file should be saved
-
-		**Note: On `sys` targets, this function requires the `format` library.**
-
-		To install:\
-		\
-		`haxelib install format`
-
-		@param image optional, used for chaining purposes. (eg. `image.fromFile("path/to/image.png")`)
-		@param path the path to the image file. on js, it can only be a relative path.
-
-		@returns the image object.
-	**/
-	public static function encode(image:Image, format:String) {
-		
-	}
-
-	/**
 		Adds an `Image` to the screen.
 
 		**Currently, this function only works on the web**, and

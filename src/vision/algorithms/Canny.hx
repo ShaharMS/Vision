@@ -93,7 +93,7 @@ class Canny {
 				traverseEdge(x, y);
 			}
 		}
-		// second iteration
+		// second iteration, remove weak pixels.
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
 				if (!isStrong(copy.getPixel(x, y)))

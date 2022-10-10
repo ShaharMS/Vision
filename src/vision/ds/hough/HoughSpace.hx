@@ -26,9 +26,9 @@ class HoughSpace {
 	/**
 		The rays detected from the accumulator.
 
-		Those are definded only when using the `getHoughSpaceWithRays` method.
+		Those are definded only when using the ~~`getHoughSpaceWithRays`~~ method.
 
-		@see getHoughSpaceWithRays()
+		@see ~~getHoughSpaceWithRays()~~
 	**/
 	public var rays:Array<Ray2D>;
 
