@@ -178,67 +178,7 @@ class Main {
 				trace("Deepfrying took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				#end
 		});
-
 		
-
-
-
-
-
-
-
-
-
-		Vision.
-
-
-
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		#if draw_tests
 		var image = new Image(250, 250, 0x000000);
 		image.drawLine(12, 53, 54, 15, 0xbd0202);
