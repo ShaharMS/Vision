@@ -143,30 +143,13 @@ abstract Image(ByteArray) {
 			var gettable:IntPoint2D = new IntPoint2D(0, 0);
 			var ox = x;
 			var oy = y;
-			if (ox < 0 && oy < 0)
-				gettable.x = gettable.y = 0;
-			else if (ox < 0 && oy >= height) {
-				gettable.x = 0;
-				gettable.y = height - 1;
-			} else if (ox >= width && oy < 0) {
-				gettable.x = width - 1;
-				gettable.y = 0;
-			} else if (ox >= width && oy >= height) {
-				gettable.x = width - 1;
-				gettable.y = height - 1;
-			} else if (ox < 0) {
-				gettable.x = 0;
-				gettable.y = oy;
-			} else if (oy < 0) {
-				gettable.x = ox;
-				gettable.y = 0;
-			} else if (ox >= width) {
-				gettable.x = width - 1;
-				gettable.y = oy;
-			} else if (oy >= height) {
-				gettable.x = ox;
-				gettable.y = height - 1;
-			}
+			gettable.x = ox;
+			gettable.y = oy;
+			if (ox < 0) gettable.x = 0;
+			if (ox >= width) gettable.x = width - 1;
+			if (oy < 0) gettable.y = 0;
+			if (oy >= height) gettable.y = height - 1;
+			
 			return getPixel(gettable.x, gettable.y);
 		}
 		return getPixel(x, y);

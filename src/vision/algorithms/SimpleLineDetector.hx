@@ -21,14 +21,14 @@ class SimpleLineDetector {
 			return null;
 
 		// now, were going to start looking for points around the point to find the entire line.
-		var prev:Point2D = null;
-		var prev2:Point2D = null;
+		var prev:IntPoint2D = null;
+		var prev2:IntPoint2D = null;
 		function expand() {
 			for (X in xArr) {
 				for (Y in yArr) {
 					if (X == 0 && Y == 0 || !image.hasPixel(point.x + X, point.y + Y))
 						continue;
-					if (image.getPixel(point.x + X, point.y + Y).to24Bit() == Color.WHITE) {
+					if (image.getPixel(point.x + X, point.y + Y).red == 255) {
 						point.x = point.x + X;
 						point.y = point.y + Y;
 
@@ -74,10 +74,20 @@ class SimpleLineDetector {
 		var sx = (x1 < x2) ? 1 : -1;
 		var sy = (y1 < y2) ? 1 : -1;
 		var err = dx - dy;
+		//were going to check for the longest gap using an array of integers
+		//each time a gap is getting longer, we'll set the array at the index of the
+		//current length of the gap to 1
+		//then, the max length should be the length of the array
+		var gapChecker:Array<Int> = [];
+		var currentGap = 1;
 		while (true) {
 			if (image.hasPixel(x1, y1)) {
 				if (image.getPixel(Std.int(x1), Std.int(y1)).red == 255) {
 					coveredPixels++;
+					currentGap = 0;
+				} else {
+					gapChecker[currentGap] = 1;
+					currentGap++;
 				}
 			}
 			totalPixels++;
@@ -93,6 +103,6 @@ class SimpleLineDetector {
 				y1 += sy;
 			}
 		}
-		return coveredPixels / totalPixels * 100;
+		return (coveredPixels /*The biggest gap */- gapChecker.length) / totalPixels * 100;
 	}
 }

@@ -144,11 +144,11 @@ class ImageTools {
 		return image;
 	}
 
-	public static function getNeighborsOfPixel(image:Image, x:Int, y:Int, radius:Int):Array<Array<Color>> {
+	public static function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array<Array<Color>> {
 		var neighbors:Array<Array<Color>> = [];
-		for (i in 0...radius + 1)
+		for (i in 0...kernalSize + 1)
 			neighbors[i] = [];
-		var roundedDown = Std.int((radius - 1) / 2);
+		var roundedDown = Std.int((kernalSize - 1) / 2);
 
 		for (X in -roundedDown...roundedDown + 1) {
 			for (Y in -roundedDown...roundedDown + 1) {

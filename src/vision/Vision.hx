@@ -81,16 +81,16 @@ class Vision {
 		@param threshold The threshold for converting to black and white: 
 		`threshold` is the maximum average of the three color components.
 		that will still be considered black. `threshold` is a value between 0 and 255.
-		The higher the value, the more "sensitive" the conversion. The default value is 64.
+		The higher the value, the more "sensitive" the conversion. The default value is 128.
 
 		@return The converted image.
 	**/
-	public static function blackAndWhite(image:Image, threshold:Int = 64):Image {
+	public static function blackAndWhite(image:Image, threshold:Int = 128):Image {
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
 				var pixel = image.getPixel(i, j);
-				var average = (pixel.red + pixel.green + pixel.blue) / 3;
-				if (average > threshold) {
+				var colorValue = MathTools.max(pixel.red, pixel.green, pixel.blue);
+				if (colorValue > threshold) {
 					image.setPixel(i, j, 0xFFFFFFFF);
 				} else {
 					image.setPixel(i, j, Color.fromInt(0));
@@ -138,45 +138,55 @@ class Vision {
 	}
 
 	/**
-	 * Uses a fast, convolution-based method to highlight ridges within an image.
-	 * 
-	 * It does the highlighting by grayscaling & normalizing the image, and then
-	 * convolving it with a ridge detection kernal.
-	 * 
-	 * @param image the image to be ridge detected on
-	 * @param normalizationRangeStart Optional, if you want to change the normalization range's start color. `0x44444444` by default.
-	 * @param normalizationRangeEnd Optional, if you want to change the normalization range's end color `0xBBBBBBBB` by default.
-	 * @return The ridge-highlighted version of the image. **The original copy is preserved**
-	 */
-	public static function highlightRidges(image:Image, normalizationRangeStart:Color = 0x44444444, normalizationRangeEnd:Color = 0xBBBBBBBB):Image {
-		final clone = image.clone();
+		Uses a fast, convolution-based method to highlight ridges within an image.
+		
+		It does the highlighting by grayscaling & normalizing the image, and then
+		convolving it with a ridge detection kernal.
+		
+		@param image the image to be ridge detected on
+		@param normalizationRangeStart Optional, if you want to change the normalization range's start color. `0x44444444` by default.
+		@param normalizationRangeEnd Optional, if you want to change the normalization range's end color `0xBBBBBBBB` by default.
+		@param refine Appends an iterative pixel check to the algorithm, which removes isolated ridge pixels. `false` by default for performance reasons.
+		@return The ridge-highlighted version of the image. **The original copy is preserved**
+	**/
+	public static function convolutionRidgeDetection(image:Image, ?normalizationRangeStart:Color = 0x44444444, ?normalizationRangeEnd:Color = 0xBBBBBBBB, refine:Bool = false):Image {
+		var clone = image.clone();
 		Vision.grayscale(clone);
 		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
-		return Vision.convolve(clone, RidgeDetectionAggressive);
+		clone = Vision.convolve(clone, RidgeDetectionAggressive);
+		clone = Vision.replaceColorRanges(clone, [{rangeStart: 0xFF000000, rangeEnd: 0xFFAAAAAA, replacement: 0xFF000000}]);
+		if (!refine) return clone;
+		blackAndWhite(clone);
+		clone.forEachPixel((x, y, color) -> {
+			var neighbors = clone.getNeighborsOfPixel(x, y, 3).flatten();
+			neighbors.remove(color);
+			if (!neighbors.contains(color)) clone.setPixel(x, y, 0);
+		});
+		return clone;
 	}
 
 	/**
-	 * Limits the range of colors on an image, by resizing the range of a given color channel, according to the values
-	 * of `rangeStart`'s and `rangeEnd`'s color channels.
-	 * 
-	 * ### How Does this work?
-	 * 
-	 * 1. before calculating anything, you get the min & max values of each color channel from the two given colors.
-	 * For example, if `rangeStart` is `0xFF05F243` and `rangeEnd` is `0x239A6262`, the min/max values of the `red` channel 
-	 * will be set to (`0x05`, `0x9A`), the min/max values of the green channel will be set to (`0x62`, `0xF2`)...
-	 * 2. Loop over the pixels, and calculate the ratios between the the pixel's color channel's and the values (`0x00`, `0xFF`)
-	 * 3. Now, calculate the step between each color value of the new range, by dividing each channel's (`max` - `min`) by `255`. the
-	 * default step between each color value is `1` by default (`(0xFF - 0x00) / 0xFF = 1`).
-	 * 4. Loop over the channels, and multiply their value by the value of the new `step` (for example, 4
-	 * `newStep = (0x88 - 0x00) / 0xFF = 0.5`, `color.red = color.red * newStep`);
-	 * 5. enjoy your normalized image :)
-	 * 
-	 * 
-	 * @param image The image to be normalized
-	 * @param rangeStart The start of the range of channels. By default, this value is `0x00000000`
-	 * @param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
-	 * @return The normalized image. The original copy is not preserved.
-	 */
+		Limits the range of colors on an image, by resizing the range of a given color channel, according to the values
+		of `rangeStart`'s and `rangeEnd`'s color channels.
+		
+		### How Does this work?
+		
+		1. before calculating anything, you get the min & max values of each color channel from the two given colors.
+		For example, if `rangeStart` is `0xFF05F243` and `rangeEnd` is `0x239A6262`, the min/max values of the `red` channel 
+		will be set to (`0x05`, `0x9A`), the min/max values of the green channel will be set to (`0x62`, `0xF2`)...
+		2. Loop over the pixels, and calculate the ratios between the the pixel's color channel's and the values (`0x00`, `0xFF`)
+		3. Now, calculate the step between each color value of the new range, by dividing each channel's (`max` - `min`) by `255`. the
+		default step between each color value is `1` by default (`(0xFF - 0x00) / 0xFF = 1`).
+		4. Loop over the channels, and multiply their value by the value of the new `step` (for example, 4
+		`newStep = (0x88 - 0x00) / 0xFF = 0.5`, `color.red = color.red * newStep`);
+		5. enjoy your normalized image :)
+		
+		
+		@param image The image to be normalized
+		@param rangeStart The start of the range of channels. By default, this value is `0x00000000`
+		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
+		@return The normalized image. The original copy is not preserved.
+	**/
 	public static function normalize(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
 		var max:Color = 0x0, min:Color = 0x0, step:Color = 0x0;
 		max.red = cast Math.max(rangeStart.red, rangeEnd.red);
@@ -199,14 +209,14 @@ class Vision {
 	}
 
 	/**
-	 * Limits the range of colors on an image, by limiting the range of a given color channel, according to the values
-	 * of `rangeStart`'s and `rangeEnd`'s color channels.
-	 * 
-	 * @param image The image to be li processed
-	 * @param rangeStart The start of the range of channels. By default, this value is `0x00000000`
-	 * @param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
-	 * @return The normalized image. The original copy is not preserved.
-	 */
+		Limits the range of colors on an image, by limiting the range of a given color channel, according to the values
+		of `rangeStart`'s and `rangeEnd`'s color channels.
+		
+		@param image The image to be li processed
+		@param rangeStart The start of the range of channels. By default, this value is `0x00000000`
+		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
+		@return The normalized image. The original copy is not preserved.
+	**/
 	public static function limitColorRanges(image:Image, rangeStart:Color, rangeEnd:Color):Image {
 		image.forEachPixel((x, y, color) -> {
 			color.red = MathTools.boundInt(color.red, rangeStart.red, rangeEnd.red);
@@ -218,26 +228,27 @@ class Vision {
 	}
 
 	/**
-	 * Replaces the colors inside each range with the given color inside that range object:  
-	 * 
-	 * 		[{rangeStart: 0x00000000, rangeEnd = 0x88888888, replacement: 0xFFFFFFFF}] 
-	 * 
-	 * will replace every pixel inside the given color range with the color `0xFFFFFFFF`
-	 * 
-	 * @param image The image process
-	 * @param .An array of color ranges & replacement colors.
-	 * @return A processed version of the image. The original image is not preserved
-	 */
+		Replaces the colors inside each range with the given color inside that range object:  
+		
+				[{rangeStart: 0x00000000, rangeEnd = 0x88888888, replacement: 0xFFFFFFFF}] 
+		
+		will replace every pixel inside the given color range with the color `0xFFFFFFFF`
+		
+		@param image The image process
+		@param .An array of color ranges & replacement colors.
+		@return A processed version of the image. The original image is not preserved
+	**/
 	public static function replaceColorRanges(image:Image, ranges:Array<{rangeStart:Color, rangeEnd:Color, replacement:Color}>):Image {
 		for (range in ranges) {
 			final rangeStart = range.rangeStart;
 			final rangeEnd = range.rangeEnd;
 			final with = range.replacement;
 			image.forEachPixel((x, y, color) -> {
+				var original:Int = color;
 				color.red = MathTools.isBetweenRanges(color.red, {start: rangeStart.red, end: rangeEnd.red}) ? color.red : with.red;
 				color.blue = MathTools.isBetweenRanges(color.blue, {start: rangeStart.blue, end: rangeEnd.blue}) ? color.blue : with.blue;
 				color.green = MathTools.isBetweenRanges(color.green, {start: rangeStart.green, end: rangeEnd.green}) ? color.green : with.green;
-				image.setPixel(x, y, color);
+				if (color == original) image.setPixel(x, y, color) else image.setPixel(x, y, with);
 			});
 		}
 		return image;
@@ -394,12 +405,6 @@ class Vision {
 		You can modify the values of the matrix by passing a float to the `sigma` parameter.
 		The higher the value of `sigma`, the more value will be given to the center pixel's color, and the less value will be given to the surrounding pixels.
 
-		example of how sigma values effect distribution:
-		\
-		\
-		\
-		![gaussian distribution at different sigma values](https://i.stack.imgur.com/B33AE.png)
-		
 		@param image The image to be blurred
 		@param sigma The sigma value to use for the gaussian distribution on the kernal. a lower value will focus more on the center pixel, while a higher value will shift focus to the surrounding pixels more, effectively blurring it better.
 		@param kernalSize The size of the kernal (`width` & `height`)
@@ -411,12 +416,12 @@ class Vision {
 	}
 
 	/**
-	 * Applies a median filter to an image to reduce the amount of noise in that image.
-	 * @param image The image to apply median blurring to.
-	 * @param kernalRadius the radius around the pixels in which we should search for the median. a radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
-	 * @param forceRadix Force enabling/disabling of the radix sorting algorithm when finding the median in each "neighborhood" of pixels. Radix is automatically used when `kernalRadius >= 5`.
-	 * @return A filtered version of the image, using median blurring. The original image is not preserved
-	 */
+		Applies a median filter to an image to reduce the amount of noise in that image.
+		@param image The image to apply median blurring to.
+		@param kernalRadius the radius around the pixels in which we should search for the median. a radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
+		@param forceRadix Force enabling/disabling of the radix sorting algorithm when finding the median in each "neighborhood" of pixels. Radix is automatically used when `kernalRadius >= 5`.
+		@return A filtered version of the image, using median blurring. The original image is not preserved
+	**/
 	public static function medianBlur(image:Image, kernalRadius:Int, ?forceRadix:Bool = null):Image {
 		var medianed = new Image(image.width, image.height);
 		final useRadix = switch forceRadix {
@@ -483,37 +488,29 @@ class Vision {
         }
         var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
         var lines:Array<Line2D> = [];
+		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
-                lines.push(line);
-                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
-                lines.push(line2);
-                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
-                lines.push(line3);
-                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
-                lines.push(line4);
+				lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true));
             }
         }
-        var actualLines:Array<Line2D> = [];
-        trace(accuracy);
         for (l in lines) {
             if (l == null) continue;
             if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
             actualLines.push(l);
         }
+		lines = [];
         //now, get a mirrored version
-        var edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
+        edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                var line = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength);
-                lines.push(line);
-                var line2 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true);
-                lines.push(line2);
-                var line3 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true);
-                lines.push(line3);
-                var line4 = SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true);
-                lines.push(line4);
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true));
             }
         }
         for (l in lines) {
@@ -525,45 +522,35 @@ class Vision {
     }
 
 	/**
-	 * Applies the sobel filter to an image.
-	 * 
-	 * The image doesn't have to get grayscaled before being passed 
-	 * to this function.
-	 * 
-	 * It is different from the `sobelEdgeDetection` function, since
-	 * it doesn't try to threshold the resulting image to extract the strong edges,
-	 * and leaves that information in. example of this filter in action:
-	 * 
-	 * |Status|Image|
-	 * |---|---|
-	 * |before filtering: |![Pre-Processed](https://i.stack.imgur.com/Bnxa6.jpg)|
-	 * |after filtering:|![Post-Processed](https://i.stack.imgur.com/o54O0.png)|
-	 * 
-	 * @param image The image to be operated on
-	 * @return A new image, containing the gradients of the edges as whitened pixels.
-	 */
+		Applies the sobel filter to an image.
+
+		The image doesn't have to get grayscaled before being passed 
+		to this function.
+		
+		It is different from the `sobelEdgeDetection` function, since
+		it doesn't try to threshold the resulting image to extract the strong edges,
+		and leaves that information in. example of this filter in action:
+
+		@param image The image to be operated on
+		@return A new image, containing the gradients of the edges as whitened pixels.
+	**/
 	public static function sobelEdgeDiffOperator(image:Image) {
 		return Sobel.convolveWithSobelOperator(grayscale(image.clone()));
 	}
 
 	/**
-	 * Applies the perwitt filter to an image.
-	 * 
-	 * The image doesnt have to get grayscaled before being passed 
-	 * to this function.
-	 * 
-	 * It is different from the `perwittEdgeDetection` function, since
-	 * it doesnt try to threshold the resulting image to extract the strong edges,
-	 * and leaves that information in. example of this filter in action:
-	 * 
-	 * |Status|Image|
-	 * |---|---|
-	 * |before filtering: |![Pre-Processed](https://i.stack.imgur.com/Bnxa6.jpg)|
-	 * |after filtering:|![Post-Processed](https://i.stack.imgur.com/o54O0.png)|
-	 * 
-	 * @param image The image to be operated on
-	 * @return A new image, containing the gradients of the edges as whitened pixels.
-	 */
+		Applies the perwitt filter to an image.
+		
+		The image doesnt have to get grayscaled before being passed 
+		to this function.
+		
+		It is different from the `perwittEdgeDetection` function, since
+		it doesnt try to threshold the resulting image to extract the strong edges,
+		and leaves that information in. example of this filter in action:
+		
+		@param image The image to be operated on
+		@return A new image, containing the gradients of the edges as whitened pixels.
+	**/
 	public static function perwittEdgeDiffOperator(image:Image) {
 		return Perwitt.convolveWithPerwittOperator(grayscale(image.clone()));
 	}
