@@ -56,7 +56,7 @@ enum Kernal2D {
 	 * 
 	 * ![Pre-processed](https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png)
 	 * 
-	 * Convolved:
+	 * Convolved (Normalized & Range Limited):
 	 * 
 	 * ![Post-processed](https://upload.wikimedia.org/wikipedia/commons/2/20/Vd-Rige1.png)
 	 */
@@ -77,7 +77,7 @@ enum Kernal2D {
 	 * 
 	 * ![Pre-processed](https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png)
 	 * 
-	 * Convolved:
+	 * Convolved (Normalized & Range Limited):
 	 * 
 	 * ![Post-processed](https://upload.wikimedia.org/wikipedia/commons/0/0b/Vd-Rige2.png)
 	 */

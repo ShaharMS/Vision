@@ -351,11 +351,11 @@ class Vision {
 
 		@param image The image to be processed.
 		@param threshold The threshold for detecting edges. The lower the value, 
-		the more pixels will be considered edges (check this function's source code for more information).
+		the more pixels will be considered edges. Default is `500`
 
 		@return The image with edges detected. This image is returned as a new, black and white image.
 	**/
-	public static function sobelEdgeDetection(image:Image, threshold:Float = 100):Image {
+	public static function sobelEdgeDetection(image:Image, threshold:Float = 500):Image {
 		return Sobel.detectEdges(image, threshold);
 	}
 
@@ -368,7 +368,9 @@ class Vision {
 		(ie. it doesn't need to be grayscaled/black and white)
 
 		@param image The image to be processed.
-		@param threshold The threshold for detecting edges. The lower the value, the more pixels will be considered edges (check this function's source code for more information).
+		@param threshold The threshold for detecting edges. The lower the value, 
+		the more pixels will be considered edges. Default is `100`
+
 
 		@return The image with edges detected. This image is returned as a new, black and white image.
 	**/
@@ -429,7 +431,7 @@ class Vision {
 			default: forceRadix;
 		}
 		image.forEachPixel((x, y, color) -> {
-			var neighbors:Array<Int> = MathTools.flatten(image.getNeighborsOfPixel(x, y, kernalRadius));
+			var neighbors:Array<UInt> = MathTools.flatten(image.getNeighborsOfPixel(x, y, kernalRadius));
 			if (useRadix) Radix.sort(neighbors) else ArraySort.sort(neighbors, (a, b) -> a - b);
 			medianed.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
@@ -446,18 +448,18 @@ class Vision {
 
 		@param image The image to be edge detected.
 		@param sigma The sigma value to be used in the gaussian blur.
-		@param initialKernalSize This is used for the second step of the canny edge detection - gaussian blur. unless you want to improve performance, this should remain unchanged.
+		@param kernalSize This is used for the second step of the canny edge detection - gaussian blur. unless you want to improve performance, this should remain unchanged.
 		@param lowThreshold The low threshold value to be used in the hysteresis thresholding.
 		@param highThreshold The high threshold value to be used in the hysteresis thresholding.
 
-		@throws InvalidGaussianKernalSize thrown if the `initialKernalSize` is negative/divisible by `2`.
+		@throws InvalidGaussianKernalSize thrown if the `kernalSize` is negative/divisible by `2`.
 		@return The edge detected image.
 	**/
-	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, initialKernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05,
+	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, kernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05,
 			highThreshold:Float = 0.2):Image {
 		var cannyObject:CannyObject = image.clone();
 		return blackAndWhite(cannyObject.grayscale()
-			.applyGaussian(initialKernalSize, sigma)
+			.applyGaussian(kernalSize, sigma)
 			.applySobelFilters()
 			.nonMaxSuppression()
 			.applyHysteresis(highThreshold, lowThreshold),

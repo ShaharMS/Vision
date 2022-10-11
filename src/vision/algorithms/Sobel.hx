@@ -129,15 +129,15 @@ class Sobel {
 
 		var intermediate = edges.clone();
 
-		for (x in 1...intermediate.width - 1) {
-			for (y in 1...intermediate.height - 1) {
-				if (edges.getPixel(x, y).red == 0) {
+		for (x in 0...intermediate.width) {
+			for (y in 0...intermediate.height) {
+				if (edges.getSafePixel(x, y).red == 0) {
 					var candidate = false, X = false, Y = false;
-					if (image.getPixel(x + 1, y).red == 255 && image.getPixel(x - 1, y).red == 255) {
+					if (image.getSafePixel(x + 1, y).red == 255 && image.getSafePixel(x - 1, y).red == 255) {
 						candidate = true;
 						X = true;
 					}
-					if (image.getPixel(x, y + 1).red == 255 && image.getPixel(x, y - 1).red == 255) {
+					if (image.getSafePixel(x, y + 1).red == 255 && image.getSafePixel(x, y - 1).red == 255) {
 						candidate = true;
 						Y = true;
 					}
@@ -145,12 +145,12 @@ class Sobel {
 					if (candidate) {
 						intermediate.setPixel(x, y, Color.fromRGBA(255, 255, 255));
 						if (X) {
-							intermediate.setPixel(x + 1, y, Color.fromRGBA(0, 0, 0));
-							intermediate.setPixel(x - 1, y, Color.fromRGBA(0, 0, 0));
+							if (intermediate.hasPixel(x + 1, y)) intermediate.setPixel(x + 1, y, Color.fromRGBA(0, 0, 0));
+							if (intermediate.hasPixel(x - 1, y)) intermediate.setPixel(x - 1, y, Color.fromRGBA(0, 0, 0));
 						}
 						if (Y) {
-							intermediate.setPixel(x, y + 1, Color.fromRGBA(0, 0, 0));
-							intermediate.setPixel(x, y - 1, Color.fromRGBA(0, 0, 0));
+							if (intermediate.hasPixel(x, y + 1)) intermediate.setPixel(x, y + 1, Color.fromRGBA(0, 0, 0));
+							if (intermediate.hasPixel(x, y - 1)) intermediate.setPixel(x, y - 1, Color.fromRGBA(0, 0, 0));
 						}
 					}
 				}

@@ -90,15 +90,15 @@ class Main {
 			
 			#if blur_tests
 			start = haxe.Timer.stamp();
-			printImage(Vision.nearestNeighborBlur(image.clone(), 4));
+			printImage(Vision.nearestNeighborBlur(image.clone(), 1));
 			end = haxe.Timer.stamp();
 			trace("Nearest neighbor blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().gaussianBlur(1, X9));
+			printImage(image.clone().gaussianBlur(1));
 			end = haxe.Timer.stamp();
 			trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().medianBlur(7));
+			printImage(image.clone().medianBlur(10));
 			end = haxe.Timer.stamp();
 			trace("Median blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			#end
