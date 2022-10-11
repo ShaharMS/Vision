@@ -39,7 +39,15 @@ using vision.algorithms.Canny;
 **/
 class Vision {
 	/**
-		Grayscales an image.
+		Grayscales an image, by averaging the color channels of each pixel.
+
+		To get a higher quality grayscale, define `vision_better_grayscale`
+
+		Example (both with & without `vision_better_grayscale`):
+
+		| Original | Regular | `vision_better_grayscale` |
+		|---|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale.png)|![After](https://1e87bfd9.spacebubble-io.pages.dev/vision/docs/valve-grayscale#vision_better_grayscale.png)|
 
 		@param image The image to be grayscaled.
 
@@ -60,6 +68,21 @@ class Vision {
 	/**
 		Inverts an image.
 
+		Invertion is just flipping the values of each color channel - `0xFFFFFF` will turn into `0x000000`, `0xFF00FF` will turn into `0x00FF00`, etc.
+
+		The math behind invertion is just subtracting the current value of the channel from `0xFF`:
+
+		| Color | Process | Result|
+		|:---:|:---:|:---:|
+		|`0xFFFF00` |FF - FF = **`00`**, FF - FF = **`00`**, FF - 00 = **`FF`**| `0x0000FF` |
+		|`0xB13FFF` |FF - B1 = **`E4`**, FF - 3F = **`C0`**, FF - FF = **`00`**| `0xE4C000` |
+
+		Example:
+
+		| Original | Inverted |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://1e87bfd9.spacebubble-io.pages.dev/vision/docs/valve-invert.png)|
+
 		@param image The image to be inverted.
 
 		@return The inverted image.
@@ -76,6 +99,12 @@ class Vision {
 
 	/**
 		Converts an image to COMPLETE black and white.
+
+		It does so by taking the color channel with the highest value, and checking if that maximum surpasses `threshold`.
+
+		| Original | `threshold = 128` |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-blackAndWhite.png)|
 
 		@param image The image to be converted.
 		@param threshold The threshold for converting to black and white: 
@@ -104,6 +133,10 @@ class Vision {
 		Gets a contrast-enhanced version of an image,
 		with more exaggerated colors.
 
+		| Original | Processed |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-contrast.png)|
+
 		@param image The image to be contrasted.
 	**/
 	public static function contrast(image:Image):Image {
@@ -116,6 +149,12 @@ class Vision {
 		When an image is sharpened. it's color differences are exaggerated. The more times
 		the image is sharpened, the more "deepfried" it'll look.
 
+		Example:
+
+		| Original | Sharpened |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://13fdc26f.spacebubble-io.pages.dev/vision/docs/valve-sharpen.png)|
+
 		@param image The image to be contrasted.
 		@return The sharpened image. The original copy is not preserved.
 	**/
@@ -125,6 +164,12 @@ class Vision {
 
 	/**
 		Deepfries an image by running to through a sharpening filter `iterations` times.
+
+		Example:
+
+		| Original | `iterations = 2` |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-deepfry.png)|
 
 		The higher the value, the more deepfried the image will look.
 		@param image The image to be deepfried
@@ -138,11 +183,25 @@ class Vision {
 	}
 
 	/**
-		Uses a fast, convolution-based method to highlight ridges within an image.
+		Uses a fast, convolution-based method to detect ridges within an image.
 		
-		It does the highlighting by grayscaling & normalizing the image, and then
+		It does the detection by grayscaling & normalizing the image, and then
 		convolving it with a ridge detection kernal.
-		
+
+		Useful as a fast alternative to other **edge** detection algorithms, since it usually
+		produces the most accurate edge representation while being the fastest (`1.5x` faster than sobel & perwitt, 
+		exponentially faseter than canny (image size dependent)).  
+
+		**Comparison:**
+		  
+		| Algorithm | Output | Time Complexity |
+		|:---:|---|:---:|
+		|None|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-original.png)| - |
+		|**`perwittEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-perwittEdgeDetection.png)| `O(width*height)` |
+		|**`sobelEdgeDetection`**|![Sobel Edge Detection](https://spacebubble.io/vision/docs/valve-sobelEdgeDetection.png)| `O(width*height)` |
+		|**`cannyEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-cannyEdgeDetection.png)| `O(width*height log(width* height))` |
+		|**`convolutionRidgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-convolutionRidgeDetection.png)| `O(width*height)` |
+
 		@param image the image to be ridge detected on
 		@param normalizationRangeStart Optional, if you want to change the normalization range's start color. `0x44444444` by default.
 		@param normalizationRangeEnd Optional, if you want to change the normalization range's end color `0xBBBBBBBB` by default.
@@ -229,13 +288,13 @@ class Vision {
 
 	/**
 		Replaces the colors inside each range with the given color inside that range object:  
-		
-				[{rangeStart: 0x00000000, rangeEnd = 0x88888888, replacement: 0xFFFFFFFF}] 
-		
+		```haxe
+		[{rangeStart: 0x00000000, rangeEnd = 0x88888888, replacement: 0xFFFFFFFF}] 
+		```
 		will replace every pixel inside the given color range with the color `0xFFFFFFFF`
 		
 		@param image The image process
-		@param .An array of color ranges & replacement colors.
+		@param ranges array of color ranges & replacement colors.
 		@return A processed version of the image. The original image is not preserved
 	**/
 	public static function replaceColorRanges(image:Image, ranges:Array<{rangeStart:Color, rangeEnd:Color, replacement:Color}>):Image {
@@ -346,8 +405,12 @@ class Vision {
 
 		To improve angle related errors with the sobel operator, Scharr's optimized version is used.
 
-		There's no need to pre-process the image, just throw it on it and it will do the rest. 
-		(ie. it doesn't need to be grayscaled/black and white)
+		There's no need to pre-process the image, just throw it on it and it will do the rest
+		(ie. it doesn't need to be grayscaled/black and white):
+
+		| Before | After |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sobelEdgeDetection.png)|
 
 		@param image The image to be processed.
 		@param threshold The threshold for detecting edges. The lower the value, 
@@ -364,13 +427,16 @@ class Vision {
 
 		Edges are detected using the Perwitt operator, going from left to right and top to bottom.
 
-		There's no need to pre-process the image, just throw it on it and it will do the rest. 
-		(ie. it doesn't need to be grayscaled/black and white)
+		There's no need to pre-process the image, just throw it on it and it will do the rest
+		(ie. it doesn't need to be grayscaled/black and white):
+
+		| Before | After |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-perwittEdgeDetection.png)|
 
 		@param image The image to be processed.
 		@param threshold The threshold for detecting edges. The lower the value, 
 		the more pixels will be considered edges. Default is `100`
-
 
 		@return The image with edges detected. This image is returned as a new, black and white image.
 	**/
@@ -382,8 +448,14 @@ class Vision {
 		Uses an iterative, nearest-neighbor style algorithm to blur an image.
 
 		The algorithm is very simple and quite fast, but also very sensitive 
-		performance-wise. The maximum value recommended ti use for the 
-		`iterations` property is 100.
+		performance-wise. The maximum value recommended to use for the 
+		`iterations` property is 100, altho you shouldn't really find yourself using more than `25`.
+
+		Example:
+
+		| Original | `iterations = 1` | `iterations = 4` |
+		|---|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-nearestNeighborBlur%28iterations%20=%201%29.png)|![After](https://spacebubble.io/vision/docs/valve-nearestNeighborBlur%28iterations%20=%204%29.png)|
 
 		@param image The image to be blurred.
 		@param iterations The number of times the algorithm will be run. the more iterations, the more blurry the image will be, and the higher the "blur range". for example: a value of 3 will produce a blur range of 3 pixels on each object.
@@ -405,7 +477,11 @@ class Vision {
 		the pixels covered by the 5x5 matrix, and the [gaussian distribution function](https://en.wikipedia.org/wiki/Gaussian_function).
 
 		You can modify the values of the matrix by passing a float to the `sigma` parameter.
-		The higher the value of `sigma`, the more value will be given to the center pixel's color, and the less value will be given to the surrounding pixels.
+		The higher the value of `sigma`, the blurrier the image:
+		
+		| Original | `sigma = 0.5` | `sigma = 1` | `sigma = 2` |
+		|---|---|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%200.5%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%201%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%202%29.png)|
 
 		@param image The image to be blurred
 		@param sigma The sigma value to use for the gaussian distribution on the kernal. a lower value will focus more on the center pixel, while a higher value will shift focus to the surrounding pixels more, effectively blurring it better.
@@ -419,6 +495,16 @@ class Vision {
 
 	/**
 		Applies a median filter to an image to reduce the amount of noise in that image.
+
+		Median filter "blurs" the image by taking a pixel & its surrounding, 
+		finding the median of that group, and setting the center pixel to that median.
+
+		Example of the filter in action:
+
+		| Original | `kernalRadius = 5` | `kernalRadius = 10` | `kernalRadius = 15` |
+		|---|---|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%205%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%2010%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%2015%29.png)|
+
 		@param image The image to apply median blurring to.
 		@param kernalRadius the radius around the pixels in which we should search for the median. a radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
 		@param forceRadix Force enabling/disabling of the radix sorting algorithm when finding the median in each "neighborhood" of pixels. Radix is automatically used when `kernalRadius >= 5`.
@@ -445,6 +531,12 @@ class Vision {
 
 		This algorithm works by first applying a gaussian blur to the image, and then
 		applying more filters to differentiate between strong edges, weak edges and non-edges.
+
+		Example:
+
+		| Original | Edge Detected (default settings) |
+		|---|:---:|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-cannyEdgeDetection.png)|
 
 		@param image The image to be edge detected.
 		@param sigma The sigma value to be used in the gaussian blur.
@@ -531,7 +623,11 @@ class Vision {
 		
 		It is different from the `sobelEdgeDetection` function, since
 		it doesn't try to threshold the resulting image to extract the strong edges,
-		and leaves that information in. example of this filter in action:
+		and leaves that information in. Example of this filter in action:
+
+		| Original | After Filtering |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sobelEdgeDiffOperator.png)|
 
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.
@@ -548,8 +644,12 @@ class Vision {
 		
 		It is different from the `perwittEdgeDetection` function, since
 		it doesnt try to threshold the resulting image to extract the strong edges,
-		and leaves that information in. example of this filter in action:
+		and leaves that information in. Example of this filter in action:
 		
+		| Original | After Filtering |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-perwittEdgeDiffOperator.png)|
+
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.
 	**/

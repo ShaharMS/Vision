@@ -52,9 +52,21 @@ class Main {
 			end = haxe.Timer.stamp();
 			trace("Grayscale took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
+			printImage(Vision.invert(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("Invertion took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
 			printImage(image.clone().contrast());
 			end = haxe.Timer.stamp();
 			trace("Contrast took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().sharpen());
+			end = haxe.Timer.stamp();
+			trace("Sharpening took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().deepfry());
+			end = haxe.Timer.stamp();
+			trace("Deepfrying took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone());
 			end = haxe.Timer.stamp();
@@ -166,6 +178,66 @@ class Main {
 				trace("Deepfrying took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				#end
 		});
+
+		
+
+
+
+
+
+
+
+
+
+		Vision.
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		#if draw_tests
 		var image = new Image(250, 250, 0x000000);
