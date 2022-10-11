@@ -20,7 +20,6 @@ import vision.ds.Color;
 import vision.ds.Rectangle;
 import vision.ds.Point2D;
 import vision.ds.Ray2D;
-import haxe.display.Display.Package;
 #if js
 import js.html.File;
 import js.html.FileSystem;
@@ -37,7 +36,7 @@ class Main {
 	static function main() {
 		var start:Float, end:Float;
 
-		#if !eval
+		#if js
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
 
@@ -115,7 +114,7 @@ class Main {
 			end = haxe.Timer.stamp();
 			trace("Median blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			#end
-			
+
 			#if feature_detection_tests
 			start = haxe.Timer.stamp();
 			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 15);
@@ -268,9 +267,9 @@ class Main {
 		}
 		#end
 	}
-
+	#if js
 	public static function printImage(image:Image) {
-		#if js
+		
 		var c = Browser.document.createCanvasElement();
 		c.width = image.width;
 		c.height = image.height;
@@ -289,6 +288,6 @@ class Main {
 		ctx.putImageData(imageData, 0, 0);
 		c.style.padding = "10px";
 		Browser.document.body.appendChild(c);
-		#end
 	}
+	#end
 }
