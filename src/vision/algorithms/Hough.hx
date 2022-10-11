@@ -1,13 +1,17 @@
 package vision.algorithms;
 
+import haxe.ds.Vector;
+import js.lib.Int16Array;
 import vision.ds.hough.HoughAccumulator;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Point2D;
+import vision.ds.Line2D;
 import vision.ds.Color;
 import vision.ds.Ray2D;
 import vision.ds.Image;
 
 using vision.tools.MathTools;
+
 import vision.tools.MathTools.*;
 
 /**
@@ -68,5 +72,43 @@ class Hough {
 			}
 		}
 		return {accumulator: accum, image: houghSpace};
+	}
+
+	public static function detectMaximas(space:HoughSpace):HoughSpace {
+		space.maximums = space.accumulator.getMaximas();
+		return space;
+	}
+
+	public static function getRays(space:HoughSpace):HoughSpace {
+		final houghHeight = cast (Math.sqrt(2) * Math.max(space.image.height, space.image.width)) / 2;
+		final centerX = space.image.width / 2;
+		final centerY = space.image.height / 2;
+		space.rays = [];
+		for (max in space.maximums) {
+			var theta = degreesToRadians(max.y);
+			var r = max.x;
+
+			final tsin = Math.sin(theta);
+			final tcos = Math.cos(theta);
+
+			if (theta < Math.PI * 0.25 || theta > Math.PI * 0.75) {
+				var x1 = 0, y1 = 0;
+				var x2 = 0, y2 = space.image.height - 1;
+
+				x1 = cast((((r - houghHeight) - ((y1 - centerY) * tsin)) / tcos) + centerX);
+				x2 = cast((((r - houghHeight) - ((y2 - centerY) * tsin)) / tcos) + centerX);
+
+				space.rays.push(Ray2D.from2Points({x: x1, y: y1}, {x: x2, y: y2}));
+			} else {
+				var x1 = 0, y1 = 0;
+				var x2 = space.image.width - 1, y2 = 0;
+
+				y1 = cast((((r - houghHeight) - ((x1 - centerX) * tcos)) / tsin) + centerY);
+				y2 = cast((((r - houghHeight) - ((x2 - centerX) * tcos)) / tsin) + centerY);
+
+				space.rays.push(Ray2D.from2Points({x: x1, y: y1}, {x: x2, y: y2}));
+			}
+		}
+		return space;
 	}
 }

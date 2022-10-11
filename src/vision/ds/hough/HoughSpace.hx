@@ -21,7 +21,7 @@ class HoughSpace {
 		when a certine point in the accumulator is greater than a presuplied value,
 		the point is considered a maximum, and the value is added to the maximums array.
 	**/
-	public var maximums:Array<Point2D>;
+	public var maximums:Array<IntPoint2D>;
 
 	/**
 		The rays detected from the accumulator.

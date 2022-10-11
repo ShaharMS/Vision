@@ -1,5 +1,7 @@
 package vision.ds.hough;
 
+import vision.tools.MathTools;
+
 /**
 	Used for the accumulator array of the hough transform.
 
@@ -58,23 +60,35 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
 	}
 
 	/**
-	 * Retireves the positions of all the cell containing a value greater than `threshold`.
+	 * Retireves the positions of all the cell containing a value which is a local maximum
 	 * 
-	 * @param threshold the minimun value of a cell to be considered a maximim, and thus reported.
 	 * @return an array of `IntPoint2D`s, containing the locations of the cells. `point.x` is `rho`, `point.y` is the theta's index.
 	 */
-	public function getMaximas(threshold:Int):Array<IntPoint2D> {
+	public function getMaximas():Array<IntPoint2D> {
 		var pointArray:Array<IntPoint2D> = [];
-		for (x in 0...this.length) {
-			for (y in 0...this[x].length) {
-				if (this[x][y] >= threshold)
-					pointArray.push(new IntPoint2D(x - rhoMax, y));
+		for (x in 1...this.length - 1) {
+			for (y in 1...this[x].length - 1) {
+				var neighbors = [
+					this[x - 1][y - 1],
+					this[x - 1][y],
+					this[x - 1][y + 1],
+					this[x][y - 1],
+					this[x][y],
+					this[x][y + 1],
+					this[x + 1][y - 1],
+					this[x + 1][y],
+					this[x + 1][y + 1],
+				];
+
+				if (this[x][y] == MathTools.max(neighbors)){
+					pointArray.push({x: x, y: y});
+				} else continue;
 			}
 		}
 		return pointArray;
 	}
 
-	public function cellIterator(?threshold:Int = 0) {
-		return getMaximas(threshold).iterator();
+	public function cellIterator() {
+		return this.iterator();
 	}
 }
