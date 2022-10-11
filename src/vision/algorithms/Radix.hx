@@ -1,8 +1,29 @@
 package vision.algorithms;
 
 /**
- * An implementation of radix sort in Haxe, by [Shahar Marcus](https://www.github.com/ShaharMS).
- */
+	An implementation of radix sort in Haxe, by [Shahar Marcus](https://www.github.com/ShaharMS).
+
+	Radix vs. ArraySort.sort:
+
+	|Radix                                 | ArraySort.sort                |
+	|:------------------------------------:|:-----------------------------:|
+	|length: 38, time: 0.000s              | length: 38, time: 0.000s      |
+	|length: 74, time: 0.000s              | length: 74, time: 0.000s      |
+	|length: 146, time: 0.001s             | length: 146, time: 0.001s     |
+	|length: 290, time: 0.001s             | length: 290, time: 0.002s     |
+	|length: 578, time: 0.003s             | length: 578, time: 0.003s     |
+	|length: 1154, time: 0.005s            | length: 1154, time: 0.006s    |
+	|length: 2306, time: 0.01s             | length: 2306, time: 0.012s    |
+	|length: 4610, time: 0.02s             | length: 4610, time: 0.022s    |
+	|length: 9218, time: 0.0591s           | length: 9218, time: 0.048s    |
+	|length: 18434, time: 0.0701s          | length: 18434, time: 0.0961s  |
+	|length: 36866, time: 0.1614s          | length: 36866, time: 0.1882s  |
+	|length: 73730, time: 0.3123s          | length: 73730, time: 0.3856s  |
+	|length: 147458, time: 0.5837s         | length: 147458, time: 0.7417s |
+	|length: 294914, time: 1.1621s         | length: 294914, time: 1.6143s |
+	|length: 589826, time: 2.3471s         | length: 589826, time: 3.0588s |
+	|length: 1179650, time: 4.7839s        | length: 1179650, time: 6.1441s|
+**/
 class Radix {
 	/**
 	 * Gets the maximum in array `array`.

@@ -47,7 +47,7 @@ class Vision {
 
 		| Original | Regular | `vision_better_grayscale` |
 		|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale.png)|![After](https://1e87bfd9.spacebubble-io.pages.dev/vision/docs/valve-grayscale#vision_better_grayscale.png)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale&vision_better_grayscale.png)|
 
 		@param image The image to be grayscaled.
 
@@ -81,7 +81,7 @@ class Vision {
 
 		| Original | Inverted |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://1e87bfd9.spacebubble-io.pages.dev/vision/docs/valve-invert.png)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-invert.png)|
 
 		@param image The image to be inverted.
 
@@ -153,7 +153,7 @@ class Vision {
 
 		| Original | Sharpened |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://13fdc26f.spacebubble-io.pages.dev/vision/docs/valve-sharpen.png)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sharpen.png)|
 
 		@param image The image to be contrasted.
 		@return The sharpened image. The original copy is not preserved.
@@ -507,18 +507,13 @@ class Vision {
 
 		@param image The image to apply median blurring to.
 		@param kernalRadius the radius around the pixels in which we should search for the median. a radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
-		@param forceRadix Force enabling/disabling of the radix sorting algorithm when finding the median in each "neighborhood" of pixels. Radix is automatically used when `kernalRadius >= 5`.
 		@return A filtered version of the image, using median blurring. The original image is not preserved
 	**/
-	public static function medianBlur(image:Image, kernalRadius:Int, ?forceRadix:Bool = null):Image {
+	public static function medianBlur(image:Image, kernalRadius:Int):Image {
 		var medianed = new Image(image.width, image.height);
-		final useRadix = switch forceRadix {
-			case null: image.getNeighborsOfPixel(0, 0, kernalRadius).flatten().length > 100;
-			default: forceRadix;
-		}
 		image.forEachPixel((x, y, color) -> {
 			var neighbors:Array<UInt> = MathTools.flatten(image.getNeighborsOfPixel(x, y, kernalRadius));
-			if (useRadix) Radix.sort(neighbors) else ArraySort.sort(neighbors, (a, b) -> a - b);
+			ArraySort.sort(neighbors, (a, b) -> a - b);
 			medianed.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
 

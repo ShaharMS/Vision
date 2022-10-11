@@ -37,6 +37,7 @@ class Main {
 	static function main() {
 		var start:Float, end:Float;
 
+		#if !eval
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
 
@@ -110,11 +111,11 @@ class Main {
 			end = haxe.Timer.stamp();
 			trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().medianBlur(10));
+			printImage(image.clone().medianBlur(11));
 			end = haxe.Timer.stamp();
 			trace("Median blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			#end
-
+		Vision.grayscale
 			#if feature_detection_tests
 			start = haxe.Timer.stamp();
 			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 15);
@@ -178,7 +179,8 @@ class Main {
 				trace("Deepfrying took: " + MathTools.turnicate(end - start, 4) + " seconds");
 				#end
 		});
-		
+		#end
+
 		#if draw_tests
 		var image = new Image(250, 250, 0x000000);
 		image.drawLine(12, 53, 54, 15, 0xbd0202);
@@ -244,6 +246,9 @@ class Main {
 		}
 
 		var arr = [2,3,41,54,67456,456,34512,34123,667,562,23,124,26,785234,1234,12352,7656,834,5,456,215,76,35,235,745,7568,235234,126,4575,87,6,34,51234,236457,34561345,535,12,45123];
+		var c = arr.copy();
+		ArraySort.sort(c, (a, b) -> a - b);
+		trace(Radix.sort(arr.copy()), c);
 		trace("Radix \t\t\t\t\t| ArraySort.sort");
 		trace("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 		for (i in 0...16) {

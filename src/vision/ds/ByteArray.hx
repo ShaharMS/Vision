@@ -21,7 +21,6 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
         Creates a new `ByteArray`
     **/
     public function new(length:Int) {
-        var data:BytesData = new BytesData(length);
-        this = @:privateAccess new Bytes(data);
+        this = Bytes.alloc(length);
     }
 }

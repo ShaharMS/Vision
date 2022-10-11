@@ -29,8 +29,8 @@ class ImageTools {
 	public static var defaultResizeAlgorithm:ImageResizeAlgorithm = BilinearInterpolation;
 
 	/**
-		Gets an image from a file.
-		the supplied path can be an absolute path or a relative path.
+		Gets an image from a file. **On Js**, a URL is valid too.  
+		the given path can be an absolute path or a relative path.
 
 		**Note: On `sys` targets, this function requires the `format` library.**
 
@@ -38,14 +38,14 @@ class ImageTools {
 		\
 		`haxelib install format`
 
-		@param image optional, used for chaining purposes. (eg. `image.fromFile("path/to/image.png")`)
-		@param path the path to the image file. on js, it can only be a relative path.
+		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
+		@param path the path to the image file. on js, it can only be a relative path/a URL
 
 		@returns the image object.
 	**/
 	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
 		#if sys
-		if (path.split(".").pop() == "png") {
+		if (path.split(".").pop().toUpperCase() == "PNG") {
 			try {
 				var handle = sys.io.File.getBytes(path);
 				var reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
@@ -56,43 +56,45 @@ class ImageTools {
 				var image = new Image(header.width, header.height);
 				
 				onComplete(image);
+
 			} catch (e:haxe.Exception) {
 				#if vision_quiet
 				onComplete(new Image(100, 100));
 				#else
-				throw "Png Loading Failed.";
+				throw "PNG Loading Failed.";
 				#end
 			}
 		}
 		#if vision_quiet
 		#else
-		throw new Unimplemented(path.split(".").pop().toUpperCase() + "Decoding");
+		throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding");
 		#end
 		#else
 		var imgElement = js.Browser.document.createImageElement();
 		imgElement.src = path;
 		imgElement.crossOrigin = "Anonymus";
 		imgElement.onload = () -> {
+
 			var canvas = js.Browser.document.createCanvasElement();
+
 			canvas.width = imgElement.width;
 			canvas.height = imgElement.height;
+
 			canvas.getContext2d().drawImage(imgElement, 0, 0);
-			trace(imgElement.width, imgElement.height, imgElement.naturalWidth, imgElement.naturalHeight);
-			if (image == null)
-				image = new Image(imgElement.width, imgElement.height);
+
+			if (image == null) image = new Image(imgElement.width, imgElement.height);
+
 			var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
+
 			var i = 0;
 			while (i < imageData.data.length) {
-				var r = imageData.data[i + 0];
-				var g = imageData.data[i + 1];
-				var b = imageData.data[i + 2];
-				var a = imageData.data[i + 3];
-
-				var x = Math.floor((i / 4) % imageData.width);
-				var y = Math.floor((i / 4) / imageData.width);
-				image.setPixel(x, y, Color.fromRGBA(r, g, b, a));
+				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 0] = imageData.data[i + 0];
+				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1]  = imageData.data[i + 1];
+				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2]  = imageData.data[i + 2];
+				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 3]  = imageData.data[i + 3];
 				i += 4;
 			}
+
 			onComplete(image);
 		}
 		#end
@@ -119,26 +121,33 @@ class ImageTools {
 	**/
 	public static function addToScreen(image:Image, x:Int, y:Int, ?units:{?xUnits:String, ?yUnits:String, ?zIndex:String}):Image {
 		#if sys
+
 		#else
 		var c = js.Browser.document.createCanvasElement();
+
 		c.width = image.width;
 		c.height = image.height;
+
 		var ctx = c.getContext2d();
 		var imageData = ctx.getImageData(0, 0, image.width, image.height);
 		var data = imageData.data;
+
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
 				var i = (y * image.width + x) * 4;
-				data[i] = image.getPixel(x, y).red;
-				data[i + 1] = image.getPixel(x, y).green;
-				data[i + 2] = image.getPixel(x, y).blue;
+				data[i] = image.underlying[i + (@:privateAccess Image.OFFSET + 1)];
+				data[i + 1] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1];
+				data[i + 2] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2];
 				data[i + 3] = 255;
 			}
 		}
+
 		ctx.putImageData(imageData, 0, 0);
+
 		c.style.position = "absolute";
 		c.style.top = (y + units.yUnits) != null ? y + units.yUnits : y + "px";
 		c.style.left = (x + units.xUnits) != null ? x + units.xUnits : x + "px";
+
 		js.Browser.document.body.appendChild(c);
 		#end
 		return image;
@@ -146,7 +155,7 @@ class ImageTools {
 
 	public static function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array<Array<Color>> {
 		var neighbors:Array<Array<Color>> = [];
-		for (i in 0...kernalSize + 1)
+		for (i in 0...kernalSize)
 			neighbors[i] = [];
 		var roundedDown = Std.int((kernalSize - 1) / 2);
 
@@ -168,7 +177,7 @@ class ImageTools {
 	public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
 		var image = new Image(Std.int(sprite.width), Std.int(sprite.height));
 		if (sprite.pixels == null) {
-			lime.utils.Log.warn("ImageTools.fromFlxSprite() - The supplied sprite's bitmapData is null. An empty image is returned");
+			lime.utils.Log.warn("ImageTools.fromFlxSprite() - The given sprite's bitmapData is null. An empty image is returned. Is the given FlxSprite not added?");
 			return image;
 		}
 		for (x in 0...Std.int(sprite.width)) {
@@ -281,7 +290,11 @@ class ImageTools {
 		switch pixels.format {
 			case ARGB:
 			default:
-				throw "pixels format must be RGBA, currently: " + pixels.format;
+				#if !vision_quiet
+				throw "pixels format must be in ARGB format, currently: " + pixels.format;
+				#else
+				return image;
+				#end
 		}
 		for (x in 0...pixels.width) {
 			for (y in 0...pixels.height) {
@@ -291,10 +304,10 @@ class ImageTools {
 		return image;
 	}
 	public static function toHeapsPixels(image:Image):hxd.Pixels {
-		var pixels = hxd.Pixels.alloc(image.width,image.height,ARGB);
+		var pixels = hxd.Pixels.alloc(image.width, image.height, ARGB);
 		for (x in 0...image.width) {
 			for (y in 0...pixels.height) {
-				pixels.setPixel(x,y,image.getPixel(x,y));
+				pixels.setPixel(x, y, image.getPixel(x,y));
 			}
 		}
 		return pixels;

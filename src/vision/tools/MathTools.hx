@@ -22,12 +22,12 @@ class MathTools {
 	//-----------------------------------------------------------------------------------------
 	// Constants
 	//-----------------------------------------------------------------------------------------
-
-	public static var PI_OVER_2(default, never):Float = Math.PI / 2;
+	
+	public static var PI(get, null):Float;
+	public static var PI_OVER_2(get, never):Float;
 	public static var NEGATIVE_INFINITY(get, null):Float;
 	public static var POSITIVE_INFINITY(get, null):Float;
 	public static var NaN(get, null):Float;
-
 
 	//-----------------------------------------------------------------------------------------
 	// Ray2D Extensions
@@ -164,7 +164,7 @@ class MathTools {
 		if (ua < 0 || ua > 1 || ub < 0 || ub > 1)
 			return null;
 
-		// Return a object with the x and y coordinates of the intersection
+		// Return an object with the x and y coordinates of the intersection
 		final x = x1 + ua * (x2 - x1);
 		final y = y1 + ua * (y2 - y1);
 
@@ -389,7 +389,7 @@ class MathTools {
 		return round(num * multiplier) / multiplier;
 	}
 
-	overload extern inline public static function min(...values:Float) {
+	overload extern inline public static function min(...values:Float):Float {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -398,7 +398,7 @@ class MathTools {
 		return min;
 	}
 
-	overload extern inline public static function min(values:Array<Float>) {
+	overload extern inline public static function min(values:Array<Float>):Float {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -407,7 +407,7 @@ class MathTools {
 		return min;
 	}
 
-	overload extern inline public static function min(...values:Int) {
+	overload extern inline public static function min(...values:Int):Int {
 		var min:Int = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -416,7 +416,7 @@ class MathTools {
 		return min;
 	}
 
-	overload extern inline public static function min(values:Array<Int>) {
+	overload extern inline public static function min(values:Array<Int>):Int {
 		var min:Int = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -425,7 +425,7 @@ class MathTools {
 		return min;
 	}
 
-	overload extern inline public static function max(...values:Float) {
+	overload extern inline public static function max(...values:Float):Float {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
@@ -434,7 +434,7 @@ class MathTools {
 		return max;
 	}
 
-	overload extern inline public static function max(values:Array<Float>) {
+	overload extern inline public static function max(values:Array<Float>):Float {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
@@ -443,7 +443,7 @@ class MathTools {
 		return max;
 	}
 
-	overload extern inline public static function max(...values:Int) {
+	overload extern inline public static function max(...values:Int):Int {
 		var max:Int = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
@@ -452,7 +452,7 @@ class MathTools {
 		return max;
 	}
 
-	overload extern inline public static function max(values:Array<Int>) {
+	overload extern inline public static function max(values:Array<Int>):Int {
 		var max:Int = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
@@ -534,7 +534,7 @@ class MathTools {
 		return s[floor(values.length / 2)];
 	}
 
-	public static inline function verifyInt(v:Float) {
+	public static inline function isInt(v:Float) {
 		return v == Std.int(v);
 	}
 
@@ -543,21 +543,11 @@ class MathTools {
 	//---------------------
 	
 
-	@:noCompletion static inline function get_NEGATIVE_INFINITY()
-		return Math.NEGATIVE_INFINITY;
-
-	
-
-	@:noCompletion static inline function get_POSITIVE_INFINITY()
-		return Math.POSITIVE_INFINITY;
-
-	@:noCompletion static inline function get_NaN()
-		return Math.NaN;
-
-	public static var PI(get, null):Float;
-
-	@:noCompletion static inline function get_PI()
-		return Math.PI;
+	@:noCompletion static inline function get_NEGATIVE_INFINITY() return Math.NEGATIVE_INFINITY;
+	@:noCompletion static inline function get_POSITIVE_INFINITY() return Math.POSITIVE_INFINITY;
+	@:noCompletion static inline function get_NaN() return Math.NaN;
+	@:noCompletion static inline function get_PI_OVER_2() return PI / 2;
+	@:noCompletion static inline function get_PI() return Math.PI;
 
 	public static inline function abs(v:Float):Float
 		return Math.abs(v);

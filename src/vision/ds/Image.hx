@@ -589,8 +589,8 @@ abstract Image(ByteArray) {
 
 		for (y in 0...values.length) {
 			if (values[y] == null) continue;
-			var min = MathTools.min(values[y]);
-			var max = MathTools.max(values[y]);
+			var min:Int = MathTools.min(values[y]);
+			var max:Int = MathTools.max(values[y]);
 			for (i in min...max + 1) setPixel(i, y, color);
 		}
 	}
