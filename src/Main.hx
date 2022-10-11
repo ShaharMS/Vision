@@ -115,7 +115,7 @@ class Main {
 			end = haxe.Timer.stamp();
 			trace("Median blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			#end
-		Vision.grayscale
+			
 			#if feature_detection_tests
 			start = haxe.Timer.stamp();
 			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 15);
