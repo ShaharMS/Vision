@@ -74,8 +74,8 @@ class Hough {
 		return {accumulator: accum, image: houghSpace};
 	}
 
-	public static function detectMaximas(space:HoughSpace):HoughSpace {
-		space.maximums = space.accumulator.getMaximas();
+	public static function detectMaximas(space:HoughSpace, ?threshold:Int = 30):HoughSpace {
+		space.maximums = space.accumulator.getMaximas(threshold);
 		return space;
 	}
 

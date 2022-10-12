@@ -64,7 +64,7 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
 	 * 
 	 * @return an array of `IntPoint2D`s, containing the locations of the cells. `point.x` is `rho`, `point.y` is the theta's index.
 	 */
-	public function getMaximas():Array<IntPoint2D> {
+	public function getMaximas(threshold:Int):Array<IntPoint2D> {
 		var pointArray:Array<IntPoint2D> = [];
 		for (x in 1...this.length - 1) {
 			for (y in 1...this[x].length - 1) {
@@ -80,7 +80,7 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
 					this[x + 1][y + 1],
 				];
 
-				if (this[x][y] == MathTools.max(neighbors)){
+				if (this[x][y] == MathTools.max(neighbors) && this[x][y] >= threshold){
 					pointArray.push({x: x, y: y});
 				} else continue;
 			}

@@ -44,7 +44,7 @@ class Main {
 			var rays = Hough.getRays(space).rays;
 			var newI = image.clone();
 			for (l in rays) {
-				if (Math.random() > 0.999) newI.drawRay2D(l, 0x00FFD5);
+				newI.drawRay2D(l, 0x00FFD5);
 			}
 			printImage(newI);
 			end = haxe.Timer.stamp();
