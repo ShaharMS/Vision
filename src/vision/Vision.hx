@@ -1,5 +1,6 @@
 package vision;
 
+import vision.algorithms.RobertsCross;
 import vision.ds.IntPoint2D;
 import haxe.extern.EitherType;
 import vision.algorithms.Radix;
@@ -650,5 +651,27 @@ class Vision {
 	**/
 	public static function perwittEdgeDiffOperator(image:Image) {
 		return Perwitt.convolveWithPerwittOperator(grayscale(image.clone()));
+	}
+
+	/**
+		Applies the Robert's Cross operator to an image.
+		
+		The image doesnt have to get grayscaled before being passed 
+		to this function.
+		
+		While being the one of the oldest forms of edge gradient operators (dates back to 1963!),
+		Its one of the fastest, if not *the* fastest.
+
+		It does have its caviets though: while generally being 2x faster, its *way* more sensitive to noise, and may produce a more "jagged" image.
+		
+		| Original | After Filtering |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-robertEdgeDiffOperator.png)|
+
+		@param image The image to be operated on
+		@return A new image, containing the gradients of the edges as whitened pixels.
+	**/
+	public static function robertEdgeDiffOperator(image:Image) {
+		return RobertsCross.convolveWithRobertsCross(grayscale(image.clone()));
 	}
 }

@@ -8,21 +8,21 @@ using vision.algorithms.Canny;
 using vision.tools.MathTools;
 
 /**
- * An implementation of the canny edge detection algorithm, 
- * by [ShaharMS](https://www.github.com/ShaharMS).
- *
- * The Canny Edge Detection is a multi-stage edge 
- * detection algorithm, utilizing blurring filters 
- * and multi-level thresholding.
- *
- * This class contains function for all 5 stages:
- * 
- * - `grayscale()`
- * - `applyGaussian()`
- * - `applySobelFilters()`
- * - `nonMaxSuppresion()`
- * - `applyHysteresis()`
- */
+	An implementation of the canny edge detection algorithm, 
+	by [ShaharMS](https://www.github.com/ShaharMS).
+	
+	The Canny Edge Detection is a multi-stage edge 
+	detection algorithm, utilizing blurring filters 
+	and multi-level thresholding.
+	
+	This class contains function for all 5 stages:
+	 
+	- `grayscale()`
+	- `applyGaussian()`
+	- `applySobelFilters()`
+	- `nonMaxSuppresion()`
+	- `applyHysteresis()`
+**/
 class Canny {
 	public static function grayscale(image:CannyObject):CannyObject {
 		return Vision.grayscale(image);

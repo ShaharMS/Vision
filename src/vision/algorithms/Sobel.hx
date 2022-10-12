@@ -7,72 +7,44 @@ import vision.ds.Image;
 using vision.tools.MathTools;
 
 /**
- * An implementation of both the sobel operator & edge detection algorithms
- * by [Shahar Marcus](https://www.github.com/ShaharMS)
- */
+	An implementation of both the sobel operator & edge detection algorithms
+	by [Shahar Marcus](https://www.github.com/ShaharMS)
+**/
 class Sobel {
 	public static function convolveWithSobelOperator(image:Image) {
-		var edgeColors:Array<Array<Int>> = [];
+		var edgeColors:Image = new Image(image.width, image.height);
 		var maxGradient = -1;
 
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
-				final val00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
-				final val01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
-				final val02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
-				final val10 = ImageTools.grayscalePixel(image.getSafePixel(i, j - 1)).red;
-				final val11 = ImageTools.grayscalePixel(image.getSafePixel(i, j)).red;
-				final val12 = ImageTools.grayscalePixel(image.getSafePixel(i, j + 1)).red;
-				final val20 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j - 1)).red;
-				final val21 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j)).red;
-				final val22 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j + 1)).red;
+				// get the red value of the grayed pixel
+				// we can "trust" .red since the value should be similar across the channels
+				final pos00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
+				final pos01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
+				final pos02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
+				final pos10 = ImageTools.grayscalePixel(image.getSafePixel(i, j - 1)).red;
+				final pos11 = ImageTools.grayscalePixel(image.getSafePixel(i, j)).red;
+				final pos12 = ImageTools.grayscalePixel(image.getSafePixel(i, j + 1)).red;
+				final pos20 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j - 1)).red;
+				final pos21 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j)).red;
+				final pos22 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j + 1)).red;
 
-				final gx = ((-3 * val00) + (0 * val01) + (3 * val02)) + ((-10 * val10) + (0 * val11) + (10 * val12)) + ((-3 * val20) + (0 * val21) + (3 * val22));
+				final gx = ((-3 * pos00) + (0 * pos01) + (3 * pos02)) + ((-10 * pos10) + (0 * pos11) + (10 * pos12)) + ((-3 * pos20) + (0 * pos21) + (3 * pos22));
 
-				final gy = ((-3 * val00) + (-10 * val01) + (-3 * val02)) + ((0 * val10) + (0 * val11) + (0 * val12)) + ((3 * val20) + (10 * val21) + (3 * val22));
+				final gy = ((-3 * pos00) + (-10 * pos01) + (-3 * pos02)) + ((0 * pos10) + (0 * pos11) + (0 * pos12)) + ((3 * pos20) + (10 * pos21) + (3 * pos22));
 
 				final gval = Math.sqrt((gx * gx) + (gy * gy));
 				final g = Std.int(gval);
 
-				if (g > maxGradient) {
-					maxGradient = g;
-				}
+				if (g > maxGradient) maxGradient = g;
 
-				if (edgeColors[i] == null)
-					edgeColors[i] = [];
-				edgeColors[i][j] = g;
+				final rgb:Int = Std.int(g * (255 / maxGradient));
+				//turn into ARGB
+				edgeColors.setPixel(i, j, 0xff000000 | (rgb << 16) | (rgb << 8) | rgb);
 			}
 		}
 
-		final scale = 255.0 / maxGradient;
-
-		final edgeImage = new Image(image.width, image.height);
-		for (i in 0...image.width) {
-			for (j in 0...image.height) {
-				var edgeColor = edgeColors[i][j];
-				edgeColor = Std.int(edgeColor * scale);
-				// RGB -> ARGB
-				edgeColor = 0xff000000 | (edgeColor << 16) | (edgeColor << 8) | edgeColor;
-
-				edgeImage.setPixel(i, j, edgeColor);
-			}
-		}
-
-		return edgeImage;
-	}
-
-	static function getNeighbors(kernalSize:Int, x:Int, y:Int, image:Image):Array<Array<Color>> {
-		var neighbors:Array<Array<Color>> = [];
-		for (i in 0...kernalSize + 1)
-			neighbors[i] = [];
-		final roundedDown = Std.int((kernalSize - 1) / 2);
-
-		for (X in -roundedDown...roundedDown + 1) {
-			for (Y in -roundedDown...roundedDown + 1) {
-				neighbors[X + roundedDown].push(image.getSafePixel(x + X, y + Y));
-			}
-		}
-		return neighbors;
+		return edgeColors;
 	}
 
 	/**

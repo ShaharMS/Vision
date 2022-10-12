@@ -36,21 +36,7 @@ class Main {
 	static function main() {
 		var start:Float, end:Float;
 
-		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
-			start = haxe.Timer.stamp();
-			printImage(Hough.toHoughSpace(image.cannyEdgeDetection()).image);
-			var space = Hough.toHoughSpace(image.cannyEdgeDetection());
-			Hough.detectMaximas(space);
-			var rays = Hough.getRays(space).rays;
-			var newI = image.clone();
-			for (l in rays) {
-				newI.drawRay2D(l, 0x00FFD5);
-			}
-			printImage(newI);
-			end = haxe.Timer.stamp();
-			trace("Hough detection took: " + MathTools.turnicate(end - start, 4) + " seconds");
-		});
-		#if (js && false)
+		#if (js && true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
 
@@ -111,6 +97,10 @@ class Main {
 			printImage(image.clone().perwittEdgeDiffOperator());
 			end = haxe.Timer.stamp();
 			trace("Perwitt Filter took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().robertEdgeDiffOperator());
+			end = haxe.Timer.stamp();
+			trace("Robert Filter took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			#end
 			
 			
