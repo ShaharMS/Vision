@@ -1,5 +1,6 @@
 package vision;
 
+import vision.algorithms.BilateralFilter;
 import vision.algorithms.RobertsCross;
 import vision.ds.IntPoint2D;
 import haxe.extern.EitherType;
@@ -673,5 +674,28 @@ class Vision {
 	**/
 	public static function robertEdgeDiffOperator(image:Image) {
 		return RobertsCross.convolveWithRobertsCross(grayscale(image.clone()));
+	}
+
+	/**
+	    Applies the Bilateral Filter to the given image.  
+		The bilateral filter denoises an image by using a "blur", 
+		similar to the gaussian blur, but it differs from the gaussian blur 
+		by assigning different weights & intensities to different pixels, 
+		depending on their color differences, and not only their positions.
+	    
+
+		| Original | Sharpened | Sharpened (Denoised) |
+		|---|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sharpen.png)|![After](https://spacebubble.io/vision/docs/valve-bilateralDenoise)|
+
+		@param image The image to operate on
+		@param gaussianSigma The sigma to use when generating the gaussian kernal. This also decides the size of the kernal 
+		(The size of the kernal is always `Math.round(6 * gaussianSigma)`, and gets inceremented if the resulting size is even)
+		@param intensitySigma The intensity sigma decides how hard should the algorithm "try" to reduce the noise inside
+		the image. A higher value casues a pixel that has vastly different color than it's surrounding to weigh much less, and pretty much get "ignored and overwritten". **tl;dr - a higher value reduces more noise, but may blur the image if too high.**
+
+	**/
+	public static function bilateralDenoise(image:Image, gaussianSigma:Float, intensitySigma:Float):Image {
+		return BilateralFilter.filter(image, gaussianSigma, intensitySigma);
 	}
 }

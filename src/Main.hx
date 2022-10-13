@@ -1,5 +1,6 @@
 package;
 
+import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;
 import haxe.ds.ArraySort;
 import vision.algorithms.Radix;
@@ -39,6 +40,12 @@ class Main {
 		#if (js && true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
+			printImage(image.clone().sharpen());
+			start = haxe.Timer.stamp();
+			printImage(BilateralFilter.filter(image.clone().sharpen(), 0.8, 50));
+			end = haxe.Timer.stamp();
+			trace("Bilateral took: " + MathTools.turnicate(end - start, 4) + " seconds");
+
 
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
