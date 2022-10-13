@@ -324,7 +324,8 @@ private class NeighborsIterator {
 	var Y:Int;
 
 	public inline function new(image:Image, x:Int, y:Int, kernalSize:Int) {
-		roundedDown = (kernalSize - 1) >> 1;
+		this.image = image;
+		this.roundedDown = (kernalSize - 1) >> 1;
 		this.x = x;
 		this.y = y;
 		X = -roundedDown;
