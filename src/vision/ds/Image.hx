@@ -11,6 +11,8 @@ import vision.ds.Color;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
 
+using vision.tools.MathTools;
+
 /**
 	Represents a 2D image, as a matrix of Colors.
 **/
@@ -41,7 +43,7 @@ abstract Image(ByteArray) {
 	public var width(get, #if vision_allow_resize set #else never #end):Int;
 
 	inline function get_width() {
-		return this[0] | this[1] << 8 | this[2] << 16 | this[3] << 24;
+		return this.getInt32(0);
 	}
 
 	#if vision_allow_resize
@@ -73,10 +75,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function new(width:Int, height:Int, ?color:Color = 0x00000000) {
 		this = new ByteArray(width * height * 4 + OFFSET);
-		this[0] = width & 0xFF;
-		this[1] = width >> 8 & 0xFF;
-		this[2] = width >> 16 & 0xFF;
-		this[3] = width >> 24 & 0xFF;
+		this.setInt32(0, width);
 		var i = 4;
 		while (i < this.length) {
 			this[i] = color.alpha;
@@ -89,13 +88,7 @@ abstract Image(ByteArray) {
 
 	inline function getColorFromStartingBytePos(position:Int):Color {
 		position += OFFSET;
-		var c = new Color();
-		c.alpha = this[position];
-		c.red = this[position + 1];
-		c.green = this[position + 2];
-		c.blue = this[position + 3];
-
-		return c;
+		return new Color(this.get(position) << 24 | this.get(position + 1) << 16 | this.get(position + 2) << 8 | this.get(position + 3)); 
 	}
 
 	inline function setColorFromStartingBytePos(position:Int, c:Color) {
@@ -140,17 +133,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function getSafePixel(x:Int, y:Int):Color {
 		if (!hasPixel(x, y)) {
-			var gettable:IntPoint2D = new IntPoint2D(0, 0);
-			var ox = x;
-			var oy = y;
-			gettable.x = ox;
-			gettable.y = oy;
-			if (ox < 0) gettable.x = 0;
-			if (ox >= width) gettable.x = width - 1;
-			if (oy < 0) gettable.y = 0;
-			if (oy >= height) gettable.y = height - 1;
-			
-			return getPixel(gettable.x, gettable.y);
+			return getPixel(x.clamp(0, width), y.clamp(0, height));
 		}
 		return getPixel(x, y);
 	}
@@ -271,9 +254,7 @@ abstract Image(ByteArray) {
 		@return The color of the pixel at the given coordinates.
 	**/
 	public inline function copyPixelTo(image:Image, x:Int, y:Int):Color {
-		final c = getPixel(x, y);
-		image.setPixel(x, y, c);
-		return c;
+		return image.copyPixelFrom(cast this, x, y);
 	}
 
 	/**

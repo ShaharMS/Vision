@@ -9,18 +9,18 @@ import haxe.io.Bytes;
 @:forward
 abstract ByteArray(Bytes) from Bytes to Bytes {
     
-    @:op([]) function read(index:Int) {
+    @:op([]) inline function read(index:Int) {
         return this.get(index);
     }
 
-    @:op([]) function write(index:Int, value:Int) {
+    @:op([]) inline function write(index:Int, value:Int) {
         return this.set(index, value);
     }
 
     /**
         Creates a new `ByteArray`
     **/
-    public function new(length:Int) {
+    public inline function new(length:Int) {
         this = Bytes.alloc(length);
     }
 }
