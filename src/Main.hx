@@ -37,10 +37,9 @@ class Main {
 	static function main() {
 		var start:Float, end:Float;
 
-		#if (js)
+		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
-
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
 			#if simple_tests
@@ -160,35 +159,35 @@ class Main {
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png", image ->
 		{
 			#if convolve_tests
-				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(Identity));
-				end = haxe.Timer.stamp();
-				trace("Identity Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(BoxBlur));
-				end = haxe.Timer.stamp();
-				trace("BoxBlur Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(RidgeDetection));
-				end = haxe.Timer.stamp();
-				trace("Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(RidgeDetectionAggressive));
-				end = haxe.Timer.stamp();
-				trace("Aggresive Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(Sharpen));
-				end = haxe.Timer.stamp();
-				trace("Shaprening Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				start = haxe.Timer.stamp();
-				printImage(image.clone().convolve(UnsharpMasking));
-				end = haxe.Timer.stamp();
-				trace("Unsharp Masking Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				start = haxe.Timer.stamp();
-				printImage(image.clone().deepfry());
-				end = haxe.Timer.stamp();
-				trace("Deepfrying took: " + MathTools.turnicate(end - start, 4) + " seconds");
-				#end
+			start = haxe.Timer.stamp();
+			printImage(image.clone().convolve(Identity));
+			end = haxe.Timer.stamp();
+			trace("Identity Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().convolve(BoxBlur));
+			end = haxe.Timer.stamp();
+			trace("BoxBlur Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().convolve(RidgeDetection));
+			end = haxe.Timer.stamp();
+			trace("Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().convolve(RidgeDetectionAggressive));
+			end = haxe.Timer.stamp();
+			trace("Aggresive Ridge Detection Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().convolve(Sharpen));
+			end = haxe.Timer.stamp();
+			trace("Shaprening Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().convolve(UnsharpMasking));
+			end = haxe.Timer.stamp();
+			trace("Unsharp Masking Convolution took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().deepfry());
+			end = haxe.Timer.stamp();
+			trace("Deepfrying took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			#end
 		});
 		#end
 
@@ -281,16 +280,15 @@ class Main {
 
 		#if interp
 		var content = sys.io.File.getContent("C:\\Users\\shaha\\Desktop\\Github\\Vision\\src\\vision\\Vision.hx");
-		trace(content.split("\n")[0]); //should trace package vision;
 		var cases = TestCaseGenerator.generateFromCode(content);
 		for (i in 0...cases.length) {
 			cases[i].writeHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
 		}
 		#end
 	}
-	#if js
+	
 	public static function printImage(image:Image) {
-		
+	#if js
 		var c = Browser.document.createCanvasElement();
 		c.width = image.width;
 		c.height = image.height;
@@ -309,6 +307,7 @@ class Main {
 		ctx.putImageData(imageData, 0, 0);
 		c.style.padding = "10px";
 		Browser.document.body.appendChild(c);
-	}
 	#end
+	}
+	
 }

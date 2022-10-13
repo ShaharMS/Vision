@@ -13,6 +13,8 @@ import vision.ds.IntPoint2D;
 import vision.ds.Color;
 import vision.ds.Image;
 
+using StringTools;
+
 /**
 	A class used to provide extra utilities to the `Image` class.
 
@@ -30,13 +32,14 @@ class ImageTools {
 	public static var defaultResizeAlgorithm:ImageResizeAlgorithm = BilinearInterpolation;
 
 	/**
-		Gets an image from a file. **On Js**, a URL is valid too.  
-		the given path can be an absolute path or a relative path.
+		Gets an image from a file. 
 
-		**Note: On `sys` targets, this function requires the `format` library.**
+		the given path can be an absolute path or a relative path. a URL is valid too.  
 
-		To install:\
-		\
+		**Note: On `sys` targets, this function requires the `format` library, and only supports PNG.**
+
+		To install:  
+		  
 		`haxelib install format`
 
 		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
@@ -46,7 +49,33 @@ class ImageTools {
 	**/
 	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
 		#if sys
-		if (path.split(".").pop().toUpperCase() == "PNG") {
+		trace(path, path.contains("://"));
+		if (path.contains("://")) {
+			var httpreq = new sys.Http(path);
+			httpreq.onBytes = (data) -> {
+				try {
+					var reader = new format.png.Reader(new haxe.io.BytesInput(data));
+					var data = reader.read();
+					var header = format.png.Tools.getHeader(data);
+					var bytes = format.png.Tools.extract32(data);
+					format.png.Tools.reverseBytes(bytes);
+					var image = new Image(header.width, header.height);
+
+					image.underlying.blit(4, bytes, 0, bytes.length);
+					
+					onComplete(image);
+	
+				} catch (e:haxe.Exception) {
+					#if vision_quiet
+					onComplete(new Image(100, 100));
+					#else
+					throw "PNG Loading Failed.";
+					#end
+				}
+			}
+			httpreq.request();
+
+		} else if (path.split(".").pop().toUpperCase() == "PNG") {
 			try {
 				var handle = sys.io.File.getBytes(path);
 				var reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
@@ -55,7 +84,9 @@ class ImageTools {
 				var bytes = format.png.Tools.extract32(data);
 				format.png.Tools.reverseBytes(bytes);
 				var image = new Image(header.width, header.height);
-				
+
+				image.underlying.blit(4, bytes, 0, bytes.length);
+
 				onComplete(image);
 
 			} catch (e:haxe.Exception) {
@@ -65,11 +96,7 @@ class ImageTools {
 				throw "PNG Loading Failed.";
 				#end
 			}
-		}
-		#if vision_quiet
-		#else
-		throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding");
-		#end
+		} else #if vision_quiet #else throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding"); #end
 		#else
 		var imgElement = js.Browser.document.createImageElement();
 		imgElement.src = path;
