@@ -1,5 +1,6 @@
 package vision.tools;
 
+import vision.ds.Array2D;
 import vision.exceptions.Unimplemented;
 import vision.ds.ImageResizeAlgorithm;
 #if js
@@ -153,18 +154,17 @@ class ImageTools {
 		return image;
 	}
 
-	public static function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array<Array<Color>> {
-		var neighbors:Array<Array<Color>> = [];
-		for (i in 0...kernalSize)
-			neighbors[i] = [];
-		var roundedDown = Std.int((kernalSize - 1) / 2);
-
-		for (X in -roundedDown...roundedDown + 1) {
-			for (Y in -roundedDown...roundedDown + 1) {
-				neighbors[X + roundedDown].push(image.getSafePixel(x + X, y + Y));
-			}
+	public static function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
+		var neighbours = new Array2D(kernalSize, kernalSize);
+		var i = 0;
+		for(neighbour in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
+			neighbours.inner[i++] = neighbour;
 		}
-		return neighbors;
+		return neighbours;
+	}
+
+	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int):Iterator<Color> {
+		return new NeighboursIterator(image, x, y, kernalSize);
 	}
 
 	public static inline function grayscalePixel(pixel:Color):Color {
@@ -313,4 +313,35 @@ class ImageTools {
 		return pixels;
 	}
 	#end
+}
+
+private class NeighboursIterator {
+	var roundedDown:Int;
+	var image:Image;
+	var x:Int;
+	var y:Int;
+	var X:Int;
+	var Y:Int;
+
+	public inline function new(image:Image, x:Int, y:Int, kernalSize:Int) {
+		roundedDown = (kernalSize - 1) >> 1;
+		this.x = x;
+		this.y = y;
+		X = -roundedDown;
+		Y = -roundedDown;
+	}
+
+	public inline function next():Color {
+		var p = image.getSafePixel(x + X, y + Y);
+		Y += 1;
+		if (Y > roundedDown) {
+			Y = -roundedDown;
+			X += 1;
+		}
+		return p;
+	}
+
+	public inline function hasNext():Bool {
+		return X <= roundedDown && Y <= roundedDown;
+	}
 }

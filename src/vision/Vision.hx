@@ -218,9 +218,11 @@ class Vision {
 		if (!refine) return clone;
 		blackAndWhite(clone);
 		clone.forEachPixel((x, y, color) -> {
-			var neighbors = clone.getNeighborsOfPixel(x, y, 3).flatten();
-			neighbors.remove(color);
-			if (!neighbors.contains(color)) clone.setPixel(x, y, 0);
+			var neighbors = clone.getNeighborsOfPixelIter(x, y, 3); //.flatten();
+			// neighbors.remove(color);
+			var count = 0;
+			for(c in neighbors) if(c == color) count++;
+			if (count <= 1) clone.setPixel(x, y, 0);
 		});
 		return clone;
 	}
@@ -383,12 +385,13 @@ class Vision {
 			denominator += number;
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
-				var neighbors:Array<Color> = image.getNeighborsOfPixel(x, y, maxLength).flatten();
+				var i = 0;
 				var red = 0., green = 0., blue = 0.;
-				for (i in 0...neighbors.length) {
-					red += flatMatrix[i] * neighbors[i].red;
-					blue += flatMatrix[i] * neighbors[i].blue;
-					green += flatMatrix[i] * neighbors[i].green;
+				for (color in image.getNeighborsOfPixelIter(x, y, maxLength)) {
+					red += flatMatrix[i] * color.red;
+					blue += flatMatrix[i] * color.blue;
+					green += flatMatrix[i] * color.green;
+					i++;
 				}
 				red /= denominator;
 				green /= denominator;
@@ -513,7 +516,7 @@ class Vision {
 	public static function medianBlur(image:Image, kernalRadius:Int):Image {
 		var medianed = new Image(image.width, image.height);
 		image.forEachPixel((x, y, color) -> {
-			var neighbors:Array<UInt> = MathTools.flatten(image.getNeighborsOfPixel(x, y, kernalRadius));
+			var neighbors:Array<UInt> = image.getNeighborsOfPixel(x, y, kernalRadius).inner;
 			ArraySort.sort(neighbors, (a, b) -> a - b);
 			medianed.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
