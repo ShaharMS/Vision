@@ -71,8 +71,7 @@ class BilateralFilter {
                             final kernelPositionIntensity = image.getSafePixel(i, j);
 
                             // calculate weight of current kernel position.
-                            kernelPositionWeight = gaussianKernelMatrix[x - i + halfKernelSize][y - j + halfKernelSize] *
-                                    intensityVector[getIntensityDifferenceForVectorPosition(kernelCenterIntensity, kernelPositionIntensity)];
+                            kernelPositionWeight = gaussianKernelMatrix.get(x - i + halfKernelSize, y - j + halfKernelSize) * intensityVector[getIntensityDifferenceForVectorPosition(kernelCenterIntensity, kernelPositionIntensity)];
 
                             // process each color component separately.
                             numeratorSumR += kernelPositionWeight * kernelPositionIntensity.red;

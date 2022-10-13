@@ -369,7 +369,7 @@ class Vision {
 						[farCorner, farEdge, edge, farEdge, farCorner]
 					];
 				case Custom(kernal): kernal;
-				case GaussianBlur(size, sigma): Gaussian.createKernalOfSize(size, sigma);
+				case GaussianBlur(size, sigma): Gaussian.createKernalOfSize(size, sigma).inner.raise(size);
 			}
 		}
 

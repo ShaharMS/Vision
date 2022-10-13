@@ -341,6 +341,36 @@ class MathTools {
 		return Vector.fromArrayCopy(flat);
 	}
 
+	/**
+	 * Takes a 1D array and turns it into a 2D array, while splitting into arrays every `delimiter` indexes
+	 * @param array
+	 * @param delimiter
+	 * @return Array<T>
+	 */
+	overload extern inline public static function raise<T>(array:Array<T>, delimiter:Int):Array<Array<T>> {
+		var raised = [];
+		for (i in 0...array.length) {
+			if (raised[floor(i / delimiter)] == null) raised[floor(i / delimiter)] = [];
+			raised[floor(i / delimiter)][i % delimiter] = array[i];
+		}
+		return raised;
+	}
+
+	/**
+	 * Takes a Vector and turns it into a Matrix, while splitting into vectors every `delimiter` indexes
+	 * @param vector
+	 * @param delimiter
+	 * @return Array<T>
+	 */
+	 overload extern inline public static function raise<T>(vector:Vector<T>, delimiter:Int):Matrix<T> {
+		var raised = new Matrix(floor(vector.length / delimiter));
+		for (i in 0...vector.length) {
+			if (raised[floor(i / delimiter)] == null) raised[floor(i / delimiter)] = new Vector(i % delimiter);
+			raised[floor(i / delimiter)][i % delimiter] = vector[i];
+		}
+		return raised;
+	}
+
 
 
 	//-----------------------------------------------------------------------------------------

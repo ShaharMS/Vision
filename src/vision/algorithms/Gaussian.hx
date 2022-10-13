@@ -107,7 +107,7 @@ class Gaussian {
 		return kernal;
 	}
 
-	public static function createKernalOfSize(size:Int, sigma:Float) {
+	public static function createKernalOfSize(size:Int, sigma:Float):Array2D<Float> {
 		#if vision_quiet
 		if (size <= 0)
 			size = -size;
@@ -118,10 +118,7 @@ class Gaussian {
 			throw new InvalidGaussianKernalSize(size);
 		#end
 		var r, s = 2.0 * sigma * sigma, sum = 0.;
-		var kernal:Array2D<Float> = [];
-		for (i in 0...size) {
-			kernal[i] = [];
-		}
+		var kernal:Array2D<Float> = new Array2D<Float>(size, size);
 		// get the average of the parameter size, rounded down
 		var avg = Std.int((size - 1) / 2);
 
@@ -129,15 +126,15 @@ class Gaussian {
 		for (x in -avg...avg + 1) {
 			for (y in -avg...avg + 1) {
 				r = Math.sqrt(x * x + y * y);
-				kernal[x + avg][y + avg] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
-				sum += kernal[x + avg][y + avg];
+				kernal.set(x + avg, y + avg, (Math.exp(-(r * r) / s)) / (Math.PI * s));
+				sum += kernal.get(x + avg, y + avg);
 			}
 		}
 
 		// normalize the kernal
 		for (i in 0...size) {
 			for (j in 0...size) {
-				kernal[i][j] /= sum;
+				kernal.set(i, j, kernal.get(i, j) / sum);
 			}
 		}
 
