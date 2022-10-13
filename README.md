@@ -150,19 +150,22 @@ Here is a roadmap of all features added/planned for the future:
 #### class `Vision`:
  
  - [x] `grayscale()`
- - [x] `blackAndWhitd()`
+ - [x] `blackAndWhite()`
  - [x] `invert()`
  - [x] `sharpen()`
  - [x] `deepfry()` 
  - [x] `convolve()`
  - [x] `contrast()`
  - [x] `normalize()`
- - [x] `highlightRidges()`
  - [x] `limitColorRanges()` 
  - [x] `replaceColorRanges()` 
+ - [ ] `saltAndPepperNoise()`
+ - [ ] `gaussianNoise()`
+ - [ ] `whiteNoise()`
  - [ ] `houghRay2DDetection()`
  - [ ] `houghLine2DDetection()`
  - [x] `simpleLineDetector()`
+ - [x] `convolutionRidgeDetection()`
  - [x] `perwittEdgeDetection()`
  - [x] `perwittEdgeDiffOperator()`
  - [x] `sobelEdgeDiffOperator()`
