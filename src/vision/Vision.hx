@@ -218,8 +218,7 @@ class Vision {
 		if (!refine) return clone;
 		blackAndWhite(clone);
 		clone.forEachPixel((x, y, color) -> {
-			var neighbors = clone.getNeighborsOfPixelIter(x, y, 3); //.flatten();
-			// neighbors.remove(color);
+			var neighbors = clone.getNeighborsOfPixelIter(x, y, 3);
 			var count = 0;
 			for(c in neighbors) if(c == color) count++;
 			if (count <= 1) clone.setPixel(x, y, 0);

@@ -154,7 +154,7 @@ class ImageTools {
 		return image;
 	}
 
-	public static function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
+	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
 		var neighbors = new Array2D(kernalSize, kernalSize);
 		var i = 0;
 		for(neighbor in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
