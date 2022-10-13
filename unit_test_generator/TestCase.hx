@@ -28,7 +28,7 @@ class TestCase {
         if (args == null) args = [];
         optionals = {};
         originalFile = {};
-        optionals.imageLinkOrFile = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG";
+        optionals.imageLinkOrFile = "https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png";
         optionals.attempts = 5;
         modulePackage = packPath;
         this.module = module;
@@ -62,6 +62,7 @@ class TestCase {
 -debug
 --interp
 --library vision
+--library format
         ';
         File.saveContent(path + "/" + name + "/compile.hxml", hxml);
         FileSystem.createDirectory(path + "/" + name + "/src");
@@ -146,10 +147,11 @@ class Test_${modulePackage.replace(".", "_")}_${module}_${method}
 {
 ${t}public static function main()
 ${t}{
-${t}${t}var start:Float, end:Float, sum:Float, best:Float, worst:Float;
+${t}${t}var start:Float = 0, end:Float = 0, sum:Float = 0, best:Float = Math.POSITIVE_INFINITY, worst:Float = 0;
+${t}${t}var attempts = ${optionals.attempts};
 ${t}${t}vision.tools.ImageTools.loadFromFile("${optionals.imageLinkOrFile}", function(image)
 ${t}${t}{
-${t}${t}${t}for (i in 0...${optionals.attempts})
+${t}${t}${t}for (i in 0...attempts)
 ${t}${t}${t}{
 ${t}${t}${t}${t}start = haxe.Timer.stamp();
 ${t}${t}${t}${t}$modulePackage.$module.$method(image${argsAsString()});
@@ -159,10 +161,10 @@ ${t}${t}${t}${t}if (end - start < best) best = end - start;
 ${t}${t}${t}${t}sum += end - start;
 ${t}${t}${t}}
 ${t}${t}${t}trace("${splitter}$modulePackage.$module.$method()${splitter}");
-${t}${t}${t}trace("attempts: ${optionals.attempts}");
+${t}${t}${t}trace("attempts: " + attempts);
 ${t}${t}${t}trace("worst: " + worst);
 ${t}${t}${t}trace("best: " + best);
-${t}${t}${t}trace("average: " + sum / ${optionals.attempts});
+${t}${t}${t}trace("average: " + sum / attempts);
 ${t}${t}${t}trace("${splitter}${getSplitterAtLength((modulePackage + module + method).length + 4)}${splitter}");
 ${t}${t}});
 ${t}}

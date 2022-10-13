@@ -48,8 +48,7 @@ class ImageTools {
 		@returns the image object.
 	**/
 	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
-		#if sys
-		trace(path, path.contains("://"));
+		#if (sys && format)
 		if (path.contains("://")) {
 			var httpreq = new sys.Http(path);
 			httpreq.onBytes = (data) -> {
@@ -59,19 +58,21 @@ class ImageTools {
 					var header = format.png.Tools.getHeader(data);
 					var bytes = format.png.Tools.extract32(data);
 					format.png.Tools.reverseBytes(bytes);
-					var image = new Image(header.width, header.height);
-
-					image.underlying.blit(4, bytes, 0, bytes.length);
+					image = new Image(header.width, header.height);
+					try {image.underlying.blit(4, bytes, 0, bytes.length - 1);} catch (e) trace(e);
 					
-					onComplete(image);
-	
 				} catch (e:haxe.Exception) {
 					#if vision_quiet
 					onComplete(new Image(100, 100));
 					#else
-					throw "PNG Loading Failed.";
+					throw "PNG Loading Failed: " + e.message;
 					#end
 				}
+				
+				onComplete(image);
+			}
+			httpreq.onError = msg -> {
+				trace(msg);
 			}
 			httpreq.request();
 

@@ -210,7 +210,7 @@ class Vision {
 		@param refine Appends an iterative pixel check to the algorithm, which removes isolated ridge pixels. `false` by default for performance reasons.
 		@return The ridge-highlighted version of the image. **The original copy is preserved**
 	**/
-	public static function convolutionRidgeDetection(image:Image, ?normalizationRangeStart:Color = 0x44444444, ?normalizationRangeEnd:Color = 0xBBBBBBBB, refine:Bool = false):Image {
+	public static function convolutionRidgeDetection(image:Image, ?normalizationRangeStart:Color = 0xFF444444, ?normalizationRangeEnd:Color = 0xFFBBBBBB, refine:Bool = false):Image {
 		var clone = image.clone();
 		Vision.grayscale(clone);
 		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
@@ -251,12 +251,12 @@ class Vision {
 	**/
 	public static function normalize(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
 		var max:Color = 0x0, min:Color = 0x0, step:Color = 0x0;
-		max.red = cast Math.max(rangeStart.red, rangeEnd.red);
-		min.red = cast Math.min(rangeStart.red, rangeEnd.red);
-		max.green = cast Math.max(rangeStart.green, rangeEnd.green);
-		min.green = cast Math.min(rangeStart.green, rangeEnd.green);
-		max.blue = cast Math.max(rangeStart.blue, rangeEnd.blue);
-		min.blue = cast Math.min(rangeStart.blue, rangeEnd.blue);
+		max.red = MathTools.max(rangeStart.red, rangeEnd.red);
+		min.red = MathTools.min(rangeStart.red, rangeEnd.red);
+		max.green = MathTools.max(rangeStart.green, rangeEnd.green);
+		min.green = MathTools.min(rangeStart.green, rangeEnd.green);
+		max.blue = MathTools.max(rangeStart.blue, rangeEnd.blue);
+		min.blue = MathTools.min(rangeStart.blue, rangeEnd.blue);
 		step.redFloat = (max.red - min.red) / 0xFF;
 		step.blueFloat = (max.blue - min.blue) / 0xFF;
 		step.greenFloat = (max.green - min.green) / 0xFF;
