@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import vision.ds.Array2D;
 import vision.exceptions.InvalidGaussianKernalSize;
 
 /**
@@ -117,7 +118,7 @@ class Gaussian {
 			throw new InvalidGaussianKernalSize(size);
 		#end
 		var r, s = 2.0 * sigma * sigma, sum = 0.;
-		var kernal:Array<Array<Float>> = [];
+		var kernal:Array2D<Float> = [];
 		for (i in 0...size) {
 			kernal[i] = [];
 		}

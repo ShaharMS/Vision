@@ -9,7 +9,7 @@
 #--interp
 #--define radix_test
 --define feature_detection_tests
---define draw_tests
+#--define draw_tests
 --define mirror_flip_tests
 --define blur_tests
 --define filter_tests

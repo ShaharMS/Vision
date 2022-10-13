@@ -162,18 +162,22 @@ Here is a roadmap of all features added/planned for the future:
  - [ ] `saltAndPepperNoise()`
  - [ ] `gaussianNoise()`
  - [ ] `whiteNoise()`
- - [ ] `houghRay2DDetection()`
- - [ ] `houghLine2DDetection()`
  - [x] `simpleLineDetector()`
  - [x] `convolutionRidgeDetection()`
+ - [ ] *`robertEdgeDetection()`*
+ - [x] `robertEdgeDiffOperator`
  - [x] `perwittEdgeDetection()`
  - [x] `perwittEdgeDiffOperator()`
  - [x] `sobelEdgeDiffOperator()`
  - [x] `sobelEdgeDetection()`
  - [x] `cannyEdgeDetection()`
+ - [ ] `houghRay2DDetection()`
+ - [ ] `houghLine2DDetection()`
  - [x] `nearestNeighborBlur()`
  - [x] `gaussianBlur()`
  - [x] `medianBlur()` 
+ - [x] `bilateralDenoise()`
+ - [ ] `nonLocalMeansDenoise` 
 
 #### algorithms:
 
