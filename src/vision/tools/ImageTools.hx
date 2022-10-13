@@ -155,16 +155,16 @@ class ImageTools {
 	}
 
 	public static function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
-		var neighbours = new Array2D(kernalSize, kernalSize);
+		var neighbors = new Array2D(kernalSize, kernalSize);
 		var i = 0;
-		for(neighbour in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
-			neighbours.inner[i++] = neighbour;
+		for(neighbor in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
+			neighbors.inner[i++] = neighbor;
 		}
-		return neighbours;
+		return neighbors;
 	}
 
 	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int):Iterator<Color> {
-		return new NeighboursIterator(image, x, y, kernalSize);
+		return new NeighborsIterator(image, x, y, kernalSize);
 	}
 
 	public static inline function grayscalePixel(pixel:Color):Color {
@@ -315,7 +315,7 @@ class ImageTools {
 	#end
 }
 
-private class NeighboursIterator {
+private class NeighborsIterator {
 	var roundedDown:Int;
 	var image:Image;
 	var x:Int;
