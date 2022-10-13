@@ -538,6 +538,10 @@ class MathTools {
 		return v == Std.int(v);
 	}
 
+	public static inline function clamp(value:Int, mi:Int, ma:Int) {
+		return inline min(inline max(value, ma), mi);
+	}
+
 	//---------------------
 	// Math.hx compatibility
 	//---------------------

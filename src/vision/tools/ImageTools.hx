@@ -1,5 +1,6 @@
 package vision.tools;
 
+import vision.ds.Array2D;
 import vision.exceptions.Unimplemented;
 import vision.ds.ImageResizeAlgorithm;
 #if js
@@ -153,21 +154,20 @@ class ImageTools {
 		return image;
 	}
 
-	public static function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array<Array<Color>> {
-		var neighbors:Array<Array<Color>> = [];
-		for (i in 0...kernalSize)
-			neighbors[i] = [];
-		var roundedDown = Std.int((kernalSize - 1) / 2);
-
-		for (X in -roundedDown...roundedDown + 1) {
-			for (Y in -roundedDown...roundedDown + 1) {
-				neighbors[X + roundedDown].push(image.getSafePixel(x + X, y + Y));
-			}
+	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
+		var neighbors = new Array2D(kernalSize, kernalSize);
+		var i = 0;
+		for(neighbor in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
+			neighbors.inner[i++] = neighbor;
 		}
 		return neighbors;
 	}
 
-	public static function grayscalePixel(pixel:Color):Color {
+	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int):Iterator<Color> {
+		return new NeighborsIterator(image, x, y, kernalSize);
+	}
+
+	public static inline function grayscalePixel(pixel:Color):Color {
 		var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
 			+ pixel.green + pixel.blue) / 3) #end;
 		return Color.fromRGBA(gray, gray, gray, pixel.alpha);
@@ -313,4 +313,36 @@ class ImageTools {
 		return pixels;
 	}
 	#end
+}
+
+private class NeighborsIterator {
+	var roundedDown:Int;
+	var image:Image;
+	var x:Int;
+	var y:Int;
+	var X:Int;
+	var Y:Int;
+
+	public inline function new(image:Image, x:Int, y:Int, kernalSize:Int) {
+		this.image = image;
+		this.roundedDown = (kernalSize - 1) >> 1;
+		this.x = x;
+		this.y = y;
+		X = -roundedDown;
+		Y = -roundedDown;
+	}
+
+	public inline function next():Color {
+		var p = image.getSafePixel(x + X, y + Y);
+		Y += 1;
+		if (Y > roundedDown) {
+			Y = -roundedDown;
+			X += 1;
+		}
+		return p;
+	}
+
+	public inline function hasNext():Bool {
+		return X <= roundedDown && Y <= roundedDown;
+	}
 }

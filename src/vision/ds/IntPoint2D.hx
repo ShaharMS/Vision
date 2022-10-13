@@ -12,6 +12,11 @@ private typedef Impl = haxe.Int64;
 private class Impl {
 	public var x:Int;
 	public var y:Int;
+
+	public inline function new(x:Int, y:Int) {
+		this.x = x;
+		this.y = y;
+	}
 }
 #end
 
@@ -30,11 +35,11 @@ abstract IntPoint2D(Impl) {
 	**/
 	public var y(get, set):Int;
 
-	public inline function new(x:Int, y:Int) {
+	public extern inline function new(x:Int, y:Int) {
 		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		this = Int64.make(x, y);
 		#else
-		this = ({x: x, y: y} : Impl);
+		this = new Impl(x, y);
 		#end
 	}
 
@@ -58,7 +63,7 @@ abstract IntPoint2D(Impl) {
 		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		this = Int64.make(x, y);
 		#else
-		this = ({x: x, y: y} : Impl);
+		this.y = y;
 		#end
 		return y;
 	}
@@ -67,7 +72,7 @@ abstract IntPoint2D(Impl) {
 		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		this = Int64.make(x, y);
 		#else
-		this = ({x: x, y: y} : Impl);
+		this.x = x;
 		#end
 		return x;
 	}
