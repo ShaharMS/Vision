@@ -37,15 +37,9 @@ class Main {
 	static function main() {
 		var start:Float, end:Float;
 
-		#if (js && true)
+		#if (js)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
-			printImage(image.clone().sharpen());
-			start = haxe.Timer.stamp();
-			printImage(BilateralFilter.filter(image.clone().sharpen(), 0.8, 50));
-			end = haxe.Timer.stamp();
-			trace("Bilateral took: " + MathTools.turnicate(end - start, 4) + " seconds");
-
 
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
@@ -109,6 +103,13 @@ class Main {
 			end = haxe.Timer.stamp();
 			trace("Robert Filter took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			#end
+
+			#if noise_tests
+			start = haxe.Timer.stamp();
+			printImage(Vision.bilateralDenoise(image.clone().sharpen(), 0.8, 50));
+			end = haxe.Timer.stamp();
+			trace("Bilateral Denoising took: " + MathTools.turnicate(end - start, 4) + " seconds");
+			#end
 			
 			
 			#if blur_tests
@@ -121,7 +122,7 @@ class Main {
 			end = haxe.Timer.stamp();
 			trace("Gaussian blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().medianBlur(11));
+			printImage(image.clone().medianBlur(5));
 			end = haxe.Timer.stamp();
 			trace("Median blur took: " + MathTools.turnicate(end - start, 4) + " seconds");
 			#end
@@ -275,6 +276,15 @@ class Main {
 			st += 'length: ${arr.length}, time: ${sts(MathTools.turnicate(end - start, 4))}';
 			trace(st);
 			arr = enrich(arr);
+		}
+		#end
+
+		#if interp
+		var content = sys.io.File.getContent("C:\\Users\\shaha\\Desktop\\Github\\Vision\\src\\vision\\Vision.hx");
+		trace(content.split("\n")[0]); //should trace package vision;
+		var cases = TestCaseGenerator.generateFromCode(content);
+		for (i in 0...cases.length) {
+			cases[i].writeHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
 		}
 		#end
 	}

@@ -137,7 +137,7 @@ class MathTools {
 		final distance3:Float = distanceFromLineToPoint2D(line2, line1.start);
 		final distance4:Float = distanceFromLineToPoint2D(line2, line1.end);
 
-		var distance:Float = min(distance1, distance2, distance3, distance4);
+		var distance:Float = minFloat(distance1, distance2, distance3, distance4);
 		return distance;
 	}
 
@@ -419,7 +419,7 @@ class MathTools {
 		return round(num * multiplier) / multiplier;
 	}
 
-	overload extern inline public static function min(...values:Float):Float {
+	overload extern inline public static function minFloat(...values:Float):Float {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -428,7 +428,7 @@ class MathTools {
 		return min;
 	}
 
-	overload extern inline public static function min(values:Array<Float>):Float {
+	overload extern inline public static function minFloat(values:Array<Float>):Float {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -455,7 +455,7 @@ class MathTools {
 		return min;
 	}
 
-	overload extern inline public static function max(...values:Float):Float {
+	overload extern inline public static function maxFloat(...values:Float):Float {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
@@ -464,7 +464,7 @@ class MathTools {
 		return max;
 	}
 
-	overload extern inline public static function max(values:Array<Float>):Float {
+	overload extern inline public static function maxFloat(values:Array<Float>):Float {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)

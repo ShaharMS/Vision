@@ -1,12 +1,13 @@
 --class-path src
+--class-path unit_test_generator
 --main Main
 
 --library format
 --library console.hx
 -debug
 --dce full
---js bin/main.js
-#--interp
+#--js bin/main.js
+--interp
 #--define radix_test
 --define feature_detection_tests
 #--define draw_tests
@@ -15,3 +16,4 @@
 --define filter_tests
 --define convolve_tests
 --define simple_tests
+--define noise_tests

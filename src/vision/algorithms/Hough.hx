@@ -1,7 +1,6 @@
 package vision.algorithms;
 
 import haxe.ds.Vector;
-import js.lib.Int16Array;
 import vision.ds.hough.HoughAccumulator;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Point2D;
