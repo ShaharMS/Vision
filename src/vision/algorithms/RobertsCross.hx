@@ -30,12 +30,12 @@ class RobertsCross {
 
 				final gy = ((0 * pos00) + (1 * pos02)) + ((-1 * pos20) + (0 * pos22));
 
-				final gval = Math.sqrt((gx * gx) + (gy * gy));
-				final g = Std.int(gval);
+				final gradientFloatValue = Math.sqrt((gx * gx) + (gy * gy));
+				final gradient = Std.int(gradientFloatValue);
 
-				if (g > maxGradient) maxGradient = g;
+				if (gradient > maxGradient) maxGradient = gradient;
 
-				final rgb:Int = Std.int(g * (255 / maxGradient));
+				final rgb:Int = Std.int(gradient * (255 / maxGradient));
 				//turn into ARGB
 				edgeColors.setPixel(i, j, 0xff000000 | (rgb << 16) | (rgb << 8) | rgb);
 			}

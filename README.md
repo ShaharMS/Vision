@@ -89,8 +89,8 @@ import openfl.display.BitmapData;
 import vision.ds.Image;
 
 var future = BitmapData.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG");
-future.onComplete(bitmapdata -> {
-	var image:Image = bitmapdata; // converts the given openfl.display.BitmapData to vision.ds.Image
+future.onComplete(bitmapData -> {
+	var image:Image = bitmapData; // converts the given openfl.display.BitmapData to vision.ds.Image
    // The conversions are lossless, so you never lose data.
 	addChild(new Bitmap(image)); //converts back to a BitmapData.
 });
@@ -154,8 +154,8 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `invert()`
  - [x] `sharpen()`
  - [x] `deepfry()` 
- - [ ] `erode()`
- - [ ] `dilate()`
+ - [x] `erode()`
+ - [x] `dilate()`
  - [x] `convolve()`
  - [x] `contrast()`
  - [x] `normalize()`
@@ -239,7 +239,6 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `drawEllipse()`
    - [x] `drawQuadraticBezier()`
    - [x] `drawCubicBezier()`
-   - [x] `drawLineWithLerp()`
    - [x] `fillRect()`
    - [x] `fillCircle()`
  - [x] Copying:

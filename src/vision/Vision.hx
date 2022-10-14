@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.specifics.ColorImportanceOrder;
 import vision.algorithms.BilateralFilter;
 import vision.algorithms.RobertsCross;
 import vision.ds.IntPoint2D;
@@ -7,7 +8,7 @@ import haxe.extern.EitherType;
 import vision.algorithms.Radix;
 import haxe.ds.ArraySort;
 import vision.ds.Histogram;
-import vision.ds.simple.AlgorithmSettings;
+import vision.ds.specifics.AlgorithmSettings;
 import haxe.Timer;
 import vision.helpers.VisionThread;
 import vision.algorithms.Perwitt;
@@ -70,9 +71,9 @@ class Vision {
 	/**
 		Inverts an image.
 
-		Invertion is just flipping the values of each color channel - `0xFFFFFF` will turn into `0x000000`, `0xFF00FF` will turn into `0x00FF00`, etc.
+		Inversion is just flipping the values of each color channel - `0xFFFFFF` will turn into `0x000000`, `0xFF00FF` will turn into `0x00FF00`, etc.
 
-		The math behind invertion is just subtracting the current value of the channel from `0xFF`:
+		The math behind inversion is just subtracting the current value of the channel from `0xFF`:
 
 		| Color | Process | Result|
 		|:---:|:---:|:---:|
@@ -184,47 +185,36 @@ class Vision {
 		return image;
 	}
 
-	/**
-		Uses a fast, convolution-based method to detect ridges within an image.
-		
-		It does the detection by grayscaling & normalizing the image, and then
-		convolving it with a ridge detection kernal.
-
-		Useful as a fast alternative to other **edge** detection algorithms, since it usually
-		produces the most accurate edge representation while being the fastest (`1.5x` faster than sobel & perwitt, 
-		exponentially faseter than canny (image size dependent)).  
-
-		**Comparison:**
-		  
-		| Algorithm | Output | Time Complexity |
-		|:---:|---|:---:|
-		|None|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-original.png)| - |
-		|**`perwittEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-perwittEdgeDetection.png)| `O(width*height)` |
-		|**`sobelEdgeDetection`**|![Sobel Edge Detection](https://spacebubble.io/vision/docs/valve-sobelEdgeDetection.png)| `O(width*height)` |
-		|**`cannyEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-cannyEdgeDetection.png)| `O(width*height log(width* height))` |
-		|**`convolutionRidgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-convolutionRidgeDetection.png)| `O(width*height)` |
-
-		@param image the image to be ridge detected on
-		@param normalizationRangeStart Optional, if you want to change the normalization range's start color. `0x44444444` by default.
-		@param normalizationRangeEnd Optional, if you want to change the normalization range's end color `0xBBBBBBBB` by default.
-		@param refine Appends an iterative pixel check to the algorithm, which removes isolated ridge pixels. `false` by default for performance reasons.
-		@return The ridge-highlighted version of the image. **The original copy is preserved**
-	**/
-	public static function convolutionRidgeDetection(image:Image, ?normalizationRangeStart:Color = 0xFF444444, ?normalizationRangeEnd:Color = 0xFFBBBBBB, refine:Bool = false):Image {
-		var clone = image.clone();
-		Vision.grayscale(clone);
-		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
-		clone = Vision.convolve(clone, RidgeDetectionAggressive);
-		clone = Vision.replaceColorRanges(clone, [{rangeStart: 0xFF000000, rangeEnd: 0xFFAAAAAA, replacement: 0xFF000000}]);
-		if (!refine) return clone;
-		blackAndWhite(clone);
-		clone.forEachPixel((x, y, color) -> {
-			var neighbors = clone.getNeighborsOfPixelIter(x, y, 3);
-			var count = 0;
-			for(c in neighbors) if(c == color) count++;
-			if (count <= 1) clone.setPixel(x, y, 0);
+	public static function erode(image:Image, ?erosionRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue):Image {
+		var intermediate = new Image(image.width, image.height);
+		image.forEachPixel((x, y, color) -> {
+			var maxColor:Color = 0;
+			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1)) {
+				color &= colorImportanceOrder;
+				final redLarger = color.red > maxColor.red ? 1 : 0;
+				final greenLarger = color.green > maxColor.green ? 1 : 0;
+				final blueLarger = color.blue > maxColor.blue ? 1 : 0;
+				if (redLarger + blueLarger + greenLarger >= 2) maxColor = color;
+			}
+			intermediate.setPixel(x, y, maxColor);
 		});
-		return clone;
+		return image = intermediate;
+	}
+
+	public static function dilate(image:Image, ?dilationRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue):Image {
+		var intermediate = new Image(image.width, image.height);
+		image.forEachPixel((x, y, color) -> {
+			var minColor:Color = 0;
+			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1)) {
+				color &= colorImportanceOrder;
+				final redSmaller = color.red < minColor.red ? 1 : 0;
+				final greenSmaller = color.green < minColor.green ? 1 : 0;
+				final blueSmaller = color.blue < minColor.blue ? 1 : 0;
+				if (redSmaller + blueSmaller + greenSmaller >= 2) minColor = color;
+			}
+			intermediate.setPixel(x, y, minColor);
+		});
+		return image = intermediate;
 	}
 
 	/**
@@ -279,7 +269,7 @@ class Vision {
 		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
 		@return The normalized image. The original copy is not preserved.
 	**/
-	public static function limitColorRanges(image:Image, rangeStart:Color, rangeEnd:Color):Image {
+	public static function limitColorRanges(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
 		image.forEachPixel((x, y, color) -> {
 			color.red = MathTools.boundInt(color.red, rangeStart.red, rangeEnd.red);
 			color.blue = MathTools.boundInt(color.blue, rangeStart.blue, rangeEnd.blue);
@@ -300,7 +290,8 @@ class Vision {
 		@param ranges array of color ranges & replacement colors.
 		@return A processed version of the image. The original image is not preserved
 	**/
-	public static function replaceColorRanges(image:Image, ranges:Array<{rangeStart:Color, rangeEnd:Color, replacement:Color}>):Image {
+	public static function replaceColorRanges(image:Image, ?ranges:Array<{rangeStart:Color, rangeEnd:Color, replacement:Color}>):Image {
+		if (ranges == null) return image;
 		for (range in ranges) {
 			final rangeStart = range.rangeStart;
 			final rangeEnd = range.rangeEnd;
@@ -342,17 +333,17 @@ class Vision {
 		or just a matrix: both `convolve(image, BoxBlur)` and `convolve(image, [[1,1,1],[1,1,1],[1,1,1]])` are valid ways to represent a box blur.
 		@return A convolved version of the image. The original image is not preserved
 	**/
-	public static function convolve(image:Image, kernal:EitherType<Kernal2D, Array<Array<Float>>>):Image {
+	public static function convolve(image:Image, kernal:EitherType<Kernal2D, Array<Array<Float>>> = Identity):Image {
 		var matrix:Array<Array<Float>>;
 		if (kernal is Array) {
 			matrix = cast kernal;
 		} else {
 			matrix = switch cast(kernal, Kernal2D) {
-				case Identity: [[0, 0, 0], [0, 1, 0], [0, 0, 0],];
-				case BoxBlur: [[1, 1, 1], [1, 1, 1], [1, 1, 1],];
-				case RidgeDetection: [[-1, -1, -1], [-1, 4, -1], [-1, -1, -1],];
-				case RidgeDetectionAggressive: [[-1, -1, -1], [-1, 7.75, -1], [-1, -1, -1],];
-				case Sharpen: [[0, -1, 0], [-1, 5, -1], [0, -1, 0],];
+				case Identity: [[0, 0, 0], [0, 1, 0], [0, 0, 0]];
+				case BoxBlur: [[1, 1, 1], [1, 1, 1], [1, 1, 1]];
+				case RidgeDetection: [[-1, -1, -1], [-1, 4, -1], [-1, -1, -1]];
+				case RidgeDetectionAggressive: [[-1, -1, -1], [-1, 7.75, -1], [-1, -1, -1]];
+				case Sharpen: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]];
 				case UnsharpMasking: [
 						[1, 4, 6, 4, 1],
 						[4, 16, 24, 16, 4],
@@ -370,6 +361,8 @@ class Vision {
 					];
 				case Custom(kernal): kernal;
 				case GaussianBlur(size, sigma): Gaussian.createKernalOfSize(size, sigma).inner.raise(size);
+				case LaplacianPositive: [[0, 1, 0], [1, -4, 1], [0, 1, 0]];
+				case LaplacianNegative: [[0, -1, 0], [-1, 4, -1], [0, -1, 0]];
 			}
 		}
 
@@ -505,23 +498,23 @@ class Vision {
 
 		Example of the filter in action:
 
-		| Original | `kernalRadius = 5` | `kernalRadius = 10` | `kernalRadius = 15` |
+		| Original | `kernalSize = 5` | `kernalSize = 10` | `kernalSize = 15` |
 		|---|---|---|---|
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%205%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%2010%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%2015%29.png)|
 
 		@param image The image to apply median blurring to.
-		@param kernalRadius the radius around the pixels in which we should search for the median. a radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
+		@param kernalSize the width & height of the kernal in which we should search for the median. a radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
 		@return A filtered version of the image, using median blurring. The original image is not preserved
 	**/
-	public static function medianBlur(image:Image, kernalRadius:Int):Image {
-		var medianed = new Image(image.width, image.height);
+	public static function medianBlur(image:Image, kernalSize:Int = 5):Image {
+		var median = new Image(image.width, image.height);
 		image.forEachPixel((x, y, color) -> {
-			var neighbors:Array<UInt> = image.getNeighborsOfPixel(x, y, kernalRadius).inner;
+			var neighbors:Array<UInt> = image.getNeighborsOfPixel(x, y, kernalSize).inner;
 			ArraySort.sort(neighbors, (a, b) -> a - b);
-			medianed.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
+			median.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
 
-		return image = medianed;
+		return image = median;
 	}
 
 	/**
@@ -546,8 +539,7 @@ class Vision {
 		@throws InvalidGaussianKernalSize thrown if the `kernalSize` is negative/divisible by `2`.
 		@return The edge detected image.
 	**/
-	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, kernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05,
-			highThreshold:Float = 0.2):Image {
+	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, kernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05, highThreshold:Float = 0.2):Image {
 		var cannyObject:CannyObject = image.clone();
 		return blackAndWhite(cannyObject.grayscale()
 			.applyGaussian(kernalSize, sigma)
@@ -571,11 +563,11 @@ class Vision {
 
 		@return The line detected image.
 	**/
-	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermidiate):Array<Line2D> {
+	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermediate):Array<Line2D> {
         final kernalSize = switch speedToAccuracyRatio {
             case VeryLow_VeryFast: X1;
             case Low_Fast: X3;
-            case Medium_Intermidiate: X5;
+            case Medium_Intermediate: X5;
             case High_Slow: X7;
             case VeryHigh_VerySlow: X9;
         }
@@ -638,11 +630,11 @@ class Vision {
 	/**
 		Applies the perwitt filter to an image.
 		
-		The image doesnt have to get grayscaled before being passed 
+		The image doesn't have to get grayscaled before being passed 
 		to this function.
 		
 		It is different from the `perwittEdgeDetection` function, since
-		it doesnt try to threshold the resulting image to extract the strong edges,
+		it doesn't try to threshold the resulting image to extract the strong edges,
 		and leaves that information in. Example of this filter in action:
 		
 		| Original | After Filtering |
@@ -659,13 +651,13 @@ class Vision {
 	/**
 		Applies the Robert's Cross operator to an image.
 		
-		The image doesnt have to get grayscaled before being passed 
+		The image doesn't have to get grayscaled before being passed 
 		to this function.
 		
 		While being the one of the oldest forms of edge gradient operators (dates back to 1963!),
 		Its one of the fastest, if not *the* fastest.
 
-		It does have its caviets though: while generally being 2x faster, its *way* more sensitive to noise, and may produce a more "jagged" image.
+		It does have its caveats though: while generally being 2x faster, its *way* more sensitive to noise, and may produce a more "jagged" image.
 		
 		| Original | After Filtering |
 		|---|---|
@@ -676,6 +668,49 @@ class Vision {
 	**/
 	public static function robertEdgeDiffOperator(image:Image) {
 		return RobertsCross.convolveWithRobertsCross(grayscale(image.clone()));
+	}
+
+	/**
+		Uses a fast, convolution-based method to detect ridges within an image.
+		
+		It does the detection by grayscaling & normalizing the image, and then
+		convolving it with a ridge detection kernal.
+
+		Useful as a fast alternative to other **edge** detection algorithms, since it usually
+		produces the most accurate edge representation while being the fastest (`1.5x` faster than sobel & perwitt, 
+		exponentially faster than canny (image size dependent)).  
+
+		**Comparison:**
+		  
+		| Algorithm | Output | Time Complexity |
+		|:---:|---|:---:|
+		|None|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-original.png)| - |
+		|**`perwittEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-perwittEdgeDetection.png)| `O(width*height)` |
+		|**`sobelEdgeDetection`**|![Sobel Edge Detection](https://spacebubble.io/vision/docs/valve-sobelEdgeDetection.png)| `O(width*height)` |
+		|**`cannyEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-cannyEdgeDetection.png)| `O(width*height log(width* height))` |
+		|**`convolutionRidgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-convolutionRidgeDetection.png)| `O(width*height)` |
+
+		@param image the image to be ridge detected on
+		@param normalizationRangeStart Optional, if you want to change the normalization range's start color. `0x44444444` by default.
+		@param normalizationRangeEnd Optional, if you want to change the normalization range's end color `0xBBBBBBBB` by default.
+		@param refine Appends an iterative pixel check to the algorithm, which removes isolated ridge pixels. `false` by default for performance reasons.
+		@return The ridge-highlighted version of the image. **The original copy is preserved**
+	**/
+	public static function convolutionRidgeDetection(image:Image, ?normalizationRangeStart:Color = 0xFF444444, ?normalizationRangeEnd:Color = 0xFFBBBBBB, refine:Bool = false):Image {
+		var clone = image.clone();
+		Vision.grayscale(clone);
+		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
+		clone = Vision.convolve(clone, RidgeDetectionAggressive);
+		clone = Vision.replaceColorRanges(clone, [{rangeStart: 0xFF000000, rangeEnd: 0xFFAAAAAA, replacement: 0xFF000000}]);
+		if (!refine) return clone;
+		blackAndWhite(clone);
+		clone.forEachPixel((x, y, color) -> {
+			var neighbors = clone.getNeighborsOfPixelIter(x, y, 3);
+			var count = 0;
+			for(c in neighbors) if(c == color) count++;
+			if (count <= 1) clone.setPixel(x, y, 0);
+		});
+		return clone;
 	}
 
 	/**
@@ -691,8 +726,8 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sharpen.png)|![After](https://spacebubble.io/vision/docs/valve-bilateralDenoise)|
 
 		@param image The image to operate on
-		@param gaussianSigma The sigma to use when generating the gaussian kernal. This also decides the size of the kernal (The size of the kernal is always `Math.round(6 * gaussianSigma)`, and gets inceremented if the resulting size is even)
-		@param intensitySigma The intensity sigma decides how hard should the algorithm "try" to reduce the noise inside the image. A higher value casues a pixel that has vastly different color than it's surrounding to weigh much less, and pretty much get "ignored and overwritten". **tl;dr - a higher value reduces more noise, but may blur the image if too high.**
+		@param gaussianSigma The sigma to use when generating the gaussian kernal. This also decides the size of the kernal (The size of the kernal is always `Math.round(6 * gaussianSigma)`, and gets incremented if the resulting size is even)
+		@param intensitySigma The intensity sigma decides how hard should the algorithm "try" to reduce the noise inside the image. A higher value causes a pixel that has vastly different color than it's surrounding to weigh much less, and pretty much get "ignored and overwritten". **tl;dr - a higher value reduces more noise, but may blur the image if too high.**
 
 	**/
 	public static function bilateralDenoise(image:Image, gaussianSigma:Float = 0.8, intensitySigma:Float = 50):Image {

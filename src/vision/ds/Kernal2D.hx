@@ -42,6 +42,44 @@ enum Kernal2D {
 	BoxBlur;
 
 	/**
+	 * This kernal applies a Positive Laplacian Operator:
+	 * 
+	 * ```
+	 * 0  1  0
+	 * 1  -4 1
+	 * 0  1  0
+	 * ```
+	 * 
+	 * Original:
+	 * 
+	 * ![Pre-processed](https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png)
+	 * 
+	 * Convolved:
+	 * 
+	 * ![Post-processed](https://upload.wikimedia.org/wikipedia/commons/0/04/Vd-Orig.png)
+	 */
+	LaplacianPositive;
+
+	/**
+	 * This kernal applies a Negative Laplacian Operator:
+	 * 
+	 * ```
+	 * 0  -1  0
+	 * -1  4 -1
+	 * 0  -1  0
+	 * ```
+	 * 
+	 * Original:
+	 * 
+	 * ![Pre-processed](https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png)
+	 * 
+	 * Convolved:
+	 * 
+	 * ![Post-processed](https://upload.wikimedia.org/wikipedia/commons/0/04/Vd-Orig.png)
+	 */
+	LaplacianNegative;
+
+	/**
 	 * This kernal is often used to detect changes of surface level in an image.
 	 * 
 	 * For a more aggressive kernal, see `RidgeDetectionAggressive`
@@ -84,7 +122,7 @@ enum Kernal2D {
 	RidgeDetectionAggressive;
 
 	/**
-	 * This kernal is often used to sharpen, or "deepfry" an image. It boldens 
+	 * This kernal is often used to sharpen, or "deepfry" an image. It highlights
 	 * the change in pixel values where colors in the image change dramatically
 	 * from one pixel to the other.
 	 * 

@@ -80,8 +80,8 @@ class MathTools {
 	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
 	 */
 	public static inline function findPointAtDistanceUsingX(ray:Ray2D, startXPos:Float, distance:Float, goPositive:Bool = true) {
-		// Were going to step one point to the right, and chek how much distance was covered.
-		// After checking, were going to devide distance with the distance between start to start(y + 1)
+		// Were going to step one point to the right, and check how much distance was covered.
+		// After checking, were going to divide distance with the distance between start to start(y + 1)
 		// Make sure to not surpass `distance`
 		distance = MathTools.abs(distance);
 		var start = ray.getPointAtX(startXPos);
@@ -104,8 +104,8 @@ class MathTools {
 	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
 	 */
 	 public static inline function findPointAtDistanceUsingY(ray:Ray2D, startYPos:Float, distance:Float, goPositive:Bool = true) {
-		// Were going to step one point to the right, and chek how much distance was covered.
-		// After checking, were going to devide distance with the distance between start to start(y + 1)
+		// Were going to step one point to the right, and check how much distance was covered.
+		// After checking, were going to divide distance with the distance between start to start(y + 1)
 		// Make sure to not surpass `distance`
 		distance = MathTools.abs(distance);
 		var start = ray.getPointAtY(startYPos);
@@ -401,7 +401,6 @@ class MathTools {
 		return tan(radians);
 	}
 
-	// For fuck sake do not fuckin use this i will come to your house
 	public static inline function cotan(radians:Float):Float {
 		return 1 / tan(radians);
 	}
@@ -414,7 +413,7 @@ class MathTools {
 		return 1 / cos(radians);
 	}
 
-	public static function turnicate(num:Float, numbersAfterDecimal:Int):Float {
+	public static function truncate(num:Float, numbersAfterDecimal:Int):Float {
 		var multiplier:Float = pow(10, numbersAfterDecimal);
 		return round(num * multiplier) / multiplier;
 	}

@@ -3,11 +3,15 @@
 
 ### `Vision.hx`
 
+ - **Added `erode()`**
+ - **Added `dilate()`**
  - **Added `robertEdgeDiffOperator()`**, using the newly implemented `RobertsCross` algorithm.
  - **Added `bilateralDenoise`**, using the newly implemented `BilateralFilter` algorithm.
 ### `vision.ds`
 
  - Added `Array2D`
+ - Added `Kernal2D.LaplacianPositive`
+ - Added `Kernal2D.LaplacianNegative`
 
 ### `vision.tools`
 

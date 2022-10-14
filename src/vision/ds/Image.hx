@@ -156,7 +156,7 @@ abstract Image(ByteArray) {
 			X (0.5)                                        
 		```
 
-		First, we're going to calculate the actual fraction - the means, extracting the numbetrs after the decimal point:
+		First, we're going to calculate the actual fraction - the means, extracting the numbers after the decimal point:
 
 			final xFraction = x - Std.int(x);
 			final yFraction = y - Std.int(y);
@@ -187,11 +187,11 @@ abstract Image(ByteArray) {
 		if (!hasPixel(Math.ceil(x), Math.ceil(y)))
 			throw new OutOfBounds(cast this, {x: x, y: y});
 		#end
-		final yfrac = y - Std.int(y), xfrac = x - Std.int(x);
-		final red =  Std.int((1 - yfrac) * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y)).red + xfrac * getPixel(Std.int(x) + 1, Std.int(y)).red) + yfrac * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1).red + xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1).red));
-		final green =  Std.int((1 - yfrac) * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y)).green + xfrac * getPixel(Std.int(x) + 1, Std.int(y)).green) + yfrac * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1).green + xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1).green));
-		final blue =  Std.int((1 - yfrac) * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y)).blue + xfrac * getPixel(Std.int(x) + 1, Std.int(y)).blue) + yfrac * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1).blue + xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1).blue));
-		final alpha =  Std.int((1 - yfrac) * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y)).alpha + xfrac * getPixel(Std.int(x) + 1, Std.int(y)).alpha) + yfrac * ((1 - xfrac) * getPixel(Std.int(x), Std.int(y) + 1).alpha + xfrac * getPixel(Std.int(x) + 1, Std.int(y) + 1).alpha));
+		final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
+		final red =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).red) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).red));
+		final green =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).green + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).green) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).green + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).green));
+		final blue =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).blue + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).blue) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).blue + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).blue));
+		final alpha =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).alpha + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).alpha) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).alpha + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).alpha));
 		return Color.fromRGBA(red, green, blue, alpha);
 	}
 
@@ -258,7 +258,7 @@ abstract Image(ByteArray) {
 	}
 
 	/**
-		Sets the color of a pixel, but doesnt completely overwrite the pixel:
+		Sets the color of a pixel, but doesn't completely overwrite the pixel:
 
 		- if the color of the new pixel is the same as the old pixel, the old pixel is kept.
 		- if the alpha of the new pixel is 0, the old pixel is kept.
@@ -376,7 +376,7 @@ abstract Image(ByteArray) {
 	}
 
 	/**
-		Draws an infine line specified by a Ray2D object.
+		Draws an intine line specified by a Ray2D object.
 
 		**Notice** - The (0, 0) point is **not** the same is `image.getPixel(0, 0)`,
 		but rather the bottom left corner of the image - `image.getPixel(0, image.height - 1)`.
@@ -419,7 +419,7 @@ abstract Image(ByteArray) {
 		Draws a `Line2D` object using the given color.
 
 		If the line segment is not completely within the image, 
-		it doesnt throw an error, but just draws the part of the 
+		it doesn't throw an error, but just draws the part of the 
 		line segment that is within the image.
 
 		@param line The line segment to draw.
@@ -818,7 +818,7 @@ abstract Image(ByteArray) {
 	}
 
 	//--------------------------------------------------------------------------
-	// General Manipuation
+	// General Manipulation
 	//--------------------------------------------------------------------------
 
 	public function mirror():Image {
@@ -848,10 +848,10 @@ abstract Image(ByteArray) {
 			case NearestNeighbor:
 				{
 					var image = new Image(newWidth, newHeight);
-					var xMulitiplier = image.width / width;
-					var yMulitiplier = image.height / height;
+					var xMultiplier = image.width / width;
+					var yMultiplier = image.height / height;
 					forEachPixel((x, y, color) -> {
-						var color = image.getPixel(MathTools.floor(x * xMulitiplier), MathTools.floor(y * yMulitiplier));
+						var color = image.getPixel(MathTools.floor(x * xMultiplier), MathTools.floor(y * yMultiplier));
 						image.setPixel(x, y, color);
 					});
 				}
@@ -861,14 +861,14 @@ abstract Image(ByteArray) {
 	}
 
 	//--------------------------------------------------------------------------
-	// Convinience
+	// Convenience
 	//--------------------------------------------------------------------------
 
 	/**
 		Gets the image as a string.
 
-		@param special When using the `Console.hx` haxelib, images can be prined to the console
-		with color. set this to false if you dont want this to happen. Set to `true` by default.
+		@param special When using the `Console.hx` haxelib, images can be printed to the console
+		with color. set this to false if you don't want this to happen. Set to `true` by default.
 	**/
 	public function toString(?special:Bool = true):String {
 		if (!special) {

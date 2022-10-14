@@ -1,4 +1,4 @@
-package vision.ds.simple;
+package vision.ds.specifics;
 
 enum AlgorithmSettings {
 	/**Lowest quality, best performance**/
@@ -6,7 +6,7 @@ enum AlgorithmSettings {
 	/**Low quality, great performance**/
 	Low_Fast;
 	/**Medium quality, Medium performance**/
-	Medium_Intermidiate;
+	Medium_Intermediate;
 	/**High quality, worse performance**/
 	High_Slow;
 	/**Highest quality, worst performance**/

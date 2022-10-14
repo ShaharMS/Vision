@@ -47,15 +47,15 @@ class ImageTools {
 
 		@returns the image object.
 		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
-		@throws ByteBlittingFailed Thrown when a loaded image's pixel data is curropted, but the image type is identified (png, jpg...)
-		@throws LoadingFailed Thrown when trying to load a currupted file with a known filetype.
+		@throws ByteBlittingFailed Thrown when a loaded image's pixel data is corrupted, but the image type is identified (png, jpg...)
+		@throws LoadingFailed Thrown when trying to load a corrupted file with a known filetype.
 	**/
 	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
 		#if sys
 			#if format
 				if (path.contains("://") && path.split(".").pop().toUpperCase() == "PNG") {
-					var httpreq = new sys.Http(path);
-					httpreq.onBytes = (data) -> {
+					var httpRequest = new sys.Http(path);
+					httpRequest.onBytes = (data) -> {
 						try {
 							var reader = new format.png.Reader(new haxe.io.BytesInput(data));
 							var data = reader.read();
@@ -75,10 +75,10 @@ class ImageTools {
 
 						onComplete(image);
 					}
-					httpreq.onError = msg -> {
+					httpRequest.onError = msg -> {
 						trace(msg);
 					}
-					httpreq.request();
+					httpRequest.request();
 				
 				} else if (path.split(".").pop().toUpperCase() == "PNG") {
 					try {
@@ -111,7 +111,7 @@ class ImageTools {
 		#else
 			var imgElement = js.Browser.document.createImageElement();
 			imgElement.src = path;
-			imgElement.crossOrigin = "Anonymus";
+			imgElement.crossOrigin = "Anonymous";
 			imgElement.onload = () -> {
 
 				var canvas = js.Browser.document.createCanvasElement();
@@ -143,7 +143,7 @@ class ImageTools {
 		Adds an `Image` to the screen.
 
 		**Currently, this function only works on the web**, and
-		it uses an absoultly positioned canvas element.
+		it uses an absolutely positioned canvas element.
 
 		#### Notice - JS Only
 

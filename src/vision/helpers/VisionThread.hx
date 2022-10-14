@@ -1,6 +1,6 @@
 package vision.helpers;
 
-import vision.exceptions.MultithreadFaliure;
+import vision.exceptions.MultithreadFailure;
 import haxe.Exception;
 #if js
 import js.lib.Promise;
@@ -51,7 +51,7 @@ class VisionThread {
 		this.job = job;
 		count = COUNT++;
 		onFailed = (d:Exception) -> {
-			throw new MultithreadFaliure(count, d);
+			throw new MultithreadFailure(count, d);
 		};
 		onDone = () -> {};
 	}

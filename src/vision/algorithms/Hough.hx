@@ -52,7 +52,7 @@ class Hough {
 	**/
 	public static function toHoughSpace(image:Image):HoughSpace {
 		final rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
-		final accum:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
+		final accumulator:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
 		final houghSpace = new Image(181, Std.int(rhoMax), Color.WHITE);
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
@@ -62,7 +62,7 @@ class Hough {
 					var thetaIndex = 0;
 					while (thetaIndex < 180) {
 						rho = x * Math.cos(theta) + y * Math.sin(theta);
-						accum.incrementCell(rho, thetaIndex);
+						accumulator.incrementCell(rho, thetaIndex);
 						houghSpace.paintPixel(thetaIndex, Std.int(rho), Color.fromRGBAFloat(0, 0, 0, 0.01));
 						theta += Math.PI / 360;
 						thetaIndex++;
@@ -70,7 +70,7 @@ class Hough {
 				}
 			}
 		}
-		return {accumulator: accum, image: houghSpace};
+		return {accumulator: accumulator, image: houghSpace};
 	}
 
 	public static function detectMaximas(space:HoughSpace, ?threshold:Int = 30):HoughSpace {
@@ -87,23 +87,23 @@ class Hough {
 			var theta = degreesToRadians(max.y);
 			var r = max.x;
 
-			final tsin = Math.sin(theta);
-			final tcos = Math.cos(theta);
+			final thetaSin = Math.sin(theta);
+			final thetaCos = Math.cos(theta);
 
 			if (theta < Math.PI * 0.25 || theta > Math.PI * 0.75) {
 				var x1 = 0, y1 = 0;
 				var x2 = 0, y2 = space.image.height - 1;
 
-				x1 = cast((((r - houghHeight) - ((y1 - centerY) * tsin)) / tcos) + centerX);
-				x2 = cast((((r - houghHeight) - ((y2 - centerY) * tsin)) / tcos) + centerX);
+				x1 = cast((((r - houghHeight) - ((y1 - centerY) * thetaSin)) / thetaCos) + centerX);
+				x2 = cast((((r - houghHeight) - ((y2 - centerY) * thetaSin)) / thetaCos) + centerX);
 
 				space.rays.push(Ray2D.from2Points({x: x1, y: y1}, {x: x2, y: y2}));
 			} else {
 				var x1 = 0, y1 = 0;
 				var x2 = space.image.width - 1, y2 = 0;
 
-				y1 = cast((((r - houghHeight) - ((x1 - centerX) * tcos)) / tsin) + centerY);
-				y2 = cast((((r - houghHeight) - ((x2 - centerX) * tcos)) / tsin) + centerY);
+				y1 = cast((((r - houghHeight) - ((x1 - centerX) * thetaCos)) / thetaSin) + centerY);
+				y2 = cast((((r - houghHeight) - ((x2 - centerX) * thetaCos)) / thetaSin) + centerY);
 
 				space.rays.push(Ray2D.from2Points({x: x1, y: y1}, {x: x2, y: y2}));
 			}
