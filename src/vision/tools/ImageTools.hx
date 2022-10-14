@@ -46,86 +46,96 @@ class ImageTools {
 		@param path the path to the image file. on js, it can only be a relative path/a URL
 
 		@returns the image object.
+		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
+		@throws ByteBlittingFailed Thrown when a loaded image's pixel data is curropted, but the image type is identified (png, jpg...)
+		@throws LoadingFailed Thrown when trying to load a currupted file with a known filetype.
 	**/
 	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
-		#if (sys && format)
-		if (path.contains("://")) {
-			var httpreq = new sys.Http(path);
-			httpreq.onBytes = (data) -> {
-				try {
-					var reader = new format.png.Reader(new haxe.io.BytesInput(data));
-					var data = reader.read();
-					var header = format.png.Tools.getHeader(data);
-					var bytes = format.png.Tools.extract32(data);
-					format.png.Tools.reverseBytes(bytes);
-					image = new Image(header.width, header.height);
-					try {image.underlying.blit(4, bytes, 0, bytes.length - 1);} catch (e) trace(e);
-					
-				} catch (e:haxe.Exception) {
-					#if vision_quiet
-					onComplete(new Image(100, 100));
-					#else
-					throw "PNG Loading Failed: " + e.message;
-					#end
-				}
+		#if sys
+			#if format
+				if (path.contains("://") && path.split(".").pop().toUpperCase() == "PNG") {
+					var httpreq = new sys.Http(path);
+					httpreq.onBytes = (data) -> {
+						try {
+							var reader = new format.png.Reader(new haxe.io.BytesInput(data));
+							var data = reader.read();
+							var header = format.png.Tools.getHeader(data);
+							var bytes = format.png.Tools.extract32(data);
+							format.png.Tools.reverseBytes(bytes);
+							image = new Image(header.width, header.height);
+							try {image.underlying.blit(4, bytes, 0, bytes.length - 1);} catch (e) #if !vision_quiet throw "Byte Blitting Failed: " + e.message; #end
+
+						} catch (e:haxe.Exception) {
+							#if vision_quiet
+								onComplete(new Image(100, 100));
+							#else
+								throw "PNG Loading Failed: " + e.message;
+							#end
+						}
+
+						onComplete(image);
+					}
+					httpreq.onError = msg -> {
+						trace(msg);
+					}
+					httpreq.request();
 				
-				onComplete(image);
-			}
-			httpreq.onError = msg -> {
-				trace(msg);
-			}
-			httpreq.request();
-
-		} else if (path.split(".").pop().toUpperCase() == "PNG") {
-			try {
-				var handle = sys.io.File.getBytes(path);
-				var reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
-				var data = reader.read();
-				var header = format.png.Tools.getHeader(data);
-				var bytes = format.png.Tools.extract32(data);
-				format.png.Tools.reverseBytes(bytes);
-				var image = new Image(header.width, header.height);
-
-				image.underlying.blit(4, bytes, 0, bytes.length);
-
-				onComplete(image);
-
-			} catch (e:haxe.Exception) {
-				#if vision_quiet
-				onComplete(new Image(100, 100));
-				#else
-				throw "PNG Loading Failed.";
+				} else if (path.split(".").pop().toUpperCase() == "PNG") {
+					try {
+						var handle = sys.io.File.getBytes(path);
+						var reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
+						var data = reader.read();
+						var header = format.png.Tools.getHeader(data);
+						var bytes = format.png.Tools.extract32(data);
+						format.png.Tools.reverseBytes(bytes);
+						var image = new Image(header.width, header.height);
+					
+						//copy the ARG bytes from the PNG to the image, without overwriting the first 4 bytes
+						image.underlying.blit(4, bytes, 0, bytes.length);
+					
+						onComplete(image);
+					
+					} catch (e:haxe.Exception) {
+						#if vision_quiet
+							onComplete(new Image(100, 100));
+						#else
+							throw "PNG Loading Failed: " + e.message;
+						#end
+					}
+				} else #if !vision_quiet throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding"); #end
+			#else
+				#if !vision_quiet
+					throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
 				#end
-			}
-		} else #if vision_quiet #else throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding"); #end
+			#end
 		#else
-		var imgElement = js.Browser.document.createImageElement();
-		imgElement.src = path;
-		imgElement.crossOrigin = "Anonymus";
-		imgElement.onload = () -> {
+			var imgElement = js.Browser.document.createImageElement();
+			imgElement.src = path;
+			imgElement.crossOrigin = "Anonymus";
+			imgElement.onload = () -> {
 
-			var canvas = js.Browser.document.createCanvasElement();
+				var canvas = js.Browser.document.createCanvasElement();
 
-			canvas.width = imgElement.width;
-			canvas.height = imgElement.height;
+				canvas.width = imgElement.width;
+				canvas.height = imgElement.height;
 
-			canvas.getContext2d().drawImage(imgElement, 0, 0);
+				canvas.getContext2d().drawImage(imgElement, 0, 0);
 
-			if (image == null) image = new Image(imgElement.width, imgElement.height);
+				if (image == null) image = new Image(imgElement.width, imgElement.height);
 
-			var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
+				var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
 
-			var i = 0;
-			while (i < imageData.data.length) {
-				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 0] = imageData.data[i + 0];
-				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1]  = imageData.data[i + 1];
-				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2]  = imageData.data[i + 2];
-				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 3]  = imageData.data[i + 3];
-				i += 4;
+				var i = 0;
+				while (i < imageData.data.length) {
+					image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 0] = imageData.data[i + 0];
+					image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1]  = imageData.data[i + 1];
+					image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2]  = imageData.data[i + 2];
+					image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 3]  = imageData.data[i + 3];
+					i += 4;
+				}
+
+				onComplete(image);
 			}
-
-			onComplete(image);
-		}
 		#end
 	}
 
@@ -152,32 +162,32 @@ class ImageTools {
 		#if sys
 
 		#else
-		var c = js.Browser.document.createCanvasElement();
+			var c = js.Browser.document.createCanvasElement();
 
-		c.width = image.width;
-		c.height = image.height;
+			c.width = image.width;
+			c.height = image.height;
 
-		var ctx = c.getContext2d();
-		var imageData = ctx.getImageData(0, 0, image.width, image.height);
-		var data = imageData.data;
+			var ctx = c.getContext2d();
+			var imageData = ctx.getImageData(0, 0, image.width, image.height);
+			var data = imageData.data;
 
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				var i = (y * image.width + x) * 4;
-				data[i] = image.underlying[i + (@:privateAccess Image.OFFSET + 1)];
-				data[i + 1] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1];
-				data[i + 2] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2];
-				data[i + 3] = 255;
+			for (x in 0...image.width) {
+				for (y in 0...image.height) {
+					var i = (y * image.width + x) * 4;
+					data[i] = image.underlying[i + (@:privateAccess Image.OFFSET + 1)];
+					data[i + 1] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1];
+					data[i + 2] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2];
+					data[i + 3] = 255;
+				}
 			}
-		}
 
-		ctx.putImageData(imageData, 0, 0);
+			ctx.putImageData(imageData, 0, 0);
 
-		c.style.position = "absolute";
-		c.style.top = (y + units.yUnits) != null ? y + units.yUnits : y + "px";
-		c.style.left = (x + units.xUnits) != null ? x + units.xUnits : x + "px";
+			c.style.position = "absolute";
+			c.style.top = (y + units.yUnits) != null ? y + units.yUnits : y + "px";
+			c.style.left = (x + units.xUnits) != null ? x + units.xUnits : x + "px";
 
-		js.Browser.document.body.appendChild(c);
+			js.Browser.document.body.appendChild(c);
 		#end
 		return image;
 	}
