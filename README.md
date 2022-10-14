@@ -154,6 +154,8 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `invert()`
  - [x] `sharpen()`
  - [x] `deepfry()` 
+ - [ ] `erode()`
+ - [ ] `dilate()`
  - [x] `convolve()`
  - [x] `contrast()`
  - [x] `normalize()`
@@ -166,6 +168,8 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `convolutionRidgeDetection()`
  - [ ] *`robertEdgeDetection()`*
  - [x] `robertEdgeDiffOperator`
+ - [ ] `laplacianEdgeDetection`
+ - [ ] `laplacianEdgeDiffOperator`
  - [x] `perwittEdgeDetection()`
  - [x] `perwittEdgeDiffOperator()`
  - [x] `sobelEdgeDiffOperator()`
