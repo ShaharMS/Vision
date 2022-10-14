@@ -168,8 +168,8 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `convolutionRidgeDetection()`
  - [ ] *`robertEdgeDetection()`*
  - [x] `robertEdgeDiffOperator`
- - [ ] `laplacianEdgeDetection`
- - [ ] `laplacianEdgeDiffOperator`
+ - [x] `laplacianEdgeDetection`
+ - [x] `laplacianEdgeDiffOperator`
  - [x] `perwittEdgeDetection()`
  - [x] `perwittEdgeDiffOperator()`
  - [x] `sobelEdgeDiffOperator()`
@@ -183,43 +183,6 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `bilateralDenoise()`
  - [ ] `nonLocalMeansDenoise` 
 
-#### algorithms:
-
- - Hough Transform
-    - [x] hough space generation
-    - [ ] *adaptive hough space generation*
-    - [ ] *line segment finder*
-    - [ ] *Circle finder*
-
- - Gaussian
-    - [x] 3x3 kernal generation
-    - [x] 5x5 kernal generation
-    - [x] 7x7 kernal generation
-    - [x] 9x9 kernal generation
-    - [x] custom size kernal generation
-
- - Canny
-    - [x] grayscale
-    - [x] gaussian blur
-    - [x] Sobel filter
-    - [x] non-max suppression 
-    - [x] hysteresis
-  
- - Sobel
-    - [x] Sobel filter
-    - [x] Sobel edge detection
-
- - Perwitt
-    - [x] Perwitt filter
-    - [x] Perwitt edge detection
-
- - Radix
-   - [x] Counting sort
-   - [x] Radix sort 
- 
- - Bilinear
-   - [x] interpolate 
-   
 #### class `Image`:
 
  - [x] `getPixel()`

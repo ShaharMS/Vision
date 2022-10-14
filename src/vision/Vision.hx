@@ -1,5 +1,6 @@
 package vision;
 
+import vision.algorithms.Laplacian;
 import vision.ds.specifics.ColorImportanceOrder;
 import vision.algorithms.BilateralFilter;
 import vision.algorithms.RobertsCross;
@@ -396,52 +397,6 @@ class Vision {
 	}
 
 	/**
-		Detects edges within an image.
-
-		Edges are detected using the Sobel operator, going from left to right and top to bottom.
-
-		To improve angle related errors with the sobel operator, Scharr's optimized version is used.
-
-		There's no need to pre-process the image, just throw it on it and it will do the rest
-		(ie. it doesn't need to be grayscaled/black and white):
-
-		| Before | After |
-		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sobelEdgeDetection.png)|
-
-		@param image The image to be processed.
-		@param threshold The threshold for detecting edges. The lower the value, 
-		the more pixels will be considered edges. Default is `500`
-
-		@return The image with edges detected. This image is returned as a new, black and white image.
-	**/
-	public static function sobelEdgeDetection(image:Image, threshold:Float = 500):Image {
-		return Sobel.detectEdges(image, threshold);
-	}
-
-	/**
-		Detects edges within an image.
-
-		Edges are detected using the Perwitt operator, going from left to right and top to bottom.
-
-		There's no need to pre-process the image, just throw it on it and it will do the rest
-		(ie. it doesn't need to be grayscaled/black and white):
-
-		| Before | After |
-		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-perwittEdgeDetection.png)|
-
-		@param image The image to be processed.
-		@param threshold The threshold for detecting edges. The lower the value, 
-		the more pixels will be considered edges. Default is `100`
-
-		@return The image with edges detected. This image is returned as a new, black and white image.
-	**/
-	public static function perwittEdgeDetection(image:Image, threshold:Float = 100):Image {
-		return Perwitt.detectEdges(image, threshold);
-	}
-
-	/**
 		Uses an iterative, nearest-neighbor style algorithm to blur an image.
 
 		The algorithm is very simple and quite fast, but also very sensitive 
@@ -515,38 +470,6 @@ class Vision {
 		});
 
 		return image = median;
-	}
-
-	/**
-		Uses Canny's edge multi stage edge detection algorithm to detect edges in an image,
-		while reducing noise.
-
-		This algorithm works by first applying a gaussian blur to the image, and then
-		applying more filters to differentiate between strong edges, weak edges and non-edges.
-
-		Example:
-
-		| Original | Edge Detected (default settings) |
-		|---|:---:|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-cannyEdgeDetection.png)|
-
-		@param image The image to be edge detected.
-		@param sigma The sigma value to be used in the gaussian blur.
-		@param kernalSize This is used for the second step of the canny edge detection - gaussian blur. unless you want to improve performance, this should remain unchanged.
-		@param lowThreshold The low threshold value to be used in the hysteresis thresholding.
-		@param highThreshold The high threshold value to be used in the hysteresis thresholding.
-
-		@throws InvalidGaussianKernalSize thrown if the `kernalSize` is negative/divisible by `2`.
-		@return The edge detected image.
-	**/
-	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, kernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05, highThreshold:Float = 0.2):Image {
-		var cannyObject:CannyObject = image.clone();
-		return blackAndWhite(cannyObject.grayscale()
-			.applyGaussian(kernalSize, sigma)
-			.applySobelFilters()
-			.nonMaxSuppression()
-			.applyHysteresis(highThreshold, lowThreshold),
-			40);
 	}
 
 	/**
@@ -668,6 +591,130 @@ class Vision {
 	**/
 	public static function robertEdgeDiffOperator(image:Image) {
 		return RobertsCross.convolveWithRobertsCross(grayscale(image.clone()));
+	}
+
+	/**
+		Applies the laplacian filter to an image.
+		
+		The image doesn't have to get grayscaled before being passed 
+		to this function.
+		
+		It is different from the `perwittEdgeDetection` function, since
+		it doesn't try to threshold the resulting image to extract the strong edges,
+		and leaves that information in. Example of this filter in action:
+		
+		| Original | After Filtering (Positive) | After Filtering (Negative) |
+		|---|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20true%29.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20true%29.png)|
+
+		@param image The image to be operated on
+		@param filterPositive Which version of the laplacian filter should the function use: the negative (detects "outward" edges), or the positive (detects "inward" edges). Default is positive (`true`).
+		@return A new image, containing the gradients of the edges as whitened pixels.
+	**/
+	public static function laplacianEdgeDiffOperator(image:Image, filterPositive:Bool = true) {
+		return Laplacian.convolveWithLaplacianOperator(image.clone(), filterPositive);
+	}
+
+	/**
+		Uses Canny's edge multi stage edge detection algorithm to detect edges in an image,
+		while reducing noise.
+
+		This algorithm works by first applying a gaussian blur to the image, and then
+		applying more filters to differentiate between strong edges, weak edges and non-edges.
+
+		Example:
+
+		| Original | Edge Detected (default settings) |
+		|---|:---:|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-cannyEdgeDetection.png)|
+
+		@param image The image to be edge detected.
+		@param sigma The sigma value to be used in the gaussian blur.
+		@param kernalSize This is used for the second step of the canny edge detection - gaussian blur. unless you want to improve performance, this should remain unchanged.
+		@param lowThreshold The low threshold value to be used in the hysteresis thresholding.
+		@param highThreshold The high threshold value to be used in the hysteresis thresholding.
+
+		@throws InvalidGaussianKernalSize thrown if the `kernalSize` is negative/divisible by `2`.
+		@return The edge detected image.
+	**/
+	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, kernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05, highThreshold:Float = 0.2):Image {
+		var cannyObject:CannyObject = image.clone();
+		return blackAndWhite(cannyObject.grayscale()
+			.applyGaussian(kernalSize, sigma)
+			.applySobelFilters()
+			.nonMaxSuppression()
+			.applyHysteresis(highThreshold, lowThreshold),
+			40);
+	}
+
+	/**
+		Detects edges within an image.
+
+		Edges are detected using the Sobel operator, going from left to right and top to bottom.
+
+		To improve angle related errors with the sobel operator, Scharr's optimized version is used.
+
+		There's no need to pre-process the image, just throw it on it and it will do the rest
+		(ie. it doesn't need to be grayscaled/black and white):
+
+		| Before | After |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sobelEdgeDetection.png)|
+
+		@param image The image to be processed.
+		@param threshold The threshold for detecting edges. The lower the value, 
+		the more pixels will be considered edges. Default is `500`
+
+		@return The image with edges detected. This image is returned as a new, black and white image.
+	**/
+	public static function sobelEdgeDetection(image:Image, threshold:Float = 500):Image {
+		return Sobel.detectEdges(image, threshold);
+	}
+
+	/**
+		Detects edges within an image.
+
+		Edges are detected using the Perwitt operator, going from left to right and top to bottom.
+
+		There's no need to pre-process the image, just throw it on it and it will do the rest
+		(ie. it doesn't need to be grayscaled/black and white):
+
+		| Before | After |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-perwittEdgeDetection.png)|
+
+		@param image The image to be processed.
+		@param threshold The threshold for detecting edges. The lower the value, 
+		the more pixels will be considered edges. Default is `100`
+
+		@return The image with edges detected. This image is returned as a new, black and white image.
+	**/
+	public static function perwittEdgeDetection(image:Image, threshold:Float = 100):Image {
+		return Perwitt.detectEdges(image, threshold);
+	}
+
+	/**
+		Detects edges within an image, using a gaussian blur & the laplacian filter.
+
+		This algorithm works a bit like a combination of canny & perwitt edge detection, by blurring the image first to remove noise, and then
+		going over the image with a kernal. With the default settings. This algorithm is the fastest when working with smaller images.
+
+		There's no need to pre-process the image, just throw it into the function it will do the rest
+		(ie. the image doesn't need to be grayscale/black and white):
+
+		| Original | After Filtering (Positive) | After Filtering (Negative) |
+		|---|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianOfGaussianEdgeDetection%28filterPositive%20=%20true%29.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianOfGaussianEdgeDetection%28filterPositive%20=%20true%29.png)|
+
+		@param image The image to be processed.
+		@param threshold The threshold for detecting edges. The lower the value, the more pixels will be considered edges. Default is `5`.
+		@param filterPositive Which version of the laplacian filter should the function use: the negative (detects "outward" edges), or the positive (detects "inward" edges). Default is positive (`true`).
+		@param sigma The sigma value to use for the gaussian blur. a lower value will focus the kernal more on the center pixel, while a higher value will shift focus to the surrounding pixels more. **The higher the value, the blurrier the image.** Default is `1`.
+		@param kernalSize The size of the kernal (`width` & `height`) - a kernal size of `7`/ will produce a `7x7` kernal. Default is `GaussianKernalSize.X3`.
+		@return A new, black and white image, with white pixels being the detected edges.
+	**/
+	public static function laplacianOfGaussianEdgeDetection(image:Image, ?threshold:Int = 2, ?filterPositive:Bool = true, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = X3) {
+		return Laplacian.laplacianOfGaussian(image, kernalSize, sigma, threshold, filterPositive);
 	}
 
 	/**

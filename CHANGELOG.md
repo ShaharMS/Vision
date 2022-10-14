@@ -5,7 +5,9 @@
  - **Added `erode()`**
  - **Added `dilate()`**
  - **Added `robertEdgeDiffOperator()`**, using the newly implemented `RobertsCross` algorithm.
- - **Added `bilateralDenoise`**, using the newly implemented `BilateralFilter` algorithm.
+ - **Added `laplacianEdgeDiffOperator()`**
+ - **Added `laplacianOfGaussianEdgeDetection()`**
+ - **Added `bilateralDenoise()`**, using the newly implemented `BilateralFilter` algorithm.
 ### `vision.ds`
 
  - Added `Array2D`

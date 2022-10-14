@@ -1,5 +1,6 @@
 package;
 
+import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;
 import haxe.ds.ArraySort;
@@ -42,6 +43,8 @@ class Main {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
+			printImage(Laplacian.convolveWithLaplacianOperator(image.clone(), true));
+			printImage(Laplacian.laplacianOfGaussian(image.clone(), 3, 1, 2, false));
 			#if simple_tests
 			start = haxe.Timer.stamp();
 			printImage(Vision.blackAndWhite(image.clone()));
@@ -101,6 +104,10 @@ class Main {
 			printImage(image.clone().robertEdgeDiffOperator());
 			end = haxe.Timer.stamp();
 			trace("Robert Filter took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().laplacianEdgeDiffOperator());
+			end = haxe.Timer.stamp();
+			trace("Laplacian Filter took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 
 			#if noise_tests
@@ -153,7 +160,10 @@ class Main {
 			printImage(Vision.convolutionRidgeDetection(image.clone(), true));
 			end = haxe.Timer.stamp();
 			trace("Ridge detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			
+			start = haxe.Timer.stamp();
+			printImage(image.clone().laplacianOfGaussianEdgeDetection());
+			end = haxe.Timer.stamp();
+			trace("Laplacian edge detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 		});
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png", image ->
@@ -278,7 +288,7 @@ class Main {
 		}
 		#end
 
-		#if eval
+		#if (eval && compile_unit_tests)
 		var content = sys.io.File.getContent("C:\\Users\\shaha\\Desktop\\Github\\Vision\\src\\vision\\Vision.hx");
 		var cases = TestCaseGenerator.generateFromCode(content);
 		for (i in 0...cases.length) {
