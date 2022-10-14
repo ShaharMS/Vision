@@ -33,12 +33,12 @@ class Sobel {
 
 				final gy = ((-3 * pos00) + (-10 * pos01) + (-3 * pos02)) + ((0 * pos10) + (0 * pos11) + (0 * pos12)) + ((3 * pos20) + (10 * pos21) + (3 * pos22));
 
-				final gval = Math.sqrt((gx * gx) + (gy * gy));
-				final g = Std.int(gval);
+				final gradientFloatValue = Math.sqrt((gx * gx) + (gy * gy));
+				final gradient = Std.int(gradientFloatValue);
 
-				if (g > maxGradient) maxGradient = g;
+				if (gradient > maxGradient) maxGradient = gradient;
 
-				final rgb:Int = Std.int(g * (255 / maxGradient));
+				final rgb:Int = Std.int(gradient * (255 / maxGradient));
 				//turn into ARGB
 				edgeColors.setPixel(i, j, 0xff000000 | (rgb << 16) | (rgb << 8) | rgb);
 			}
@@ -70,19 +70,19 @@ class Sobel {
 	**/
 	public static function detectEdges(image:Image, threshold:Float) {
 		final edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
-		final blacknwhite = Vision.grayscale(image.clone());
-		for (x in 0...blacknwhite.width) {
-			for (y in 0...blacknwhite.height) {
+		final blackAndWhite = Vision.grayscale(image.clone());
+		for (x in 0...blackAndWhite.width) {
+			for (y in 0...blackAndWhite.height) {
 				final neighbors = [
-					blacknwhite.getSafePixel(x - 1, y - 1),
-					blacknwhite.getSafePixel(x, y - 1),
-					blacknwhite.getSafePixel(x + 1, y - 1),
-					blacknwhite.getSafePixel(x - 1, y),
-					blacknwhite.getSafePixel(x, y),
-					blacknwhite.getSafePixel(x + 1, y),
-					blacknwhite.getSafePixel(x - 1, y + 1),
-					blacknwhite.getSafePixel(x, y + 1),
-					blacknwhite.getSafePixel(x + 1, y + 1)
+					blackAndWhite.getSafePixel(x - 1, y - 1),
+					blackAndWhite.getSafePixel(x, y - 1),
+					blackAndWhite.getSafePixel(x + 1, y - 1),
+					blackAndWhite.getSafePixel(x - 1, y),
+					blackAndWhite.getSafePixel(x, y),
+					blackAndWhite.getSafePixel(x + 1, y),
+					blackAndWhite.getSafePixel(x - 1, y + 1),
+					blackAndWhite.getSafePixel(x, y + 1),
+					blackAndWhite.getSafePixel(x + 1, y + 1)
 				];
 				final sobelCalculationIterationLTR = neighbors[0].red * -3
 					+ neighbors[3].red * -10 + neighbors[6].red * -3 + neighbors[2].red * 3 + neighbors[5].red * 10 + neighbors[8].red * 3;

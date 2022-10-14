@@ -20,7 +20,7 @@ using vision.tools.MathTools;
 	- `grayscale()`
 	- `applyGaussian()`
 	- `applySobelFilters()`
-	- `nonMaxSuppresion()`
+	- `nonMaxSuppression()`
 	- `applyHysteresis()`
 **/
 class Canny {

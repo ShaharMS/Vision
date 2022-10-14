@@ -12,7 +12,7 @@ import vision.tools.MathTools;
 
 	(ρ - rho, θ - theta)
 
-	the underlying array will be accesed with `array[rho][theta]`
+	the underlying array will be accessed with `array[rho][theta]`
 **/
 abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Array<Int>> {
 	public var rhoMax(get, never):Int;
@@ -51,7 +51,7 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
 	}
 
 	/**
-	 * Setss the value of the cell located in `rho`,`theta`.
+	 * Sets the value of the cell located in `rho`,`theta`.
 	 * 
 	 * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.
 	 */
@@ -60,7 +60,7 @@ abstract HoughAccumulator(Array<Array<Int>>) from Array<Array<Int>> to Array<Arr
 	}
 
 	/**
-	 * Retireves the positions of all the cell containing a value which is a local maximum
+	 * Retrieves the positions of all the cell containing a value which is a local maximum
 	 * 
 	 * @return an array of `IntPoint2D`s, containing the locations of the cells. `point.x` is `rho`, `point.y` is the theta's index.
 	 */

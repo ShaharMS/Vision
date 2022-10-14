@@ -39,16 +39,14 @@ class Perwitt {
 					+ ((0 * val10) + (0 * val11) + (0 * val12))
 					+ ((1 * val20) + (2 * val21) + (1 * val22));
 
-				var gval = Math.sqrt((gx * gx) + (gy * gy));
-				var g = Std.int(gval);
-
-				if (maxGradient < g) {
-					maxGradient = g;
-				}
+				final gradientFloatValue = Math.sqrt((gx * gx) + (gy * gy));
+				final gradient = Std.int(gradientFloatValue);
+	
+				if (gradient > maxGradient) maxGradient = gradient;
 
 				if (edgeColors[i] == null)
 					edgeColors[i] = [];
-				edgeColors[i][j] = g;
+				edgeColors[i][j] = gradient;
 			}
 		}
 
@@ -108,19 +106,19 @@ class Perwitt {
 		
 
 			var edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
-			var blacknwhite = Vision.grayscale(image.clone());
-			for (x in 0...blacknwhite.width) {
-				for (y in 0...blacknwhite.height) {
+			var blackAndWhite = Vision.grayscale(image.clone());
+			for (x in 0...blackAndWhite.width) {
+				for (y in 0...blackAndWhite.height) {
 					var neighbors = [
-						blacknwhite.getSafePixel(x - 1, y - 1),
-						blacknwhite.getSafePixel(x, y - 1),
-						blacknwhite.getSafePixel(x + 1, y - 1),
-						blacknwhite.getSafePixel(x - 1, y),
-						blacknwhite.getSafePixel(x, y),
-						blacknwhite.getSafePixel(x + 1, y),
-						blacknwhite.getSafePixel(x - 1, y + 1),
-						blacknwhite.getSafePixel(x, y + 1),
-						blacknwhite.getSafePixel(x + 1, y + 1)
+						blackAndWhite.getSafePixel(x - 1, y - 1),
+						blackAndWhite.getSafePixel(x, y - 1),
+						blackAndWhite.getSafePixel(x + 1, y - 1),
+						blackAndWhite.getSafePixel(x - 1, y),
+						blackAndWhite.getSafePixel(x, y),
+						blackAndWhite.getSafePixel(x + 1, y),
+						blackAndWhite.getSafePixel(x - 1, y + 1),
+						blackAndWhite.getSafePixel(x, y + 1),
+						blackAndWhite.getSafePixel(x + 1, y + 1)
 					];
 					final perwittCalculationIterationLTR = neighbors[0].red * -1
 						+ neighbors[3].red * -1 + neighbors[6].red * -1 + neighbors[2].red * 1 + neighbors[5].red * 1 + neighbors[8].red * 1;

@@ -3,7 +3,7 @@ package vision.ds;
 import vision.tools.MathTools;
 
 /**
-	Represents a 2-dimensional ray on the cartesian coordinate sysetm
+	Represents a 2-dimensional ray on the cartesian coordinate system
 **/
 class Ray2D {
 

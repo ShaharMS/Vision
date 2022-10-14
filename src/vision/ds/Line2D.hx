@@ -13,17 +13,17 @@ class Line2D {
 	public var length(get, null):Float;
 
 	/**
-		The slope of the line streched from `start` to `end`
+		The slope of the line stretched from `start` to `end`
 	**/
 	public var slope(default, null):Float;
 
 	/**
-		The degrees of the line streched from `start` to `end`
+		The degrees of the line stretched from `start` to `end`
 	**/
 	public var degrees(default, null):Float;
 
 	/**
-		The radians of the line streched from `start` to `end`
+		The radians of the line stretched from `start` to `end`
 	**/
 	public var radians(default, null):Float;
 

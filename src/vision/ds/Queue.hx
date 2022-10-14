@@ -86,7 +86,7 @@ class Queue<T> {
 		Whether or not this `Queue` contains `value`.
 
 		This function iterates over the elements from the end of the queue to the start,
-		and checks for equality using standart equality (`==`).
+		and checks for equality using standard equality (`==`).
 
 		@param value the value to check with
 		@returns Whether or not `value` is present in this `Queue`.
