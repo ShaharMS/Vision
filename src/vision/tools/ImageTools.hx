@@ -1,5 +1,8 @@
 package vision.tools;
 
+import vision.ds.ImageFormat;
+import format.swf.Data.LineStyle;
+import format.png.Tools;
 import vision.ds.Array2D;
 import vision.exceptions.Unimplemented;
 import vision.ds.ImageResizeAlgorithm;
@@ -25,7 +28,6 @@ using StringTools;
 		using vision.tools.ImageTools;
 **/
 class ImageTools {
-	
 	/**
 	 * The default algorithm to use when resizing an image by "brute force" (setting its `width`/`height` when `vision_allow_resize` is defined)
 	 */
@@ -53,89 +55,114 @@ class ImageTools {
 	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
 		#if sys
 			#if format
-				if (path.contains("://") && path.split(".").pop().toUpperCase() == "PNG") {
-					var httpRequest = new sys.Http(path);
-					httpRequest.onBytes = (data) -> {
-						try {
-							var reader = new format.png.Reader(new haxe.io.BytesInput(data));
-							var data = reader.read();
-							var header = format.png.Tools.getHeader(data);
-							var bytes = format.png.Tools.extract32(data);
-							format.png.Tools.reverseBytes(bytes);
-							image = new Image(header.width, header.height);
-							try {image.underlying.blit(4, bytes, 0, bytes.length - 1);} catch (e) #if !vision_quiet throw "Byte Blitting Failed: " + e.message; #end
-
-						} catch (e:haxe.Exception) {
-							#if vision_quiet
-								onComplete(new Image(100, 100));
-							#else
-								throw "PNG Loading Failed: " + e.message;
-							#end
-						}
-
-						onComplete(image);
-					}
-					httpRequest.onError = msg -> {
-						trace(msg);
-					}
-					httpRequest.request();
-				
-				} else if (path.split(".").pop().toUpperCase() == "PNG") {
+			if (path.contains("://") && path.split(".").pop().toUpperCase() == "PNG") {
+				var httpRequest = new sys.Http(path);
+				httpRequest.onBytes = (data) -> {
 					try {
-						var handle = sys.io.File.getBytes(path);
-						var reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
+						var reader = new format.png.Reader(new haxe.io.BytesInput(data));
 						var data = reader.read();
 						var header = format.png.Tools.getHeader(data);
 						var bytes = format.png.Tools.extract32(data);
 						format.png.Tools.reverseBytes(bytes);
-						var image = new Image(header.width, header.height);
-					
-						//copy the ARG bytes from the PNG to the image, without overwriting the first 4 bytes
-						image.underlying.blit(4, bytes, 0, bytes.length);
-					
-						onComplete(image);
-					
+						image = new Image(header.width, header.height);
+						try {
+							image.underlying.blit(4, bytes, 0, bytes.length - 1);
+						} catch (e) #if !vision_quiet throw "Byte Blitting Failed: " + e.message; #end
 					} catch (e:haxe.Exception) {
 						#if vision_quiet
-							onComplete(new Image(100, 100));
+						onComplete(new Image(100, 100));
 						#else
-							throw "PNG Loading Failed: " + e.message;
+						throw "PNG Loading Failed: " + e.message;
 						#end
 					}
-				} else #if !vision_quiet throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding"); #end
+
+					onComplete(image);
+				}
+				httpRequest.onError = msg -> {
+					trace(msg);
+				}
+				httpRequest.request();
+			} else if (path.split(".").pop().toUpperCase() == "PNG") {
+				try {
+					var handle = sys.io.File.getBytes(path);
+					var reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
+					var data = reader.read();
+					var header = format.png.Tools.getHeader(data);
+					var bytes = format.png.Tools.extract32(data);
+					format.png.Tools.reverseBytes(bytes);
+					var image = new Image(header.width, header.height);
+
+					// copy the ARG bytes from the PNG to the image, without overwriting the first 4 bytes
+					image.underlying.blit(4, bytes, 0, bytes.length);
+
+					onComplete(image);
+				} catch (e:haxe.Exception) {
+					#if vision_quiet
+					onComplete(new Image(100, 100));
+					#else
+					throw "PNG Loading Failed: " + e.message;
+					#end
+				}
+			} else #if !vision_quiet throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding"); #end
 			#else
 				#if !vision_quiet
-					throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
+				throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
 				#end
 			#end
 		#else
-			var imgElement = js.Browser.document.createImageElement();
-			imgElement.src = path;
-			imgElement.crossOrigin = "Anonymous";
-			imgElement.onload = () -> {
+		var imgElement = js.Browser.document.createImageElement();
+		imgElement.src = path;
+		imgElement.crossOrigin = "Anonymous";
+		imgElement.onload = () -> {
+			var canvas = js.Browser.document.createCanvasElement();
 
-				var canvas = js.Browser.document.createCanvasElement();
+			canvas.width = imgElement.width;
+			canvas.height = imgElement.height;
 
-				canvas.width = imgElement.width;
-				canvas.height = imgElement.height;
+			canvas.getContext2d().drawImage(imgElement, 0, 0);
 
-				canvas.getContext2d().drawImage(imgElement, 0, 0);
+			if (image == null) image = new Image(imgElement.width, imgElement.height);
 
-				if (image == null) image = new Image(imgElement.width, imgElement.height);
+			var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
 
-				var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
-
-				var i = 0;
-				while (i < imageData.data.length) {
-					image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 0] = imageData.data[i + 0];
-					image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1]  = imageData.data[i + 1];
-					image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2]  = imageData.data[i + 2];
-					image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 3]  = imageData.data[i + 3];
-					i += 4;
-				}
-
-				onComplete(image);
+			var i = 0;
+			while (i < imageData.data.length) {
+				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 0] = imageData.data[i + 0];
+				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1] = imageData.data[i + 1];
+				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2] = imageData.data[i + 2];
+				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 3] = imageData.data[i + 3];
+				i += 4;
 			}
+
+			onComplete(image);
+		}
+		#end
+	}
+
+	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
+		#if sys
+			#if format
+			switch saveFormat {
+				case PNG: {
+					try {
+						var out = sys.io.File.write(pathWithFileName);
+						var writer = new format.png.Writer(out);
+						var data = format.png.Tools.build32ARGB(image.width, image.height, image.underlying.sub(4, image.underlying.length - 4));
+						writer.write(data);
+						out.close();
+					} catch (e:haxe.Exception) {
+						#if !vision_quiet
+						throw "PNG Saving Failed: " + e.message;
+						#end
+					}
+				}
+			}
+			#else
+				#if !vision_quiet
+				throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
+				#end
+			#end
+		#else
 		#end
 	}
 
@@ -160,34 +187,33 @@ class ImageTools {
 	**/
 	public static function addToScreen(image:Image, x:Int, y:Int, ?units:{?xUnits:String, ?yUnits:String, ?zIndex:String}):Image {
 		#if sys
-
 		#else
-			var c = js.Browser.document.createCanvasElement();
+		var c = js.Browser.document.createCanvasElement();
 
-			c.width = image.width;
-			c.height = image.height;
+		c.width = image.width;
+		c.height = image.height;
 
-			var ctx = c.getContext2d();
-			var imageData = ctx.getImageData(0, 0, image.width, image.height);
-			var data = imageData.data;
+		var ctx = c.getContext2d();
+		var imageData = ctx.getImageData(0, 0, image.width, image.height);
+		var data = imageData.data;
 
-			for (x in 0...image.width) {
-				for (y in 0...image.height) {
-					var i = (y * image.width + x) * 4;
-					data[i] = image.underlying[i + (@:privateAccess Image.OFFSET + 1)];
-					data[i + 1] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1];
-					data[i + 2] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2];
-					data[i + 3] = 255;
-				}
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				var i = (y * image.width + x) * 4;
+				data[i] = image.underlying[i + (@:privateAccess Image.OFFSET + 1)];
+				data[i + 1] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1];
+				data[i + 2] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2];
+				data[i + 3] = 255;
 			}
+		}
 
-			ctx.putImageData(imageData, 0, 0);
+		ctx.putImageData(imageData, 0, 0);
 
-			c.style.position = "absolute";
-			c.style.top = (y + units.yUnits) != null ? y + units.yUnits : y + "px";
-			c.style.left = (x + units.xUnits) != null ? x + units.xUnits : x + "px";
+		c.style.position = "absolute";
+		c.style.top = (y + units.yUnits) != null ? y + units.yUnits : y + "px";
+		c.style.left = (x + units.xUnits) != null ? x + units.xUnits : x + "px";
 
-			js.Browser.document.body.appendChild(c);
+		js.Browser.document.body.appendChild(c);
 		#end
 		return image;
 	}
@@ -195,7 +221,7 @@ class ImageTools {
 	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
 		var neighbors = new Array2D(kernalSize, kernalSize);
 		var i = 0;
-		for(neighbor in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
+		for (neighbor in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
 			neighbors.inner[i++] = neighbor;
 		}
 		return neighbors;
@@ -278,6 +304,7 @@ class ImageTools {
 		return fromBitmapData(bmp);
 	}
 	#end
+
 	#if openfl
 	public static function toShape(image:Image):openfl.display.Shape {
 		var s:openfl.display.Shape = cast toSprite(image);
@@ -286,7 +313,6 @@ class ImageTools {
 		return sh;
 	}
 	#end
-	
 
 	#if lime
 	public static function fromLimeImage(limeImage:lime.graphics.Image):Image {
@@ -341,11 +367,12 @@ class ImageTools {
 		}
 		return image;
 	}
+
 	public static function toHeapsPixels(image:Image):hxd.Pixels {
 		var pixels = hxd.Pixels.alloc(image.width, image.height, ARGB);
 		for (x in 0...image.width) {
 			for (y in 0...pixels.height) {
-				pixels.setPixel(x, y, image.getPixel(x,y));
+				pixels.setPixel(x, y, image.getPixel(x, y));
 			}
 		}
 		return pixels;

@@ -1,0 +1,33 @@
+{
+    "indentation": {
+        "tabWidth": 4,
+        "indentObjectLiteral": true,
+        "character": "tab",
+        "conditionalPolicy": "alignedNestedIncrease",
+        "indentCaseLabels": true
+    },
+    "emptyLines": {
+        "afterPackage": 1,
+        "betweenTypes": 1,
+        "finalNewline": true,
+        "afterBlocks": "keep",
+        "afterReturn": "keep"
+    },
+    "lineEnds": {
+        "rightCurly": "after",
+        "leftCurly": "after",
+        "caseColon": "none"
+    },
+    "sameLine": {
+        "elseIf": "same",
+        "ifElse": "same",
+        "expressionIf": "same",
+        "ifBody": "same",
+        "catchBody": "same",
+        "comprehensionFor": "same",
+        "elseBody": "same",
+        "doWhileBody": "same",
+        "doWhile": "next",
+        "tryCatch": "same"
+    }
+}
