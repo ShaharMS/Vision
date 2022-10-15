@@ -1,5 +1,9 @@
 package;
 
+#if sys
+import sys.io.File;
+import sys.FileSystem;
+#end
 using StringTools;
 
 class TestCaseGenerator {
@@ -25,11 +29,7 @@ class TestCaseGenerator {
         while (functionRegex.match(parsed)) {
             var name = functionRegex.matched(1);
             var tc = new TestCase(mainPackage, mainClass, name, if (argumentsPerFunction != null) argumentsPerFunction[name] else []);
-            tc.originalFile = {
-                pack: mainPackage,
-                name: mainClass,
-                content: fileAsCode
-            }
+            tc.originalFile.content = fileAsCode;
             parsed = functionRegex.replace(parsed, "");
             cases.push(tc);
         }
@@ -45,10 +45,6 @@ class TestCaseGenerator {
         var cases = [];
         for (name in functions) {
             var tc = new TestCase(pack, module, name, if (argumentsPerFunction != null) argumentsPerFunction[name] else []);
-            tc.originalFile = {
-                pack: pack,
-                name: module
-            }
             cases.push(tc);
         }
 
@@ -56,6 +52,43 @@ class TestCaseGenerator {
     }
 
     public static function generateHaxeProjectOfMultipleTestCases(cases:Array<TestCase>, path:String, name:String) {
-        
+        #if sys
+        FileSystem.createDirectory(path + "/" + name);
+        final hxml = 
+'--class-path src
+--main Main
+-debug
+--interp
+--library vision
+--library format
+        ';
+        File.saveContent(path + "/" + name + "/compile.hxml", hxml);
+        FileSystem.createDirectory(path + "/" + name + "/src");
+        var sourceFolder = path + "/" + name + "/src";
+        var main = generateMainClassOfCases(cases);
+        File.saveContent(sourceFolder + "/Main.hx", main);
+        for (c in cases) {
+            File.saveContent(sourceFolder + '${if (c.optionals.pack != null) c.optionals.pack.replace(".", "/") + "/" else "/"}${c.generatedClassName}.hx', c.getMainTestClass());
+        }
+        #end
+    }
+
+    static function generateMainClassOfCases(cases:Array<TestCase>):String {
+        return
+'package;
+
+class Main {
+
+    public static function main() {
+        var start:Float, end:Float;
+        trace("${cases[0].splitter}Launching Tests${cases[0].splitter}\\n");
+        start = haxe.Timer.stamp();
+        ${[for (c in cases) c.functionCallOfTestMain].join(";\n\t\t")};
+        end = haxe.Timer.stamp();
+        trace("${cases[0].splitter}---------------${cases[0].splitter}\\n");
+        trace("${cases.length} Tests, " + ((end - start) + "") + "s");
+    }
+}
+';
     }
 }

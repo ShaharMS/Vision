@@ -25,6 +25,7 @@ class TestCase {
 
     public var indent(get, set):String;
     public var generatedClassName(get, null):String;
+    public var functionCallOfTestMain(get, null):String;
     
     public function new(packPath:String, module:String, method:String, ?args:Array<String>) {
         if (args == null) args = [];
@@ -187,5 +188,9 @@ ${t}}
 
 	function get_generatedClassName():String {
 		return 'Test_${originalFile.pack.replace(".", "_")}_${originalFile.module}_${method}';
+	}
+
+	function get_functionCallOfTestMain():String {
+		return '$generatedClassName.main()';
 	}
 }
