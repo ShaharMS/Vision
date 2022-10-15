@@ -61,14 +61,15 @@ class BilateralFilter {
 
                 // needed to transform the kernalSize into something a for loop can work with
                 final halfKernelSize = Math.floor(kernelSize / 2);
-                final kernelCenterIntensity = image.getPixel(x, y);
+                // SAFETY: x and y are within the bounds of the image
+                final kernelCenterIntensity = image.getUnsafePixel(x, y);
 
                 for (i in x - halfKernelSize...x + halfKernelSize) {
                     for (j in y - halfKernelSize...y + halfKernelSize) {
                         if (i >= 0 && j >= 0 && i < image.width && j < image.height) {
 
-                            // (i, j) may be outside the bounds of the image, so we use getSafePixel()
-                            final kernelPositionIntensity = image.getSafePixel(i, j);
+                            // SAFETY: (i, j) is inside the bounds of the image, as checked above
+                            final kernelPositionIntensity = image.getUnsafePixel(i, j);
 
                             // calculate weight of current kernel position.
                             kernelPositionWeight = gaussianKernelMatrix.get(x - i + halfKernelSize, y - j + halfKernelSize) * intensityVector[getIntensityDifferenceForVectorPosition(kernelCenterIntensity, kernelPositionIntensity)];
