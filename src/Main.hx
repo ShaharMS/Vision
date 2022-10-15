@@ -289,11 +289,11 @@ class Main {
 		#end
 
 		#if (eval && compile_unit_tests)
-		var content = sys.io.File.getContent("C:\\Users\\shaha\\Desktop\\Github\\Vision\\src\\vision\\Vision.hx");
-		var cases = TestCaseGenerator.generateFromCode(content);
+		var cases = TestCaseGenerator.generateFromClass(Vision);
 		for (i in 0...cases.length) {
 			cases[i].writeHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
 		}
+		
 		#end
 	}
 	

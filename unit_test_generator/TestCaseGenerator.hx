@@ -37,4 +37,21 @@ class TestCaseGenerator {
         return cases;
     }
 
+    public static function generateFromClass(module:Class<Dynamic>, ?imageUrlOrLocation:String, ?argumentsPerFunction:Map<String, Array<String>>) {
+        return generateFromFunctions(Type.getClassFields(module), Type.getClassName(module).substring(0, Type.getClassName(module).lastIndexOf(".")), Type.getClassName(module).split(".").pop(), imageUrlOrLocation, argumentsPerFunction);
+    }
+
+    public static function generateFromFunctions(functions:Array<String>, pack:String, module:String, ?imageUrlOrLocation:String, ?argumentsPerFunction:Map<String, Array<String>>):Array<TestCase> {
+        var cases = [];
+        for (name in functions) {
+            var tc = new TestCase(pack, module, name, if (argumentsPerFunction != null) argumentsPerFunction[name] else []);
+            tc.originalFile = {
+                pack: pack,
+                name: module
+            }
+            cases.push(tc);
+        }
+
+        return cases;
+    }
 }
