@@ -4,9 +4,9 @@ using StringTools;
 
 class TestCaseGenerator {
     
-    public static var packageRegex = ~/package *([a-zA-Z0-9\._]+);/;
-    public static var classRegex = ~/class *([A-Z][a-zA-Z0-9\._]+)/;
-    public static var functionRegex = ~/public *static *function *([a-zA-Z0-9_]+)/;
+    static var packageRegex = ~/package *([a-zA-Z0-9\._]+);/;
+    static var classRegex = ~/class *([A-Z][a-zA-Z0-9\._]+)/;
+    static var functionRegex = ~/public *static *function *([a-zA-Z0-9_]+)/;
 
     public static function generateFromCode(fileAsCode:String, ?imageUrlOrLocation:String, ?argumentsPerFunction:Map<String, Array<String>>):Array<TestCase> {
         var cases = [];
@@ -53,5 +53,9 @@ class TestCaseGenerator {
         }
 
         return cases;
+    }
+
+    public static function generateHaxeProjectOfMultipleTestCases(cases:Array<TestCase>, path:String, name:String) {
+        
     }
 }
