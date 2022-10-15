@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.io.Bytes;
 import vision.ds.ByteArray;
 import haxe.io.UInt8Array;
 import vision.exceptions.Unimplemented;
@@ -25,10 +26,10 @@ abstract Image(ByteArray) {
 	/**
 		Returns the underlying type of this abstract.
 	**/
-	public var underlying(get, #if vision_allow_resize set #else never #end):ByteArray;
+	public var underlying(get, #if vision_allow_resize set #else never #end):haxe.io.Bytes;
 
 	inline function get_underlying() {
-		return this;
+		return haxe.io.Bytes.ofData(this);
 	}
 
 	#if vision_allow_resize
@@ -88,7 +89,7 @@ abstract Image(ByteArray) {
 
 	inline function getColorFromStartingBytePos(position:Int):Color {
 		position += OFFSET;
-		return new Color(this.get(position) << 24 | this.get(position + 1) << 16 | this.get(position + 2) << 8 | this.get(position + 3)); 
+		return new Color(this[position] << 24 | this[position + 1] << 16 | this[position + 2] << 8 | this[position + 3]); 
 	}
 
 	inline function setColorFromStartingBytePos(position:Int, c:Color) {
@@ -136,6 +137,11 @@ abstract Image(ByteArray) {
 			return getPixel(x.clamp(0, width), y.clamp(0, height));
 		}
 		return getPixel(x, y);
+	}
+
+	@:allow(vision)
+	inline function getUnsafePixel(x:Int, y:Int):Color {
+		return getColorFromStartingBytePos((y * width + x) * 4);
 	}
 
 	/**
@@ -1001,6 +1007,6 @@ private class PixelIterator {
 	}
 
 	public inline function hasNext():Bool {
-		return i < (cast img:UInt8Array).length;
+		return i < (cast img:ByteArray).length;
 	}
 }

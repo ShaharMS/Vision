@@ -21,8 +21,8 @@ class SimpleLineDetector {
 			return null;
 
 		// now, were going to start looking for points around the point to find the entire line.
-		var prev:IntPoint2D = null;
-		var prev2:IntPoint2D = null;
+		var prev:Null<IntPoint2D> = null;
+		var prev2:Null<IntPoint2D> = null;
 		function expand() {
 			for (X in xArr) {
 				for (Y in yArr) {
