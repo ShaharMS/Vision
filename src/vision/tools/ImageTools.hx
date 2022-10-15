@@ -1,5 +1,7 @@
 package vision.tools;
 
+import vision.exceptions.ImageLoadingFailed;
+import vision.exceptions.ImageSavingFailed;
 import vision.ds.ImageFormat;
 import format.swf.Data.LineStyle;
 import format.png.Tools;
@@ -49,8 +51,7 @@ class ImageTools {
 
 		@returns the image object.
 		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
-		@throws ByteBlittingFailed Thrown when a loaded image's pixel data is corrupted, but the image type is identified (png, jpg...)
-		@throws LoadingFailed Thrown when trying to load a corrupted file with a known filetype.
+		@throws ImageLoadingFailed Thrown when trying to load a corrupted file.
 	**/
 	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
 		#if sys
@@ -67,12 +68,12 @@ class ImageTools {
 						image = new Image(header.width, header.height);
 						try {
 							image.underlying.blit(4, bytes, 0, bytes.length - 1);
-						} catch (e) #if !vision_quiet throw "Byte Blitting Failed: " + e.message; #end
+						} catch (e) #if !vision_quiet throw new ImageLoadingFailed(PNG, e.message);#end
 					} catch (e:haxe.Exception) {
 						#if vision_quiet
 						onComplete(new Image(100, 100));
 						#else
-						throw "PNG Loading Failed: " + e.message;
+						throw new ImageLoadingFailed(PNG, e.message);
 						#end
 					}
 
@@ -100,7 +101,7 @@ class ImageTools {
 					#if vision_quiet
 					onComplete(new Image(100, 100));
 					#else
-					throw "PNG Loading Failed: " + e.message;
+					throw new ImageLoadingFailed(PNG, e.message);
 					#end
 				}
 			} else #if !vision_quiet throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding"); #end
@@ -152,7 +153,7 @@ class ImageTools {
 						out.close();
 					} catch (e:haxe.Exception) {
 						#if !vision_quiet
-						throw "PNG Saving Failed: " + e.message;
+						throw new ImageSavingFailed(saveFormat, e.message);
 						#end
 					}
 				}
