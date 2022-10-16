@@ -11,7 +11,6 @@ import haxe.ds.ArraySort;
 import vision.ds.Histogram;
 import vision.ds.specifics.AlgorithmSettings;
 import haxe.Timer;
-import vision.helpers.VisionThread;
 import vision.algorithms.Perwitt;
 import vision.algorithms.Sobel;
 import vision.ds.Kernal2D;
