@@ -2,7 +2,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  noise-tests:
+  noise-and-blurring:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -27,10 +27,15 @@ jobs:
           haxelib install hxjava --quiet
           haxelib install hxcs --quiet
       - name: Bilateral Denoising (${{ matrix.target }})
-        working-directory: unit_tests/bilateralDenoise
         run: |
-          haxe ${{ matrix.target }}.hxml
+          haxe unit_tests/bilateralDenoise/${{ matrix.target }}.hxml
       - name: Median Blurring (${{ matrix.target }})
-        working-directory: unit_tests/medianBlur
         run: |
-          haxe ${{ matrix.target }}.hxml
+          haxe unit_tests/medianBlur/${{ matrix.target }}.hxml
+      - name: Gaussian Blurring (${{ matrix.target }})
+        run: |
+          haxe unit_tests/gaussianBlur/${{ matrix.target }}.hxml
+      - name: Nearest-Neighbor Blurring (${{ matrix.target }})
+        run: |
+          haxe unit_tests/nearestNeighborBlur/${{ matrix.target }}.hxml
+          
