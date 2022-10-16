@@ -560,7 +560,7 @@ class MathTools {
 		return max;
 	}
 
-	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
+	public static function isBetweenRanges(value:Float, ranges:Rest<{start:Float, end:Float}>):Bool {
 		var between = false;
 		for (range in ranges) {
 			if (range.end < range.start) {
