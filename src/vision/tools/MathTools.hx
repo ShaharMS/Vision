@@ -9,11 +9,6 @@ import vision.ds.Rectangle;
 import vision.ds.Ray2D;
 import vision.ds.Line2D;
 import vision.ds.Point2D;
-#if (haxever >= "4.2.0")
-import haxe.Rest;
-#else
-import haxe.extern.Rest;
-#end
 
 /**
 	A class consisting of a **b u n c h** of static methods for manipulating values,
@@ -488,7 +483,7 @@ class MathTools {
 	}
 
 	#if (haxe_ver >= "4.2.0")
-	overload extern inline public static function minFloat(values:Rest<Float>):Float {
+	overload extern inline public static function minFloat(...values:Float):Float {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -506,7 +501,7 @@ class MathTools {
 		return min;
 	}
 	#if (haxe_ver >= "4.2.0")
-	overload extern inline public static function min(values:Rest<Int>):Int {
+	overload extern inline public static function min(...values:Int):Int {
 		var min:Int = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -524,7 +519,7 @@ class MathTools {
 		return min;
 	}
 	#if (haxe_ver >= "4.2.0")
-	overload extern inline public static function maxFloat(values:Rest<Float>):Float {
+	overload extern inline public static function maxFloat(...values:Float):Float {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
@@ -542,7 +537,7 @@ class MathTools {
 		return max;
 	}
 	#if (haxe_ver >= "4.2.0")
-	overload extern inline public static function max(values:Rest<Int>):Int {
+	overload extern inline public static function max(...values:Int):Int {
 		var max:Int = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
@@ -576,7 +571,7 @@ class MathTools {
 	}
 
 	#if (haxe_ver >= "4.2.0")
-	overload extern inline public static function average(values:Rest<Float>):Float {
+	overload extern inline public static function average(...values:Float):Float {
 		var sum = 0.;
 		for (v in values) {
 			sum += v;
@@ -595,7 +590,7 @@ class MathTools {
 	/**
 	 * Gets the median of the given values. For large arrays, Radix sort is used to boost performance (1000 elements or above)
 	 */
-	extern overload public static inline function median<T:Int, UInt, Int64, Float>(values:Rest<T>):T {
+	extern overload public static inline function median<T:Int, UInt, Int64, Float>(...values:T):T {
 		var s = values.toArray();
 		ArraySort.sort(s , (a, b) -> a - b);
 		return s[floor(values.length / 2)];
