@@ -75,6 +75,26 @@ class TestCase {
         #end
     }
 
+    public function writeCrossPlatformHaxeProject(path:String, name:String) {
+        #if sys
+        FileSystem.createDirectory(path + "/" + name);
+        for (target in ["interp", "neko neko/main.n", "hl hl/main.hl", "js js/main.js", "cpp cpp", "cppia cppia/main.cppia", "cs cs", "java java", "jvm jvm/main.jar", "lua lua/main.lua", "python python/main.py", "php php"]) {
+            var hxml = '
+--class-path src
+--main ${if (optionals.pack != null) optionals.pack + "." else ""}Test_${originalFile.pack.replace(".", "_")}_${originalFile.module}_${method}
+-debug
+--$target
+--library vision
+--library format';
+            File.saveContent(path + "/" + name + '/${target.split(" ")[0]}.hxml', hxml);
+        }
+        FileSystem.createDirectory(path + "/" + name + "/src");
+        var sourceFolder = path + "/" + name + "/src";
+        File.saveContent(sourceFolder + '${if (optionals.pack != null) optionals.pack.replace(".", "/") + "/" else "/"}Test_${originalFile.pack.replace(".", "_")}_${originalFile.module}_${method}.hx', toString());
+        
+        #end
+    }
+
     public function getMainTestClass():String {
         return this.toString();        
     }

@@ -1,0 +1,7 @@
+
+--class-path src
+--main Test_vision_Vision_robertEdgeDiffOperator
+-debug
+--java java
+--library vision
+--library format

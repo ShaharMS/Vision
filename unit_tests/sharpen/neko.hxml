@@ -1,0 +1,7 @@
+
+--class-path src
+--main Test_vision_Vision_sharpen
+-debug
+--neko neko/main.n
+--library vision
+--library format

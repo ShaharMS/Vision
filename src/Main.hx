@@ -291,7 +291,7 @@ class Main {
 		#if (sys && compile_unit_tests)
 		var cases = TestCaseGenerator.generateFromClass(Vision);
 		for (i in 0...cases.length) {
-			cases[i].writeHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
+			cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
 		}
 		TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
 		#end

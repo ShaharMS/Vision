@@ -1,0 +1,7 @@
+
+--class-path src
+--main Test_vision_Vision_grayscale
+-debug
+--hl hl/main.hl
+--library vision
+--library format

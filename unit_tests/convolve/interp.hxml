@@ -1,0 +1,7 @@
+
+--class-path src
+--main Test_vision_Vision_convolve
+-debug
+--interp
+--library vision
+--library format

@@ -9,7 +9,6 @@
 
 --interp
 --define compile_unit_tests
-
 #--define radix_test
 
 #--js bin/main.js

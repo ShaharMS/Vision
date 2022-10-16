@@ -1,9 +1,7 @@
 --class-path src
 --main Main
 -debug
---cmd whoami
---js bin/main.js
---verbose
+--interp
 --library vision
 --library format
         
