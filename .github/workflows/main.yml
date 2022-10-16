@@ -23,6 +23,9 @@ jobs:
         run: |
           haxelib dev vision $GITHUB_WORKSPACE
           haxelib install format --quiet
+          haxelib install hxcpp --quiet
+          haxelib install hxjava --quiet
+          haxelib install hxcs --quiet
       - name: Bilateral Denoising (${{ matrix.target }})
         working-directory: unit_tests/bilateralDenoise
         run: |
