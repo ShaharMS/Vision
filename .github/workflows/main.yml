@@ -23,6 +23,6 @@ jobs:
           haxelib dev vision $GITHUB_WORKSPACE
           haxelib install format --quiet
       - name: Run Tests
-        working-directory: unit-tests/bilateralDenoise
+        working-directory: unit_tests/bilateralDenoise
         run: |
           haxe compile.hxml
