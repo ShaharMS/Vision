@@ -8,6 +8,8 @@
  - **Added `laplacianEdgeDiffOperator()`**
  - **Added `laplacianOfGaussianEdgeDetection()`**
  - **Added `bilateralDenoise()`**, using the newly implemented `BilateralFilter` algorithm.
+ - **Added `saltAndPepperNoise()`**
+ - **Added `dropOutNoise()`**
 ### `vision.ds`
 
  - **Added `Array2D`**

@@ -217,6 +217,38 @@ class Vision {
 		return image = intermediate;
 	}
 
+	public static function saltAndPepperNoise(image:Image, percentage:Float = 25):Image {
+		var translated = percentage / 100;
+		image.forEachPixel((x, y, color) -> {
+			//generate salt and pepper
+			var multiplierCounter = 1;
+			var multiplier = 1;
+			var diff = 0;
+			while (multiplierCounter < 32) {
+				if (Math.random() < translated) diff |= multiplier;
+				multiplier *= 2;
+				multiplierCounter++;
+			}
+			diff = ImageTools.grayscalePixel(diff);
+			color |= diff;
+			image.setPixel(x, y, color);
+		});
+		return image;
+	}
+
+	public static function dropOutNoise(image:Image, percentage:Float = 5, threshold:Int = 128):Image {
+		var translated = percentage / 100;
+		image.forEachPixel((x, y, color) -> {
+			if (Math.random() > translated) return;
+			if (color.red > threshold || color.blue > threshold || color.green > threshold) {
+				image.setPixel(x, y, 0);
+				return;
+			}
+			image.setPixel(x, y, 0xFFFFFFFF);
+		});
+		return image;
+	}
+
 	/**
 		Limits the range of colors on an image, by resizing the range of a given color channel, according to the values
 		of `rangeStart`'s and `rangeEnd`'s color channels.

@@ -43,8 +43,10 @@ class Main {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-			printImage(Laplacian.convolveWithLaplacianOperator(image.clone(), true));
-			printImage(Laplacian.laplacianOfGaussian(image.clone(), 3, 1, 2, false));
+			start = haxe.Timer.stamp();
+			printImage(Vision.dropOutNoise(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#if simple_tests
 			start = haxe.Timer.stamp();
 			printImage(Vision.blackAndWhite(image.clone()));
@@ -74,6 +76,14 @@ class Main {
 			printImage(image.clone());
 			end = haxe.Timer.stamp();
 			trace("Image Cloning took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(Vision.saltAndPepperNoise(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(Vision.dropOutNoise(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("Dropout Noise took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 
 			#if mirror_flip_tests
