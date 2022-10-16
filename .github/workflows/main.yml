@@ -28,14 +28,18 @@ jobs:
           haxelib install hxcs --quiet
       - name: Bilateral Denoising (${{ matrix.target }})
         run: |
-          haxe unit_tests/bilateralDenoise/${{ matrix.target }}.hxml
+          cd unit_tests/bilateralDenoise
+          haxe ${{ matrix.target }}.hxml
       - name: Median Blurring (${{ matrix.target }})
         run: |
-          haxe unit_tests/medianBlur/${{ matrix.target }}.hxml
+          cd unit_tests/medianBlur
+          haxe ${{ matrix.target }}.hxml
       - name: Gaussian Blurring (${{ matrix.target }})
         run: |
-          haxe unit_tests/gaussianBlur/${{ matrix.target }}.hxml
+          cd unit_tests/gaussianBlur
+          haxe ${{ matrix.target }}.hxml
       - name: Nearest-Neighbor Blurring (${{ matrix.target }})
         run: |
-          haxe unit_tests/nearestNeighborBlur/${{ matrix.target }}.hxml
+          cd unit_tests/nearestNeighborBlur
+          haxe ${{ matrix.target }}.hxml
           
