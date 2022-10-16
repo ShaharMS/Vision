@@ -2,12 +2,13 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  noise-eval:
+  noise-tests:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         haxe-version: [4.2.5]
+        target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
     steps:
       - uses: actions/checkout@v1
       - name: Setup Haxe (${{ matrix.haxe-version }})
@@ -22,11 +23,14 @@ jobs:
         run: |
           haxelib dev vision $GITHUB_WORKSPACE
           haxelib install format --quiet
-      - name: Bilateral Denoising
+          haxelib install hxcpp --quiet
+          haxelib install hxjava --quiet
+          haxelib install hxcs --quiet
+      - name: Bilateral Denoising (${{ matrix.target }})
         working-directory: unit_tests/bilateralDenoise
         run: |
-          haxe compile.hxml
-      - name: Median Blurring
+          haxe ${{ matrix.target }}.hxml
+      - name: Median Blurring (${{ matrix.target }})
         working-directory: unit_tests/medianBlur
         run: |
-          haxe compile.hxml
+          haxe ${{ matrix.target }}.hxml
