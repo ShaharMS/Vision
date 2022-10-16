@@ -316,7 +316,7 @@ class MathTools {
 	@:generic public static inline function isPositive<T:Int, Float, Int64>(number:T):Bool {
 		return (abs(number) / number) > 0;
 	}
-	#if (haxe_ver >= "4.2.0")
+
 	/**
 	 * Takes a 2D array and flattens it to a regular, 1D array.
 	 * @param array
@@ -341,35 +341,6 @@ class MathTools {
 		return Vector.fromArrayCopy(flat);
 	}
 
-	public static inline function flattenMatrix<T>(matrix:Matrix<T>):Vector<T> {
-		return flatten(matrix);
-	}
-	#else
-	/**
-	 * Takes a 2D array and flattens it to a regular, 1D array.
-	 * @param array
-	 * @return Array<T>
-	 */
-	public static inline function flatten<T>(array:Array<Array<T>>):Array<T> {
-		var flat = [];
-		for (item in array)
-			flat = flat.concat(item);
-		return flat;
-	}
-
-	/**
-	 * Takes a Matrix and flattens it into a Vector.
-	 * @param matrix
-	 * @return Vector<T>
-	 */
-	public static inline function flattenMatrix<T>(matrix:Matrix<T>):Vector<T> {
-		var flat = [];
-		for (item in matrix)
-			flat = flat.concat(item.toArray());
-		return Vector.fromArrayCopy(flat);
-	}
-	#end
-	#if (haxe_ver >= "4.2.0")
 	/**
 	 * Takes a 1D array and turns it into a 2D array, while splitting into arrays every `delimiter` indexes
 	 * @param array
@@ -391,7 +362,7 @@ class MathTools {
 	 * @param delimiter
 	 * @return Array<T>
 	 */
-	overload extern inline public static function raise<T>(vector:Vector<T>, delimiter:Int):Matrix<T> {
+	 overload extern inline public static function raise<T>(vector:Vector<T>, delimiter:Int):Matrix<T> {
 		var raised = new Matrix(floor(vector.length / delimiter));
 		for (i in 0...vector.length) {
 			if (raised[floor(i / delimiter)] == null) raised[floor(i / delimiter)] = new Vector(i % delimiter);
@@ -399,41 +370,6 @@ class MathTools {
 		}
 		return raised;
 	}
-
-	public static inline function raiseMatrix<T>(vector:Vector<T>, delimiter:Int):Matrix<T> {
-		return raise(vector, delimiter);
-	}
-	#else
-	/**
-	 * Takes a 1D array and turns it into a 2D array, while splitting into arrays every `delimiter` indexes
-	 * @param array
-	 * @param delimiter
-	 * @return Array<T>
-	 */
-	public static inline function raise<T>(array:Array<T>, delimiter:Int):Array<Array<T>> {
-		var raised = [];
-		for (i in 0...array.length) {
-			if (raised[floor(i / delimiter)] == null) raised[floor(i / delimiter)] = [];
-			raised[floor(i / delimiter)][i % delimiter] = array[i];
-		}
-		return raised;
-	}
-
-	/**
-	 * Takes a Vector and turns it into a Matrix, while splitting into vectors every `delimiter` indexes
-	 * @param vector
-	 * @param delimiter
-	 * @return Array<T>
-	 */
-	public static inline function raiseMatrix<T>(vector:Vector<T>, delimiter:Int):Matrix<T> {
-		var raised = new Matrix(floor(vector.length / delimiter));
-		for (i in 0...vector.length) {
-			if (raised[floor(i / delimiter)] == null) raised[floor(i / delimiter)] = new Vector(i % delimiter);
-			raised[floor(i / delimiter)][i % delimiter] = vector[i];
-		}
-		return raised;
-	}
-	#end
 
 
 
@@ -482,7 +418,6 @@ class MathTools {
 		return round(num * multiplier) / multiplier;
 	}
 
-	#if (haxe_ver >= "4.2.0")
 	overload extern inline public static function minFloat(...values:Float):Float {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
@@ -491,8 +426,8 @@ class MathTools {
 		}
 		return min;
 	}
-	
-	overload extern #end inline public static function minFloat(values:Array<Float>):Float {
+
+	overload extern inline public static function minFloat(values:Array<Float>):Float {
 		var min:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -500,7 +435,7 @@ class MathTools {
 		}
 		return min;
 	}
-	#if (haxe_ver >= "4.2.0")
+
 	overload extern inline public static function min(...values:Int):Int {
 		var min:Int = values[0];
 		for (i in 0...values.length) {
@@ -510,7 +445,7 @@ class MathTools {
 		return min;
 	}
 
-	overload extern #end inline public static function min(values:Array<Int>):Int {
+	overload extern inline public static function min(values:Array<Int>):Int {
 		var min:Int = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min)
@@ -518,7 +453,7 @@ class MathTools {
 		}
 		return min;
 	}
-	#if (haxe_ver >= "4.2.0")
+
 	overload extern inline public static function maxFloat(...values:Float):Float {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
@@ -528,7 +463,7 @@ class MathTools {
 		return max;
 	}
 
-	overload extern #end inline public static function maxFloat(values:Array<Float>):Float {
+	overload extern inline public static function maxFloat(values:Array<Float>):Float {
 		var max:Float = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
@@ -536,7 +471,7 @@ class MathTools {
 		}
 		return max;
 	}
-	#if (haxe_ver >= "4.2.0")
+
 	overload extern inline public static function max(...values:Int):Int {
 		var max:Int = values[0];
 		for (i in 0...values.length) {
@@ -546,7 +481,7 @@ class MathTools {
 		return max;
 	}
 
-	overload extern #end inline public static function max(values:Array<Int>):Int {
+	overload extern inline public static function max(values:Array<Int>):Int {
 		var max:Int = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max)
@@ -570,7 +505,6 @@ class MathTools {
 		return false;
 	}
 
-	#if (haxe_ver >= "4.2.0")
 	overload extern inline public static function average(...values:Float):Float {
 		var sum = 0.;
 		for (v in values) {
@@ -579,29 +513,53 @@ class MathTools {
 		return sum / values.length;
 	}
 
-	overload extern #end public static inline function average<T:Int, UInt, Int64, Float>(values:Array<T>):StdTypes.Float {
+	overload extern public static inline function average<T:Int, UInt, Int64, Float>(values:Array<T>):StdTypes.Float {
 		var sum = 0.;
 		for (v in values) {
 			sum += v;
 		}
 		return sum / values.length;
 	}
-	#if (haxe_ver >= "4.2.0")
+
 	/**
 	 * Gets the median of the given values. For large arrays, Radix sort is used to boost performance (1000 elements or above)
 	 */
-	extern overload public static inline function median<T:Int, UInt, Int64, Float>(...values:T):T {
+	extern overload public static inline function median<T:Int, UInt, Int64>(...values:T):T {
+		if (values.length > 5000) {
+			return Radix.sort(values.toArray())[floor(values.length / 2)];
+		}
 		var s = values.toArray();
 		ArraySort.sort(s , (a, b) -> a - b);
 		return s[floor(values.length / 2)];
 	}
 
 	/**
+	 * Gets the median of the given values.
+	 */
+	extern overload public static inline function median(...values:Float) {
+		var s = values.toArray();
+		ArraySort.sort(s , (a, b) -> Std.int(a - b));
+		return s[floor(values.length / 2)];
+	}
+
+	/**
 	 * Gets the median of the given values. For large arrays, Radix sort is used to boost performance (1000 elements or above)
 	 */
-	extern overload #end public static inline function median<T:Int, UInt, Int64, Float>(values:Array<T>):T {
+	 extern overload public static inline function median<T:Int, UInt, Int64>(values:Array<T>):T {
+		if (values.length > 5000) {
+			return Radix.sort(values.copy())[floor(values.length / 2)];
+		}
 		var s = values.copy();
 		ArraySort.sort(s , (a, b) -> a - b);
+		return s[floor(values.length / 2)];
+	}
+
+	/**
+	 * Gets the median of the given values.
+	 */
+	extern overload public static inline function median(values:Array<Float>) {
+		var s = values.copy();
+		ArraySort.sort(s , (a, b) -> Std.int(a - b));
 		return s[floor(values.length / 2)];
 	}
 

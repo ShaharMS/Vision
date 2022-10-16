@@ -69,7 +69,7 @@ class ImageTools {
 						image = new Image(header.width, header.height);
 						try {
 							image.underlying.blit(4, bytes, 0, bytes.length - 1);
-						} catch (e:haxe.Exception) #if !vision_quiet throw new ImageLoadingFailed(PNG, e.message);#end
+						} catch (e) #if !vision_quiet throw new ImageLoadingFailed(PNG, e.message);#end
 					} catch (e:haxe.Exception) {
 						#if vision_quiet
 						onComplete(new Image(100, 100));
