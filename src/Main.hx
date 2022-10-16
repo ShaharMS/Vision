@@ -289,7 +289,12 @@ class Main {
 		#end
 
 		#if (sys && compile_unit_tests)
-		trace(Type.getClassFields(Vision));
+		var s = Type.getClassFields(Vision);
+		var st = "[";
+		for (t in s) {
+			st += "'" + t + "', ";
+		}
+		trace(st.substring(0, st.length - 2) + "]");
 		//var cases = TestCaseGenerator.generateFromClass(Vision);
 		//for (i in 0...cases.length) {
 		//	cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);

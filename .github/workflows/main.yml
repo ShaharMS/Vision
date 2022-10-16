@@ -7,7 +7,7 @@ jobs:
 		strategy:
 			fail-fast: false
 			matrix:
-				algorithm: [laplacianEdgeDiffOperator,limitColorRanges,bilateralDenoise,deepfry,simpleLine2DDetection,perwittEdgeDiffOperator,cannyEdgeDetection,invert,normalize,medianBlur,laplacianOfGaussianEdgeDetection,convolutionRidgeDetection,blackAndWhite,erode,nearestNeighborBlur,gaussianBlur,dilate,sharpen,grayscale,convolve,robertEdgeDiffOperator,replaceColorRanges,sobelEdgeDiffOperator,sobelEdgeDetection,contrast,perwittEdgeDetection]
+				algorithm: ['laplacianEdgeDiffOperator', 'limitColorRanges', 'bilateralDenoise', 'deepfry', 'simpleLine2DDetection', 'perwittEdgeDiffOperator', 'cannyEdgeDetection', 'invert', 'normalize', 'medianBlur', 'laplacianOfGaussianEdgeDetection', 'convolutionRidgeDetection', 'blackAndWhite', 'erode', 'nearestNeighborBlur', 'gaussianBlur', 'dilate', 'sharpen', 'grayscale', 'convolve', 'robertEdgeDiffOperator', 'replaceColorRanges', 'sobelEdgeDiffOperator', 'sobelEdgeDetection', 'contrast', 'perwittEdgeDetection']
 				target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
 				haxe-version: [4.2.5]
 
