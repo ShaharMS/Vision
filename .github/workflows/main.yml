@@ -22,7 +22,11 @@ jobs:
         run: |
           haxelib dev vision $GITHUB_WORKSPACE
           haxelib install format --quiet
-      - name: Run Tests
+      - name: Bilateral Denoising
         working-directory: unit_tests/bilateralDenoise
+        run: |
+          haxe compile.hxml
+      - name: Median Blurring
+        working-directory: unit_tests/medianBlur
         run: |
           haxe compile.hxml
