@@ -2,7 +2,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  noise-html5:
+  noise-eval:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
