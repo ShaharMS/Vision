@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        algo: ['bilateralDenoise', 'normalize', 'convolutionRidgeDetection', 'convolve']
+        algo: ['convolve']
         haxe-version: [4.2.5]
         target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
     steps:
@@ -37,6 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         algo: ['deepfry', 'laplacianEdgeDiffOperator', 'limitColorRanges', 'bilateralDenoise', 'simpleLine2DDetection', 'perwittEdgeDiffOperator', 'cannyEdgeDetection', 'invert', 'normalize', 'medianBlur', 'laplacianOfGaussianEdgeDetection', 'convolutionRidgeDetection', 'blackAndWhite', 'erode', 'nearestNeighborBlur', 'gaussianBlur', 'dilate', 'sharpen', 'grayscale', 'convolve', 'robertEdgeDiffOperator', 'replaceColorRanges', 'sobelEdgeDiffOperator', 'sobelEdgeDetection', 'contrast', 'perwittEdgeDetection']
+        haxe-version: [4.2.5]
         target: [interp]
     steps:
       - uses: actions/checkout@v1
