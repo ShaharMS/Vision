@@ -20,10 +20,9 @@ jobs:
           echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
       - name: Install & Set-up Vision
         run: |
-          git clone --branch master https://github.com/haxeui/haxeui-core.git --depth=1
-          haxelib dev vision Vision
+          haxelib dev vision $GITHUB_WORKSPACE
           haxelib install format --quiet
       - name: Run Tests
-        working-directory: ./unit-tests/bilateralDenoise
+        working-directory: unit-tests/bilateralDenoise
         run: |
           haxe compile.hxml
