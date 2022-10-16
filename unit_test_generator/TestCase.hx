@@ -87,6 +87,10 @@ class TestCase {
 --library vision
 --library format';
             File.saveContent(path + "/" + name + '/${target.split(" ")[0]}.hxml', hxml);
+            if (${target.split(" ")[0]} == "cppia") {
+                FileSystem.createDirectory(path + "/" + name + '/cppia');
+                File.saveContent(path + "/" + name + '/cppia/main.cppia', "keep");
+            }
         }
         FileSystem.createDirectory(path + "/" + name + "/src");
         var sourceFolder = path + "/" + name + "/src";
