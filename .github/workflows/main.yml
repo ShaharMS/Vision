@@ -1,0 +1,27 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  noise-html5:
+    strategy:
+      matrix:
+        haxe-version: [4.0.5, 4.1.5, 4.2.5]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Haxe (${{ matrix.haxe-version }})
+        uses: krdlab/setup-haxe@v1
+        with:
+          haxe-version: ${{ matrix.haxe-version }}
+
+      - name: Set HAXEPATH
+        run: |
+          echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
+      - name: Install & Set-up Vision
+        run: |
+          haxelib dev vision $GITHUB_WORKSPACE
+          haxelib install format --quiet
+      - name: Run Tests
+        run: |
+          haxe $GITHUB_WORKSPACE/unit_tests/bilateralDenoise/compile.hxml
+          haxe $GITHUB_WORKSPACE/unit_tests/medianBlur/compile.hxml
