@@ -313,8 +313,8 @@ class MathTools {
 	/**
 	 	Returns `true` if `number` is positive, `false` if negative
 	**/
-	@:generic public static inline function isPositive<T:Int, Float, Int64>(number:T):Bool {
-		return (abs(number) / number) > 0;
+	@:generic public static inline function isPositive<T>(number:T):Bool {
+		return (abs(cast number) / cast number) > 0;
 	}
 
 	/**
