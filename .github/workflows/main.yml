@@ -23,5 +23,5 @@ jobs:
           haxelib install format --quiet
       - name: Run Tests
         run: |
-          haxe $GITHUB_WORKSPACE/unit_tests/bilateralDenoise/compile.hxml
-          haxe $GITHUB_WORKSPACE/unit_tests/medianBlur/compile.hxml
+          haxe unit_tests/bilateralDenoise/compile.hxml
+          haxe unit_tests/medianBlur/compile.hxml
