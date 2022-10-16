@@ -336,7 +336,7 @@ class Vision {
 	**/
 	public static function convolve(image:Image, kernal:EitherType<Kernal2D, Array<Array<Float>>> = Identity):Image {
 		var matrix:Array<Array<Float>>;
-		if (#if (haxe_ver >= "4.2.0") kernal is Array #else Std.isofType(kernal, Array) #end) {
+		if (kernal is Array) {
 			matrix = cast kernal;
 		} else {
 			matrix = switch cast(kernal, Kernal2D) {
