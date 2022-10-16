@@ -31,7 +31,7 @@ class Radix {
 	 * @param endIndex optional, an index after which we stop checking for a maximum 
 	 * (useful if the range in which the maximum value is present is known)
 	 */
-	static function getMax<T:Int, UInt, Int64>(array:Array<T>, ?endIndex:Int) {
+	static function getMax<T:Int, #if !cs Uint, #end Int64>(array:Array<T>, ?endIndex:Int) {
 		if (endIndex == null)
 			endIndex = array.length;
 
@@ -49,7 +49,7 @@ class Radix {
 	 * @param exp Represents the digit's "place" on which were going to count - `10` will count on the last digit, `100` will count on the second-to-last, etc.
 	 * @param endIndex optional, an index after which we stop sorting
 	 */
-	static function countingSort<T:Int, UInt, Int64>(array:Array<T>, exp:Int, ?endIndex:Int) {
+	static function countingSort<T:Int, #if !cs Uint, #end Int64>(array:Array<T>, exp:Int, ?endIndex:Int) {
 		if (endIndex == null)
 			endIndex = array.length;
 
@@ -88,7 +88,7 @@ class Radix {
 	/**
 		Sorts an array of `Int`s / `UInt`s / `Int64` using **Radix Sort**.
 	**/
-	public static function sort<T:Int, UInt, Int64>(array:Array<T>) {
+	public static function sort<T:Int, #if !cs Uint, #end Int64>(array:Array<T>) {
 		// Find the maximum number to know number of digits
 		final max = getMax(array, array.length);
 		var exp = 1;

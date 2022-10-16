@@ -513,7 +513,7 @@ class MathTools {
 		return sum / values.length;
 	}
 
-	overload extern public static inline function average<T:Int, UInt, Int64, Float>(values:Array<T>):StdTypes.Float {
+	overload extern public static inline function average<T:Int, #if !cs Uint, #end Int64, Float>(values:Array<T>):StdTypes.Float {
 		var sum = 0.;
 		for (v in values) {
 			sum += v;
@@ -524,7 +524,7 @@ class MathTools {
 	/**
 	 * Gets the median of the given values. For large arrays, Radix sort is used to boost performance (1000 elements or above)
 	 */
-	extern overload public static inline function median<T:Int, UInt, Int64>(...values:T):T {
+	extern overload public static inline function median<T:Int, #if !cs Uint, #end Int64>(...values:T):T {
 		if (values.length > 5000) {
 			return Radix.sort(values.toArray())[floor(values.length / 2)];
 		}
@@ -545,7 +545,7 @@ class MathTools {
 	/**
 	 * Gets the median of the given values. For large arrays, Radix sort is used to boost performance (1000 elements or above)
 	 */
-	 extern overload public static inline function median<T:Int, UInt, Int64>(values:Array<T>):T {
+	 extern overload public static inline function median<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
 		if (values.length > 5000) {
 			return Radix.sort(values.copy())[floor(values.length / 2)];
 		}

@@ -464,7 +464,7 @@ class Vision {
 	public static function medianBlur(image:Image, kernalSize:Int = 5):Image {
 		var median = new Image(image.width, image.height);
 		image.forEachPixel((x, y, color) -> {
-			var neighbors:Array<UInt> = image.getNeighborsOfPixel(x, y, kernalSize).inner;
+			var neighbors:Array<Int> = image.getNeighborsOfPixel(x, y, kernalSize).inner;
 			ArraySort.sort(neighbors, (a, b) -> a - b);
 			median.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
