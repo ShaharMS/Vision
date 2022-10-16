@@ -3,12 +3,13 @@ on: [push, pull_request]
 
 jobs:
   noise-html5:
+    runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         haxe-version: [4.0.5, 4.1.5, 4.2.5]
-    runs-on: ubuntu-latest
     steps:
-      #- uses: actions/checkout@v1
+      - uses: actions/checkout@v1
       - name: Setup Haxe (${{ matrix.haxe-version }})
         uses: krdlab/setup-haxe@v1
         with:
@@ -19,9 +20,10 @@ jobs:
           echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
       - name: Install & Set-up Vision
         run: |
-          haxelib dev vision $GITHUB_WORKSPACE
+          git clone --branch master https://github.com/haxeui/haxeui-core.git --depth=1
+          haxelib dev vision Vision
           haxelib install format --quiet
       - name: Run Tests
+        working-directory: ./unit-tests/bilateralDenoise
         run: |
-          haxe unit_tests/bilateralDenoise/compile.hxml
-          haxe unit_tests/medianBlur/compile.hxml
+          haxe compile.hxml
