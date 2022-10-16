@@ -2,33 +2,33 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  algorithm:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        algorithm: ['laplacianEdgeDiffOperator', 'limitColorRanges', 'bilateralDenoise', 'deepfry', 'simpleLine2DDetection', 'perwittEdgeDiffOperator', 'cannyEdgeDetection', 'invert', 'normalize', 'medianBlur', 'laplacianOfGaussianEdgeDetection', 'convolutionRidgeDetection', 'blackAndWhite', 'erode', 'nearestNeighborBlur', 'gaussianBlur', 'dilate', 'sharpen', 'grayscale', 'convolve', 'robertEdgeDiffOperator', 'replaceColorRanges', 'sobelEdgeDiffOperator', 'sobelEdgeDetection', 'contrast', 'perwittEdgeDetection']
-        target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
-        haxe-version: [4.2.5]
+	algorithm:
+		runs-on: ubuntu-latest
+		strategy:
+			fail-fast: false
+			matrix:
+				algo: ['laplacianEdgeDiffOperator']
+				target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
+				haxe-version: [4.2.5]
 
-    steps:
-      - uses: actions/checkout@v1
-      - name: Setup Haxe (${{ matrix.haxe-version }})
-      uses: krdlab/setup-haxe@v1
-      with:
-        haxe-version: ${{ matrix.haxe-version }}
+		steps:
+			uses: actions/checkout@v1
+			- name: Setup Haxe (${{ matrix.haxe-version }})
+			uses: krdlab/setup-haxe@v1
+			with:
+				haxe-version: ${{ matrix.haxe-version }}
 
-    - name: Set HAXEPATH
-      run: |
-        echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
-    - name: Install & Set-up Vision
-      run: |
-        haxelib dev vision $GITHUB_WORKSPACE
-        haxelib install format --quiet
-        haxelib install hxcpp --quiet
-        haxelib install hxjava --quiet
-        haxelib install hxcs --quiet
-    - name: ${{ matrix.algorithm }} (${{ matrix.target }})
-      run: |
-        cd unit_tests/${{ matrix.algorithm }}
-        haxe ${{ matrix.target }}.hxml
+		- name: Set HAXEPATH
+			run: |
+				echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
+		- name: Install & Set-up Vision
+			run: |
+				haxelib dev vision $GITHUB_WORKSPACE
+				haxelib install format --quiet
+				haxelib install hxcpp --quiet
+				haxelib install hxjava --quiet
+				haxelib install hxcs --quiet
+		- name: ${{ matrix.algo }} (${{ matrix.target }})
+			run: |
+				cd unit_tests/${{ matrix.algo }}
+				haxe ${{ matrix.target }}.hxml
