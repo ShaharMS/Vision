@@ -2,33 +2,45 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  algorithm:
+  Algorithm:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        algo: ['laplacianEdgeDiffOperator']
-        target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
+	  	algo: []
         haxe-version: [4.2.5]
-
+        target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
     steps:
-      uses: actions/checkout@v1
+      - uses: actions/checkout@v1
       - name: Setup Haxe (${{ matrix.haxe-version }})
-      uses: krdlab/setup-haxe@v1
-      with:
-        haxe-version: ${{ matrix.haxe-version }}
+        uses: krdlab/setup-haxe@v1
+        with:
+          haxe-version: ${{ matrix.haxe-version }}
 
-    - name: Set HAXEPATH
-      run: |
-        echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
-    - name: Install & Set-up Vision
-      run: |
-        haxelib dev vision $GITHUB_WORKSPACE
-        haxelib install format --quiet
-        haxelib install hxcpp --quiet
-        haxelib install hxjava --quiet
-        haxelib install hxcs --quiet
-    - name: ${{ matrix.algo }} (${{ matrix.target }})
-      run: |
-        cd unit_tests/${{ matrix.algo }}
-        haxe ${{ matrix.target }}.hxml
+      - name: Set HAXEPATH
+        run: |
+          echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
+      - name: Install & Set-up Vision
+        run: |
+          haxelib dev vision $GITHUB_WORKSPACE
+          haxelib install format --quiet
+          haxelib install hxcpp --quiet
+          haxelib install hxjava --quiet
+          haxelib install hxcs --quiet
+      - name: Bilateral Denoising (${{ matrix.target }})
+        run: |
+          cd unit_tests/bilateralDenoise
+          haxe ${{ matrix.target }}.hxml
+      - name: Median Blurring (${{ matrix.target }})
+        run: |
+          cd unit_tests/medianBlur
+          haxe ${{ matrix.target }}.hxml
+      - name: Gaussian Blurring (${{ matrix.target }})
+        run: |
+          cd unit_tests/gaussianBlur
+          haxe ${{ matrix.target }}.hxml
+      - name: Nearest-Neighbor Blurring (${{ matrix.target }})
+        run: |
+          cd unit_tests/nearestNeighborBlur
+          haxe ${{ matrix.target }}.hxml
+          
