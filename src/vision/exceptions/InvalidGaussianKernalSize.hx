@@ -1,7 +1,5 @@
 package vision.exceptions;
 
-import haxe.Exception;
-
 class InvalidGaussianKernalSize extends VisionException {
 	public function new(size:Int) {
 		super('Creating a gaussian kernal of size $size is not allowed. ${getReason(size)}', "Invalid Gaussian Kernal Size");
