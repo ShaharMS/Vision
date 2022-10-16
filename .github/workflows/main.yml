@@ -31,7 +31,6 @@ jobs:
         run: |
           cd unit_tests/${{ matrix.algo }}
           haxe ${{ matrix.target }}.hxml
-	  
   algorithm:
     runs-on: ubuntu-latest
     strategy:
