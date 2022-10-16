@@ -6,6 +6,7 @@
  - [**Tutorials**](https://github.com/ShaharMS/Vision/blob/main/README.md#tutorials)
  - [**About**](https://github.com/ShaharMS/Vision/blob/main/README.md#about)
  - [**Roadmap**](https://github.com/ShaharMS/Vision/blob/main/ROADMAP.md)
+ - [**Changelog**](https://github.com/ShaharMS/Vision/blob/main/CHANGELOG.md)
  - [**Define List**](https://github.com/ShaharMS/Vision/blob/main/README.md#define-list)
 
 
