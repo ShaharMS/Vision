@@ -1,0 +1,9 @@
+--class-path src
+--main Main
+-debug
+--cmd whoami
+--js bin/main.js
+--verbose
+--library vision
+--library format
+        

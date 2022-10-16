@@ -58,6 +58,7 @@ class ImageTools {
 			#if format
 			if (path.contains("://") && path.split(".").pop().toUpperCase() == "PNG") {
 				var httpRequest = new sys.Http(path);
+				httpRequest.addHeader("User-Agent", "Vision");
 				httpRequest.onBytes = (data) -> {
 					try {
 						var reader = new format.png.Reader(new haxe.io.BytesInput(data));

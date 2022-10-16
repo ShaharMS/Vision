@@ -26,10 +26,10 @@ abstract Image(ByteArray) {
 	/**
 		Returns the underlying type of this abstract.
 	**/
-	public var underlying(get, #if vision_allow_resize set #else never #end):haxe.io.Bytes;
+	public var underlying(get, #if vision_allow_resize set #else never #end):ByteArray;
 
 	inline function get_underlying() {
-		return haxe.io.Bytes.ofData(this);
+		return this;
 	}
 
 	#if vision_allow_resize
