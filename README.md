@@ -12,7 +12,7 @@
 
 # Structure
 
-This Library is organized into 4 subfolders, and one important file:
+This Library is organized into 5 subfolders, and one important file:
 
  - [**`ds`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/ds) - contains Vision's data structures & types. Some functions &
 Features require different return types which aren't basic - such as lines, rays or points.
@@ -23,7 +23,8 @@ For example, `MathTools` is a superset of the `Math` class from the standard lib
 are lacking/have unclear documentation, please open an issue about it**
  - [**`exceptions`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/exceptions) - contains the errors usually thrown by Vision. **Notice - those errors are present just to let you know if you did something unexpected. If you want to get 
 rid of them, define `vision_quiet`.**
- - [**`Vision.hx`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/Vision.hx) - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the algorithms class, since those are less likely to break compatibility, and are usually more concise.
+ - [**`helpers`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/helpers) - contains some helper classes that may be used by Vision. Theres nothing preventing you from using them yourself though...
+ - [**`Vision.hx`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/Vision.hx) - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the algorithms class, since the ones in `Vision` are less likely to break compatibility, and are usually more concise.
 
 
 
