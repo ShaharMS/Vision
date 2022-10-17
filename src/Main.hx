@@ -44,9 +44,10 @@ class Main {
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
 			start = haxe.Timer.stamp();
+			printImage(Vision.saltAndPepperNoise(image.clone()));
 			printImage(Vision.dropOutNoise(image.clone()));
-			printImage(Vision.combine(image.clone()));
 			printImage(Vision.whiteNoise(image.clone()));
+			printImage(Vision.combine(image.clone()));
 			end = haxe.Timer.stamp();
 			trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#if simple_tests

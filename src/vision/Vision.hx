@@ -47,7 +47,7 @@ class Vision {
 		if (with == null) with = new Image(image.width, image.height);
 		final translated = percentage / 100;
 		image.forEachPixel((x, y, first) -> {
-			var second = with.getUnsafePixel(x, y);
+			var second = with.getSafePixel(x, y);
 			first.red = Math.round((first.red * (1 - translated) + second.red * translated));
 			first.blue = Math.round((first.blue * (1 - translated) + second.blue * translated));
 			first.green = Math.round((first.green * (1 - translated) + second.green * translated));
@@ -237,15 +237,15 @@ class Vision {
 			//generate salt and pepper
 			var multiplierCounter = 1;
 			var multiplier = 1;
-			var diff = 0;
+			var diff = color;
 			while (multiplierCounter < 32) {
 				if (Math.random() < translated) diff |= multiplier;
 				multiplier *= 2;
 				multiplierCounter++;
 			}
-			diff = ImageTools.grayscalePixel(diff);
-			color |= diff;
-			image.setPixel(x, y, color);
+			//diff = ImageTools.grayscalePixel(diff);
+			Color.interpolate(color, diff);
+			image.setPixel(x, y, Color.interpolate(color, diff));
 		});
 		return image;
 	}
@@ -263,7 +263,7 @@ class Vision {
 		return image;
 	}
 
-	public static function whiteNoise(image:Image, percentage:Float = 75, whiteNoiseRange:WhiteNoiseRange = RANGE_16) {
+	public static function whiteNoise(image:Image, percentage:Float = 25, whiteNoiseRange:WhiteNoiseRange = RANGE_16) {
 		var colorVector:Vector<Int> = new Vector(whiteNoiseRange);
 		colorVector[0] = 0;
 		colorVector[colorVector.length - 1] = 255;
