@@ -45,6 +45,8 @@ class Main {
 			printImage(image);
 			start = haxe.Timer.stamp();
 			printImage(Vision.dropOutNoise(image.clone()));
+			printImage(Vision.combine(image.clone()));
+			printImage(Vision.whiteNoise(image.clone()));
 			end = haxe.Timer.stamp();
 			trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#if simple_tests
@@ -299,17 +301,17 @@ class Main {
 		#end
 
 		#if (sys && compile_unit_tests)
-		var s = Type.getClassFields(Vision);
-		var st = "[";
-		for (t in s) {
-			st += "'" + t + "', ";
-		}
-		trace(st.substring(0, st.length - 2) + "]");
-		//var cases = TestCaseGenerator.generateFromClass(Vision);
-		//for (i in 0...cases.length) {
-		//	cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
+		//var s = Type.getClassFields(Vision);
+		//var st = "[";
+		//for (t in s) {
+		//	st += "'" + t + "', ";
 		//}
-		//TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
+		//trace(st.substring(0, st.length - 2) + "]");
+		var cases = TestCaseGenerator.generateFromClass(Vision);
+		for (i in 0...cases.length) {
+			cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
+		}
+		TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
 		#end
 	}
 	

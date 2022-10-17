@@ -9,11 +9,14 @@ class Main {
         tests.Test_vision_Vision_laplacianEdgeDiffOperator.main();
 		tests.Test_vision_Vision_limitColorRanges.main();
 		tests.Test_vision_Vision_bilateralDenoise.main();
+		tests.Test_vision_Vision_whiteNoise.main();
 		tests.Test_vision_Vision_deepfry.main();
 		tests.Test_vision_Vision_simpleLine2DDetection.main();
+		tests.Test_vision_Vision_combine.main();
 		tests.Test_vision_Vision_perwittEdgeDiffOperator.main();
 		tests.Test_vision_Vision_cannyEdgeDetection.main();
 		tests.Test_vision_Vision_invert.main();
+		tests.Test_vision_Vision_saltAndPepperNoise.main();
 		tests.Test_vision_Vision_normalize.main();
 		tests.Test_vision_Vision_medianBlur.main();
 		tests.Test_vision_Vision_laplacianOfGaussianEdgeDetection.main();
@@ -32,8 +35,9 @@ class Main {
 		tests.Test_vision_Vision_sobelEdgeDetection.main();
 		tests.Test_vision_Vision_contrast.main();
 		tests.Test_vision_Vision_perwittEdgeDetection.main();
+		tests.Test_vision_Vision_dropOutNoise.main();
         end = haxe.Timer.stamp();
         trace("-----------------------------------\n");
-        trace("26 Tests, " + ((end - start) + "") + "s");
+        trace("30 Tests, " + ((end - start) + "") + "s");
     }
 }

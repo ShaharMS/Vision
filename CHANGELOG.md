@@ -4,18 +4,23 @@
 
  - **Added `erode()`**
  - **Added `dilate()`**
+ - **Added `combine()`**
  - **Added `robertEdgeDiffOperator()`**, using the newly implemented `RobertsCross` algorithm.
  - **Added `laplacianEdgeDiffOperator()`**
  - **Added `laplacianOfGaussianEdgeDetection()`**
  - **Added `bilateralDenoise()`**, using the newly implemented `BilateralFilter` algorithm.
  - **Added `saltAndPepperNoise()`**
  - **Added `dropOutNoise()`**
+ - **Added `whiteNoise()`**
+
 ### `vision.ds`
 
  - **Added `Array2D`**
  - **Added `ImageFormat`** for image saving.
+ - **Added `WhiteNoiseRange`** for different white noise types (2-bit, 16-bit...)
  - **Added `Kernal2D.LaplacianPositive`**
  - **Added `Kernal2D.LaplacianNegative`**
+ - **Added `Color.from8Bit()`** to get a gray color out of a single, 8-bit color channel
 
 ### `vision.tools`
 

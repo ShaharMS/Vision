@@ -200,6 +200,17 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
+	 * Generate a grayscale color from a single color channel value (0 to 255)
+	 *
+	 * @param Value	The channel value of the red, green & blue channels of the color
+	 * @return The color as a Color
+	 */
+	public static inline function from8Bit(Value:Int) {
+		var color = new Color();
+		return color.setRGBA(Value, Value, Value, 1);
+	}
+
+	/**
 	 * Generate a color from float RGB values (0 to 1)
 	 *
 	 * @param Red	The red value of the color from 0 to 1

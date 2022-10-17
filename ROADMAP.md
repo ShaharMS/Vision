@@ -20,12 +20,12 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `convolve()`
  - [x] `contrast()`
  - [x] `normalize()`
- - [ ] `combine()`
+ - [x] `combine()`
  - [x] `limitColorRanges()` 
  - [x] `replaceColorRanges()` 
  - [x] `saltAndPepperNoise()`
  - [ ] `gaussianNoise()`
- - [ ] `whiteNoise()`
+ - [x] `whiteNoise()`
  - [x] `dropOutNoise()`
  - [x] `simpleLineDetector()`
  - [x] `convolutionRidgeDetection()`

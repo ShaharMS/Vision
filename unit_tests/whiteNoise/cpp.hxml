@@ -1,0 +1,7 @@
+
+--class-path src
+--main Test_vision_Vision_whiteNoise
+-debug
+--cpp cpp
+--library vision
+--library format

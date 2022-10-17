@@ -1,5 +1,7 @@
 package vision;
 
+import haxe.ds.Vector;
+import vision.ds.specifics.WhiteNoiseRange;
 import vision.algorithms.Laplacian;
 import vision.ds.specifics.ColorImportanceOrder;
 import vision.algorithms.BilateralFilter;
@@ -10,7 +12,6 @@ import vision.algorithms.Radix;
 import haxe.ds.ArraySort;
 import vision.ds.Histogram;
 import vision.ds.specifics.AlgorithmSettings;
-import haxe.Timer;
 import vision.algorithms.Perwitt;
 import vision.algorithms.Sobel;
 import vision.ds.Kernal2D;
@@ -41,6 +42,19 @@ using vision.algorithms.Canny;
 	```
 **/
 class Vision {
+
+	public static function combine(image:Image, ?with:Image, percentage:Float = 50) {
+		if (with == null) with = new Image(image.width, image.height);
+		final translated = percentage / 100;
+		image.forEachPixel((x, y, first) -> {
+			var second = with.getUnsafePixel(x, y);
+			first.red = Math.round((first.red * (1 - translated) + second.red * translated));
+			first.blue = Math.round((first.blue * (1 - translated) + second.blue * translated));
+			first.green = Math.round((first.green * (1 - translated) + second.green * translated));
+			image.setPixel(x, y, first);
+		});
+		return image;
+	}
 	/**
 		Grayscales an image, by averaging the color channels of each pixel.
 
@@ -245,6 +259,25 @@ class Vision {
 				return;
 			}
 			image.setPixel(x, y, 0xFFFFFFFF);
+		});
+		return image;
+	}
+
+	public static function whiteNoise(image:Image, percentage:Float = 75, whiteNoiseRange:WhiteNoiseRange = RANGE_16) {
+		var colorVector:Vector<Int> = new Vector(whiteNoiseRange);
+		colorVector[0] = 0;
+		colorVector[colorVector.length - 1] = 255;
+		var step = MathTools.round(256 / whiteNoiseRange);
+		for (i in 1...whiteNoiseRange - 1) {
+			colorVector[i] = step * i;
+		}
+		final translated = percentage / 100;
+		image.forEachPixel((x, y, first) -> {
+			var randomAtRange = Math.floor(Math.random() * whiteNoiseRange);
+			first.red = Math.round((first.red * (1 - translated) + colorVector[randomAtRange] * translated));
+			first.blue = Math.round((first.blue * (1 - translated) + colorVector[randomAtRange] * translated));
+			first.green = Math.round((first.green * (1 - translated) + colorVector[randomAtRange] * translated));
+			image.setPixel(x, y, first);
 		});
 		return image;
 	}
