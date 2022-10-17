@@ -43,6 +43,16 @@ using vision.algorithms.Canny;
 **/
 class Vision {
 
+	/**
+	    Combines two images by averaging out the values of each pixel, according to `percentage`.
+
+		The images can be of different sizes.
+
+		
+	    @param image 
+	    @param with 
+	    @param percentage 
+	**/
 	public static function combine(image:Image, ?with:Image, percentage:Float = 50) {
 		if (with == null) with = new Image(image.width, image.height);
 		final translated = percentage / 100;
@@ -203,7 +213,8 @@ class Vision {
 		var intermediate = new Image(image.width, image.height);
 		image.forEachPixel((x, y, color) -> {
 			var maxColor:Color = 0;
-			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1)) {
+			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, true)) {
+				if (color == null) continue;
 				color &= colorImportanceOrder;
 				final redLarger = color.red > maxColor.red ? 1 : 0;
 				final greenLarger = color.green > maxColor.green ? 1 : 0;
@@ -217,9 +228,10 @@ class Vision {
 
 	public static function dilate(image:Image, ?dilationRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue):Image {
 		var intermediate = new Image(image.width, image.height);
-		image.forEachPixel((x, y, color) -> {
-			var minColor:Color = 0;
-			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1)) {
+		image.forEachPixel((x, y, c) -> {
+			var minColor:Color = 0xFFFFFFFF;
+			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1, true)) {
+				if (color == null) continue;
 				color &= colorImportanceOrder;
 				final redSmaller = color.red < minColor.red ? 1 : 0;
 				final greenSmaller = color.green < minColor.green ? 1 : 0;

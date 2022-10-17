@@ -48,6 +48,8 @@ class Main {
 			printImage(Vision.dropOutNoise(image.clone()));
 			printImage(Vision.whiteNoise(image.clone()));
 			printImage(Vision.combine(image.clone()));
+			printImage(Vision.erode(image.clone()));
+			printImage(Vision.dilate(image.clone()));
 			end = haxe.Timer.stamp();
 			trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#if simple_tests

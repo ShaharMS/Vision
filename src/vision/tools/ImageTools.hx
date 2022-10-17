@@ -15,9 +15,11 @@ import js.Browser;
 import haxe.ds.Vector;
 import vision.ds.Matrix;
 import vision.ds.IntPoint2D;
+import vision.ds.Point2D;
 import vision.ds.Color;
 import vision.ds.Image;
 
+using vision.tools.MathTools;
 using StringTools;
 
 /**
@@ -220,17 +222,26 @@ class ImageTools {
 		return image;
 	}
 
-	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
+	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Array2D<Color> {
 		var neighbors = new Array2D(kernalSize, kernalSize);
 		var i = 0;
 		for (neighbor in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
 			neighbors.inner[i++] = neighbor;
 		}
+		if (!circular) return neighbors;
+
+		for (x in 0...neighbors.width) {
+			for (y in 0...neighbors.height) {
+				if (({x: x, y: y} : Point2D).distanceBetweenPoints({x: (kernalSize - 1) >> 1, y: (kernalSize - 1) >> 1}) > (kernalSize - 1) >> 1) {
+					neighbors.set(x, y, null);
+				}
+			}
+		}
 		return neighbors;
 	}
 
-	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int):Iterator<Color> {
-		return new NeighborsIterator(image, x, y, kernalSize);
+	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Iterator<Color> {
+		return new NeighborsIterator(image, x, y, kernalSize, circular);
 	}
 
 	public static inline function grayscalePixel(pixel:Color):Color {
@@ -389,12 +400,14 @@ private class NeighborsIterator {
 	var y:Int;
 	var X:Int;
 	var Y:Int;
+	var circular:Bool;
 
-	public inline function new(image:Image, x:Int, y:Int, kernalSize:Int) {
+	public inline function new(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false) {
 		this.image = image;
 		this.roundedDown = (kernalSize - 1) >> 1;
 		this.x = x;
 		this.y = y;
+		this.circular = circular;
 		X = -roundedDown;
 		Y = -roundedDown;
 	}
@@ -406,7 +419,7 @@ private class NeighborsIterator {
 			Y = -roundedDown;
 			X += 1;
 		}
-		return p;
+		return if (circular && ({x: X, y: Y} : Point2D).distanceBetweenPoints({x: roundedDown, y: roundedDown}) > roundedDown) null else p;
 	}
 
 	public inline function hasNext():Bool {

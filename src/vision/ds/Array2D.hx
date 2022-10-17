@@ -4,6 +4,7 @@ class Array2D<T> {
 	public var inner:Array<T>;
 	public var width:Int;
 	public var height:Int;
+	public var length(get, null):Int;
 
 	public inline function new(width:Int, height:Int) {
 		this.width = width;
@@ -19,5 +20,13 @@ class Array2D<T> {
 
 	public inline function set(x:Int, y:Int, val:T) {
 		return inner[x + (y * height)] = val;
+	}
+
+	public inline function iterator() {
+		return inner.iterator();
+	}
+
+	inline function get_length():Int {
+		return inner.length;
 	}
 }
