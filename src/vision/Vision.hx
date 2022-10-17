@@ -211,7 +211,7 @@ class Vision {
 
 	public static function erode(image:Image, ?erosionRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue):Image {
 		var intermediate = new Image(image.width, image.height);
-		image.forEachPixel((x, y, color) -> {
+		image.forEachPixel((x, y, c) -> {
 			var maxColor:Color = 0;
 			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, true)) {
 				if (color == null) continue;
