@@ -5,6 +5,7 @@
         "alloc",
         "ARGB",
         "Bezier",
+        "bitmask",
         "blit",
         "Blitting",
         "bolden",

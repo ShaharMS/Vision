@@ -250,11 +250,33 @@ class Vision {
 		return image = intermediate;
 	}
 
-	public static function erode(image:Image, ?erosionRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue):Image {
+	/**
+	    Loops over the given image's pixels with a kernal, and replaces the center pixel of that kernal with the "minimum value" inside that kernal:
+
+		**What does replacing with the minimum value mean?**
+
+		Basically, if a nearby pixel is darker than the current pixel, the current pixel is replaced with the darker pixel.
+		That check is applied to all neighboring pixels, resulting in each pixel's color being the darkest color in its surroundings. 
+		
+		**example:** an image being eroded with a square 5x5 kernal. you should see how each time the kernal moves, it picks the darkest colors inside of it, and continues.
+
+		![example](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Grayscale_Morphological_Erosion.gif/220px-Grayscale_Morphological_Erosion.gif)
+
+		| Original | Eroded |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-erode.png)|
+
+		@param image The image to operate on.
+		@param dilationRadius The radius of the kernal used for the erosion process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernal. The higher this value, the further each pixel checks for a nearby darker pixel.
+		@param colorImportanceOrder Since there may be conflicts when calculating the difference in darkness between colors with similar values in different color channels (e.g. `0xFF0000` and `0x0000FF` - channel values are "similar", colors are not), this parameter is used to favor the given color channels. The default is `RedGreenBlue` - `red` is the most important, and is considered the "darkest", followed by green, and blue is considered the "lightest".
+		@param circularKernal When enabled, the kernal used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
+		@return The eroded image. The original copy is not preserved.
+	**/
+	public static function erode(image:Image, ?erosionRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernal:Bool = true):Image {
 		var intermediate = new Image(image.width, image.height);
 		image.forEachPixel((x, y, c) -> {
 			var minColor:Color = 0xFFFFFFFF;
-			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, true)) {
+			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, circularKernal)) {
 				color &= colorImportanceOrder;
 				final redSmaller = color.red < minColor.red ? 1 : 0;
 				final greenSmaller = color.green < minColor.green ? 1 : 0;
@@ -266,6 +288,21 @@ class Vision {
 		return image = intermediate;
 	}
 
+	/**
+		Applies noise to an image, in a "salt & pepper" fashion:
+
+		every `100 / percentage` pixels or so, a randomly generated mask bitmask is applied to the color, using **color interpolation**
+		
+		| Original | Processed |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-saltAndPepperNoise.png)
+		
+		@param image The image to apply salt&pepper noise on
+		@param percentage How much of the image should be "corrupted", in percentages between 0 to 100 - 0 means no change, 100 means fully "corrupted". Default is 25
+		@return The noisy image. The original copy is not preserved.
+
+		@see Color.interpolate()
+	**/
 	public static function saltAndPepperNoise(image:Image, percentage:Float = 25):Image {
 		var translated = percentage / 100;
 		image.forEachPixel((x, y, color) -> {
@@ -285,6 +322,21 @@ class Vision {
 		return image;
 	}
 
+	/**
+		Applies noise to an image, in a "drop-out" fashion:
+
+		every `100 / percentage` pixels or so, a pixel is set to either black or white, 
+		depending on the pixel it replaces - a lighter pixel is replaced by black, 
+		while a darker pixel is replaced by white.
+		
+		| Original | Processed |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-dropOutNoise.png)
+		
+		@param image The image to apply salt&pepper noise on
+		@param percentage How much of the image should be "corrupted", in percentages between 0 to 100 - 0 means no change, 100 means fully "corrupted". Default is 5
+		@return The noisy image. The original copy is not preserved.
+	**/
 	public static function dropOutNoise(image:Image, percentage:Float = 5, threshold:Int = 128):Image {
 		var translated = percentage / 100;
 		image.forEachPixel((x, y, color) -> {
@@ -298,6 +350,20 @@ class Vision {
 		return image;
 	}
 
+	/**
+		Applies white noise to an image. white noise is the "snow" screen you see on televisions when they pick up unwanted electric/radiated electromagnetic signals instead of the channels you ant to watch.
+
+		Instead of applying white noise every couple of pixels, white noise is sort of "combined" with the image, according to `percentage`:
+		
+		| Original | Processed |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-whiteNoise.png)
+		
+		@param image The image to apply salt&pepper noise on
+		@param percentage How white-noisy the resulting image should be, or, the ratio between the contributions of each pixel from the original image and the white noise to the final image, from 0 to 100: a lower value will make the first image's pixels contribute more to the the final image, thus making the resulting image less noisy, and vice-versa.
+		@param whiteNoiseRange The number of shades of gray used to generate the white noise. shouldn't really effect performance, but you may want to change it to get a "higher/lower quality" white noise
+		@return The noisy image. The original copy is not preserved.
+	**/
 	public static function whiteNoise(image:Image, percentage:Float = 25, whiteNoiseRange:WhiteNoiseRange = RANGE_16) {
 		var colorVector:Vector<Int> = new Vector(whiteNoiseRange);
 		colorVector[0] = 0;

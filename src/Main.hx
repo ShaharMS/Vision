@@ -44,6 +44,7 @@ class Main {
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
 			start = haxe.Timer.stamp();
+			printImage(image.sharpen().bilateralDenoise());
 			printImage(Vision.saltAndPepperNoise(image.clone()));
 			printImage(Vision.dropOutNoise(image.clone()));
 			printImage(Vision.whiteNoise(image.clone()));
