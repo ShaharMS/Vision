@@ -222,25 +222,16 @@ class ImageTools {
 		return image;
 	}
 
-	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Array2D<Null<Color>> {
+	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
 		var neighbors = new Array2D(kernalSize, kernalSize);
 		var i = 0;
 		for (neighbor in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
 			neighbors.inner[i++] = neighbor;
 		}
-		if (!circular) return neighbors;
-
-		for (x in 0...neighbors.width) {
-			for (y in 0...neighbors.height) {
-				if (({x: x, y: y} : Point2D).distanceBetweenPoints({x: (kernalSize - 1) >> 1, y: (kernalSize - 1) >> 1}) > (kernalSize - 1) >> 1) {
-					neighbors.set(x, y, null);
-				}
-			}
-		}
 		return neighbors;
 	}
 
-	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Iterator<Null<Color>> {
+	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Iterator<Color> {
 		return new NeighborsIterator(image, x, y, kernalSize, circular);
 	}
 
@@ -414,12 +405,14 @@ private class NeighborsIterator {
 
 	public inline function next():Color {
 		var p = image.getSafePixel(x + X, y + Y);
-		Y += 1;
-		if (Y > roundedDown) {
-			Y = -roundedDown;
-			X += 1;
-		}
-		return if (circular && ({x: X, y: Y} : Point2D).distanceBetweenPoints({x: roundedDown, y: roundedDown}) > roundedDown) null else p;
+		do {
+			Y += 1;
+			if (Y > roundedDown) {
+				Y = -roundedDown;
+				X += 1;
+			}
+		} while (circular && ({x: X, y: Y} : Point2D).distanceBetweenPoints({x: roundedDown, y: roundedDown}) > roundedDown);
+		return p;
 	}
 
 	public inline function hasNext():Bool {
