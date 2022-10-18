@@ -12,7 +12,7 @@
  - **Added `saltAndPepperNoise()`**
  - **Added `dropOutNoise()`**
  - **Added `whiteNoise()`**
- - **Sped up `perwittEdgeDiffOperator`**
+ - **Sped up `perwittEdgeDiffOperator()`**
 
 ### `vision.ds`
 
