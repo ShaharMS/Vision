@@ -21,8 +21,8 @@ private class Impl {
 #end
 
 /**
- * A 2D point represented by two, 32-bit integers.
- */
+	A 2D point represented by two, 32-bit integers.
+**/
 abstract IntPoint2D(Impl) {
 
 	/**

@@ -19,118 +19,118 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var TRANSPARENT:Color = 0x00000000;
 
 	/**
-	 * ![color](https://www.colorhexa.com/ffffff.png)![color](https://www.colorhexa.com/ffffff.png)
-	 */
+		![color](https://www.colorhexa.com/ffffff.png)![color](https://www.colorhexa.com/ffffff.png)
+	**/
 	public static inline var WHITE:Color = 0xFFFFFFFF;
 
 	/**
-	 * ![color](https://www.colorhexa.com/808080.png)![color](https://www.colorhexa.com/808080.png)
-	 */
+		![color](https://www.colorhexa.com/808080.png)![color](https://www.colorhexa.com/808080.png)
+	**/
 	public static inline var GRAY:Color = 0xFF808080;
 
 	/**
-	 * ![color](https://www.colorhexa.com/000000.png)![color](https://www.colorhexa.com/000000.png)
-	 */
+		![color](https://www.colorhexa.com/000000.png)![color](https://www.colorhexa.com/000000.png)
+	**/
 	public static inline var BLACK:Color = 0xFF000000;
 
 	/**
-	 * ![color](https://www.colorhexa.com/00ff00.png)![color](https://www.colorhexa.com/00ff00.png)
-	 */
+		![color](https://www.colorhexa.com/00ff00.png)![color](https://www.colorhexa.com/00ff00.png)
+	**/
 	public static inline var GREEN:Color = 0xFF00FF00;
 
 	/**
-	 * ![color](https://www.colorhexa.com/FFFF00.png)![color](https://www.colorhexa.com/FFFF00.png)
-	 */
+		![color](https://www.colorhexa.com/FFFF00.png)![color](https://www.colorhexa.com/FFFF00.png)
+	**/
 	public static inline var YELLOW:Color = 0xFFFFFF00;
 
 	/**
-	 * ![color](https://www.colorhexa.com/FFA500.png)![color](https://www.colorhexa.com/FFA500.png)
-	 */
+		![color](https://www.colorhexa.com/FFA500.png)![color](https://www.colorhexa.com/FFA500.png)
+	**/
 	public static inline var ORANGE:Color = 0xFFFFA500;
 
 	/**
-	 * ![color](https://www.colorhexa.com/FF0000.png)![color](https://www.colorhexa.com/FF0000.png)
-	 */
+		![color](https://www.colorhexa.com/FF0000.png)![color](https://www.colorhexa.com/FF0000.png)
+	**/
 	public static inline var RED:Color = 0xFFFF0000;
 
 	/**
-	 * ![color](https://www.colorhexa.com/800080.png)![color](https://www.colorhexa.com/800080.png)
-	 */
+		![color](https://www.colorhexa.com/800080.png)![color](https://www.colorhexa.com/800080.png)
+	**/
 	public static inline var PURPLE:Color = 0xFF800080;
 
 	/**
-	 * ![color](https://www.colorhexa.com/0000ff.png)![color](https://www.colorhexa.com/0000ff.png)
-	 */
+		![color](https://www.colorhexa.com/0000ff.png)![color](https://www.colorhexa.com/0000ff.png)
+	**/
 	public static inline var BLUE:Color = 0xFF0000FF;
 
 	/**
-	 * ![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)
-	 */
+		![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)
+	**/
 	public static inline var BROWN:Color = 0xFF8B4513;
 
 	/**
-	 * ![color](https://www.colorhexa.com/FFC0CB.png)![color](https://www.colorhexa.com/FFC0CB.png)
-	 */
+		![color](https://www.colorhexa.com/FFC0CB.png)![color](https://www.colorhexa.com/FFC0CB.png)
+	**/
 	public static inline var PINK:Color = 0xFFFFC0CB;
 
 	/**
-	 * ![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)
-	 */
+		![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)
+	**/
 	public static inline var MAGENTA:Color = 0xFFFF00FF;
 
 	/**
-	 * ![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)
-	 */
+		![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)
+	**/
 	public static inline var CYAN:Color = 0xFF00FFFF;
 
 	/**
-	 * ![color](https://www.colorhexa.com/C0C0C0.png)![color](https://www.colorhexa.com/C0C0C0.png)
-	 */
+		![color](https://www.colorhexa.com/C0C0C0.png)![color](https://www.colorhexa.com/C0C0C0.png)
+	**/
 	public static inline var SILVER:Color = 0xC0C0C0;
 
 	/**
-	 * ![color](https://www.colorhexa.com/FFD700.png)![color](https://www.colorhexa.com/FFD700.png)
-	 */
+		![color](https://www.colorhexa.com/FFD700.png)![color](https://www.colorhexa.com/FFD700.png)
+	**/
 	public static inline var GOLD:Color = 0xFFFFD700;
 
 	/**
-	 * ![color](https://www.colorhexa.com/808000.png)![color](https://www.colorhexa.com/808000.png)
-	 */
+		![color](https://www.colorhexa.com/808000.png)![color](https://www.colorhexa.com/808000.png)
+	**/
 	public static inline var OLIVE:Color = 0xFF808000;
 
 	/**
-	 * ![color](https://www.colorhexa.com/800000.png)![color](https://www.colorhexa.com/800000.png)
-	 */
+		![color](https://www.colorhexa.com/800000.png)![color](https://www.colorhexa.com/800000.png)
+	**/
 	public static inline var MAROON:Color = 0xFF800000;
 
 	/**
-	 * ![color](https://www.colorhexa.com/000080.png)![color](https://www.colorhexa.com/000080.png)
-	 */
+		![color](https://www.colorhexa.com/000080.png)![color](https://www.colorhexa.com/000080.png)
+	**/
 	public static inline var NAVY:Color = 0xFF000080;
 
 	/**
-	 * ![color](https://www.colorhexa.com/008080.png)![color](https://www.colorhexa.com/008080.png)
-	 */
+		![color](https://www.colorhexa.com/008080.png)![color](https://www.colorhexa.com/008080.png)
+	**/
 	public static inline var TEAL:Color = 0xFF008080;
 
 	/**
-	 * ![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)
-	 */
+		![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)
+	**/
 	public static inline var FUCHSIA:Color = 0xFFFF00FF;
 
 	/**
-	 * ![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)
-	 */
+		![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)
+	**/
 	public static inline var AQUA:Color = 0xFF00FFFF;
 
 	/**
-	 * ![color](https://www.colorhexa.com/32CD32.png)![color](https://www.colorhexa.com/32CD32.png)
-	 */
+		![color](https://www.colorhexa.com/32CD32.png)![color](https://www.colorhexa.com/32CD32.png)
+	**/
 	public static inline var LIME:Color = 0xFF32CD32;
 
 	/**
-	 * ![color](https://www.colorhexa.com/4169E1.png)![color](https://www.colorhexa.com/4169E1.png)
-	 */
+		![color](https://www.colorhexa.com/4169E1.png)![color](https://www.colorhexa.com/4169E1.png)
+	**/
 	public static inline var ROYAL_BLUE:Color = 0xFF4169E1;
 
 	public var red(get, set):Int;
@@ -149,139 +149,139 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public var black(get, set):Float;
 
 	/**
-	 * The red, green and blue channels of this color as a 24 bit integer (from 0 to 0xFFFFFF, does not include alpha values)
-	 */
+		The red, green and blue channels of this color as a 24 bit integer (from 0 to 0xFFFFFF, does not include alpha values)
+	**/
 	public var rgb(get, set):Color;
 
 	/** 
-	 * The hue of the color in degrees (from 0 to 359)
-	 */
+		The hue of the color in degrees (from 0 to 359)
+	**/
 	public var hue(get, set):Float;
 
 	/**
-	 * The saturation of the color (from 0 to 1)
-	 */
+		The saturation of the color (from 0 to 1)
+	**/
 	public var saturation(get, set):Float;
 
 	/**
-	 * The brightness (aka value) of the color (from 0 to 1)
-	 */
+		The brightness (aka value) of the color (from 0 to 1)
+	**/
 	public var brightness(get, set):Float;
 
 	/**
-	 * The lightness of the color (from 0 to 1)
-	 */
+		The lightness of the color (from 0 to 1)
+	**/
 	public var lightness(get, set):Float;
 
 	static var COLOR_REGEX = ~/^(0x|#)(([A-F0-9]{2}){3,4})$/i;
 
 	/**
-	 * Create a color from the least significant four bytes of an Int
-	 *
-	 * @param value Int with bytes in the format 0xAARRGGBB
-	 * @return	The color as a Color
-	 */
+		Create a color from the least significant four bytes of an Int
+
+		@param value Int with bytes in the format 0xAARRGGBB
+		@return	The color as a Color
+	**/
 	public static inline function fromInt(value:Int):Color {
 		return new Color(value);
 	}
 
 	/**
-	 * Generate a color from integer RGB values (0 to 255)
-	 *
-	 * @param Red	The red value of the color from 0 to 255
-	 * @param Green	The green value of the color from 0 to 255
-	 * @param Blue	The green value of the color from 0 to 255
-	 * @param Alpha	How opaque the color should be, from 0 to 255
-	 * @return The color as a Color
-	 */
+		Generate a color from integer RGB values (0 to 255)
+
+		@param Red	The red value of the color from 0 to 255
+		@param Green	The green value of the color from 0 to 255
+		@param Blue	The green value of the color from 0 to 255
+		@param Alpha	How opaque the color should be, from 0 to 255
+		@return The color as a Color
+	**/
 	public static inline function fromRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color {
 		var color = new Color();
 		return color.setRGBA(Red, Green, Blue, Alpha);
 	}
 
 	/**
-	 * Generate a grayscale color from a single color channel value (0 to 255)
-	 *
-	 * @param Value	The channel value of the red, green & blue channels of the color
-	 * @return The color as a Color
-	 */
+		Generate a grayscale color from a single color channel value (0 to 255)
+
+		@param Value	The channel value of the red, green & blue channels of the color
+		@return The color as a Color
+	**/
 	public static inline function from8Bit(Value:Int) {
 		var color = new Color();
 		return color.setRGBA(Value, Value, Value, 1);
 	}
 
 	/**
-	 * Generate a color from float RGB values (0 to 1)
-	 *
-	 * @param Red	The red value of the color from 0 to 1
-	 * @param Green	The green value of the color from 0 to 1
-	 * @param Blue	The green value of the color from 0 to 1
-	 * @param Alpha	How opaque the color should be, from 0 to 1
-	 * @return The color as a Color
-	 */
+		Generate a color from float RGB values (0 to 1)
+
+		@param Red	The red value of the color from 0 to 1
+		@param Green	The green value of the color from 0 to 1
+		@param Blue	The green value of the color from 0 to 1
+		@param Alpha	How opaque the color should be, from 0 to 1
+		@return The color as a Color
+	**/
 	public static inline function fromRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color {
 		var color = new Color();
 		return color.setRGBAFloat(Red, Green, Blue, Alpha);
 	}
 
 	/**
-	 * Generate a color from CMYK values (0 to 1)
-	 *
-	 * @param Cyan		The cyan value of the color from 0 to 1
-	 * @param Magenta	The magenta value of the color from 0 to 1
-	 * @param Yellow	The yellow value of the color from 0 to 1
-	 * @param Black		The black value of the color from 0 to 1
-	 * @param Alpha		How opaque the color should be, from 0 to 1
-	 * @return The color as a Color
-	 */
+		Generate a color from CMYK values (0 to 1)
+
+		@param Cyan		The cyan value of the color from 0 to 1
+		@param Magenta	The magenta value of the color from 0 to 1
+		@param Yellow	The yellow value of the color from 0 to 1
+		@param Black		The black value of the color from 0 to 1
+		@param Alpha		How opaque the color should be, from 0 to 1
+		@return The color as a Color
+	**/
 	public static inline function fromCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):Color {
 		var color = new Color();
 		return color.setCMYK(Cyan, Magenta, Yellow, Black, Alpha);
 	}
 
 	/**
-	 * Generate a color from HSB (aka HSV) components.
-	 *
-	 * @param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
-	 * @param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-	 * @param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
-	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
-	 * @return	The color as a Color
-	 */
+		Generate a color from HSB (aka HSV) components.
+
+		@param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
+		@param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
+		@param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
+		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
+		@return	The color as a Color
+	**/
 	public static function fromHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha:Float = 1):Color {
 		var color = new Color();
 		return color.setHSB(Hue, Saturation, Brightness, Alpha);
 	}
 
 	/**
-	 * Generate a color from HSL components.
-	 *
-	 * @param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
-	 * @param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-	 * @param	Lightness	A number between 0 and 1, indicating the lightness of the color
-	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
-	 * @return	The color as a Color
-	 */
+		Generate a color from HSL components.
+
+		@param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
+		@param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
+		@param	Lightness	A number between 0 and 1, indicating the lightness of the color
+		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
+		@return	The color as a Color
+	**/
 	public static inline function fromHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha:Float = 1):Color {
 		var color = new Color();
 		return color.setHSL(Hue, Saturation, Lightness, Alpha);
 	}
 
 	/**
-	 * Parses a `String` and returns a `Color` or `null` if the `String` couldn't be parsed.
-	 *
-	 * Examples (input -> output in hex):
-	 *
-	 * - `0x00FF00`    -> `0xFF00FF00`
-	 * - `0xAA4578C2`  -> `0xAA4578C2`
-	 * - `#0000FF`     -> `0xFF0000FF`
-	 * - `#3F000011`   -> `0x3F000011`
-	 * - `GRAY`        -> `0xFF808080`
-	 * - `blue`        -> `0xFF0000FF`
-	 *
-	 * @param	str 	The string to be parsed
-	 * @return	A `Color` or `null` if the `String` couldn't be parsed
-	 */
+		Parses a `String` and returns a `Color` or `null` if the `String` couldn't be parsed.
+
+		Examples (input -> output in hex):
+
+		- `0x00FF00`    -> `0xFF00FF00`
+		- `0xAA4578C2`  -> `0xAA4578C2`
+		- `#0000FF`     -> `0xFF0000FF`
+		- `#3F000011`   -> `0x3F000011`
+		- `GRAY`        -> `0xFF808080`
+		- `blue`        -> `0xFF0000FF`
+
+		@param	str 	The string to be parsed
+		@return	A `Color` or `null` if the `String` couldn't be parsed
+	**/
 	public static function fromString(str:String):Null<Color> {
 		var result:Null<Color> = null;
 		str = StringTools.trim(str);
@@ -298,23 +298,23 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Get HSB color wheel values in an array which will be 360 elements in size
-	 *
-	 * @param	Alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque)
-	 * @return	HSB color wheel as Array of Colors
-	 */
+		Get HSB color wheel values in an array which will be 360 elements in size
+
+		@param	Alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque)
+		@return	HSB color wheel as Array of Colors
+	**/
 	public static function getHSBColorWheel(Alpha:Int = 255):Array<Color> {
 		return [for (c in 0...360) fromHSB(c, 1.0, 1.0, Alpha)];
 	}
 
 	/**
-	 * Get an interpolated color based on two different colors.
-	 *
-	 * @param 	Color1 The first color
-	 * @param 	Color2 The second color
-	 * @param 	Factor Value from 0 to 1 representing how much to shift Color1 toward Color2
-	 * @return	The interpolated color
-	 */
+		Get an interpolated color based on two different colors.
+
+		@param 	Color1 The first color
+		@param 	Color2 The second color
+		@param 	Factor Value from 0 to 1 representing how much to shift Color1 toward Color2
+		@return	The interpolated color
+	**/
 	public static inline function interpolate(Color1:Color, Color2:Color, Factor:Float = 0.5):Color {
 		var r:Int = Std.int((Color2.red - Color1.red) * Factor + Color1.red);
 		var g:Int = Std.int((Color2.green - Color1.green) * Factor + Color1.green);
@@ -325,14 +325,14 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Create a gradient from one color to another
-	 *
-	 * @param Color1 The color to shift from
-	 * @param Color2 The color to shift to
-	 * @param Steps How many colors the gradient should have
-	 * @param Ease An optional easing function, such as those provided in FlxEase
-	 * @return An array of colors of length Steps, shifting from Color1 to Color2
-	 */
+		Create a gradient from one color to another
+
+		@param Color1 The color to shift from
+		@param Color2 The color to shift to
+		@param Steps How many colors the gradient should have
+		@param Ease An optional easing function, such as those provided in FlxEase
+		@return An array of colors of length Steps, shifting from Color1 to Color2
+	**/
 	public static function gradient(Color1:Color, Color2:Color, Steps:Int, ?Ease:Float->Float):Array<Color> {
 		var output = new Array<Color>();
 
@@ -350,8 +350,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Multiply the RGB and alpha channels of two Colors
-	 */
+		Multiply the RGB and alpha channels of two Colors
+	**/
 	@:op(A * B)
 	public static inline function multiply(lhs:Color, rhs:Color):Color {
 		return Color.fromRGBAFloat(lhs.redFloat * rhs.redFloat, lhs.greenFloat * rhs.greenFloat, lhs.blueFloat * rhs.blueFloat,
@@ -359,16 +359,16 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Add the RGB and alpha channels of two Colors
-	 */
+		Add the RGB and alpha channels of two Colors
+	**/
 	@:op(A + B)
 	public static inline function add(lhs:Color, rhs:Color):Color {
 		return Color.fromRGBA(lhs.red + rhs.red, lhs.green + rhs.green, lhs.blue + rhs.blue, lhs.alpha + rhs.alpha);
 	}
 
 	/**
-	 * Subtract the RGB and alpha channels of one Color from another
-	 */
+		Subtract the RGB and alpha channels of one Color from another
+	**/
 	@:op(A - B)
 	public static inline function subtract(lhs:Color, rhs:Color):Color {
 		return Color.fromRGBA(lhs.red - rhs.red, lhs.green - rhs.green, lhs.blue - rhs.blue, lhs.alpha - rhs.alpha);
@@ -380,22 +380,22 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Returns a Complementary Color Harmony of this color.
-	 * A complementary hue is one directly opposite the color given on the color wheel
-	 *
-	 * @return	The complimentary color
-	 */
+		Returns a Complementary Color Harmony of this color.
+		A complementary hue is one directly opposite the color given on the color wheel
+
+		@return	The complimentary color
+	**/
 	public inline function getComplementHarmony():Color {
 		return fromHSB(MathTools.wrapInt(Std.int(hue) + 180, 0, 350), brightness, saturation, alphaFloat);
 	}
 
 	/**
-	 * Returns an Analogous Color Harmony for the given color.
-	 * An Analogous harmony are hues adjacent to each other on the color wheel
-	 *
-	 * @param	Threshold Control how adjacent the colors will be (default +- 30 degrees)
-	 * @return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)
-	 */
+		Returns an Analogous Color Harmony for the given color.
+		An Analogous harmony are hues adjacent to each other on the color wheel
+
+		@param	Threshold Control how adjacent the colors will be (default +- 30 degrees)
+		@return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)
+	**/
 	public inline function getAnalogousHarmony(Threshold:Int = 30):Harmony {
 		var warmer:Int = fromHSB(MathTools.wrapInt(Std.int(hue) - Threshold, 0, 350), saturation, brightness, alphaFloat);
 		var colder:Int = fromHSB(MathTools.wrapInt(Std.int(hue) + Threshold, 0, 350), saturation, brightness, alphaFloat);
@@ -404,12 +404,12 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Returns an Split Complement Color Harmony for this color.
-	 * A Split Complement harmony are the two hues on either side of the color's Complement
-	 *
-	 * @param	Threshold Control how adjacent the colors will be to the Complement (default +- 30 degrees)
-	 * @return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)
-	 */
+		Returns an Split Complement Color Harmony for this color.
+		A Split Complement harmony are the two hues on either side of the color's Complement
+
+		@param	Threshold Control how adjacent the colors will be to the Complement (default +- 30 degrees)
+		@return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)
+	**/
 	public inline function getSplitComplementHarmony(Threshold:Int = 30):Harmony {
 		var oppositeHue:Int = MathTools.wrapInt(Std.int(hue) + 180, 0, 350);
 		var warmer:Color = fromHSB(MathTools.wrapInt(oppositeHue - Threshold, 0, 350), saturation, brightness, alphaFloat);
@@ -419,11 +419,11 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Returns a Triadic Color Harmony for this color. A Triadic harmony are 3 hues equidistant
-	 * from each other on the color wheel.
-	 *
-	 * @return 	Object containing 3 properties: color1 (the original color), color2 and color3 (the equidistant colors)
-	 */
+		Returns a Triadic Color Harmony for this color. A Triadic harmony are 3 hues equidistant
+		from each other on the color wheel.
+
+		@return 	Object containing 3 properties: color1 (the original color), color2 and color3 (the equidistant colors)
+	**/
 	public inline function getTriadicHarmony():TriadicHarmony {
 		var triadic1:Color = fromHSB(MathTools.wrapInt(Std.int(hue) + 120, 0, 359), saturation, brightness, alphaFloat);
 		var triadic2:Color = fromHSB(MathTools.wrapInt(Std.int(triadic1.hue) + 120, 0, 359), saturation, brightness, alphaFloat);
@@ -432,41 +432,41 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Return a 24 bit version of this color (i.e. without an alpha value)
-	 *
-	 * @return A 24 bit version of this color
-	 */
+		Return a 24 bit version of this color (i.e. without an alpha value)
+
+		@return A 24 bit version of this color
+	**/
 	public inline function to24Bit():Color {
 		return this & 0xffffff;
 	}
 
 	/**
-	 * Return a String representation of the color in the format
-	 *
-	 * @param Alpha Whether to include the alpha value in the hes string
-	 * @param Prefix Whether to include "0x" prefix at start of string
-	 * @return	A string of length 10 in the format 0xAARRGGBB
-	 */
+		Return a String representation of the color in the format
+
+		@param Alpha Whether to include the alpha value in the hes string
+		@param Prefix Whether to include "0x" prefix at start of string
+		@return	A string of length 10 in the format 0xAARRGGBB
+	**/
 	public inline function toHexString(Alpha:Bool = true, Prefix:Bool = true):String {
 		return (Prefix ? "0x" : "") + (Alpha ? StringTools.hex(alpha,
 			2) : "") + StringTools.hex(red, 2) + StringTools.hex(green, 2) + StringTools.hex(blue, 2);
 	}
 
 	/**
-	 * Return a String representation of the color in the format #RRGGBB
-	 *
-	 * @return	A string of length 7 in the format #RRGGBB
-	 */
+		Return a String representation of the color in the format #RRGGBB
+
+		@return	A string of length 7 in the format #RRGGBB
+	**/
 	public inline function toWebString():String {
 		return "#" + toHexString(false, false);
 	}
 
 	/**
-	 * Get a darkened version of this color
-	 *
-	 * @param	Factor Value from 0 to 1 of how much to progress toward black.
-	 * @return 	A darkened version of this color
-	 */
+		Get a darkened version of this color
+
+		@param	Factor Value from 0 to 1 of how much to progress toward black.
+		@return 	A darkened version of this color
+	**/
 	public function darken(Factor:Float = 0.2):Color {
 		Factor = MathTools.boundFloat(Factor, 0, 1);
 		var output:Color = this;
@@ -475,11 +475,11 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Get a lightened version of this color
-	 *
-	 * @param	Factor Value from 0 to 1 of how much to progress toward white.
-	 * @return 	A lightened version of this color
-	 */
+		Get a lightened version of this color
+
+		@param	Factor Value from 0 to 1 of how much to progress toward white.
+		@return 	A lightened version of this color
+	**/
 	public inline function lighten(Factor:Float = 0.2):Color {
 		Factor = MathTools.boundFloat(Factor, 0, 1);
 		var output:Color = this;
@@ -488,10 +488,10 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Get the inversion of this color
-	 *
-	 * @return The inversion of this color
-	 */
+		Get the inversion of this color
+
+		@return The inversion of this color
+	**/
 	public inline function invert():Color {
 		var oldAlpha = alpha;
 		var output:Color = Color.WHITE - this;
@@ -500,14 +500,14 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Set RGB values as integers (0 to 255)
-	 *
-	 * @param Red	The red value of the color from 0 to 255
-	 * @param Green	The green value of the color from 0 to 255
-	 * @param Blue	The green value of the color from 0 to 255
-	 * @param Alpha	How opaque the color should be, from 0 to 255
-	 * @return This color
-	 */
+		Set RGB values as integers (0 to 255)
+
+		@param Red	The red value of the color from 0 to 255
+		@param Green	The green value of the color from 0 to 255
+		@param Blue	The green value of the color from 0 to 255
+		@param Alpha	How opaque the color should be, from 0 to 255
+		@return This color
+	**/
 	public inline function setRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color {
 		red = Red;
 		green = Green;
@@ -517,14 +517,14 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Set RGB values as floats (0 to 1)
-	 *
-	 * @param Red	The red value of the color from 0 to 1
-	 * @param Green	The green value of the color from 0 to 1
-	 * @param Blue	The green value of the color from 0 to 1
-	 * @param Alpha	How opaque the color should be, from 0 to 1
-	 * @return This color
-	 */
+		Set RGB values as floats (0 to 1)
+
+		@param Red	The red value of the color from 0 to 1
+		@param Green	The green value of the color from 0 to 1
+		@param Blue	The green value of the color from 0 to 1
+		@param Alpha	How opaque the color should be, from 0 to 1
+		@return This color
+	**/
 	public inline function setRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color {
 		redFloat = Red;
 		greenFloat = Green;
@@ -534,15 +534,15 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Set CMYK values as floats (0 to 1)
-	 *
-	 * @param Cyan		The cyan value of the color from 0 to 1
-	 * @param Magenta	The magenta value of the color from 0 to 1
-	 * @param Yellow	The yellow value of the color from 0 to 1
-	 * @param Black		The black value of the color from 0 to 1
-	 * @param Alpha		How opaque the color should be, from 0 to 1
-	 * @return This color
-	 */
+		Set CMYK values as floats (0 to 1)
+
+		@param Cyan		The cyan value of the color from 0 to 1
+		@param Magenta	The magenta value of the color from 0 to 1
+		@param Yellow	The yellow value of the color from 0 to 1
+		@param Black		The black value of the color from 0 to 1
+		@param Alpha		How opaque the color should be, from 0 to 1
+		@return This color
+	**/
 	public inline function setCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):Color {
 		redFloat = (1 - Cyan) * (1 - Black);
 		greenFloat = (1 - Magenta) * (1 - Black);
@@ -552,14 +552,14 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Set HSB (aka HSV) components
-	 *
-	 * @param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
-	 * @param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-	 * @param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
-	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
-	 * @return	This color
-	 */
+		Set HSB (aka HSV) components
+
+		@param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
+		@param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
+		@param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
+		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
+		@return	This color
+	**/
 	public inline function setHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha:Float):Color {
 		var chroma = Brightness * Saturation;
 		var match = Brightness - chroma;
@@ -567,14 +567,14 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Set HSL components.
-	 *
-	 * @param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
-	 * @param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-	 * @param	Lightness	A number between 0 and 1, indicating the lightness of the color
-	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255
-	 * @return	This color
-	 */
+		Set HSL components.
+
+		@param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
+		@param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
+		@param	Lightness	A number between 0 and 1, indicating the lightness of the color
+		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255
+		@return	This color
+	**/
 	public inline function setHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha:Float):Color {
 		var chroma = (1 - Math.abs(2 * Lightness - 1)) * Saturation;
 		var match = Lightness - chroma / 2;
@@ -582,8 +582,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Private utility function to perform common operations between setHSB and setHSL
-	 */
+		Private utility function to perform common operations between setHSB and setHSL
+	**/
 	inline function setHSChromaMatch(Hue:Float, Saturation:Float, Chroma:Float, Match:Float, Alpha:Float):Color {
 		Hue %= 360;
 		var hueD = Hue / 60;
