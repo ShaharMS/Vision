@@ -404,7 +404,6 @@ private class NeighborsIterator {
 	}
 
 	public inline function next():Color {
-		var p = image.getSafePixel(x + X, y + Y);
 		do {
 			Y += 1;
 			if (Y > roundedDown) {
@@ -412,7 +411,7 @@ private class NeighborsIterator {
 				X += 1;
 			}
 		} while (circular && ({x: X, y: Y} : Point2D).distanceBetweenPoints({x: roundedDown, y: roundedDown}) > roundedDown);
-		return p;
+		return image.getSafePixel(x + X, y + Y);
 	}
 
 	public inline function hasNext():Bool {
