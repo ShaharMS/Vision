@@ -5,7 +5,7 @@
     "description": "Vision is a simple, powerful and flexible computer vision & image processing library for Haxe.",
     "contributors": ["ShaharMS"],
     "releasenote": "Added Bilateral denoising, Dilating & Eroding, Robert's Cross, laplacian, and more...",
-    "tags": ["cv", "computer-vision", "im", "image-manipulation", "cross", "cross-framework", "image", "hough"],
+    "tags": ["cv", "computer-vision", "im", "image-manipulation", "cross", "cross-framework", "image", "image-processing", "ip"],
     "classPath": "src",
     "dependencies": {},
     "url": "https://github.com/ShaharMS/Vision"

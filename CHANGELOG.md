@@ -12,6 +12,7 @@
  - **Added `saltAndPepperNoise()`**
  - **Added `dropOutNoise()`**
  - **Added `whiteNoise()`**
+ - **Sped up `perwittEdgeDiffOperator`**
 
 ### `vision.ds`
 
@@ -21,7 +22,7 @@
  - **Added `Kernal2D.LaplacianPositive`**
  - **Added `Kernal2D.LaplacianNegative`**
  - **Added `Color.from8Bit()`** to get a gray color out of a single, 8-bit color channel.
- - **Boosted `Image.clone()`**
+ - **Sped Up `Image.clone()`**
 
 ### `vision.tools`
 
