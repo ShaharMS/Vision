@@ -214,7 +214,6 @@ class Vision {
 		image.forEachPixel((x, y, c) -> {
 			var maxColor:Color = 0;
 			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, true)) {
-				if (color == null) continue;
 				color &= colorImportanceOrder;
 				final redLarger = color.red > maxColor.red ? 1 : 0;
 				final greenLarger = color.green > maxColor.green ? 1 : 0;
@@ -231,7 +230,6 @@ class Vision {
 		image.forEachPixel((x, y, c) -> {
 			var minColor:Color = 0xFFFFFFFF;
 			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1, true)) {
-				if (color == null) continue;
 				color &= colorImportanceOrder;
 				final redSmaller = color.red < minColor.red ? 1 : 0;
 				final greenSmaller = color.green < minColor.green ? 1 : 0;
