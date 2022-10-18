@@ -44,14 +44,17 @@ using vision.algorithms.Canny;
 class Vision {
 
 	/**
-	    Combines two images by averaging out the values of each pixel, according to `percentage`.
+	    Combines two images by averaging out the values of each pixel's color channels, according to `percentage`.
 
-		The images can be of different sizes.
-
+		The images can be of different sizes. 
 		
-	    @param image 
-	    @param with 
-	    @param percentage 
+		| Original | Combined With Default |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-combine.png)|
+
+		@param image The image to combine on. When this function returns, that image should be modified
+		@param with The second image to combine with. That image is preserved throughout the function.
+		@param percentage The ratio between the contributions of each pixel within the two images, from 0 to 100: a lower value will make the first image's pixels contribute more to the the final image, thus making that image more similar to the first image, and vice-versa.
 	**/
 	public static function combine(image:Image, ?with:Image, percentage:Float = 50) {
 		if (with == null) with = new Image(image.width, image.height);
@@ -83,7 +86,7 @@ class Vision {
 	public static function grayscale(image:Image):Image {
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
-				var pixel = image.getPixel(i, j);
+				var pixel = image.getUnsafePixel(i, j);
 				var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
 					+ pixel.green + pixel.blue) / 3) #end;
 				image.setPixel(i, j, Color.fromRGBA(gray, gray, gray));
@@ -117,7 +120,7 @@ class Vision {
 	public static function invert(image:Image) {
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
-				var pixel = image.getPixel(i, j);
+				var pixel = image.getUnsafePixel(i, j);
 				image.setPixel(i, j, Color.fromRGBA(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
 			}
 		}
@@ -144,7 +147,7 @@ class Vision {
 	public static function blackAndWhite(image:Image, threshold:Int = 128):Image {
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
-				var pixel = image.getPixel(i, j);
+				var pixel = image.getUnsafePixel(i, j);
 				var colorValue:Int = MathTools.max(pixel.red, pixel.green, pixel.blue);
 				if (colorValue > threshold) {
 					image.setPixel(i, j, 0xFFFFFFFF);
@@ -209,11 +212,33 @@ class Vision {
 		return image;
 	}
 
-	public static function erode(image:Image, ?erosionRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue):Image {
+	/**
+	    Loops over the given image's pixels with a kernal, and replaces the center pixel of that kernal with the "maximum value" inside that kernal:
+
+		**What does replacing with the maximum value mean?**
+
+		Basically, if a nearby pixel is lighter than the current pixel, the current pixel is replaced with the lighter pixel.
+		That check is applied to all neighboring pixels, resulting in each pixel's color being the lightest color in its surroundings. 
+		
+		**example:** an image being dilated with a 5x5 square kernal. you should see how each time the kernal moves, it picks the lightest colors inside of it, and continues.
+
+		![example](https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Grayscale_Morphological_Dilation.gif/220px-Grayscale_Morphological_Dilation.gif)
+
+		| Original | Dilated |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-dilate.png)|
+
+		@param image The image to operate on.
+		@param dilationRadius The radius of the kernal used for the dilation process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernal. The higher this value, the further each pixel checks for a nearby lighter pixel.
+		@param colorImportanceOrder Since there may be conflicts when calculating the difference in lightness between colors with similar values in different color channels (e.g. `0xFF0000` and `0x0000FF` - channel values are "similar", colors are not), this parameter is used to favor the given color channels. The default is `RedGreenBlue` - `red` is the most important, and is considered the "lightest", followed by green, and blue is considered the "darkest".
+		@param circularKernal When enabled, the kernal used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
+		@return The dilated image. The original copy is not preserved.
+	**/
+	public static function dilate(image:Image, ?dilationRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernal:Bool = true):Image {
 		var intermediate = new Image(image.width, image.height);
 		image.forEachPixel((x, y, c) -> {
 			var maxColor:Color = 0;
-			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, true)) {
+			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1, circularKernal)) {
 				color &= colorImportanceOrder;
 				final redLarger = color.red > maxColor.red ? 1 : 0;
 				final greenLarger = color.green > maxColor.green ? 1 : 0;
@@ -225,11 +250,11 @@ class Vision {
 		return image = intermediate;
 	}
 
-	public static function dilate(image:Image, ?dilationRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue):Image {
+	public static function erode(image:Image, ?erosionRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue):Image {
 		var intermediate = new Image(image.width, image.height);
 		image.forEachPixel((x, y, c) -> {
 			var minColor:Color = 0xFFFFFFFF;
-			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1, true)) {
+			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, true)) {
 				color &= colorImportanceOrder;
 				final redSmaller = color.red < minColor.red ? 1 : 0;
 				final greenSmaller = color.green < minColor.green ? 1 : 0;
