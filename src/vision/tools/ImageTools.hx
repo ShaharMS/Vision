@@ -96,7 +96,7 @@ class ImageTools {
 					format.png.Tools.reverseBytes(bytes);
 					var image = new Image(header.width, header.height);
 
-					// copy the ARG bytes from the PNG to the image, without overwriting the first 4 bytes
+					// copy the ARGB bytes from the PNG to the image, without overwriting the first 4 bytes
 					image.underlying.blit(4, bytes, 0, bytes.length);
 
 					onComplete(image);

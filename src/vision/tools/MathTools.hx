@@ -313,7 +313,7 @@ class MathTools {
 	/**
 	 	Returns `true` if `number` is positive, `false` if negative
 	**/
-	@:generic public static inline function isPositive<T>(number:T):Bool {
+	@:generic public static inline function isPositive<T:Number>(number:T):Bool {
 		return (abs(cast number) / cast number) > 0;
 	}
 
@@ -645,3 +645,5 @@ class MathTools {
 	public static inline function isNaN(f:Float):Bool
 		return Math.isNaN(f);
 }
+
+abstract Number(Dynamic) from Float from Int from UInt to Float to Int to UInt {}

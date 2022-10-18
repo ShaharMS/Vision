@@ -34,8 +34,8 @@ class Array2D<T> {
 	    @param height The array's height
 	**/
 	public inline function new(width:Int, height:Int) {
-		this.width = width;
-		this.height = height;
+		@:bypassAccessor this.width = width;
+		@:bypassAccessor this.height = height;
 
 		this.inner = new Array();
 		inner.resize(width * height);
