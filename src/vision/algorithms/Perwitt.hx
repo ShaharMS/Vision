@@ -12,59 +12,39 @@ using vision.tools.MathTools;
  */
 class Perwitt {
 	public static function convolveWithPerwittOperator(image:Image) {
-		var edgeColors:Array<Array<Color>> = [];
+		var edgeColors:Image = new Image(image.width, image.height);
 		var maxGradient = -1;
 
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
-				var val00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
-				var val01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
-				var val02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
-				var val10 = ImageTools.grayscalePixel(image.getSafePixel(i, j - 1)).red;
-				var val11 = ImageTools.grayscalePixel(image.getSafePixel(i, j)).red;
-				var val12 = ImageTools.grayscalePixel(image.getSafePixel(i, j + 1)).red;
-				var val20 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j - 1)).red;
-				var val21 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j)).red;
-				var val22 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j + 1)).red;
+				// get the red value of the grayed pixel
+				// we can "trust" .red since the value should be similar across the channels
+				final pos00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
+				final pos01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
+				final pos02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
+				final pos10 = ImageTools.grayscalePixel(image.getSafePixel(i, j - 1)).red;
+				final pos11 = ImageTools.grayscalePixel(image.getSafePixel(i, j)).red;
+				final pos12 = ImageTools.grayscalePixel(image.getSafePixel(i, j + 1)).red;
+				final pos20 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j - 1)).red;
+				final pos21 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j)).red;
+				final pos22 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j + 1)).red;
 
-				var gx = ((-1 * val00)
-					+ (0 * val01)
-					+ (1 * val02))
-					+ ((-2 * val10) + (0 * val11) + (2 * val12))
-					+ ((-1 * val20) + (0 * val21) + (1 * val22));
+				final gx = ((-1 * pos00) + (0 * pos01) + (1 * pos02)) + ((-2 * pos10) + (0 * pos11) + (2 * pos12)) + ((-1 * pos20) + (0 * pos21) + (1 * pos22));
 
-				var gy = ((-1 * val00)
-					+ (-2 * val01)
-					+ (-1 * val02))
-					+ ((0 * val10) + (0 * val11) + (0 * val12))
-					+ ((1 * val20) + (2 * val21) + (1 * val22));
+				final gy = ((-1 * pos00) + (-2 * pos01) + (-1 * pos02)) + ((0 * pos10) + (0 * pos11) + (0 * pos12)) + ((1 * pos20) + (2 * pos21) + (1 * pos22));
 
 				final gradientFloatValue = Math.sqrt((gx * gx) + (gy * gy));
 				final gradient = Std.int(gradientFloatValue);
-	
+
 				if (gradient > maxGradient) maxGradient = gradient;
 
-				if (edgeColors[i] == null)
-					edgeColors[i] = [];
-				edgeColors[i][j] = gradient;
+				final rgb:Int = Std.int(gradient * (255 / maxGradient));
+				//turn into ARGB
+				edgeColors.setPixel(i, j, 0xff000000 | (rgb << 16) | (rgb << 8) | rgb);
 			}
 		}
 
-		var scale = 255.0 / maxGradient;
-
-		var edgeImage = new Image(image.width, image.height);
-		for (i in 0...image.width) {
-			for (j in 0...image.height) {
-				var edgeColor = edgeColors[i][j];
-				edgeColor = Std.int(edgeColor * scale);
-				//RGB -> ARGB
-				edgeColor = 0xff000000 | (edgeColor << 16) | (edgeColor << 8) | edgeColor;
-
-				edgeImage.setPixel(i, j, edgeColor);
-			}
-		}
-
-		return edgeImage;
+		return edgeColors;
 	}
 
 	static function getNeighbors(kernalSize:Int, x:Int, y:Int, image:Image):Array<Array<Color>> {
