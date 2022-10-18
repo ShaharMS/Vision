@@ -40,11 +40,14 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `cannyEdgeDetection()`
  - [ ] `houghRay2DDetection()`
  - [ ] `houghLine2DDetection()`
+ - [ ] `harrisCornerDetection()`
+ - [ ] `forstnerCornerDetection()`
  - [x] `nearestNeighborBlur()`
  - [x] `gaussianBlur()`
  - [x] `medianBlur()` 
  - [x] `bilateralDenoise()`
  - [ ] `nonLocalMeansDenoise()` 
+ - [ ] `nonLocalIsolativeDenoise()`
 
 #### class `Image`:
 
@@ -53,7 +56,7 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `setPixel()`
  - [x] `hasPixel()`
  - [x] `paintPixel()`
- - [x] matrix access `image[x][y]`
+ - [ ] matrix access `image[x][y]`
  - [x] Drawing:
    - [x] `fillColor()`
    - [x] `fillColorRecursive()`
