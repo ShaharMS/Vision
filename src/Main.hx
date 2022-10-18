@@ -51,6 +51,10 @@ class Main {
 			printImage(Vision.combine(image.clone()));
 			printImage(Vision.erode(image.clone()));
 			printImage(Vision.dilate(image.clone()));
+			printImage(Vision.laplacianEdgeDiffOperator(image.clone(), true));
+			printImage(Vision.laplacianEdgeDiffOperator(image.clone(), false));
+			printImage(Vision.laplacianOfGaussianEdgeDetection(image.clone(), true));
+			printImage(Vision.laplacianOfGaussianEdgeDetection(image.clone(), false));
 			end = haxe.Timer.stamp();
 			trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#if simple_tests

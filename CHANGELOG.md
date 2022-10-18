@@ -20,7 +20,8 @@
  - **Added `WhiteNoiseRange`** for different white noise types (2-bit, 16-bit...)
  - **Added `Kernal2D.LaplacianPositive`**
  - **Added `Kernal2D.LaplacianNegative`**
- - **Added `Color.from8Bit()`** to get a gray color out of a single, 8-bit color channel
+ - **Added `Color.from8Bit()`** to get a gray color out of a single, 8-bit color channel.
+ - **Boosted `Image.clone()`**
 
 ### `vision.tools`
 

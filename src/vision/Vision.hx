@@ -935,7 +935,7 @@ class Vision {
 
 		| Original | Sharpened | Sharpened (Denoised) |
 		|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sharpen.png)|![After](https://spacebubble.io/vision/docs/valve-bilateralDenoise)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sharpen.png)|![After](https://spacebubble.io/vision/docs/valve-bilateralDenoise.png)|
 
 		@param image The image to operate on
 		@param gaussianSigma The sigma to use when generating the gaussian kernal. This also decides the size of the kernal (The size of the kernal is always `Math.round(6 * gaussianSigma)`, and gets incremented if the resulting size is even)
