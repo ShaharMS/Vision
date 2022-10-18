@@ -814,13 +814,7 @@ abstract Image(ByteArray) {
 			var blurred = Vision.gaussianBlur(image.clone());
 	**/
 	public function clone():Image {
-		var clone = new Image(width, height, 0);
-		for (i in 0...width) {
-			for (j in 0...height) {
-				clone.setPixel(i, j, getPixel(i, j));
-			}
-		}
-		return clone;
+		return cast this.sub(0, this.length);
 	}
 
 	//--------------------------------------------------------------------------
