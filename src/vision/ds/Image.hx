@@ -19,9 +19,17 @@ using vision.tools.MathTools;
 **/
 abstract Image(ByteArray) {
 	/**
-	 * the first 4 bytes represent width.
-	 */
-	static var OFFSET = 4;
+		the first 4 bytes represent image width,
+		the next 8 bytes are the x & y position of an image view, if defined,
+		the next 8 bytes are the width & height of an image view, if defined,
+	**/
+	static var OFFSET = 21;
+
+	static var WIDTH_BYTES = 4;
+	static var VIEW_XY_BYTES = 8;
+	static var VIEW_WH_BYTES = 8;
+	static var VIEW_SHAPE_BYTES = 1;
+	static var DATA_GAP = 4;
 
 	/**
 		Returns the underlying type of this abstract.
@@ -77,7 +85,7 @@ abstract Image(ByteArray) {
 	public inline function new(width:Int, height:Int, ?color:Color = 0x00000000) {
 		this = new ByteArray(width * height * 4 + OFFSET);
 		this.setInt32(0, width);
-		var i = 4;
+		var i = OFFSET;
 		while (i < this.length) {
 			this[i] = color.alpha;
 			this[i + 1] = color.red;
@@ -217,6 +225,11 @@ abstract Image(ByteArray) {
 			#else
 			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
 			#end
+		}		
+		if (hasCurrentView()) {
+			final view = getCurrentView();
+			x = x.boundInt(view.x, view.width);
+			y = y.boundInt(view.y, view.height);
 		}
 		setColorFromStartingBytePos((y * width + x) * 4, color);
 	}
@@ -887,15 +900,54 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
+		final view = getCurrentView();
 		for (x in 0...width) {
 			for (y in 0...height) {
-				callback(x, y, getPixel(x, y));
+				if (hasCurrentView()) {
+					if (x >= view.x && y >= view.y && x < view.x + view.width && y < view.y + view.height) callback(x, y, getUnsafePixel(x, y));
+				} else {
+					callback(x, y, getUnsafePixel(x, y));
+				}
 			}
 		}
 	}
 
 	public inline function iterator():Iterator<Pixel> {
 		return new PixelIterator(cast this);
+	}
+
+	//--------------------------------------------------------------------------
+	// Image View
+	//--------------------------------------------------------------------------
+
+	public inline function hasCurrentView():Bool {
+		return (
+			this.getInt32(WIDTH_BYTES) != 0 ||
+			this.getInt32(WIDTH_BYTES + DATA_GAP) != 0 ||
+			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES) != 0 ||
+			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP) != 0 ||
+			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES) != 0
+		);
+	}
+
+	public inline function setCurrentView(x:Int, y:Int, width:Int, height:Int, shape:ImageViewShape):Image {
+		this.setInt32(WIDTH_BYTES, x);
+		this.setInt32(WIDTH_BYTES + DATA_GAP, y);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, shape);
+		trace(getCurrentView());
+		return cast this;
+	}
+
+	public inline function getCurrentView():{x:Int, y:Int, width:Int, height:Int, shape:ImageViewShape} {
+		return {
+			x: this.getInt32(WIDTH_BYTES),
+			y: this.getInt32(WIDTH_BYTES + DATA_GAP),
+			width: this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES),
+			height: this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP),
+			shape: this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES),
+		}
 	}
 
 	//--------------------------------------------------------------------------
