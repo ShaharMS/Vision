@@ -2,7 +2,6 @@ package vision.ds;
 
 import haxe.io.Bytes;
 import vision.ds.ByteArray;
-import haxe.io.UInt8Array;
 import vision.exceptions.Unimplemented;
 import vision.tools.MathTools;
 import vision.algorithms.BilinearInterpolation;
@@ -33,7 +32,7 @@ abstract Image(ByteArray) {
 	}
 
 	#if vision_allow_resize
-	inline function set_underlying(bytes:UInt8Array) {
+	inline function set_underlying(bytes:ByteArray) {
 		return this = bytes;
 	}
 	#end
