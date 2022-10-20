@@ -85,6 +85,11 @@ abstract Image(ByteArray) {
 	public inline function new(width:Int, height:Int, ?color:Color = 0x00000000) {
 		this = new ByteArray(width * height * 4 + OFFSET);
 		this.setInt32(0, width);
+		this.setInt32(WIDTH_BYTES, 0);
+		this.setInt32(WIDTH_BYTES + DATA_GAP, 0);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
 		var i = OFFSET;
 		while (i < this.length) {
 			this[i] = color.alpha;
@@ -221,17 +226,20 @@ abstract Image(ByteArray) {
 	public inline function setPixel(x:Int, y:Int, color:Color) {
 		if (!hasPixel(x, y)) {
 			#if vision_quiet
-			return;
 			#else
 			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
 			#end
-		}		
-		if (hasCurrentView()) {
-			final view = getCurrentView();
-			x = x.boundInt(view.x, view.width);
-			y = y.boundInt(view.y, view.height);
-		}
-		setColorFromStartingBytePos((y * width + x) * 4, color);
+		} else {
+			if (hasCurrentView()) {
+				final view = getCurrentView();
+				if (x < view.x + view.width && y < view.y + view.height) {
+					setColorFromStartingBytePos((y * width + x) * 4, color);
+				}
+			} else {
+				setColorFromStartingBytePos((y * width + x) * 4, color);
+			}
+		}	
+		
 	}
 
 	/**
@@ -924,8 +932,8 @@ abstract Image(ByteArray) {
 		return (
 			this.getInt32(WIDTH_BYTES) != 0 ||
 			this.getInt32(WIDTH_BYTES + DATA_GAP) != 0 ||
-			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES) != 0 ||
-			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP) != 0 ||
+			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES) != width ||
+			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP) != height ||
 			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES) != 0
 		);
 	}

@@ -43,20 +43,7 @@ class Main {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-			start = haxe.Timer.stamp();
-			printImage(image.contrast().bilateralDenoise());
-			printImage(Vision.saltAndPepperNoise(image.clone().setCurrentView(10, 10, 50, 50, 0)));
-			printImage(Vision.dropOutNoise(image.clone().setCurrentView(10, 10, 50, 50, 0)));
-			printImage(Vision.whiteNoise(image.clone().setCurrentView(10, 10, 50, 50, 0)));
-			printImage(Vision.combine(image.clone().setCurrentView(10, 10, 50, 50, 0)));
-			printImage(Vision.erode(image.clone().setCurrentView(10, 10, 50, 50, 0)));
-			printImage(Vision.dilate(image.clone().setCurrentView(10, 10, 50, 50, 0)));
-			printImage(Vision.laplacianEdgeDiffOperator(image.clone(), true));
-			printImage(Vision.laplacianEdgeDiffOperator(image.clone(), false));
-			printImage(Vision.laplacianOfGaussianEdgeDetection(image.clone(), true));
-			printImage(Vision.laplacianOfGaussianEdgeDetection(image.clone(), false));
-			end = haxe.Timer.stamp();
-			trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
+			image.setCurrentView(10, 10, 80, 80, 0);
 			#if simple_tests
 			start = haxe.Timer.stamp();
 			printImage(Vision.blackAndWhite(image.clone()));
