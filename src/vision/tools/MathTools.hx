@@ -568,7 +568,7 @@ class MathTools {
 	}
 
 	public static inline function clamp(value:Int, mi:Int, ma:Int) {
-		return boundInt(value, mi, ma)
+		return boundInt(value, mi, ma);
 	}
 
 	//---------------------
