@@ -645,3 +645,5 @@ class MathTools {
 	public static inline function isNaN(f:Float):Bool
 		return Math.isNaN(f);
 }
+
+abstract Number(Dynamic) from Float from Int from UInt to Float to Int to UInt {}
