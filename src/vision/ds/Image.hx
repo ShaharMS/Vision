@@ -232,7 +232,7 @@ abstract Image(ByteArray) {
 		} else {
 			if (hasCurrentView()) {
 				final view = getCurrentView();
-				if (x < view.x + view.width && y < view.y + view.height) {
+				if (x < view.x + view.width && y < view.y + view.height && x >= view.x && y >= view.y) {
 					setColorFromStartingBytePos((y * width + x) * 4, color);
 				}
 			} else {

@@ -235,7 +235,7 @@ class Vision {
 		@return The dilated image. The original copy is not preserved.
 	**/
 	public static function dilate(image:Image, ?dilationRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernal:Bool = true):Image {
-		var intermediate = new Image(image.width, image.height);
+		var intermediate = image.clone();
 		image.forEachPixel((x, y, c) -> {
 			var maxColor:Color = 0;
 			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1, circularKernal)) {
@@ -273,7 +273,7 @@ class Vision {
 		@return The eroded image. The original copy is not preserved.
 	**/
 	public static function erode(image:Image, ?erosionRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernal:Bool = true):Image {
-		var intermediate = new Image(image.width, image.height);
+		var intermediate = image.clone();
 		image.forEachPixel((x, y, c) -> {
 			var minColor:Color = 0xFFFFFFFF;
 			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, circularKernal)) {
@@ -532,7 +532,7 @@ class Vision {
 			}
 		}
 
-		var convolved = new Image(image.width, image.height);
+		var convolved = image.clone();
 		var maxLength = -1;
 		for (array in matrix) {
 			if (array.length > maxLength)
@@ -627,7 +627,7 @@ class Vision {
 		@return A filtered version of the image, using median blurring. The original image is not preserved
 	**/
 	public static function medianBlur(image:Image, kernalSize:Int = 5):Image {
-		var median = new Image(image.width, image.height);
+		var median = image.clone();
 		image.forEachPixel((x, y, color) -> {
 			var neighbors:Array<Int> = image.getNeighborsOfPixel(x, y, kernalSize).inner;
 			ArraySort.sort(neighbors, (a, b) -> a - b);
@@ -910,6 +910,7 @@ class Vision {
 	**/
 	public static function convolutionRidgeDetection(image:Image, ?normalizationRangeStart:Color = 0xFF444444, ?normalizationRangeEnd:Color = 0xFFBBBBBB, refine:Bool = false):Image {
 		var clone = image.clone();
+		clone.setCurrentView(0, 0, clone.width, clone.height, 0);
 		Vision.grayscale(clone);
 		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
 		clone = Vision.convolve(clone, RidgeDetectionAggressive);

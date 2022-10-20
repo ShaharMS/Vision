@@ -81,6 +81,10 @@ class Main {
 			printImage(Vision.dropOutNoise(image.clone()));
 			end = haxe.Timer.stamp();
 			trace("Dropout Noise took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(Vision.whiteNoise(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("White Noise took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 
 			#if mirror_flip_tests
