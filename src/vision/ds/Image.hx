@@ -242,6 +242,31 @@ abstract Image(ByteArray) {
 		
 	}
 
+	inline function setInsideView(x:Int, y:Int, color:Color) {
+		
+	}
+
+	public inline function hasPixelInView(x:Int, y:Int):Bool {
+		var has = false;
+		final view = getCurrentView();
+		switch view.shape {
+			case RECTANGLE: has = (x < view.x + view.width && y < view.y + view.height && x >= view.x && y >= view.y);
+			case ELLIPSE: {
+				//calculate the focal points of the ellipse
+				//c^2 = a^2 - b^2
+				if (view.width > view.height) {
+					final c = MathTools.sqrt((view.width)*(view.width) - (view.height)*(view.height));
+					final dc = new Point2D(view.x + view.width / 2 + c, view.y + view.height / 2).distanceBetweenPoints(new Point2D(x, y));
+					final dmc = new Point2D(view.x + view.width / 2 - c, view.y + view.height / 2).distanceBetweenPoints(new Point2D(x, y));
+					has = dc + dmc < view.width * 2;
+				} else {
+
+				}
+			}
+		}
+		return has;
+	}
+
 	/**
 		Checks if the given coordinates are within the bounds of the image.
 
