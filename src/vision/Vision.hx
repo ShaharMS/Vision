@@ -659,7 +659,7 @@ class Vision {
             case High_Slow: X7;
             case VeryHigh_VerySlow: X9;
         }
-        var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
+        var edgeDetected = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16);
         var lines:Array<Line2D> = [];
 		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
@@ -677,7 +677,7 @@ class Vision {
         }
 		lines = [];
         //now, get a mirrored version
-        edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
+        edgeDetected = cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16);
         for (x in 0...image.width) {
             for (y in 0...image.height) {
                 lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength));
@@ -803,7 +803,7 @@ class Vision {
 		@return The edge detected image.
 	**/
 	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, kernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05, highThreshold:Float = 0.2):Image {
-		var cannyObject:CannyObject = image.clone();
+		var cannyObject:CannyObject = image.clone().removeView();
 		return blackAndWhite(cannyObject.grayscale()
 			.applyGaussian(kernalSize, sigma)
 			.applySobelFilters()
@@ -910,7 +910,7 @@ class Vision {
 	**/
 	public static function convolutionRidgeDetection(image:Image, ?normalizationRangeStart:Color = 0xFF444444, ?normalizationRangeEnd:Color = 0xFFBBBBBB, refine:Bool = false):Image {
 		var clone = image.clone();
-		clone.setCurrentView(0, 0, clone.width, clone.height, 0);
+		clone.removeView();
 		Vision.grayscale(clone);
 		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
 		clone = Vision.convolve(clone, RidgeDetectionAggressive);

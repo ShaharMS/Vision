@@ -13,11 +13,11 @@ class __ByteArrayView {
     }
 
     public function get(pos:Int):Int {
-        return parentArray[pos + this.pos];
+        return parentArray.get(pos + this.pos);
     }
 
     public function set(pos:Int, value:Int) {
-        return parentArray[pos + this.pos] = value;
+        return parentArray.set(pos + this.pos, value);
     }
 }
 

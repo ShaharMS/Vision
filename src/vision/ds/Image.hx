@@ -2,7 +2,6 @@ package vision.ds;
 
 import haxe.io.Bytes;
 import vision.ds.ByteArray;
-import haxe.io.UInt8Array;
 import vision.exceptions.Unimplemented;
 import vision.tools.MathTools;
 import vision.algorithms.BilinearInterpolation;
@@ -76,6 +75,23 @@ abstract Image(ByteArray) {
 	#end
 
 	/**
+	    The current image's `ImageView`. you can get/set this field to change the view, but changing it's values won't effect anything.
+
+		`ImageView`s disallow setting pixels on parts outside of the view. That's useful when you want to operate
+		on a certain part of the image, without modifying other portions/copying pixels around.
+	**/
+	public var view(get, set):ImageView;
+
+	inline function get_view():ImageView {
+		return getView();
+	}
+
+	inline function set_view(view:ImageView):ImageView {
+		setView(view);
+		return view;
+	}
+
+	/**
 		Creates a new image of the given size. Onces created, the image cannot be resized.
 
 		@param width The width of the image.
@@ -89,7 +105,7 @@ abstract Image(ByteArray) {
 		this.setInt32(WIDTH_BYTES + DATA_GAP, 0);
 		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
 		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
 		var i = OFFSET;
 		while (i < this.length) {
 			this[i] = color.alpha;
@@ -230,9 +246,9 @@ abstract Image(ByteArray) {
 			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
 			#end
 		} else {
-			if (hasCurrentView()) {
-				final view = getCurrentView();
-				if (x < view.x + view.width && y < view.y + view.height && x >= view.x && y >= view.y) {
+			if (hasView()) {
+				final view = getView();
+				if (hasPixelInView(x, y)) {
 					setColorFromStartingBytePos((y * width + x) * 4, color);
 				}
 			} else {
@@ -240,31 +256,6 @@ abstract Image(ByteArray) {
 			}
 		}	
 		
-	}
-
-	inline function setInsideView(x:Int, y:Int, color:Color) {
-		
-	}
-
-	public inline function hasPixelInView(x:Int, y:Int):Bool {
-		var has = false;
-		final view = getCurrentView();
-		switch view.shape {
-			case RECTANGLE: has = (x < view.x + view.width && y < view.y + view.height && x >= view.x && y >= view.y);
-			case ELLIPSE: {
-				//calculate the focal points of the ellipse
-				//c^2 = a^2 - b^2
-				if (view.width > view.height) {
-					final c = MathTools.sqrt((view.width)*(view.width) - (view.height)*(view.height));
-					final dc = new Point2D(view.x + view.width / 2 + c, view.y + view.height / 2).distanceBetweenPoints(new Point2D(x, y));
-					final dmc = new Point2D(view.x + view.width / 2 - c, view.y + view.height / 2).distanceBetweenPoints(new Point2D(x, y));
-					has = dc + dmc < view.width * 2;
-				} else {
-
-				}
-			}
-		}
-		return has;
 	}
 
 	/**
@@ -933,11 +924,13 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
-		final view = getCurrentView();
+		final view = getView();
 		for (x in 0...width) {
 			for (y in 0...height) {
-				if (hasCurrentView()) {
-					if (x >= view.x && y >= view.y && x < view.x + view.width && y < view.y + view.height) callback(x, y, getUnsafePixel(x, y));
+				if (hasView()) {
+					if (hasPixelInView(x, y)) {
+						callback(x, y, getUnsafePixel(x, y));
+					}
 				} else {
 					callback(x, y, getUnsafePixel(x, y));
 				}
@@ -953,34 +946,79 @@ abstract Image(ByteArray) {
 	// Image View
 	//--------------------------------------------------------------------------
 
-	public inline function hasCurrentView():Bool {
+	public inline function hasView():Bool {
 		return (
 			this.getInt32(WIDTH_BYTES) != 0 ||
 			this.getInt32(WIDTH_BYTES + DATA_GAP) != 0 ||
 			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES) != width ||
 			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP) != height ||
-			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES) != 0
+			this.get(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES) != 0
 		);
 	}
 
-	public inline function setCurrentView(x:Int, y:Int, width:Int, height:Int, shape:ImageViewShape):Image {
-		this.setInt32(WIDTH_BYTES, x);
-		this.setInt32(WIDTH_BYTES + DATA_GAP, y);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, shape);
-		trace(getCurrentView());
+	public inline function setView(view:ImageView):Image {
+		this.setInt32(WIDTH_BYTES, view.x);
+		this.setInt32(WIDTH_BYTES + DATA_GAP, view.y);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, view.width);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height);
+		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, view.shape);
 		return cast this;
 	}
 
-	public inline function getCurrentView():{x:Int, y:Int, width:Int, height:Int, shape:ImageViewShape} {
+	public inline function getView():ImageView {
 		return {
 			x: this.getInt32(WIDTH_BYTES),
 			y: this.getInt32(WIDTH_BYTES + DATA_GAP),
 			width: this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES),
 			height: this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP),
-			shape: this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES),
+			shape: this.get(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES),
 		}
+	}
+
+	public inline function removeView():Image {
+		this.setInt32(WIDTH_BYTES, 0);
+		this.setInt32(WIDTH_BYTES + DATA_GAP, 0);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
+		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		return cast this;
+	}
+
+	public inline function hasPixelInView(x:Int, y:Int, ?v:ImageView):Bool {
+		var has = false;
+		final view = v != null ? v : view;
+		switch view.shape {
+			case RECTANGLE: has = (x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
+			case RECTANGLE_INVERTED: has = !(x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
+			case ELLIPSE, ELLIPSE_INVERTED: {
+				//calculate the focal points of the ellipse
+				//c^2 = a^2 - b^2
+				if (view.width > view.height) {
+					final a = view.width / 2;
+					final b = view.height / 2;
+					final c = Math.sqrt(a * a - b * b);
+					final f1 = new Point2D(view.x + view.width / 2 - c, view.y + view.height / 2);
+					final f2 = new Point2D(view.x + view.width / 2 + c, view.y + view.height / 2);
+					final p = new Point2D(x, y);
+					has = f1.distanceBetweenPoints(p) + f2.distanceBetweenPoints(p) <= view.width;
+					if (view.shape == ELLIPSE_INVERTED) has = !has;
+				} else if (view.height > view.width) {
+					final a = view.height / 2;
+					final b = view.width / 2;
+					final c = Math.sqrt(a * a - b * b);
+					final f1 = new Point2D(view.x + view.width / 2, view.y + view.height / 2 - c);
+					final f2 = new Point2D(view.x + view.width / 2, view.y + view.height / 2 + c);
+					final p = new Point2D(x, y);
+					has = f1.distanceBetweenPoints(p) + f2.distanceBetweenPoints(p) <= view.height;
+					if (view.shape == ELLIPSE_INVERTED) has = !has;
+				} else {
+					//just check if the distance from the point to the center is larger than the radius of the circle
+					has = new Point2D(x, y).distanceBetweenPoints(new Point2D(view.x + view.width / 2, view.y + view.height / 2)) <= (view.width / 2);
+					if (view.shape == ELLIPSE_INVERTED) has = !has;
+				}
+			}
+		}
+		return has;
 	}
 
 	//--------------------------------------------------------------------------

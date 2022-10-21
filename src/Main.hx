@@ -1,5 +1,6 @@
 package;
 
+import js.html.EffectTiming;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;
@@ -43,7 +44,7 @@ class Main {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-			image.setCurrentView(10, 10, 80, 80, 0);
+			image.setView({x: 10, y: 10, width: 80, height: 100, shape: ELLIPSE_INVERTED});
 			#if simple_tests
 			start = haxe.Timer.stamp();
 			printImage(Vision.blackAndWhite(image.clone()));
