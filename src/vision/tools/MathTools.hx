@@ -300,8 +300,10 @@ class MathTools {
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
 	**/
 	public static function boundInt(value:Int, min:Int, max:Int) {
-		return Std.int(Math.min(Math.max(value, min), max));
-	}
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
 
 	/**
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.

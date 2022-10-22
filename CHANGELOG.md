@@ -1,3 +1,14 @@
+# 1.1.1
+
+### `vision.ds`
+
+ - **Fixed `Image.underlying` setter failing with `vision_allow_resize`**
+
+### `vision.tools`
+
+ - **Fixed `MathTools.clamp()`**
+ - **Optimized `MathTools.boundInt()`**
+
 # 1.1.0
 
 ### `Vision.hx`
@@ -12,7 +23,7 @@
  - **Added `saltAndPepperNoise()`**
  - **Added `dropOutNoise()`**
  - **Added `whiteNoise()`**
- - **Sped up `perwittEdgeDiffOperator()`**
+ - **Optimized `perwittEdgeDiffOperator()`**
 
 ### `vision.ds`
 
@@ -22,7 +33,7 @@
  - **Added `Kernal2D.LaplacianPositive`**
  - **Added `Kernal2D.LaplacianNegative`**
  - **Added `Color.from8Bit()`** to get a gray color out of a single, 8-bit color channel.
- - **Sped Up `Image.clone()`**
+ - **Optimized `Image.clone()`**
 
 ### `vision.tools`
 
