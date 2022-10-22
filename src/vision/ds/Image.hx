@@ -18,17 +18,28 @@ using vision.tools.MathTools;
 **/
 abstract Image(ByteArray) {
 	/**
-		the first 4 bytes represent image width,
-		the next 8 bytes are the x & y position of an image view, if defined,
-		the next 8 bytes are the width & height of an image view, if defined,
-	**/
-	static var OFFSET = 21;
+		### If `vision_higher_width_cap` is defined:
 
-	static var WIDTH_BYTES = 4;
-	static var VIEW_XY_BYTES = 8;
-	static var VIEW_WH_BYTES = 8;
+		the first 4 bytes represent image width,  
+		the next 8 bytes are the x & y position of an image view,  
+		the next 8 bytes are the width & height of an image view,
+		the last byte represents view shape
+
+		### Otherwise:
+
+		the first 2 bytes represent image width,  
+		the next 4 bytes are the x & y position of an image view,  
+		the next 4 bytes are the width & height of an image view,
+		the last byte represents view shape
+
+	**/
+	static var OFFSET = #if vision_higher_width_cap 21 #else 11 #end;
+
+	static var WIDTH_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
+	static var VIEW_XY_BYTES = #if vision_higher_width_cap 8 #else 4 #end;
+	static var VIEW_WH_BYTES = #if vision_higher_width_cap 8 #else 4 #end;
 	static var VIEW_SHAPE_BYTES = 1;
-	static var DATA_GAP = 4;
+	static var DATA_GAP = #if vision_higher_width_cap 4 #else 2 #end;
 
 	/**
 		Returns the underlying type of this abstract.
@@ -51,7 +62,7 @@ abstract Image(ByteArray) {
 	public var width(get, #if vision_allow_resize set #else never #end):Int;
 
 	inline function get_width() {
-		return this.getInt32(0);
+		return #if vision_higher_width_cap this.getInt32(0) #else this.getUInt16(0) #end;
 	}
 
 	#if vision_allow_resize
@@ -100,12 +111,21 @@ abstract Image(ByteArray) {
 	**/
 	public inline function new(width:Int, height:Int, ?color:Color = 0x00000000) {
 		this = new ByteArray(width * height * 4 + OFFSET);
+		#if vision_higher_width_cap
 		this.setInt32(0, width);
 		this.setInt32(WIDTH_BYTES, 0);
 		this.setInt32(WIDTH_BYTES + DATA_GAP, 0);
 		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
 		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		#else
+		this.setUInt16(0, width);
+		this.setUInt16(WIDTH_BYTES, 0);
+		this.setUInt16(WIDTH_BYTES + DATA_GAP, 0);
+		this.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES, width);
+		this.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		#end
 		var i = OFFSET;
 		while (i < this.length) {
 			this[i] = color.alpha;
@@ -955,38 +975,38 @@ abstract Image(ByteArray) {
 
 	public inline function hasView():Bool {
 		return (
-			this.getInt32(WIDTH_BYTES) != 0 ||
-			this.getInt32(WIDTH_BYTES + DATA_GAP) != 0 ||
-			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES) != width ||
-			this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP) != height ||
+			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES) != 0 ||
+			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + DATA_GAP) != 0 ||
+			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES) != width ||
+			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP) != height ||
 			this.get(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES) != 0
 		);
 	}
 
 	public inline function setView(view:ImageView):Image {
-		this.setInt32(WIDTH_BYTES, view.x);
-		this.setInt32(WIDTH_BYTES + DATA_GAP, view.y);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, view.width);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, view.x);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, view.y);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, view.width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, view.shape);
 		return cast this;
 	}
 
 	public inline function getView():ImageView {
 		return {
-			x: this.getInt32(WIDTH_BYTES),
-			y: this.getInt32(WIDTH_BYTES + DATA_GAP),
-			width: this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES),
-			height: this.getInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP),
-			shape: this.get(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES),
+			x: 		#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES),
+			y: 		#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + DATA_GAP),
+			width: 	#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES),
+			height: #if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP),
+			shape: 	this.get(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES),
 		}
 	}
 
 	public inline function removeView():Image {
-		this.setInt32(WIDTH_BYTES, 0);
-		this.setInt32(WIDTH_BYTES + DATA_GAP, 0);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
 		return cast this;
 	}
