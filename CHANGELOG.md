@@ -6,6 +6,8 @@
 
 ### `vision.tools`
 
+ - **Fixed forced dependency on `format`**
+ - **Added more documentation for `ImageTools`**
  - **Fixed `MathTools.clamp()`**
  - **Optimized `MathTools.boundInt()`**
 

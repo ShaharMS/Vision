@@ -3,8 +3,6 @@ package vision.tools;
 import vision.exceptions.ImageLoadingFailed;
 import vision.exceptions.ImageSavingFailed;
 import vision.ds.ImageFormat;
-import format.swf.Data.LineStyle;
-import format.png.Tools;
 import vision.ds.Array2D;
 import vision.exceptions.Unimplemented;
 import vision.ds.ImageResizeAlgorithm;
@@ -143,6 +141,24 @@ class ImageTools {
 		#end
 	}
 
+	/**
+	    Saves an image to a path.
+
+		Currently, this function is only available on `sys` targets.
+
+		**Note: this function requires the `format` library, and only supports PNG.**
+
+		To install:  
+		  
+		`haxelib install format`
+
+
+		@param image The image to save
+		@param pathWithFileName The path to save to
+		@param saveFormat An image format.
+		@throws LibraryRequired Thrown when used without installing & including `format`
+		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
+	**/
 	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
 		#if sys
 			#if format
@@ -222,6 +238,17 @@ class ImageTools {
 		return image;
 	}
 
+	/**
+		Gets an `Array2D` of all neighboring pixels at `x, y`.
+
+		The pixels are added to the Array2D from left to right, top to bottom.
+
+	    @param image The image to get the neighbors in.
+	    @param x The x position of the pixel.
+	    @param y The y position of the pixel.
+	    @param kernalSize the width & height of the kernal.
+	    @return an `Array2D` of colors
+	**/
 	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
 		var neighbors = new Array2D(kernalSize, kernalSize);
 		var i = 0;
@@ -231,6 +258,18 @@ class ImageTools {
 		return neighbors;
 	}
 
+	/**
+		Gets an iterator over all neighboring pixels at `x, y`.
+
+		The pixels are iterated on from left to right, top to bottom.
+
+	    @param image The image to get the neighbors in.
+	    @param x The x position of the pixel.
+	    @param y The y position of the pixel.
+	    @param kernalSize the width & height of the kernal.
+		@param circular Whether or not the kernal is a circle, or a square. to get more "accurate" neighbors, set this to `true`. `false` by default.
+	    @return an `Array2D` of colors
+	**/
 	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Iterator<Color> {
 		return new NeighborsIterator(image, x, y, kernalSize, circular);
 	}
