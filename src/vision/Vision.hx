@@ -59,7 +59,7 @@ class Vision {
 	public static function combine(image:Image, ?with:Image, percentage:Float = 50) {
 		if (with == null) with = new Image(image.width, image.height);
 		final translated = percentage / 100;
-		image.forEachPixel((x, y, first) -> {
+		image.forEachPixelInView((x, y, first) -> {
 			var second = with.getSafePixel(x, y);
 			first.red = Math.round((first.red * (1 - translated) + second.red * translated));
 			first.blue = Math.round((first.blue * (1 - translated) + second.blue * translated));
@@ -84,14 +84,10 @@ class Vision {
 		@return The grayscaled image.
 	**/
 	public static function grayscale(image:Image):Image {
-		for (i in 0...image.width) {
-			for (j in 0...image.height) {
-				var pixel = image.getUnsafePixel(i, j);
-				var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
-					+ pixel.green + pixel.blue) / 3) #end;
-				image.setPixel(i, j, Color.fromRGBA(gray, gray, gray));
-			}
-		}
+		image.forEachPixelInView((x, y, pixel) -> {
+			var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red + pixel.green + pixel.blue) / 3) #end;
+			image.setPixel(x, y, Color.fromRGBA(gray, gray, gray));
+		});
 		return image;
 	}
 
@@ -118,12 +114,9 @@ class Vision {
 		@return The inverted image.
 	**/
 	public static function invert(image:Image) {
-		for (i in 0...image.width) {
-			for (j in 0...image.height) {
-				var pixel = image.getUnsafePixel(i, j);
-				image.setPixel(i, j, Color.fromRGBA(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
-			}
-		}
+		image.forEachPixelInView((x, y, pixel) -> {
+			image.setPixel(x, y, Color.fromRGBA(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
+		});
 		return image;
 	}
 
@@ -145,17 +138,14 @@ class Vision {
 		@return The converted image.
 	**/
 	public static function blackAndWhite(image:Image, threshold:Int = 128):Image {
-		for (i in 0...image.width) {
-			for (j in 0...image.height) {
-				var pixel = image.getUnsafePixel(i, j);
-				var colorValue:Int = MathTools.max(pixel.red, pixel.green, pixel.blue);
-				if (colorValue > threshold) {
-					image.setPixel(i, j, 0xFFFFFFFF);
-				} else {
-					image.setPixel(i, j, Color.fromInt(0));
-				}
+		image.forEachPixelInView((x, y, pixel) -> {
+			var colorValue:Int = MathTools.max(pixel.red, pixel.green, pixel.blue);
+			if (colorValue > threshold) {
+				image.setPixel(x, y, 0xFFFFFFFF);
+			} else {
+				image.setPixel(x, y, Color.fromInt(0));
 			}
-		}
+		});
 		return image;
 	}
 
@@ -235,8 +225,8 @@ class Vision {
 		@return The dilated image. The original copy is not preserved.
 	**/
 	public static function dilate(image:Image, ?dilationRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernal:Bool = true):Image {
-		var intermediate = new Image(image.width, image.height);
-		image.forEachPixel((x, y, c) -> {
+		var intermediate = image.clone();
+		image.forEachPixelInView((x, y, c) -> {
 			var maxColor:Color = 0;
 			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1, circularKernal)) {
 				color &= colorImportanceOrder;
@@ -273,8 +263,8 @@ class Vision {
 		@return The eroded image. The original copy is not preserved.
 	**/
 	public static function erode(image:Image, ?erosionRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernal:Bool = true):Image {
-		var intermediate = new Image(image.width, image.height);
-		image.forEachPixel((x, y, c) -> {
+		var intermediate = image.clone();
+		image.forEachPixelInView((x, y, c) -> {
 			var minColor:Color = 0xFFFFFFFF;
 			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, circularKernal)) {
 				color &= colorImportanceOrder;
@@ -305,7 +295,7 @@ class Vision {
 	**/
 	public static function saltAndPepperNoise(image:Image, percentage:Float = 25):Image {
 		var translated = percentage / 100;
-		image.forEachPixel((x, y, color) -> {
+		image.forEachPixelInView((x, y, color) -> {
 			//generate salt and pepper
 			var multiplierCounter = 1;
 			var multiplier = 1;
@@ -315,8 +305,6 @@ class Vision {
 				multiplier *= 2;
 				multiplierCounter++;
 			}
-			//diff = ImageTools.grayscalePixel(diff);
-			Color.interpolate(color, diff);
 			image.setPixel(x, y, Color.interpolate(color, diff));
 		});
 		return image;
@@ -339,7 +327,7 @@ class Vision {
 	**/
 	public static function dropOutNoise(image:Image, percentage:Float = 5, threshold:Int = 128):Image {
 		var translated = percentage / 100;
-		image.forEachPixel((x, y, color) -> {
+		image.forEachPixelInView((x, y, color) -> {
 			if (Math.random() > translated) return;
 			if (color.red > threshold || color.blue > threshold || color.green > threshold) {
 				image.setPixel(x, y, 0);
@@ -373,7 +361,7 @@ class Vision {
 			colorVector[i] = step * i;
 		}
 		final translated = percentage / 100;
-		image.forEachPixel((x, y, first) -> {
+		image.forEachPixelInView((x, y, first) -> {
 			var randomAtRange = Math.floor(Math.random() * whiteNoiseRange);
 			first.red = Math.round((first.red * (1 - translated) + colorVector[randomAtRange] * translated));
 			first.blue = Math.round((first.blue * (1 - translated) + colorVector[randomAtRange] * translated));
@@ -417,7 +405,7 @@ class Vision {
 		step.blueFloat = (max.blue - min.blue) / 0xFF;
 		step.greenFloat = (max.green - min.green) / 0xFF;
 
-		image.forEachPixel((x, y, color) -> {
+		image.forEachPixelInView((x, y, color) -> {
 			color.redFloat *= step.redFloat;
 			color.blueFloat *= step.blueFloat;
 			color.greenFloat *= step.greenFloat;
@@ -436,7 +424,7 @@ class Vision {
 		@return The normalized image. The original copy is not preserved.
 	**/
 	public static function limitColorRanges(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
-		image.forEachPixel((x, y, color) -> {
+		image.forEachPixelInView((x, y, color) -> {
 			color.red = MathTools.boundInt(color.red, rangeStart.red, rangeEnd.red);
 			color.blue = MathTools.boundInt(color.blue, rangeStart.blue, rangeEnd.blue);
 			color.green = MathTools.boundInt(color.green, rangeStart.green, rangeEnd.green);
@@ -462,7 +450,7 @@ class Vision {
 			final rangeStart = range.rangeStart;
 			final rangeEnd = range.rangeEnd;
 			final with = range.replacement;
-			image.forEachPixel((x, y, color) -> {
+			image.forEachPixelInView((x, y, color) -> {
 				var original:Int = color;
 				color.red = MathTools.isBetweenRanges(color.red, {start: rangeStart.red, end: rangeEnd.red}) ? color.red : with.red;
 				color.blue = MathTools.isBetweenRanges(color.blue, {start: rangeStart.blue, end: rangeEnd.blue}) ? color.blue : with.blue;
@@ -532,7 +520,7 @@ class Vision {
 			}
 		}
 
-		var convolved = new Image(image.width, image.height);
+		var convolved = image.clone();
 		var maxLength = -1;
 		for (array in matrix) {
 			if (array.length > maxLength)
@@ -542,22 +530,20 @@ class Vision {
 		var denominator = 0.;
 		for (number in flatMatrix)
 			denominator += number;
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				var i = 0;
-				var red = 0., green = 0., blue = 0.;
-				for (color in image.getNeighborsOfPixelIter(x, y, maxLength)) {
-					red += flatMatrix[i] * color.red;
-					blue += flatMatrix[i] * color.blue;
-					green += flatMatrix[i] * color.green;
-					i++;
-				}
-				red /= denominator;
-				green /= denominator;
-				blue /= denominator;
-				convolved.setPixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
+		image.forEachPixelInView((x, y, _) -> {
+			var i = 0;
+			var red = 0., green = 0., blue = 0.;
+			for (color in image.getNeighborsOfPixelIter(x, y, maxLength)) {
+				red += flatMatrix[i] * color.red;
+				blue += flatMatrix[i] * color.blue;
+				green += flatMatrix[i] * color.green;
+				i++;
 			}
-		}
+			red /= denominator;
+			green /= denominator;
+			blue /= denominator;
+			convolved.setPixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
+		});
 		return image = convolved;
 	}
 
@@ -627,8 +613,8 @@ class Vision {
 		@return A filtered version of the image, using median blurring. The original image is not preserved
 	**/
 	public static function medianBlur(image:Image, kernalSize:Int = 5):Image {
-		var median = new Image(image.width, image.height);
-		image.forEachPixel((x, y, color) -> {
+		var median = image.clone();
+		image.forEachPixelInView((x, y, color) -> {
 			var neighbors:Array<Int> = image.getNeighborsOfPixel(x, y, kernalSize).inner;
 			ArraySort.sort(neighbors, (a, b) -> a - b);
 			median.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
@@ -659,7 +645,7 @@ class Vision {
             case High_Slow: X7;
             case VeryHigh_VerySlow: X9;
         }
-        var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
+        var edgeDetected = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16);
         var lines:Array<Line2D> = [];
 		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
@@ -677,7 +663,7 @@ class Vision {
         }
 		lines = [];
         //now, get a mirrored version
-        edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
+        edgeDetected = cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16);
         for (x in 0...image.width) {
             for (y in 0...image.height) {
                 lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength));
@@ -803,7 +789,7 @@ class Vision {
 		@return The edge detected image.
 	**/
 	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, kernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05, highThreshold:Float = 0.2):Image {
-		var cannyObject:CannyObject = image.clone();
+		var cannyObject:CannyObject = image.clone().removeView();
 		return blackAndWhite(cannyObject.grayscale()
 			.applyGaussian(kernalSize, sigma)
 			.applySobelFilters()
@@ -909,7 +895,7 @@ class Vision {
 		@return The ridge-highlighted version of the image. **The original copy is preserved**
 	**/
 	public static function convolutionRidgeDetection(image:Image, ?normalizationRangeStart:Color = 0xFF444444, ?normalizationRangeEnd:Color = 0xFFBBBBBB, refine:Bool = false):Image {
-		var clone = image.clone();
+		var clone = image.clone().removeView();
 		Vision.grayscale(clone);
 		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
 		clone = Vision.convolve(clone, RidgeDetectionAggressive);

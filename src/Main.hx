@@ -1,5 +1,6 @@
 package;
 
+import js.html.EffectTiming;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;
@@ -43,20 +44,7 @@ class Main {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-			//start = haxe.Timer.stamp();
-			//printImage(image.contrast().bilateralDenoise());
-			//printImage(Vision.saltAndPepperNoise(image.clone()));
-			//printImage(Vision.dropOutNoise(image.clone()));
-			//printImage(Vision.whiteNoise(image.clone()));
-			//printImage(Vision.combine(image.clone()));
-			//printImage(Vision.erode(image.clone()));
-			//printImage(Vision.dilate(image.clone()));
-			//printImage(Vision.laplacianEdgeDiffOperator(image.clone(), true));
-			//printImage(Vision.laplacianEdgeDiffOperator(image.clone(), false));
-			//printImage(Vision.laplacianOfGaussianEdgeDetection(image.clone(), true));
-			//printImage(Vision.laplacianOfGaussianEdgeDetection(image.clone(), false));
-			//end = haxe.Timer.stamp();
-			//trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
+			image.setView({x: 10, y: 10, width: 80, height: 100, shape: ELLIPSE});
 			#if simple_tests
 			start = haxe.Timer.stamp();
 			printImage(Vision.blackAndWhite(image.clone()));
@@ -94,6 +82,10 @@ class Main {
 			printImage(Vision.dropOutNoise(image.clone()));
 			end = haxe.Timer.stamp();
 			trace("Dropout Noise took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(Vision.whiteNoise(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("White Noise took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 
 			#if mirror_flip_tests
