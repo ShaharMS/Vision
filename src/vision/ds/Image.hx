@@ -278,6 +278,11 @@ abstract Image(ByteArray) {
 		
 	}
 
+	@:allow(vision)
+	inline function setUnsafePixel(x:Int, y:Int, color:Color) {
+		setColorFromStartingBytePos((y * width + x) * 4, color);
+	}
+
 	/**
 		Checks if the given coordinates are within the bounds of the image.
 

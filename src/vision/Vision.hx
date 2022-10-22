@@ -64,7 +64,7 @@ class Vision {
 			first.red = Math.round((first.red * (1 - translated) + second.red * translated));
 			first.blue = Math.round((first.blue * (1 - translated) + second.blue * translated));
 			first.green = Math.round((first.green * (1 - translated) + second.green * translated));
-			image.setPixel(x, y, first);
+			image.setUnsafePixel(x, y, first);
 		});
 		return image;
 	}
@@ -86,7 +86,7 @@ class Vision {
 	public static function grayscale(image:Image):Image {
 		image.forEachPixelInView((x, y, pixel) -> {
 			var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red + pixel.green + pixel.blue) / 3) #end;
-			image.setPixel(x, y, Color.fromRGBA(gray, gray, gray));
+			image.setUnsafePixel(x, y, Color.fromRGBA(gray, gray, gray));
 		});
 		return image;
 	}
@@ -115,7 +115,7 @@ class Vision {
 	**/
 	public static function invert(image:Image) {
 		image.forEachPixelInView((x, y, pixel) -> {
-			image.setPixel(x, y, Color.fromRGBA(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
+			image.setUnsafePixel(x, y, Color.fromRGBA(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
 		});
 		return image;
 	}
@@ -141,9 +141,9 @@ class Vision {
 		image.forEachPixelInView((x, y, pixel) -> {
 			var colorValue:Int = MathTools.max(pixel.red, pixel.green, pixel.blue);
 			if (colorValue > threshold) {
-				image.setPixel(x, y, 0xFFFFFFFF);
+				image.setUnsafePixel(x, y, 0xFFFFFFFF);
 			} else {
-				image.setPixel(x, y, Color.fromInt(0));
+				image.setUnsafePixel(x, y, 0xFF000000);
 			}
 		});
 		return image;
@@ -235,7 +235,7 @@ class Vision {
 				final blueLarger = color.blue > maxColor.blue ? 1 : 0;
 				if (redLarger + blueLarger + greenLarger >= 2) maxColor = color;
 			}
-			intermediate.setPixel(x, y, maxColor);
+			intermediate.setUnsafePixel(x, y, maxColor);
 		});
 		return image = intermediate;
 	}
@@ -273,7 +273,7 @@ class Vision {
 				final blueSmaller = color.blue < minColor.blue ? 1 : 0;
 				if (redSmaller + blueSmaller + greenSmaller >= 2) minColor = color;
 			}
-			intermediate.setPixel(x, y, minColor);
+			intermediate.setUnsafePixel(x, y, minColor);
 		});
 		return image = intermediate;
 	}
@@ -305,7 +305,7 @@ class Vision {
 				multiplier *= 2;
 				multiplierCounter++;
 			}
-			image.setPixel(x, y, Color.interpolate(color, diff));
+			image.setUnsafePixel(x, y, Color.interpolate(color, diff));
 		});
 		return image;
 	}
@@ -330,10 +330,10 @@ class Vision {
 		image.forEachPixelInView((x, y, color) -> {
 			if (Math.random() > translated) return;
 			if (color.red > threshold || color.blue > threshold || color.green > threshold) {
-				image.setPixel(x, y, 0);
+				image.setUnsafePixel(x, y, 0);
 				return;
 			}
-			image.setPixel(x, y, 0xFFFFFFFF);
+			image.setUnsafePixel(x, y, 0xFFFFFFFF);
 		});
 		return image;
 	}
@@ -366,7 +366,7 @@ class Vision {
 			first.red = Math.round((first.red * (1 - translated) + colorVector[randomAtRange] * translated));
 			first.blue = Math.round((first.blue * (1 - translated) + colorVector[randomAtRange] * translated));
 			first.green = Math.round((first.green * (1 - translated) + colorVector[randomAtRange] * translated));
-			image.setPixel(x, y, first);
+			image.setUnsafePixel(x, y, first);
 		});
 		return image;
 	}
@@ -409,7 +409,7 @@ class Vision {
 			color.redFloat *= step.redFloat;
 			color.blueFloat *= step.blueFloat;
 			color.greenFloat *= step.greenFloat;
-			image.setPixel(x, y, color);
+			image.setUnsafePixel(x, y, color);
 		});
 		return image;
 	}
@@ -428,7 +428,7 @@ class Vision {
 			color.red = MathTools.boundInt(color.red, rangeStart.red, rangeEnd.red);
 			color.blue = MathTools.boundInt(color.blue, rangeStart.blue, rangeEnd.blue);
 			color.green = MathTools.boundInt(color.green, rangeStart.green, rangeEnd.green);
-			image.setPixel(x, y, color);
+			image.setUnsafePixel(x, y, color);
 		});
 		return image;
 	}
@@ -455,7 +455,7 @@ class Vision {
 				color.red = MathTools.isBetweenRanges(color.red, {start: rangeStart.red, end: rangeEnd.red}) ? color.red : with.red;
 				color.blue = MathTools.isBetweenRanges(color.blue, {start: rangeStart.blue, end: rangeEnd.blue}) ? color.blue : with.blue;
 				color.green = MathTools.isBetweenRanges(color.green, {start: rangeStart.green, end: rangeEnd.green}) ? color.green : with.green;
-				if (color == original) image.setPixel(x, y, color) else image.setPixel(x, y, with);
+				if (color == original) image.setUnsafePixel(x, y, color) else image.setUnsafePixel(x, y, with);
 			});
 		}
 		return image;
@@ -542,7 +542,7 @@ class Vision {
 			red /= denominator;
 			green /= denominator;
 			blue /= denominator;
-			convolved.setPixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
+			convolved.setUnsafePixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
 		});
 		return image = convolved;
 	}
@@ -617,7 +617,7 @@ class Vision {
 		image.forEachPixelInView((x, y, color) -> {
 			var neighbors:Array<Int> = image.getNeighborsOfPixel(x, y, kernalSize).inner;
 			ArraySort.sort(neighbors, (a, b) -> a - b);
-			median.setPixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
+			median.setUnsafePixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
 
 		return image = median;
@@ -906,7 +906,7 @@ class Vision {
 			var neighbors = clone.getNeighborsOfPixelIter(x, y, 3);
 			var count = 0;
 			for(c in neighbors) if(c == color) count++;
-			if (count <= 1) clone.setPixel(x, y, 0);
+			if (count <= 1) clone.setUnsafePixel(x, y, 0);
 		});
 		return clone;
 	}
