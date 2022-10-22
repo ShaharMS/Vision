@@ -924,14 +924,21 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
-		final view = getView();
 		for (x in 0...width) {
 			for (y in 0...height) {
-				if (hasView()) {
-					if (hasPixelInView(x, y)) {
-						callback(x, y, getUnsafePixel(x, y));
-					}
-				} else {
+				callback(x, y, getUnsafePixel(x, y));
+			}
+		}
+	}
+
+	public inline function forEachPixelInView(callback:(x:Int, y:Int, color:Color) -> Void) {
+		if (!hasView()) {
+			forEachPixel(callback);
+			return;
+		}
+		for (x in 0...width) {
+			for (y in 0...height) {
+				if (hasPixelInView(x, y)) {
 					callback(x, y, getUnsafePixel(x, y));
 				}
 			}
@@ -992,7 +999,9 @@ abstract Image(ByteArray) {
 			case RECTANGLE_INVERTED: has = !(x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
 			case ELLIPSE, ELLIPSE_INVERTED: {
 				//calculate the focal points of the ellipse
-				//c^2 = a^2 - b^2
+				//F = sqrt(a^2 - b^2)
+				//a = major axis / 2
+				//b = minor axis / 2
 				if (view.width > view.height) {
 					final a = view.width / 2;
 					final b = view.height / 2;

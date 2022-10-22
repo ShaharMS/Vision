@@ -44,7 +44,7 @@ class Main {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-			image.setView({x: 10, y: 10, width: 80, height: 100, shape: ELLIPSE_INVERTED});
+			image.setView({x: 10, y: 10, width: 80, height: 100, shape: ELLIPSE});
 			#if simple_tests
 			start = haxe.Timer.stamp();
 			printImage(Vision.blackAndWhite(image.clone()));
