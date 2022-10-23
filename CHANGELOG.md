@@ -1,3 +1,23 @@
+# 1.2.0
+
+### `Vision.hx`
+
+ - **Optimized algorithm's pixel looping method**
+  
+### `vision.ds`
+
+ - **Added `ImageView`** - manipulate a section of the image without having to copy/paste pixels!
+ - **Image's byte offset changed from `4` to `11`**
+ - **Added `image.view`** - easy access for gettint & setting the currently set image view
+ - **Added `image.forEachPixelInView()`** - allows iterating over only the pixels inside the current view
+ - **Added `image.hasView()`**
+ - **Added `image.getView()`**
+ - **Added `image.setView()`**
+ - **Added `image.removeView()`**
+ - **Added `image.hasPixelInView()`** - allows checking whether or not the given pixel is inside a given/the image's view
+ - **Added `vision.ds.ImageView`**
+ - **Added `vision.ds.ImageViewShape`**
+
 # 1.1.1
 
 ### `vision.ds`

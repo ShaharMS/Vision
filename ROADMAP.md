@@ -53,8 +53,10 @@ Here is a roadmap of all features added/planned for the future:
 
  - [x] `getPixel()`
  - [x] `getFloatingPixel()`
+ - [x] `getSafePixel()` 
  - [x] `setPixel()`
  - [x] `hasPixel()`
+ - [x] `hasPixelInView()`
  - [x] `paintPixel()`
  - [ ] matrix access `image[x][y]`
  - [x] Drawing:
@@ -70,13 +72,21 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `drawCubicBezier()`
    - [x] `fillRect()`
    - [x] `fillCircle()`
+   - [ ] `drawText` 
  - [x] Copying:
    - [x] `clone()`
    - [x] `getImagePortion()`
    - [x] `setImagePortion()`
    - [x] `copyPixelFrom()`
  - [ ] Manipulation:
+   - [x] `view`:
+     - [x] `image.view`
+     - [x] `hasView()`  
+     - [x] `getView()`  
+     - [x] `setView()`  
+     - [x] `removeView()`  
    - [x] `forEachPixel()`
+   - [x] `forEachPixelInView()`
    - [x] `iterator()`
    - [x] `mirror()`  
    - [x] `flip()`
