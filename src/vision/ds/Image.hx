@@ -1,6 +1,5 @@
 package vision.ds;
 
-import haxe.io.Bytes;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.tools.MathTools;
@@ -899,6 +898,14 @@ abstract Image(ByteArray) {
 		return cast this;
 	}
 
+	/**
+		Resizes the image according to `algorithm`, to `newWidth` by `newHeight`.
+
+		@param newWidth The width to resize to
+		@param newHeight The height to resize to
+		@param algorithm Which algorithm to use. You can use the algorithms available in `ImageResizeAlgorithm`. If no algorithm is specified, uses `ImageTools.defaultResizeAlgorithm`.
+		@return this image, after resizing.
+	**/
 	public inline function resize(newWidth:Int, newHeight:Int, ?algorithm:ImageResizeAlgorithm):Image {
 		if (algorithm == null)
 			algorithm = ImageTools.defaultResizeAlgorithm;
@@ -995,6 +1002,11 @@ abstract Image(ByteArray) {
 	// Image View
 	//--------------------------------------------------------------------------
 
+	/**
+	    Checks whether or not this image currently has a view
+
+		If `view`'s dimensions are all 0'ed out, or are the same as the image's dimensions, this will return false.
+	**/
 	public inline function hasView():Bool {
 		return (
 			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES) != 0 ||
@@ -1005,15 +1017,28 @@ abstract Image(ByteArray) {
 		);
 	}
 
+	/**
+	    Sets the current `ImageView`, and returns this image.
+
+		If `view`'s dimensions are all 0'ed out, or are the same as the image's dimensions, `hasView()` will return false.
+
+		If you want to remove the currently set `ImageView`, check out `removeView()`.
+
+		@param view The `ImageView` to set to.
+		@return This image, after applying the view.
+	**/
 	public inline function setView(view:ImageView):Image {
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, view.x);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, view.y);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, view.width);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, view.width == 0 ? view.width : view.width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height == 0 ? view.height : view.height);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, view.shape);
 		return cast this;
 	}
 
+	/**
+	    Gets the currently set `ImageView`.
+	**/
 	public inline function getView():ImageView {
 		return {
 			x: 		#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES),
@@ -1024,6 +1049,9 @@ abstract Image(ByteArray) {
 		}
 	}
 
+	/**
+	    Removes the currently set `ImageView`, and returns this image.
+	**/
 	public inline function removeView():Image {
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
@@ -1033,7 +1061,22 @@ abstract Image(ByteArray) {
 		return cast this;
 	}
 
+	/**
+	    Checks whether or not the given pixel in coordinates `(x, y)` is inside the given `ImageView`, 
+		or inside currently set `ImageView` (if `v` is `null`).
+
+		If `v` is null, and this image's view isn't set (check out `hasView()` for more details), 
+		this function calls `hasPixel()` to remove unnecessary calculations.
+
+		@param x The x position of the pixel
+		@param y The y position of the pixel
+		@param v A view to check against, or `null` if you want to check against this image's view.
+		@return Whether or not the given pixel is inside the view.
+	**/
 	public inline function hasPixelInView(x:Int, y:Int, ?v:ImageView):Bool {
+		if (!hasView() && v == null) {
+			return hasPixel(x, y);
+		}
 		var has = false;
 		final view = v != null ? v : view; //reduces calls to get_view
 		switch view.shape {
