@@ -968,7 +968,7 @@ abstract Image(ByteArray) {
 
 		If an `ImageView` isn't set, this function will call `forEachPixel` instead to increase performance. 
 
-	    @param callback A function to dispatch on each pixel: Arguments contain the X & Y of the pixel, and its color. Won't dispatch for pixels outside of the currently set view.
+		@param callback A function to dispatch on each pixel: Arguments contain the X & Y of the pixel, and its color. Won't dispatch for pixels outside of the currently set view.
 	**/
 	public inline function forEachPixelInView(callback:(x:Int, y:Int, color:Color) -> Void) {
 		if (!hasView()) {
@@ -1035,10 +1035,12 @@ abstract Image(ByteArray) {
 
 	public inline function hasPixelInView(x:Int, y:Int, ?v:ImageView):Bool {
 		var has = false;
-		final view = v != null ? v : view;
+		final view = v != null ? v : view; //reduces calls to get_view
 		switch view.shape {
 			case RECTANGLE: has = (x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
 			case RECTANGLE_INVERTED: has = !(x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
+			case RHOMBUS: has = ((x - view.x - view.width / 2).abs() / (view.width / 2) + (y - view.y - view.height / 2).abs() / (view.height / 2) <= 1);
+			case RHOMBUS_INVERTED: has = !((x - view.x - view.width / 2).abs() / (view.width / 2) + (y - view.y - view.height / 2).abs() / (view.height / 2) <= 1);
 			case ELLIPSE, ELLIPSE_INVERTED: {
 				//calculate the focal points of the ellipse
 				//F = sqrt(a^2 - b^2)

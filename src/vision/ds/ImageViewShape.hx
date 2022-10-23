@@ -5,4 +5,6 @@ enum abstract ImageViewShape(Int) from Int to Int {
     var RECTANGLE_INVERTED;
     var ELLIPSE;
     var ELLIPSE_INVERTED;
+    var RHOMBUS;
+    var RHOMBUS_INVERTED;
 }

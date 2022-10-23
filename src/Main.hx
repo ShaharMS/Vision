@@ -42,9 +42,9 @@ class Main {
 		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
-			//image = image.resize(150, 112, BilinearInterpolation);
-			//printImage(image);
-			//image.setView({x: 10, y: 10, width: 200, height: 140, shape: ELLIPSE});
+			image = image.resize(150, 112, BilinearInterpolation);
+			printImage(image);
+			image.setView({x: 10, y: 10, width: 100, height: 70, shape: RHOMBUS});
 			#if simple_tests
 			start = haxe.Timer.stamp();
 			printImage(Vision.blackAndWhite(image.clone()));
