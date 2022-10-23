@@ -117,6 +117,10 @@ trace([[[[[1, 2, 3, 4], [5, 6, 7]]]]].flatten().flatten().flatten().flatten().me
 
 Vision's versioning will try to follow semver's specifications as accuratly as possible. Here is a list of what can change across version types:
 
+> ✔️: This type of modification is allowed  
+> ❌: This type of modification is disallowed  
+> ❓: This type of modification may occur from time to time  
+
 <table>
     <tr>
         <th>Version Type</th>
