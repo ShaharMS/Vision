@@ -948,6 +948,10 @@ abstract Image(ByteArray) {
 		return s;
 	}
 
+	/**
+	    Iterates over each pixel inside this image, from left to right, top to bottom.
+	    @param callback A function to dispatch on each pixel: Arguments contain the X & Y of the pixel, and its color.
+	**/
 	public inline function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
 		for (x in 0...width) {
 			for (y in 0...height) {
@@ -956,6 +960,16 @@ abstract Image(ByteArray) {
 		}
 	}
 
+	/**
+	    Iterates over each pixel inside this image, from left to right, top to bottom.
+
+		This function differs from `forEachPixel` by not dispatching `callback()` 
+		on pixels outside of the currently set `ImageView`.
+
+		If an `ImageView` isn't set, this function will call `forEachPixel` instead to increase performance. 
+
+	    @param callback A function to dispatch on each pixel: Arguments contain the X & Y of the pixel, and its color. Won't dispatch for pixels outside of the currently set view.
+	**/
 	public inline function forEachPixelInView(callback:(x:Int, y:Int, color:Color) -> Void) {
 		if (!hasView()) {
 			forEachPixel(callback);
@@ -970,6 +984,9 @@ abstract Image(ByteArray) {
 		}
 	}
 
+	/**
+	    Returns an iterator over this image's pixels.
+	**/
 	public inline function iterator():Iterator<Pixel> {
 		return new PixelIterator(cast this);
 	}
