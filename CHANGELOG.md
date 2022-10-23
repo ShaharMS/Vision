@@ -8,6 +8,7 @@
 
  - **Added `ImageView`** - manipulate a section of the image without having to copy/paste pixels!
  - **Image's byte offset changed from `4` to `11`**
+ - **Added `image.stamp()`** - draw an image on top of another image
  - **Added `image.view`** - easy access for gettint & setting the currently set image view
  - **Added `image.forEachPixelInView()`** - allows iterating over only the pixels inside the current view
  - **Added `image.hasView()`**

@@ -90,6 +90,7 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `iterator()`
    - [x] `mirror()`  
    - [x] `flip()`
+   - [x] `stamp()` 
    - [ ] `resize()`:
      - [x] `NearestNeighbor`
      - [x] `BilinearInterpolation`

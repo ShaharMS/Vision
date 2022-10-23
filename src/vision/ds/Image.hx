@@ -882,19 +882,28 @@ abstract Image(ByteArray) {
 	// General Manipulation
 	//--------------------------------------------------------------------------
 
-	public function mirror():Image {
+	public inline function mirror():Image {
 		var inter = clone();
-		forEachPixel((x, y, color) -> {
-			setPixel(x, y, inter.getPixel(inter.width - x - 1, y));
+		forEachPixelInView((x, y, color) -> {
+			setUnsafePixel(x, y, inter.getUnsafePixel(inter.width - x - 1, y));
 		});
 		return cast this;
 	}
 
-	public function flip():Image {
+	public inline  function flip():Image {
 		var inter = clone();
-		forEachPixel((x, y, color) -> {
-			setPixel(x, y, inter.getPixel(x, inter.height - y - 1));
+		forEachPixelInView((x, y, color) -> {
+			setUnsafePixel(x, y, inter.getUnsafePixel(x, inter.height - y - 1));
 		});
+		return cast this;
+	}
+
+	public inline function stamp(X:Int, Y:Int, image:Image):Image {
+		for (x in X...X + image.width) {
+			for (y in Y...Y + image.height) {
+				setPixel(x, y, image.getUnsafePixel(x - X, y - Y));
+			}
+		}
 		return cast this;
 	}
 
