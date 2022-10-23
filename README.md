@@ -4,6 +4,7 @@
   
  - [**Structure**](https://github.com/ShaharMS/Vision/blob/main/README.md#structure)
  - [**Tutorials**](https://github.com/ShaharMS/Vision/blob/main/README.md#tutorials)
+ - [**Versioning**](https://github.com/ShaharMS/Vision/blob/main/README.md#versioning)
  - [**About**](https://github.com/ShaharMS/Vision/blob/main/README.md#about)
  - [**Roadmap**](https://github.com/ShaharMS/Vision/blob/main/ROADMAP.md)
  - [**Changelog**](https://github.com/ShaharMS/Vision/blob/main/CHANGELOG.md)
@@ -112,6 +113,104 @@ trace(MathTools.median([[12, 123, 321, 4, 333], [12, 123, 145, 321, 4], [12, 123
 trace([[[[[1, 2, 3, 4], [5, 6, 7]]]]].flatten().flatten().flatten().flatten().median()); // 4
 ```
 
+# Versioning
+
+Vision's versioning will try to follow semver's specifications as accuratly as possible. Here is a list of what can change across version types:
+
+<table>
+    <tr>
+        <th>Version Type</th>
+        <th>Changes Allowed</th>
+    </tr>
+    <tr>
+        <td>patch (x.x.Y)</td>
+        <td><table>
+            <tr>
+                <td>code changes</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>documentation</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>deprecation notices</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td>ABI changes</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td>API additions</td>
+                <td>❓</td>
+            </tr>
+            <tr>
+                <td>API changes</td>
+                <td>❌</td>
+            </tr>
+        </table></td>
+    </tr>
+    <tr>
+        <td>minor (x.Y.x)</td>
+        <td><table>
+            <tr>
+                <td>code changes</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>documentation</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>deprecation notices</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>ABI changes</td>
+                <td>❓</td>
+            </tr>
+            <tr>
+                <td>API additions</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>API changes</td>
+                <td>❌</td>
+            </tr>
+        </table></td>
+    </tr>
+    <tr>
+        <td>major (Y.x.x)</td>
+        <td><table>
+            <tr>
+                <td>code changes</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>documentation</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>deprecation notices</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>ABI changes</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>API additions</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>API changes</td>
+                <td>✔️</td>
+            </tr>
+        </table></td>
+    </tr>
+</table>
+
 
 # About 
 
@@ -151,4 +250,4 @@ If you see some code that you think is not understandable, or some place that la
 | `vision_quiet` | When enabled, no errors are thrown from this library's components, and an effort is made to return the "expected" value. For example, gaussian kernal's size would be incremented if even, and a `getPixel` call outside the bounds of the image should return the closest pixel to that point. | 1.0.0 |
 | `vision_allow_resize` | When enabled, you can resize an image by directly setting its width/height property. Bilinear interpolation is used by default. If you wish to change this, change `defaultResizeAlgorithm` in `ImageTools`.| 1.0.0 |
 | `vision_multithread` | Attempts to use multithreaded versions of some algorithms - might boost performance. Available on both web & sys. | 1.0.0 |
-| `vision_higher_width_cap` | allows using images wider than 65535 pixels, but makes the byte offset bigger (11 to 21 bytes). Also allows image views to be wider & taller than 65535 pixels. ||
+| `vision_higher_width_cap` | allows using images wider than 65535 pixels, but makes the byte offset bigger (11 to 21 bytes). Also allows image views to be wider & taller than 65535 pixels. | 1.2.0 |
