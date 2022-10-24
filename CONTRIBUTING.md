@@ -13,7 +13,7 @@ Here are a list of guidelines, from the most important (🔴), to the least impo
 🔴 Don't change any API without specifying the change  
 🔴 Don't create new top-level subfolders. If subfolders are needed, place them in `vision.ds` or `vision.helpers`  
 🟠 Don't use abbreviations  
-🟠 Don't write module-level functions/fields exclusively. Try using classes whenever possible
+🟠 Don't write module-level functions/fields exclusively. Try using classes whenever possible  
 🟠 Don't remove any feature if you don't give an alternative  
 🟠 When heavily editing core API's (`Vision.hx`, `Image.hx`), make sure to specify your reason for editing  
 🟠 Vision has a specific formatting style, specified in `hxformat.json`. Don't write code that doesn't conform to the formatting rules. It makes things look messy.  
