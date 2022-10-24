@@ -18,6 +18,7 @@
  - **Added `image.hasPixelInView()`** - allows checking whether or not the given pixel is inside a given/the image's view
  - **Added `vision.ds.ImageView`**
  - **Added `vision.ds.ImageViewShape`**
+ - **Fixed `Image.paintPixel()` resetting `alpha` to `1`**
 
 # 1.1.1
 

@@ -150,6 +150,18 @@ abstract Image(ByteArray) {
 		return c;
 	}
 
+	//--------------------------------------------------------------------------
+	// Pixels
+	//--------------------------------------------------------------------------
+
+
+
+	//--------------------------------------------------------------------------
+	// Getters
+	//--------------------------------------------------------------------------
+
+
+
 	/**
 		Gets the color of the pixel at the given coordinates.
 
@@ -249,6 +261,14 @@ abstract Image(ByteArray) {
 		return Color.fromRGBA(red, green, blue, alpha);
 	}
 
+	
+
+	//--------------------------------------------------------------------------
+	// Setters
+	//--------------------------------------------------------------------------
+
+
+
 	/**
 		Sets the color of the pixel at the given coordinates.
 
@@ -277,10 +297,73 @@ abstract Image(ByteArray) {
 		
 	}
 
+	public inline function setFloatingPixel(x:Float, y:Float, color:Color) {
+		#if !vision_quiet
+		if (!hasPixel(Math.ceil(x), Math.ceil(y)))
+			throw new OutOfBounds(cast this, {x: x, y: y});
+		#end
+		final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
+
+		// (0, 0) strength: (1 - xFraction, 1 - yFraction)
+		// (0, 1) strength: (1 - xFraction,     yFraction)
+		// (1, 0) strength: (	 xFraction, 1 - yFraction)
+		// (1, 1) strength: (	 xFraction,     yFraction)
+		setPixel(x.floor(), y.floor(), Color.fromRGBAFloat(((1 - xFraction) + (1 - yFraction)) / 2 * color.redFloat, ((1 - xFraction) + (1 - yFraction)) / 2 * color.greenFloat, ((1 - xFraction) + (1 - yFraction)) / 2 * color.blueFloat, color.alphaFloat));
+		if (!y.isInt()) setPixel(x.floor(), y.ceil() , Color.fromRGBAFloat(((1 - xFraction) + (    yFraction)) / 2 * color.redFloat, ((1 - xFraction) + (    yFraction)) / 2 * color.greenFloat, ((1 - xFraction) + (    yFraction)) / 2 * color.blueFloat, color.alphaFloat));
+		if (!x.isInt()) setPixel(x.ceil() , y.floor(), Color.fromRGBAFloat(((    xFraction) + (1 - yFraction)) / 2 * color.redFloat, ((    xFraction) + (1 - yFraction)) / 2 * color.greenFloat, ((    xFraction) + (1 - yFraction)) / 2 * color.blueFloat, color.alphaFloat));
+		if (!x.isInt() && !y.isInt()) setPixel(x.ceil() , y.ceil() , Color.fromRGBAFloat(((    xFraction) + (    yFraction)) / 2 * color.redFloat, ((    xFraction) + (    yFraction)) / 2 * color.greenFloat, ((    xFraction) + (    yFraction)) / 2 * color.blueFloat, color.alphaFloat));
+	}
+
 	@:allow(vision)
 	inline function setUnsafePixel(x:Int, y:Int, color:Color) {
 		setColorFromStartingBytePos((y * width + x) * 4, color);
 	}
+
+
+
+	//--------------------------------------------------------------------------
+	// Painters
+	//--------------------------------------------------------------------------
+
+
+
+	/**
+		Sets the color of a pixel, but doesn't completely overwrite the pixel:
+
+		- if the color of the new pixel is the same as the old pixel, the old pixel is kept.
+		- if the alpha of the new pixel is 0, the old pixel is kept.
+		- if the alpha of the new pixel is 255, the new pixel is kept.
+		- if the alpha of the new pixel is between 0 and 255, the new pixel is blended with the old pixel.
+
+		@param x The x coordinate of the pixel.
+		@param y The y coordinate of the pixel.
+		@param color The color to set the pixel to. pay attention to the alpha value.
+	**/
+	public inline function paintPixel(x:Int, y:Int, color:Color) {
+		if (x < 0 || x >= width || y < 0 || y >= height) {
+			#if !vision_quiet
+			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
+			#else
+			return;
+			#end
+		}
+		var oldColor = getPixel(x, y);
+		var newColor = Color.fromRGBAFloat(color.redFloat * color.alphaFloat
+			+ oldColor.redFloat * (1 - color.alphaFloat),
+			color.greenFloat * color.alphaFloat
+			+ oldColor.greenFloat * (1 - color.alphaFloat),
+			color.blueFloat * color.alphaFloat
+			+ oldColor.blueFloat * (1 - color.alphaFloat), oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat);
+		setPixel(x, y, newColor);
+	}
+
+
+
+	//--------------------------------------------------------------------------
+	// Checks
+	//--------------------------------------------------------------------------
+
+
 
 	/**
 		Checks if the given coordinates are within the bounds of the image.
@@ -293,6 +376,14 @@ abstract Image(ByteArray) {
 	public inline function hasPixel(x:Int, y:Int):Bool {
 		return (x >= 0 && y >= 0 && x < width && y < height);
 	}
+
+
+
+	//--------------------------------------------------------------------------
+	// Copying & Pasting
+	//--------------------------------------------------------------------------
+
+
 
 	/**
 		Copies a pixel from the given image to this image.
@@ -322,61 +413,6 @@ abstract Image(ByteArray) {
 	**/
 	public inline function copyPixelTo(image:Image, x:Int, y:Int):Color {
 		return image.copyPixelFrom(cast this, x, y);
-	}
-
-	/**
-		Sets the color of a pixel, but doesn't completely overwrite the pixel:
-
-		- if the color of the new pixel is the same as the old pixel, the old pixel is kept.
-		- if the alpha of the new pixel is 0, the old pixel is kept.
-		- if the alpha of the new pixel is 255, the new pixel is kept.
-		- if the alpha of the new pixel is between 0 and 255, the new pixel is blended with the old pixel.
-
-		@param x The x coordinate of the pixel.
-		@param y The y coordinate of the pixel.
-		@param color The color to set the pixel to. pay attention to the alpha value.
-	**/
-	public inline function paintPixel(x:Int, y:Int, color:Color) {
-		if (x < 0 || x >= width || y < 0 || y >= height) {
-			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
-		}
-		var oldColor = getPixel(x, y);
-		var newColor = Color.fromRGBAFloat(color.redFloat * color.alphaFloat
-			+ oldColor.redFloat * (1 - color.alphaFloat),
-			color.greenFloat * color.alphaFloat
-			+ oldColor.greenFloat * (1 - color.alphaFloat),
-			color.blueFloat * color.alphaFloat
-			+ oldColor.blueFloat * (1 - color.alphaFloat), 1);
-		setPixel(x, y, newColor);
-	}
-
-	/**
-		Sets a rectangle of pixels to the given color, essentially filling it with the given color.
-
-		@param rect The rectangle to fill: The fill starts at (x, y) and extends to (x + width, y + height), not including the endpoints.
-		@param color The color to fill that rectangular portion with.
-	**/
-	public inline function fillRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
-		for (X in x...x + width) {
-			for (Y in y...y + height) {
-				setPixel(X, Y, color);
-			}
-		}
-	}
-
-	/**
-		Draws a rectangular outline of the given color.
-
-		This function is a shortcut for just doing repeated calls to drawLine.
-
-		@param rect The rectangle to draw the outline of.
-		@param color The color to draw the outline with.
-	**/
-	public inline function drawRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
-		drawLine(x, y, x + width, y, color);
-		drawLine(x + width, y, x + width, y + height, color);
-		drawLine(x + width, y + height, x, y + height, color);
-		drawLine(x, y + height, x, y, color);
 	}
 
 	/**
@@ -413,9 +449,13 @@ abstract Image(ByteArray) {
 		}
 	}
 
+	
+
 	//--------------------------------------------------------------------------
 	// Graphics Drawing Methods
 	//--------------------------------------------------------------------------
+
+
 
 	/**
 		Draws a line from (x1, y1) to (x2, y2) using the given color.
@@ -519,6 +559,35 @@ abstract Image(ByteArray) {
 				y1 += sy;
 			}
 		}
+	}
+
+	/**
+		Sets a rectangle of pixels to the given color, essentially filling it with the given color.
+
+		@param rect The rectangle to fill: The fill starts at (x, y) and extends to (x + width, y + height), not including the endpoints.
+		@param color The color to fill that rectangular portion with.
+	**/
+	public inline function fillRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
+		for (X in x...x + width) {
+			for (Y in y...y + height) {
+				setPixel(X, Y, color);
+			}
+		}
+	}
+
+	/**
+		Draws a rectangular outline of the given color.
+
+		This function is a shortcut for just doing repeated calls to drawLine.
+
+		@param rect The rectangle to draw the outline of.
+		@param color The color to draw the outline with.
+	**/
+	public inline function drawRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
+		drawLine(x, y, x + width, y, color);
+		drawLine(x + width, y, x + width, y + height, color);
+		drawLine(x + width, y + height, x, y + height, color);
+		drawLine(x, y + height, x, y, color);
 	}
 
 	/**
@@ -926,12 +995,13 @@ abstract Image(ByteArray) {
 			case NearestNeighbor:
 				{
 					var image = new Image(newWidth, newHeight);
-					var xMultiplier = image.width / width;
-					var yMultiplier = image.height / height;
-					forEachPixel((x, y, color) -> {
-						var color = image.getPixel(MathTools.floor(x * xMultiplier), MathTools.floor(y * yMultiplier));
+					var xMultiplier = width / image.width;
+					var yMultiplier = height / image.height;
+					image.forEachPixel((x, y, color) -> {
+						var color = getPixel(MathTools.floor(x * xMultiplier), MathTools.floor(y * yMultiplier));
 						image.setPixel(x, y, color);
 					});
+					this = image.underlying;
 				}
 		}
 

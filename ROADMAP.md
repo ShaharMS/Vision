@@ -54,10 +54,17 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `getPixel()`
  - [x] `getFloatingPixel()`
  - [x] `getSafePixel()` 
+ - [x] `getUnsafePixel()` 
  - [x] `setPixel()`
+ - [ ] `setFloatingPixel()`
+ - [ ] `setSafePixel()` 
+ - [x] `setUnsafePixel()` 
+ - [x] `paintPixel()`
+ - [ ] `paintFloatingPixel()`
+ - [ ] `paintSafePixel()` 
+ - [ ] `paintUnsafePixel()` 
  - [x] `hasPixel()`
  - [x] `hasPixelInView()`
- - [x] `paintPixel()`
  - [ ] matrix access `image[x][y]`
  - [x] Drawing:
    - [x] `fillColor()`

@@ -237,6 +237,10 @@ class Main {
 		image.drawRect(20, 200, 60, 40, 0xFF5432);
 		image.fillUntilColor({x: 25, y: 205}, 0xFF48FF, 0xFF5432);
 		printImage(image);
+		var pixelTests = new Image(10, 10);
+		pixelTests.setFloatingPixel(5.4, 5.4, Color.RED);
+		pixelTests.resize(100, 100, NearestNeighbor);
+		printImage(pixelTests);
 		#end
 
 		#if ds_tests
