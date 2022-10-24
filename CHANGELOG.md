@@ -6,7 +6,8 @@
   
 ### `vision.ds`
 
- - **Added `ImageView`** - manipulate a section of the image without having to copy/paste pixels!
+ - **Added `vision.ds.ImageView`**  - manipulate a section of the image without having to copy/paste pixels!
+ - **Added `vision.ds.ImageViewShape`**
  - **Image's byte offset changed from `4` to `11`**
  - **Added `image.stamp()`** - draw an image on top of another image
  - **Added `image.view`** - easy access for gettint & setting the currently set image view
@@ -16,9 +17,10 @@
  - **Added `image.setView()`**
  - **Added `image.removeView()`**
  - **Added `image.hasPixelInView()`** - allows checking whether or not the given pixel is inside a given/the image's view
- - **Added `vision.ds.ImageView`**
- - **Added `vision.ds.ImageViewShape`**
+ - **Added `image.setFloatingPixel()`**
+ - **Added `image.setSafePixel()`**
  - **Fixed `Image.paintPixel()` resetting `alpha` to `1`**
+ - **Fixed `Image.resize()` not working with Nearest-Neighbor**
 
 # 1.1.1
 

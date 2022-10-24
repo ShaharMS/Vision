@@ -286,7 +286,6 @@ abstract Image(ByteArray) {
 			#end
 		} else {
 			if (hasView()) {
-				final view = getView();
 				if (hasPixelInView(x, y)) {
 					setColorFromStartingBytePos((y * width + x) * 4, color);
 				}
@@ -295,6 +294,18 @@ abstract Image(ByteArray) {
 			}
 		}	
 		
+	}
+
+	public inline function setSafePixel(x:Int, y:Int, color:Color) {
+		x = x.boundInt(0, width - 1);
+		y = y.boundInt(0, height - 1);
+		if (hasView()) {
+			if (hasPixelInView(x, y)) {
+				setColorFromStartingBytePos((y * width + x) * 4, color);
+			}
+		} else {
+			setColorFromStartingBytePos((y * width + x) * 4, color);
+		}
 	}
 
 	public inline function setFloatingPixel(x:Float, y:Float, color:Color) {

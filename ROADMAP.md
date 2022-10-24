@@ -56,8 +56,8 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `getSafePixel()` 
  - [x] `getUnsafePixel()` 
  - [x] `setPixel()`
- - [ ] `setFloatingPixel()`
- - [ ] `setSafePixel()` 
+ - [x] `setFloatingPixel()`
+ - [x] `setSafePixel()` 
  - [x] `setUnsafePixel()` 
  - [x] `paintPixel()`
  - [ ] `paintFloatingPixel()`

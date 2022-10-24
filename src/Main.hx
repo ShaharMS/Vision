@@ -239,6 +239,7 @@ class Main {
 		printImage(image);
 		var pixelTests = new Image(10, 10);
 		pixelTests.setFloatingPixel(5.4, 5.4, Color.RED);
+		pixelTests.setSafePixel(12, 12, Color.BLUE);
 		pixelTests.resize(100, 100, NearestNeighbor);
 		printImage(pixelTests);
 		#end
