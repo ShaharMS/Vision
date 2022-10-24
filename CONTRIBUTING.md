@@ -11,15 +11,16 @@ Here are a list of guidelines, from the most important (🔴), to the least impo
 
 🔴 No single-letter variables/functions  
 🔴 Don't change any API without specifying the change  
-🔴 Don't create new top-level subfolders. If subfolders are needed, place them in `vision.ds` or `vision.helpers`  
+🔴 Don't create new top-level subfolders. If subfolders are needed, place them in `vision.ds` or `vision.helpers` 
+🔴 One class per file, unless the second one is a one-line typedef, or a private class that shouldn't really be used anywhere else.  
 🟠 Don't use abbreviations  
 🟠 Don't write module-level functions/fields exclusively. Try using classes whenever possible  
 🟠 Don't remove any feature if you don't give an alternative  
 🟠 When heavily editing core API's (`Vision.hx`, `Image.hx`), make sure to specify your reason for editing  
-🟠 Vision has a specific formatting style, specified in `hxformat.json`. Don't write code that doesn't conform to the formatting rules. It makes things look messy.  
-🟡 When creating a fork, prefix your branch's name with `feature/` for a new feature, `qol/` for a QOL change/addition, `perf/` for a performance improvement, and `impr/` for an improvement upon an existing feature   
+🟠 Vision has a specific formatting style, specified in `hxformat.json`. Don't write code that doesn't conform to the formatting rules. It makes things look messy.    
 🟡 Write self-descriptive code (full variable names, does'nt matter how long they are)  
 🟡 Don't write obfuscated code (even if its faster, if it isn't understandable, its hard to maintain)  
+🟡 When creating a fork, prefix your branch's name with `feature/` for a new feature, `qol/` for a QOL change/addition, `perf/` for a performance improvement, and `impr/` for an improvement upon an existing feature 
 🟢 Write comments to explain your code  
 🔵 Add documentation  
 🔵 Extend/fix documentation
