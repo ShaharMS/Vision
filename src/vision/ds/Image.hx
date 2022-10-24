@@ -354,21 +354,67 @@ abstract Image(ByteArray) {
 		if (x < 0 || x >= width || y < 0 || y >= height) {
 			#if !vision_quiet
 			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
-			#else
-			return;
 			#end
+		} else {
+			var oldColor = getPixel(x, y);
+			var newColor = Color.fromRGBAFloat(
+				color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
+				color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat), 
+				color.blueFloat * color.alphaFloat + oldColor.blueFloat * (1 - color.alphaFloat), 
+				oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat
+			);
+			setPixel(x, y, newColor);
 		}
-		var oldColor = getPixel(x, y);
-		var newColor = Color.fromRGBAFloat(color.redFloat * color.alphaFloat
-			+ oldColor.redFloat * (1 - color.alphaFloat),
-			color.greenFloat * color.alphaFloat
-			+ oldColor.greenFloat * (1 - color.alphaFloat),
-			color.blueFloat * color.alphaFloat
-			+ oldColor.blueFloat * (1 - color.alphaFloat), oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat);
-		setPixel(x, y, newColor);
 	}
 
+	public inline function paintFloatingPixel(x:Float, y:Float, color:Color) {
+		if (x < 0 || x >= width || y < 0 || y >= height) {
+			#if !vision_quiet
+			throw new OutOfBounds(cast this, new Point2D(x, y));
+			#end
+		} else {
+			final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
 
+			// (0, 0) strength: (1 - xFraction, 1 - yFraction)
+			// (0, 1) strength: (1 - xFraction,     yFraction)
+			// (1, 0) strength: (	 xFraction, 1 - yFraction)
+			// (1, 1) strength: (	 xFraction,     yFraction)
+			final ix = x.floor(), iy = y.floor();
+			for (posX in [0, 1]) {
+				if (posX == 1 && x == ix) continue;
+				for (posY in [0, 1]) {
+					if (posY == 1 && y == iy) continue;
+					var oldColor = getPixel(ix + posX, iy + posY);
+					color.alphaFloat = ((if (posX == 0) 1 - xFraction else xFraction) + (if (posY == 0) 1 - yFraction else yFraction)) / 2;
+					var newColor = Color.fromRGBAFloat(
+						color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
+						color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat), 
+						color.blueFloat * color.alphaFloat + oldColor.blueFloat * (1 - color.alphaFloat), 
+						oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat
+					);
+					setPixel(ix + posX, iy + posY, newColor);
+				}
+			}
+			
+		}
+	}
+
+	public inline function paintSafePixel(x:Int, y:Int, color:Int) {
+		paintPixel(x.boundInt(0, width - 1), y.boundInt(0, height - 1), color);
+	}
+
+	@:allow(vision)
+	inline function paintUnsafePixel(x:Int, y:Int, color:Color) {
+		var oldColor = getUnsafePixel(x, y);
+		var newColor = Color.fromRGBAFloat(
+			color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
+			color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat), 
+			color.blueFloat * color.alphaFloat + oldColor.blueFloat * (1 - color.alphaFloat), 
+			oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat
+		);
+		setUnsafePixel(x, y, newColor);
+		
+	}
 
 	//--------------------------------------------------------------------------
 	// Checks

@@ -238,8 +238,11 @@ class Main {
 		image.fillUntilColor({x: 25, y: 205}, 0xFF48FF, 0xFF5432);
 		printImage(image);
 		var pixelTests = new Image(10, 10);
-		pixelTests.setFloatingPixel(5.4, 5.4, Color.RED);
 		pixelTests.setSafePixel(12, 12, Color.BLUE);
+		pixelTests.setPixel(9, 8, Color.BLUE);
+		pixelTests.setFloatingPixel(5.4, 5.4, Color.RED);
+		pixelTests.paintFloatingPixel(8.1, 7.4, Color.RED);
+		pixelTests.paintSafePixel(10, 10, 0x88FF0000);
 		pixelTests.resize(100, 100, NearestNeighbor);
 		printImage(pixelTests);
 		#end

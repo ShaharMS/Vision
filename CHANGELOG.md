@@ -19,6 +19,8 @@
  - **Added `image.hasPixelInView()`** - allows checking whether or not the given pixel is inside a given/the image's view
  - **Added `image.setFloatingPixel()`**
  - **Added `image.setSafePixel()`**
+ - **Added `image.paintFloatingPixel()`**
+ - **Added `image.paintSafePixel()`**
  - **Fixed `Image.paintPixel()` resetting `alpha` to `1`**
  - **Fixed `Image.resize()` not working with Nearest-Neighbor**
 

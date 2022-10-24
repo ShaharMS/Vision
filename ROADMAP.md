@@ -60,9 +60,9 @@ Here is a roadmap of all features added/planned for the future:
  - [x] `setSafePixel()` 
  - [x] `setUnsafePixel()` 
  - [x] `paintPixel()`
- - [ ] `paintFloatingPixel()`
- - [ ] `paintSafePixel()` 
- - [ ] `paintUnsafePixel()` 
+ - [x] `paintFloatingPixel()`
+ - [x] `paintSafePixel()` 
+ - [x] `paintUnsafePixel()` 
  - [x] `hasPixel()`
  - [x] `hasPixelInView()`
  - [ ] matrix access `image[x][y]`
