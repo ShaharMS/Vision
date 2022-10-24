@@ -1,7 +1,34 @@
 package vision.triangle;
 import vision.ds.Image;
+import vision.triangle.QuadHelper;
 
 // Module ThickLineHelper
+
+/**
+  provides a thick line using two triangles vector p, q
+**/
+inline function fillLine( image: Image
+                        , px: Float, py: Float, qx: Float, qy: Float
+                        , thick: Float, color: Int ){
+  var o = qy-py;
+  var a = qx-py;
+  var h = Math.pow( o*o + a*a, 0.5 );
+  var theta = Math.atan2( o, a );
+  rotateLine( image, px, py, thick, h, theta, color);
+}
+/**
+  provides a thick line using two gradient triangle vector p,q
+  the four colors are arranged clockwise a,b,c,d
+**/
+inline function fillGradLine( image: Image, px: Float, py: Float, qx: Float, qy: Float
+                            , thick: Float
+                            , colorA: Int, colorB: Int, colorC: Int, colorD: Int ){
+  var o = qy-py;
+  var a = qx-py;
+  var h = Math.pow( o*o + a*a, 0.5 );
+  var theta = Math.atan2( o, a );
+  rotateGradLine( this, px, py, thick, h, theta, colorA, colorB, colorC, colorD, debugCorners );
+}
 
 inline function rotateLine( image: Image
                           , px: Float, py: Float
@@ -34,7 +61,7 @@ inline function rotateLine( image: Image
     temp = px + rotX( dx, dy, sin, cos );
     dy = py + rotY( dx, dy, sin, cos ); 
     dx = temp;
-    image.fillQuad( ax, ay, bx, by, cx, cy, dx, dy, color );
+    fillQuad( image, ax, ay, bx, by, cx, cy, dx, dy, color );
 }
 
 inline function rotateGradLine( image: Image
@@ -70,7 +97,7 @@ inline function rotateGradLine( image: Image
     dy = py + rotY( dx, dy, sin, cos ); 
     dx = temp;
 
-    image.fillGradientQuad( ax, ay, colorA, bx, by, colorB, cx, cy, colorC, dx, dy, colorD );
+    fillGradientQuad( image, ax, ay, colorA, bx, by, colorB, cx, cy, colorC, dx, dy, colorD );
 }
 inline function rotX( x: Float, y: Float, sin: Float, cos: Float )
   return x * cos - y * sin;
