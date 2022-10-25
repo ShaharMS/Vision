@@ -168,7 +168,7 @@ abstract Image(ByteArray) {
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
 
-		@throws OutOfBounds if the coordinates are out of bounds.
+		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 		@return The color of the pixel at the given coordinates.
 	**/
 	public inline function getPixel(x:Int, y:Int):Color {
@@ -245,7 +245,7 @@ abstract Image(ByteArray) {
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
 
-		@throws OutOfBounds if the coordinates are out of bounds.
+		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 		@return The color of the pixel at the given coordinates.
 	**/
 	public inline function getFloatingPixel(x:Float, y:Float):Color {
@@ -276,7 +276,7 @@ abstract Image(ByteArray) {
 		@param y The y coordinate of the pixel.
 		@param color The color to set the pixel to.
 
-		@throws OutOfBounds if the pixel is out of bounds.
+		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 	**/
 	public inline function setPixel(x:Int, y:Int, color:Color) {
 		if (!hasPixel(x, y)) {
@@ -349,6 +349,7 @@ abstract Image(ByteArray) {
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
 		@param color The color to set the pixel to. pay attention to the alpha value.
+		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 	**/
 	public inline function paintPixel(x:Int, y:Int, color:Color) {
 		if (x < 0 || x >= width || y < 0 || y >= height) {
@@ -372,7 +373,10 @@ abstract Image(ByteArray) {
 			#if !vision_quiet
 			throw new OutOfBounds(cast this, new Point2D(x, y));
 			#end
+		} else if (x.isInt() && y.isInt()) {
+			paintPixel(x.floor(), y.floor(), color);
 		} else {
+			
 			final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
 
 			// (0, 0) strength: (1 - xFraction, 1 - yFraction)

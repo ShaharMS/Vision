@@ -44,7 +44,7 @@ class Main {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-			image.setView({x: 10, y: 10, width: 100, height: 70, shape: RHOMBUS});
+			//image.setView({x: 10, y: 10, width: 100, height: 70, shape: RHOMBUS});
 			#if simple_tests
 			start = haxe.Timer.stamp();
 			printImage(Vision.blackAndWhite(image.clone()));
@@ -237,13 +237,11 @@ class Main {
 		image.drawRect(20, 200, 60, 40, 0xFF5432);
 		image.fillUntilColor({x: 25, y: 205}, 0xFF48FF, 0xFF5432);
 		printImage(image);
-		var pixelTests = new Image(10, 10);
-		pixelTests.setSafePixel(12, 12, Color.BLUE);
-		pixelTests.setPixel(9, 8, Color.BLUE);
-		pixelTests.setFloatingPixel(5.4, 5.4, Color.RED);
-		pixelTests.paintFloatingPixel(8.1, 7.4, Color.RED);
-		pixelTests.paintSafePixel(10, 10, 0x88FF0000);
-		pixelTests.resize(100, 100, NearestNeighbor);
+		var pixelTests = new Image(300, 300);
+		for (x in 0...299) {
+			pixelTests.paintFloatingPixel(x, x / 3, 0xFFFF0000);
+		}
+		//pixelTests.resize(100, 100, NearestNeighbor);
 		printImage(pixelTests);
 		#end
 
@@ -255,8 +253,6 @@ class Main {
 		trace(new Ray2D({x: 0, y: 0}, 1).getPointAtY(8));
 		trace(new Ray2D({x: 0, y: 0}, 1).yIntercept);
 		trace(new Ray2D({x: 0, y: 0}, 1).xIntercept);
-		trace(new Ray2D({x: 0, y: 0}, 1).findPointWithDistance(0, Math.sqrt(2) * 5, true));
-		trace(new Ray2D({x: 0, y: 0}, 1).findPointWithDistance(0, Math.sqrt(2) * 5, false));
 		var h = new Histogram();
 		var queue = new Queue<Int>();
 		queue.enqueue(0);
