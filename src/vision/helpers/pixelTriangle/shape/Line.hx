@@ -21,10 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package nanjizal.visionTriangle.shape;
+package vision.helpers.pixelTriangle.shape;
 
 import vision.ds.Image;
-import nanjizal.visionTriangle.shape.Quad;
+import vision.helpers.pixelTriangle.shape.Quad;
 
 /**
   provides a thick line using two triangles vector p, q
