@@ -28,7 +28,7 @@ import vision.ds.Color;
 
 import vision.helpers.pixelTriangle.iter.BoundIterators;
 import vision.helpers.pixelTriangle.iter.IteratorRange;
-import vision.helpers.pixelTriangle..pixelplus.ChannelHelp;
+import vision.helpers.pixelTriangle.pixelplus.ChannelHelp;
 
 inline function triangleFill( image: Image
                             , ax: Float, ay: Float
