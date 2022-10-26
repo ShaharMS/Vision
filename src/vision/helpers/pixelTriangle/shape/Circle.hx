@@ -21,10 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package nanjizal.visionTriangle.shape;
+package vision.helpers.pixelTriangle.shape;
 
 import vision.ds.Image;
-import nanjizal.visionTriangle.shape.Triangle;
+import vision.helpers.pixelTriangle.Triangle;
 
 inline function ellipseFill( image: Image
                            , cx: Float, cy: Float
