@@ -274,6 +274,7 @@ class ImageTools {
 		return new NeighborsIterator(image, x, y, kernalSize, circular);
 	}
 
+	@:deprecated("ImageTools.grayscalePixel(color) is deprecated. Use color.grayscale() instead.")
 	public static inline function grayscalePixel(pixel:Color):Color {
 		var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
 			+ pixel.green + pixel.blue) / 3) #end;
