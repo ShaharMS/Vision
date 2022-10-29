@@ -3,11 +3,10 @@
 ### `Vision.hx`
 
  - **Optimized algorithm's pixel looping method**
+ - **`Vision.grayscale()` Now accepts an addition, optional, parameter**, replacing `vision_better_grayscale`.
   
-### `vision.ds`
+### `vision.ds.Image`
 
- - **Added `vision.ds.ImageView`**  - manipulate a section of the image without having to copy/paste pixels!
- - **Added `vision.ds.ImageViewShape`**
  - **Image's byte offset changed from `4` to `11`**
  - **Added `image.stamp()`** - draw an image on top of another image
  - **Added `image.view`** - easy access for gettint & setting the currently set image view
@@ -24,6 +23,11 @@
  - **Fixed `Image.paintPixel()` resetting `alpha` to `1`**
  - **Fixed `Image.resize()` not working with Nearest-Neighbor**
 
+### `vision.ds`
+
+ - **Added `vision.ds.ImageView`**  - manipulate a section of the image without having to copy/paste pixels!
+ - **Added `vision.ds.ImageViewShape`**
+ - **Changed `Color.grayscale()`'s signature to accept an optional, extra variable**. That variable enable/disables better grayscaling.
 # 1.1.1
 
 ### `vision.ds`

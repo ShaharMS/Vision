@@ -71,21 +71,22 @@ class Vision {
 	/**
 		Grayscales an image, by averaging the color channels of each pixel.
 
-		To get a higher quality grayscale, define `vision_better_grayscale`
+		If for some reason, you want to get a lower quality grayscale, set `simpleGrayscale` to `true`.
 
-		Example (both with & without `vision_better_grayscale`):
+		Example:
 
-		| Original | Regular | `vision_better_grayscale` |
+		| Original | `simpleGrayscale` | `!simpleGrayscale` default) |
 		|---|---|---|
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale&vision_better_grayscale.png)|
 
 		@param image The image to be grayscaled.
+		@param simpleGrayscale When enabled, gets the gray by averaging pixel's color-channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`
 
 		@return The grayscaled image.
 	**/
-	public static function grayscale(image:Image):Image {
+	public static function grayscale(image:Image, ?simpleGrayscale:Bool = false):Image {
 		image.forEachPixelInView((x, y, pixel) -> {
-			var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red + pixel.green + pixel.blue) / 3) #end;
+			var gray = if (!simpleGrayscale) Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) else Std.int((pixel.red + pixel.green + pixel.blue) / 3);
 			image.setUnsafePixel(x, y, Color.fromRGBA(gray, gray, gray));
 		});
 		return image;

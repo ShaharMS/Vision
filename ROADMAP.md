@@ -79,7 +79,7 @@ Here is a roadmap of all features added/planned for the future:
    - [x] `drawCubicBezier()`
    - [x] `fillRect()`
    - [x] `fillCircle()`
-   - [ ] `drawText` 
+   - [ ] `drawText()` 
  - [x] Copying:
    - [x] `clone()`
    - [x] `getImagePortion()`
