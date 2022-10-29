@@ -9,7 +9,7 @@
 
  - **Image's byte offset changed from `4` to `11`**
  - **Added `image.stamp()`** - draw an image on top of another image
- - **Added `image.view`** - easy access for gettint & setting the currently set image view
+ - **Added `image.view`** - easy access for getting & setting the currently set image view
  - **Added `image.forEachPixelInView()`** - allows iterating over only the pixels inside the current view
  - **Added `image.hasView()`**
  - **Added `image.getView()`**
