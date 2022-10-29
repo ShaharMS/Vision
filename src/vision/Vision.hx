@@ -131,10 +131,7 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-blackAndWhite.png)|
 
 		@param image The image to be converted.
-		@param threshold The threshold for converting to black and white: 
-		`threshold` is the maximum average of the three color components.
-		that will still be considered black. `threshold` is a value between 0 and 255.
-		The higher the value, the more "sensitive" the conversion. The default value is 128.
+		@param threshold The threshold for converting to black and white: `threshold` is the maximum average of the three color components, that will still be considered black. `threshold` is a value between 0 and 255. The higher the value, the more "sensitive" the conversion. The default value is 128.
 
 		@return The converted image.
 	**/

@@ -28,6 +28,7 @@
  - **Added `vision.ds.ImageView`**  - manipulate a section of the image without having to copy/paste pixels!
  - **Added `vision.ds.ImageViewShape`**
  - **Changed `Color.grayscale()`'s signature to accept an optional, extra variable**. That variable enable/disables better grayscaling.
+ - **Added `Color.blackOrWhite()`**
 # 1.1.1
 
 ### `vision.ds`
