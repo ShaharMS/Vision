@@ -153,6 +153,10 @@ Vision's versioning will try to follow semver's specifications as accuratly as p
                 <td>API changes</td>
                 <td>❌</td>
             </tr>
+            <tr>
+                <td>Major API changes</td>
+                <td>❌</td>
+            </tr>
         </table></td>
     </tr>
     <tr>
@@ -180,6 +184,10 @@ Vision's versioning will try to follow semver's specifications as accuratly as p
             </tr>
             <tr>
                 <td>API changes</td>
+                <td>❓</td>
+            </tr>
+            <tr>
+                <td>Major API changes</td>
                 <td>❌</td>
             </tr>
         </table></td>
@@ -209,6 +217,10 @@ Vision's versioning will try to follow semver's specifications as accuratly as p
             </tr>
             <tr>
                 <td>API changes</td>
+                <td>✔️</td>
+            </tr>
+            <tr>
+                <td>Major API changes</td>
                 <td>✔️</td>
             </tr>
         </table></td>
