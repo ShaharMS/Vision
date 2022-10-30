@@ -36,16 +36,18 @@ class Tesseract {
             Syntax.code('
         Tesseract.recognize(
             {0},
-            \'eng\',
+            {1},
             { logger: text => {
                 document.getElementById("progressText").innerText = text;
-                console.log(text);
+                document.getElementById("progressText").onchange();
+                //console.log(text);
             }}
         ).then(({ data: { text } }) => {
             document.getElementById("finalText").innerText = text;
-            console.log(text);
+            document.getElementById("finalText").onchange();
+            //console.log(text);
         });
-        ', imageURL);
+        ', imageURL, language);
         return;
         }
         Browser.document.body.appendChild(script);
