@@ -1,6 +1,6 @@
 --class-path src
 --class-path unit_test_generator
---main Main
+--main VisionMain
 
 --library format
 #--library console.hx
