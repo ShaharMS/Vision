@@ -14,8 +14,9 @@ class Tesseract {
 
         var text = Browser.window.document.createParagraphElement();
         Browser.document.body.appendChild(text);
-        text.style.color = "0x000000";
         text.style.position = "absolute";
+        text.style.top = "-1000vh";
+        text.style.height = "500vh";
         text.id = "finalText";
         text.onchange = () -> {
             onComplete(text.innerText);
@@ -23,8 +24,9 @@ class Tesseract {
 
         var progress = Browser.window.document.createParagraphElement();
         Browser.document.body.appendChild(progress);
-        progress.style.color = "0x000000";
         progress.style.position = "absolute";
+        progress.style.top = "-1000vh";
+        progress.style.height = "500vh";
         progress.id = "progressText";
         progress.onchange = () -> {
             onProgress(progress.innerText);
@@ -38,7 +40,7 @@ class Tesseract {
             {0},
             {1},
             { logger: text => {
-                document.getElementById("progressText").innerText = text;
+                document.getElementById("progressText").innerText = text.status + ", progress: " + text.progress * 100 + "%";
                 document.getElementById("progressText").onchange();
                 //console.log(text);
             }}
