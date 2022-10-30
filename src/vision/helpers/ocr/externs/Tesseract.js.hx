@@ -10,6 +10,13 @@ class Tesseract {
     
     public static inline var TEST_IMAGE_URL = "https://tesseract.projectnaptha.com/img/eng_bw.png";
 
+    /**
+    	This function sucks. it works, but so dirty its actually kinda sad 😂
+    	@param imageURL a web URL
+    	@param language *usually*, a 3-letter combo
+    	@param onComplete dispatches on text recognition
+    	@param onProgress dispatches on progress updates
+    **/
     public static function recognize(?imageURL:String = TEST_IMAGE_URL, ?language:String = "eng", onComplete:String -> Void, onProgress:String -> Void) {
 
         var text = Browser.window.document.createParagraphElement();
