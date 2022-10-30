@@ -36,21 +36,25 @@ class Tesseract {
         script.src = 'https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js';
         script.onload = () -> {
             Syntax.code('
-        Tesseract.recognize(
-            {0},
-            {1},
-            { logger: text => {
-                document.getElementById("progressText").innerText = text.status + ", progress: " + text.progress * 100 + "%";
-                document.getElementById("progressText").onchange();
-                //console.log(text);
-            }}
-        ).then(({ data: { text } }) => {
-            document.getElementById("finalText").innerText = text;
-            document.getElementById("finalText").onchange();
-            //console.log(text);
-        });
-        ', imageURL, language);
-        return;
+                Tesseract.recognize(
+                    {0},
+                    {1},
+                    { logger: text => {
+                        document.getElementById("progressText").innerText = text.status + ", progress: " + text.progress * 100 + "%";
+                        document.getElementById("progressText").onchange();
+                        //console.log(text);
+                    }}
+                ).then(({ data: { text } }) => {
+                    document.getElementById("finalText").innerText = text;
+                    document.getElementById("finalText").onchange();
+                    //console.log(text);
+                });
+                ', imageURL, language
+            );
+            Browser.document.body.removeChild(script);
+            Browser.document.body.removeChild(progress);
+            Browser.document.body.removeChild(text);
+            return;
         }
         Browser.document.body.appendChild(script);
     }
