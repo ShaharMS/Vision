@@ -40,9 +40,9 @@ class Main {
 	static function main() {
 		var start:Float, end:Float;
 
-		#if js
-		Tesseract.recognize(text -> trace(text), text -> trace(text));
-		#end
+		//#if js
+		//Tesseract.recognize(text -> trace(text), text -> trace(text));
+		//#end
 		
 		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
