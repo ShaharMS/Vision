@@ -1,5 +1,6 @@
 package;
 
+import vision.helpers.ocr.externs.Tesseract;
 import js.html.EffectTiming;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
@@ -38,6 +39,8 @@ using vision.tools.MathTools;
 class Main {
 	static function main() {
 		var start:Float, end:Float;
+
+		Tesseract.recognize(text -> trace(text), text -> trace(text));
 
 		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
