@@ -36,7 +36,7 @@ import vision.ds.Image;
 using vision.Vision;
 using vision.tools.MathTools;
 
-class Main {
+class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 
