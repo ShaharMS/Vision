@@ -19,6 +19,7 @@ class Tesseract {
     **/
     public static function recognize(?imageURL:String = TEST_IMAGE_URL, ?language:String = "eng", onComplete:String -> Void, onProgress:String -> Void) {
 
+        //resulting text
         var text = Browser.window.document.createParagraphElement();
         Browser.document.body.appendChild(text);
         text.style.position = "absolute";
@@ -29,6 +30,7 @@ class Tesseract {
             onComplete(text.innerText);
         }
 
+        //progress bar
         var progress = Browser.window.document.createParagraphElement();
         Browser.document.body.appendChild(progress);
         progress.style.position = "absolute";
@@ -39,6 +41,8 @@ class Tesseract {
             onProgress(progress.innerText);
         }
 
+        //script element
+        //todo: find a way to not retrain tesseract every time
         var script = Browser.window.document.createScriptElement();
         script.src = 'https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js';
         script.onload = () -> {
