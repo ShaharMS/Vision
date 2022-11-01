@@ -13,7 +13,7 @@ class LibraryRequired extends VisionException {
         #elseif kha
         return 'project.addLibrary(\'$lib\');'
         #elseif ceramic
-        return "Add `- vision` to `plugins:`"
+        return 'Add `- $lib` to `plugins:`'
         #else
         return '--library $lib';
         #end
