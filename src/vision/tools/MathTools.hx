@@ -319,12 +319,74 @@ class MathTools {
 		return (abs(cast number) / cast number) > 0;
 	}
 
+	//-----------------------------------------------------------------------------------------
+	// Conversions
+	//-----------------------------------------------------------------------------------------
+
+	public static inline function slopeToDegrees(slope:Float) {
+		return atan(slope) * 180 / PI;
+	}
+
+	public static inline function slopeToRadians(slope:Float) {
+		return atan(slope);
+	}
+
+	public static inline function degreesToSlope(degrees:Float) {
+		return tan(degrees * PI / 180);
+	}
+
+	public static inline function degreesToRadians(degrees:Float) {
+		return degrees * PI / 180;
+	}
+
+	public static inline function radiansToDegrees(radians:Float) {
+		return radians * 180 / PI;
+	}
+
+	public static inline function radiansToSlope(radians:Float) {
+		return tan(radians);
+	}
+
+	//-----------------------------------------------------------------------------------------
+	// Trigonometric
+	//-----------------------------------------------------------------------------------------
+
+	public static inline function cotan(radians:Float):Float {
+		return 1 / tan(radians);
+	}
+
+	public static inline function cosec(radians:Float):Float {
+		return 1 / sin(radians);
+	}
+
+	public static inline function sec(radians:Float):Float {
+		return 1 / cos(radians);
+	}
+
+	//-----------------------------------------------------------------------------------------
+	// Convenience
+	//-----------------------------------------------------------------------------------------
+
+	public static function truncate(num:Float, numbersAfterDecimal:Int):Float {
+		var multiplier:Float = pow(10, numbersAfterDecimal);
+		return round(num * multiplier) / multiplier;
+	}
+
+	public static function cropDecimal(number:Float):Int {
+		if(number < 0) return Math.ceil(number);
+		return Math.floor(number);
+	}
+
+	//-----------------------------------------------------------------------------------------
+	// Utilities For Number Arrays
+	//-----------------------------------------------------------------------------------------
+
 	/**
 	 * Takes a 2D array and flattens it to a regular, 1D array.
 	 * @param array
 	 * @return Array<T>
 	 */
-	overload extern inline public static function flatten<T>(array:Array<Array<T>>):Array<T> {
+	 overload extern inline public static function flatten<T>(array:Array<Array<T>>):Array<T> {
 		var flat = [];
 		for (item in array)
 			flat = flat.concat(item);
@@ -371,53 +433,6 @@ class MathTools {
 			raised[floor(i / delimiter)][i % delimiter] = vector[i];
 		}
 		return raised;
-	}
-
-
-
-	//-----------------------------------------------------------------------------------------
-	// Conversions
-	//-----------------------------------------------------------------------------------------
-
-	public static inline function slopeToDegrees(slope:Float) {
-		return atan(slope) * 180 / PI;
-	}
-
-	public static inline function slopeToRadians(slope:Float) {
-		return atan(slope);
-	}
-
-	public static inline function degreesToSlope(degrees:Float) {
-		return tan(degrees * PI / 180);
-	}
-
-	public static inline function degreesToRadians(degrees:Float) {
-		return degrees * PI / 180;
-	}
-
-	public static inline function radiansToDegrees(radians:Float) {
-		return radians * 180 / PI;
-	}
-
-	public static inline function radiansToSlope(radians:Float) {
-		return tan(radians);
-	}
-
-	public static inline function cotan(radians:Float):Float {
-		return 1 / tan(radians);
-	}
-
-	public static inline function cosec(radians:Float):Float {
-		return 1 / sin(radians);
-	}
-
-	public static inline function sec(radians:Float):Float {
-		return 1 / cos(radians);
-	}
-
-	public static function truncate(num:Float, numbersAfterDecimal:Int):Float {
-		var multiplier:Float = pow(10, numbersAfterDecimal);
-		return round(num * multiplier) / multiplier;
 	}
 
 	overload extern inline public static function minFloat(...values:Float):Float {
