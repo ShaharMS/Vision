@@ -367,12 +367,12 @@ class MathTools {
 	// Convenience
 	//-----------------------------------------------------------------------------------------
 
-	public static function truncate(num:Float, numbersAfterDecimal:Int):Float {
+	public static inline function truncate(num:Float, numbersAfterDecimal:Int):Float {
 		var multiplier:Float = pow(10, numbersAfterDecimal);
 		return round(num * multiplier) / multiplier;
 	}
 
-	public static function cropDecimal(number:Float):Int {
+	public static inline function cropDecimal(number:Float):Int {
 		if(number < 0) return Math.ceil(number);
 		return Math.floor(number);
 	}
