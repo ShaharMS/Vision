@@ -1320,6 +1320,7 @@ abstract Image(ByteArray) {
         return ImageTools.toHeapsPixels(cast this);
     }
     #end
+	
 	#if js
 	@:from public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
         return ImageTools.fromJsCanvas(canvas);

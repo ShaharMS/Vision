@@ -1,7 +1,6 @@
 package vision.tools;
 
 import vision.ds.ByteArray;
-import js.html.CanvasElement;
 import vision.exceptions.ImageLoadingFailed;
 import vision.exceptions.ImageSavingFailed;
 import vision.ds.ImageFormat;
@@ -11,6 +10,8 @@ import vision.ds.ImageResizeAlgorithm;
 #if js
 import js.lib.Promise;
 import js.Browser;
+import js.html.CanvasElement;
+
 #end
 import haxe.ds.Vector;
 import vision.ds.Matrix;
