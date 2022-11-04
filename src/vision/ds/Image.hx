@@ -1320,6 +1320,14 @@ abstract Image(ByteArray) {
         return ImageTools.toHeapsPixels(cast this);
     }
     #end
+	#if js
+	@:from public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
+        return ImageTools.fromJsCanvas(canvas);
+    }
+    @:to public function toJsCanvas():js.html.CanvasElement {
+        return ImageTools.toJsCanvas(cast this);
+    }
+	#end
 
 	//--------------------------------------------------------------------------
 	// Other From/Tos
@@ -1340,6 +1348,25 @@ abstract Image(ByteArray) {
 		}
 
 		return image;
+	}
+
+	public static function fromColorByteArrayAndData(array:ByteArray, width:Int, height:Int):Image {
+		#if vision_higher_width_cap
+		array.setInt32(0, width);
+		array.setInt32(WIDTH_BYTES, 0);
+		array.setInt32(WIDTH_BYTES + DATA_GAP, 0);
+		array.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
+		array.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		array.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		#else
+		array.setUInt16(0, width);
+		array.setUInt16(WIDTH_BYTES, 0);
+		array.setUInt16(WIDTH_BYTES + DATA_GAP, 0);
+		array.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES, width);
+		array.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		array.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		#end
+		return cast array;
 	}
 }
 
