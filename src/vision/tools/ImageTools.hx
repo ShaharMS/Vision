@@ -1,5 +1,6 @@
 package vision.tools;
 
+import vision.ds.ByteArray;
 import vision.exceptions.ImageLoadingFailed;
 import vision.exceptions.ImageSavingFailed;
 import vision.ds.ImageFormat;
@@ -9,6 +10,8 @@ import vision.ds.ImageResizeAlgorithm;
 #if js
 import js.lib.Promise;
 import js.Browser;
+import js.html.CanvasElement;
+
 #end
 import haxe.ds.Vector;
 import vision.ds.Matrix;
@@ -29,6 +32,7 @@ using StringTools;
 
 		using vision.tools.ImageTools;
 **/
+@:access(vision.ds.Image)
 class ImageTools {
 	/**
 	 * The default algorithm to use when resizing an image by "brute force" (setting its `width`/`height` when `vision_allow_resize` is defined)
@@ -419,6 +423,48 @@ class ImageTools {
 			}
 		}
 		return pixels;
+	}
+	#end
+	#if js
+	public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
+		var image:Image = Image.fromColorByteArrayAndData(new ByteArray(Image.OFFSET + (canvas.width + canvas.height) * 4), canvas.width, canvas.height);
+
+		var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
+
+			var i = 0;
+			while (i < imageData.data.length) {
+				image.underlying[i + (Image.OFFSET + 1) + 0] = imageData.data[i + 0];
+				image.underlying[i + (Image.OFFSET + 1) + 1] = imageData.data[i + 1];
+				image.underlying[i + (Image.OFFSET + 1) + 2] = imageData.data[i + 2];
+				image.underlying[i + (Image.OFFSET + 1) + 3] = imageData.data[i + 3];
+				i += 4;
+			}
+
+		return image;
+	}
+
+	public static function toJsCanvas(image:Image):js.html.CanvasElement {
+		var c = js.Browser.document.createCanvasElement();
+
+		c.width = image.width;
+		c.height = image.height;
+
+		var ctx = c.getContext2d();
+		var imageData = ctx.getImageData(0, 0, image.width, image.height);
+		var data = imageData.data;
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				var i = (y * image.width + x) * 4;
+				data[i] = image.underlying[i + (Image.OFFSET + 1)];
+				data[i + 1] = image.underlying[i + (Image.OFFSET + 1) + 1];
+				data[i + 2] = image.underlying[i + (Image.OFFSET + 1) + 2];
+				data[i + 3] = 255;
+			}
+		}
+
+		ctx.putImageData(imageData, 0, 0);
+
+		return c;
 	}
 	#end
 }
