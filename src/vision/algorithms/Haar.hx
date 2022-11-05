@@ -6,6 +6,7 @@ import haxe.io.Float32Array;
 import haxe.io.UInt8Array;
 import vision.ds.haar.IntegralImage;
 import vision.ds.Image;
+import vision.tools.MathTools.*;
 
 @:access(vision.ds.Image)
 class Haar {
@@ -241,12 +242,11 @@ class Haar {
 
 		// original code
 		// find number of neighbor classes
-		for (i in 0...rlen) ref[i] = 0;
 		for (i in 0...rlen)
-		{
+			ref[i] = 0;
+		for (i in 0...rlen) {
 			found = false;
-			for (j in 0...i)
-			{
+			for (j in 0...i) {
 				if (rects[j].equals(rects[i], epsilon)) {
 					found = true;
 					ref[i] = ref[j];
@@ -262,25 +262,27 @@ class Haar {
 		// merge neighbor classes
 		neighbors = [];
 		r = [];
-		for (i in 0...nb_classes)
-		{
+		for (i in 0...nb_classes) {
 			neighbors[i] = 0;
 			r[i] = {};
 		}
 
-		for (i in 0...rlen)
-		{
+		for (i in 0...rlen) {
 			ri = ref[i];
 			neighbors[ri]++;
 			r[ri].add(rects[i]);
 		}
-        var fri:Feature;
-		for (i in 0...nb_classes)
-		{
+		var fri:Feature;
+		for (i in 0...nb_classes) {
 			n = neighbors[i];
 			if (n >= min_neighbors) {
 				t = 1 / (n + n);
-				fri = {x: t * (r[i].x * 2 + n), y: t * (r[i].y * 2 + n), width: t * (r[i].width * 2 + n), height: t * (r[i].height * 2 + n)};
+				fri = {
+					x: t * (r[i].x * 2 + n),
+					y: t * (r[i].y * 2 + n),
+					width: t * (r[i].width * 2 + n),
+					height: t * (r[i].height * 2 + n)
+				};
 
 				feats.push(fri);
 			}
@@ -288,10 +290,8 @@ class Haar {
 
 		// filter inside rectangles
 		rlen = feats.length;
-		for (i in 0...rlen)
-		{
-			for (j in i + 1...rlen)
-			{
+		for (i in 0...rlen) {
+			for (j in i + 1...rlen) {
 				if (!feats[i].isInside && feats[i].inside(feats[j])) {
 					feats[i].isInside = true;
 				} else if (!feats[j].isInside && feats[j].inside(feats[i])) {
@@ -310,21 +310,301 @@ class Haar {
 	}
 
 	// area used as compare func for sorting
-	static function byArea(a:Feature, b:Feature):Int { return Std.int(b.area - a.area); }
+	static function byArea(a:Feature, b:Feature):Int {
+		return Std.int(b.area - a.area);
+	}
 
 	// serial index used as compare func for sorting
-	static function byOrder(a:Feature, b:Feature):Int { return a.index-b.index; }
+	static function byOrder(a:Feature, b:Feature):Int {
+		return a.index - b.index;
+	}
 
-	
 	// used for parallel "reduce" computation
-	static function mergeSteps(d:Array<Array<Feature>>)
-	{
+	static function mergeSteps(d:Array<Array<Feature>>) {
 		// concat and sort according to serial ordering
-		if (d[1].length != 0){
+		if (d[1].length != 0) {
 			var temp = d[0].concat(d[1]);
 			temp.sort(byOrder);
 			d[0] = temp;
 		}
 		return d[0];
+	}
+
+	// used for parallel, asynchronous and/or synchronous computation
+	static function detectSingleStep(self:Dynamic):Array<Feature> {
+		var Sqrt:Float->Float = Math.sqrt,
+			ret:Array<Feature> = [],
+			haar:Dynamic = self.haardata,
+			haar_stages = haar.stages,
+			scaledSelection = self.scaledSelection,
+			w = self.width,
+			h = self.height,
+			selw = scaledSelection.width,
+			selh = scaledSelection.height,
+			imArea = w * h,
+			imArea1 = imArea - 1,
+			sizex = haar.size1,
+			sizey = haar.size2,
+			xstep,
+			ystep,
+			xsize,
+			ysize,
+			startx = scaledSelection.x,
+			starty = scaledSelection.y,
+			startty,
+			x,
+			y,
+			ty,
+			tyw,
+			tys,
+			sl = haar_stages.length,
+			p0,
+			p1,
+			p2,
+			p3,
+			xl,
+			yl,
+			s,
+			t,
+			bx1,
+			bx2,
+			by1,
+			by2,
+			swh,
+			inv_area,
+			total_x,
+			total_x2,
+			vnorm,
+			edges_density,
+			pass,
+			cL = self.cannyLow,
+			cH = self.cannyHigh,
+
+			stage,
+			threshold,
+			trees,
+			tl,
+			canny = self.canny,
+			integral = self.integral,
+			squares = self.squares,
+			tilted = self.tilted,
+			t,
+			cur_node_ind,
+			where,
+			features,
+			feature,
+			rects,
+			nb_rects,
+			thresholdf,
+			rect_sum,
+			kr,
+			r,
+			x1,
+			y1,
+			x2,
+			y2,
+			x3,
+			y3,
+			x4,
+			y4,
+			rw,
+			rh,
+			yw,
+			yh,
+			sum,
+			scale = self.scale,
+			increment = self.increment,
+			index = self.i != null ? self.i : 0,
+			doCanny = self.doCannyPruning;
+
+		bx1 = 0;
+		bx2 = w - 1;
+		by1 = 0;
+		by2 = imArea - w;
+
+		xsize = cropDecimal(scale * sizex);
+		xstep = cropDecimal(xsize * increment);
+		ysize = cropDecimal(scale * sizey);
+		ystep = cropDecimal(ysize * increment);
+		// ysize = xsize; ystep = xstep;
+		tyw = ysize * w;
+		tys = ystep * w;
+		startty = starty * tys;
+		xl = selw - xsize;
+		yl = selh - ysize;
+		swh = xsize * ysize;
+		inv_area = 1.0 / swh;
+
+		y = starty;
+		ty = startty;
+		while (y < yl) {
+			x = startx;
+			while (x < xl) {
+				p0 = x - 1 + ty - w;
+				p1 = p0 + xsize;
+				p2 = p0 + tyw;
+				p3 = p2 + xsize;
+
+				// clamp
+				p0 = (p0 < 0) ? 0 : (p0 > imArea1) ? imArea1 : p0;
+				p1 = (p1 < 0) ? 0 : (p1 > imArea1) ? imArea1 : p1;
+				p2 = (p2 < 0) ? 0 : (p2 > imArea1) ? imArea1 : p2;
+				p3 = (p3 < 0) ? 0 : (p3 > imArea1) ? imArea1 : p3;
+
+				if (doCanny) {
+					// avoid overflow
+					edges_density = inv_area * (canny[p3] - canny[p2] - canny[p1] + canny[p0]);
+					if (edges_density < cL || edges_density > cH) continue;
+				}
+
+				// pre-compute some values for speed
+
+				// avoid overflow
+				total_x = inv_area * (integral[p3] - integral[p2] - integral[p1] + integral[p0]);
+				// avoid overflow
+				total_x2 = inv_area * (squares[p3] - squares[p2] - squares[p1] + squares[p0]);
+
+				vnorm = total_x2 - total_x * total_x;
+				vnorm = (vnorm > 1) ? Sqrt(vnorm) : /*vnorm*/ 1;
+
+				pass = true;
+				for (s in 0...sl) {
+					// Viola-Jones HAAR-Stage evaluator
+					stage = haar_stages[s];
+					threshold = stage.thres;
+					trees = stage.trees;
+					tl = trees.length;
+					sum = 0;
+
+					for (t in 0...tl) {
+						//
+						// inline the tree and leaf evaluators to avoid function calls per-loop (faster)
+						//
+
+						// Viola-Jones HAAR-Tree evaluator
+						features = trees[t].feats;
+						cur_node_ind = 0;
+						while (true) {
+							feature = features[cur_node_ind];
+
+							// Viola-Jones HAAR-Leaf evaluator
+							rects = feature.rects;
+							nb_rects = rects.length;
+							thresholdf = feature.thres;
+							rect_sum = 0;
+
+							if (feature.tilt) {
+								// tilted rectangle feature, Lienhart et al. extension
+								for (kr in 0...nb_rects) {
+									r = rects[kr];
+
+									// this produces better/larger features, possible rounding effects??
+									x1 = x + cropDecimal(scale * r[0]);
+									y1 = (y - 1 + cropDecimal(scale * r[1])) * w;
+									x2 = x + cropDecimal(scale * (r[0] + r[2]));
+									y2 = (y - 1 + cropDecimal(scale * (r[1] + r[2]))) * w;
+									x3 = x + cropDecimal(scale * (r[0] - r[3]));
+									y3 = (y - 1 + cropDecimal(scale * (r[1] + r[3]))) * w;
+									x4 = x + cropDecimal(scale * (r[0] + r[2] - r[3]));
+									y4 = (y - 1 + cropDecimal(scale * (r[1] + r[2] + r[3]))) * w;
+
+									// clamp
+									x1 = (x1 < bx1) ? bx1 : (x1 > bx2) ? bx2 : x1;
+									x2 = (x2 < bx1) ? bx1 : (x2 > bx2) ? bx2 : x2;
+									x3 = (x3 < bx1) ? bx1 : (x3 > bx2) ? bx2 : x3;
+									x4 = (x4 < bx1) ? bx1 : (x4 > bx2) ? bx2 : x4;
+									y1 = (y1 < by1) ? by1 : (y1 > by2) ? by2 : y1;
+									y2 = (y2 < by1) ? by1 : (y2 > by2) ? by2 : y2;
+									y3 = (y3 < by1) ? by1 : (y3 > by2) ? by2 : y3;
+									y4 = (y4 < by1) ? by1 : (y4 > by2) ? by2 : y4;
+
+									// RSAT(x-h+w, y+w+h-1) + RSAT(x, y-1) - RSAT(x-h, y+h-1) - RSAT(x+w, y+w-1)
+									//        x4     y4            x1  y1          x3   y3            x2   y2
+									rect_sum += r[4] * (tilted[x4 + y4] - tilted[x3 + y3] - tilted[x2 + y2] + tilted[x1 + y1]);
+								}
+							} else {
+								// orthogonal rectangle feature, Viola-Jones original
+								for (kr in 0...nb_rects) {
+									r = rects[kr];
+
+									// this produces better/larger features, possible rounding effects??
+									x1 = x - 1 + cropDecimal(scale * r[0]);
+									x2 = x - 1 + cropDecimal(scale * (r[0] + r[2]));
+									y1 = (w) * (y - 1 + cropDecimal(scale * r[1]));
+									y2 = (w) * (y - 1 + cropDecimal(scale * (r[1] + r[3])));
+
+									// clamp
+									x1 = (x1 < bx1) ? bx1 : (x1 > bx2) ? bx2 : x1;
+									x2 = (x2 < bx1) ? bx1 : (x2 > bx2) ? bx2 : x2;
+									y1 = (y1 < by1) ? by1 : (y1 > by2) ? by2 : y1;
+									y2 = (y2 < by1) ? by1 : (y2 > by2) ? by2 : y2;
+
+									// SAT(x-1, y-1) + SAT(x+w-1, y+h-1) - SAT(x-1, y+h-1) - SAT(x+w-1, y-1)
+									//      x1   y1         x2      y2          x1   y1            x2    y1
+									rect_sum += r[4] * (integral[x2 + y2] - integral[x1 + y2] - integral[x2 + y1] + integral[x1 + y1]);
+								}
+							}
+
+							where = (rect_sum * inv_area < thresholdf * vnorm) ? 0 : 1;
+							// END Viola-Jones HAAR-Leaf evaluator
+
+							if (where != 0) {
+								if (feature.has_r) {
+									sum += feature.r_val;
+									break;
+								} else {
+									cur_node_ind = feature.r_node;
+								}
+							} else {
+								if (feature.has_l) {
+									sum += feature.l_val;
+									break;
+								} else {
+									cur_node_ind = feature.l_node;
+								}
+							}
+						}
+						// END Viola-Jones HAAR-Tree evaluator
+					}
+					pass = (sum > threshold) ? true : false;
+					// END Viola-Jones HAAR-Stage evaluator
+
+					if (!pass) break;
+				}
+
+				if (pass) {
+					ret.push({
+						index: index,
+						x: x,
+						y: y,
+						width: xsize,
+						height: ysize
+					});
+				}
+
+				x += xstep;
+			}
+
+			y += ystep;
+			ty += tys;
+		}
+
+		// return any features found in this step
+		return ret;
+	}
+
+	// called when detection ends, calls user-defined callback if any
+	static function detectEnd(self:Dynamic, rects:Array<Feature>, withOnComplete:Bool)
+	{
+		var i, n, ratio;
+		for (i in 0...rects.length) rects[i] = rects[i].clone();
+		self.objects = groupRectangles(rects, self.min_neighbors, self.epsilon);
+		ratio = 1.0 / self.Ratio;
+		for(i in 0...self.objects.length) self.objects[i].scale(ratio).round().computeArea();
+		// sort according to size
+		// (a deterministic way to present results under different cases)
+		self.objects.sort(byArea);
+		self.Ready = true;
+		if (withOnComplete && self.onComplete) self.onComplete.call(self);
 	}
 }
