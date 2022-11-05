@@ -1,6 +1,5 @@
 package vision.ds.haar;
 
-import haxe.Constraints.FlatEnum;
 import vision.tools.MathTools.*;
 @:structInit
 class Feature {
