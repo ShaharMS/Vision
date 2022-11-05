@@ -89,7 +89,7 @@ class Haar {
 	}
 
 	// compute Canny edges on gray-scale image to speed up detection if possible
-	static function integralCanny(gray, w, h) {
+	static function computeIntegralCanny(gray:UInt8Array, w:Int, h:Float) {
 		var i:Int,
 			j:Int,
 			k:Int,
@@ -307,5 +307,24 @@ class Haar {
 		}
 
 		return feats;
+	}
+
+	// area used as compare func for sorting
+	static function byArea(a:Feature, b:Feature):Int { return Std.int(b.area - a.area); }
+
+	// serial index used as compare func for sorting
+	static function byOrder(a:Feature, b:Feature):Int { return a.index-b.index; }
+
+	
+	// used for parallel "reduce" computation
+	static function mergeSteps(d:Array<Array<Feature>>)
+	{
+		// concat and sort according to serial ordering
+		if (d[1].length != 0){
+			var temp = d[0].concat(d[1]);
+			temp.sort(byOrder);
+			d[0] = temp;
+		}
+		return d[0];
 	}
 }
