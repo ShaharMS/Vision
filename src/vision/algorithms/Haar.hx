@@ -594,8 +594,7 @@ class Haar {
 	}
 
 	// called when detection ends, calls user-defined callback if any
-	static function detectEnd(self:Dynamic, rects:Array<Feature>, withOnComplete:Bool)
-	{
+	static function detectEnd(self:Dynamic, rects:Array<Feature>, withOnComplete:Bool) {
 		var i, n, ratio;
 		for (i in 0...rects.length) rects[i] = rects[i].clone();
 		self.objects = groupRectangles(rects, self.min_neighbors, self.epsilon);
