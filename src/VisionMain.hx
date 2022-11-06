@@ -1,5 +1,7 @@
 package;
 
+import vision.ds.haar.HaarCascades;
+import vision.algorithms.Haar;
 import js.html.EffectTiming;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
@@ -39,7 +41,23 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 
-		#if (true)
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Kulusuk%2C_Inuit_man_%286822268117%29.jpg/134px-Kulusuk%2C_Inuit_man_%286822268117%29.jpg", image -> {
+			trace("image loaded");
+			Haar.detectFeature(image, HaarCascades.face, d -> {
+				trace("drawing of" + d.objects + " started") ;
+				var c = Color.RED;
+				for (o in d.objects) {
+					image.drawLine(Std.int(o.x), Std.int(o.y), Std.int(o.x + o.width), Std.int(o.y), c);
+					image.drawLine(Std.int(o.x), Std.int(o.y), Std.int(o.x), Std.int(o.y + o.height), c);
+					image.drawLine(Std.int(o.x), Std.int(o.y + o.height), Std.int(o.x + o.width), Std.int(o.y + o.height), c);
+					image.drawLine(Std.int(o.x + o.width), Std.int(o.y), Std.int(o.x + o.width), Std.int(o.y + o.height), c);
+				}
+			});
+			trace("haar feature detection done");
+			trace(Haar.detector);
+		});
+
+		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);

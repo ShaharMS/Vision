@@ -12,10 +12,10 @@ import vision.tools.MathTools.*;
 @:access(vision.ds.Image)
 class Haar {
 
-	public static var detector:HaarDetector;
+	public static var detector:HaarDetector = {};
 
 	public static function integralImage(image:Image):IntegralImage {
-		var im:ByteArray,
+		var im:ByteArray = image.underlying,
 			count = image.width * image.height,
 			sum:Float,
 			sum2:Float,
@@ -439,11 +439,14 @@ class Haar {
 		swh = xsize * ysize;
 		inv_area = 1.0 / swh;
 
-		y = starty;
-		ty = startty;
+		y = starty - 1;
+		ty = startty - 1;
 		while (y < yl) {
-			x = startx;
+			y += ystep;
+			ty += tys;
+			x = startx - 1;
 			while (x < xl) {
+				x+=xstep;
 				p0 = x - 1 + ty - w;
 				p1 = p0 + xsize;
 				p2 = p0 + tyw;
@@ -585,12 +588,7 @@ class Haar {
 						height: ysize
 					});
 				}
-
-				x += xstep;
 			}
-
-			y += ystep;
-			ty += tys;
 		}
 
 		// return any features found in this step
@@ -609,5 +607,16 @@ class Haar {
 		self.objects.sort(byArea);
 		self.Ready = true;
 		if (withOnComplete && self.onComplete != null) self.onComplete(self);
+	}
+
+	public static function detectFeature(image:Image, feature:Dynamic, onComplete:HaarDetector -> Void) {
+		detector
+			.dispose()
+			.setFeatureToTrack(feature)
+			.image(image, null, image)
+			.interval(50)
+			.complete(() -> onComplete(detector))
+			.cannyThreshold({low:5, high:200})  // custom thresholds for canny pruning (for best results)
+            .detect(1, 1.1, 0.12, 1, 0.2, true); // go
 	}
 }

@@ -8,6 +8,7 @@ import vision.tools.MathTools.*;
 @:structInit
 class HaarDetector {
 	@:optional public var haardata:Dynamic = null;
+	@:optional public var maxScale:Null<Float> = null;
 	@:optional public var Canvas:Image = null;
 	@:optional public var objects:Array<Feature> = [];
 	@:optional public var Selection:Feature = null;
@@ -33,10 +34,15 @@ class HaarDetector {
 	@:optional public var scale:Null<Float> = null;
 	@:optional public var min_neighbors:Dynamic = null;
 	@:optional public var scale_inc:Dynamic = null;
-	@:optional public var increment = 0.;
+	@:optional public var increment = 0.5;
 	@:optional public var epsilon:Null<Float> = null;
 
     @:optional public var i:Null<Int> = 0;
+
+	public function setFeatureToTrack(haardata:Dynamic) {
+		this.haardata = haardata;
+		return this;
+	}
 
 	/**
 	 * __dispose()__
@@ -46,7 +52,6 @@ class HaarDetector {
 	 *
 	 * Disposes the detector and clears space of data cached
 	 */
-	var maxScale:Float;
 
 	public function dispose() {
 		var self = this;
