@@ -1,328 +1,412 @@
 package vision.ds.haar;
 
+import haxe.Timer;
 import haxe.Constraints.Function;
 import vision.algorithms.Haar.*;
 import vision.tools.MathTools.*;
 
 @:structInit
 class HaarDetector {
+	@:optional public var haardata:Dynamic = null;
+	@:optional public var Canvas:Image = null;
+	@:optional public var objects:Array<Feature> = [];
+	@:optional public var Selection:Feature = null;
+	@:optional public var scaledSelection:Dynamic = null;
+	@:optional public var Ratio = 0.5;
+	@:optional public var origWidth = 0;
+	@:optional public var origHeight = 0;
+	@:optional public var width = 0;
+	@:optional public var height = 0;
+	@:optional public var DetectInterval = 30;
+	@:optional public var TimeInterval:Timer = null;
+	@:optional public var doCannyPruning = false;
+	@:optional public var cannyLow:Null<Int> = 10;
+	@:optional public var cannyHigh:Null<Int> = 100;
+	@:optional public var canny:Dynamic = null;
+	@:optional public var integral:Dynamic = null;
+	@:optional public var squares:Dynamic = null;
+	@:optional public var tilted:Dynamic = null;
+	@:optional public var Parallel = false;
+	@:optional public var Ready = false;
+	@:optional public var onComplete:Function = () -> return;
 
-    @:optional public var haardata:Dynamic = null;
-    @:optional public var Canvas:Image = null;
-    @:optional public var objects:Array<Feature> = [];
-    @:optional public var Selection:Dynamic = null;
-    @:optional public var scaledSelection:Dynamic = null;
-    @:optional public var Ratio = 0.5;
-    @:optional public var origWidth = 0;
-    @:optional public var origHeight = 0;
-    @:optional public var width = 0;
-    @:optional public var height = 0;
-    @:optional public var DetectInterval = 30;
-    @:optional public var TimeInterval:Dynamic = null;
-    @:optional public var doCannyPruning = false;
-    @:optional public var cannyLow = 10;
-    @:optional public var cannyHigh = 100;
-    @:optional public var canny:Dynamic = null;
-    @:optional public var integral:Dynamic = null;
-    @:optional public var squares:Dynamic = null;
-    @:optional public var tilted:Dynamic = null;
-    @:optional public var Parallel = false;
-    @:optional public var Ready = false;
-    @:optional public var onComplete:Function = () -> return;
-    
-    @:optional public var scale:Null<Float> = null;
-    @:optional public var min_neighbors:Dynamic = null;
-    @:optional public var scale_inc:Dynamic = null;
-    @:optional public var increment = false;
-    @:optional public var epsilon:Null<Float> = null;
-    /**
-    * __dispose()__
-    * ```javascript
-    * detector.dispose();
-    * ```
-    *
-    * Disposes the detector and clears space of data cached
-    */
+	@:optional public var scale:Null<Float> = null;
+	@:optional public var min_neighbors:Dynamic = null;
+	@:optional public var scale_inc:Dynamic = null;
+	@:optional public var increment = 0.;
+	@:optional public var epsilon:Null<Float> = null;
+
+    @:optional public var i:Null<Int> = 0;
+
+	/**
+	 * __dispose()__
+	 * ```javascript
+	 * detector.dispose();
+	 * ```
+	 *
+	 * Disposes the detector and clears space of data cached
+	 */
 	var maxScale:Float;
 
-    public function dispose() {
-        var self = this;
-        if ( self.DetectInterval != 0) //clearTimeout( self.DetectInterval );
-        self.DetectInterval = null;
-        self.TimeInterval = null;
-        self.haardata = null;
-        self.Canvas = null;
-        self.objects = null;
-        self.Selection = null;
-        self.scaledSelection = null;
-        self.Ratio = null;
-        self.origWidth = null;
-        self.origHeight = null;
-        self.width = null;
-        self.height = null;
-        self.doCannyPruning = null;
-        self.cannyLow = null;
-        self.cannyHigh = null;
-        self.canny = null;
-        self.integral = null;
-        self.squares = null;
-        self.tilted = null;
-        self.Parallel = null;
-        self.Ready = null;
-        self.onComplete = null;
-        return self;
-    }
+	public function dispose() {
+		var self = this;
+		if (self.DetectInterval != 0) // clearTimeout( self.DetectInterval );
+			self.DetectInterval = null;
+		self.TimeInterval = null;
+		self.haardata = null;
+		self.Canvas = null;
+		self.objects = null;
+		self.Selection = null;
+		self.scaledSelection = null;
+		self.Ratio = null;
+		self.origWidth = null;
+		self.origHeight = null;
+		self.width = null;
+		self.height = null;
+		self.doCannyPruning = null;
+		self.cannyLow = null;
+		self.cannyHigh = null;
+		self.canny = null;
+		self.integral = null;
+		self.squares = null;
+		self.tilted = null;
+		self.Parallel = null;
+		self.Ready = null;
+		self.onComplete = null;
+		return self;
+	}
 
-    // clear the image and detector data
-    // reload the image to re-compute the needed image data (.image method)
-    // and re-set the detector haar data (.cascade method)
+	// clear the image and detector data
+	// reload the image to re-compute the needed image data (.image method)
+	// and re-set the detector haar data (.cascade method)
+
+	/**[DOC_MARKDOWN]
+	 * __clearCache()__
+	 * ```javascript
+	 * detector.clearCache();
+	 * ```
+	 *
+	 * Clear any cached image data and haardata in case space is an issue. Use image method and cascade method (see below) to re-set image and haar data
+		[/DOC_MARKDOWN] */
+	public function clearCache() {
+		var self = this;
+		self.haardata = null;
+		self.canny = null;
+		self.integral = null;
+		self.squares = null;
+		self.tilted = null;
+		self.Selection = null;
+		self.scaledSelection = null;
+		return self;
+	}
+
+	// set haardata, use same detector with cached data, to detect different feature
+
+	/**[DOC_MARKDOWN]
+	 * __cascade(haardata)__
+	 * ```javascript
+	 * detector.cascade(haardata);
+	 * ```
+	 *
+	 * Allow to use same detector (with its cached image data), to detect different feature on same image, by using another cascade. This way any image pre-processing is done only once
+	 *
+	 * __Explanation of parameters__
+	 *
+	 * * _haardata_ : The actual haardata (as generated by haartojs tool), this is specific per feature, openCV haar data can be used.
+		[/DOC_MARKDOWN] */
+	public function cascade(haardata:Dynamic):HaarDetector {
+		this.haardata = haardata;
+		return this;
+	}
+
+	public function parallel(v) {
+		this.Parallel = false;
+		return this;
+	}
+
+	// set image for detector along with scaling (and an optional canvas, eg for node)
+
+	/**[DOC_MARKDOWN]
+	 * __image(ImageOrVideoOrCanvas, scale, CanvasClass)__
+	 * ```javascript
+	 * detector.image(ImageOrVideoOrCanvas, scale, CanvasClass);
+	 * ```
+	 *
+	 * __Explanation of parameters__
+	 *
+	 * * _ImageOrVideoOrCanvas_ : an actual Image or Video element or Canvas Object (in this case they are equivalent).
+	 * * _scale_ : The percent of scaling from the original image, so detection proceeds faster on a smaller image (default __1.0__ ). __NOTE__ scaling might alter the detection results sometimes, if having problems opt towards 1 (slower)
+	 * * _CanvasClass_ : This is optional and used only when running in node (passing the node-canvas object).
+		[/DOC_MARKDOWN]**/
+	public function image(image:Image, scale:Null<Float>, canvas) {
+		var self = this;
+		if (image != null) {
+			var ctx,
+				imdata,
+				integralImg,
+				w,
+				h,
+				sw,
+				sh,
+				r,
+				cnv,
+				isVideo = false;
+
+			// re-use the existing canvas if possible and not create new one
+			if (self.Canvas == null) self.Canvas = canvas;
+			cnv = self.Canvas;
+			r = self.Ratio = (scale == null) ? 1.0 : scale;
+			self.Ready = false;
+
+			// make easy for video element to be used as input image
+			w = self.origWidth = image.width;
+			h = self.origHeight = image.height;
+			sw = self.width = round(r * w);
+			sh = self.height = round(r * h);
+
+			// compute image data now, once per image change
+			imdata = image.clone().removeView();
+			integralImg = integralImage(imdata);
+			self.integral = integralImg.integral;
+			self.squares = integralImg.squares;
+			self.tilted = integralImg.tilted;
+			self.canny = integralCanny(integralImg.gray, sw, sh);
+
+			integralImg.gray = null;
+			integralImg.integral = null;
+			integralImg.squares = null;
+			integralImg.tilted = null;
+			integralImg = null;
+		}
+		return self;
+	}
+
+	// detector set detection interval
+
+	/**[DOC_MARKDOWN]
+	 * __interval(detectionInterval)__
+	 * ```javascript
+	 * detector.interval(detectionInterval);
+	 * ```
+	 *
+	 * __Explanation of parameters__
+	 *
+	 * * _detectionInterval_ : interval to run the detection asynchronously (if not parallel) in  microseconds (default __30__).
+		[/DOC_MARKDOWN]**/
+	public function interval(it) {
+		if (it > 0) this.DetectInterval = it;
+		return this;
+	}
+
+	// customize canny prunning thresholds for best results
+
+	/**[DOC_MARKDOWN]
+	 * __cannyThreshold({low: lowThreshold, high: highThreshold})__
+	 * ```javascript
+	 * detector.cannyThreshold({low: lowThreshold, high: highThreshold});
+	 * ```
+	 *
+	 * Set the thresholds when Canny Pruning is used, for extra fine-tuning.
+	 * Canny Pruning detects the number/density of edges in a given region. A region with too few or too many edges is unlikely to be a feature.
+	 * Default values work fine in most cases, however depending on image size and the specific feature, some fine tuning could be needed
+	 *
+	 * __Explanation of parameters__
+	 *
+	 * * _low_ : (Optional) The low threshold (default __20__ ).
+	 * * _high_ : (Optional) The high threshold (default __100__ ).
+		[/DOC_MARKDOWN]**/
+	public function cannyThreshold(thres:{?low:Null<Int>, ?high:Null<Int>}) {
+		if (thres != null && thres.low != null) (this.cannyLow = thres.low);
+		if (thres != null && thres.high != null) (this.cannyHigh = thres.high);
+		return this;
+	}
+
+	// set custom detection region as selection
+
+	/**[DOC_MARKDOWN]
+	 * __select|selection('auto'|object|feature|x [,y, width, height])__
+	 * ```javascript
+	 * detector.selection('auto'|object|feature|x [,y, width, height]);
+	 * ```
+	 *
+	 * Allow to set a custom region in the image to confine the detection process only in that region (eg detect nose while face already detected)
+	 *
+	 * __Explanation of parameters__
+	 *
+	 * * _1st parameter_ : This can be the string 'auto' which sets the whole image as the selection, or an object ie: {x:10, y:'auto', width:100, height:'auto'} (every param set as 'auto' will take the default image value) or a detection rectangle/feature, or a x coordinate (along with rest coordinates).
+	 * * _y_ : (Optional) the selection start y coordinate, can be an actual value or 'auto' (y=0)
+	 * * _width_ : (Optional) the selection width, can be an actual value or 'auto' (width=image.width)
+	 * * _height_ : (Optional) the selection height, can be an actual value or 'auto' (height=image.height)
+	 *
+	 * The actual selection rectangle/feature is available as this.Selection or detector.Selection
+		[/DOC_MARKDOWN]**/
+	public function select(...args:Dynamic) {
+		var argslen = args.length;
+
+		if (1 == argslen && 'auto' == args[0] || argslen != 0) this.Selection = null; else this.Selection = ({} : Feature).data(args.toArray());
+		return this;
+	}
+
+	// detector on complete callback
+
+	/**[DOC_MARKDOWN]
+	 * __complete(callback)__
+	 * ```javascript
+	 * detector.complete(callback);
+	 * ```
+	 *
+	 * Set the callback handler when detection completes (for parallel and asynchronous detection)
+	 *
+	 * __Explanation of parameters__
+	 *
+	 * * _callback_ : The user-defined callback function (will be called within the detectors scope, the value of 'this' will be the detector instance).
+		[/DOC_MARKDOWN]**/
+	public function complete(callback) {
+		this.onComplete = callback != null ? callback : () -> return;
+		return this;
+	}
+
+	// Detector detect method to start detection
+
+	/**[DOC_MARKDOWN]
+	 * __detect(baseScale, scale_inc, increment, min_neighbors, epsilon, doCannyPruning)__
+	 * ```javascript
+	 * detector.detect(baseScale, scale_inc, increment, min_neighbors, epsilon, doCannyPruning);
+	 * ```
+	 *
+	 * __Explanation of parameters__ ([JViolaJones Parameters](http://code.google.com/p/jviolajones/wiki/Parameters))
+	 *
+	 * * *baseScale* : The initial ratio between the window size and the Haar classifier size (default __1__ ).
+	 * * *scale_inc* : The scale increment of the window size, at each step (default __1.25__ ).
+	 * * *increment* : The shift of the window at each sub-step, in terms of percentage of the window size (default __0.5__ ).
+	 * * *min_neighbors* : The minimum numbers of similar rectangles needed for the region to be considered as a feature (avoid noise) (default __1__ )
+	 * * *epsilon*   : Epsilon value that determines similarity between detected rectangles. `0` means identical (default __0.2__ )
+	 * * *doCannyPruning* : enable Canny Pruning to pre-detect regions unlikely to contain features, in order to speed up the execution (optional default __false__ ).
+		[/DOC_MARKDOWN] */
+	public function detect(baseScale, scale_inc, increment, min_neighbors, epsilon, doCannyPruning) {
+		var self = this;
+		var haardata = self.haardata,
+			sizex = haardata.size1,
+			sizey = haardata.size2,
+			selection,
+			scaledSelection,
+			width = self.width,
+			height = self.height,
+			origWidth = self.origWidth,
+			origHeight = self.origHeight,
+			maxScale,
+			scale,
+			integral = self.integral,
+			squares = self.squares,
+			tilted = self.tilted,
+			canny = self.canny,
+			cannyLow = self.cannyLow,
+			cannyHigh = self.cannyHigh;
+
+		if (self.Selection == null) self.Selection = {
+			x: 0,
+			y: 0,
+			width: origWidth,
+			height: origHeight
+		};
+		selection = self.Selection;
+		selection.x = (-1 == selection.x) ? 0 : selection.x;
+		selection.y = (-1 == selection.y) ? 0 : selection.y;
+		selection.width = (-1 == selection.width) ? origWidth : selection.width;
+		selection.height = (-1 == selection.height) ? origHeight : selection.height;
+		scaledSelection = self.scaledSelection = selection.clone().scale(self.Ratio).round();
+
+		baseScale = (null == baseScale) ? 1.0 : baseScale;
+		scale_inc = (null == scale_inc) ? 1.25 : scale_inc;
+		increment = (null == increment) ? 0.5 : increment;
+		min_neighbors = (null == min_neighbors) ? 1 : min_neighbors;
+		epsilon = (epsilon == null) ? 0.2 : epsilon;
+		doCannyPruning = (doCannyPruning == null) ? false : doCannyPruning;
+
+		maxScale = self.maxScale = minFloat(scaledSelection.width / sizex, scaledSelection.height / sizey);
+		scale = self.scale = baseScale;
+		self.min_neighbors = min_neighbors;
+		self.scale_inc = scale_inc;
+		self.epsilon = epsilon;
+		self.doCannyPruning = doCannyPruning;
+		self.Ready = false;
+
+		if (true) {
+			// else detect asynchronously using fixed intervals
+			var rects = [], detectAsync = function() {};
+
+			detectAsync = () -> {
+				if (self.scale <= self.maxScale) {
+					rects = rects.concat(detectSingleStep(self));
+					// increase scale
+					self.scale *= self.scale_inc;
+					self.TimeInterval = makeTimer(detectAsync, self.DetectInterval);
+				} else {
+					self.TimeInterval.stop();
+					detectEnd(self, rects, true);
+				}
+			}
+
+			self.TimeInterval = makeTimer(detectAsync, self.DetectInterval);
+		}
+		return self;
+	}
+
     /**[DOC_MARKDOWN]
-    * __clearCache()__
+    * __detectSync(baseScale, scale_inc, increment, min_neighbors, doCannyPruning)__
     * ```javascript
-    * detector.clearCache();
+    * var features = detector.detectSync(baseScale, scale_inc, increment, min_neighbors, doCannyPruning);
     * ```
     *
-    * Clear any cached image data and haardata in case space is an issue. Use image method and cascade method (see below) to re-set image and haar data
+    * Run detector synchronously in one step, instead of parallel or asynchronously. Can be useful when immediate results are needed. Due to massive amount of processing the UI thread may be blocked.
+    *
+    * __Explanation of parameters__ (similar to *detect* method)
+    *
     [/DOC_MARKDOWN]*/
-    public function clearCache() {
-        var self = this;
-        self.haardata = null;
-        self.canny = null;
-        self.integral = null;
-        self.squares = null;
-        self.tilted = null;
-        self.Selection = null;
-        self.scaledSelection = null;
-        return self;
-    }
+    public function detectSync(baseScale, scale_inc, increment, min_neighbors, epsilon, doCannyPruning) {
+        var self = this, maxScale,
+            sizex = self.haardata.size1, sizey = self.haardata.size2;
 
-    // set haardata, use same detector with cached data, to detect different feature
-    /**[DOC_MARKDOWN]
-    * __cascade(haardata)__
-    * ```javascript
-    * detector.cascade(haardata);
-    * ```
-    *
-    * Allow to use same detector (with its cached image data), to detect different feature on same image, by using another cascade. This way any image pre-processing is done only once
-    *
-    * __Explanation of parameters__
-    *
-    * * _haardata_ : The actual haardata (as generated by haartojs tool), this is specific per feature, openCV haar data can be used.
-    [/DOC_MARKDOWN]*/
-    public function cascade(haardata:Dynamic):HaarDetector {
-        this.haardata = haardata;
-        return this;
-    }
+        if (self.Selection == null) self.Selection = {x: 0, y: 0, width: self.origWidth, height: self.origHeight};
+        self.Selection.x = (-1==self.Selection.x) ? 0 : self.Selection.x;
+        self.Selection.y = (-1==self.Selection.y) ? 0 : self.Selection.y;
+        self.Selection.width = (-1==self.Selection.width) ? self.origWidth : self.Selection.width;
+        self.Selection.height = (-1==self.Selection.height) ? self.origHeight : self.Selection.height;
+        self.scaledSelection = self.Selection.clone().scale(self.Ratio).round();
 
-    public function parallel(v) {
-        this.Parallel = false;
-        return this;
-    }
+        baseScale = (baseScale == null) ? 1.0 : baseScale;
+        scale_inc = (scale_inc == null) ? 1.25 : scale_inc;
+        increment = (increment == null) ? 0.5 : increment;
+        min_neighbors = (min_neighbors == null) ? 1 : min_neighbors;
+        self.epsilon = (epsilon == null) ? 0.2 : epsilon;
+        self.doCannyPruning = (doCannyPruning == null) ? false : doCannyPruning;
 
-    // set image for detector along with scaling (and an optional canvas, eg for node)
-    /**[DOC_MARKDOWN]
-    * __image(ImageOrVideoOrCanvas, scale, CanvasClass)__
-    * ```javascript
-    * detector.image(ImageOrVideoOrCanvas, scale, CanvasClass);
-    * ```
-    *
-    * __Explanation of parameters__
-    *
-    * * _ImageOrVideoOrCanvas_ : an actual Image or Video element or Canvas Object (in this case they are equivalent).
-    * * _scale_ : The percent of scaling from the original image, so detection proceeds faster on a smaller image (default __1.0__ ). __NOTE__ scaling might alter the detection results sometimes, if having problems opt towards 1 (slower)
-    * * _CanvasClass_ : This is optional and used only when running in node (passing the node-canvas object).
-    [/DOC_MARKDOWN]**/
-    public function image(image:Image, scale:Null<Float>, canvas) {
-        var self = this;
-        if (image != null)
-        {
-            var ctx, imdata, integralImg, w, h, sw, sh, r, cnv, isVideo = false;
-
-            // re-use the existing canvas if possible and not create new one
-            if (self.Canvas == null) self.Canvas = canvas;
-            cnv = self.Canvas;
-            r = self.Ratio = (scale == null) ? 1.0 : scale;
-            self.Ready = false;
-
-            // make easy for video element to be used as input image
-            w = self.origWidth = image.width;
-            h = self.origHeight = image.height;
-            sw = self.width = round(r * w);
-            sh = self.height = round(r * h);
-
-            // compute image data now, once per image change
-            imdata = image.clone().removeView();
-            integralImg = integralImage(imdata);
-            self.integral = integralImg.integral;
-            self.squares = integralImg.squares;
-            self.tilted = integralImg.tilted;
-            self.canny = integralCanny(integralImg.gray, sw, sh);
-
-            integralImg.gray = null;
-            integralImg.integral = null;
-            integralImg.squares = null;
-            integralImg.tilted = null;
-            integralImg = null;
-        }
-        return self;
-    }
-
-    // detector set detection interval
-    /**[DOC_MARKDOWN]
-    * __interval(detectionInterval)__
-    * ```javascript
-    * detector.interval(detectionInterval);
-    * ```
-    *
-    * __Explanation of parameters__
-    *
-    * * _detectionInterval_ : interval to run the detection asynchronously (if not parallel) in  microseconds (default __30__).
-    [/DOC_MARKDOWN]**/
-    public function interval(it) {
-        if (it>0) this.DetectInterval = it;
-        return this;
-    }
-
-    // customize canny prunning thresholds for best results
-    /**[DOC_MARKDOWN]
-    * __cannyThreshold({low: lowThreshold, high: highThreshold})__
-    * ```javascript
-    * detector.cannyThreshold({low: lowThreshold, high: highThreshold});
-    * ```
-    *
-    * Set the thresholds when Canny Pruning is used, for extra fine-tuning.
-    * Canny Pruning detects the number/density of edges in a given region. A region with too few or too many edges is unlikely to be a feature.
-    * Default values work fine in most cases, however depending on image size and the specific feature, some fine tuning could be needed
-    *
-    * __Explanation of parameters__
-    *
-    * * _low_ : (Optional) The low threshold (default __20__ ).
-    * * _high_ : (Optional) The high threshold (default __100__ ).
-    [/DOC_MARKDOWN]**/
-    public function cannyThreshold(thres:{?low:Null<Float>, ?high:Null<Float>}) {
-        (thres != null && thres.low  != null) && (this.cannyLow = thres.low);
-        (thres != null && thres.high != null) && (this.cannyHigh = thres.high);
-        return this;
-    }
-
-    // set custom detection region as selection
-    /**[DOC_MARKDOWN]
-    * __select|selection('auto'|object|feature|x [,y, width, height])__
-    * ```javascript
-    * detector.selection('auto'|object|feature|x [,y, width, height]);
-    * ```
-    *
-    * Allow to set a custom region in the image to confine the detection process only in that region (eg detect nose while face already detected)
-    *
-    * __Explanation of parameters__
-    *
-    * * _1st parameter_ : This can be the string 'auto' which sets the whole image as the selection, or an object ie: {x:10, y:'auto', width:100, height:'auto'} (every param set as 'auto' will take the default image value) or a detection rectangle/feature, or a x coordinate (along with rest coordinates).
-    * * _y_ : (Optional) the selection start y coordinate, can be an actual value or 'auto' (y=0)
-    * * _width_ : (Optional) the selection width, can be an actual value or 'auto' (width=image.width)
-    * * _height_ : (Optional) the selection height, can be an actual value or 'auto' (height=image.height)
-    *
-    * The actual selection rectangle/feature is available as this.Selection or detector.Selection
-    [/DOC_MARKDOWN]**/
-    public function select(...args:Dynamic) {
-        var argslen=args.length;
-
-        if (1==argslen && 'auto'==args[0] || argslen != 0) this.Selection = null;
-        else this.Selection = ({} : Feature).data(args.toArray());
-        return this;
-    }
-
-    // detector on complete callback
-    /**[DOC_MARKDOWN]
-    * __complete(callback)__
-    * ```javascript
-    * detector.complete(callback);
-    * ```
-    *
-    * Set the callback handler when detection completes (for parallel and asynchronous detection)
-    *
-    * __Explanation of parameters__
-    *
-    * * _callback_ : The user-defined callback function (will be called within the detectors scope, the value of 'this' will be the detector instance).
-    [/DOC_MARKDOWN]**/
-    public function complete(callback) {
-        this.onComplete = callback != null ? callback : () -> return;
-        return this;
-    }
-
-    // Detector detect method to start detection
-    /**[DOC_MARKDOWN]
-    * __detect(baseScale, scale_inc, increment, min_neighbors, epsilon, doCannyPruning)__
-    * ```javascript
-    * detector.detect(baseScale, scale_inc, increment, min_neighbors, epsilon, doCannyPruning);
-    * ```
-    *
-    * __Explanation of parameters__ ([JViolaJones Parameters](http://code.google.com/p/jviolajones/wiki/Parameters))
-    *
-    * * *baseScale* : The initial ratio between the window size and the Haar classifier size (default __1__ ).
-    * * *scale_inc* : The scale increment of the window size, at each step (default __1.25__ ).
-    * * *increment* : The shift of the window at each sub-step, in terms of percentage of the window size (default __0.5__ ).
-    * * *min_neighbors* : The minimum numbers of similar rectangles needed for the region to be considered as a feature (avoid noise) (default __1__ )
-    * * *epsilon*   : Epsilon value that determines similarity between detected rectangles. `0` means identical (default __0.2__ )
-    * * *doCannyPruning* : enable Canny Pruning to pre-detect regions unlikely to contain features, in order to speed up the execution (optional default __false__ ).
-    [/DOC_MARKDOWN]*/
-    public function detect(baseScale, scale_inc, increment, min_neighbors, epsilon, doCannyPruning) {
-        var self = this;
-        var haardata = self.haardata,
-            sizex = haardata.size1, sizey = haardata.size2,
-            selection, scaledSelection,
-            width = self.width, height = self.height,
-            origWidth = self.origWidth, origHeight = self.origHeight,
-            maxScale, scale,
-            integral = self.integral, squares = self.squares, tilted = self.tilted, canny = self.canny,
-            cannyLow = self.cannyLow, cannyHigh = self.cannyHigh
-        ;
-
-        if (!self.Selection) self.Selection = new Feature(0, 0, origWidth, origHeight);
-        selection = self.Selection;
-        selection.x = ('auto'==selection.x) ? 0 : selection.x;
-        selection.y = ('auto'==selection.y) ? 0 : selection.y;
-        selection.width = ('auto'==selection.width) ? origWidth : selection.width;
-        selection.height = ('auto'==selection.height) ? origHeight : selection.height;
-        scaledSelection = self.scaledSelection = selection.clone().scale(self.Ratio).round();
-
-        baseScale = (null == baseScale) ? 1.0 : baseScale;
-        scale_inc = (null == scale_inc) ? 1.25 : scale_inc;
-        increment = (null == increment) ? 0.5 : increment;
-        min_neighbors = (null == min_neighbors) ? 1 : min_neighbors;
-        epsilon = (epsilon == null) ? 0.2 : epsilon;
-        doCannyPruning = (doCannyPruning == null) ? false : doCannyPruning;
-
-        maxScale = self.maxScale = minFloat(scaledSelection.width/sizex, scaledSelection.height/sizey);
-        scale = self.scale = baseScale;
+        maxScale = self.maxScale = minFloat(self.scaledSelection.width/sizex, self.scaledSelection.height/sizey);
+        self.scale = baseScale;
         self.min_neighbors = min_neighbors;
         self.scale_inc = scale_inc;
         self.increment = increment;
-        self.epsilon = epsilon;
-        self.doCannyPruning = doCannyPruning;
         self.Ready = false;
 
-        if (true)
+        // detect synchronously
+        var rects = [];
+        // detection loop
+        while (self.scale <= maxScale)
         {
-            // else detect asynchronously using fixed intervals
-            var rects = [],
-                detectAsync = function() {
-                    if (self.scale <= self.maxScale)
-                    {
-                        rects = rects.concat( detectSingleStep(self) );
-                        // increase scale
-                        self.scale *= self.scale_inc;
-                        self.TimeInterval = setTimeout(detectAsync, self.DetectInterval);
-                    }
-                    else
-                    {
-                        clearTimeout( self.TimeInterval );
-                        detectEnd(self, rects, true);
-                    }
-                }
-            ;
-            self.TimerInterval = new haxe.Timer(self.DetectInterval);
-            self.TimerInterval.run = detectAsync;
+            rects = rects.concat( detectSingleStep(self) );
+            // increase scale
+            self.scale *= scale_inc;
         }
-        return self;
-    },
+
+        detectEnd(self, rects, false);
+
+        // return results
+        return self.objects;
+    }
+
+    function makeTimer(fn:() -> Void, ms:Int) {
+        var t = new haxe.Timer(ms);
+        t.run = fn;
+        return t;
+    }
 }

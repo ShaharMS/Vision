@@ -3,6 +3,8 @@ package vision.ds.haar;
 import vision.tools.MathTools.*;
 @:structInit
 class Feature {
+
+    public static var groupRectangles:Bool;
     
     @:optional public var x:Float = 0;
     @:optional public var y:Float = 0;

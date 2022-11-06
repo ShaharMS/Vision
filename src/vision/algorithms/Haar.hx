@@ -335,7 +335,7 @@ class Haar {
 	}
 
 	// used for parallel, asynchronous and/or synchronous computation
-	public static function detectSingleStep(self:Dynamic):Array<Feature> {
+	public static function detectSingleStep(self:HaarDetector):Array<Feature> {
 		var Sqrt:Float->Float = Math.sqrt,
 			ret:Array<Feature> = [],
 			haar:Dynamic = self.haardata,
@@ -598,16 +598,16 @@ class Haar {
 	}
 
 	// called when detection ends, calls user-defined callback if any
-	public static function detectEnd(self:Dynamic, rects:Array<Feature>, withOnComplete:Bool) {
+	public static function detectEnd(self:HaarDetector, rects:Array<Feature>, withOnComplete:Bool) {
 		var i, n, ratio;
 		for (i in 0...rects.length) rects[i] = rects[i].clone();
 		self.objects = groupRectangles(rects, self.min_neighbors, self.epsilon);
 		ratio = 1.0 / self.Ratio;
-		for(i in 0...self.objects.length) self.objects[i].scale(ratio).round().computeArea();
+		for(i in 0...self.objects.length) self.objects[i].scale(ratio).round();
 		// sort according to size
 		// (a deterministic way to present results under different cases)
 		self.objects.sort(byArea);
 		self.Ready = true;
-		if (withOnComplete && self.onComplete) self.onComplete.call(self);
+		if (withOnComplete && self.onComplete != null) self.onComplete(self);
 	}
 }
