@@ -15,6 +15,43 @@ class Feature {
     public var area(get, never):Float;
 	function get_area():Float return width * height;
 
+    public function data(x:Dynamic, ?y, ?w, ?h, ?i) {
+        var self = this;
+        if (x is Feature)
+        {
+            self.copy(x);
+        }
+        else if (x is Dynamic)
+        {
+            self.x = x.x != null ? x.x : 0;
+            self.y = x.y != null ? x.y : 0;
+            self.width = x.width != null ? x.width : 0;
+            self.height = x.height != null ? x.height : 0;
+            self.index = x.index != null ? x.index : 0;
+            self.isInside = x.isInside || false;
+        }
+        else if (x is Array)
+        {
+            self.x = x[0] != null ? x[0] : 0;
+            self.y = x[1] != null ? x[1] : 0;
+            self.width = x[2] != null ? x[2] : 0;
+            self.height = x[3] != null ? x[3] : 0;
+            self.index = x[4] != null ? x[4] : 0;
+            self.isInside = x[5] || false;
+        }
+        else
+        {
+            self.x = x != null ? cast x : 0;
+            self.y = y != null ? y : 0;
+            self.width = width != null ? width : 0;
+            self.height = height != null ? height : 0;
+            self.index = index != null ? index : 0;
+            self.isInside = isInside || false;
+        }
+
+        return self;
+    }
+
     public function add(f:Feature) {
         this.x += f.x;
         this.y += f.y;

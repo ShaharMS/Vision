@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import vision.ds.haar.HaarDetector;
 import vision.ds.haar.Feature;
 import vision.ds.ByteArray;
 import haxe.io.Float32Array;
@@ -10,7 +11,10 @@ import vision.tools.MathTools.*;
 
 @:access(vision.ds.Image)
 class Haar {
-	static function computeIntegralImage(image:Image):IntegralImage {
+
+	public static var detector:HaarDetector;
+
+	public static function integralImage(image:Image):IntegralImage {
 		var im:ByteArray,
 			count = image.width * image.height,
 			sum:Float,
@@ -90,7 +94,7 @@ class Haar {
 	}
 
 	// compute Canny edges on gray-scale image to speed up detection if possible
-	static function computeIntegralCanny(gray:UInt8Array, w:Int, h:Float) {
+	public static function integralCanny(gray:UInt8Array, w:Int, h:Float) {
 		var i:Int,
 			j:Int,
 			k:Int,
@@ -226,7 +230,7 @@ class Haar {
 	}
 
 	// merge the detected features if needed
-	static function groupRectangles(rects:Array<Feature>, min_neighbors, epsilon) {
+	public static function groupRectangles(rects:Array<Feature>, min_neighbors, epsilon) {
 		var rlen = rects.length,
 			ref = [],
 			feats:Array<Feature> = [],
@@ -310,17 +314,17 @@ class Haar {
 	}
 
 	// area used as compare func for sorting
-	static function byArea(a:Feature, b:Feature):Int {
+	public static function byArea(a:Feature, b:Feature):Int {
 		return Std.int(b.area - a.area);
 	}
 
 	// serial index used as compare func for sorting
-	static function byOrder(a:Feature, b:Feature):Int {
+	public static function byOrder(a:Feature, b:Feature):Int {
 		return a.index - b.index;
 	}
 
 	// used for parallel "reduce" computation
-	static function mergeSteps(d:Array<Array<Feature>>) {
+	public static function mergeSteps(d:Array<Array<Feature>>) {
 		// concat and sort according to serial ordering
 		if (d[1].length != 0) {
 			var temp = d[0].concat(d[1]);
@@ -331,7 +335,7 @@ class Haar {
 	}
 
 	// used for parallel, asynchronous and/or synchronous computation
-	static function detectSingleStep(self:Dynamic):Array<Feature> {
+	public static function detectSingleStep(self:Dynamic):Array<Feature> {
 		var Sqrt:Float->Float = Math.sqrt,
 			ret:Array<Feature> = [],
 			haar:Dynamic = self.haardata,
@@ -594,7 +598,7 @@ class Haar {
 	}
 
 	// called when detection ends, calls user-defined callback if any
-	static function detectEnd(self:Dynamic, rects:Array<Feature>, withOnComplete:Bool) {
+	public static function detectEnd(self:Dynamic, rects:Array<Feature>, withOnComplete:Bool) {
 		var i, n, ratio;
 		for (i in 0...rects.length) rects[i] = rects[i].clone();
 		self.objects = groupRectangles(rects, self.min_neighbors, self.epsilon);
