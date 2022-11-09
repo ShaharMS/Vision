@@ -1369,6 +1369,10 @@ abstract Image(ByteArray) {
 		#end
 		return cast array;
 	}
+
+	public function toColorByteArrayAndData():{data:ByteArray, width:Int, height:Int, view:ImageView} {
+		return {data: underlying.sub(OFFSET, underlying.length - OFFSET), width: width, height: height, view: view}
+	}
 }
 
 private class PixelIterator {
