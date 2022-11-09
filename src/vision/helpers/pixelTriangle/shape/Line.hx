@@ -31,10 +31,10 @@ import vision.helpers.pixelTriangle.shape.Quad;
 	provides a thick line using two triangles vector p, q
 **/
 inline function lineFill(image:Image, px:Float, py:Float, qx:Float, qy:Float, thick:Float, color:Int) {
-	var o = qy - py;
-	var a = qx - py;
-	var h = Math.pow(o * o + a * a, 0.5);
-	var theta = Math.atan2(o, a);
+	final o = qy - py;
+	final a = qx - py;
+	final h = Math.pow(o * o + a * a, 0.5);
+	final theta = Math.atan2(o, a);
 	rotateLine(image, px, py, thick, h, theta, color);
 }
 
@@ -43,17 +43,17 @@ inline function lineFill(image:Image, px:Float, py:Float, qx:Float, qy:Float, th
 	the four colors are arranged clockwise a,b,c,d
 **/
 inline function lineGradientFill(image:Image, px:Float, py:Float, qx:Float, qy:Float, thick:Float, colorA:Int, colorB:Int, colorC:Int, colorD:Int) {
-	var o = qy - py;
-	var a = qx - py;
-	var h = Math.pow(o * o + a * a, 0.5);
-	var theta = Math.atan2(o, a);
+	final o = qy - py;
+	final a = qx - py;
+	final h = Math.pow(o * o + a * a, 0.5);
+	final theta = Math.atan2(o, a);
 	rotateGradLine(image, px, py, thick, h, theta, colorA, colorB, colorC, colorD);
 }
 
 inline function rotateLine(image:Image, px:Float, py:Float, thick:Float, h:Float, theta:Float, color:Int) {
-	var sin = Math.sin(theta);
-	var cos = Math.cos(theta);
-	var radius = thick / 2;
+	final sin = Math.sin(theta);
+	final cos = Math.cos(theta);
+	final radius = thick / 2;
 	var dx = 0.1;
 	var dy = radius;
 	var cx = h;
@@ -78,13 +78,14 @@ inline function rotateLine(image:Image, px:Float, py:Float, thick:Float, h:Float
 	temp = px + rotX(dx, dy, sin, cos);
 	dy = py + rotY(dx, dy, sin, cos);
 	dx = temp;
+
 	quadFill(image, ax, ay, bx, by, cx, cy, dx, dy, color);
 }
 
 inline function rotateGradLine(image:Image, px:Float, py:Float, thick:Float, h:Float, theta:Float, colorA:Int, colorB:Int, colorC:Int, colorD:Int) {
-	var sin = Math.sin(theta);
-	var cos = Math.cos(theta);
-	var radius = thick / 2;
+	final sin = Math.sin(theta);
+	final cos = Math.cos(theta);
+	final radius = thick / 2;
 	var dx = 0.1;
 	var dy = radius;
 	var cx = h;
