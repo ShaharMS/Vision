@@ -44,15 +44,15 @@ inline function triangleFill(image:Image, ax:Float, ay:Float, bx:Float, by:Float
 }
 
 inline function fillTriangleUnsafe(image:Image, ax:Float, ay:Float, bx:Float, by:Float, cx:Float, cy:Float, color:Int) {
-	var s0 = ay * cx - ax * cy;
-	var sx = cy - ay;
-	var sy = ax - cx;
-	var t0 = ax * by - ay * bx;
-	var tx = ay - by;
-	var ty = bx - ax;
-	var A = -by * cx + ay * (-bx + cx) + ax * (by - cy) + bx * cy;
-	var yIter3:IteratorRange = boundIterator3(ay, by, cy);
-	var foundY = false;
+	final s0 = ay * cx - ax * cy;
+	final sx = cy - ay;
+	final sy = ax - cx;
+	final t0 = ax * by - ay * bx;
+	final tx = ay - by;
+	final ty = bx - ax;
+	final A = -by * cx + ay * (-bx + cx) + ax * (by - cy) + bx * cy;
+	finak yIter3:IteratorRange = boundIterator3(ay, by, cy);
+	var foundY:Bool = false;
 	var s = 0.;
 	var t = 0.;
 	var sxx = 0.;
