@@ -69,7 +69,7 @@ abstract IteratorRange(IntIterStart) from IntIterStart {
 	}
 
 	public inline function add(b:IteratorRange):IteratorRange {
-		var begin:Int = Std.int(Math.min(this.start, b.max));
+		final begin:Int = Std.int(Math.min(this.start, b.max));
 		var end = (begin == this.start) ? b.max : this.max;
 		return new IteratorRange(begin, end);
 	}
@@ -110,7 +110,7 @@ abstract IteratorRange(IntIterStart) from IntIterStart {
 	}
 
 	inline public function ifContainMove(v:Int, amount:Int):Bool {
-		var ifHas = contains(v);
+		final ifHas = contains(v);
 		if (ifHas) moveRange(amount);
 		return ifHas;
 	}
