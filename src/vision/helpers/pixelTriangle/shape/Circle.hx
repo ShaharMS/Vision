@@ -27,44 +27,44 @@ package vision.helpers.pixelTriangle.shape;
 import vision.ds.Image;
 import vision.helpers.pixelTriangle.shape.Triangle;
 
-inline function ellipseFill(image:Image, cx:Float, cy:Float, rx:Float, ry:Float, color:Int) {
-	var radius = (rx > ry) ? rx : ry;
-	var sides = circleError(radius);
-	var theta = 2 * Math.PI / sides + 0.01;
+inline function ellipseFill(image:Image, cx:Float, cy:Float, rx:Float, ry:Float, color:Int):Void {
+	final radius = (rx > ry) ? rx : ry;
+	final sides = circleError(radius);
+	final theta = 2 * Math.PI / sides + 0.01;
 	var lastX:Float = cx + rx * Math.cos((sides + 1) * theta);
 	var lastY:Float = cy + ry * Math.sin((sides + 1) * theta);
 	for (i in 0...sides + 1) {
-		var nextX = cx + rx * Math.cos(i * theta);
-		var nextY = cy + ry * Math.sin(i * theta);
+		final nextX = cx + rx * Math.cos(i * theta);
+		final nextY = cy + ry * Math.sin(i * theta);
 		triangleFill(image, cx, cy, lastX, lastY, nextX, nextY, color);
 		lastX = nextX;
 		lastY = nextY;
 	}
 }
 
-inline function ellipseFillRadialGradient(image:Image, cx:Float, cy:Float, rx:Float, ry:Float, colorIn:Int, colorOut:Int) {
-	var radius = (rx > ry) ? rx : ry;
-	var sides = circleError(radius);
-	var theta = 2 * Math.PI / sides + 0.01;
+inline function ellipseFillRadialGradient(image:Image, cx:Float, cy:Float, rx:Float, ry:Float, colorIn:Int, colorOut:Int):Void {
+	final radius = (rx > ry) ? rx : ry;
+	final sides = circleError(radius);
+	final theta = 2 * Math.PI / sides + 0.01;
 	var lastX:Float = cx + rx * Math.cos((sides + 1) * theta);
 	var lastY:Float = cy + ry * Math.sin((sides + 1) * theta);
 	for (i in 0...sides + 1) {
-		var nextX = cx + rx * Math.cos(i * theta);
-		var nextY = cy + ry * Math.sin(i * theta);
+		final nextX = cx + rx * Math.cos(i * theta);
+		final nextY = cy + ry * Math.sin(i * theta);
 		triangleGradientFill(image, cx, cy, colorIn, lastX, lastY, colorOut, nextX, nextY, colorOut);
 		lastX = nextX;
 		lastY = nextY;
 	}
 }
 
-inline function quadrantGradientFill(image:Image, cx:Float, cy:Float, rx:Float, ry:Float, rotation:Float, colorIn:Int, colorOut:Int) {
-	var sides = getSidesDivisible4(rx, ry);
-	var theta = 2 * Math.PI / sides + 0.01;
+inline function quadrantGradientFill(image:Image, cx:Float, cy:Float, rx:Float, ry:Float, rotation:Float, colorIn:Int, colorOut:Int):Void {
+	final sides = getSidesDivisible4(rx, ry);
+	final theta = 2 * Math.PI / sides + 0.01;
 	var lastX:Float = cx + rx * Math.cos((sides + 1) * theta + rotation);
 	var lastY:Float = cy + ry * Math.sin((sides + 1) * theta + rotation);
 	for (i in 0...Std.int(sides / 4) + 1) {
-		var nextX = cx + rx * Math.cos(i * theta + rotation);
-		var nextY = cy + ry * Math.sin(i * theta + rotation);
+		final nextX = cx + rx * Math.cos(i * theta + rotation);
+		final nextY = cy + ry * Math.sin(i * theta + rotation);
 		triangleGradientFill(image, cx, cy, colorIn, lastX, lastY, colorOut, nextX, nextY, colorOut);
 		lastX = nextX;
 		lastY = nextY;
@@ -73,8 +73,8 @@ inline function quadrantGradientFill(image:Image, cx:Float, cy:Float, rx:Float, 
 
 // equation from math.stackexchange from TeM
 
-inline function circleError(radius:Float, ?targetE:Float = 0.5, ?minN:Int = 12, ?maxN:Int = 500):Int {
-	var result = Math.ceil(Math.PI / (Math.acos(1 - targetE / radius)));
+inline function circleError(radius:Float, targetE:Float = 0.5, minN:Int = 12, maxN:Int = 500):Int {
+	final result = Math.ceil(Math.PI / (Math.acos(1 - targetE / radius)));
 	return if (result < minN) {
 		minN;
 	} else if (result > maxN) {
@@ -85,7 +85,7 @@ inline function circleError(radius:Float, ?targetE:Float = 0.5, ?minN:Int = 12, 
 }
 
 inline function getSidesDivisible4(rx:Float, ry:Float, targetError:Float = 0.5):Int {
-	var rSmall = (rx > ry) ? ry : rx;
-	var noSides = circleError(rSmall, targetError);
+	final rSmall = (rx > ry) ? ry : rx;
+	final noSides = circleError(rSmall, targetError);
 	return Math.ceil(noSides / 4) * 4;
 }
