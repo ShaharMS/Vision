@@ -90,11 +90,11 @@ class ImageTools {
 				httpRequest.request();
 			} else if (path.split(".").pop().toUpperCase() == "PNG") {
 				try {
-					var handle = sys.io.File.getBytes(path);
-					var reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
-					var data = reader.read();
-					var header = format.png.Tools.getHeader(data);
-					var bytes = format.png.Tools.extract32(data);
+					final handle = sys.io.File.getBytes(path);
+					final reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
+					final data = reader.read();
+					final header = format.png.Tools.getHeader(data);
+					final bytes = format.png.Tools.extract32(data);
 					format.png.Tools.reverseBytes(bytes);
 					var image = new Image(header.width, header.height);
 
@@ -169,9 +169,9 @@ class ImageTools {
 			switch saveFormat {
 				case PNG: {
 					try {
-						var out = sys.io.File.write(pathWithFileName);
+						final out = sys.io.File.write(pathWithFileName);
 						var writer = new format.png.Writer(out);
-						var data = format.png.Tools.build32ARGB(image.width, image.height, image.underlying.sub(4, image.underlying.length - 4));
+						final data = format.png.Tools.build32ARGB(image.width, image.height, image.underlying.sub(4, image.underlying.length - 4));
 						writer.write(data);
 						out.close();
 					} catch (e:haxe.Exception) {
@@ -279,7 +279,7 @@ class ImageTools {
 	}
 
 	public static inline function grayscalePixel(pixel:Color):Color {
-		var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
+		final gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
 			+ pixel.green + pixel.blue) / 3) #end;
 		return Color.fromRGBA(gray, gray, gray, pixel.alpha);
 	}
@@ -339,7 +339,7 @@ class ImageTools {
 	}
 
 	public static function toSprite(image:Image):flash.display.Sprite {
-		var bmp = toBitmapData(image);
+		final bmp = toBitmapData(image);
 		var s = new flash.display.Sprite();
 		s.addChild(new flash.display.Bitmap(bmp));
 		return s;
@@ -429,8 +429,9 @@ class ImageTools {
 	public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
 		var image:Image = Image.fromColorByteArrayAndData(new ByteArray(Image.OFFSET + (canvas.width + canvas.height) * 4), canvas.width, canvas.height);
 
-		var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
+		final imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
 
+		{
 			var i = 0;
 			while (i < imageData.data.length) {
 				image.underlying[i + (Image.OFFSET + 1) + 0] = imageData.data[i + 0];
@@ -439,6 +440,7 @@ class ImageTools {
 				image.underlying[i + (Image.OFFSET + 1) + 3] = imageData.data[i + 3];
 				i += 4;
 			}
+		}
 
 		return image;
 	}
@@ -450,7 +452,7 @@ class ImageTools {
 		c.height = image.height;
 
 		var ctx = c.getContext2d();
-		var imageData = ctx.getImageData(0, 0, image.width, image.height);
+		final imageData = ctx.getImageData(0, 0, image.width, image.height);
 		var data = imageData.data;
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
