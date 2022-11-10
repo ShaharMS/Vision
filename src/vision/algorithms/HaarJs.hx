@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import haxe.Timer;
 import haxe.extern.EitherType;
 import vision.ds.Image;
 import vision.ds.ByteArray;
@@ -24,10 +25,8 @@ import haxe.io.Float32Array;
 
 // the export object
 var HAAR = { VERSION: "@@VERSION@@" };
-var Detector:Dynamic;
 var Feature:Dynamic;
 var proto:String = 'prototype';
-var undef = null;
 
 typedef Array32F = Float32Array;
 typedef Array8U = UInt8Array;
@@ -110,7 +109,7 @@ function integralImage(im:ByteArray, w, h/*, selection*/)
 }
 
 // compute Canny edges on gray-scale image to speed up detection if possible
-function integralCanny(gray, w, h)
+function integralCanny(gray:UInt8Array, w, h)
 {
     var i, j, k, sum:Float, grad_x, grad_y,
         ind0, ind1, ind2, ind_1, ind_2, count=gray.length,
@@ -237,7 +236,7 @@ function integralCanny(gray, w, h)
 // merge the detected features if needed
 function groupRectangles(rects:Array<Feature>, min_neighbors, epsilon)
 {
-    var rlen = rects.length, ref = new ArrayAccessVector(rlen), feats:Array<Dynamic> = [],
+    var rlen = rects.length, ref = new ArrayAccessVector(rlen), feats:Array<Feature> = [],
         nb_classes = 0, neighbors, r, found = false, i, j, n, t, ri:Int;
     for(i in 0...rlen) ref[i] = 0;
     for(i in 0...rlen)
@@ -252,7 +251,7 @@ function groupRectangles(rects:Array<Feature>, min_neighbors, epsilon)
             }
         }
 
-        if (! found)
+        if (!found)
         {
             ref[i] = nb_classes;
             nb_classes++;
@@ -269,7 +268,7 @@ function groupRectangles(rects:Array<Feature>, min_neighbors, epsilon)
         if (n >= min_neighbors)
         {
             t=1/(n + n);
-            var rri = {
+            var rri:Feature = {
                 x: t*(r[i].x * 2 + n),          y: t*(r[i].y * 2 + n),
                 width: t*(r[i].width * 2 + n),  height: t*(r[i].height * 2 + n)
             };
@@ -301,10 +300,10 @@ function groupRectangles(rects:Array<Feature>, min_neighbors, epsilon)
 }
 
 // area used as compare func for sorting
-function byArea(a, b) { return b.area-a.area; }
+function byArea(a:Feature, b:Feature) { return Std.int(b.area-a.area); }
 
 // serial index used as compare func for sorting
-function byOrder(a, b) { return a.index-b.index; }
+function byOrder(a:Feature, b:Feature) { return a.index-b.index; }
 
 /*
 splice subarray (not used)
@@ -522,18 +521,18 @@ function detectSingleStep(self)
 }
 
 // called when detection ends, calls user-defined callback if any
-function detectEnd(self, rects:Array<Feature>, withOnComplete)
+function detectEnd(self, rects:Array<Feature>, withOnComplete:Bool)
 {
     var n, ratio;
-    for (i in 0...rects.length) rects[i] = new Feature(rects[i]);
+    for (i in 0...rects.length) rects[i] = rects[i].clone();
     self.objects = groupRectangles(rects, self.min_neighbors, self.epsilon);
     ratio = 1.0 / self.Ratio;
-    for (i in 0...self.objects.length) self.objects[i].scale(ratio).round().computeArea();
+    for (i in 0...self.objects.length) self.objects[i].scale(ratio).round();
     // sort according to size
     // (a deterministic way to present results under different cases)
     self.objects.sort(byArea);
     self.Ready = true;
-    if (withOnComplete && self.onComplete != null) self.onComplete(self);
+    if (withOnComplete) self.onComplete(self);
 }
 
 
@@ -560,6 +559,33 @@ function detectEnd(self, rects:Array<Feature>, withOnComplete)
 [/DOC_MARKDOWN]**/
 
 var Detector = {
+    haardata: null,
+    Canvas: null,
+    objects: (null : Array<Feature>),
+
+    Selection: (null : Feature),
+    scaledSelection: (null : Feature),
+    Ratio: 0.5,
+    origWidth: (0 : Null<Int>),
+    origHeight: (0 : Null<Int>),
+    width: (0 : Null<Int>),
+    height: (0 : Null<Int>),
+
+    DetectInterval: 30,
+    TimeInterval: (null : Timer),
+
+    doCannyPruning: false,
+    cannyLow: (20. : Null<Float>),
+    cannyHigh: (100. : Null<Float>),
+    canny: null,
+
+    integral: [],
+    squares: [],
+    tilted: [],
+
+    Parallel: false,
+    Ready: false,
+    onComplete: () -> {return;},
 
     constructor: function(haardata, Parallel) {
         var self = Detector;
@@ -573,39 +599,11 @@ var Detector = {
         self.TimeInterval = null;
         self.DetectInterval = 30;
         self.Ratio = 0.5;
-        self.cannyLow = 20;
-        self.cannyHigh = 100;
+        self.cannyLow = 20.;
+        self.cannyHigh = 100.;
         self.Parallel= Parallel || null;
         self.onComplete = null;
     },
-
-    haardata: null,
-    Canvas: null,
-    objects: null,
-
-    Selection: null,
-    scaledSelection: null,
-    Ratio: 0.5,
-    origWidth: 0,
-    origHeight: 0,
-    width: 0,
-    height: 0,
-
-    DetectInterval: 30,
-    TimeInterval: null,
-
-    doCannyPruning: false,
-    cannyLow: 20,
-    cannyHigh: 100,
-    canny: null,
-
-    integral: null,
-    squares: null,
-    tilted: null,
-
-    Parallel: null,
-    Ready: false,
-    onComplete: null,
 
     /**[DOC_MARKDOWN]
     * __dispose()__
@@ -616,8 +614,8 @@ var Detector = {
     * Disposes the detector and clears space of data cached
     [/DOC_MARKDOWN]**/
     dispose: function() {
-        var self = this;
-        if ( self.DetectInterval ) clearTimeout( self.DetectInterval );
+        var self = Detector;
+        if ( self.DetectInterval != 0) clearTimeout( self.DetectInterval );
         self.DetectInterval = null;
         self.TimeInterval = null;
         self.haardata = null;
@@ -721,7 +719,7 @@ var Detector = {
         {
             var ctx, imdata, integralImg, sw, sh;
 
-            var r = self.Ratio = (undef == scale) ? 1.0 : scale;
+            var r = self.Ratio = (null == scale) ? 1.0 : scale;
             self.Ready = false;
 
             // compute image data now, once per image change
@@ -755,8 +753,8 @@ var Detector = {
     * * _detectionInterval_ : interval to run the detection asynchronously (if not parallel) in  microseconds (default __30__).
     [/DOC_MARKDOWN]**/
     interval: function(it) {
-        if (it>0) this.DetectInterval = it;
-        return this;
+        if (it>0) Detector.DetectInterval = it;
+        return Detector;
     },
 
     // customize canny prunning thresholds for best results
@@ -776,9 +774,9 @@ var Detector = {
     * * _high_ : (Optional) The high threshold (default __100__ ).
     [/DOC_MARKDOWN]**/
     cannyThreshold: function(thres:{low:Null<Float>, high:Null<Float>}) {
-        (thres && undef!=thres.low) && (this.cannyLow = thres.low);
-        (thres && undef!=thres.high) && (this.cannyHigh = thres.high);
-        return this;
+        if (thres != null && null!=thres.low) (Detector.cannyLow = thres.low);
+        if (thres != null && null!=thres.high) (Detector.cannyHigh = thres.high);
+        return Detector;
     },
 
     // set custom detection region as selection
@@ -801,11 +799,11 @@ var Detector = {
     [/DOC_MARKDOWN]**/
     select: function(x:EitherType<String, EitherType<Int, Feature>>, ?y = 0, ?width, ?height) {
         if (x is String) {
-            Detector.Selection = {x:0, y: 0, width: width, height: height}
+            Detector.Selection = ({x:0, y: 0, width: Detector.width, height: Detector.height} : Feature);
         } else if (x is Feature) {
-            Detector.Selection = x;
+            Detector.Selection = (x : Feature);
         } else {
-            Detector.Selection = {x: x, y: y, width: width, height: height}
+            Detector.Selection = ({x: x, y: y, width: width, height: height} : Feature);
         }
         return Detector;
     },
@@ -823,9 +821,9 @@ var Detector = {
     *
     * * _callback_ : The user-defined callback function (will be called within the detectors scope, the value of 'this' will be the detector instance).
     [/DOC_MARKDOWN]**/
-    complete: function(callback) {
-        this.onComplete = callback || null;
-        return this;
+    complete: function(?callback:Void -> Void) {
+        Detector.onComplete = callback != null ? callback : Detector.onComplete;
+        return Detector;
     },
 
     // Detector detect method to start detection
@@ -845,31 +843,30 @@ var Detector = {
     * * *doCannyPruning* : enable Canny Pruning to pre-detect regions unlikely to contain features, in order to speed up the execution (optional default __false__ ).
     [/DOC_MARKDOWN]**/
     detect: function(baseScale, scale_inc, increment, min_neighbors, epsilon, doCannyPruning) {
-        var self = this;
-        var haardata = self.haardata,
+        var haardata = Detector.haardata,
             sizex = haardata.size1, sizey = haardata.size2,
             selection, scaledSelection,
-            width = self.width, height = self.height,
-            origWidth = self.origWidth, origHeight = self.origHeight,
+            width = Detector.width, height = Detector.height,
+            origWidth = Detector.origWidth, origHeight = Detector.origHeight,
             maxScale, scale,
-            integral = self.integral, squares = self.squares, tilted = self.tilted, canny = self.canny,
-            cannyLow = self.cannyLow, cannyHigh = self.cannyHigh
+            integral = Detector.integral, squares = Detector.squares, tilted = Detector.tilted, canny = Detector.canny,
+            cannyLow = Detector.cannyLow, cannyHigh = Detector.cannyHigh
         ;
 
-        if (!self.Selection) self.Selection = new Feature(0, 0, origWidth, origHeight);
-        selection = self.Selection;
-        selection.x = ('auto'==selection.x) ? 0 : selection.x;
-        selection.y = ('auto'==selection.y) ? 0 : selection.y;
-        selection.width = ('auto'==selection.width) ? origWidth : selection.width;
-        selection.height = ('auto'==selection.height) ? origHeight : selection.height;
-        scaledSelection = self.scaledSelection = selection.clone().scale(self.Ratio).round();
+        if (Detector.Selection == null) Detector.Selection = new Feature(0, 0, origWidth, origHeight);
+        selection = Detector.Selection;
+        selection.x = (-1==selection.x) ? 0 : selection.x;
+        selection.y = (-1==selection.y) ? 0 : selection.y;
+        selection.width = (-1==selection.width) ? origWidth : selection.width;
+        selection.height = (-1==selection.height) ? origHeight : selection.height;
+        scaledSelection = Detector.scaledSelection = selection.clone().scale(Detector.Ratio).round();
 
-        baseScale = (undef == baseScale) ? 1.0 : baseScale;
-        scale_inc = (undef == scale_inc) ? 1.25 : scale_inc;
-        increment = (undef == increment) ? 0.5 : increment;
-        min_neighbors = (undef == min_neighbors) ? 1 : min_neighbors;
-        epsilon = (typeof epsilon == 'undefined') ? 0.2 : epsilon;
-        doCannyPruning = (typeof doCannyPruning == 'undefined') ? false : doCannyPruning;
+        baseScale = (null == baseScale) ? 1.0 : baseScale;
+        scale_inc = (null == scale_inc) ? 1.25 : scale_inc;
+        increment = (null == increment) ? 0.5 : increment;
+        min_neighbors = (null == min_neighbors) ? 1 : min_neighbors;
+        epsilon = (epsilon == null) ? 0.2 : epsilon;
+        doCannyPruning = (doCannyPruning == null) ? false : doCannyPruning;
 
         maxScale = self.maxScale = Min(scaledSelection.width/sizex, scaledSelection.height/sizey);
         scale = self.scale = baseScale;
@@ -880,72 +877,66 @@ var Detector = {
         self.doCannyPruning = doCannyPruning;
         self.Ready = false;
 
-        // needs parallel.js library (included)
-        var parallel = self.Parallel;
-        if (parallel && parallel.isSupported())
-        {
-            var data=[], sc, i=0;
-
-            for (sc=baseScale; sc<=maxScale; sc*=scale_inc)
-            {
-                data.push({
-                    haardata : haardata,
-
-                    width : width,
-                    height : height,
-                    scaledSelection : {x:scaledSelection.x, y:scaledSelection.y, width:scaledSelection.width, height:scaledSelection.height},
-
-                    integral : integral,
-                    squares : squares,
-                    tilted : tilted,
-
-                    doCannyPruning : doCannyPruning,
-                    canny : (doCannyPruning) ? canny : null,
-                    cannyLow : cannyLow,
-                    cannyHigh : cannyHigh,
-
-                    maxScale : maxScale,
-                    min_neighbors : min_neighbors,
-                    epsilon: epsilon,
-                    scale_inc : scale_inc,
-                    increment : increment,
-                    scale : sc, // current scale to check
-                    i : i++ // serial ordering
-                });
-            }
-
-            // needs parallel.js library (included)
-            // parallelize the detection, using map-reduce
-            // should also work in Nodejs (using child processes)
-            new parallel(data, {synchronous: false})
-                .require( byOrder, detectSingleStep, mergeSteps )
-                .map( detectSingleStep ).reduce( mergeSteps )
-                .then( function(rects){ detectEnd(self, rects, true); } )
-            ;
-        }
-        else
+        //// needs parallel.js library (included)
+        //var parallel = self.Parallel;
+        //if (parallel && parallel.isSupported())
+        //{
+        //    var data=[], sc, i=0;
+        //    for (sc=baseScale; sc<=maxScale; sc*=scale_inc)
+        //    {
+        //        data.push({
+        //            haardata : haardata,
+        //            width : width,
+        //            height : height,
+        //            scaledSelection : {x:scaledSelection.x, y:scaledSelection.y, width:scaledSelection.width, height:scaledSelection.height},
+        //            integral : integral,
+        //            squares : squares,
+        //            tilted : tilted,
+        //            doCannyPruning : doCannyPruning,
+        //            canny : (doCannyPruning) ? canny : null,
+        //            cannyLow : cannyLow,
+        //            cannyHigh : cannyHigh,
+        //            maxScale : maxScale,
+        //            min_neighbors : min_neighbors,
+        //            epsilon: epsilon,
+        //            scale_inc : scale_inc,
+        //            increment : increment,
+        //            scale : sc, // current scale to check
+        //            i : i++ // serial ordering
+        //        });
+        //    }
+        //    // needs parallel.js library (included)
+        //    // parallelize the detection, using map-reduce
+        //    // should also work in Nodejs (using child processes)
+        //    new parallel(data, {synchronous: false})
+        //        .require( byOrder, detectSingleStep, mergeSteps )
+        //        .map( detectSingleStep ).reduce( mergeSteps )
+        //        .then( function(rects){ detectEnd(self, rects, true); } )
+        //    ;
+        //}
+        //else
         {
             // else detect asynchronously using fixed intervals
-            var rects = [],
-                detectAsync = function() {
-                    if (self.scale <= self.maxScale)
+            var rects:Array<Feature> = [], detectAsync:Void -> Void;
+            detectAsync = function() {
+                    if (Detector.scale <= Detector.maxScale)
                     {
-                        rects = rects.concat( detectSingleStep(self) );
+                        rects = rects.concat( detectSingleStep(Detector) );
                         // increase scale
-                        self.scale *= self.scale_inc;
-                        self.TimeInterval = setTimeout(detectAsync, self.DetectInterval);
+                        Detector.scale *= Detector.scale_inc;
+                        Detector.TimeInterval = setTimeout(detectAsync, Detector.DetectInterval);
                     }
                     else
                     {
-                        clearTimeout( self.TimeInterval );
-                        detectEnd(self, rects, true);
+                        clearTimeout( Detector.TimeInterval );
+                        detectEnd(Detector, rects, true);
                     }
                 }
             ;
 
-            self.TimeInterval = setTimeout(detectAsync, self.DetectInterval);
+            Detector.TimeInterval = setTimeout(detectAsync, Detector.DetectInterval);
         }
-        return self;
+        return Detector;
     },
 
     /**[DOC_MARKDOWN]
@@ -960,22 +951,22 @@ var Detector = {
     *
     [/DOC_MARKDOWN]**/
     detectSync: function(baseScale, scale_inc, increment, min_neighbors, epsilon, doCannyPruning) {
-        var self = this, maxScale,
+        var self = Detector, maxScale,
             sizex = self.haardata.size1, sizey = self.haardata.size2;
 
-        if (!self.Selection) self.Selection = new Feature(0, 0, self.origWidth, self.origHeight);
-        self.Selection.x = ('auto'==self.Selection.x) ? 0 : self.Selection.x;
-        self.Selection.y = ('auto'==self.Selection.y) ? 0 : self.Selection.y;
-        self.Selection.width = ('auto'==self.Selection.width) ? self.origWidth : self.Selection.width;
-        self.Selection.height = ('auto'==self.Selection.height) ? self.origHeight : self.Selection.height;
+        if (self.Selection == null) self.Selection = new Feature(0, 0, self.origWidth, self.origHeight);
+        self.Selection.x = (-1==self.Selection.x) ? 0 : self.Selection.x;
+        self.Selection.y = (-1==self.Selection.y) ? 0 : self.Selection.y;
+        self.Selection.width = (-1==self.Selection.width) ? self.origWidth : self.Selection.width;
+        self.Selection.height = (-1==self.Selection.height) ? self.origHeight : self.Selection.height;
         self.scaledSelection = self.Selection.clone().scale(self.Ratio).round();
 
-        baseScale = (typeof baseScale == 'undefined') ? 1.0 : baseScale;
-        scale_inc = (typeof scale_inc == 'undefined') ? 1.25 : scale_inc;
-        increment = (typeof increment == 'undefined') ? 0.5 : increment;
-        min_neighbors = (typeof min_neighbors == 'undefined') ? 1 : min_neighbors;
-        self.epsilon = (typeof epsilon == 'undefined') ? 0.2 : epsilon;
-        self.doCannyPruning = (typeof doCannyPruning == 'undefined') ? false : doCannyPruning;
+        baseScale = (baseScale == null) ? 1.0 : baseScale;
+        scale_inc = (scale_inc == null) ? 1.25 : scale_inc;
+        increment = (increment == null) ? 0.5 : increment;
+        min_neighbors = (min_neighbors == null) ? 1 : min_neighbors;
+        self.epsilon = (epsilon == null) ? 0.2 : epsilon;
+        self.doCannyPruning = ( doCannyPruning == null) ? false : doCannyPruning;
 
         maxScale = self.maxScale = Min(self.scaledSelection.width/sizex, self.scaledSelection.height/sizey);
         self.scale = baseScale;
@@ -1000,146 +991,4 @@ var Detector = {
         return self.objects;
     }
 
-};
-// aliases
-Detector[proto].selection = Detector[proto].select;
-
-//
-//
-//
-// Feature/Rectangle Class  (arguably better than generic Object)
-Feature = HAAR.Feature = function(x, y, w, h, i) {
-    this.data(x, y, w, h, i);
-};
-Feature.groupRectangles = groupRectangles;
-Feature[proto] = {
-
-    constructor: Feature,
-
-    index: 0,
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    area: 0,
-
-    isInside: false,
-
-    data: function(x, y, w, h, i) {
-        var self = this;
-        if (x && (x instanceof Feature))
-        {
-            self.copy(x);
-        }
-        else if (x && (x instanceof Object))
-        {
-            self.x = x.x || 0;
-            self.y = x.y || 0;
-            self.width = x.width || 0;
-            self.height = x.height || 0;
-            self.index = x.index || 0;
-            self.area = x.area || 0;
-            self.isInside = x.isInside || false;
-        }
-        else
-        {
-            self.x = x || 0;
-            self.y = y || 0;
-            self.width = w || 0;
-            self.height = h || 0;
-            self.index = i || 0;
-            self.area = 0;
-            self.isInside = false;
-        }
-
-        return self;
-    },
-
-    add: function (f) {
-        var self = this;
-        self.x += f.x;
-        self.y += f.y;
-        self.width += f.width;
-        self.height += f.height;
-        return self;
-    },
-
-    scale: function(s) {
-        var self = this;
-        self.x *= s;
-        self.y *= s;
-        self.width *= s;
-        self.height *= s;
-        return self;
-    },
-
-    round: function() {
-        var self = this;
-        self.x = ~~(self.x+0.5);
-        self.y = ~~(self.y+0.5);
-        self.width = ~~(self.width+0.5);
-        self.height = ~~(self.height+0.5);
-        return self;
-    },
-
-    computeArea: function() {
-        var self = this;
-        self.area = self.width*self.height;
-        return self.area;
-    },
-
-    inside: function(f, eps) {
-        if (null == eps) eps = 0.1;
-        if (0 > eps) eps = 0;
-        var dx = f.width * eps, dy = f.height * eps;
-        return (this.x >= f.x - dx) &&
-            (this.y >= f.y - dy) &&
-            (this.x + this.width <= f.x + f.width + dx) &&
-            (this.y + this.height <= f.y + f.height + dy);
-    },
-
-    contains: function(f, eps) {
-        return f.inside(this, null == eps ? 0.1 : eps);
-    },
-
-    equals: function(f, eps) {
-        if (null == eps) eps = 0.2;
-        if (0 > eps) eps = 0;
-        var delta = eps * (Min(this.width, f.width) + Min(this.height, f.height)) * 0.5;
-        return Abs(this.x - f.x) <= delta &&
-            Abs(this.y - f.y) <= delta &&
-            Abs(this.x + this.width - f.x - f.width) <= delta &&
-            Abs(this.y + this.height - f.y - f.height) <= delta;
-    },
-
-    clone: function() {
-        var self = this, f = new Feature();
-        f.x = self.x;
-        f.y = self.y;
-        f.width = self.width;
-        f.height = self.height;
-        f.index = self.index;
-        f.area = self.area;
-        f.isInside = self.isInside;
-        return f;
-    },
-
-    copy: function(f) {
-        var self = this;
-        if ( f && (f instanceof Feature) )
-        {
-            self.x = f.x;
-            self.y = f.y;
-            self.width = f.width;
-            self.height = f.height;
-            self.index = f.index;
-            self.area = f.area;
-            self.isInside = f.isInside;
-        }
-        return self;
-    },
-
-    toString: function() {
-        return ['[ x:', this.x, 'y:', this.y, 'width:', this.width, 'height:', this.height, ']'].join(' ');
-    }
 };
