@@ -51,7 +51,7 @@ class ImageTools {
 		`haxelib install format`
 
 		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
-		@param path the path to the image file. on js, it can only be a relative path/a URL
+		@param path the path to the image file. On `js`, it can only be a relative path/a URL
 
 		@returns the image object.
 		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
@@ -152,8 +152,8 @@ class ImageTools {
 
 		**Note: this function requires the `format` library, and only supports PNG.**
 
-		To install:  
-		  
+		To install:
+
 		`haxelib install format`
 
 
