@@ -176,10 +176,10 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	static var COLOR_REGEX = ~/^(0x|#)(([A-F0-9]{2}){3,4})$/i;
 
 	/**
-		Create a color from the least significant four bytes of an Int
+		Create a color from the least significant four bytes of an `Int`
 
-		@param value Int with bytes in the format 0xAARRGGBB
-		@return	The color as a Color
+		@param value `Int` with bytes in the format 0xAARRGGBB
+		@return	The color as a `Color`
 	**/
 	public static inline function fromInt(value:Int):Color {
 		return new Color(value);
@@ -191,7 +191,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Red	The red value of the color from 0 to 255
 		@param Green	The green value of the color from 0 to 255
 		@param Blue	The green value of the color from 0 to 255
-		@param Alpha	How opaque the color should be, from 0 to 255
+		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
 		@return The color as a Color
 	**/
 	public static inline function fromRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color {
@@ -216,8 +216,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Red	The red value of the color from 0 to 1
 		@param Green	The green value of the color from 0 to 1
 		@param Blue	The green value of the color from 0 to 1
-		@param Alpha	How opaque the color should be, from 0 to 1
-		@return The color as a Color
+		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
+		@return The color as a `Color`
 	**/
 	public static inline function fromRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color {
 		var color = new Color();
@@ -231,8 +231,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Magenta	The magenta value of the color from 0 to 1
 		@param Yellow	The yellow value of the color from 0 to 1
 		@param Black		The black value of the color from 0 to 1
-		@param Alpha		How opaque the color should be, from 0 to 1
-		@return The color as a Color
+		@param Alpha		How opaque the color should be, from 0 to 1, default is 1
+		@return The color as a `Color`
 	**/
 	public static inline function fromCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):Color {
 		var color = new Color();
@@ -244,9 +244,9 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 
 		@param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
 		@param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-		@param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
-		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
-		@return	The color as a Color
+		@param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright (default).
+		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255, default is 1.
+		@return	The color as a `Color`
 	**/
 	public static function fromHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha:Float = 1):Color {
 		var color = new Color();
@@ -259,8 +259,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
 		@param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
 		@param	Lightness	A number between 0 and 1, indicating the lightness of the color
-		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
-		@return	The color as a Color
+		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255, default is 1.
+		@return	The color as a `Color`
 	**/
 	public static inline function fromHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha:Float = 1):Color {
 		var color = new Color();
@@ -300,7 +300,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	/**
 		Get HSB color wheel values in an array which will be 360 elements in size
 
-		@param	Alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque)
+		@param	Alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque) (default)
 		@return	HSB color wheel as Array of Colors
 	**/
 	public static function getHSBColorWheel(Alpha:Int = 255):Array<Color> {
@@ -312,8 +312,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 
 		@param 	Color1 The first color
 		@param 	Color2 The second color
-		@param 	Factor Value from 0 to 1 representing how much to shift Color1 toward Color2
-		@return	The interpolated color
+		@param 	Factor Value from 0 to 1 representing how much to shift Color1 toward Color2, default is 0.5
+		@return	The interpolated color as a `Color`
 	**/
 	public static inline function interpolate(Color1:Color, Color2:Color, Factor:Float = 0.5):Color {
 		var r:Int = Std.int((Color2.red - Color1.red) * Factor + Color1.red);
@@ -505,7 +505,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Red	The red value of the color from 0 to 255
 		@param Green	The green value of the color from 0 to 255
 		@param Blue	The green value of the color from 0 to 255
-		@param Alpha	How opaque the color should be, from 0 to 255
+		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
 		@return This color
 	**/
 	public inline function setRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color {
@@ -522,7 +522,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Red	The red value of the color from 0 to 1
 		@param Green	The green value of the color from 0 to 1
 		@param Blue	The green value of the color from 0 to 1
-		@param Alpha	How opaque the color should be, from 0 to 1
+		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
 		@return This color
 	**/
 	public inline function setRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color {
@@ -540,7 +540,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Magenta	The magenta value of the color from 0 to 1
 		@param Yellow	The yellow value of the color from 0 to 1
 		@param Black		The black value of the color from 0 to 1
-		@param Alpha		How opaque the color should be, from 0 to 1
+		@param Alpha		How opaque the color should be, from 0 to 1, default is 1
 		@return This color
 	**/
 	public inline function setCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):Color {
@@ -621,7 +621,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 
 		@param threshold The threshold for converting to black and white: `threshold` is the maximum average of the three color components, that will still be considered black. `threshold` is a value between 0 and 255. The higher the value, the more "sensitive" the conversion. The default value is 128.
 	**/
-	public inline function blackOrWhite(?threshold:Int = 128):Color {
+	public inline function blackOrWhite(threshold:Int = 128):Color {
 		var colorValue:Int = MathTools.max(red, green, blue);
 		var a = alpha;
 		if (colorValue > threshold) {

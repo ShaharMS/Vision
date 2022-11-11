@@ -21,15 +21,15 @@ abstract Image(ByteArray) {
 		### If `vision_higher_width_cap` is defined:
 
 		the first 4 bytes represent image width,  
-		the next 8 bytes are the x & y position of an image view,  
-		the next 8 bytes are the width & height of an image view,
+		the next 8 bytes are the `x` & `y` position of an image view,  
+		the next 8 bytes are the `width` & `height` of an image view,
 		the last byte represents view shape
 
 		### Otherwise:
 
 		the first 2 bytes represent image width,  
-		the next 4 bytes are the x & y position of an image view,  
-		the next 4 bytes are the width & height of an image view,
+		the next 4 bytes are the `x` & `y` position of an image view,  
+		the next 4 bytes are the `width` & `height` of an image view,
 		the last byte represents view shape
 
 	**/
@@ -86,7 +86,7 @@ abstract Image(ByteArray) {
 	#end
 
 	/**
-	    The current image's `ImageView`. you can get/set this field to change the view, but changing it's values won't effect anything.
+	    The current image's `ImageView`. You can get/set this field to change the view, but changing it's values won't effect anything.
 
 		`ImageView`s disallow setting pixels on parts outside of the view. That's useful when you want to operate
 		on a certain part of the image, without modifying other portions/copying pixels around.
@@ -103,13 +103,13 @@ abstract Image(ByteArray) {
 	}
 
 	/**
-		Creates a new image of the given size. Onces created, the image cannot be resized.
+		Creates a new image of the given size. Once is created, the image cannot be resized.
 
 		@param width The width of the image.
 		@param height The height of the image.
 		@param color The color to fill the image with. if unspecified, the image is transparent.
 	**/
-	public inline function new(width:Int, height:Int, ?color:Color = 0x00000000) {
+	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
 		this = new ByteArray(width * height * 4 + OFFSET);
 		#if vision_higher_width_cap
 		this.setInt32(0, width);
@@ -349,7 +349,7 @@ abstract Image(ByteArray) {
 
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
-		@param color The color to set the pixel to. pay attention to the alpha value.
+		@param color The color to set the pixel to. Pay attention to the alpha value.
 		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 	**/
 	public inline function paintPixel(x:Int, y:Int, color:Color) {
@@ -664,7 +664,7 @@ abstract Image(ByteArray) {
 
 		@see Line2D
 	**/
-	public inline function drawQuadraticBezier(line:Line2D, control:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
+	public inline function drawQuadraticBezier(line:Line2D, control:IntPoint2D, color:Color, accuracy:Float = 1000) {
 		function bezier(t:Float, p0:IntPoint2D, p1:IntPoint2D, p2:IntPoint2D):IntPoint2D {
 			var t2 = t * t;
 			var t3 = t2 * t;
@@ -699,7 +699,7 @@ abstract Image(ByteArray) {
 		@param control1 The first control point of the curve.
 		@param control2 The second control point of the curve.
 		@param color The color to draw the curve with.
-		@param accuracy The number of iterations to use when drawing the curve. the higher the number, the more iterations are used, and the more accurate the curve is. for example, accuracy of 100 will draw the curve with 100 iterations, and will draw 100 points on the curve. **default is 1000**
+		@param accuracy The number of iterations to use when drawing the curve. The higher the number, the more iterations are used, and the more accurate the curve is. For example: accuracy of 100 will draw the curve with 100 iterations, and will draw 100 points on the curve. **default is 1000**
 
 		@see Line2D
 	**/
@@ -896,7 +896,7 @@ abstract Image(ByteArray) {
 		**Warning** - this function is recursive. This function is not slow, but can trigger
 		a stack overflow if used on large images. This is only here so an implementation will be available.
 
-		@param position The position to start filling at. you can use a Point2D or IntPoint2D.
+		@param position The position to start filling at. You can use a Point2D or IntPoint2D.
 		@param color The color to fill with.
 	**/
 	public function fillColorRecursive(position:IntPoint2D, color:Color) {
@@ -925,7 +925,7 @@ abstract Image(ByteArray) {
 
 		This uses the BFS `Breadth First Search` algorithm
 
-		@param position The position to start filling at. you can use a Point2D or IntPoint2D.
+		@param position The position to start filling at. You can use a Point2D or IntPoint2D.
 		@param color The color to fill with.
 	**/
 	public function fillColor(position:IntPoint2D, color:Color) {
@@ -961,7 +961,7 @@ abstract Image(ByteArray) {
 
 		This uses the BFS `Breadth First Search` algorithm
 
-		@param position The position to start filling at. you can use a Point2D or IntPoint2D.
+		@param position The position to start filling at. You can use a Point2D or IntPoint2D.
 		@param color The color to fill with.
 		@param borderColor The color upon which to stop filling.
 	**/
@@ -1081,9 +1081,9 @@ abstract Image(ByteArray) {
 		Gets the image as a string.
 
 		@param special When using the `Console.hx` haxelib, images can be printed to the console
-		with color. set this to false if you don't want this to happen. Set to `true` by default.
+		with color. Set this to false if you don't want this to happen. Set to `true` by default.
 	**/
-	public function toString(?special:Bool = true):String {
+	public function toString(special:Bool = true):String {
 		if (!special) {
 			return Std.string(this);
 		}

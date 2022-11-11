@@ -28,7 +28,7 @@ class Array2D<T> {
 	    Creates a new `Array2D` instance. The created array can be filled in with non-null values, and thats target-dependent:
 
 		 - on dynamic targets, values are always `null`
-		 - on static targets, `0`, `0.0` or `false` are filled in for Int, Float and Bool respectively. Other types are filled in with `null`
+		 - on static targets, `0`, `0.0` or `false` are filled in for `Int`, `Float` and `Bool` respectively. Other types are filled in with `null`
 	    
 	    @param width The array's width
 	    @param height The array's height
