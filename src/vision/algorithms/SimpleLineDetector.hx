@@ -17,8 +17,7 @@ class SimpleLineDetector {
 		final startX = point.x, startY = point.y;
 		final yArr = preferTTB ? [0, 1, 2] : [0, -1, -2];
 		final xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
-		if (!image.hasPixel(point.x, point.y) || image.getPixel(point.x, point.y) == 0)
-			return null;
+		if (!image.hasPixel(point.x, point.y) || image.getPixel(point.x, point.y) == 0) return null;
 
 		// now, were going to start looking for points around the point to find the entire line.
 		var prev:Null<IntPoint2D> = null;

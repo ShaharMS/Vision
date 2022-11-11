@@ -627,9 +627,7 @@ class Vision {
 		those lines can be partially incomplete, but they will be detected as lines.
 
 		@param image The image to be line detected.
-		@param accuracy When a line is detected, the algorithm checks how much of the line actually covers a 
-		"line portion" of the image. `accuracy` is set to `50` by default - at least half of the line has to match with the image.
-		To optimize for line count, `40` and below is recommended. otherwise, `50` to `60` should be fine.
+		@param accuracy When a line is detected, the algorithm checks how much of the line actually covers a  "line portion" of the image. `accuracy` is set to `50` by default - at least half of the line has to match with the image. To optimize for line count, `40` and below is recommended. otherwise, `50` to `60` should be fine.
 		@param minLineLength The minimum length of a line segment to be detected.
 		@param speedToAccuracyRatio  If the algorithm is too slow/too inaccurate for you, you can change this setting.
 
