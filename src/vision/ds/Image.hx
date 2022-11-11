@@ -1332,6 +1332,22 @@ abstract Image(ByteArray) {
     @:to public function toJsCanvas():js.html.CanvasElement {
         return ImageTools.toJsCanvas(cast this);
     }
+	@:from public static function fromJsImage(image:js.html.ImageElement):Image {
+		return ImageTools.fromJsImage(image);
+    }
+	@:to public function toJsImage():js.html.ImageElement {
+		return ImageTools.toJsImage(cast this);
+    }
+	#end
+
+	#if haxeui_core
+	@:from public static function fromHaxeUIImage(image:haxe.ui.components.Image):Image {
+		return ImageTools.fromHaxeUIImage(image);
+	}
+
+	@:to public static function toHaxeUIImage():haxe.ui.components.Image {
+		return ImageTools.toHaxeUIImage(cast this);
+	}
 	#end
 
 	//--------------------------------------------------------------------------

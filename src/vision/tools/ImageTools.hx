@@ -466,6 +466,50 @@ class ImageTools {
 
 		return c;
 	}
+
+	public static function fromJsImage(image:js.html.ImageElement):Image {
+		var canvas = js.Browser.document.createCanvasElement();
+		canvas.width = image.width;
+		canvas.height = image.height;
+		canvas.getContext2d().drawImage(image);
+ 		return fromJsCanvas(canvas);
+	}
+
+	public static function toJsImage(image:Image):js.html.ImageElement {
+		var canvas = image.toJsCanvas();
+		var htmlImage = js.Browser.document.createImageElement();
+		htmlImage.src = canvas.toDataURL();
+		return htmlImage;
+	}
+	#end
+	#if (haxeui_core && (haxeui_flixel || haxeui_openfl || haxeui_heaps || haxeui_html5))
+	public static function fromHaxeUIImage(image:haxe.ui.components.Image):Image {
+		#if haxeui_flixel
+			return fromFlxSprite(image.resource);
+		#elseif haxeui_openfl
+			return fromSprite(image.resource);
+		#elseif haxeui_heaps
+			return fromHeapsPixels(image.resource);
+		#else
+			return fromJsImage(image.resource);
+		#end
+	}
+
+	public static function toHaxeUIImage(image:Image):haxe.ui.components.Image {
+		var huiImage = new haxe.ui.components.Image();
+		huiImage.width = image.width;
+		huiImage.height = image.height;
+		#if haxeui_flixel
+			huiImage.resource = toFlxSprite(image);
+		#elseif haxeui_openfl
+			huiImage.resource = toSprite(image);
+		#elseif haxeui_heaps
+			huiImage.resource = toHeapsPixels(image);
+		#else
+			huiImage.resource = toJsImage(image);
+		#end
+		return huiImage;
+	}
 	#end
 }
 
