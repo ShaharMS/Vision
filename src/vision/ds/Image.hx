@@ -1345,8 +1345,16 @@ abstract Image(ByteArray) {
 		return ImageTools.fromHaxeUIImage(image);
 	}
 
-	@:to public static function toHaxeUIImage():haxe.ui.components.Image {
+	@:to public function toHaxeUIImage():haxe.ui.components.Image {
 		return ImageTools.toHaxeUIImage(cast this);
+	}
+
+	@:from public static function fromHaxeUIImageData(image:haxe.ui.backend.ImageData):Image {
+		return ImageTools.fromHaxeUIImageData(image);
+	}
+
+	@:to public function toHaxeUIImageData():haxe.ui.backend.ImageData {
+		return ImageTools.toHaxeUIImageData(cast this);
 	}
 	#end
 

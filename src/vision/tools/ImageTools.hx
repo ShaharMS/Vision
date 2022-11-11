@@ -471,7 +471,7 @@ class ImageTools {
 		var canvas = js.Browser.document.createCanvasElement();
 		canvas.width = image.width;
 		canvas.height = image.height;
-		canvas.getContext2d().drawImage(image);
+		canvas.getContext2d().drawImage(image, 0, 0);
  		return fromJsCanvas(canvas);
 	}
 
@@ -487,7 +487,7 @@ class ImageTools {
 		#if haxeui_flixel
 			return fromFlxSprite(image.resource);
 		#elseif haxeui_openfl
-			return fromSprite(image.resource);
+			return fromBitmapData(image.resource);
 		#elseif haxeui_heaps
 			return fromHeapsPixels(image.resource);
 		#else
@@ -502,13 +502,37 @@ class ImageTools {
 		#if haxeui_flixel
 			huiImage.resource = toFlxSprite(image);
 		#elseif haxeui_openfl
-			huiImage.resource = toSprite(image);
+			huiImage.resource = toBitmapData(image);
 		#elseif haxeui_heaps
 			huiImage.resource = toHeapsPixels(image);
 		#else
 			huiImage.resource = toJsImage(image);
 		#end
 		return huiImage;
+	}
+
+	public static function fromHaxeUIImageData(image:haxe.ui.backend.ImageData):Image {
+		#if haxeui_flixel
+			return fromFlxSprite(image.);
+		#elseif haxeui_openfl
+			return fromBitmapData(image);
+		#elseif haxeui_heaps
+			return fromHeapsPixels(image);
+		#else
+			return fromJsImage(image);
+		#end
+	}
+
+	public static function toHaxeUIImageData(image:Image):haxe.ui.backend.ImageData {
+		#if haxeui_flixel
+			return toFlxSprite(image);
+		#elseif haxeui_openfl
+			return fromBitmapData(image);
+		#elseif haxeui_heaps
+			return toHeapsPixels(image);
+		#else
+			return toJsImage(image);
+		#end
 	}
 	#end
 }
