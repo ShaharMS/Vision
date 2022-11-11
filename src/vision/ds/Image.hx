@@ -15,6 +15,7 @@ using vision.tools.MathTools;
 /**
 	Represents a 2D image, as a matrix of Colors.
 **/
+@:transitive
 abstract Image(ByteArray) {
 	/**
 		### If `vision_higher_width_cap` is defined:
@@ -1005,6 +1006,9 @@ abstract Image(ByteArray) {
 			var blurred = Vision.gaussianBlur(image.clone());
 	**/
 	public function clone():Image {
+		if (this == null) {
+			trace("Warning: Cloning a null image");
+		}
 		return cast this.sub(0, this.length);
 	}
 
