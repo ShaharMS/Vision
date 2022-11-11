@@ -634,7 +634,8 @@ class Vision {
 		@return The line detected image.
 	**/
 	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermediate):Array<Line2D> {
-        final kernalSize = switch speedToAccuracyRatio {
+        SimpleLineDetector.cachedPoints = [];
+		final kernalSize = switch speedToAccuracyRatio {
             case VeryLow_VeryFast: X1;
             case Low_Fast: X3;
             case Medium_Intermediate: X5;
