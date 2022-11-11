@@ -348,7 +348,7 @@ abstract Image(ByteArray) {
 
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
-		@param color The color to set the pixel to pay attention to the alpha value.
+		@param color The color to set the pixel to. Pay attention to the alpha value.
 		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 	**/
 	public inline function paintPixel(x:Int, y:Int, color:Color) {
