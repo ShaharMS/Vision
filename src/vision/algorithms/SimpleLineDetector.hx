@@ -13,12 +13,16 @@ using vision.tools.MathTools;
  * An iterative, partially recursive line detection implementation by [Shahar Marcus](https://www.github.com/ShaharMS).
  */
 class SimpleLineDetector {
+
+	public static var cachedPoints:Map<Int, Array<IntPoint2D>> = [];
+
 	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineLength:Float, preferTTB:Bool = false, preferRTL:Bool = false):Line2D {
+		//final rtl = preferRTL == true ? 1 : 0, ttb = preferTTB == true ? 1 : 0;
+		//if (cachedPoints[ttb | rtl << 1].contains(point)) return null;
 		final startX = point.x, startY = point.y;
 		final yArr = preferTTB ? [0, 1, 2] : [0, -1, -2];
 		final xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
-		if (!image.hasPixel(point.x, point.y) || image.getPixel(point.x, point.y) == 0)
-			return null;
+		if (image.getUnsafePixel(point.x, point.y) == 0) return null;
 
 		// now, were going to start looking for points around the point to find the entire line.
 		var prev:Null<IntPoint2D> = null;
@@ -31,6 +35,7 @@ class SimpleLineDetector {
 					if (image.getPixel(point.x + X, point.y + Y).red == 255) {
 						point.x = point.x + X;
 						point.y = point.y + Y;
+						//cachedPoints[ttb | rtl << 1].push(point.copy());
 
 						// used to prevent infinite recursion
 						if (prev == null) {

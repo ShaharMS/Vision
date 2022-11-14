@@ -51,7 +51,7 @@ class ImageTools {
 		`haxelib install format`
 
 		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
-		@param path the path to the image file. on js, it can only be a relative path/a URL
+		@param path the path to the image file. On `js`, it can only be a relative path/a URL
 
 		@returns the image object.
 		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
@@ -152,8 +152,8 @@ class ImageTools {
 
 		**Note: this function requires the `format` library, and only supports PNG.**
 
-		To install:  
-		  
+		To install:
+
 		`haxelib install format`
 
 
@@ -467,6 +467,74 @@ class ImageTools {
 		ctx.putImageData(imageData, 0, 0);
 
 		return c;
+	}
+
+	public static function fromJsImage(image:js.html.ImageElement):Image {
+		var canvas = js.Browser.document.createCanvasElement();
+		canvas.width = image.width;
+		canvas.height = image.height;
+		canvas.getContext2d().drawImage(image, 0, 0);
+ 		return fromJsCanvas(canvas);
+	}
+
+	public static function toJsImage(image:Image):js.html.ImageElement {
+		var canvas = image.toJsCanvas();
+		var htmlImage = js.Browser.document.createImageElement();
+		htmlImage.src = canvas.toDataURL();
+		return htmlImage;
+	}
+	#end
+	#if (haxeui_core && (haxeui_flixel || haxeui_openfl || haxeui_heaps || haxeui_html5))
+	public static function fromHaxeUIImage(image:haxe.ui.components.Image):Image {
+		#if haxeui_flixel
+			return fromFlxSprite(image.resource);
+		#elseif haxeui_openfl
+			return fromBitmapData(image.resource);
+		#elseif haxeui_heaps
+			return fromHeapsPixels(image.resource);
+		#else
+			return fromJsImage(image.resource);
+		#end
+	}
+
+	public static function toHaxeUIImage(image:Image):haxe.ui.components.Image {
+		var huiImage = new haxe.ui.components.Image();
+		huiImage.width = image.width;
+		huiImage.height = image.height;
+		#if haxeui_flixel
+			huiImage.resource = toFlxSprite(image);
+		#elseif haxeui_openfl
+			huiImage.resource = toBitmapData(image);
+		#elseif haxeui_heaps
+			huiImage.resource = toHeapsPixels(image);
+		#else
+			huiImage.resource = toJsImage(image);
+		#end
+		return huiImage;
+	}
+
+	public static function fromHaxeUIImageData(image:haxe.ui.backend.ImageData):Image {
+		#if haxeui_flixel
+			return fromFlxSprite(image.);
+		#elseif haxeui_openfl
+			return fromBitmapData(image);
+		#elseif haxeui_heaps
+			return fromHeapsPixels(image);
+		#else
+			return fromJsImage(image);
+		#end
+	}
+
+	public static function toHaxeUIImageData(image:Image):haxe.ui.backend.ImageData {
+		#if haxeui_flixel
+			return toFlxSprite(image);
+		#elseif haxeui_openfl
+			return fromBitmapData(image);
+		#elseif haxeui_heaps
+			return toHeapsPixels(image);
+		#else
+			return toJsImage(image);
+		#end
 	}
 	#end
 }

@@ -1,3 +1,26 @@
+# 1.2.1
+
+### `Vision.hx`
+
+ - **Slight optimization for `simpleLine2DDetection()`**
+
+### `Image.hx`
+
+ - **Added from/to casting methods for JS `Canvas` & `Image` elements**
+ - **Added from/to casting methods for HaxeUI's `Image` element and `ImageData`**
+
+### `vision.helpers`
+
+ - **Added triangulation methods for drawing on images (Thanks [Nanjizal](https://github.com/nanjizal))**
+
+### `vision.exceptions`
+
+ - **Fixed LibraryRequired errors being inaccurate on Ceramic**
+
+### `vision.tools`
+
+ - **Added `MathTools.cropDecimal()`**
+
 # 1.2.0
 
 ### `Vision.hx`
