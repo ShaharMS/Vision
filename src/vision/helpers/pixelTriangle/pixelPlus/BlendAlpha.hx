@@ -33,18 +33,18 @@ inline function alphaBlendImage(imageTarget:Image, imageSource:Image, xTarget:Fl
 	provides alpha channel blend which is commumative
 **/
 inline function alphaBlend(lhs:Color, rhs:Color):Color {
-	var a1:Float = channelFloat(lhs.alpha);
-	var r1:Float = channelFloat(lhs.red);
-	var g1:Float = channelFloat(lhs.green);
-	var b1:Float = channelFloat(lhs.blue);
-	var a2:Float = channelFloat(rhs.alpha);
-	var r2:Float = channelFloat(rhs.red);
-	var g2:Float = channelFloat(rhs.green);
-	var b2:Float = channelFloat(rhs.blue);
-	var a3 = a1 * (1 - a2);
-	var r = colBlendFunc(r1, r2, a3, a2);
-	var g = colBlendFunc(g1, g2, a3, a2);
-	var b = colBlendFunc(b1, b2, a3, a2);
-	var a = alphaBlendFunc(a3, a2);
+	final a1:Float = channelFloat(lhs.alpha);
+	final r1:Float = channelFloat(lhs.red);
+	final g1:Float = channelFloat(lhs.green);
+	final b1:Float = channelFloat(lhs.blue);
+	final a2:Float = channelFloat(rhs.alpha);
+	final r2:Float = channelFloat(rhs.red);
+	final g2:Float = channelFloat(rhs.green);
+	final b2:Float = channelFloat(rhs.blue);
+	final a3 = a1 * (1 - a2);
+	final r = colBlendFunc(r1, r2, a3, a2);
+	final g = colBlendFunc(g1, g2, a3, a2);
+	final b = colBlendFunc(b1, b2, a3, a2);
+	final a = alphaBlendFunc(a3, a2);
 	return Color.fromRGBA(r, g, b, a);
 }
