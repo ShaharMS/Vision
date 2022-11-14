@@ -27,29 +27,51 @@ class SimpleLineDetector {
 		// now, were going to start looking for points around the point to find the entire line.
 		var prev:Null<IntPoint2D> = null;
 		var prev2:Null<IntPoint2D> = null;
+		var currentDirection:Null<IntPoint2D> = {x: 0, y: 0};
 		function expand() {
-			for (X in xArr) {
-				for (Y in yArr) {
-					if (X == 0 && Y == 0 || !image.hasPixel(point.x + X, point.y + Y))
-						continue;
-					if (image.getPixel(point.x + X, point.y + Y).red == 255) {
-						point.x = point.x + X;
-						point.y = point.y + Y;
-						//cachedPoints[ttb | rtl << 1].push(point.copy());
-
-						// used to prevent infinite recursion
-						if (prev == null) {
-							prev = {x: point.x, y: point.y};
-						} else {
-							prev2 = {x: prev.x, y: prev.y};
-							prev = {x: point.x, y: point.y};
-						}
-						if ((if (preferTTB) Y else X) == 0) {
-							if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
-								return;
+			if (currentDirection != null && image.hasPixel(point.x + currentDirection.x, point.y + currentDirection.y) && image.getPixel(point.x + currentDirection.x, point.y + currentDirection.y).red == 255) {
+				point.x = point.x + currentDirection.x;
+				point.y = point.y + currentDirection.y;
+				//cachedPoints[ttb | rtl << 1].push(point.copy());
+	
+				// used to prevent infinite recursion
+				if (prev == null) {
+					prev = {x: point.x, y: point.y};
+				} else {
+					prev2 = {x: prev.x, y: prev.y};
+					prev = {x: point.x, y: point.y};
+				}
+				if ((if (preferTTB) currentDirection.y else currentDirection.x) == 0) {
+					if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
+						return;
+					}
+				}
+				expand();
+			} else { //fallback, used for skewed/dotted/dashed lines
+				for (X in xArr) {
+					for (Y in yArr) {
+						if (X == 0 && Y == 0 || !image.hasPixel(point.x + X, point.y + Y))
+							continue;
+						if (image.getPixel(point.x + X, point.y + Y).red == 255) {
+							currentDirection = {x: X, y: Y};
+							point.x = point.x + X;
+							point.y = point.y + Y;
+							//cachedPoints[ttb | rtl << 1].push(point.copy());
+	
+							// used to prevent infinite recursion
+							if (prev == null) {
+								prev = {x: point.x, y: point.y};
+							} else {
+								prev2 = {x: prev.x, y: prev.y};
+								prev = {x: point.x, y: point.y};
 							}
+							if ((if (preferTTB) Y else X) == 0) {
+								if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
+									return;
+								}
+							}
+							expand();
 						}
-						expand();
 					}
 				}
 			}
@@ -109,5 +131,15 @@ class SimpleLineDetector {
 			}
 		}
 		return (coveredPixels /*The biggest gap */- gapChecker.length) / totalPixels * 100;
+	}
+
+
+
+
+
+
+
+	public function new(image:Image) {
+		
 	}
 }
