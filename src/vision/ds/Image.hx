@@ -1044,12 +1044,19 @@ abstract Image(ByteArray) {
 	/**
 		Resizes the image according to `algorithm`, to `newWidth` by `newHeight`.
 
-		@param newWidth The width to resize to
-		@param newHeight The height to resize to
+		@param newWidth The width to resize to. if assigned to `-1`, the image resizes to the given `newHeight`, and keeps the aspect-ratio of the original image.
+		@param newHeight The height to resize to. if assigned to `-1`, the image resizes to the given `newWidth`, and keeps the aspect-ratio of the original image.
 		@param algorithm Which algorithm to use. You can use the algorithms available in `ImageResizeAlgorithm`. If no algorithm is specified, uses `ImageTools.defaultResizeAlgorithm`.
 		@return this image, after resizing.
 	**/
-	public inline function resize(newWidth:Int, newHeight:Int, ?algorithm:ImageResizeAlgorithm):Image {
+	public inline function resize(newWidth:Int = -1, newHeight:Int = -1, ?algorithm:ImageResizeAlgorithm):Image {
+		if (newWidth == -1 && newHeight == -1) return cast this;
+		if (newWidth == -1) {
+			newWidth = Std.int(((newHeight / height) * width));
+		} else if (newHeight == -1) {
+			newHeight = Std.int(((newWidth / width) * height));
+		} 
+		trace(newWidth, newHeight);
 		if (algorithm == null)
 			algorithm = ImageTools.defaultResizeAlgorithm;
 		switch algorithm {
