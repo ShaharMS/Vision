@@ -14,33 +14,29 @@ using vision.tools.MathTools;
  */
 class SimpleLineDetector {
 
-	public static var cachedPoints:Map<Int, Array<IntPoint2D>> = [];
+	public static var cachedPoints:Array<IntPoint2D> = [];
 
-	public static function findLineFromPoint(image:Image, point:IntPoint2D, minLineLength:Float, preferTTB:Bool = false, preferRTL:Bool = false):Line2D {
-		//final rtl = preferRTL == true ? 1 : 0, ttb = preferTTB == true ? 1 : 0;
-		//if (cachedPoints[ttb | rtl << 1].contains(point)) return null;
+	public static var image:Image;
+
+	public static function findLineFromPoint(point:IntPoint2D, minLineLength:Float, preferTTB:Bool = false, preferRTL:Bool = false):Line2D {
+		if (image.getUnsafePixel(point.x, point.y) == 0) return null;
+
 		final startX = point.x, startY = point.y;
 		final yArr = preferTTB ? [0, 1, 2] : [0, -1, -2];
 		final xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
-		if (image.getUnsafePixel(point.x, point.y) == 0) return null;
-
 		// now, were going to start looking for points around the point to find the entire line.
-		var prev:Null<IntPoint2D> = null;
+		var prev:Null<IntPoint2D> = {x: 0, y: 0};
 		var prev2:Null<IntPoint2D> = null;
 		var currentDirection:Null<IntPoint2D> = {x: 0, y: 0};
 		function expand() {
-			if (currentDirection != null && image.hasPixel(point.x + currentDirection.x, point.y + currentDirection.y) && image.getPixel(point.x + currentDirection.x, point.y + currentDirection.y).red == 255) {
+			if (currentDirection != null && image.hasPixel(point.x + currentDirection.x, point.y + currentDirection.y) && image.getUnsafePixel(point.x + currentDirection.x, point.y + currentDirection.y).red == 255) {
 				point.x = point.x + currentDirection.x;
 				point.y = point.y + currentDirection.y;
-				//cachedPoints[ttb | rtl << 1].push(point.copy());
 	
 				// used to prevent infinite recursion
-				if (prev == null) {
-					prev = {x: point.x, y: point.y};
-				} else {
-					prev2 = {x: prev.x, y: prev.y};
-					prev = {x: point.x, y: point.y};
-				}
+				prev2 = {x: prev.x, y: prev.y};
+				prev = {x: point.x, y: point.y};
+				
 				if ((if (preferTTB) currentDirection.y else currentDirection.x) == 0) {
 					if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
 						return;
@@ -52,19 +48,15 @@ class SimpleLineDetector {
 					for (Y in yArr) {
 						if (X == 0 && Y == 0 || !image.hasPixel(point.x + X, point.y + Y))
 							continue;
-						if (image.getPixel(point.x + X, point.y + Y).red == 255) {
+						if (image.getUnsafePixel(point.x + X, point.y + Y).red == 255) {
 							currentDirection = {x: X, y: Y};
 							point.x = point.x + X;
 							point.y = point.y + Y;
-							//cachedPoints[ttb | rtl << 1].push(point.copy());
 	
 							// used to prevent infinite recursion
-							if (prev == null) {
-								prev = {x: point.x, y: point.y};
-							} else {
-								prev2 = {x: prev.x, y: prev.y};
-								prev = {x: point.x, y: point.y};
-							}
+							prev2 = {x: prev.x, y: prev.y};
+							prev = {x: point.x, y: point.y};
+							
 							if ((if (preferTTB) Y else X) == 0) {
 								if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
 									return;
@@ -133,13 +125,25 @@ class SimpleLineDetector {
 		return (coveredPixels /*The biggest gap */- gapChecker.length) / totalPixels * 100;
 	}
 
-
-
-
-
-
-
-	public function new(image:Image) {
-		
+	static function depositPoints(x1:Float, y1:Float, x2:Float, y2:Float) {
+		var dx = Math.abs(x2 - x1);
+		var dy = Math.abs(y2 - y1);
+		var sx = (x1 < x2) ? 1 : -1;
+		var sy = (y1 < y2) ? 1 : -1;
+		var err = dx - dy;
+		while (true) {
+			cachedPoints.push({x: x1, y: y1});
+			if (x1 == x2 && y1 == y2)
+				break;
+			var e2 = 2 * err;
+			if (e2 > -dy) {
+				err -= dy;
+				x1 += sx;
+			}
+			if (e2 < dx) {
+				err += dx;
+				y1 += sy;
+			}
+		}
 	}
 }

@@ -98,4 +98,12 @@ abstract IntPoint2D(Impl) {
 	public inline function copy() {
 		return new IntPoint2D(x, y);
 	}
+
+	@:op(A == B) public inline function equals(lhs:IntPoint2D):Bool {
+		return x == lhs.x && y == lhs.y;
+	}
+
+	@:op(A != B) inline function this_not_equals_IntPoint2D(lhs:IntPoint2D):Bool {
+		return x != lhs.x || y != lhs.y;
+	}
 }

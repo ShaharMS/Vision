@@ -643,14 +643,15 @@ class Vision {
             case VeryHigh_VerySlow: X9;
         }
         var edgeDetected = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16);
+		SimpleLineDetector.image = edgeDetected.clone();
         var lines:Array<Line2D> = [];
 		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-				lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true));
+				lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, true));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, false, true));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, true, true));
             }
         }
         for (l in lines) {
@@ -661,12 +662,13 @@ class Vision {
 		lines = [];
         //now, get a mirrored version
         edgeDetected = cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16);
+		SimpleLineDetector.image = edgeDetected.clone();
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, true));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, false, true));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, true, true));
             }
         }
         for (l in lines) {
