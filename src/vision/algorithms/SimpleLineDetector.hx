@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import vision.exceptions.VisionException;
 import haxe.display.Display.Package;
 import vision.ds.IntPoint2D;
 import vision.tools.MathTools;
@@ -31,7 +32,7 @@ class SimpleLineDetector {
 		for (x in xArr) {
 			for (y in yArr) {
 				if (!image.hasPixel(x, y)) continue;
-				if (image.getUnsafePixel(x,y).red == 0) continue;
+				if (image.getUnsafePixel(x,y).red != 255) continue;
 				dirX = x; dirY = y;
 				broken = true;
 				break;
@@ -43,36 +44,52 @@ class SimpleLineDetector {
 		if (dirX == 0 && dirY == 0) return null;
 
 		var cwp = point.copy();
-		var continueOrgLoop = false;
-		while (true) {
-			trace(cwp, dirX, dirY);
+		var continueOrgLoop = true;
+		var iter = 0;
+		while (continueOrgLoop) {
+			iter++;
+			if (iter > 10000) throw new VisionException("Too Many Iterations on point " + cwp.toString() + ". This should not occur.", "Line Detection Failure");
+			if (iter % 20 == 0) trace(cwp, dirX, dirY);
 			if (cwp.x >= image.width) break;
 			if (image.hasPixel(cwp.x + dirX, cwp.y + dirY) && image.getPixel(cwp.x + dirX, cwp.y + dirY).red == 255) {
 				cwp.x += dirX;
 				cwp.y += dirY;
-				continue;
 			}
 			else if (dirY > 0) {
 				for (y in [1, 2]) {
-					if (image.hasPixel(cwp.x + dirX, cwp.y + y) && image.getPixel(cwp.x + dirX, cwp.y + y).red == 255) {
+					if (image.hasPixel(cwp.x + dirX, cwp.y + y + dirY) && image.getPixel(cwp.x + dirX, cwp.y + y + dirY).red == 255) {
 						cwp.x += dirX;
 						cwp.y += y + dirY;
-						continueOrgLoop = true;
+						continueOrgLoop = false;
+						break;
+					} else if (image.hasPixel(cwp.x + dirX + 1, cwp.y + y + dirY) && image.getPixel(cwp.x + dirX + 1, cwp.y + y + dirY).red == 255) {
+						cwp.x += dirX + 1;
+						cwp.y += y + dirY;
+						continueOrgLoop = false;
+						break;
+					} else {
+						continueOrgLoop = false;
 						break;
 					}
 				}
 			} else {
 				for (y in [-1, -2]) {
-					if (image.hasPixel(cwp.x + dirX, cwp.y + y) && image.getPixel(cwp.x + dirX, cwp.y + y).red == 255) {
+					if (image.hasPixel(cwp.x + dirX, cwp.y + y + dirY) && image.getPixel(cwp.x + dirX, cwp.y + y + dirY).red == 255) {
 						cwp.x += dirX;
 						cwp.y += y + dirY;
-						continueOrgLoop = true;
+						continueOrgLoop = false;
+						break;
+					} else if (image.hasPixel(cwp.x + dirX + 1, cwp.y + y + dirY) && image.getPixel(cwp.x + dirX + 1, cwp.y + y + dirY).red == 255) {
+						cwp.x += dirX + 1;
+						cwp.y += y + dirY;
+						continueOrgLoop = false;
+						break;
+					} else {
+						continueOrgLoop = false;
 						break;
 					}
 				}
 			}
-
-			if (continueOrgLoop) continue else break;
 		}
 
 
