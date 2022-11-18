@@ -357,6 +357,8 @@ abstract Image(ByteArray) {
 			#if !vision_quiet
 			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
 			#end
+		} else if (color.alphaFloat == 1) {
+			setPixel(x, y, color);
 		} else {
 			var oldColor = getPixel(x, y);
 			var newColor = Color.fromRGBAFloat(
@@ -1032,10 +1034,19 @@ abstract Image(ByteArray) {
 		return cast this;
 	}
 
+	/**
+	 * Stamps the given image onto this image, with the stamped image's top left corner being at (`X`, `Y`).
+	 * 
+	 * 
+	 * @param X The X coordinate of the top left corner of the stamped image.
+	 * @param Y The Y coordinate of the top left corner of the stamped image
+	 * @param image The image to stamp. Alpha values are respected.
+	 * @return this image after stamping the given image onto it.
+	 */
 	public inline function stamp(X:Int, Y:Int, image:Image):Image {
 		for (x in X...X + image.width) {
 			for (y in Y...Y + image.height) {
-				setPixel(x, y, image.getUnsafePixel(x - X, y - Y));
+				paintPixel(x, y, image.getUnsafePixel(x - X, y - Y));
 			}
 		}
 		return cast this;
