@@ -1,7 +1,7 @@
 {
     "name": "vision",
     "license": "MIT",
-    "version": "1.2.1",   
+    "version": "1.2.2",   
     "description": "Vision is a simple, powerful and flexible computer vision & image processing library for Haxe.",
     "contributors": ["ShaharMS"],
     "releasenote": "Added \"Image Views\": allows manipulating a set portion of the image, without having to copy/paste pixels :)",

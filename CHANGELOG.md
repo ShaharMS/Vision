@@ -1,3 +1,13 @@
+# 1.2.2
+
+### `vision.ds`
+
+ - **Fix `DivideByZero` errors on PHP when using `Color.divide()`**
+ - **Fix Historgrams simply not working**
+ - **Optimized `image.paintPixel()`**
+ - **Fixed `image.stamp`, should now respect alpha values.**
+
+
 # 1.2.1
 
 ### `Vision.hx`
