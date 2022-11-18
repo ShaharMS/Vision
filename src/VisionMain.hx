@@ -76,6 +76,14 @@ class VisionMain {
 			printImage(image.clone());
 			end = haxe.Timer.stamp();
 			trace("Image Cloning took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().erode());
+			end = haxe.Timer.stamp();
+			trace("Erosion took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().dilate());
+			end = haxe.Timer.stamp();
+			trace("Dilation took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 
 			#if mirror_flip_tests
@@ -117,7 +125,7 @@ class VisionMain {
 			#if noise_tests
 			printSectionDivider("Noising/denoising tests");
 			start = haxe.Timer.stamp();
-			printImage(Vision.bilateralDenoise(image.clone().dropOutNoise(2), 0.8, 50));
+			printImage(Vision.bilateralDenoise(image.clone().contrast(), 0.8, 50));
 			end = haxe.Timer.stamp();
 			trace("Bilateral Denoising of Dropout noise took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
@@ -263,7 +271,7 @@ class VisionMain {
 				printImage(sip);
 				var stamped = image.clone();
 				var st = test.clone();
-				st.forEachPixel((x, y, color) -> {color.alpha = 0; st.setPixel(x, y, color);});
+				st.forEachPixel((x, y, color) -> {color.alpha = 64; st.setPixel(x, y, color);});
 				stamped.stamp(10, 30, st);
 				printImage(stamped); 
 			});
