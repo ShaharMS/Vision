@@ -45,7 +45,6 @@ class VisionMain {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-			//image.setView({x: 10, y: 10, width: 100, height: 70, shape: RHOMBUS});
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
 			start = haxe.Timer.stamp();
