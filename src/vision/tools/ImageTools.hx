@@ -1,5 +1,7 @@
 package vision.tools;
 
+import haxe.crypto.Base64;
+import haxe.io.BytesOutput;
 import vision.ds.ByteArray;
 import vision.exceptions.ImageLoadingFailed;
 import vision.exceptions.ImageSavingFailed;
@@ -148,8 +150,6 @@ class ImageTools {
 	/**
 	    Saves an image to a path.
 
-		Currently, this function is only available on `sys` targets.
-
 		**Note: this function requires the `format` library, and only supports PNG.**
 
 		To install:
@@ -187,6 +187,28 @@ class ImageTools {
 				#end
 			#end
 		#else
+			#if format
+			switch saveFormat {
+				case PNG: {
+					try {
+						var canvas = image.toJsCanvas();
+  						var i = canvas.toDataURL("image/png", 1.0).replace("image/png", "image/octet-stream");
+  						var link = Browser.document.createAnchorElement();
+  						link.download = "my-image.png";
+  						link.href = i;
+  						link.click();
+					} catch (e:haxe.Exception) {
+						#if !vision_quiet
+						throw new ImageSavingFailed(saveFormat, e.message);
+						#end
+					}
+				}
+			}
+			#else
+				#if !vision_quiet
+				throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
+				#end
+			#end
 		#end
 	}
 

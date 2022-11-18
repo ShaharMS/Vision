@@ -1,6 +1,5 @@
 package;
 
-import js.html.EffectTiming;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;
@@ -38,7 +37,6 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-
 		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printSectionDivider("Test image, resized");
@@ -270,7 +268,7 @@ class VisionMain {
 				printImage(sip);
 				var stamped = image.clone();
 				var st = test.clone();
-				st.forEachPixel((x, y, color) -> {color.alpha = 64; st.setPixel(x, y, color);});
+				st.forEachPixel((x, y, color) -> {color.alpha = 128; st.setPixel(x, y, color);});
 				stamped.stamp(10, 30, st);
 				printImage(stamped); 
 			});
@@ -390,5 +388,4 @@ class VisionMain {
 	div.appendChild(hr);
 	#end
 	}
-	
 }
