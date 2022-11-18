@@ -597,10 +597,9 @@ abstract Image(ByteArray) {
 		@see Line2D
 	**/
 	public inline function drawLine2D(line:Line2D, color:Color) {
-		var x1 = Std.int(line.start.x), 
-			y1 = Std.int(line.start.y), 
-			x2 = Std.int(line.end.x), 
-			y2 = Std.int(line.end.y);
+		var p1 = IntPoint2D.fromPoint2D(line.start);
+		var p2 = IntPoint2D.fromPoint2D(line.end);
+		var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
 		var dx = Math.abs(x2 - x1);
 		var dy = Math.abs(y2 - y1);
 		var sx = (x1 < x2) ? 1 : -1;

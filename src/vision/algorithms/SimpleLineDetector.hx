@@ -1,6 +1,5 @@
 package vision.algorithms;
 
-import haxe.display.Display.Package;
 import vision.ds.IntPoint2D;
 import vision.tools.MathTools;
 import vision.ds.Color;
@@ -19,66 +18,58 @@ class SimpleLineDetector {
 
 	public static var image:Image;
 
-	public static function findLineFromPoint(point:IntPoint2D, minLineLength:Float, maxGap:Int = 1):Line2D {
+	public static function findLineFromPoint(point:IntPoint2D, minLineLength:Float, preferTTB:Bool = false, preferRTL:Bool = false):Line2D {
 		if (image.getUnsafePixel(point.x, point.y) == 0) return null;
-		var broken = false;
+
 		final startX = point.x, startY = point.y;
-		final xArr = [0, 1, 2];
-		final yArr = [0, 1, -1, 2, -2];
-		var dirX:Int = 0, dirY:Int = 0;
-		var gap:Int = 0;
-		//find the line's direction
-		for (x in xArr) {
-			for (y in yArr) {
-				if (!image.hasPixel(x, y)) continue;
-				if (image.getUnsafePixel(x,y).red == 0) continue;
-				dirX = x; dirY = y;
-				broken = true;
-				break;
-			}
-			if (broken) break;
-		}
-		broken = false;
-		//return if a dir wasn't found
-		if (dirX == 0 && dirY == 0) return null;
-
-		var cwp = point.copy();
-		var continueOrgLoop = false;
-		while (true) {
-			trace(cwp, dirX, dirY);
-			if (cwp.x >= image.width) break;
-			if (image.hasPixel(cwp.x + dirX, cwp.y + dirY) && image.getPixel(cwp.x + dirX, cwp.y + dirY).red == 255) {
-				cwp.x += dirX;
-				cwp.y += dirY;
-				continue;
-			}
-			else if (dirY > 0) {
-				for (y in [1, 2]) {
-					if (image.hasPixel(cwp.x + dirX, cwp.y + y) && image.getPixel(cwp.x + dirX, cwp.y + y).red == 255) {
-						cwp.x += dirX;
-						cwp.y += y + dirY;
-						continueOrgLoop = true;
-						break;
+		final yArr = preferTTB ? [0, 1, 2] : [0, -1, -2];
+		final xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
+		// now, were going to start looking for points around the point to find the entire line.
+		var prev:Null<IntPoint2D> = {x: 0, y: 0};
+		var prev2:Null<IntPoint2D> = null;
+		var currentDirection:Null<IntPoint2D> = {x: 0, y: 0};
+		function expand() {
+			if (currentDirection != null && image.hasPixel(point.x + currentDirection.x, point.y + currentDirection.y) && image.getUnsafePixel(point.x + currentDirection.x, point.y + currentDirection.y).red == 255) {
+				point.x = point.x + currentDirection.x;
+				point.y = point.y + currentDirection.y;
+	
+				// used to prevent infinite recursion
+				prev2 = {x: prev.x, y: prev.y};
+				prev = {x: point.x, y: point.y};
+				
+				if ((if (preferTTB) currentDirection.y else currentDirection.x) == 0) {
+					if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
+						return;
 					}
 				}
-			} else {
-				for (y in [-1, -2]) {
-					if (image.hasPixel(cwp.x + dirX, cwp.y + y) && image.getPixel(cwp.x + dirX, cwp.y + y).red == 255) {
-						cwp.x += dirX;
-						cwp.y += y + dirY;
-						continueOrgLoop = true;
-						break;
+				expand();
+			} else { //fallback, used for skewed/dotted/dashed lines
+				for (X in xArr) {
+					for (Y in yArr) {
+						if (X == 0 && Y == 0 || !image.hasPixel(point.x + X, point.y + Y))
+							continue;
+						if (image.getUnsafePixel(point.x + X, point.y + Y).red == 255) {
+							currentDirection = {x: X, y: Y};
+							point.x = point.x + X;
+							point.y = point.y + Y;
+	
+							// used to prevent infinite recursion
+							prev2 = {x: prev.x, y: prev.y};
+							prev = {x: point.x, y: point.y};
+							
+							if ((if (preferTTB) Y else X) == 0) {
+								if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
+									return;
+								}
+							}
+							expand();
+						}
 					}
 				}
 			}
-
-			if (continueOrgLoop) continue else break;
 		}
-
-
-		//finished finding lines, now try returning it
-
-		var line = new Line2D({x: startX, y: startY}, cwp);
+		expand();
+		var line = new Line2D({x: startX, y: startY}, point);
 
 		if (line.length > minLineLength) {
 			return line;
@@ -109,14 +100,15 @@ class SimpleLineDetector {
 		var gapChecker:Array<Int> = [];
 		var currentGap = 1;
 		while (true) {
-			if (image.getPixel(Std.int(x1), Std.int(y1)).red == 255) {
-				coveredPixels++;
-				currentGap = 0;
-			} else {
-				gapChecker[currentGap] = 1;
-				currentGap++;
+			if (image.hasPixel(x1, y1)) {
+				if (image.getPixel(Std.int(x1), Std.int(y1)).red == 255) {
+					coveredPixels++;
+					currentGap = 0;
+				} else {
+					gapChecker[currentGap] = 1;
+					currentGap++;
+				}
 			}
-			
 			totalPixels++;
 			if (x1 == x2 && y1 == y2)
 				break;

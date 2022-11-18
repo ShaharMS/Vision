@@ -649,6 +649,9 @@ class Vision {
         for (x in 0...image.width) {
             for (y in 0...image.height) {
 				lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, true));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, false, true));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, true, true));
             }
         }
         for (l in lines) {
@@ -663,6 +666,9 @@ class Vision {
         for (x in 0...image.width) {
             for (y in 0...image.height) {
                 lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, true));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, false, true));
+                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength, true, true));
             }
         }
         for (l in lines) {
