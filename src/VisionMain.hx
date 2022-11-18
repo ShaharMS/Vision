@@ -176,10 +176,6 @@ class VisionMain {
 			printImage(image.clone().laplacianOfGaussianEdgeDetection());
 			end = haxe.Timer.stamp();
 			trace("Laplacian edge detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			start = haxe.Timer.stamp();
-			printImage(image.clone().sobelEdgeDiffOperator().blackAndWhite());
-			end = haxe.Timer.stamp();
-			trace("Eroded Perwitt edge detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 		});
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png", image ->
