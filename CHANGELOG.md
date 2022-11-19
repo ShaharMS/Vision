@@ -1,3 +1,16 @@
+# 1.2.3
+
+### `vision.ds`
+
+ - **Added `ImageVIew.toString()`**
+ - **Improved doc comment for private static field `Image.OFFSET`**
+
+### `vision.tools`
+
+ - **Implemented `ImageTools.saveToFile()` for JS**
+ - **Fixed `ImageTools.saveToFile()` saving incorrectly on sys targets**
+ - **Fixed `ImageTools.loadFromFile()` loading incorrectly on sys targets**
+
 # 1.2.2
 
 ### `vision.ds`

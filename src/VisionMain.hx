@@ -37,22 +37,6 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-		ImageTools.loadFromFile("https://w7.pngwing.com/pngs/656/85/png-transparent-yellow-circles-background-other-orange-computer-wallpaper.png",
-    data -> {
-        //image = data;
-        var image = data;
-		trace(image.getView().toString());
-        ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/tr/5/5c/Sanalika_logo.png",
-            data2 -> {
-                var image2 = data2;
-                image = image.stamp(0, 0, image2.getImagePortion({x: 0, y: 0, width: 50, height: 50}));
-                trace("image loaded");
-				printImage(image.clone());
-                image.saveToFile("test.png", PNG);
-            }
-        );
-    }
-);
 		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printSectionDivider("Test image, resized");
