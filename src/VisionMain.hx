@@ -41,10 +41,10 @@ class VisionMain {
     data -> {
         //image = data;
         var image = data;
+		trace(image.getView().toString());
         ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/tr/5/5c/Sanalika_logo.png",
             data2 -> {
                 var image2 = data2;
-
                 image = image.stamp(0, 0, image2.getImagePortion({x: 0, y: 0, width: 50, height: 50}));
                 trace("image loaded");
 				printImage(image.clone());
