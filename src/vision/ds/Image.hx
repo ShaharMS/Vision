@@ -17,22 +17,21 @@ using vision.tools.MathTools;
 **/
 @:transitive
 abstract Image(ByteArray) {
+	#if vision_higher_width_cap
 	/**
-		### If `vision_higher_width_cap` is defined:
-
 		the first 4 bytes represent image width,  
 		the next 8 bytes are the `x` & `y` position of an image view,  
 		the next 8 bytes are the `width` & `height` of an image view,
 		the last byte represents view shape
-
-		### Otherwise:
-
+	**/
+	#else
+	/**
 		the first 2 bytes represent image width,  
 		the next 4 bytes are the `x` & `y` position of an image view,  
 		the next 4 bytes are the `width` & `height` of an image view,
 		the last byte represents view shape
-
 	**/
+	#end
 	static var OFFSET = #if vision_higher_width_cap 21 #else 11 #end;
 
 	static var WIDTH_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
@@ -111,21 +110,12 @@ abstract Image(ByteArray) {
 	**/
 	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
 		this = new ByteArray(width * height * 4 + OFFSET);
-		#if vision_higher_width_cap
-		this.setInt32(0, width);
-		this.setInt32(WIDTH_BYTES, 0);
-		this.setInt32(WIDTH_BYTES + DATA_GAP, 0);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (0, width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-		#else
-		this.setUInt16(0, width);
-		this.setUInt16(WIDTH_BYTES, 0);
-		this.setUInt16(WIDTH_BYTES + DATA_GAP, 0);
-		this.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		this.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
-		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-		#end
 		var i = OFFSET;
 		while (i < this.length) {
 			this[i] = color.alpha;

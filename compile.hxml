@@ -8,10 +8,11 @@
 --dce full
 
 #--interp
+--cpp bin/cpp
 #--define compile_unit_tests
 #--define radix_test
 
---js bin/main.js
+#--js bin/main.js
 --define feature_detection_tests
 --define draw_tests
 --define mirror_flip_tests
@@ -20,3 +21,4 @@
 --define convolve_tests
 --define simple_tests
 --define noise_tests
+--define copy_paste_tests
