@@ -150,7 +150,7 @@ class VisionMain {
 
 			#if feature_detection_tests
 			start = haxe.Timer.stamp();
-			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 15);
+			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 5);
 			var newI = image.clone();
 			for (l in lines) {
 				newI.drawLine2D(l, 0x00FFD5);

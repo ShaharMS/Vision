@@ -21,35 +21,48 @@ class SimpleLineDetector {
 
 	public static var image:Image;
 
+	/**
+		Shortcut for
+		```haxe
+		new Int16Point2D(x, y)
+		```
+	**/
 	static inline function p(x:Int = 0, y:Int = 0) {
 		return new Int16Point2D(x, y);
 	}
 
 
 	public static function findLineFromPoint(point:Int16Point2D, minLineLength:Float, maxGap:Int = 1):Line2D {
-		if (image.getUnsafePixel(point.x, point.y) == 0 || cachedPoints.contains(point)) return null;
-		final start = point;
-		var pointCheckOrder:Array<Int16Point2D> = [p(1, 1), p(0, 1), p(-1, 1), p(0, 1), p(0, -1), p(-1, 1), p(-1, 0), p(-1, -1)];
+		if (image.getUnsafePixel(point.x, point.y) != 0xFFFFFFFF || cachedPoints.contains(point)) return null;
+		final start = p(point.x, point.y);
+		var pointCheckOrder:Array<Int16Point2D> = [p(1, 0), p(1, 1), p(1, -1), p(-1, 0), p(-1, 1), p(-1, -1), p(0, 1), p(0, -1)];
 		var cwp:Null<Int16Point2D> = point;
-		var prev:Null<Int> = 0, prev2:Null<Int> = 0;
 		var safetyNet = 0;
-		while (cwp != null) {
+		var voided:Bool = false;
+		/* 
+			A positive/negative integer, calculated during the processing of the first few pixels.
+			When positive, the point (0, -1) will be removed from the detection calculations. when negative, the opposite
+			point gets removed.
+		*/
+		var dir:Float = 0;
+		while (!voided) {
 			safetyNet++;
-			if (safetyNet % 10 == 0) trace(cwp.toString());
-			if (safetyNet > 5000) throw new VisionException("Too Many Iterations on point " + cwp.toString() + ". This should not occur.", "Line Detection Failure");
-			cwp = null;
+			if (safetyNet == 10) {
+				dir = MathTools.degreesFromPointToPoint2D(start, cwp);
+			}
+			if (safetyNet > 1000) break;//throw new VisionException("Too Many Iterations on point " + cwp.toString() + ". This should not occur.", "Line Detection Failure");
+			voided = true;
 			for (p in pointCheckOrder) {
-				if (prev2 != S.p(p.x + cwp.x, p.y + cwp.y) && image.getUnsafePixel(p.x + cwp.x, p.y + cwp.y) == 0xFFFFFFFF) {
+				if (image.getUnsafePixel(p.x + cwp.x, p.y + cwp.y) == 0xFFFFFFFF) {
 					cwp.x = cwp.x + p.x;
 					cwp.y = cwp.y + p.y;
+					voided = false;
+					break;
 				}
 			}
-			prev = cwp;
-			prev2 = prev;
-			if (prev == cwp || prev2 == cwp) break;
 			cachedPoints.push(cwp);
 		}
-
+		trace(safetyNet);
 		var line = new Line2D(start, cwp);
 		if (line.length >= minLineLength) return line; 
 		return null;
