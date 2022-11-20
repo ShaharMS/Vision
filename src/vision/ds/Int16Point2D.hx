@@ -20,9 +20,6 @@ abstract Int16Point2D(Int) {
 
     public inline function new(X:Int = 0, Y:Int = 0) {
         this = (X & 0xFFFF) | ((Y & 0xFFFF) << 16);
-
-        Node<int> node = new Node<int>(16);
-        node.SetNext 
     }
 
     inline function get_x() {
