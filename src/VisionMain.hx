@@ -1,6 +1,6 @@
 package;
 
-import js.html.EffectTiming;
+import vision.ds.Int16Point2D;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;
@@ -38,8 +38,11 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-
-		#if (true)
+		var i16p = new Int16Point2D(0, 0);
+		i16p.x = 124;
+		i16p.y = 4921;
+		trace(i16p.toString());
+		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
 			//image = image.resize(150, 112, BilinearInterpolation);

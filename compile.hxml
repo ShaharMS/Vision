@@ -7,11 +7,11 @@
 -debug
 --dce full
 
-#--interp
+--interp
 #--define compile_unit_tests
 #--define radix_test
 
---js bin/main.js
+#--js bin/main.js
 --define feature_detection_tests
 #--define edge_corner_detection_tests
 #--define draw_tests
