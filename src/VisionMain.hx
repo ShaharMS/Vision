@@ -150,11 +150,12 @@ class VisionMain {
 
 			#if feature_detection_tests
 			start = haxe.Timer.stamp();
-			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 5);
+			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
 			var newI = image.clone();
 			for (l in lines) {
 				newI.drawLine2D(l, 0x00FFD5);
 			}
+			printImage(Vision.cannyEdgeDetection(image.clone().removeView(), 1, X5, 0.05, 0.16));
 			printImage(newI);
 			end = haxe.Timer.stamp();
 			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");

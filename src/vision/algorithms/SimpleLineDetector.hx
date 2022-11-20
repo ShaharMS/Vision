@@ -36,7 +36,7 @@ class SimpleLineDetector {
 		if (image.getUnsafePixel(point.x, point.y) != 0xFFFFFFFF || cachedPoints.contains(point)) return null;
 		final start = p(point.x, point.y);
 		var pointCheckOrder:Array<Int16Point2D> = [p(1, 0), p(1, 1), p(1, -1), p(-1, 0), p(-1, 1), p(-1, -1), p(0, 1), p(0, -1)];
-		var cwp:Null<Int16Point2D> = point;
+		var cwp:Null<Int16Point2D> = p(point.x, point.y);
 		var safetyNet = 0;
 		var voided:Bool = false;
 		/* 
@@ -47,22 +47,31 @@ class SimpleLineDetector {
 		var dir:Float = 0;
 		while (!voided) {
 			safetyNet++;
-			if (safetyNet == 10) {
+			if (safetyNet == 5 || safetyNet == 10) {
 				dir = MathTools.degreesFromPointToPoint2D(start, cwp);
+				if (dir > 0) {
+					if (dir < 90) pointCheckOrder = [p(1, 0), p(1, -1), p(1, -1), p(0, -1)];
+					else if (dir > 90) pointCheckOrder = [p(-1, 0), p(-1, -1), p(-1, -1), p(0, -1)];
+					else pointCheckOrder = [p(0, -1), p(1, -1), p(-1, -1), p(1, 0), p(-1, 0)];
+				} else if (dir < 0) {
+					if (dir > -90) pointCheckOrder = [p(1, 0), p(1, 1), p(1, 1), p(0, 1)];
+					else if (dir < -90) pointCheckOrder = [p(-1, 0), p(-1, 1), p(-1, 1), p(0, 1)];
+					else pointCheckOrder = [p(0, 1), p(1, 1), p(-1, 1), p(1, 0), p(-1, 0)];
+				} else {
+					pointCheckOrder = [p(1, 0), p(1, -1), p(1, -1), p(0, -1), p(0, 1)];
+				}
 			}
 			if (safetyNet > 1000) break;//throw new VisionException("Too Many Iterations on point " + cwp.toString() + ". This should not occur.", "Line Detection Failure");
 			voided = true;
 			for (p in pointCheckOrder) {
-				if (image.getUnsafePixel(p.x + cwp.x, p.y + cwp.y) == 0xFFFFFFFF) {
-					cwp.x = cwp.x + p.x;
-					cwp.y = cwp.y + p.y;
+				if (image.hasPixel(p.x + cwp.x, p.y + cwp.y) && image.getUnsafePixel(p.x + cwp.x, p.y + cwp.y) == 0xFFFFFFFF) {
+					if (p != S.p(0, 1) && p != S.p(1, 0)) trace(p.toString());
+					cwp = S.p(cwp.x + p.x, cwp.y + p.y);
 					voided = false;
-					break;
-				}
+				} 
 			}
 			cachedPoints.push(cwp);
 		}
-		trace(safetyNet);
 		var line = new Line2D(start, cwp);
 		if (line.length >= minLineLength) return line; 
 		return null;
