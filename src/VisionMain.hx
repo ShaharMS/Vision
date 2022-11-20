@@ -42,7 +42,7 @@ class VisionMain {
 		i16p.x = 124;
 		i16p.y = 4921;
 		trace(i16p.toString());
-		#if (false)
+		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printImage(image);
 			//image = image.resize(150, 112, BilinearInterpolation);

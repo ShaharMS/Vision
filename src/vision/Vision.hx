@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.Int16Point2D;
 import haxe.ds.Vector;
 import vision.ds.specifics.WhiteNoiseRange;
 import vision.algorithms.Laplacian;
@@ -648,7 +649,7 @@ class Vision {
 		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-				lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength));
+				lines.push(SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength));
             }
         }
         for (l in lines) {
@@ -662,7 +663,7 @@ class Vision {
 		SimpleLineDetector.image = edgeDetected.clone();
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                lines.push(SimpleLineDetector.findLineFromPoint({x: x, y: y}, minLineLength));
+                lines.push(SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength));
             }
         }
         for (l in lines) {

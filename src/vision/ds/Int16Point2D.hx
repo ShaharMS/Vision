@@ -6,6 +6,7 @@ package vision.ds;
  * An abstract over a 32-bit `Int`, with its first 16 bits representing
  * the X value, and the other bits representing the Y value
  */
+@:structInit
 abstract Int16Point2D(Int) {
 
     /**
@@ -44,5 +45,17 @@ abstract Int16Point2D(Int) {
 
     public inline function toString():String {
         return '($x, $y)';
+    }
+
+    @:to public inline function toPoint2D():Point2D {
+        return new Point2D(x, y);
+    }
+
+    @:to public inline function toIntPoint2D():Point2D {
+        return new IntPoint2D(x, y);
+    }
+
+    @:to public inline function toInt():Int {
+        return this;
     }
 }
