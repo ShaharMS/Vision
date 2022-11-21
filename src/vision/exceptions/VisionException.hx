@@ -8,6 +8,7 @@ import js.Syntax;
 **/
 class VisionException {
 	public function new(message:String, type:String) {
+		trace('$type: $message');
 		Syntax.code("throw \"Exception - \" + {0} + \":\\n\\n\\t\" + {1} + \"\\n\"", type, message);
 	}
 }
@@ -20,6 +21,7 @@ import haxe.Exception;
 **/
 class VisionException extends Exception {
 	public function new(message:String, type:String) {
+		trace('$type: $message');
 		super('$type: $message');
 	}
 }
