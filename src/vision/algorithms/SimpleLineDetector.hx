@@ -33,16 +33,18 @@ class SimpleLineDetector {
 
 
 	public static function findLineFromPoint(point:Int16Point2D, minLineLength:Float, maxGap:Int = 1):Null<Line2D> {
-		if(point.x >= 0 && point.y >= 0 && point.x < image.width && point.y < image.height)
+		if(point.x >= 0 && point.y >= 0) return null;
+		if((point.x /* + image.x */ < image.width /* + image.x */) || (point.y /* + image.y */ < image.height /* + image.x*/))
 			return null;
-		if (image.getUnsafePixel(point.x, point.y) != 0xFFFFFFFF || cachedPoints.contains(point)) {
+
+		/*if (image.getUnsafePixel(point.x, point.y) != 0xFFFFFFFF || cachedPoints.contains(point)) {
 			trace('point unsafe');
 			return null;
 		}
 		if (!image.hasPixel(point.x, point.y)) {
 			trace('unreal point');
 			return null;
-		}
+		}*/
 		final start = p(point.x, point.y);
 		var pointCheckOrder:Array<Int16Point2D> = [p(1, 0), p(1, 1), p(1, -1), p(-1, 0), p(-1, 1), p(-1, -1), p(0, 1), p(0, -1)];
 		var cwp:Null<Int16Point2D> = p(point.x, point.y);
