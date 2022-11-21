@@ -427,9 +427,8 @@ abstract Image(ByteArray) {
 
 		@return True if the coordinates are within the bounds of the image.
 	**/
-	public inline function hasPixel(x:Int, y:Int):Bool {
-		if(x < 0 || y < 0) return false;
-		return (x < width && y < height);
+	public inline function hasPixel(x:Int = 0, y:Int = 0):Bool {
+		return (x >= 0 && y >= 0 && x <= width && y <= height);
 	}
 
 
@@ -518,14 +517,14 @@ abstract Image(ByteArray) {
 	public inline function drawLine(x1:Int, y1:Int, x2:Int, y2:Int, color:Color) {
 		var dx = Math.abs(x2 - x1);
 		var dy = Math.abs(y2 - y1);
-		var sx = (x1 < x2) ? 1 : -1;
-		var sy = (y1 < y2) ? 1 : -1;
+		final sx = (x1 < x2) ? 1 : -1;
+		final sy = (y1 < y2) ? 1 : -1;
 		var err = dx - dy;
 		while (true) {
 			setPixel(x1, y1, color);
 			if (x1 == x2 && y1 == y2)
 				break;
-			var e2 = 2 * err;
+			final e2 = 2 * err;
 			if (e2 > -dy) {
 				err -= dy;
 				x1 += sx;
