@@ -667,10 +667,14 @@ class Vision {
         for (l in lines) {
             if (l == null) continue;
             if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
+            actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
+        }
+        return actualLines;
     }
 
 	/**
 		Applies the sobel filter to an image.
+
 		The image doesn't have to get grayscaled before being passed 
 		to this function.
 		
