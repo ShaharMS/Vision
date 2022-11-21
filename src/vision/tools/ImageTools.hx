@@ -1,5 +1,7 @@
 package vision.tools;
 
+import haxe.crypto.Base64;
+import haxe.io.BytesOutput;
 import vision.ds.ByteArray;
 import vision.exceptions.ImageLoadingFailed;
 import vision.exceptions.ImageSavingFailed;
@@ -72,7 +74,7 @@ class ImageTools {
 						format.png.Tools.reverseBytes(bytes);
 						image = new Image(header.width, header.height);
 						try {
-							image.underlying.blit(4, bytes, 0, bytes.length - 1);
+							image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length - 1);
 						} catch (e) #if !vision_quiet throw new ImageLoadingFailed(PNG, e.message);#end
 					} catch (e:haxe.Exception) {
 						#if vision_quiet
@@ -98,8 +100,8 @@ class ImageTools {
 					format.png.Tools.reverseBytes(bytes);
 					var image = new Image(header.width, header.height);
 
-					// copy the ARGB bytes from the PNG to the image, without overwriting the first 4 bytes
-					image.underlying.blit(4, bytes, 0, bytes.length);
+					// copy the ARGB bytes from the PNG to the image, without overwriting the first couple of bytes
+					image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length);
 
 					onComplete(image);
 				} catch (e:haxe.Exception) {
@@ -148,8 +150,6 @@ class ImageTools {
 	/**
 	    Saves an image to a path.
 
-		Currently, this function is only available on `sys` targets.
-
 		**Note: this function requires the `format` library, and only supports PNG.**
 
 		To install:
@@ -171,7 +171,7 @@ class ImageTools {
 					try {
 						final out = sys.io.File.write(pathWithFileName);
 						var writer = new format.png.Writer(out);
-						final data = format.png.Tools.build32ARGB(image.width, image.height, image.underlying.sub(4, image.underlying.length - 4));
+						final data = format.png.Tools.build32ARGB(image.width, image.height, image.underlying.sub(Image.OFFSET, image.underlying.length - Image.OFFSET));
 						writer.write(data);
 						out.close();
 					} catch (e:haxe.Exception) {
@@ -187,6 +187,28 @@ class ImageTools {
 				#end
 			#end
 		#else
+			#if format
+			switch saveFormat {
+				case PNG: {
+					try {
+						var canvas = image.toJsCanvas();
+  						var i = canvas.toDataURL("image/png", 1.0).replace("image/png", "image/octet-stream");
+  						var link = Browser.document.createAnchorElement();
+  						link.download = "my-image.png";
+  						link.href = i;
+  						link.click();
+					} catch (e:haxe.Exception) {
+						#if !vision_quiet
+						throw new ImageSavingFailed(saveFormat, e.message);
+						#end
+					}
+				}
+			}
+			#else
+				#if !vision_quiet
+				throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
+				#end
+			#end
 		#end
 	}
 

@@ -44,11 +44,12 @@ class VisionMain {
 		trace(i16p.toString());
 		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			printSectionDivider("Test image, resized");
 			printImage(image);
-			//image = image.resize(150, 112, BilinearInterpolation);
-			//printImage(image);
-			//image.setView({x: 10, y: 10, width: 100, height: 70, shape: RHOMBUS});
+			image = image.resize(150, 112, BilinearInterpolation);
+			printImage(image);
 			#if simple_tests
+			printSectionDivider("Simple image manipulation");
 			start = haxe.Timer.stamp();
 			printImage(Vision.blackAndWhite(image.clone()));
 			end = haxe.Timer.stamp();
@@ -78,20 +79,17 @@ class VisionMain {
 			end = haxe.Timer.stamp();
 			trace("Image Cloning took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(Vision.saltAndPepperNoise(image.clone()));
+			printImage(image.clone().erode());
 			end = haxe.Timer.stamp();
-			trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
+			trace("Erosion took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(Vision.dropOutNoise(image.clone()));
+			printImage(image.clone().dilate());
 			end = haxe.Timer.stamp();
-			trace("Dropout Noise took: " + MathTools.truncate(end - start, 4) + " seconds");
-			start = haxe.Timer.stamp();
-			printImage(Vision.whiteNoise(image.clone()));
-			end = haxe.Timer.stamp();
-			trace("White Noise took: " + MathTools.truncate(end - start, 4) + " seconds");
+			trace("Dilation took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 
 			#if mirror_flip_tests
+			printSectionDivider("Mirror/flip tests");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().mirror());
 			end = haxe.Timer.stamp();
@@ -107,6 +105,7 @@ class VisionMain {
 			#end
 
 			#if filter_tests
+			printSectionDivider("Image filtering tests");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().sobelEdgeDiffOperator());
 			end = haxe.Timer.stamp();
@@ -126,14 +125,28 @@ class VisionMain {
 			#end
 
 			#if noise_tests
+			printSectionDivider("Noising/denoising tests");
 			start = haxe.Timer.stamp();
-			printImage(Vision.bilateralDenoise(image.clone().sharpen(), 0.8, 50));
+			printImage(Vision.bilateralDenoise(image.clone().contrast(), 0.8, 50));
 			end = haxe.Timer.stamp();
-			trace("Bilateral Denoising took: " + MathTools.truncate(end - start, 4) + " seconds");
+			trace("Bilateral Denoising of Dropout noise took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(Vision.saltAndPepperNoise(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("Salt & pepper took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(Vision.dropOutNoise(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("Dropout Noise took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(Vision.whiteNoise(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("White Noise took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 			
 			
 			#if blur_tests
+			printSectionDivider("Blur tests");
 			start = haxe.Timer.stamp();
 			printImage(Vision.nearestNeighborBlur(image.clone(), 1));
 			end = haxe.Timer.stamp();
@@ -149,6 +162,7 @@ class VisionMain {
 			#end
 
 			#if feature_detection_tests
+			printSectionDivider("Feature detection tests");
 			start = haxe.Timer.stamp();
 			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
 			var newI = image.clone();
@@ -159,8 +173,6 @@ class VisionMain {
 			printImage(newI);
 			end = haxe.Timer.stamp();
 			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			#end
-			#if edge_corner_detection_tests
 			start = haxe.Timer.stamp();
 			printImage(image.clone().sobelEdgeDetection());
 			end = haxe.Timer.stamp();
@@ -187,6 +199,7 @@ class VisionMain {
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png", image ->
 		{
 			#if convolve_tests
+			printSectionDivider("Convolution tests");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().convolve(Identity));
 			end = haxe.Timer.stamp();
@@ -220,6 +233,7 @@ class VisionMain {
 		#end
 
 		#if draw_tests
+		printSectionDivider("Draw tests");
 		var image = new Image(250, 250, 0x000000);
 		image.drawLine(12, 53, 54, 15, 0xbd0202);
 		image.drawLine(56, 248, 181, 95, 0x000355);
@@ -249,6 +263,22 @@ class VisionMain {
 		}
 		//pixelTests.resize(100, 100, NearestNeighbor);
 		printImage(pixelTests);
+		#end
+		#if copy_paste_tests
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", valve -> {
+			ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png", test -> {
+				printSectionDivider("copy/paste tests");
+				var image = valve.clone();
+				var sip = image.clone();
+				sip.setImagePortion({x: 20, y: 20, width: test.width, height: test.width}, test);
+				printImage(sip);
+				var stamped = image.clone();
+				var st = test.clone();
+				st.forEachPixel((x, y, color) -> {color.alpha = 128; st.setPixel(x, y, color);});
+				stamped.stamp(10, 30, st);
+				printImage(stamped); 
+			});
+		});
 		#end
 
 		#if ds_tests
@@ -347,5 +377,21 @@ class VisionMain {
 		Browser.document.body.appendChild(c);
 	#end
 	}
-	
+
+	public static function printSectionDivider(title:String) {
+	#if js
+	var div = Browser.document.createDivElement();
+	div.style.overflow = "hidden";
+	div.style.whiteSpace = "nowrap";
+	div.textContent = title + ":";
+	div.style.fontWeight = "bold";
+	var hr = Browser.document.createHRElement();
+	Browser.document.body.appendChild(div);
+	var divW = title.length * 9;
+	hr.style.float = "right";
+	hr.style.display = "inline-block";
+	hr.style.width = 'calc(100% - ${divW}px)';
+	div.appendChild(hr);
+	#end
+	}
 }

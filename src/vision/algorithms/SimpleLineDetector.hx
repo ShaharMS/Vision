@@ -83,7 +83,8 @@ class SimpleLineDetector {
 	**/
 	public static function lineCoveragePercentage(image:Image, line:Line2D):Float {
 		var coveredPixels = 0, totalPixels = 0;
-		if (line == null) return 0;
+		if (line == null)
+			return 0;
 		final p1 = IntPoint2D.fromPoint2D(line.start);
 		final p2 = IntPoint2D.fromPoint2D(line.end);
 		var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
@@ -92,23 +93,25 @@ class SimpleLineDetector {
 		var sx = (x1 < x2) ? 1 : -1;
 		var sy = (y1 < y2) ? 1 : -1;
 		var err = dx - dy;
-		// were going to check for the longest gap using an array of integers
-		// each time a gap is getting longer, we'll set the array at the index of the
-		// current length of the gap to 1
-		// then, the max length should be the length of the array
+		//were going to check for the longest gap using an array of integers
+		//each time a gap is getting longer, we'll set the array at the index of the
+		//current length of the gap to 1
+		//then, the max length should be the length of the array
 		var gapChecker:Array<Int> = [];
 		var currentGap = 1;
 		while (true) {
-			if (image.hasPixel(Std.int(x1), Std.int(y1)) && image.getPixel(Std.int(x1), Std.int(y1)).red == 255) {
-				coveredPixels++;
-				currentGap = 0;
-			} else {
-				gapChecker[currentGap] = 1;
-				currentGap++;
+			if (image.hasPixel(x1, y1)) {
+				if (image.getPixel(Std.int(x1), Std.int(y1)).red == 255) {
+					coveredPixels++;
+					currentGap = 0;
+				} else {
+					gapChecker[currentGap] = 1;
+					currentGap++;
+				}
 			}
-
 			totalPixels++;
-			if (x1 == x2 && y1 == y2) break;
+			if (x1 == x2 && y1 == y2)
+				break;
 			var e2 = 2 * err;
 			if (e2 > -dy) {
 				err -= dy;
@@ -119,7 +122,7 @@ class SimpleLineDetector {
 				y1 += sy;
 			}
 		}
-		return (coveredPixels /*The biggest gap */ - gapChecker.length) / totalPixels * 100;
+		return (coveredPixels /*The biggest gap */- gapChecker.length) / totalPixels * 100;
 	}
 
 	static function depositPoints(x1:Float, y1:Float, x2:Float, y2:Float) {

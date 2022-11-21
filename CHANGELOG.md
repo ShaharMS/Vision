@@ -1,3 +1,26 @@
+# 1.2.3
+
+### `vision.ds`
+
+ - **Added `ImageVIew.toString()`**
+ - **Improved doc comment for private static field `Image.OFFSET`**
+
+### `vision.tools`
+
+ - **Implemented `ImageTools.saveToFile()` for JS**
+ - **Fixed `ImageTools.saveToFile()` saving incorrectly on sys targets**
+ - **Fixed `ImageTools.loadFromFile()` loading incorrectly on sys targets**
+
+# 1.2.2
+
+### `vision.ds`
+
+ - **Fix `DivideByZero` errors on PHP when using `Color.divide()`**
+ - **Fix Historgrams simply not working**
+ - **Optimized `image.paintPixel()`**
+ - **Fixed `image.stamp`, should now respect alpha values.**
+
+
 # 1.2.1
 
 ### `Vision.hx`

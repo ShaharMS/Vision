@@ -6,7 +6,7 @@ import haxe.ds.Vector;
 import vision.ds.Point2D;
 
 #if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
-private typedef Impl = Null<haxe.Int64>;
+private typedef Impl = haxe.Int64;
 #else
 @:structInit
 private class Impl {
@@ -97,13 +97,5 @@ abstract IntPoint2D(Impl) {
 	**/
 	public inline function copy() {
 		return new IntPoint2D(x, y);
-	}
-
-	@:op(A == B) public inline function equals(lhs:IntPoint2D):Bool {
-		return lhs != null && x == lhs.x && y == lhs.y;
-	}
-
-	@:op(A != B) inline function this_not_equals_IntPoint2D(lhs:IntPoint2D):Bool {
-		return lhs == null || x != lhs.x || y != lhs.y;
 	}
 }

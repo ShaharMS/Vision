@@ -17,22 +17,21 @@ using vision.tools.MathTools;
 **/
 @:transitive
 abstract Image(ByteArray) {
+	#if vision_higher_width_cap
 	/**
-		### If `vision_higher_width_cap` is defined:
-
 		the first 4 bytes represent image width,  
 		the next 8 bytes are the `x` & `y` position of an image view,  
 		the next 8 bytes are the `width` & `height` of an image view,
 		the last byte represents view shape
-
-		### Otherwise:
-
+	**/
+	#else
+	/**
 		the first 2 bytes represent image width,  
 		the next 4 bytes are the `x` & `y` position of an image view,  
 		the next 4 bytes are the `width` & `height` of an image view,
 		the last byte represents view shape
-
 	**/
+	#end
 	static var OFFSET = #if vision_higher_width_cap 21 #else 11 #end;
 
 	static var WIDTH_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
@@ -111,21 +110,12 @@ abstract Image(ByteArray) {
 	**/
 	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
 		this = new ByteArray(width * height * 4 + OFFSET);
-		#if vision_higher_width_cap
-		this.setInt32(0, width);
-		this.setInt32(WIDTH_BYTES, 0);
-		this.setInt32(WIDTH_BYTES + DATA_GAP, 0);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (0, width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-		#else
-		this.setUInt16(0, width);
-		this.setUInt16(WIDTH_BYTES, 0);
-		this.setUInt16(WIDTH_BYTES + DATA_GAP, 0);
-		this.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		this.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
-		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-		#end
 		var i = OFFSET;
 		while (i < this.length) {
 			this[i] = color.alpha;
@@ -357,6 +347,8 @@ abstract Image(ByteArray) {
 			#if !vision_quiet
 			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
 			#end
+		} else if (color.alphaFloat == 1) {
+			setPixel(x, y, color);
 		} else {
 			var oldColor = getPixel(x, y);
 			var newColor = Color.fromRGBAFloat(
@@ -597,10 +589,9 @@ abstract Image(ByteArray) {
 		@see Line2D
 	**/
 	public inline function drawLine2D(line:Line2D, color:Color) {
-		var x1 = Std.int(line.start.x), 
-			y1 = Std.int(line.start.y), 
-			x2 = Std.int(line.end.x), 
-			y2 = Std.int(line.end.y);
+		var p1 = IntPoint2D.fromPoint2D(line.start);
+		var p2 = IntPoint2D.fromPoint2D(line.end);
+		var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
 		var dx = Math.abs(x2 - x1);
 		var dy = Math.abs(y2 - y1);
 		var sx = (x1 < x2) ? 1 : -1;
@@ -1033,10 +1024,19 @@ abstract Image(ByteArray) {
 		return cast this;
 	}
 
+	/**
+	 * Stamps the given image onto this image, with the stamped image's top left corner being at (`X`, `Y`).
+	 * 
+	 * 
+	 * @param X The X coordinate of the top left corner of the stamped image.
+	 * @param Y The Y coordinate of the top left corner of the stamped image
+	 * @param image The image to stamp. Alpha values are respected.
+	 * @return this image after stamping the given image onto it.
+	 */
 	public inline function stamp(X:Int, Y:Int, image:Image):Image {
 		for (x in X...X + image.width) {
 			for (y in Y...Y + image.height) {
-				setPixel(x, y, image.getUnsafePixel(x - X, y - Y));
+				paintPixel(x, y, image.getUnsafePixel(x - X, y - Y));
 			}
 		}
 		return cast this;

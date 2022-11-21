@@ -374,9 +374,14 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return Color.fromRGBA(lhs.red - rhs.red, lhs.green - rhs.green, lhs.blue - rhs.blue, lhs.alpha - rhs.alpha);
 	}
 
+	/**
+	 * Divide the RGB and alpha channels of one Color from another.
+	 * 
+	 * If a color channel value on the right hand side is `0`, the left hand side's channel will get divided by `1`.
+	 */
 	@:op(A / B)
 	public static inline function divide(lhs:Color, rhs:Color):Color {
-		return Color.fromRGBA(Std.int(lhs.red / rhs.red), Std.int(lhs.green / rhs.green), Std.int(lhs.blue / rhs.blue), Std.int(lhs.alpha / rhs.alpha));
+		return Color.fromRGBA(Std.int(lhs.red / rhs.red == 0 ? 1 : rhs.red), Std.int(lhs.green / rhs.green == 0 ? 1 : rhs.green), Std.int(lhs.blue / rhs.blue == 0 ? 1 : rhs.blue), Std.int(lhs.alpha / rhs.alpha == 0 ? 1 : rhs.alpha));
 	}
 
 	/**
