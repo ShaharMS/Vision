@@ -21,8 +21,8 @@ import haxe.Exception;
 **/
 class VisionException extends Exception {
 	public function new(message:String, type:String) {
-		trace('$type: $message');
 		super('$type: $message');
+		trace('$type: $message');
 	}
 }
 #end
