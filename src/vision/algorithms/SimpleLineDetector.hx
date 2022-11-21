@@ -33,6 +33,8 @@ class SimpleLineDetector {
 
 
 	public static function findLineFromPoint(point:Int16Point2D, minLineLength:Float, maxGap:Int = 1):Null<Line2D> {
+		if(point.x >= 0 && point.y >= 0 && point.x < image.width && point.y < image.height)
+			return null;
 		if (image.getUnsafePixel(point.x, point.y) != 0xFFFFFFFF || cachedPoints.contains(point)) {
 			trace('point unsafe');
 			return null;
