@@ -428,7 +428,8 @@ abstract Image(ByteArray) {
 		@return True if the coordinates are within the bounds of the image.
 	**/
 	public inline function hasPixel(x:Int, y:Int):Bool {
-		return (x >= 0 && y >= 0 && x < width && y < height);
+		if(x < 0 || y < 0) return false;
+		return (x < width && y < height);
 	}
 
 
