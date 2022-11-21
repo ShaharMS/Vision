@@ -648,7 +648,9 @@ class Vision {
 		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-				lines.push(SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength));
+				var pointLine = SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength);
+				if(pointLine != null)
+					lines.push(pointLine);
             }
         }
         for (l in lines) {
@@ -661,7 +663,9 @@ class Vision {
         edgeDetected = cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16);
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-                lines.push(SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength));
+				var pointLine = SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength);
+				if(linePoint != null)
+					lines.push(pointLine);
             }
         }
         for (l in lines) {
