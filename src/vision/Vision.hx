@@ -634,11 +634,11 @@ class Vision {
 
 		@return The line detected image.
 	**/
-	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermediate):Array<Line2D> {
-        SimpleLineDetector.cachedPoints = [];
+	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, ?minLineLength:Float = 10, speedToAccuracyRatio:AlgorithmSettings = Medium_Intermediate):Array<Line2D> {
+		SimpleLineDetector.cachedPoints = [];
 		final kernalSize = switch speedToAccuracyRatio {
-            case VeryLow_VeryFast: X1;
-            case Low_Fast: X3;
+			case VeryLow_VeryFast: X1;
+			case Low_Fast: X3;
             case Medium_Intermediate: X5;
             case High_Slow: X7;
             case VeryHigh_VerySlow: X9;
@@ -664,7 +664,7 @@ class Vision {
         for (x in 0...image.width) {
             for (y in 0...image.height) {
 				var pointLine = SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength);
-				if(linePoint != null)
+				if(pointLine != null)
 					lines.push(pointLine);
             }
         }
