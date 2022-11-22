@@ -38,11 +38,17 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-		var i16p = new Int16Point2D(0, 0);
-		i16p.x = 124;
-		i16p.y = 4921;
-		trace(i16p.toString());
-		#if (true)
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			printImage(image);
+			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
+			var newI = image.clone();
+			for (l in lines) {
+				newI.drawLine2D(l, 0x00FFD5);
+			}
+			printImage(Vision.cannyEdgeDetection(image.clone().removeView(), 1, X5, 0.05, 0.16));
+			printImage(newI);
+		});
+		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			printSectionDivider("Test image, resized");
 			printImage(image);
