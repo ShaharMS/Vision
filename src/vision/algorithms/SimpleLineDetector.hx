@@ -39,7 +39,6 @@ class SimpleLineDetector {
 			}
 		} catch(e) {
 			trace(e);
-			throw new OutOfBounds(cast image, new IntPoint2D(point.x, point.y));
 			return null;
 		}
 		try {
@@ -48,7 +47,6 @@ class SimpleLineDetector {
 			}
 		} catch(e) {
 			trace(e);
-			throw new OutOfBounds(cast image, new IntPoint2D(point.x, point.y));
 			return null;
 		}
 		final start = p(point.x, point.y);
