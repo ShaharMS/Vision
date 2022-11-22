@@ -36,19 +36,19 @@ class SimpleLineDetector {
 		try {
 			if (image.getUnsafePixel(point.x, point.y) != 0xFFFFFFFF || cachedPoints.contains(point)) {
 				trace('point unsafe');
-				return null;
 			}
 		} catch(e) {
 			trace(e);
+			throw new OutOfBounds(cast image, new IntPoint2D(point.x, point.y));
 			return null;
 		}
 		try {
 			if (!image.hasPixel(point.x, point.y)) {
 				trace('unreal point');
-				return null;
 			}
 		} catch(e) {
 			trace(e);
+			throw new OutOfBounds(cast image, new IntPoint2D(point.x, point.y));
 			return null;
 		}
 		final start = p(point.x, point.y);
