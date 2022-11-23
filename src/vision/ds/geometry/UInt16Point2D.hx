@@ -1,21 +1,21 @@
 package vision.ds;
 
 /**
- * A 2D point represented by 2, 16-bit integers.
+ * A 2D point represented by 2, unsigned, 16-bit integers.
  * 
  * An abstract over a 32-bit `Int`, with its first 16 bits representing
  * the X value, and the other bits representing the Y value
  */
 @:structInit
-abstract Int16Point2D(Int) {
+abstract UInt16Point2D(Int) {
 
     /**
-		The `x` position of this `Int16Point2D`
+		The `x` position of this `UInt16Point2D`
 	**/
 	public var x(get, set):Int;
 
 	/**
-		The `y` position of this `Int16Point2D`
+		The `y` position of this `UInt16Point2D`
 	**/
 	public var y(get, set):Int;
 

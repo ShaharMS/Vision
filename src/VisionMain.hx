@@ -1,6 +1,5 @@
 package;
 
-import vision.ds.Int16Point2D;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;
@@ -38,7 +37,9 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
+		trace("started");
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			trace("image loaded");
 			printImage(image);
 			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
 			var newI = image.clone();
@@ -47,9 +48,11 @@ class VisionMain {
 			}
 			printImage(Vision.cannyEdgeDetection(image.clone().removeView(), 1, X5, 0.05, 0.16));
 			printImage(newI);
+			trace("done");
 		});
 		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
