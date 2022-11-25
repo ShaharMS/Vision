@@ -41,14 +41,16 @@ class VisionMain {
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace("image loaded");
 			printImage(image);
-			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 5);
+			start = haxe.Timer.stamp();
+			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
 			var newI = image.clone();
 			for (l in lines) {
-				newI.drawLine2D(l, Color.makeRandom());
+				newI.drawLine2D(l, Color.AQUA);
 			}
-			printImage(Vision.cannyEdgeDetection(image.clone().removeView(), 1, X5, 0.05, 0.16));
+			printImage(Vision.cannyEdgeDetection(image.clone().removeView(), 1, X5, 0.05, 0.16) | Vision.cannyEdgeDetection(image.clone().removeView().mirror(), 1, X5, 0.05, 0.16).mirror());
 			printImage(newI);
-			trace("done");
+			end = haxe.Timer.stamp();
+			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 		});
 		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {

@@ -39,9 +39,9 @@ class Ray2D {
 
 	/**
 		@param point a point on the line
-		@param m the slope of the line, optional - you can pass the angle/radians instead, and set this to null
-		@param angle the angle of the line, optional - you can pass the slope/radians instead, and set this to null
-		@param radians the radians of the line, optional - you can pass the slope/angle instead, and not set this
+		@param m the slope of the line, optional - you can pass the degrees/radians instead, and set this to null
+		@param degrees the degrees of the line, optional - you can pass the slope/radians instead, and set this to null
+		@param radians the radians of the line, optional - you can pass the slope/degrees instead, and not set this
 	**/
 	public inline function new(point:Point2D, ?m:Float, ?degrees:Float, ?radians:Float) {
 		this.point = point;

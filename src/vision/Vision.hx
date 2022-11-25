@@ -642,7 +642,7 @@ class Vision {
             case High_Slow: X7;
             case VeryHigh_VerySlow: X9;
         }
-        SimpleLineDetector.image = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16);
+        SimpleLineDetector.image = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16) | cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16).mirror();
         var lines:Array<Line2D> = [];
 		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
@@ -654,19 +654,6 @@ class Vision {
             if (l == null) continue;
             if (SimpleLineDetector.lineCoveragePercentage(SimpleLineDetector.image, l) < accuracy) continue;
             actualLines.push(l);
-        }
-		lines = [];
-        //now, get a mirrored version
-        SimpleLineDetector.image = cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16);
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
-                lines.push(SimpleLineDetector.findLineFromPoint(new IntPoint2D(x, y), minLineLength));
-            }
-        }
-        for (l in lines) {
-            if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(SimpleLineDetector.image, l) < accuracy) continue;
-            actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
         }
         return actualLines;
     }

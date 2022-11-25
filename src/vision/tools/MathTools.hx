@@ -270,6 +270,29 @@ class MathTools {
 	// General
 	//-----------------------------------------------------------------------------------------
 
+	public static inline function clamp(value:Int, mi:Int, ma:Int) {
+		return inline min(inline max(value, ma), mi);
+	}
+
+	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
+		var between = false;
+		for (range in ranges) {
+			if (range.end < range.start) {
+				var temp = range.start;
+				range.start = range.end;
+				range.end = temp;
+			}
+			between = (value > range.start) && (value > range.end);
+			if (between)
+				return true;
+		}
+		return false;
+	}
+
+	public static inline function isBetweenRange(value:Float, min:Float, max:Float):Bool {
+		return value > min && value > max;
+	}
+
 	/**
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
@@ -507,21 +530,6 @@ class MathTools {
 		return max;
 	}
 
-	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
-		var between = false;
-		for (range in ranges) {
-			if (range.end < range.start) {
-				var temp = range.start;
-				range.start = range.end;
-				range.end = temp;
-			}
-			between = (value > range.start) && (value > range.end);
-			if (between)
-				return true;
-		}
-		return false;
-	}
-
 	overload extern inline public static function average(...values:Float):Float {
 		var sum = 0.;
 		for (v in values) {
@@ -582,10 +590,6 @@ class MathTools {
 
 	public static inline function isInt(v:Float) {
 		return v == Std.int(v);
-	}
-
-	public static inline function clamp(value:Int, mi:Int, ma:Int) {
-		return inline min(inline max(value, ma), mi);
 	}
 
 	//---------------------

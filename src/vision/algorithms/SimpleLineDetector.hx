@@ -45,22 +45,19 @@ class SimpleLineDetector {
 			point gets removed.
 		*/
 		var dir:Float = 0;
-		var preferredDir = pointCheckOrder[0];
-		var gap = 0;
+		var alreadyGap = false;
 		while (!voided) {
 			safetyNet++;
 			if (safetyNet == 5 || safetyNet == 10) {
 				dir = MathTools.degreesFromPointToPoint2D(start, cwp);
-				if (dir > 0) {
-					if (dir < 90) pointCheckOrder = [p(1, 0), p(1, -1), p(0, -1)];
-					else if (dir > 90) pointCheckOrder = [p(-1, 0), p(-1, -1), p(0, -1)];
-					else pointCheckOrder = [p(0, -1), p(1, -1), p(-1, -1)];
-				} else if (dir < 0) {
-					if (dir > -90) pointCheckOrder = [p(1, 0), p(1, 1), p(0, 1)];
-					else if (dir < -90) pointCheckOrder = [p(-1, 0), p(-1, 1), p(0, 1)];
-					else pointCheckOrder = [p(0, 1), p(1, 1), p(-1, 1)];
+				if (dir.isBetweenRange(0, 90)) {
+					pointCheckOrder = [p(1, -1), p(1, 0), p(0, -1), p(-1, -1), p(1, 1)];
+				} else if (dir.isBetweenRange(90, 180)) {
+					pointCheckOrder = [p(-1, -1), p(-1, 0), p(0, -1), p(-1, 1), p(1, -1)];
+				} else if (dir.isBetweenRange(-90, 0)) {
+					pointCheckOrder = [p(1, 1), p(1, 0), p(0, 1), p(-1, 1), p(-1, 1)];
 				} else {
-					pointCheckOrder = [p(1, 0), p(1, -1), p(1, 1)];
+					pointCheckOrder = [p(-1, 1), p(-1, 0), p(0, 1), p(-1, -1), p(1, 1)];
 				}
 			}
 			if (safetyNet > 1000) break;//throw new VisionException("Too Many Iterations on point " + cwp.toString() + ". This should not occur.", "Line Detection Failure");
@@ -68,20 +65,29 @@ class SimpleLineDetector {
 			for (p in pointCheckOrder) {
 				if (image.hasPixel(p.x + cwp.x, p.y + cwp.y) && image.getUnsafePixel(p.x + cwp.x, p.y + cwp.y) == 0xFFFFFFFF) {
 					cwp = S.p(cwp.x + p.x, cwp.y + p.y);
-					preferredDir = p;
 					voided = false;
-					gap = 0;
+					alreadyGap = false;
 				} 
 			}
-			if (voided && gap <= maxGap) {
-				cwp = S.p(cwp.x + preferredDir.x, cwp.y + preferredDir.y);
+			if (voided && !alreadyGap) {
+				dir = MathTools.degreesFromPointToPoint2D(start, cwp);
+				if (dir.isBetweenRange(0, 90)) {
+					pointCheckOrder = [p(1, -1), p(1, 0), p(0, -1), p(-1, -1), p(1, 1)];
+				} else if (dir.isBetweenRange(90, 180)) {
+					pointCheckOrder = [p(-1, -1), p(-1, 0), p(0, -1), p(-1, 1), p(1, -1)];
+				} else if (dir.isBetweenRange(-90, 0)) {
+					pointCheckOrder = [p(1, 1), p(1, 0), p(0, 1), p(-1, 1), p(1, -1)];
+				} else {
+					pointCheckOrder = [p(-1, 1), p(-1, 0), p(0, 1), p(-1, -1), p(1, 1)];
+				}
 				voided = false;
-				gap++;
+				alreadyGap = true;
 			}
-			//image.setUnsafePixel(cwp.x, cwp.y, 0);
 		}
 		var line = new Line2D(start, cwp);
-		if (line.length >= minLineLength) return line; 
+		if (line.length >= minLineLength) {
+			return line; 
+		}
 		return null;
 	}
 
@@ -141,6 +147,7 @@ class SimpleLineDetector {
 		var err = dx - dy;
 		while (true) {
 			//cachedPoints.push(p(x1, y1));
+			image.setUnsafePixel(Std.int(x1), Std.int(y1), 0);
 			if (x1 == x2 && y1 == y2) break;
 			var e2 = 2 * err;
 			if (e2 > -dy) {
