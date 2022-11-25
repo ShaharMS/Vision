@@ -46,6 +46,7 @@ class SimpleLineDetector {
 		*/
 		var dir:Float = 0;
 		var alreadyGap = false;
+		var safeMax = Math.sqrt(image.width * image.width + image.height * image.height);
 		while (!voided) {
 			safetyNet++;
 			if (safetyNet == 5 || safetyNet == 10) {
@@ -60,7 +61,7 @@ class SimpleLineDetector {
 					pointCheckOrder = [p(-1, 1), p(-1, 0), p(0, 1), p(-1, -1), p(1, 1)];
 				}
 			}
-			if (safetyNet > 1000) break;//throw new VisionException("Too Many Iterations on point " + cwp.toString() + ". This should not occur.", "Line Detection Failure");
+			if (safetyNet > safeMax) break;//throw new VisionException("Too Many Iterations on point " + cwp.toString() + ". This should not occur.", "Line Detection Failure");
 			voided = true;
 			for (p in pointCheckOrder) {
 				if (image.hasPixel(p.x + cwp.x, p.y + cwp.y) && image.getUnsafePixel(p.x + cwp.x, p.y + cwp.y) == 0xFFFFFFFF) {
