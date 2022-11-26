@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import vision.ds.geometry.Int16Point2D;
 import vision.exceptions.VisionException;
 import haxe.display.Display.Package;
 import vision.ds.IntPoint2D;
@@ -25,7 +26,7 @@ class SimpleLineDetector {
 		```
 	**/
 	static inline function p(x:Int = 0, y:Int = 0) {
-		return new IntPoint2D(x, y);
+		return new Int16Point2D(x, y);
 	}
 
 
@@ -33,8 +34,8 @@ class SimpleLineDetector {
 		if (!image.hasPixel(point.x, point.y) ) return null;
 		if (image.getUnsafePixel(point.x, point.y) != 0xFFFFFFFF) return null;
 		final start = p(point.x, point.y);
-		var pointCheckOrder:Array<IntPoint2D> = [p(1, 0), p(1, 1), p(1, -1), p(-1, 0), p(-1, 1), p(-1, -1), p(0, 1), p(0, -1)];
-		var cwp:Null<IntPoint2D> = p(point.x, point.y);
+		var pointCheckOrder:Array<Int16Point2D> = [p(1, 0), p(1, 1), p(1, -1), p(-1, 0), p(-1, 1), p(-1, -1), p(0, 1), p(0, -1)];
+		var cwp:Null<Int16Point2D> = p(point.x, point.y);
 		var safetyNet = 0;
 		var voided:Bool = false;
 		/* 

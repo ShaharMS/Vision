@@ -1,5 +1,6 @@
 package;
 
+import vision.ds.geometry.Int16Point2D;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;
@@ -38,6 +39,7 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 		trace("started");
+		trace(new Int16Point2D(-123, -4352).toString());
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace("image loaded");
 			printImage(image);

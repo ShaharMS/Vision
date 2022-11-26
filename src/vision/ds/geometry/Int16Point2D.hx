@@ -1,5 +1,7 @@
 package vision.ds.geometry;
 
+import vision.tools.MathTools;
+
 /**
  * A 2D point represented by 2, 16-bit integers.
  * 
@@ -23,7 +25,7 @@ abstract Int16Point2D(Int) {
 	}
 
 	inline function get_x() {
-		return this & 0xFFFF;
+		return (this & 0xFFFF) - ((this & 0xFFFF) >> 15) * 65535;
 	}
 
 	inline function set_x(x:Int):Int {
@@ -33,7 +35,7 @@ abstract Int16Point2D(Int) {
 	}
 
 	inline function get_y() {
-		return this >> 16 & 0xFFFF;
+		return (this >> 16 & 0xFFFF) - ((this >> 16 & 0xFFFF) >> 15) * 65535;
 	}
 
 	inline function set_y(y:Int):Int {
