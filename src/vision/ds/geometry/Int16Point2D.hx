@@ -7,7 +7,7 @@ package vision.ds.geometry;
  * the X value, and the other bits representing the Y value
  */
 @:structInit
-abstract UInt16Point2D(Int) {
+abstract Int16Point2D(Int) {
 	/**
 		The `x` position of this `Int16Point2D`
 	**/

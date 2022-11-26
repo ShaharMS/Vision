@@ -16,8 +16,6 @@ private typedef S = SimpleLineDetector;
  */
 class SimpleLineDetector {
 
-	public static var cachedPoints:Array<IntPoint2D> = [];
-
 	public static var image:Image;
 
 	/**
