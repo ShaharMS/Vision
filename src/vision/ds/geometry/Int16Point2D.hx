@@ -8,7 +8,6 @@ import vision.tools.MathTools;
  * An abstract over a 32-bit `Int`, with its first 16 bits representing
  * the X value, and the other bits representing the Y value
  */
-@:structInit
 abstract Int16Point2D(Int) {
 	/**
 		The `x` position of this `Int16Point2D`
@@ -21,7 +20,7 @@ abstract Int16Point2D(Int) {
 	public var y(get, set):Int;
 
 	public inline function new(X:Int = 0, Y:Int = 0) {
-		this = ((X & 0xBFFF) + (X >> 31) * 32767) & 0xFFFF | (((Y & 0xBFFF) << 16) + ((Y >> 31) * 32767) << 16) & 0xFFFF0000;
+		this = ((X & 0x7FFF) - (X >> 31) * 32767) | ((Y & 0x7FFF) - ((Y >> 31) * 32767)) << 16;
 	}
 
 	inline function get_x() {
