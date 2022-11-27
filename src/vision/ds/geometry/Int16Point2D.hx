@@ -21,13 +21,12 @@ abstract Int16Point2D(Int) {
 	public var y(get, set):Int;
 
 	public inline function new(X:Int = 0, Y:Int = 0) {
-		this = (X & 0xFFFF) | ((Y & 0xFFFF) << 16);
+		this = ((X & 0xBFFF) + (X >> 31) * 32767) & 0xFFFF | (((Y & 0xBFFF) << 16) + ((Y >> 31) * 32767) << 16) & 0xFFFF0000;
 	}
 
 	inline function get_x() {
 		return (this & 0xFFFF) - ((this & 0xFFFF) >> 15) * 65535;
 	}
-
 	inline function set_x(x:Int):Int {
 		x &= 0xFFFF;
 		this = (this & 0xFFFF0000) | x;
