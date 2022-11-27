@@ -43,7 +43,7 @@ class VisionMain {
 		for (x in -1...2) for (y in -1...2) trace(new Int16Point2D(x, y).toString());
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace("image loaded");
-			printImage(image);
+			printImage(image = image.resize(900));
 			start = haxe.Timer.stamp();
 			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
 			var newI = image.clone();

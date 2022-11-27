@@ -6,7 +6,6 @@
 #--library console.hx
 -debug
 --dce full
-
 #--interp
 #--cpp bin/cpp
 #--define compile_unit_tests
