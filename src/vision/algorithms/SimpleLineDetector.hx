@@ -60,7 +60,7 @@ class SimpleLineDetector {
 					pointCheckOrder = [p(-1, 1), p(-1, 0), p(0, 1), p(-1, -1), p(1, 1)];
 				}
 			}
-			if (safetyNet > safeMax) break;//throw new VisionException("Too Many Iterations on point " + cwp.toString() + ". This should not occur.", "Line Detection Failure");
+			if (safetyNet > safeMax) break;
 			voided = true;
 			for (p in pointCheckOrder) {
 				if (image.hasPixel(p.x + cwp.x, p.y + cwp.y) && image.getUnsafePixel(p.x + cwp.x, p.y + cwp.y) == 0xFFFFFFFF) {
