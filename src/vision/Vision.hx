@@ -81,11 +81,11 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale&vision_better_grayscale.png)|
 
 		@param image The image to be grayscaled.
-		@param simpleGrayscale When enabled, gets the gray by averaging pixel's color-channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`
+		@param simpleGrayscale When enabled, gets the gray by averaging pixel's color-channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`.
 
 		@return The grayscaled image.
 	**/
-	public static function grayscale(image:Image, ?simpleGrayscale:Bool = false):Image {
+	public static function grayscale(image:Image, simpleGrayscale:Bool = false):Image {
 		image.forEachPixelInView((x, y, pixel) -> {
 			var gray = if (!simpleGrayscale) Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) else Std.int((pixel.red + pixel.green + pixel.blue) / 3);
 			image.setUnsafePixel(x, y, Color.fromRGBA(gray, gray, gray));
@@ -191,8 +191,8 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-deepfry.png)|
 
 		The higher the value, the more deepfried the image will look.
-		@param image The image to be deepfried
-		@param iterations The amount of times the image gets sharpened. default is `2`
+		@param image The image to be deepfried.
+		@param iterations The amount of times the image gets sharpened. default is `2`.
 		@return The deepfried image. the original copy is not preserved.
 	**/
 	public static function deepfry(image:Image, iterations:Int = 2):Image {
@@ -247,7 +247,7 @@ class Vision {
 		Basically, if a nearby pixel is darker than the current pixel, the current pixel is replaced with the darker pixel.
 		That check is applied to all neighboring pixels, resulting in each pixel's color being the darkest color in its surroundings. 
 		
-		**example:** an image being eroded with a square 5x5 kernal. you should see how each time the kernal moves, it picks the darkest colors inside of it, and continues.
+		**example:** an image being eroded with a square 5x5 kernal. You should see how each time the kernal moves, it picks the darkest colors inside of it, and continues.
 
 		![example](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Grayscale_Morphological_Erosion.gif/220px-Grayscale_Morphological_Erosion.gif)
 
@@ -286,8 +286,8 @@ class Vision {
 		|---|---|
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-saltAndPepperNoise.png)
 		
-		@param image The image to apply salt&pepper noise on
-		@param percentage How much of the image should be "corrupted", in percentages between 0 to 100 - 0 means no change, 100 means fully "corrupted". Default is 25
+		@param image The image to apply salt&pepper noise on.
+		@param percentage How much of the image should be "corrupted", in percentages between 0 to 100 - 0 means no change, 100 means fully "corrupted". Default is 25.
 		@return The noisy image. The original copy is not preserved.
 
 		@see Color.interpolate()
@@ -338,7 +338,7 @@ class Vision {
 	}
 
 	/**
-		Applies white noise to an image. white noise is the "snow" screen you see on televisions when they pick up unwanted electric/radiated electromagnetic signals instead of the channels you ant to watch.
+		Applies white noise to an image. White noise is the "snow" screen you see on televisions when they pick up unwanted electric/radiated electromagnetic signals instead of the channels you ant to watch.
 
 		Instead of applying white noise every couple of pixels, white noise is sort of "combined" with the image, according to `percentage`:
 		
@@ -348,7 +348,7 @@ class Vision {
 		
 		@param image The image to apply salt&pepper noise on
 		@param percentage How white-noisy the resulting image should be, or, the ratio between the contributions of each pixel from the original image and the white noise to the final image, from 0 to 100: a lower value will make the first image's pixels contribute more to the the final image, thus making the resulting image less noisy, and vice-versa.
-		@param whiteNoiseRange The number of shades of gray used to generate the white noise. shouldn't really effect performance, but you may want to change it to get a "higher/lower quality" white noise
+		@param whiteNoiseRange The number of shades of gray used to generate the white noise. Shouldn't really effect performance, but you may want to change it to get a "higher/lower quality" white noise.
 		@return The noisy image. The original copy is not preserved.
 	**/
 	public static function whiteNoise(image:Image, percentage:Float = 25, whiteNoiseRange:WhiteNoiseRange = RANGE_16) {
@@ -380,16 +380,16 @@ class Vision {
 		For example, if `rangeStart` is `0xFF05F243` and `rangeEnd` is `0x239A6262`, the min/max values of the `red` channel 
 		will be set to (`0x05`, `0x9A`), the min/max values of the green channel will be set to (`0x62`, `0xF2`)...
 		2. Loop over the pixels, and calculate the ratios between the the pixel's color channel's and the values (`0x00`, `0xFF`)
-		3. Now, calculate the step between each color value of the new range, by dividing each channel's (`max` - `min`) by `255`. the
+		3. Now, calculate the step between each color value of the new range, by dividing each channel's (`max` - `min`) by `255`. The
 		default step between each color value is `1` by default (`(0xFF - 0x00) / 0xFF = 1`).
 		4. Loop over the channels, and multiply their value by the value of the new `step` (for example, 4
 		`newStep = (0x88 - 0x00) / 0xFF = 0.5`, `color.red = color.red * newStep`);
 		5. enjoy your normalized image :)
 		
 		
-		@param image The image to be normalized
+		@param image The image to be normalized.
 		@param rangeStart The start of the range of channels. By default, this value is `0x00000000`
-		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
+		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF`
 		@return The normalized image. The original copy is not preserved.
 	**/
 	public static function normalize(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
@@ -417,9 +417,9 @@ class Vision {
 		Limits the range of colors on an image, by limiting the range of a given color channel, according to the values
 		of `rangeStart`'s and `rangeEnd`'s color channels.
 		
-		@param image The image to be li processed
+		@param image The image to be li processed.
 		@param rangeStart The start of the range of channels. By default, this value is `0x00000000`
-		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF
+		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF`
 		@return The normalized image. The original copy is not preserved.
 	**/
 	public static function limitColorRanges(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
@@ -439,9 +439,9 @@ class Vision {
 		```
 		will replace every pixel inside the given color range with the color `0xFFFFFFFF`
 		
-		@param image The image process
+		@param image The image process.
 		@param ranges array of color ranges & replacement colors.
-		@return A processed version of the image. The original image is not preserved
+		@return A processed version of the image. The original image is not preserved.
 	**/
 	public static function replaceColorRanges(image:Image, ?ranges:Array<{rangeStart:Color, rangeEnd:Color, replacement:Color}>):Image {
 		if (ranges == null) return image;
@@ -484,7 +484,7 @@ class Vision {
 		@param image the image to be manipulated
 		@param kernal the type/value of the kernal. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**,
 		or just a matrix: both `convolve(image, BoxBlur)` and `convolve(image, [[1,1,1],[1,1,1],[1,1,1]])` are valid ways to represent a box blur.
-		@return A convolved version of the image. The original image is not preserved
+		@return A convolved version of the image. The original image is not preserved.
 	**/
 	public static function convolve(image:Image, kernal:EitherType<Kernal2D, Array<Array<Float>>> = Identity):Image {
 		var matrix:Array<Array<Float>>;
@@ -560,9 +560,9 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-nearestNeighborBlur%28iterations%20=%201%29.png)|![After](https://spacebubble.io/vision/docs/valve-nearestNeighborBlur%28iterations%20=%204%29.png)|
 
 		@param image The image to be blurred.
-		@param iterations The number of times the algorithm will be run. the more iterations, the more blurry the image will be, and the higher the "blur range". for example: a value of 3 will produce a blur range of 3 pixels on each object.
+		@param iterations The number of times the algorithm will be run. The more iterations, the more blurry the image will be, and the higher the "blur range". **For example:** a value of 3 will produce a blur range of 3 pixels on each object.
 
-		@return A blurred version of the image. The original image is not preserved
+		@return A blurred version of the image. The original image is not preserved.
 	**/
 	public static function nearestNeighborBlur(image:Image, iterations:Int = 1):Image {
 		for (i in 0...iterations) image = convolve(image, BoxBlur);
@@ -585,11 +585,11 @@ class Vision {
 		|---|---|---|---|
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%200.5%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%201%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%202%29.png)|
 
-		@param image The image to be blurred
+		@param image The image to be blurred.
 		@param sigma The sigma value to use for the gaussian distribution on the kernal. a lower value will focus more on the center pixel, while a higher value will shift focus to the surrounding pixels more, effectively blurring it better.
 		@param kernalSize The size of the kernal (`width` & `height`)
 		@throws InvalidGaussianKernalSize if the kernal size is even, negative or `0`, this error is thrown.
-		@return A blurred version of the image. The original image is not preserved
+		@return A blurred version of the image. The original image is not preserved.
 	**/
 	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
 		return convolve(image, GaussianBlur(kernalSize, sigma));
@@ -608,8 +608,8 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%205%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%2010%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%2015%29.png)|
 
 		@param image The image to apply median blurring to.
-		@param kernalSize the width & height of the kernal in which we should search for the median. a radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
-		@return A filtered version of the image, using median blurring. The original image is not preserved
+		@param kernalSize the width & height of the kernal in which we should search for the median. A radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
+		@return A filtered version of the image, using median blurring. The original image is not preserved.
 	**/
 	public static function medianBlur(image:Image, kernalSize:Int = 5):Image {
 		var median = image.clone();
@@ -628,7 +628,7 @@ class Vision {
 		those lines can be partially incomplete, but they will be detected as lines.
 
 		@param image The image to be line detected.
-		@param accuracy When a line is detected, the algorithm checks how much of the line actually covers a  "line portion" of the image. `accuracy` is set to `50` by default - at least half of the line has to match with the image. To optimize for line count, `40` and below is recommended. otherwise, `50` to `60` should be fine.
+		@param accuracy When a line is detected, the algorithm checks how much of the line actually covers a  "line portion" of the image. `accuracy` is set to `50` by default - at least half of the line has to match with the image. To optimize for line count, `40` and below is recommended. Otherwise, `50` to `60` should be fine.
 		@param minLineLength The minimum length of a line segment to be detected.
 		@param speedToAccuracyRatio  If the algorithm is too slow/too inaccurate for you, you can change this setting.
 
@@ -636,27 +636,27 @@ class Vision {
 	**/
 	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermediate):Array<Line2D> {
 		final kernalSize = switch speedToAccuracyRatio {
-            case VeryLow_VeryFast: X1;
-            case Low_Fast: X3;
-            case Medium_Intermediate: X5;
-            case High_Slow: X7;
-            case VeryHigh_VerySlow: X9;
-        }
-        SimpleLineDetector.image = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16) | cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16).mirror();
+			case VeryLow_VeryFast: X1;
+			case Low_Fast: X3;
+			case Medium_Intermediate: X5;
+			case High_Slow: X7;
+			case VeryHigh_VerySlow: X9;
+		};
+		SimpleLineDetector.image = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16) | cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16).mirror();
 		var lines:Array<Line2D> = [];
 		var actualLines:Array<Line2D> = [];
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
 				lines.push(SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength));
-            }
-        }
-        for (l in lines) {
-            if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(SimpleLineDetector.image, l) < accuracy) continue;
-            actualLines.push(l);
-        }
-        return actualLines;
-    }
+			}
+		}
+		for (l in lines) {
+			if (l == null) continue;
+			if (SimpleLineDetector.lineCoveragePercentage(SimpleLineDetector.image, l) < accuracy) continue;
+			actualLines.push(l);
+		}
+		return actualLines;
+	}
 
 	/**
 		Applies the sobel filter to an image.
@@ -759,7 +759,7 @@ class Vision {
 
 		@param image The image to be edge detected.
 		@param sigma The sigma value to be used in the gaussian blur.
-		@param kernalSize This is used for the second step of the canny edge detection - gaussian blur. unless you want to improve performance, this should remain unchanged.
+		@param kernalSize This is used for the second step of the canny edge detection - gaussian blur. Unless you want to improve performance, this should remain unchanged.
 		@param lowThreshold The low threshold value to be used in the hysteresis thresholding.
 		@param highThreshold The high threshold value to be used in the hysteresis thresholding.
 
@@ -838,7 +838,7 @@ class Vision {
 		@param image The image to be processed.
 		@param threshold The threshold for detecting edges. The lower the value, the more pixels will be considered edges. Default is `5`.
 		@param filterPositive Which version of the laplacian filter should the function use: the negative (detects "outward" edges), or the positive (detects "inward" edges). Default is positive (`true`).
-		@param sigma The sigma value to use for the gaussian blur. a lower value will focus the kernal more on the center pixel, while a higher value will shift focus to the surrounding pixels more. **The higher the value, the blurrier the image.** Default is `1`.
+		@param sigma The sigma value to use for the gaussian blur. A lower value will focus the kernal more on the center pixel, while a higher value will shift focus to the surrounding pixels more. **The higher the value, the blurrier the image.** Default is `1`.
 		@param kernalSize The size of the kernal (`width` & `height`) - a kernal size of `7`/ will produce a `7x7` kernal. Default is `GaussianKernalSize.X3`.
 		@return A new, black and white image, with white pixels being the detected edges.
 	**/
@@ -866,11 +866,11 @@ class Vision {
 		|**`cannyEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-cannyEdgeDetection.png)| `O(width*height log(width* height))` |
 		|**`convolutionRidgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-convolutionRidgeDetection.png)| `O(width*height)` |
 
-		@param image the image to be ridge detected on
+		@param image the image to be ridge detected on.
 		@param normalizationRangeStart Optional, if you want to change the normalization range's start color. `0x44444444` by default.
 		@param normalizationRangeEnd Optional, if you want to change the normalization range's end color `0xBBBBBBBB` by default.
 		@param refine Appends an iterative pixel check to the algorithm, which removes isolated ridge pixels. `false` by default for performance reasons.
-		@return The ridge-highlighted version of the image. **The original copy is preserved**
+		@return The ridge-highlighted version of the image. **The original copy is preserved**.
 	**/
 	public static function convolutionRidgeDetection(image:Image, ?normalizationRangeStart:Color = 0xFF444444, ?normalizationRangeEnd:Color = 0xFFBBBBBB, refine:Bool = false):Image {
 		var clone = image.clone().removeView();
@@ -901,7 +901,7 @@ class Vision {
 		|---|---|---|
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sharpen.png)|![After](https://spacebubble.io/vision/docs/valve-bilateralDenoise.png)|
 
-		@param image The image to operate on
+		@param image The image to operate on.
 		@param gaussianSigma The sigma to use when generating the gaussian kernal. This also decides the size of the kernal (The size of the kernal is always `Math.round(6 * gaussianSigma)`, and gets incremented if the resulting size is even)
 		@param intensitySigma The intensity sigma decides how hard should the algorithm "try" to reduce the noise inside the image. A higher value causes a pixel that has vastly different color than it's surrounding to weigh much less, and pretty much get "ignored and overwritten". **tl;dr - a higher value reduces more noise, but may blur the image if too high.**
 
