@@ -12,12 +12,12 @@
 #--define radix_test
 
 --js bin/main.js
-#--define feature_detection_tests
-#--define draw_tests
-#--define mirror_flip_tests
-#--define blur_tests
-#--define filter_tests
-#--define convolve_tests
-#--define simple_tests
-#--define noise_tests
-#--define copy_paste_tests
+--define feature_detection_tests
+--define draw_tests
+--define mirror_flip_tests
+--define blur_tests
+--define filter_tests
+--define convolve_tests
+--define simple_tests
+--define noise_tests
+--define copy_paste_tests

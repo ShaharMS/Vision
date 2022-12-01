@@ -40,28 +40,7 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-		trace("started");
-		for (x in -1...2) for (y in -1...2) trace(new Int16Point2D(x, y).toString());
-		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
-			trace("image loaded");
-			printImage(image/* = image.resize(600)*/);
-			start = haxe.Timer.stamp();
-			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
-			trace(lines.length);
-			end = haxe.Timer.stamp();
-			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			var newI = image.clone();
-			for (l in lines) {
-				newI.drawLine2D(l, Color.AQUA);
-			}
-			start = haxe.Timer.stamp();
-			var canny = Vision.cannyEdgeDetection(image.clone().removeView(), 1, X5, 0.05, 0.16) | Vision.cannyEdgeDetection(image.clone().removeView().mirror(), 1, X5, 0.05, 0.16).mirror();
-			end = haxe.Timer.stamp();
-			trace("Edge detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			printImage(canny);
-			printImage(newI);
-		});
-		#if (false)
+		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
@@ -189,7 +168,6 @@ class VisionMain {
 			for (l in lines) {
 				newI.drawLine2D(l, 0x00FFD5);
 			}
-			printImage(Vision.cannyEdgeDetection(image.clone().removeView(), 1, X5, 0.05, 0.16));
 			printImage(newI);
 			end = haxe.Timer.stamp();
 			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");

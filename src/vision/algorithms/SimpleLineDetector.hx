@@ -1,6 +1,7 @@
 package vision.algorithms;
 
 import vision.ds.geometry.Int16Point2D;
+import vision.ds.geometry.UInt16Point2D;
 import vision.exceptions.VisionException;
 import haxe.display.Display.Package;
 import vision.ds.IntPoint2D;
@@ -103,8 +104,8 @@ class SimpleLineDetector {
 		var coveredPixels = 0, totalPixels = 0;
 		if (line == null)
 			return 0;
-		final p1 = IntPoint2D.fromPoint2D(line.start);
-		final p2 = IntPoint2D.fromPoint2D(line.end);
+		final p1 = new UInt16Point2D(Std.int(line.start.x), Std.int(line.start.y));
+		final p2 = new UInt16Point2D(Std.int(line.end.x), Std.int(line.end.y));
 		var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
 		var dx = Math.abs(x2 - x1);
 		var dy = Math.abs(y2 - y1);
