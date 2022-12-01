@@ -1,4 +1,4 @@
-package vision.ds.geometry;
+package vision.ds;
 
 import vision.tools.MathTools;
 

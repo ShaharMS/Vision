@@ -1,4 +1,4 @@
-package vision.ds.geometry;
+package vision.ds;
 
 /**
  * A 2D point represented by 2, unsigned, 16-bit integers.
