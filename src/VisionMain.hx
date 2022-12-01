@@ -2,7 +2,7 @@ package;
 
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.IntPoint2D;
-import vision.ds.geometry.Int16Point2D;
+import vision.ds.Int16Point2D;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;

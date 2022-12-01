@@ -1,7 +1,7 @@
 package vision.algorithms;
 
-import vision.ds.geometry.Int16Point2D;
-import vision.ds.geometry.UInt16Point2D;
+import vision.ds.Int16Point2D;
+import vision.ds.UInt16Point2D;
 import vision.exceptions.VisionException;
 import haxe.display.Display.Package;
 import vision.ds.IntPoint2D;

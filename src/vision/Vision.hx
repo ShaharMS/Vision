@@ -1,6 +1,6 @@
 package vision;
 
-import vision.ds.geometry.Int16Point2D;
+import vision.ds.Int16Point2D;
 import haxe.ds.Vector;
 import vision.ds.specifics.WhiteNoiseRange;
 import vision.algorithms.Laplacian;
