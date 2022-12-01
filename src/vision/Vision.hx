@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.geometry.Int16Point2D;
 import haxe.ds.Vector;
 import vision.ds.specifics.WhiteNoiseRange;
 import vision.algorithms.Laplacian;
@@ -512,7 +513,7 @@ class Vision {
 						[farCorner, farEdge, edge, farEdge, farCorner]
 					];
 				case Custom(kernal): kernal;
-				case GaussianBlur(size, sigma): Gaussian.createKernalOfSize(size, sigma).inner.raise(size);
+				case GaussianBlur(size, sigma): Gaussian.create2DKernelOfSize(size, sigma).inner.raise(size);
 				case LaplacianPositive: [[0, 1, 0], [1, -4, 1], [0, 1, 0]];
 				case LaplacianNegative: [[0, -1, 0], [-1, 4, -1], [0, -1, 0]];
 			}
@@ -634,7 +635,6 @@ class Vision {
 		@return The line detected image.
 	**/
 	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermediate):Array<Line2D> {
-        SimpleLineDetector.cachedPoints = [];
 		final kernalSize = switch speedToAccuracyRatio {
             case VeryLow_VeryFast: X1;
             case Low_Fast: X3;
@@ -642,37 +642,18 @@ class Vision {
             case High_Slow: X7;
             case VeryHigh_VerySlow: X9;
         }
-        var edgeDetected = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16);
-        var lines:Array<Line2D> = [];
+        SimpleLineDetector.image = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16) | cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16).mirror();
+		var lines:Array<Line2D> = [];
 		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-				lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true));
+				lines.push(SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength));
             }
         }
         for (l in lines) {
             if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(SimpleLineDetector.image, l) < accuracy) continue;
             actualLines.push(l);
-        }
-		lines = [];
-        //now, get a mirrored version
-        edgeDetected = cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16);
-        for (x in 0...image.width) {
-            for (y in 0...image.height) {
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, false, true));
-                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, {x: x, y: y}, minLineLength, true, true));
-            }
-        }
-        for (l in lines) {
-            if (l == null) continue;
-            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
-            actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
         }
         return actualLines;
     }

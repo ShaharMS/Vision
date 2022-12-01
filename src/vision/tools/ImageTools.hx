@@ -289,12 +289,12 @@ class ImageTools {
 
 		The pixels are iterated on from left to right, top to bottom.
 
-	    @param image The image to get the neighbors in.
-	    @param x The x position of the pixel.
-	    @param y The y position of the pixel.
-	    @param kernalSize the width & height of the kernal.
+		@param image The image to get the neighbors in.
+		@param x The x position of the pixel.
+		@param y The y position of the pixel.
+		@param kernalSize the width & height of the kernal.
 		@param circular Whether or not the kernal is a circle, or a square. to get more "accurate" neighbors, set this to `true`. `false` by default.
-	    @return an `Array2D` of colors
+		@return an `Array2D` of colors
 	**/
 	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Iterator<Color> {
 		return new NeighborsIterator(image, x, y, kernalSize, circular);

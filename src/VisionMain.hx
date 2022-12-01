@@ -1,5 +1,8 @@
 package;
 
+import vision.algorithms.SimpleLineDetector;
+import vision.ds.IntPoint2D;
+import vision.ds.geometry.Int16Point2D;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
 import vision.ds.Kernal2D;
@@ -37,8 +40,9 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-		#if (false)
+		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
@@ -159,7 +163,7 @@ class VisionMain {
 			#if feature_detection_tests
 			printSectionDivider("Feature detection tests");
 			start = haxe.Timer.stamp();
-			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 15);
+			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
 			var newI = image.clone();
 			for (l in lines) {
 				newI.drawLine2D(l, 0x00FFD5);

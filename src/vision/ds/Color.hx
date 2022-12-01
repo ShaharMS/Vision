@@ -350,6 +350,16 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
+		Generate a random color, with randomized red, green, blue and optionally alpha values.
+
+		@param alphaLock When set to `false`, the alpha channel will get a randomized value to. `true` by default, which makes a color with `alpha = 255`.
+		@param alphaValue When `alphaLock` is true, you can provide this value to override the default alpha value. Since the first argument is optional, you can do `Color.makeRandom(128)` (a random color with `alpha` set to `128`)	
+	**/
+	public static inline function makeRandom(?alphaLock:Bool = true, alphaValue:Int = 255) {
+		return Color.fromRGBAFloat(Math.random(), Math.random(), Math.random(), if (alphaLock) alphaValue else Math.random());
+	}
+
+	/**
 		Multiply the RGB and alpha channels of two Colors
 	**/
 	@:op(A * B)

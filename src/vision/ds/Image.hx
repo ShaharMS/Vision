@@ -1405,6 +1405,16 @@ abstract Image(ByteArray) {
 		#end
 		return cast array;
 	}
+
+	//--------------------------------------------------------------------------
+	// Operators
+	//--------------------------------------------------------------------------
+	@:op(A | B) static inline function image_or_image(lhs:Image, rhs:Image):Image {
+		lhs.forEachPixel((x, y, color) -> {
+			lhs.setUnsafePixel(x, y, color | rhs.getUnsafePixel(x, y));
+		});
+		return lhs;
+	}
 }
 
 private class PixelIterator {
