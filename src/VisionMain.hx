@@ -1,5 +1,6 @@
 package;
 
+import vision.algorithms.SimpleLineDetector;
 import vision.ds.IntPoint2D;
 import vision.ds.geometry.Int16Point2D;
 import vision.algorithms.Laplacian;
@@ -43,17 +44,26 @@ class VisionMain {
 		for (x in -1...2) for (y in -1...2) trace(new Int16Point2D(x, y).toString());
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace("image loaded");
-			printImage(image = image.resize(900));
+			printImage(image = image.resize(600));
 			start = haxe.Timer.stamp();
 			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
+			trace(lines.length);
+			end = haxe.Timer.stamp();
+			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			var newI = image.clone();
 			for (l in lines) {
 				newI.drawLine2D(l, Color.AQUA);
 			}
-			printImage(Vision.cannyEdgeDetection(image.clone().removeView(), 1, X5, 0.05, 0.16) | Vision.cannyEdgeDetection(image.clone().removeView().mirror(), 1, X5, 0.05, 0.16).mirror());
-			printImage(newI);
+			start = haxe.Timer.stamp();
+			//var canny = Vision.cannyEdgeDetection(image.clone().removeView(), 1, X5, 0.05, 0.16) | Vision.cannyEdgeDetection(image.clone().removeView().mirror(), 1, X5, 0.05, 0.16).mirror();
+			var canny = image.clone().removeView().cannyEdgeDetection();
 			end = haxe.Timer.stamp();
-			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			trace("Edge detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			printImage(canny);
+			printImage(newI);
+			
+			printImage(Gaussian.fastBlur(image.clone(), 5, 3));
+			printImage(image.clone().gaussianBlur(3, 5));
 		});
 		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {

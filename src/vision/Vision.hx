@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.geometry.Int16Point2D;
 import haxe.ds.Vector;
 import vision.ds.specifics.WhiteNoiseRange;
 import vision.algorithms.Laplacian;
@@ -642,11 +643,11 @@ class Vision {
             case VeryHigh_VerySlow: X9;
         }
         SimpleLineDetector.image = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16) | cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16).mirror();
-        var lines:Array<Line2D> = [];
+		var lines:Array<Line2D> = [];
 		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
             for (y in 0...image.height) {
-				lines.push(SimpleLineDetector.findLineFromPoint(new IntPoint2D(x, y), minLineLength));
+				lines.push(SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength));
             }
         }
         for (l in lines) {

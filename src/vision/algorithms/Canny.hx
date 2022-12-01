@@ -29,7 +29,7 @@ class Canny {
 	}
 
 	public static function applyGaussian(image:CannyObject, size:Int, sigma:Float):CannyObject {
-		return Vision.gaussianBlur(image, sigma, size);
+		return Gaussian.fastBlur(image, size, sigma);
 	}
 
 	public static function applySobelFilters(image:CannyObject):CannyObject {
@@ -69,8 +69,8 @@ class Canny {
 
 	public static function applyHysteresis(image:CannyObject, highThreshold:Float, lowThreshold:Float):CannyObject {
 		final copy = image.clone();
-		final isStrong = (edge:Color) -> edge.redFloat > highThreshold;
-		final isCandidate = (edge:Color) -> edge.redFloat <= highThreshold && edge.redFloat >= lowThreshold;
+		inline function isStrong(edge:Color) return edge.redFloat > highThreshold;
+		inline function isCandidate(edge:Color) return edge.redFloat <= highThreshold && edge.redFloat >= lowThreshold;
 
 		function traverseEdge(x, y) {
 			if (x == 0 || y == 0 || x == image.width - 1 || y == image.height - 1)

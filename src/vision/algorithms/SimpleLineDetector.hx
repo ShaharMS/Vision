@@ -11,14 +11,15 @@ import vision.ds.Line2D;
 import vision.ds.Image;
 
 using vision.tools.MathTools;
+using vision.tools.ImageTools;
+
 private typedef S = SimpleLineDetector;
 /**
- * An iterative, partially recursive line detection implementation by [Shahar Marcus](https://www.github.com/ShaharMS).
+ * An iterative, interpretive, line detection implementation by [Shahar Marcus](https://www.github.com/ShaharMS).
  */
 class SimpleLineDetector {
 
 	public static var image:Image;
-
 	/**
 		Shortcut for
 		```haxe
@@ -30,11 +31,11 @@ class SimpleLineDetector {
 	}
 
 
-	public static function findLineFromPoint(point:IntPoint2D, minLineLength:Float, maxGap:Int = 1):Line2D {
+	public static function findLineFromPoint(point:Int16Point2D, minLineLength:Float, maxGap:Int = 1):Line2D {
 		if (!image.hasPixel(point.x, point.y) ) return null;
 		if (image.getUnsafePixel(point.x, point.y) != 0xFFFFFFFF) return null;
 		final start = p(point.x, point.y);
-		var pointCheckOrder:Array<Int16Point2D> = [p(1, 0), p(1, 1), p(1, -1), p(-1, 0), p(-1, 1), p(-1, -1), p(0, 1), p(0, -1)];
+		var pointCheckOrder:Array<Int16Point2D> = [p(1, 0), p(1, 1), p(0, 1), p(-1, 1), p(-1, 0), p(-1, -1), p(0, -1), p(1, -1)];
 		var cwp:Null<Int16Point2D> = p(point.x, point.y);
 		var safetyNet = 0;
 		var voided:Bool = false;
@@ -46,6 +47,7 @@ class SimpleLineDetector {
 		var dir:Float = 0;
 		var alreadyGap = false;
 		var safeMax = Math.sqrt(image.width * image.width + image.height * image.height);
+		var prev:Null<Int16Point2D> = p(-5, -5), prev2:Null<Int16Point2D> = p(-10, -10);
 		while (!voided) {
 			safetyNet++;
 			if (safetyNet == 5 || safetyNet == 10) {
@@ -60,11 +62,13 @@ class SimpleLineDetector {
 					pointCheckOrder = [p(-1, 1), p(-1, 0), p(0, 1), p(-1, -1), p(1, 1)];
 				}
 			}
-			if (safetyNet > safeMax) break;
+			if (safetyNet > safeMax || safetyNet > 10 && (cwp == prev2 || cwp == prev)) break;
 			voided = true;
 			for (p in pointCheckOrder) {
 				if (image.hasPixel(p.x + cwp.x, p.y + cwp.y) && image.getUnsafePixel(p.x + cwp.x, p.y + cwp.y) == 0xFFFFFFFF) {
 					cwp = S.p(cwp.x + p.x, cwp.y + p.y);
+					prev = cwp;
+					prev2 = prev;
 					voided = false;
 					alreadyGap = false;
 				} 
