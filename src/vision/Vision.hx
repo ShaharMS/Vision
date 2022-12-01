@@ -513,7 +513,7 @@ class Vision {
 						[farCorner, farEdge, edge, farEdge, farCorner]
 					];
 				case Custom(kernal): kernal;
-				case GaussianBlur(size, sigma): Gaussian.createKernalOfSize(size, sigma).inner.raise(size);
+				case GaussianBlur(size, sigma): Gaussian.create2DKernelOfSize(size, sigma).inner.raise(size);
 				case LaplacianPositive: [[0, 1, 0], [1, -4, 1], [0, 1, 0]];
 				case LaplacianNegative: [[0, -1, 0], [-1, 4, -1], [0, -1, 0]];
 			}

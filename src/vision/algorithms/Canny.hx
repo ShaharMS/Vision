@@ -24,6 +24,7 @@ using vision.tools.MathTools;
 	- `applyHysteresis()`
 **/
 class Canny {
+	
 	public static function grayscale(image:CannyObject):CannyObject {
 		return Vision.grayscale(image);
 	}

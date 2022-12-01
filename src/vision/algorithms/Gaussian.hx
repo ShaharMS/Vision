@@ -13,6 +13,7 @@ class Gaussian {
 		return [[1]];
 	}
 
+	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create3x3Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], []];
@@ -37,6 +38,7 @@ class Gaussian {
 		return kernal;
 	}
 
+	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create5x5Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], [], [], []];
@@ -61,6 +63,7 @@ class Gaussian {
 		return kernal;
 	}
 
+	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create7x7Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], [], [], [], [], []];
@@ -85,6 +88,7 @@ class Gaussian {
 		return kernal;
 	}
 
+	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create9x9Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], [], [], [], [], [], [], []];
@@ -109,7 +113,7 @@ class Gaussian {
 		return kernal;
 	}
 
-	public static function createKernalOfSize(size:Int, sigma:Float):Array2D<Float> {
+	public static function create2DKernelOfSize(size:Int, sigma:Float):Array2D<Float> {
 		#if vision_quiet
 		if (size <= 0) size = -size;
 		if (size % 2 == 0) size++;
@@ -185,8 +189,6 @@ class Gaussian {
 		});
 
 		//second pass - horizontal
-
-		// first pass - vertical
 		var processed = image.clone();
 		var kernel = create1DKernelOfSize(size, sigma);
 		preprocessed.forEachPixelInView((x, y, color) -> {
