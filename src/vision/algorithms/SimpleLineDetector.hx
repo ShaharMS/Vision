@@ -32,7 +32,7 @@ class SimpleLineDetector {
 
 
 	public static function findLineFromPoint(point:Int16Point2D, minLineLength:Float, maxGap:Int = 1):Line2D {
-		if (!image.hasPixel(point.x, point.y) ) return null;
+		if (!image.hasPixel(point.x, point.y)) return null;
 		if (image.getUnsafePixel(point.x, point.y) != 0xFFFFFFFF) return null;
 		final start = p(point.x, point.y);
 		var pointCheckOrder:Array<Int16Point2D> = [p(1, 0), p(1, 1), p(0, 1), p(-1, 1), p(-1, 0), p(-1, -1), p(0, -1), p(1, -1)];
@@ -62,7 +62,7 @@ class SimpleLineDetector {
 					pointCheckOrder = [p(-1, 1), p(-1, 0), p(0, 1), p(-1, -1), p(1, 1)];
 				}
 			}
-			if (safetyNet > safeMax || safetyNet > 10 && (cwp == prev2 || cwp == prev)) break;
+			if (safetyNet > safeMax || (safetyNet > 10 && (cwp == prev2 || cwp == prev))) break;
 			voided = true;
 			for (p in pointCheckOrder) {
 				if (image.hasPixel(p.x + cwp.x, p.y + cwp.y) && image.getUnsafePixel(p.x + cwp.x, p.y + cwp.y) == 0xFFFFFFFF) {
