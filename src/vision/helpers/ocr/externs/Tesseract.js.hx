@@ -96,7 +96,7 @@ class Tesseract {
             onProgress(progress.innerText);
         }
 
-        var imageAsCanvas:CanvasElement = cast image;
+        var imageAsCanvas:CanvasElement = ImageTools.toJsCanvas(image);
         var src = imageAsCanvas.getContext2d().getImageData(0, 0, imageAsCanvas.width, imageAsCanvas.height);
 
         //script element
