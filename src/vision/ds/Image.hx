@@ -15,23 +15,23 @@ using vision.tools.MathTools;
 /**
 	Represents a 2D image, as a matrix of Colors.
 **/
+@:transitive
 abstract Image(ByteArray) {
+	#if vision_higher_width_cap
 	/**
-		### If `vision_higher_width_cap` is defined:
-
 		the first 4 bytes represent image width,  
-		the next 8 bytes are the x & y position of an image view,  
-		the next 8 bytes are the width & height of an image view,
+		the next 8 bytes are the `x` & `y` position of an image view,  
+		the next 8 bytes are the `width` & `height` of an image view,
 		the last byte represents view shape
-
-		### Otherwise:
-
-		the first 2 bytes represent image width,  
-		the next 4 bytes are the x & y position of an image view,  
-		the next 4 bytes are the width & height of an image view,
-		the last byte represents view shape
-
 	**/
+	#else
+	/**
+		the first 2 bytes represent image width,  
+		the next 4 bytes are the `x` & `y` position of an image view,  
+		the next 4 bytes are the `width` & `height` of an image view,
+		the last byte represents view shape
+	**/
+	#end
 	static var OFFSET = #if vision_higher_width_cap 21 #else 11 #end;
 
 	static var WIDTH_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
@@ -85,7 +85,7 @@ abstract Image(ByteArray) {
 	#end
 
 	/**
-	    The current image's `ImageView`. you can get/set this field to change the view, but changing it's values won't effect anything.
+	    The current image's `ImageView`. You can get/set this field to change the view, but changing it's values won't effect anything.
 
 		`ImageView`s disallow setting pixels on parts outside of the view. That's useful when you want to operate
 		on a certain part of the image, without modifying other portions/copying pixels around.
@@ -102,29 +102,20 @@ abstract Image(ByteArray) {
 	}
 
 	/**
-		Creates a new image of the given size. Onces created, the image cannot be resized.
+		Creates a new image of the given size. Once is created, the image cannot be resized.
 
 		@param width The width of the image.
 		@param height The height of the image.
 		@param color The color to fill the image with. if unspecified, the image is transparent.
 	**/
-	public inline function new(width:Int, height:Int, ?color:Color = 0x00000000) {
+	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
 		this = new ByteArray(width * height * 4 + OFFSET);
-		#if vision_higher_width_cap
-		this.setInt32(0, width);
-		this.setInt32(WIDTH_BYTES, 0);
-		this.setInt32(WIDTH_BYTES + DATA_GAP, 0);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		this.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (0, width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-		#else
-		this.setUInt16(0, width);
-		this.setUInt16(WIDTH_BYTES, 0);
-		this.setUInt16(WIDTH_BYTES + DATA_GAP, 0);
-		this.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		this.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
-		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-		#end
 		var i = OFFSET;
 		while (i < this.length) {
 			this[i] = color.alpha;
@@ -348,7 +339,7 @@ abstract Image(ByteArray) {
 
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
-		@param color The color to set the pixel to. pay attention to the alpha value.
+		@param color The color to set the pixel to. Pay attention to the alpha value.
 		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 	**/
 	public inline function paintPixel(x:Int, y:Int, color:Color) {
@@ -356,6 +347,8 @@ abstract Image(ByteArray) {
 			#if !vision_quiet
 			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
 			#end
+		} else if (color.alphaFloat == 1) {
+			setPixel(x, y, color);
 		} else {
 			var oldColor = getPixel(x, y);
 			var newColor = Color.fromRGBAFloat(
@@ -663,7 +656,7 @@ abstract Image(ByteArray) {
 
 		@see Line2D
 	**/
-	public inline function drawQuadraticBezier(line:Line2D, control:IntPoint2D, color:Color, ?accuracy:Float = 1000) {
+	public inline function drawQuadraticBezier(line:Line2D, control:IntPoint2D, color:Color, accuracy:Float = 1000) {
 		function bezier(t:Float, p0:IntPoint2D, p1:IntPoint2D, p2:IntPoint2D):IntPoint2D {
 			var t2 = t * t;
 			var t3 = t2 * t;
@@ -698,7 +691,7 @@ abstract Image(ByteArray) {
 		@param control1 The first control point of the curve.
 		@param control2 The second control point of the curve.
 		@param color The color to draw the curve with.
-		@param accuracy The number of iterations to use when drawing the curve. the higher the number, the more iterations are used, and the more accurate the curve is. for example, accuracy of 100 will draw the curve with 100 iterations, and will draw 100 points on the curve. **default is 1000**
+		@param accuracy The number of iterations to use when drawing the curve. The higher the number, the more iterations are used, and the more accurate the curve is. For example: accuracy of 100 will draw the curve with 100 iterations, and will draw 100 points on the curve. **default is 1000**
 
 		@see Line2D
 	**/
@@ -895,7 +888,7 @@ abstract Image(ByteArray) {
 		**Warning** - this function is recursive. This function is not slow, but can trigger
 		a stack overflow if used on large images. This is only here so an implementation will be available.
 
-		@param position The position to start filling at. you can use a Point2D or IntPoint2D.
+		@param position The position to start filling at. You can use a Point2D or IntPoint2D.
 		@param color The color to fill with.
 	**/
 	public function fillColorRecursive(position:IntPoint2D, color:Color) {
@@ -924,7 +917,7 @@ abstract Image(ByteArray) {
 
 		This uses the BFS `Breadth First Search` algorithm
 
-		@param position The position to start filling at. you can use a Point2D or IntPoint2D.
+		@param position The position to start filling at. You can use a Point2D or IntPoint2D.
 		@param color The color to fill with.
 	**/
 	public function fillColor(position:IntPoint2D, color:Color) {
@@ -960,7 +953,7 @@ abstract Image(ByteArray) {
 
 		This uses the BFS `Breadth First Search` algorithm
 
-		@param position The position to start filling at. you can use a Point2D or IntPoint2D.
+		@param position The position to start filling at. You can use a Point2D or IntPoint2D.
 		@param color The color to fill with.
 		@param borderColor The color upon which to stop filling.
 	**/
@@ -1005,6 +998,9 @@ abstract Image(ByteArray) {
 			var blurred = Vision.gaussianBlur(image.clone());
 	**/
 	public function clone():Image {
+		if (this == null) {
+			trace("Warning: Cloning a null image");
+		}
 		return cast this.sub(0, this.length);
 	}
 
@@ -1028,10 +1024,19 @@ abstract Image(ByteArray) {
 		return cast this;
 	}
 
+	/**
+	 * Stamps the given image onto this image, with the stamped image's top left corner being at (`X`, `Y`).
+	 * 
+	 * 
+	 * @param X The X coordinate of the top left corner of the stamped image.
+	 * @param Y The Y coordinate of the top left corner of the stamped image
+	 * @param image The image to stamp. Alpha values are respected.
+	 * @return this image after stamping the given image onto it.
+	 */
 	public inline function stamp(X:Int, Y:Int, image:Image):Image {
 		for (x in X...X + image.width) {
 			for (y in Y...Y + image.height) {
-				setPixel(x, y, image.getUnsafePixel(x - X, y - Y));
+				paintPixel(x, y, image.getUnsafePixel(x - X, y - Y));
 			}
 		}
 		return cast this;
@@ -1040,12 +1045,19 @@ abstract Image(ByteArray) {
 	/**
 		Resizes the image according to `algorithm`, to `newWidth` by `newHeight`.
 
-		@param newWidth The width to resize to
-		@param newHeight The height to resize to
+		@param newWidth The width to resize to. if assigned to `-1`, the image resizes to the given `newHeight`, and keeps the aspect-ratio of the original image.
+		@param newHeight The height to resize to. if assigned to `-1`, the image resizes to the given `newWidth`, and keeps the aspect-ratio of the original image.
 		@param algorithm Which algorithm to use. You can use the algorithms available in `ImageResizeAlgorithm`. If no algorithm is specified, uses `ImageTools.defaultResizeAlgorithm`.
 		@return this image, after resizing.
 	**/
-	public inline function resize(newWidth:Int, newHeight:Int, ?algorithm:ImageResizeAlgorithm):Image {
+	public inline function resize(newWidth:Int = -1, newHeight:Int = -1, ?algorithm:ImageResizeAlgorithm):Image {
+		if (newWidth == -1 && newHeight == -1) return cast this;
+		if (newWidth == -1) {
+			newWidth = Std.int(((newHeight / height) * width));
+		} else if (newHeight == -1) {
+			newHeight = Std.int(((newWidth / width) * height));
+		} 
+		trace(newWidth, newHeight);
 		if (algorithm == null)
 			algorithm = ImageTools.defaultResizeAlgorithm;
 		switch algorithm {
@@ -1077,9 +1089,9 @@ abstract Image(ByteArray) {
 		Gets the image as a string.
 
 		@param special When using the `Console.hx` haxelib, images can be printed to the console
-		with color. set this to false if you don't want this to happen. Set to `true` by default.
+		with color. Set this to false if you don't want this to happen. Set to `true` by default.
 	**/
-	public function toString(?special:Bool = true):String {
+	public function toString(special:Bool = true):String {
 		if (!special) {
 			return Std.string(this);
 		}
@@ -1320,6 +1332,39 @@ abstract Image(ByteArray) {
         return ImageTools.toHeapsPixels(cast this);
     }
     #end
+	
+	#if js
+	@:from public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
+        return ImageTools.fromJsCanvas(canvas);
+    }
+    @:to public function toJsCanvas():js.html.CanvasElement {
+        return ImageTools.toJsCanvas(cast this);
+    }
+	@:from public static function fromJsImage(image:js.html.ImageElement):Image {
+		return ImageTools.fromJsImage(image);
+    }
+	@:to public function toJsImage():js.html.ImageElement {
+		return ImageTools.toJsImage(cast this);
+    }
+	#end
+
+	#if haxeui_core
+	@:from public static function fromHaxeUIImage(image:haxe.ui.components.Image):Image {
+		return ImageTools.fromHaxeUIImage(image);
+	}
+
+	@:to public function toHaxeUIImage():haxe.ui.components.Image {
+		return ImageTools.toHaxeUIImage(cast this);
+	}
+
+	@:from public static function fromHaxeUIImageData(image:haxe.ui.backend.ImageData):Image {
+		return ImageTools.fromHaxeUIImageData(image);
+	}
+
+	@:to public function toHaxeUIImageData():haxe.ui.backend.ImageData {
+		return ImageTools.toHaxeUIImageData(cast this);
+	}
+	#end
 
 	//--------------------------------------------------------------------------
 	// Other From/Tos
@@ -1340,6 +1385,35 @@ abstract Image(ByteArray) {
 		}
 
 		return image;
+	}
+
+	public static function fromColorByteArrayAndData(array:ByteArray, width:Int, height:Int):Image {
+		#if vision_higher_width_cap
+		array.setInt32(0, width);
+		array.setInt32(WIDTH_BYTES, 0);
+		array.setInt32(WIDTH_BYTES + DATA_GAP, 0);
+		array.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
+		array.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		array.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		#else
+		array.setUInt16(0, width);
+		array.setUInt16(WIDTH_BYTES, 0);
+		array.setUInt16(WIDTH_BYTES + DATA_GAP, 0);
+		array.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES, width);
+		array.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		array.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		#end
+		return cast array;
+	}
+
+	//--------------------------------------------------------------------------
+	// Operators
+	//--------------------------------------------------------------------------
+	@:op(A | B) static inline function image_or_image(lhs:Image, rhs:Image):Image {
+		lhs.forEachPixel((x, y, color) -> {
+			lhs.setUnsafePixel(x, y, color | rhs.getUnsafePixel(x, y));
+		});
+		return lhs;
 	}
 }
 

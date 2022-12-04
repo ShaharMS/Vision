@@ -3,15 +3,15 @@ package vision.ds.hough;
 @:structInit
 class HoughSpace {
 	/**
-		The Hough space is a 2D array of integers.
-		the accumulator is that array.
+		The Hough space is a 2D array of `Int`.
+		The accumulator is that array.
 	**/
 	public var accumulator(default, null):HoughAccumulator;
 
 	/**
-		This isn't really the accumulator, but its used to visualize the Hough space.
+		This isn't really the accumulator, but it is used to visualize the Hough space.
 		the reason this and the accumulator are separate is because the accumulator's value
-		is more "predictable" - represented as Ints and not colors.
+		is more "predictable" - represented as `Int` and not colors.
 	**/
 	public var image(default, null):Image;
 

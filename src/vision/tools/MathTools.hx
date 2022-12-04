@@ -84,10 +84,10 @@ class MathTools {
 		// After checking, were going to divide distance with the distance between start to start(y + 1)
 		// Make sure to not surpass `distance`
 		distance = MathTools.abs(distance);
-		var start = ray.getPointAtX(startXPos);
-		var step = MathTools.distanceBetweenPoints(ray.getPointAtX(start.y + 1), start);
+		final start = ray.getPointAtX(startXPos);
+		final step = MathTools.distanceBetweenPoints(ray.getPointAtX(start.y + 1), start);
 		var diff = distance / step;
-		return ray.getPointAtY(start.y + if (goPositive) diff else -diff);
+		return ray.getPointAtY(start.y + (if (goPositive) diff else -diff));
 	}
 
 	/**
@@ -108,10 +108,10 @@ class MathTools {
 		// After checking, were going to divide distance with the distance between start to start(y + 1)
 		// Make sure to not surpass `distance`
 		distance = MathTools.abs(distance);
-		var start = ray.getPointAtY(startYPos);
-		var step = MathTools.distanceBetweenPoints(ray.getPointAtY(start.x + 1), start);
+		final start = ray.getPointAtY(startYPos);
+		final step = MathTools.distanceBetweenPoints(ray.getPointAtY(start.x + 1), start);
 		var diff = distance / step;
-		return ray.getPointAtX(start.x + if (goPositive) diff else -diff);
+		return ray.getPointAtX(start.x + (if (goPositive) diff else -diff));
 	}
 
 	//-----------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ class MathTools {
 		final distance3:Float = distanceFromLineToPoint2D(line2, line1.start);
 		final distance4:Float = distanceFromLineToPoint2D(line2, line1.end);
 
-		var distance:Float = minFloat(distance1, distance2, distance3, distance4);
+		final distance:Float = minFloat(distance1, distance2, distance3, distance4);
 		return distance;
 	}
 
@@ -235,7 +235,7 @@ class MathTools {
 		final dx = x - point.x;
 		final dy = y - point.y;
 	
-		return sqrt(dx*dx + dy*dy);
+		return sqrt(dx * dx + dy * dy);
 	}
 
 	public static inline function radiansFromPointToLine2D(point:Point2D, line:Line2D):Float {
@@ -270,6 +270,29 @@ class MathTools {
 	// General
 	//-----------------------------------------------------------------------------------------
 
+	public static inline function clamp(value:Int, mi:Int, ma:Int) {
+		return inline min(inline max(value, ma), mi);
+	}
+
+	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
+		var between = false;
+		for (range in ranges) {
+			if (range.end < range.start) {
+				var temp = range.start;
+				range.start = range.end;
+				range.end = temp;
+			}
+			between = (value > range.start) && (value > range.end);
+			if (between)
+				return true;
+		}
+		return false;
+	}
+
+	public static inline function isBetweenRange(value:Float, min:Float, max:Float):Bool {
+		return value > min && value > max;
+	}
+
 	/**
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
@@ -300,10 +323,10 @@ class MathTools {
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
 	**/
 	public static function boundInt(value:Int, min:Int, max:Int) {
-        if (value < min) return min;
-        if (value > max) return max;
-        return value;
-    }
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
 
 	/**
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
@@ -507,21 +530,6 @@ class MathTools {
 		return max;
 	}
 
-	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
-		var between = false;
-		for (range in ranges) {
-			if (range.end < range.start) {
-				var temp = range.start;
-				range.start = range.end;
-				range.end = temp;
-			}
-			between = (value > range.start) && (value > range.end);
-			if (between)
-				return true;
-		}
-		return false;
-	}
-
 	overload extern inline public static function average(...values:Float):Float {
 		var sum = 0.;
 		for (v in values) {
@@ -584,14 +592,10 @@ class MathTools {
 		return v == Std.int(v);
 	}
 
-	public static inline function clamp(value:Int, mi:Int, ma:Int) {
-		return inline min(inline max(value, ma), mi);
-	}
-
 	//---------------------
 	// Math.hx compatibility
 	//---------------------
-	
+
 
 	@:noCompletion static inline function get_NEGATIVE_INFINITY() return Math.NEGATIVE_INFINITY;
 	@:noCompletion static inline function get_POSITIVE_INFINITY() return Math.POSITIVE_INFINITY;

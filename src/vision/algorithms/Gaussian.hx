@@ -1,5 +1,7 @@
 package vision.algorithms;
 
+import vision.ds.Color;
+import vision.ds.Image;
 import vision.ds.Array2D;
 import vision.exceptions.InvalidGaussianKernalSize;
 
@@ -11,6 +13,7 @@ class Gaussian {
 		return [[1]];
 	}
 
+	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create3x3Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], []];
@@ -35,6 +38,7 @@ class Gaussian {
 		return kernal;
 	}
 
+	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create5x5Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], [], [], []];
@@ -59,6 +63,7 @@ class Gaussian {
 		return kernal;
 	}
 
+	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create7x7Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], [], [], [], [], []];
@@ -83,6 +88,7 @@ class Gaussian {
 		return kernal;
 	}
 
+	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create9x9Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], [], [], [], [], [], [], []];
@@ -107,15 +113,12 @@ class Gaussian {
 		return kernal;
 	}
 
-	public static function createKernalOfSize(size:Int, sigma:Float):Array2D<Float> {
+	public static function create2DKernelOfSize(size:Int, sigma:Float):Array2D<Float> {
 		#if vision_quiet
-		if (size <= 0)
-			size = -size;
-		if (size % 2 == 0)
-			size++;
+		if (size <= 0) size = -size;
+		if (size % 2 == 0) size++;
 		#else
-		if (size % 2 == 0 || size <= 0)
-			throw new InvalidGaussianKernalSize(size);
+		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernalSize(size);
 		#end
 		var r, s = 2.0 * sigma * sigma, sum = 0.;
 		var kernal:Array2D<Float> = new Array2D<Float>(size, size);
@@ -139,5 +142,66 @@ class Gaussian {
 		}
 
 		return kernal;
+	}
+
+	public static function create1DKernelOfSize(size:Int, sigma:Float):Array<Float> {
+		#if vision_quiet
+		if (size <= 0) size = -size;
+		if (size % 2 == 0) size++;
+		#else
+		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernalSize(size);
+		#end
+		var r = size / 2, sum = 0.;
+		// kernel
+		var kernel:Array<Float> = [];
+		// compute kernel
+		for (i in 0...size) {
+			kernel[i] = Math.exp((i - r) * (i - r) / (-2 * sigma*sigma)) / (Math.sqrt(2 * Math.PI) * sigma);
+			sum += kernel[i];
+		}
+		// normalize kernel
+		for (i in 0...kernel.length) {
+			kernel[i] /= sum;
+		}
+		return kernel;
+	}
+
+	public static function fastBlur(image:Image, size:Int, sigma:Float) {
+		var preprocessed = image.clone();
+		#if vision_quiet
+		if (size <= 0) size = -size;
+		if (size % 2 == 0) size++;
+		#else
+		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernalSize(size);
+		#end
+		var radius = Std.int((size - 1) / 2);
+		// first pass - vertical
+		var kernel = create1DKernelOfSize(size, sigma);
+		image.forEachPixelInView((x, y, color) -> {
+			var red = 0., green = 0., blue = 0.;
+			for (i in -radius...radius + 1) {
+				var pixel = image.getSafePixel(x, y + i);
+				red += pixel.red * kernel[i + radius];
+				green += pixel.green * kernel[i + radius];
+				blue += pixel.blue * kernel[i + radius];
+			}
+			preprocessed.setUnsafePixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
+		});
+
+		//second pass - horizontal
+		var processed = image.clone();
+		var kernel = create1DKernelOfSize(size, sigma);
+		preprocessed.forEachPixelInView((x, y, color) -> {
+			var red = 0., green = 0., blue = 0.;
+			for (i in -radius...radius + 1) {
+				var pixel = preprocessed.getSafePixel(x + i, y);
+				red += pixel.red * kernel[i + radius];
+				green += pixel.green * kernel[i + radius];
+				blue += pixel.blue * kernel[i + radius];
+			}
+			processed.setUnsafePixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
+		});
+
+		return processed;
 	}
 }

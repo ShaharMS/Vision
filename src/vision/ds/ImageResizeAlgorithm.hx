@@ -9,7 +9,7 @@ enum abstract ImageResizeAlgorithm(Int) from Int to Int {
 	**/
 	var NearestNeighbor;
 	/**
-	    Bilinear Interpolation. The most reliable method for general resizing purposes. yields the "least lossless" result.
+	    Bilinear Interpolation. The most reliable method for general resizing purposes. Yields the "least lossless" result.
 	**/
 	var BilinearInterpolation;
 	/**

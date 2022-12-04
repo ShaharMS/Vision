@@ -176,10 +176,10 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	static var COLOR_REGEX = ~/^(0x|#)(([A-F0-9]{2}){3,4})$/i;
 
 	/**
-		Create a color from the least significant four bytes of an Int
+		Create a color from the least significant four bytes of an `Int`
 
-		@param value Int with bytes in the format 0xAARRGGBB
-		@return	The color as a Color
+		@param value `Int` with bytes in the format 0xAARRGGBB
+		@return	The color as a `Color`
 	**/
 	public static inline function fromInt(value:Int):Color {
 		return new Color(value);
@@ -191,7 +191,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Red	The red value of the color from 0 to 255
 		@param Green	The green value of the color from 0 to 255
 		@param Blue	The green value of the color from 0 to 255
-		@param Alpha	How opaque the color should be, from 0 to 255
+		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
 		@return The color as a Color
 	**/
 	public static inline function fromRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color {
@@ -216,8 +216,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Red	The red value of the color from 0 to 1
 		@param Green	The green value of the color from 0 to 1
 		@param Blue	The green value of the color from 0 to 1
-		@param Alpha	How opaque the color should be, from 0 to 1
-		@return The color as a Color
+		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
+		@return The color as a `Color`
 	**/
 	public static inline function fromRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color {
 		var color = new Color();
@@ -231,8 +231,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Magenta	The magenta value of the color from 0 to 1
 		@param Yellow	The yellow value of the color from 0 to 1
 		@param Black		The black value of the color from 0 to 1
-		@param Alpha		How opaque the color should be, from 0 to 1
-		@return The color as a Color
+		@param Alpha		How opaque the color should be, from 0 to 1, default is 1
+		@return The color as a `Color`
 	**/
 	public static inline function fromCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):Color {
 		var color = new Color();
@@ -244,9 +244,9 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 
 		@param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
 		@param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-		@param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
-		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
-		@return	The color as a Color
+		@param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright (default).
+		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255, default is 1.
+		@return	The color as a `Color`
 	**/
 	public static function fromHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha:Float = 1):Color {
 		var color = new Color();
@@ -259,8 +259,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
 		@param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
 		@param	Lightness	A number between 0 and 1, indicating the lightness of the color
-		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
-		@return	The color as a Color
+		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255, default is 1.
+		@return	The color as a `Color`
 	**/
 	public static inline function fromHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha:Float = 1):Color {
 		var color = new Color();
@@ -300,7 +300,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	/**
 		Get HSB color wheel values in an array which will be 360 elements in size
 
-		@param	Alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque)
+		@param	Alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque) (default)
 		@return	HSB color wheel as Array of Colors
 	**/
 	public static function getHSBColorWheel(Alpha:Int = 255):Array<Color> {
@@ -312,14 +312,14 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 
 		@param 	Color1 The first color
 		@param 	Color2 The second color
-		@param 	Factor Value from 0 to 1 representing how much to shift Color1 toward Color2
-		@return	The interpolated color
+		@param 	Factor Value from 0 to 1 representing how much to shift Color1 toward Color2, default is 0.5
+		@return	The interpolated color as a `Color`
 	**/
 	public static inline function interpolate(Color1:Color, Color2:Color, Factor:Float = 0.5):Color {
-		var r:Int = Std.int((Color2.red - Color1.red) * Factor + Color1.red);
-		var g:Int = Std.int((Color2.green - Color1.green) * Factor + Color1.green);
-		var b:Int = Std.int((Color2.blue - Color1.blue) * Factor + Color1.blue);
-		var a:Int = Std.int((Color2.alpha - Color1.alpha) * Factor + Color1.alpha);
+		final r:Int = Std.int((Color2.red - Color1.red) * Factor + Color1.red);
+		final g:Int = Std.int((Color2.green - Color1.green) * Factor + Color1.green);
+		final b:Int = Std.int((Color2.blue - Color1.blue) * Factor + Color1.blue);
+		final a:Int = Std.int((Color2.alpha - Color1.alpha) * Factor + Color1.alpha);
 
 		return fromRGBA(r, g, b, a);
 	}
@@ -350,6 +350,16 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
+		Generate a random color, with randomized red, green, blue and optionally alpha values.
+
+		@param alphaLock When set to `false`, the alpha channel will get a randomized value to. `true` by default, which makes a color with `alpha = 255`.
+		@param alphaValue When `alphaLock` is true, you can provide this value to override the default alpha value. Since the first argument is optional, you can do `Color.makeRandom(128)` (a random color with `alpha` set to `128`)	
+	**/
+	public static inline function makeRandom(?alphaLock:Bool = true, alphaValue:Int = 255) {
+		return Color.fromRGBAFloat(Math.random(), Math.random(), Math.random(), if (alphaLock) alphaValue else Math.random());
+	}
+
+	/**
 		Multiply the RGB and alpha channels of two Colors
 	**/
 	@:op(A * B)
@@ -374,9 +384,14 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return Color.fromRGBA(lhs.red - rhs.red, lhs.green - rhs.green, lhs.blue - rhs.blue, lhs.alpha - rhs.alpha);
 	}
 
+	/**
+	 * Divide the RGB and alpha channels of one Color from another.
+	 * 
+	 * If a color channel value on the right hand side is `0`, the left hand side's channel will get divided by `1`.
+	 */
 	@:op(A / B)
 	public static inline function divide(lhs:Color, rhs:Color):Color {
-		return Color.fromRGBA(Std.int(lhs.red / rhs.red), Std.int(lhs.green / rhs.green), Std.int(lhs.blue / rhs.blue), Std.int(lhs.alpha / rhs.alpha));
+		return Color.fromRGBA(Std.int(lhs.red / rhs.red == 0 ? 1 : rhs.red), Std.int(lhs.green / rhs.green == 0 ? 1 : rhs.green), Std.int(lhs.blue / rhs.blue == 0 ? 1 : rhs.blue), Std.int(lhs.alpha / rhs.alpha == 0 ? 1 : rhs.alpha));
 	}
 
 	/**
@@ -397,8 +412,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)
 	**/
 	public inline function getAnalogousHarmony(Threshold:Int = 30):Harmony {
-		var warmer:Int = fromHSB(MathTools.wrapInt(Std.int(hue) - Threshold, 0, 350), saturation, brightness, alphaFloat);
-		var colder:Int = fromHSB(MathTools.wrapInt(Std.int(hue) + Threshold, 0, 350), saturation, brightness, alphaFloat);
+		final warmer:Int = fromHSB(MathTools.wrapInt(Std.int(hue) - Threshold, 0, 350), saturation, brightness, alphaFloat);
+		final colder:Int = fromHSB(MathTools.wrapInt(Std.int(hue) + Threshold, 0, 350), saturation, brightness, alphaFloat);
 
 		return {original: this, warmer: warmer, colder: colder};
 	}
@@ -411,9 +426,9 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)
 	**/
 	public inline function getSplitComplementHarmony(Threshold:Int = 30):Harmony {
-		var oppositeHue:Int = MathTools.wrapInt(Std.int(hue) + 180, 0, 350);
-		var warmer:Color = fromHSB(MathTools.wrapInt(oppositeHue - Threshold, 0, 350), saturation, brightness, alphaFloat);
-		var colder:Color = fromHSB(MathTools.wrapInt(oppositeHue + Threshold, 0, 350), saturation, brightness, alphaFloat);
+		final oppositeHue:Int = MathTools.wrapInt(Std.int(hue) + 180, 0, 350);
+		final warmer:Color = fromHSB(MathTools.wrapInt(oppositeHue - Threshold, 0, 350), saturation, brightness, alphaFloat);
+		final colder:Color = fromHSB(MathTools.wrapInt(oppositeHue + Threshold, 0, 350), saturation, brightness, alphaFloat);
 
 		return {original: this, warmer: warmer, colder: colder};
 	}
@@ -425,8 +440,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@return 	Object containing 3 properties: color1 (the original color), color2 and color3 (the equidistant colors)
 	**/
 	public inline function getTriadicHarmony():TriadicHarmony {
-		var triadic1:Color = fromHSB(MathTools.wrapInt(Std.int(hue) + 120, 0, 359), saturation, brightness, alphaFloat);
-		var triadic2:Color = fromHSB(MathTools.wrapInt(Std.int(triadic1.hue) + 120, 0, 359), saturation, brightness, alphaFloat);
+		final triadic1:Color = fromHSB(MathTools.wrapInt(Std.int(hue) + 120, 0, 359), saturation, brightness, alphaFloat);
+		final triadic2:Color = fromHSB(MathTools.wrapInt(Std.int(triadic1.hue) + 120, 0, 359), saturation, brightness, alphaFloat);
 
 		return {color1: this, color2: triadic1, color3: triadic2};
 	}
@@ -493,7 +508,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@return The inversion of this color
 	**/
 	public inline function invert():Color {
-		var oldAlpha = alpha;
+		final oldAlpha = alpha;
 		var output:Color = Color.WHITE - this;
 		output.alpha = oldAlpha;
 		return output;
@@ -505,7 +520,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Red	The red value of the color from 0 to 255
 		@param Green	The green value of the color from 0 to 255
 		@param Blue	The green value of the color from 0 to 255
-		@param Alpha	How opaque the color should be, from 0 to 255
+		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
 		@return This color
 	**/
 	public inline function setRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color {
@@ -522,7 +537,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Red	The red value of the color from 0 to 1
 		@param Green	The green value of the color from 0 to 1
 		@param Blue	The green value of the color from 0 to 1
-		@param Alpha	How opaque the color should be, from 0 to 1
+		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
 		@return This color
 	**/
 	public inline function setRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color {
@@ -540,7 +555,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Magenta	The magenta value of the color from 0 to 1
 		@param Yellow	The yellow value of the color from 0 to 1
 		@param Black		The black value of the color from 0 to 1
-		@param Alpha		How opaque the color should be, from 0 to 1
+		@param Alpha		How opaque the color should be, from 0 to 1, default is 1
 		@return This color
 	**/
 	public inline function setCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):Color {
@@ -561,8 +576,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@return	This color
 	**/
 	public inline function setHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha:Float):Color {
-		var chroma = Brightness * Saturation;
-		var match = Brightness - chroma;
+		final chroma = Brightness * Saturation;
+		final match = Brightness - chroma;
 		return setHSChromaMatch(Hue, Saturation, chroma, match, Alpha);
 	}
 
@@ -576,8 +591,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@return	This color
 	**/
 	public inline function setHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha:Float):Color {
-		var chroma = (1 - Math.abs(2 * Lightness - 1)) * Saturation;
-		var match = Lightness - chroma / 2;
+		final chroma = (1 - Math.abs(2 * Lightness - 1)) * Saturation;
+		final match = Lightness - chroma / 2;
 		return setHSChromaMatch(Hue, Saturation, chroma, match, Alpha);
 	}
 
@@ -586,8 +601,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	**/
 	inline function setHSChromaMatch(Hue:Float, Saturation:Float, Chroma:Float, Match:Float, Alpha:Float):Color {
 		Hue %= 360;
-		var hueD = Hue / 60;
-		var mid = Chroma * (1 - Math.abs(hueD % 2 - 1)) + Match;
+		final hueD = Hue / 60;
+		final mid = Chroma * (1 - Math.abs(hueD % 2 - 1)) + Match;
 		Chroma += Match;
 
 		switch (Std.int(hueD)) {
@@ -612,7 +627,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param simple When enabled, gets the gray by averaging this color's channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`
 	**/
 	public inline function grayscale(simple:Bool = false):Color {
-		var gray = if (simple) Std.int((red + green + blue) / 3) else Std.int(0.2126 * red + 0.7152 * green + 0.0722 * blue);
+		final gray = if (simple) Std.int((red + green + blue) / 3) else Std.int(0.2126 * red + 0.7152 * green + 0.0722 * blue);
 		return this = setRGBA(gray, gray, gray, alpha);
 	}
 
@@ -621,8 +636,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 
 		@param threshold The threshold for converting to black and white: `threshold` is the maximum average of the three color components, that will still be considered black. `threshold` is a value between 0 and 255. The higher the value, the more "sensitive" the conversion. The default value is 128.
 	**/
-	public inline function blackOrWhite(?threshold:Int = 128):Color {
-		var colorValue:Int = MathTools.max(red, green, blue);
+	public inline function blackOrWhite(threshold:Int = 128):Color {
+		final colorValue:Int = MathTools.max(red, green, blue);
 		var a = alpha;
 		if (colorValue > threshold) {
 			this = 0xFFFFFFFF;

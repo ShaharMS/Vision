@@ -1,5 +1,8 @@
 package vision.tools;
 
+import haxe.crypto.Base64;
+import haxe.io.BytesOutput;
+import vision.ds.ByteArray;
 import vision.exceptions.ImageLoadingFailed;
 import vision.exceptions.ImageSavingFailed;
 import vision.ds.ImageFormat;
@@ -9,6 +12,8 @@ import vision.ds.ImageResizeAlgorithm;
 #if js
 import js.lib.Promise;
 import js.Browser;
+import js.html.CanvasElement;
+
 #end
 import haxe.ds.Vector;
 import vision.ds.Matrix;
@@ -29,6 +34,7 @@ using StringTools;
 
 		using vision.tools.ImageTools;
 **/
+@:access(vision.ds.Image)
 class ImageTools {
 	/**
 	 * The default algorithm to use when resizing an image by "brute force" (setting its `width`/`height` when `vision_allow_resize` is defined)
@@ -47,7 +53,7 @@ class ImageTools {
 		`haxelib install format`
 
 		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
-		@param path the path to the image file. on js, it can only be a relative path/a URL
+		@param path the path to the image file. On `js`, it can only be a relative path/a URL
 
 		@returns the image object.
 		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
@@ -68,7 +74,7 @@ class ImageTools {
 						format.png.Tools.reverseBytes(bytes);
 						image = new Image(header.width, header.height);
 						try {
-							image.underlying.blit(4, bytes, 0, bytes.length - 1);
+							image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length - 1);
 						} catch (e) #if !vision_quiet throw new ImageLoadingFailed(PNG, e.message);#end
 					} catch (e:haxe.Exception) {
 						#if vision_quiet
@@ -86,16 +92,16 @@ class ImageTools {
 				httpRequest.request();
 			} else if (path.split(".").pop().toUpperCase() == "PNG") {
 				try {
-					var handle = sys.io.File.getBytes(path);
-					var reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
-					var data = reader.read();
-					var header = format.png.Tools.getHeader(data);
-					var bytes = format.png.Tools.extract32(data);
+					final handle = sys.io.File.getBytes(path);
+					final reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
+					final data = reader.read();
+					final header = format.png.Tools.getHeader(data);
+					final bytes = format.png.Tools.extract32(data);
 					format.png.Tools.reverseBytes(bytes);
 					var image = new Image(header.width, header.height);
 
-					// copy the ARGB bytes from the PNG to the image, without overwriting the first 4 bytes
-					image.underlying.blit(4, bytes, 0, bytes.length);
+					// copy the ARGB bytes from the PNG to the image, without overwriting the first couple of bytes
+					image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length);
 
 					onComplete(image);
 				} catch (e:haxe.Exception) {
@@ -144,12 +150,10 @@ class ImageTools {
 	/**
 	    Saves an image to a path.
 
-		Currently, this function is only available on `sys` targets.
-
 		**Note: this function requires the `format` library, and only supports PNG.**
 
-		To install:  
-		  
+		To install:
+
 		`haxelib install format`
 
 
@@ -165,9 +169,9 @@ class ImageTools {
 			switch saveFormat {
 				case PNG: {
 					try {
-						var out = sys.io.File.write(pathWithFileName);
+						final out = sys.io.File.write(pathWithFileName);
 						var writer = new format.png.Writer(out);
-						var data = format.png.Tools.build32ARGB(image.width, image.height, image.underlying.sub(4, image.underlying.length - 4));
+						final data = format.png.Tools.build32ARGB(image.width, image.height, image.underlying.sub(Image.OFFSET, image.underlying.length - Image.OFFSET));
 						writer.write(data);
 						out.close();
 					} catch (e:haxe.Exception) {
@@ -183,6 +187,28 @@ class ImageTools {
 				#end
 			#end
 		#else
+			#if format
+			switch saveFormat {
+				case PNG: {
+					try {
+						var canvas = image.toJsCanvas();
+  						var i = canvas.toDataURL("image/png", 1.0).replace("image/png", "image/octet-stream");
+  						var link = Browser.document.createAnchorElement();
+  						link.download = "my-image.png";
+  						link.href = i;
+  						link.click();
+					} catch (e:haxe.Exception) {
+						#if !vision_quiet
+						throw new ImageSavingFailed(saveFormat, e.message);
+						#end
+					}
+				}
+			}
+			#else
+				#if !vision_quiet
+				throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
+				#end
+			#end
 		#end
 	}
 
@@ -263,19 +289,19 @@ class ImageTools {
 
 		The pixels are iterated on from left to right, top to bottom.
 
-	    @param image The image to get the neighbors in.
-	    @param x The x position of the pixel.
-	    @param y The y position of the pixel.
-	    @param kernalSize the width & height of the kernal.
+		@param image The image to get the neighbors in.
+		@param x The x position of the pixel.
+		@param y The y position of the pixel.
+		@param kernalSize the width & height of the kernal.
 		@param circular Whether or not the kernal is a circle, or a square. to get more "accurate" neighbors, set this to `true`. `false` by default.
-	    @return an `Array2D` of colors
+		@return an `Array2D` of colors
 	**/
 	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Iterator<Color> {
 		return new NeighborsIterator(image, x, y, kernalSize, circular);
 	}
 
 	public static inline function grayscalePixel(pixel:Color):Color {
-		var gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
+		final gray = #if vision_better_grayscale Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) #else Std.int((pixel.red
 			+ pixel.green + pixel.blue) / 3) #end;
 		return Color.fromRGBA(gray, gray, gray, pixel.alpha);
 	}
@@ -335,7 +361,7 @@ class ImageTools {
 	}
 
 	public static function toSprite(image:Image):flash.display.Sprite {
-		var bmp = toBitmapData(image);
+		final bmp = toBitmapData(image);
 		var s = new flash.display.Sprite();
 		s.addChild(new flash.display.Bitmap(bmp));
 		return s;
@@ -419,6 +445,118 @@ class ImageTools {
 			}
 		}
 		return pixels;
+	}
+	#end
+	#if js
+	public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
+		var image:Image = Image.fromColorByteArrayAndData(new ByteArray(Image.OFFSET + (canvas.width + canvas.height) * 4), canvas.width, canvas.height);
+
+		final imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
+
+		{
+			var i = 0;
+			while (i < imageData.data.length) {
+				image.underlying[i + (Image.OFFSET + 1) + 0] = imageData.data[i + 0];
+				image.underlying[i + (Image.OFFSET + 1) + 1] = imageData.data[i + 1];
+				image.underlying[i + (Image.OFFSET + 1) + 2] = imageData.data[i + 2];
+				image.underlying[i + (Image.OFFSET + 1) + 3] = imageData.data[i + 3];
+				i += 4;
+			}
+		}
+
+		return image;
+	}
+
+	public static function toJsCanvas(image:Image):js.html.CanvasElement {
+		var c = js.Browser.document.createCanvasElement();
+
+		c.width = image.width;
+		c.height = image.height;
+
+		var ctx = c.getContext2d();
+		final imageData = ctx.getImageData(0, 0, image.width, image.height);
+		var data = imageData.data;
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				var i = (y * image.width + x) * 4;
+				data[i] = image.underlying[i + (Image.OFFSET + 1)];
+				data[i + 1] = image.underlying[i + (Image.OFFSET + 1) + 1];
+				data[i + 2] = image.underlying[i + (Image.OFFSET + 1) + 2];
+				data[i + 3] = 255;
+			}
+		}
+
+		ctx.putImageData(imageData, 0, 0);
+
+		return c;
+	}
+
+	public static function fromJsImage(image:js.html.ImageElement):Image {
+		var canvas = js.Browser.document.createCanvasElement();
+		canvas.width = image.width;
+		canvas.height = image.height;
+		canvas.getContext2d().drawImage(image, 0, 0);
+ 		return fromJsCanvas(canvas);
+	}
+
+	public static function toJsImage(image:Image):js.html.ImageElement {
+		var canvas = image.toJsCanvas();
+		var htmlImage = js.Browser.document.createImageElement();
+		htmlImage.src = canvas.toDataURL();
+		return htmlImage;
+	}
+	#end
+	#if (haxeui_core && (haxeui_flixel || haxeui_openfl || haxeui_heaps || haxeui_html5))
+	public static function fromHaxeUIImage(image:haxe.ui.components.Image):Image {
+		#if haxeui_flixel
+			return fromFlxSprite(image.resource);
+		#elseif haxeui_openfl
+			return fromBitmapData(image.resource);
+		#elseif haxeui_heaps
+			return fromHeapsPixels(image.resource);
+		#else
+			return fromJsImage(image.resource);
+		#end
+	}
+
+	public static function toHaxeUIImage(image:Image):haxe.ui.components.Image {
+		var huiImage = new haxe.ui.components.Image();
+		huiImage.width = image.width;
+		huiImage.height = image.height;
+		#if haxeui_flixel
+			huiImage.resource = toFlxSprite(image);
+		#elseif haxeui_openfl
+			huiImage.resource = toBitmapData(image);
+		#elseif haxeui_heaps
+			huiImage.resource = toHeapsPixels(image);
+		#else
+			huiImage.resource = toJsImage(image);
+		#end
+		return huiImage;
+	}
+
+	public static function fromHaxeUIImageData(image:haxe.ui.backend.ImageData):Image {
+		#if haxeui_flixel
+			return fromFlxSprite(image.);
+		#elseif haxeui_openfl
+			return fromBitmapData(image);
+		#elseif haxeui_heaps
+			return fromHeapsPixels(image);
+		#else
+			return fromJsImage(image);
+		#end
+	}
+
+	public static function toHaxeUIImageData(image:Image):haxe.ui.backend.ImageData {
+		#if haxeui_flixel
+			return toFlxSprite(image);
+		#elseif haxeui_openfl
+			return fromBitmapData(image);
+		#elseif haxeui_heaps
+			return toHeapsPixels(image);
+		#else
+			return toJsImage(image);
+		#end
 	}
 	#end
 }

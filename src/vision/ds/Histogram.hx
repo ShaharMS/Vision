@@ -6,7 +6,7 @@ import haxe.ds.IntMap;
  * A 2D graph, usually represents a sorted distribution of numerical values.
  */
 class Histogram {
-	var underlying:Array<Int>;
+	var underlying:Array<Null<Int>>;
 
 	/**
 		The amount of items in this `Histogram`
@@ -29,7 +29,7 @@ class Histogram {
 		Increments the value at `cell`.
 	**/
 	public function increment(cell:Int):Histogram {
-		underlying.insert(cell, cell);
+		underlying[cell] != null ? underlying[cell]++ : underlying[cell] = 1;
 		return cast this;
 	}
 
@@ -37,13 +37,20 @@ class Histogram {
 		Decrements the value at `cell`.
 	**/
 	public function decrement(cell:Int):Histogram {
-		underlying.remove(cell);
+		underlying[cell] != null ? underlying[cell]-- : underlying[cell] = -1;
 		return cast this;
 	}
 
 	function get_median():Int {
-		final offset = length % 2;
-		return underlying[Std.int((length - offset) / 2)];
+		var temp = [];
+		for (i in 0...underlying.length) {
+			if (underlying[i] == null) continue
+			else {
+				for (_ in 0...underlying[i]) temp.push(i);
+			}
+		}
+		final offset = temp.length % 2;
+		return temp[Std.int((temp.length - offset) / 2)];
 	}
 
 	function get_length():Int {

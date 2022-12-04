@@ -49,7 +49,7 @@ image.setPixel(10, 35, 0xff3204);
 image.drawLine(1,1, 34, 67, Color.LIME);
 ```
 
-Create an image from a URL (right now, JS only):
+Create an image from a URL:
 ```haxe
 var image:Image;
 ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG",
