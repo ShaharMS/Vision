@@ -1410,15 +1410,29 @@ abstract Image(ByteArray) {
 	// Operators
 	//--------------------------------------------------------------------------
 	@:op(A | B) static inline function image_or_image(lhs:Image, rhs:Image):Image {
-		lhs.forEachPixel((x, y, color) -> {
+		lhs.forEachPixelInView((x, y, color) -> {
 			lhs.setUnsafePixel(x, y, color | rhs.getUnsafePixel(x, y));
+		});
+		return lhs;
+	}
+
+	@:op(A ^ B) static inline function image_xor_image(lhs:Image, rhs:Image):Image {
+		lhs.forEachPixelInView((x, y, color) -> {
+			lhs.setUnsafePixel(x, y, color ^ rhs.getUnsafePixel(x, y));
+		});
+		return lhs;
+	}
+
+	@:op(A & B) static inline function image_and_image(lhs:Image, rhs:Image):Image {
+		lhs.forEachPixelInView((x, y, color) -> {
+			lhs.setUnsafePixel(x, y, color & rhs.getUnsafePixel(x, y));
 		});
 		return lhs;
 	}
 }
 
 private class PixelIterator {
-	var i = 4;
+	var i = @:privateAccess Image.OFFSET;
 	var img:Image;
 
 	public inline function new(img:Image) {
