@@ -1432,7 +1432,7 @@ abstract Image(ByteArray) {
 }
 
 private class PixelIterator {
-	var i = @:privateAccess Image.OFFSET;
+	var i = 4;
 	var img:Image;
 
 	public inline function new(img:Image) {
