@@ -1114,7 +1114,8 @@ abstract Image(ByteArray) {
 	public inline function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
 		for (x in 0...width) {
 			for (y in 0...height) {
-				callback(x, y, getUnsafePixel(x, y));
+				if(hasPixel(x, y))
+					callback(x, y, getUnsafePixel(x, y));
 			}
 		}
 	}
