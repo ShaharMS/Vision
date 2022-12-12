@@ -1112,8 +1112,8 @@ abstract Image(ByteArray) {
 	    @param callback A function to dispatch on each pixel: Arguments contain the X & Y of the pixel, and its color.
 	**/
 	public inline function forEachPixel(callback:(x:Int, y:Int, color:Color) -> Void) {
-		for (x in 0...width) {
-			for (y in 0...height) {
+		for (x in 0...width-1) {
+			for (y in 0...height-1) {
 				callback(x, y, getUnsafePixel(x, y));
 			}
 		}
@@ -1134,8 +1134,8 @@ abstract Image(ByteArray) {
 			forEachPixel(callback);
 			return;
 		}
-		for (x in 0...width) {
-			for (y in 0...height) {
+		for (x in 0...width-1) {
+			for (y in 0...height-1) {
 				if (hasPixelInView(x, y)) {
 					callback(x, y, getUnsafePixel(x, y));
 				}
@@ -1242,9 +1242,8 @@ abstract Image(ByteArray) {
 				//a = major axis / 2
 				//b = minor axis / 2
 				if (view.width > view.height) {
-					final a = view.width / 2;
-					final b = view.height / 2;
-					final c = Math.sqrt(a * a - b * b);
+					final view_ = {width: view.width / 2, height: view.height / 2};
+					final c = Math.sqrt(view_.width * view_.width - view_.height * view_.height);
 					final f1 = new Point2D(view.x + view.width / 2 - c, view.y + view.height / 2);
 					final f2 = new Point2D(view.x + view.width / 2 + c, view.y + view.height / 2);
 					final p = new Point2D(x, y);
