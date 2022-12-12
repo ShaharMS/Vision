@@ -38,31 +38,29 @@ class MathTools {
 	}
 
 	public inline static function intersectionBetweenRay2Ds(ray:Ray2D, ray2:Ray2D):Point2D {
-		final line1StartX = ray.point.x;
-		final line1StartY = ray.point.y;
-		final line1EndX = ray.point.x + cos(ray.radians) * 1000;
-		final line1EndY = ray.point.y + sin(ray.radians) * 1000;
-		final line2StartX = ray2.point.x;
-		final line2StartY = ray2.point.y;
-		final line2EndX = ray2.point.x + cos(ray2.radians) * 1000;
-		final line2EndY = ray2.point.y + sin(ray2.radians) * 1000;
+		final line1Start/*:Point2D*/ = {x: ray.point.x, y: ray.point.y};
+		final line1End = {x: ray.point.x + cos(ray.radians) * 1000, y: ray.point.y + sin(ray.radians) * 1000};
+
+		final line2Start = {x: ray2.point.x, y: ray2.point.y};
+		final line2End = {x: ray2.point.x + cos(ray2.radians) * 1000, y: ray2.point.y + sin(ray2.radians) * 1000};
+
 		// if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
 		var denominator, a, b, numerator1, numerator2, result:Point2D = null;
-		denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
+		denominator = ((line2End.y - line2Start.y) * (line1End.x - line1Start.x)) - ((line2End.x - line2Start.x) * (line1End.y - line1Start.y));
 		if (denominator == 0) {
 			return result;
 		}
-		a = line1StartY - line2StartY;
-		b = line1StartX - line2StartX;
-		numerator1 = ((line2EndX - line2StartX) * a) - ((line2EndY - line2StartY) * b);
-		numerator2 = ((line1EndX - line1StartX) * a) - ((line1EndY - line1StartY) * b);
+		a = line1Start.y - line2Start.y;
+		b = line1Start.x - line2Start.x;
+		numerator1 = ((line2End.x - line2Start.x) * a) - ((line2End.y - line2Start.y) * b);
+		numerator2 = ((line1End.x - line1Start.x) * a) - ((line1End.y - line1Start.y) * b);
 		a = numerator1 / denominator;
 		b = numerator2 / denominator;
 
 		// if we cast these lines infinitely in both directions, they intersect here:
 		result = new Point2D();
-		result.x = line1StartX + (a * (line1EndX - line1StartX));
-		result.y = line1StartY + (a * (line1EndY - line1StartY));
+		result.x = line1Start.x + (a * (line1End.x - line1Start.x));
+		result.y = line1Start.y + (a * (line1End.y - line1Start.y));
 		return result;
 	}
 
@@ -209,33 +207,29 @@ class MathTools {
 	public static inline function distanceFromPointToRay2D(point:Point2D, line:Ray2D) {
 		final cos:Float = cos(line.radians);
 		final sin:Float = sin(line.radians);
-		final x0:Float = line.point.x;
-		final y0:Float = line.point.y;
-		final x1:Float = point.x;
-		final y1:Float = point.y;
-		final numerator:Float = (x0 - x1) * cos + (y0 - y1) * sin;
-		final denominator:Float = sqrt(pow(x0 - x1, 2) + pow(y0 - y1, 2));
+		final xy0/*:Point2D*/ = {x: line.point.x, y: line.point.y};
+		final xy1/*:Point2D*/ = {x: point.x, y: point.y};
+		final numerator:Float = (xy0.x - xy1.x) * cos + (xy0.y - xy1.y) * sin;
+		final denominator:Float = sqrt(pow(xy0.x - xy1.x, 2) + pow(xy0.y - xy1.y, 2));
 		final distance:Float = numerator / denominator;
 		return distance;
 	}
 
 	public static function distanceFromPointToLine2D(point:Point2D, line:Line2D):Float {
 		final middle = new Point2D(line.end.x - line.start.x, line.end.y - line.start.y);
-		final denominator = middle.x * middle.x + middle.y * middle.y;
+		final denominator = pow(middle.x, 2) + pow(middle.y, 2));
 		var ratio = ((point.x - line.start.x) * middle.x + (point.y - line.start.y) * middle.y) / denominator;
-	
+
 		if (ratio > 1)
 			ratio = 1;
 		else if (ratio < 0)
 			ratio = 0;
-	
-		final x = line.start.x + ratio * middle.x;
-		final y = line.start.y + ratio * middle.y;
-	
-		final dx = x - point.x;
-		final dy = y - point.y;
-	
-		return sqrt(dx * dx + dy * dy);
+
+		final XY/*:Point2D*/ = {x: line.start.x + ratio * middle.x, y: line.start.y + ratio * middle.y};
+
+		final d = {x: XY.x - point.x, y: XY.y - point.y};
+
+		return sqrt(pow(d.x, 2) + pow(d.y, 2));
 	}
 
 	public static inline function radiansFromPointToLine2D(point:Point2D, line:Line2D):Float {
@@ -260,9 +254,8 @@ class MathTools {
 
 
 	public static inline function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
-		final x:Float = point2.x - point1.x;
-		final y:Float = point2.y - point1.y;
-		return sqrt(x * x + y * y);
+		final XY/*:Point2D*/ = {x: (point2.x - point1.x), y: (point2.y - point1.y)};
+		return sqrt(pow(XY.x, 2) + pow(XY.y, 2));
 	}
 
 
@@ -285,7 +278,7 @@ class MathTools {
 				range.start = range.end;
 				range.end = temp;
 			}
-			between = (value > range.start) && (value > range.end);
+			between = isBetweenRange(value, range.start, range.end);
 			if (between)
 				return true;
 		}
@@ -293,14 +286,17 @@ class MathTools {
 	}
 
 	public static inline function isBetweenRange(value:Float, ?min:Float = 0, max:Float):Bool {
-		return value >= min && value <= max;
+		return (value >= min && value <= max);
+	}
+	public static inline function isBetweenAndNotEqual(value:Float, ?min:Float = 0, max:Float):Bool {
+		return (value > min && value < max);
 	}
 
 	/**
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public inline static function wrapInt(value:Int, min:Int, max:Int) {
+	public inline static function wrapInt(value:Int, ?min:Int = 0, max:Int) {
 		var range = max - min + 1;
 
 		if (value < min)
@@ -313,7 +309,7 @@ class MathTools {
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public inline static function wrapFloat(value:Float, min:Float, max:Float) {
+	public inline static function wrapFloat(value:Float, ?min:Float = 0, max:Float) {
 		var range = max - min;
 
 		if (value < min)
@@ -325,7 +321,7 @@ class MathTools {
 	/**
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
 	**/
-	public static function boundInt(value:Int, min:Int, max:Int) {
+	public static function boundInt(value:Int, ?min:Int = 0, max:Int) {
 		if (value < min) return min;
 		if (value > max) return max;
 		return value;
@@ -334,7 +330,7 @@ class MathTools {
 	/**
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
 	**/
-	public static function boundFloat(value:Float, min:Float, max:Float) {
+	public static function boundFloat(value:Float, ?min:Float = 0, max:Float) {
 		return Math.min(Math.max(value, min), max);
 	}
 
@@ -602,9 +598,9 @@ class MathTools {
 
 	@:noCompletion static inline function get_NEGATIVE_INFINITY() return Math.NEGATIVE_INFINITY;
 	@:noCompletion static inline function get_POSITIVE_INFINITY() return Math.POSITIVE_INFINITY;
-	@:noCompletion static inline function get_NaN() return Math.NaN;
-	@:noCompletion static inline function get_PI_OVER_2() return PI / 2;
-	@:noCompletion static inline function get_PI() return Math.PI;
+	@:noCompletion static inline function get_NaN():Float return Math.NaN;
+	@:noCompletion static inline function get_PI_OVER_2():Float return PI / 2;
+	@:noCompletion static inline function get_PI():Float return Math.PI;
 
 	public static inline function abs(v:Float):Float
 		return Math.abs(v);
