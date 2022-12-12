@@ -270,8 +270,11 @@ class MathTools {
 	// General
 	//-----------------------------------------------------------------------------------------
 
-	public static inline function clamp(value:Int, mi:Int, ma:Int) {
-		return inline max(inline min(value, ma), mi);
+	public static inline function clamp(value:Int, Min:Int, Max:Int) {
+		return inline max(inline min(value, Max), Min);
+	}
+	public static inline function reverseClamp(value:Int, Min:Int, Max:Int) {
+		return inline min(inline max(value, Max), Min);
 	}
 
 	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
@@ -289,7 +292,7 @@ class MathTools {
 		return false;
 	}
 
-	public static inline function isBetweenRange(value:Float, min:Float, max:Float):Bool {
+	public static inline function isBetweenRange(value:Float, ?min:Float = 0, max:Float):Bool {
 		return value >= min && value <= max;
 	}
 
