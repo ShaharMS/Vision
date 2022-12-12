@@ -188,15 +188,13 @@ class MathTools {
 	}
 
 	public static inline function invertInsideRectangle(line:Line2D, rect:Rectangle):Line2D {
-		final diffSY = line.start.y - rect.y;
-		final diffEY = line.end.y - rect.y;
-		final diffSX = line.start.x - rect.x;
-		final diffEX = line.end.x - rect.x;
+		final startDiff = {x: line.start.x - rect.x, y: line.start.y - rect.y};
+		final endDiff = {x: line.end.x - rect.x, y: line.end.y - rect.y};
 
-		line.start.x = rect.x + rect.width - diffSX;
-		line.end.x = rect.x + rect.width - diffEX;
-		line.start.y = rect.y + rect.width - diffSY;
-		line.end.y = rect.y + rect.width - diffEY;
+		line.start.x = rect.x + rect.width - startDiff.x;
+		line.end.x = rect.x + rect.width - endDiff.x;
+		line.start.y = rect.y + rect.width - startDiff.y;
+		line.end.y = rect.y + rect.width - endDiff.y;
 		return line;
 	}
 
@@ -211,13 +209,13 @@ class MathTools {
 		final xy1/*:Point2D*/ = {x: point.x, y: point.y};
 		final numerator:Float = (xy0.x - xy1.x) * cos + (xy0.y - xy1.y) * sin;
 		final denominator:Float = sqrt(pow(xy0.x - xy1.x, 2) + pow(xy0.y - xy1.y, 2));
-		final distance:Float = numerator / denominator;
+		final distance:Float = (numerator / denominator);
 		return distance;
 	}
 
 	public static function distanceFromPointToLine2D(point:Point2D, line:Line2D):Float {
 		final middle = new Point2D(line.end.x - line.start.x, line.end.y - line.start.y);
-		final denominator = pow(middle.x, 2) + pow(middle.y, 2));
+		final denominator = (pow(middle.x, 2) + pow(middle.y, 2));
 		var ratio = ((point.x - line.start.x) * middle.x + (point.y - line.start.y) * middle.y) / denominator;
 
 		if (ratio > 1)
@@ -225,9 +223,9 @@ class MathTools {
 		else if (ratio < 0)
 			ratio = 0;
 
-		final XY/*:Point2D*/ = {x: line.start.x + ratio * middle.x, y: line.start.y + ratio * middle.y};
+		final final_/*:Point2D*/ = {x: line.start.x + ratio * middle.x, y: line.start.y + ratio * middle.y};
 
-		final d = {x: XY.x - point.x, y: XY.y - point.y};
+		final d = {x: final_.x - point.x, y: final_.y - point.y};
 
 		return sqrt(pow(d.x, 2) + pow(d.y, 2));
 	}
@@ -254,8 +252,8 @@ class MathTools {
 
 
 	public static inline function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
-		final XY/*:Point2D*/ = {x: (point2.x - point1.x), y: (point2.y - point1.y)};
-		return sqrt(pow(XY.x, 2) + pow(XY.y, 2));
+		final final_/*:Point2D*/ = {x: (point2.x - point1.x), y: (point2.y - point1.y)};
+		return sqrt(pow(final_.x, 2) + pow(final_.y, 2));
 	}
 
 
