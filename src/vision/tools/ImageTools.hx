@@ -28,11 +28,11 @@ using StringTools;
 /**
 	A class used to provide extra utilities to the `Image` class.
 
-	Those properties are not included because they are not needed for the basic functionality of that object.
+	Those properties are not included by default because they are not needed for the basic functionality of `Image`.
 
-	to use those utilities, use this class at the top of you file:
+	To use those utilities, use this class at the top of you file:
 
-		using vision.tools.ImageTools;
+	`using vision.tools.ImageTools;`
 **/
 @:access(vision.ds.Image)
 class ImageTools {
@@ -52,11 +52,11 @@ class ImageTools {
 		  
 		`haxelib install format`
 
-		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
-		@param path the path to the image file. On `js`, it can only be a relative path/a URL
+		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`).
+		@param path the path to the image file. On `js`, it can only be a relative path/a URL.
 
 		@returns the image object.
-		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
+		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`.
 		@throws ImageLoadingFailed Thrown when trying to load a corrupted file.
 	**/
 	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
@@ -157,10 +157,10 @@ class ImageTools {
 		`haxelib install format`
 
 
-		@param image The image to save
-		@param pathWithFileName The path to save to
+		@param image The image to save.
+		@param pathWithFileName The path to save to.
 		@param saveFormat An image format.
-		@throws LibraryRequired Thrown when used without installing & including `format`
+		@throws LibraryRequired Thrown when used without installing & including `format`.
 		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
 	**/
 	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
@@ -294,7 +294,7 @@ class ImageTools {
 		@param y The y position of the pixel.
 		@param kernalSize the width & height of the kernal.
 		@param circular Whether or not the kernal is a circle, or a square. to get more "accurate" neighbors, set this to `true`. `false` by default.
-		@return an `Array2D` of colors
+		@return an `Array2D` of colors.
 	**/
 	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Iterator<Color> {
 		return new NeighborsIterator(image, x, y, kernalSize, circular);
