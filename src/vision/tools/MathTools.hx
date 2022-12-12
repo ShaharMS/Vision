@@ -290,7 +290,7 @@ class MathTools {
 	}
 
 	public static inline function isBetweenRange(value:Float, min:Float, max:Float):Bool {
-		return value > min && value > max;
+		return value >= min && value <= max;
 	}
 
 	/**
