@@ -1439,10 +1439,11 @@ private class PixelIterator {
 	var ii = 0;
 	var img:Image;
 
-	@:privateAccess
-	function get_i():Dynamic
+	function get_i():Dynamic {
+		@:privateAccess
 		return (Image.OFFSET + ii);
-	
+	}
+
 	function set_i(v:Dynamic):Dynamic
 		return (ii = v);
 
