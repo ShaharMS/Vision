@@ -1441,7 +1441,7 @@ private class PixelIterator {
 
 	function get_i():Dynamic {
 		@:privateAccess
-		return (Image.OFFSET + ii);
+		return Std.int(Image.OFFSET + ii);
 	}
 
 	function set_i(v:Dynamic):Dynamic
