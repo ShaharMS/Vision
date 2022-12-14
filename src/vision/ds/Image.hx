@@ -1435,11 +1435,11 @@ abstract Image(ByteArray) {
 }
 
 private class PixelIterator {
-	var i(get, set):Dynamic;
-	var ii = 0;
+	var i(get, set):Int;
+	var ii:Int = 0;
 	var img:Image;
 
-	function get_i():Dynamic {
+	function get_i():Int {
 		@:privateAccess
 		return Std.int(Image.OFFSET + ii);
 	}
@@ -1452,8 +1452,8 @@ private class PixelIterator {
 	}
 
 	public inline function next():Pixel {
-		final x = i % img.width;
-		final y = Math.floor(i / img.width);
+		final x = Std.int(i % img.width);
+		final y = Std.int(Math.floor(i / img.width));
 		var pixel:Pixel = {x: x, y: y, color: img.getPixel(x, y)};
 		i += 4;
 		return pixel;
