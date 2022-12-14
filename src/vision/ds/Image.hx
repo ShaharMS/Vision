@@ -1387,7 +1387,7 @@ abstract Image(ByteArray) {
 		return image;
 	}
 
-	public static function fromColorByteArrayAndData(array:ByteArray, width:Int, height:Int):Image {
+	/*@:from */public static function fromColorByteArrayAndData(array:ByteArray, width:Int, height:Int):Image {
 		#if vision_higher_width_cap
 		array.setInt32(0, width);
 		array.setInt32(WIDTH_BYTES, 0);
@@ -1409,21 +1409,24 @@ abstract Image(ByteArray) {
 	//--------------------------------------------------------------------------
 	// Operators
 	//--------------------------------------------------------------------------
-	@:op(A | B) static inline function image_or_image(lhs:Image, rhs:Image):Image {
+	@:op(A | B)
+	static inline function image_or_image(lhs:Image, rhs:Image):Image {
 		lhs.forEachPixelInView((x, y, color) -> {
 			lhs.setUnsafePixel(x, y, color | rhs.getUnsafePixel(x, y));
 		});
 		return lhs;
 	}
 
-	@:op(A ^ B) static inline function image_xor_image(lhs:Image, rhs:Image):Image {
+	@:op(A ^ B)
+	static inline function image_xor_image(lhs:Image, rhs:Image):Image {
 		lhs.forEachPixelInView((x, y, color) -> {
 			lhs.setUnsafePixel(x, y, color ^ rhs.getUnsafePixel(x, y));
 		});
 		return lhs;
 	}
 
-	@:op(A & B) static inline function image_and_image(lhs:Image, rhs:Image):Image {
+	@:op(A & B)
+	static inline function image_and_image(lhs:Image, rhs:Image):Image {
 		lhs.forEachPixelInView((x, y, color) -> {
 			lhs.setUnsafePixel(x, y, color & rhs.getUnsafePixel(x, y));
 		});
@@ -1432,8 +1435,15 @@ abstract Image(ByteArray) {
 }
 
 private class PixelIterator {
-	var i = 4;
+	var i(get, set):Dynamic;
+	var ii = 0;
 	var img:Image;
+
+	function get_i():Dynamic
+		return (Image.OFFSET + ii);
+	
+	function set_i(v:Dynamic):Dynamic
+		return (ii = v);
 
 	public inline function new(img:Image) {
 		this.img = img;
