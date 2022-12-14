@@ -1439,6 +1439,7 @@ private class PixelIterator {
 	var ii = 0;
 	var img:Image;
 
+	@:privateAccess
 	function get_i():Dynamic
 		return (Image.OFFSET + ii);
 	
