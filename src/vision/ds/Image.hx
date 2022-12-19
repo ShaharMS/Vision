@@ -186,7 +186,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function getSafePixel(x:Int, y:Int):Color {
 		if (!hasPixel(x, y)) {
-			return getPixel(x.clamp(0, width), y.clamp(0, height));
+			return getPixel(x.clamp(0, width-1), y.clamp(0, height-1));
 		}
 		return getPixel(x, y);
 	}
