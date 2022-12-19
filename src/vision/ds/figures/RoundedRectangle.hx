@@ -2,7 +2,7 @@ package vision.ds.figures;
 
 //import vision.ds.figures.Rectangle;
 
-@:structInit
+//@:structInit
 class RoundedRectangle /*extends Rectangle*/ {
 	/**
 		The `x` position of this `RoundedRectangle`
@@ -42,4 +42,5 @@ class RoundedRectangle /*extends Rectangle*/ {
 			for (pointt in accumulatedPoints)
 				trace('RoundedRectangle: Pixel added at (x: ' + pointt.x + ', y: ' + pointt.y + ')');
 		}
+	}
 }
