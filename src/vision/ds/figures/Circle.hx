@@ -53,10 +53,11 @@ class Circle {
 		}
 	}
 	public function coordinateExists(X:Int, Y:Int):Bool {
+		var e:Bool = false;
 		forEachPixel((x, y) -> {
 			if(x == X && y == Y)
-			return true;
+			e = true;
 		}
-		return false;
+		return e;
 	}
 }
