@@ -9,6 +9,7 @@ import haxe.Int64;
 import vision.ds.Color;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
+import vision.ds.figures.Rectangle;
 
 using vision.tools.MathTools;
 
