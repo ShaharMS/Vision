@@ -11,6 +11,7 @@ import vision.ds.Histogram;
 import vision.ds.Ray2D;
 using vision.Vision;
 import vision.ds.Kernal2D;
+import vision.ds.figures.RoundedRectangle;
 
 class Test_vision_Vision_general
 {
@@ -228,6 +229,8 @@ class Test_vision_Vision_general
 		trace(queue.dequeue());
 		trace(queue.dequeue());
 		trace(queue.toString());
+	    
+	    var roudns:RoundedRectangle = new RoundedRectangle(0, 0, 10, 10, 4);
     }
 
 
