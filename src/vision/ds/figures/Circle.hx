@@ -57,7 +57,7 @@ class Circle {
 		forEachPixel((x, y) -> {
 			if(x == X && y == Y)
 			e = true;
-		}
+		});
 		return e;
 	}
 }
