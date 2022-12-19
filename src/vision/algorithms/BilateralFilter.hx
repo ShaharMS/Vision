@@ -68,7 +68,7 @@ class BilateralFilter {
 
 			for (i in x - halfKernelSize...x + halfKernelSize) {
 				for (j in y - halfKernelSize...y + halfKernelSize) {
-					if (i >= 0 && j >= 0 && i < image.width && j < image.height) {
+					if (image.hasPixel(i, j)) {
 						// SAFETY: (i, j) is inside the bounds of the image, as checked above
 						final kernelPositionIntensity = image.getUnsafePixel(i, j);
 
