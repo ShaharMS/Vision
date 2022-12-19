@@ -23,11 +23,11 @@ class RoundedRectangle /*extends Rectangle*/ {
 	/**
 		How rounded are the corners of this `RoundedRectangle`
 	**/
-	public var rounded:Float;
+	public var rounded:Int;
 
 	public var accumulatedPoints:Array<{x:Int, y:Int}> = [];
 
-	public function new(x:Int = 0, y:Int = 0, width:Int, height:Int, rounded:Float, accumulatePoints:Bool = true) {
+	public function new(x:Int = 0, y:Int = 0, width:Int, height:Int, rounded:Int, accumulatePoints:Bool = true) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -46,7 +46,7 @@ class RoundedRectangle /*extends Rectangle*/ {
 				}
 			}
 			for (pointt in accumulatedPoints)
-				trace('RoundedRectangle: Pixel added at (x: ' + pointt.x + ', y: ' + pointt.y + ')');
+				trace('RoundedRectangle: Pixel added at (x: ' + pointt.x + ', y: ' + pointt.y + ') round value: ' + this.rounded);
 		}
 	}
 }
