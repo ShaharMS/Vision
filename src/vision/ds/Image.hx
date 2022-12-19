@@ -1233,9 +1233,9 @@ abstract Image(ByteArray) {
 		var has = false;
 		final view = (v != null ? v : view); //reduces calls to get_view
 		switch view.shape {
-			case SQUARE:
+			case CIRCLE:
 			case ROUNDED_SQUARE:
-			case RECTANGLE: has = (x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
+			case RECTANGLE | SQUARE: has = (x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
 			case ROUNDED_RECTANGLE:
 				var hasX = (x < (view.x + view.width - view.rounded) // not bigger
 					    && x >= (view.x - view.rounded)); // not less
