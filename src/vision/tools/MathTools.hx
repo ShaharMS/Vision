@@ -271,7 +271,7 @@ class MathTools {
 	//-----------------------------------------------------------------------------------------
 
 	public static inline function clamp(value:Int, mi:Int, ma:Int) {
-		return inline max(inline min(value, ma), mi);
+		return inline min(inline max(value, ma), mi);
 	}
 
 	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
