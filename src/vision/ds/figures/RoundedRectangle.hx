@@ -34,8 +34,14 @@ class RoundedRectangle /*extends Rectangle*/ {
 		this.height = height;
 
 		if(accumulatePoints) {
-			for (x in 0...this.width) {
-				for (y in 0...this.height) {
+			for (x in this.rounded...(this.width - this.rounded)) {
+				/*if(x > (this.width - this.rounded) / 2)
+					continue;*/
+
+				for (y in this.rounded...(this.height - this.rounded)) {
+					/*if(y > (this.width - this.rounded) / 2)
+						continue;*/
+
 					accumulatedPoints.push({x: x, y: y});
 				}
 			}
