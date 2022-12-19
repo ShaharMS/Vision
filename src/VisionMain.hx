@@ -34,6 +34,8 @@ import js.Browser;
 import vision.algorithms.Hough;
 import vision.ds.Image;
 
+import vision.ds.figures.RoundedRectangle;
+
 using vision.Vision;
 using vision.tools.MathTools;
 
@@ -351,6 +353,8 @@ class VisionMain {
 		}
 		TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
 		#end
+
+		var roundedRectangle:RoundedRectangle = new RoundedRectangle(0, 0, 10, 10, 4);
 	}
 	
 	public static function printImage(image:Image) {
