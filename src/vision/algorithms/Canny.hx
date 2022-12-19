@@ -40,30 +40,28 @@ class Canny {
 	public static function nonMaxSuppression(image:CannyObject):CannyObject {
 		final filtered = new Image(image.width, image.height);
 
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				var n = getNeighbors(3, x, y, image);
-				if (n[1][1] > n[0][1] && n[1][1] > n[2][1])
-					filtered.setPixel(x, y, n[1][1]);
-				else
-					filtered.setPixel(x, y, 0);
+		image.forEachPixel((x, y, _) -> {
+			var n = getNeighbors(3, x, y, image);
+			if (n[1][1] > n[0][1] && n[1][1] > n[2][1])
+				filtered.setPixel(x, y, n[1][1]);
+			else
+				filtered.setPixel(x, y, 0);
 
-				if (n[1][1] > n[0][2] && n[1][1] > n[2][0])
-					filtered.setPixel(x, y, n[1][1]);
-				else
-					filtered.setPixel(x, y, 0);
+			if (n[1][1] > n[0][2] && n[1][1] > n[2][0])
+				filtered.setPixel(x, y, n[1][1]);
+			else
+				filtered.setPixel(x, y, 0);
 
-				if (n[1][1] > n[1][0] && n[1][1] > n[1][2])
-					filtered.setPixel(x, y, n[1][1]);
-				else
-					filtered.setPixel(x, y, 0);
+			if (n[1][1] > n[1][0] && n[1][1] > n[1][2])
+				filtered.setPixel(x, y, n[1][1]);
+			else
+				filtered.setPixel(x, y, 0);
 
-				if (n[1][1] > n[0][0] && n[1][1] > n[2][2])
-					filtered.setPixel(x, y, n[1][1]);
-				else
-					filtered.setPixel(x, y, 0);
-			}
-		}
+			if (n[1][1] > n[0][0] && n[1][1] > n[2][2])
+				filtered.setPixel(x, y, n[1][1]);
+			else
+				filtered.setPixel(x, y, 0);
+		});
 
 		return filtered;
 	}
@@ -89,18 +87,14 @@ class Canny {
 			}
 		}
 
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				traverseEdge(x, y);
-			}
-		}
+		image.forEachPixel((x, y, _) -> {
+			traverseEdge(x, y);
+		});
 		// second iteration, remove weak pixels.
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				if (!isStrong(copy.getPixel(x, y)))
-					copy.setPixel(x, y, 0);
-			}
-		}
+		image.forEachPixel((x, y, _) -> {
+			if (!isStrong(copy.getPixel(x, y)))
+				copy.setPixel(x, y, 0);
+		});
 
 		return copy;
 	}
