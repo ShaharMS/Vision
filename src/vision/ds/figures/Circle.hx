@@ -35,7 +35,7 @@ class Circle {
 		this.height = height;
 		this.radius = radius;
 	}
-	public function forEachPixel(callback:(x, y) -> Void) {
+	public function forEachPixel(callback:(x:Int, y:Int) -> Void) {
 		var locatedCoords:Array<{x:Int, y:Int}> = [];
 		var rectangleCoords:Array<{x:Int, y:Int}> = [];
 
