@@ -21,14 +21,14 @@ class Circle {
 
 	public var radius:Int;
 
-	public function new(?x:Int, ?y:Int, width:Int, height:Int, radius:Int, centered:Bool = true) {
-		if(centered) {
+	public function new(x:Int, y:Int, width:Int, height:Int, radius:Int) {
+		/*if(centered) {
 			if(x == null) x = width / 2;
 			if(y == null) y = height / 2;
 		} else {
 			if(x == null) x = 0;
 			if(y == null) y = 0;
-		}
+		}*/
 		this.x = x;
 		this.y = y;
 		this.width = width;
