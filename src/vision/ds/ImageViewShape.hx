@@ -1,6 +1,7 @@
 package vision.ds;
 
 enum abstract ImageViewShape(Int) from Int to Int {
+    var CIRCLE;
     var SQUARE;
     var ROUNDED_SQUARE;
     var RECTANGLE;
