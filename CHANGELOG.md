@@ -1,6 +1,27 @@
 # 1.3.0
 
+### `vision.ds`
 
+ - **Added `Int16Point2D`** - An abstract over a 32-bit integer.
+ - **Added `UInt16Point2D`** - Same abstract, but coordinates range from `0` to `65535`
+ - **Added `Color.makeRandom()`**
+
+### `vision.algorithms`
+
+ - **Fixed Bilinear interpolation failing with some aspect ratios**
+ - **Added `Gassian.create2DKernalOfSize`**
+ - **Added `Gassian.create1DKernalOfSize`**
+ - **Added `Gaussian.fastBlur`, Optimized Version of `Vision.gaussianBlur`. More Bare-Bones**
+ - **Deprecated `Gaussian.createXxXKernal` Functions**
+ - **Deprecated `Gaussian.createKernalOfSize` in favour of `Gassian.create2DKernalOfSize`**
+
+### `vision.tools`
+
+ - **Added `MathTools.isBetweenRange`**
+
+### `Image.hx`
+ 
+ - **Added Bitwise operators `|`, `&` and `^`**
 
 # 1.2.3
 

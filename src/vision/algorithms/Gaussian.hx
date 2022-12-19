@@ -9,11 +9,13 @@ import vision.exceptions.InvalidGaussianKernalSize;
  * Gaussian kernal creation implementation, ported to Haxe by [Shahar Marcus](https://www.github.com/ShaharMS).
  */
 class Gaussian {
+
+	@:deprecated("Gaussian.create1x1Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create1x1Kernal(sigma:Float):Array<Array<Float>> {
 		return [[1]];
 	}
 
-	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
+	@:deprecated("Gaussian.create3x3Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create3x3Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], []];
@@ -38,7 +40,7 @@ class Gaussian {
 		return kernal;
 	}
 
-	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
+	@:deprecated("Gaussian.create5x5Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create5x5Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], [], [], []];
@@ -63,7 +65,7 @@ class Gaussian {
 		return kernal;
 	}
 
-	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
+	@:deprecated("Gaussian.create7x7Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create7x7Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], [], [], [], [], []];
@@ -88,7 +90,7 @@ class Gaussian {
 		return kernal;
 	}
 
-	@:deprecated("Gaussian.createXxXKernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
+	@:deprecated("Gaussian.create9x9Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create9x9Kernal(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
 		var kernal:Array<Array<Float>> = [[], [], [], [], [], [], [], [], [], []];
@@ -112,7 +114,11 @@ class Gaussian {
 		}
 		return kernal;
 	}
-
+	@:deprecated("Gaussian.createKernalOfSize() is deprecated. use Gaussian.create2DKernalOfSize() instead")
+	public static function createKernalOfSize(size:Int, sigma:Int) {
+		return create2DKernelOfSize(size, sigma);
+	}
+	
 	public static function create2DKernelOfSize(size:Int, sigma:Float):Array2D<Float> {
 		#if vision_quiet
 		if (size <= 0) size = -size;
