@@ -11,7 +11,7 @@ import vision.ds.Histogram;
 import vision.ds.Ray2D;
 using vision.Vision;
 import vision.ds.Kernal2D;
-import vision.ds.figures.RoundedRectangle;
+import vision.ds.figures.*;
 
 class Test_vision_Vision_general
 {
@@ -231,6 +231,14 @@ class Test_vision_Vision_general
 		trace(queue.toString());
 	    
 	    var roudns:RoundedRectangle = new RoundedRectangle(0, 0, 100, 100, 4);
+	   
+	    var circle:Circle = new Circle(0, 0, 100, 100, 50);
+	    for(x1 in 0...circle.width) {
+		    for(y1 in 0...circle.height) {
+			    trace('Circle: Trying to see if pixel (' + x1 + ', ' + y1 + ') is in circle');
+			    trace('Works?: ' + circle.coordinateExists(x1, y1));
+		    }
+	    }
     }
 
 
