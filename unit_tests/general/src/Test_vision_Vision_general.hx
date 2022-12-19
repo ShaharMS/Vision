@@ -230,7 +230,7 @@ class Test_vision_Vision_general
 		trace(queue.dequeue());
 		trace(queue.toString());
 	    
-	    var roudns:RoundedRectangle = new RoundedRectangle(0, 0, 1000, 1000, 4);
+	    var roudns:RoundedRectangle = new RoundedRectangle(0, 0, 100, 100, 4);
     }
 
 
