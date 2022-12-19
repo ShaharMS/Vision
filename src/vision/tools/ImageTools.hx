@@ -59,7 +59,7 @@ class ImageTools {
 		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
 		@throws ImageLoadingFailed Thrown when trying to load a corrupted file.
 	**/
-	public static function loadFromFile(?image:Image, path:String, onComplete:Image->Void) {
+	public static function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
 		#if sys
 			#if format
 			if (path.contains("://") && path.split(".").pop().toUpperCase() == "PNG") {
@@ -78,13 +78,15 @@ class ImageTools {
 						} catch (e) #if !vision_quiet throw new ImageLoadingFailed(PNG, e.message);#end
 					} catch (e:haxe.Exception) {
 						#if vision_quiet
-						onComplete(new Image(100, 100));
+						if(onComplete != null)
+							onComplete(new Image(100, 100));
 						#else
 						throw new ImageLoadingFailed(PNG, e.message);
 						#end
 					}
 
-					onComplete(image);
+					if(onComplete != null)
+						onComplete(image);
 				}
 				httpRequest.onError = msg -> {
 					trace(msg);
@@ -103,10 +105,12 @@ class ImageTools {
 					// copy the ARGB bytes from the PNG to the image, without overwriting the first couple of bytes
 					image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length);
 
-					onComplete(image);
+					if(onComplete != null)
+						onComplete(image);
 				} catch (e:haxe.Exception) {
 					#if vision_quiet
-					onComplete(new Image(100, 100));
+					if(onComplete != null)
+						onComplete(new Image(100, 100));
 					#else
 					throw new ImageLoadingFailed(PNG, e.message);
 					#end
@@ -142,7 +146,8 @@ class ImageTools {
 				i += 4;
 			}
 
-			onComplete(image);
+			if(onComplete != null)
+				onComplete(image);
 		}
 		#end
 	}
