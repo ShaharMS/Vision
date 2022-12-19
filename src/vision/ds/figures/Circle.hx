@@ -1,6 +1,6 @@
 package vision.ds.figures;
 
-@:structInit
+//@:structInit
 class Circle {
 	/**
 		The `x` position of this `Circle`
@@ -21,7 +21,21 @@ class Circle {
 
 	public var radius:Int;
 
-	public function coordinateExists(X:Int, Y:Int):Bool {
+	public function new(?x:Int, ?y:Int, width:Int, height:Int, radius:Int, centered:Bool = true) {
+		if(centered) {
+			if(x == null) x = width / 2;
+			if(y == null) y = height / 2;
+		} else {
+			if(x == null) x = 0;
+			if(y == null) y = 0;
+		}
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.radius = radius;
+	}
+	public function forEachPixel(callback:(x, y)) {
 		var locatedCoords:Array<{x:Int, y:Int}> = [];
 		var rectangleCoords:Array<{x:Int, y:Int}> = [];
 
@@ -34,7 +48,15 @@ class Circle {
 			if((haha.x % radius) == 0 && (haha.y % radius) == 0)
 				locatedCoords.push(haha);
 		}
-
-		return locatedCoords.contains({x: X, y: Y});
+		for(ae in locatedCoords) {
+			callback(ae.x, ae.y);
+		}
+	}
+	public function coordinateExists(X:Int, Y:Int):Bool {
+		forEachPixel((x, y) -> {
+			if(x == X && y == Y)
+			return true;
+		}
+		return false;
 	}
 }
