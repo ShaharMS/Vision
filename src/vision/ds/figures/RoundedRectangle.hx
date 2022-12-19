@@ -32,6 +32,7 @@ class RoundedRectangle /*extends Rectangle*/ {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.rounded = rounded;
 
 		if(accumulatePoints) {
 			for (x in this.rounded...(this.width - this.rounded)) {
