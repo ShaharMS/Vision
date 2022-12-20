@@ -9,6 +9,7 @@ import haxe.Int64;
 import vision.ds.Color;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
+import vision.ds.figures.Rectangle;
 
 using vision.tools.MathTools;
 
@@ -185,7 +186,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function getSafePixel(x:Int, y:Int):Color {
 		if (!hasPixel(x, y)) {
-			return getPixel(x.clamp(0, width), y.clamp(0, height));
+			return getPixel(x.clamp(0, width-1), y.clamp(0, height-1));
 		}
 		return getPixel(x, y);
 	}
@@ -1230,10 +1231,20 @@ abstract Image(ByteArray) {
 			return hasPixel(x, y);
 		}
 		var has = false;
-		final view = v != null ? v : view; //reduces calls to get_view
+		final view = (v != null ? v : view); //reduces calls to get_view
 		switch view.shape {
-			case RECTANGLE: has = (x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
+			case CIRCLE:
+			case ROUNDED_SQUARE:
+			case RECTANGLE | SQUARE: has = (x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
+			case ROUNDED_RECTANGLE:
+				var hasX = (x < (view.x + view.width - view.rounded) // not bigger
+					    && x >= (view.x - view.rounded)); // not less
+
+				var hasY = (x < (view.y + view.height - view.rounded) // not bigger
+					    && y >= (view.y - view.rounded)); // not less
+				has = (hasX && hasY);
 			case RECTANGLE_INVERTED: has = !(x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
+			case ROUNDED_RECTANGLE_INVERTED: // imma do it later
 			case RHOMBUS: has = ((x - view.x - view.width / 2).abs() / (view.width / 2) + (y - view.y - view.height / 2).abs() / (view.height / 2) <= 1);
 			case RHOMBUS_INVERTED: has = !((x - view.x - view.width / 2).abs() / (view.width / 2) + (y - view.y - view.height / 2).abs() / (view.height / 2) <= 1);
 			case ELLIPSE, ELLIPSE_INVERTED: {

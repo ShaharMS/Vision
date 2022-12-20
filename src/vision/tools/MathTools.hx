@@ -5,7 +5,7 @@ import vision.ds.Matrix;
 import vision.algorithms.Radix;
 import haxe.Int64;
 import haxe.ds.ArraySort;
-import vision.ds.Rectangle;
+import vision.ds.figures.Rectangle;
 import vision.ds.Ray2D;
 import vision.ds.Line2D;
 import vision.ds.Point2D;

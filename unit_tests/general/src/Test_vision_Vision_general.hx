@@ -11,11 +11,13 @@ import vision.ds.Histogram;
 import vision.ds.Ray2D;
 using vision.Vision;
 import vision.ds.Kernal2D;
+import vision.ds.figures.*;
 
 class Test_vision_Vision_general
 {
     public static function main()
     {
+	#if (false)
         var start:Float = 0, end:Float = 0;
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			image = image.resize(150, 112, BilinearInterpolation);
@@ -228,6 +230,17 @@ class Test_vision_Vision_general
 		trace(queue.dequeue());
 		trace(queue.dequeue());
 		trace(queue.toString());
+	    #end
+		    
+	    var roudns:RoundedRectangle = new RoundedRectangle(0, 0, 100, 100, 4);
+	   
+	    var circle:Circle = new Circle(0, 0, 100, 100, 50);
+	    for(x1 in 0...circle.width) {
+		    for(y1 in 0...circle.height) {
+			    trace('Circle: Trying to see if pixel (' + x1 + ', ' + y1 + ') is in circle');
+			    trace('Works?: ' + circle.coordinateExists(x1, y1));
+		    }
+	    }
     }
 
 

@@ -1,4 +1,4 @@
-package vision.ds;
+package vision.ds.figures;
 
 @:structInit
 class Rectangle {
