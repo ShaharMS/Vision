@@ -42,7 +42,7 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-		#if (true)
+		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
@@ -230,8 +230,6 @@ class VisionMain {
 			trace("Deepfrying took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 		});
-		#end
-
 		#if draw_tests
 		printSectionDivider("Draw tests");
 		var image = new Image(250, 250, 0x000000);
@@ -353,6 +351,7 @@ class VisionMain {
 		}
 		TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
 		#end
+    #end
 
 		var roundedRectangle:RoundedRectangle = new RoundedRectangle(0, 0, 10, 10, 4);
 	}
