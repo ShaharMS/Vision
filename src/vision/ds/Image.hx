@@ -56,7 +56,7 @@ abstract Image(ByteArray) {
 	#end
 
 	/**
-		The width of the image, I highly recommend to use `image.width - 1` since using the original width of the image will throw `OuOfBounds` with easily.
+		The width of `this` image, I highly recommend to use `image.width - 1` since using the original width of the image will throw `OuOfBounds` with easily.
 	**/
 	public var width(get, #if vision_allow_resize set #else never #end):Int;
 
@@ -71,7 +71,7 @@ abstract Image(ByteArray) {
 	#end
 
 	/**
-		The height of the image, I highly recommend to use `image.height - 1` since using the original height of the image will throw `OuOfBounds` with easily.
+		The height of `this` image, I highly recommend to use `image.height - 1` since using the original height of the image will throw `OuOfBounds` with easily.
 	**/
 	public var height(get, #if vision_allow_resize set #else never #end):Int;
 
