@@ -101,6 +101,18 @@ abstract Image(ByteArray) {
 		return view;
 	}
 
+	public var rotate(get, set):Float;
+
+	inline function get_rotate():Float {
+		return rotate;
+	}
+
+	inline function set_rotate(v:Float):Float {
+		//if(v == 0) rotate = 0;
+
+		skew(v); // skew(rotate + v);
+		return rotate = v; // + rotate;
+	}
 	/**
 		Creates a new image of the given size. Once is created, the image cannot be resized.
 
@@ -124,6 +136,7 @@ abstract Image(ByteArray) {
 			this[i + 3] = color.blue;
 			i += 4;
 		}
+		rotate = 0;
 	}
 
 	inline function getColorFromStartingBytePos(position:Int):Color {
@@ -1315,12 +1328,31 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function skew(angle:Float) {
-		forEachPixel((x, y, color) -> {
-			var newX = x * MathTools.cos(angle) - y * MathTools.sin(angle);
-			var newY = x * MathTools.sin(angle) + y * MathTools.cos(angle);
-			//movePixel(x, y, newX, newY);
+		var done:Array<{x:Int, y:Int, color:Color}> = [];
+
+		forEachPixel(function(x, y, color) {
+			//if(!done.contains({x: x, y: y, color: color}) {
+			var newX = (x * MathTools.cos(angle) - y * MathTools.sin(angle));
+			var newY = (x * MathTools.sin(angle) + y * MathTools.cos(angle));
+			moveSafePixel(x, y, Std.int(newX), Std.int(newY), color);
+			done.push({x: Std.int(newX), y: Std.int(newY), color: color});
+			//}
 		});
 	}
+	// the same but better (wip)
+	public inline function skewFloat(angle:Float) {
+		var done:Array<{x:Float, y:Float, color:Color}> = [];
+
+		forEachPixel(function(x, y, color) {
+			//if(!done.contains({x: x, y: y, color: color}) {
+			var newX = (x * MathTools.cos(angle) - y * MathTools.sin(angle));
+			var newY = (x * MathTools.sin(angle) + y * MathTools.cos(angle));
+			//moveFloatSafePixel(x, y, newX, newY, color);
+			done.push({x: newX, y: newY, color: color});
+			//}
+		});
+	}
+
 	//--------------------------------------------------------------------------
 	// Framework-specific methods
 	//--------------------------------------------------------------------------
