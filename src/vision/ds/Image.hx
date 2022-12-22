@@ -1269,6 +1269,13 @@ abstract Image(ByteArray) {
 		return has;
 	}
 
+	public inline function skew(angle:Float) {
+		forEachPixel((x, y, color) -> {
+			var newX = x * MathTools.cos(angle) - y * MathTools.sin(angle);
+			var newY = x * MathTools.sin(angle) + y * MathTools.cos(angle);
+			//movePixel(x, y, newX, newY);
+		});
+	}
 	//--------------------------------------------------------------------------
 	// Framework-specific methods
 	//--------------------------------------------------------------------------
