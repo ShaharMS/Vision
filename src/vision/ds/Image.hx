@@ -431,13 +431,58 @@ abstract Image(ByteArray) {
 		return (x >= 0 && y >= 0 && x < width && y < height);
 	}
 
-
+	//
 
 	//--------------------------------------------------------------------------
 	// Copying & Pasting
 	//--------------------------------------------------------------------------
 
+	/**
+		Moves the pixel at `(fromX, fromY)` to `(toX, toY)` and resets the color at `(fromX, fromY)`.
 
+		@param fromX The x-coordinate of the pixel to move.
+		@param fromY The y-coordinate of the pixel to move.
+		@param toX The x-coordinate of the pixel to set to the color of `(fromX, fromY)` to.
+		@param toY The y-coordinate of the pixel to set to the color of `(fromX, fromY)` to.
+		@param oldPixelResetColor After moving the pixel, the color of the pixel at `(fromX, fromY)` resets to `0x00000000`. To change that color, set this parameter
+	**/
+	public function movePixel(fromX:Int, fromY:Int, toX:Int, toY:Int, oldPixelResetColor:Color) {
+		setPixel(toX, toY, getPixel(fromX, fromY));
+		setPixel(fromX, fromY, oldPixelResetColor);
+	}
+
+	/**
+		Moves the pixel at `(fromX, fromY)` to `(toX, toY)` and resets the color at `(fromX, fromY)`. Values outside teh bounds of `this` image are allowed.
+
+		@param fromX The x-coordinate of the pixel to move.
+		@param fromY The y-coordinate of the pixel to move.
+		@param toX The x-coordinate of the pixel to set to the color of `(fromX, fromY)` to.
+		@param toY The y-coordinate of the pixel to set to the color of `(fromX, fromY)` to.
+		@param oldPixelResetColor After moving the pixel, the color of the pixel at `(fromX, fromY)` resets to `0x00000000`. To change that color, set this parameter
+	**/
+	public function moveSafePixel(fromX:Int, fromY:Int, toX:Int, toY:Int, oldPixelResetColor:Color) {
+		setSafePixel(toX, toY, getSafePixel(fromX, fromY));
+		setSafePixel(fromX, fromY, oldPixelResetColor);
+	}
+
+	/**
+		Moves the pixel at `(fromX, fromY)` to `(toX, toY)` and resets the color at `(fromX, fromY)`. Fractional values are allowed.
+
+		@param fromX The x-coordinate of the pixel to move.
+		@param fromY The y-coordinate of the pixel to move.
+		@param toX The x-coordinate of the pixel to set to the color of `(fromX, fromY)` to.
+		@param toY The y-coordinate of the pixel to set to the color of `(fromX, fromY)` to.
+		@param oldPixelResetColor After moving the pixel, the color of the pixel at `(fromX, fromY)` resets to `0x00000000`. To change that color, set this parameter
+	**/
+	public function moveFloatingPixel(fromX:Float, fromY:Float, toX:Float, toY:Float, oldPixelResetColor:Color) {
+		setFloatingPixel(toX, toY, getFloatingPixel(fromX, fromY));
+		setFloatingPixel(fromX, fromY, oldPixelResetColor);
+	}
+
+	public function moveUnsafePixel(fromX:Int, fromY:Int, toX:Int, toY:Int, oldPixelResetColor:Color) {
+		setUnsafePixel(toX, toY, getUnsafePixel(fromX, fromY));
+		setUnsafePixel(fromX, fromY, oldPixelResetColor);
+	}
 
 	/**
 		Copies a pixel from the given image to this image.
