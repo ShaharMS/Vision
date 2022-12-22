@@ -22,7 +22,9 @@
 ### `Image.hx`
  
  - **Added Bitwise operators `|`, `&` and `^`**
-
+ - **Added `movePixel()`**, allows moving a pixel from inside the image to another position, while resetting the old position. variations:
+   - **`moveSafePixel()`**
+   - **`moveFloatingPixel()`**
 # 1.2.3
 
 ### `vision.ds`
