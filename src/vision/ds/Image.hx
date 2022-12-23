@@ -110,7 +110,8 @@ abstract Image(ByteArray) {
 	inline function set_rotate(v:Float):Float {
 		//if(v == 0) rotate = 0;
 
-		skew(v); // skew(rotate + v);
+		if(rotate != v)
+			skew(v); // skew(rotate + v);
 		return rotate = v; // + rotate;
 	}
 	/**
