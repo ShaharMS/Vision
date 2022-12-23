@@ -400,6 +400,11 @@ class MathTools {
 		return Math.floor(number);
 	}
 
+	public static function rotatePoint2D(point:Point2D, angle:Float):Point2D {
+		final xPrime = point.x * cos(angle) - point.y * sin(angle);
+		final yPrime = point.x * sin(angle) + point.y * cos(angle);
+		return {x: xPrime, y: yPrime};
+	}
 	//-----------------------------------------------------------------------------------------
 	// Utilities For Number Arrays
 	//-----------------------------------------------------------------------------------------
