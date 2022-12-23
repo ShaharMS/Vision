@@ -101,19 +101,22 @@ abstract Image(ByteArray) {
 		return view;
 	}
 
+	var _rotate:Float = 0;
+
 	public var rotate(get, set):Float;
 
 	inline function get_rotate():Float {
-		return rotate;
+		return _rotate;
 	}
 
 	inline function set_rotate(v:Float):Float {
 		//if(v == 0) rotate = 0;
 
-		if(rotate != v)
+		if(_rotate != v)
 			skew(v); // skew(rotate + v);
-		return rotate = v; // + rotate;
+		return _rotate = v; // + rotate;
 	}
+
 	/**
 		Creates a new image of the given size. Once is created, the image cannot be resized.
 
