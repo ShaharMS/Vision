@@ -101,22 +101,6 @@ abstract Image(ByteArray) {
 		return view;
 	}
 
-	var _rotate:Float;
-
-	public var rotate(get, set):Float;
-
-	inline function get_rotate():Float {
-		return _rotate;
-	}
-
-	inline function set_rotate(v:Float):Float {
-		//if(v == 0) rotate = 0;
-
-		if(_rotate != v)
-			skew(v); // skew(rotate + v);
-		return _rotate = v; // + rotate;
-	}
-
 	/**
 		Creates a new image of the given size. Once is created, the image cannot be resized.
 
@@ -140,7 +124,6 @@ abstract Image(ByteArray) {
 			this[i + 3] = color.blue;
 			i += 4;
 		}
-		_rotate = 0;
 	}
 
 	inline function getColorFromStartingBytePos(position:Int):Color {
