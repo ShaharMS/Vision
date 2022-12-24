@@ -101,7 +101,7 @@ abstract Image(ByteArray) {
 		return view;
 	}
 
-	var _rotate:Float = 0;
+	var _rotate:Float;
 
 	public var rotate(get, set):Float;
 
@@ -140,7 +140,7 @@ abstract Image(ByteArray) {
 			this[i + 3] = color.blue;
 			i += 4;
 		}
-		rotate = 0;
+		_rotate = 0;
 	}
 
 	inline function getColorFromStartingBytePos(position:Int):Color {
