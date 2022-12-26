@@ -1,5 +1,9 @@
 package;
 
+import haxe.crypto.Base64;
+import sys.FileSystem;
+import sys.io.File;
+import haxe.Http;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.IntPoint2D;
 import vision.ds.Int16Point2D;
@@ -349,7 +353,23 @@ class VisionMain {
 		}
 		TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
 		#end
-		#end		
+		#end
+		#if (minify_js_output && eval)
+		var code = sys.io.File.getContent(FileSystem.absolutePath("bin/main.js"));
+		//make a post request to toptal's javascript minifier with the code found at ./bin/main.js
+		var httpReq = new Http("https://www.toptal.com/developers/javascript-minifier/api/raw");
+		httpReq.addHeader("Content-Type", "application/x-www-form-urlencoded");
+		httpReq.setPostData("input=" + "console.log(         1)");
+		httpReq.onData = s -> {
+			trace(s.length);
+			trace(Base64.urlDecode(s).length);
+			trace(s);
+		}
+		httpReq.onError = s -> trace(s);
+		httpReq.request(true);
+
+
+		#end
 	}
 	
 	public static function printImage(image:Image) {
