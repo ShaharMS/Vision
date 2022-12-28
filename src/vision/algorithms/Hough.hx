@@ -1,113 +1,252 @@
 package vision.algorithms;
 
-import haxe.ds.Vector;
-import vision.ds.hough.HoughAccumulator;
-import vision.ds.hough.HoughSpace;
-import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Color;
-import vision.ds.Ray2D;
 import vision.ds.Image;
 
-using vision.tools.MathTools;
+/**
+ * Represents a single RGB pixel of an image.
+ */
+ class Pixel {
+    public function new (r:Int, g:Int, b:Int) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+    var r:Int;
+    var g:Int;
+    var b:Int;
+    public function getR() {
+        return r;
+    }
 
-import vision.tools.MathTools.*;
+    public function getG() {
+        return g;
+    }
+
+    public function getB() {
+        return b;
+    }
+    public function toString() {
+        return "(" + getR() + " " + getG() + " " + getB() + ")";
+    }
+}
 
 /**
-	A Hough Transform implementation by [Shahar Marcus](https://www.github.com/ShaharMS).
+ * Represents a straight line in described in Hough coordinates.
+ *
+ * The line is described by 2 parameters:
+ *  - Its distance from (0, 0) point `r`.
+ *  - The angle θ between the X axis and the line connecting (0, 0) with the closest point of the line.
+ * ```
+ *                       /
+ *  +-------------------/--------------->
+ *  |.. θ  /           /                  X
+ *  |  .. /           /
+ *  |    ..          /
+ *  |      ..       / the line
+ *  |     r  ..    /
+ *  |          .. /
+ *  |            /
+ *  |           /
+ *  |          /
+ *  | Y       /
+ *  V
+ * ```
+ */
+class Line {
+    public function new(r, theta) {
+        this.r = r;
+        this.theta = theta;
+    }
+	var r:Int;
+	var theta:Float;
+    public function toString(){
+        return "r = " + getR() + ", θ = " + getTheta();
+    }
 
-	## What is The Hough Transform?
+    public function getR() {
+        return r;
+    }
 
-	The Hough transform is a computer vision technique, commonly used to identify lines within an image.
+    public function getTheta() {
+        return theta;
+    }
+}
 
-	The only knowledge you need prior to understanding the algorithm is that lines can be represented 
-	by either:
-	 - two points `(x1, y1)` `(x2, y2)`, using the equation `y - y1 = m(x - x1)`
-	 - two values, called `theta` and `rho`:
-		- The first (theta) is the angle of the line
-		- The second (rho) is the shortest distance from that line to the origin.
+class HoughLineDetector {
 
-	## How does it work?
+    function new() {}
 
-	The algorithm basically works like this:
+    /**
+     * [Description]
+     * @param thetaSteps how many θ values to check?
+     * @param houghThreshold how many points does a line need to be acknowledged?
+     * @param image the image used as input
+     * @param binarizationThreshold binarization threshold, needs to be between 0 and 255
+     * @return Image
+     */
+    public static function detect(thetaSteps:Int, houghThreshold:Int, image:Image, binarizationThreshold:Int):Image {
 
-	1. Create a large matrix where one axis of the matrix corresponds to theta and one to rho. This matrix is called the accumulator and is said to represent the "Hough space" of the image. Initialize this matrix by each entry being 0.
-	1. Create a grayscale image
-	1. Find the edges in that image (for example using the canny algorithm)
-	1. For each point in those edges:
-	1. Calculate many lines defined by theta and rho radiating out from that point. Each theta should have the same angle of difference to each other and each rho is calculated based on the coordinate of the point and the theta. For each of these lines, add a 1 to the corresponding entry in the accumulator matrix.
-	1. When you have a filled in accumulator, find a number of local maxima within that accumulator. Each local maxima corresponds to a line in the image, so if you want to find 10 lines you should pick out the 10 local maxima that have the largest values in the accumulator matrix.
-	1. Transform the local maxima in the accumulator back to lines using their corresponding theta and rho values.
-	1. To visualize the result, overlay these lines on your original image.
+        var detector = new HoughLineDetector();
+        return detector.detectLines(thetaSteps, houghThreshold, image, binarizationThreshold);
+    }
 
-**/
-class Hough {
-	/**
-		Uses the Hough Transform to generate an accumulator based on the
-		image provided.
+    /**
+     * Perform the detection. Produce a new image with detected lines overlay.
+     */
+    private function detectLines(thetaSteps:Int,houghThreshold:Int, image:Image, binarizationThreshold:Int):Image {
+        var imgArray:Array<Array<Pixel>> = bufferedImageToPixelArray(image);
+        var width = image.width;
+        var height = image.height;
+        var binarized:Array<Array<Bool>> = binarize(imgArray, width, height, binarizationThreshold);
+        var houghArray:Array<Array<Int>> = makeHoughArray(binarized, width, height, thetaSteps);
+        var lines:Array<Line> = pickLines(houghArray, width, height, thetaSteps, houghThreshold);
+        return drawLines(image, width, height, lines);
+    }
 
-		@param image The image to be transformed.
+    /**
+     * Given a [[BufferedImage]] convert it to 2D array of [[Pixel]]s.
+     */
+    private static function bufferedImageToPixelArray(image:Image):Array<Array<Pixel>> {
+        var width = image.width;
+        var height = image.height;
+        var result:Array<Array<Pixel>> = [for (i in 0...height) []]; //new Pixel[height][width] 
 
-		@return A `HoughSpace` object, containing the accumulator and an image representation of the accumulator.
-	**/
-	public static function toHoughSpace(image:Image):HoughSpace {
-		final rhoMax = Math.sqrt(image.width * image.width + image.height * image.height);
-		final accumulator:HoughAccumulator = new HoughAccumulator(Std.int(rhoMax));
-		final houghSpace = new Image(181, Std.int(rhoMax), Color.WHITE);
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				if (Math.abs(image.getPixel(x, y).red) == 255) {
-					var rho:Float;
-					var theta = 0.;
-					var thetaIndex = 0;
-					while (thetaIndex < 180) {
-						rho = x * Math.cos(theta) + y * Math.sin(theta);
-						accumulator.incrementCell(rho, thetaIndex);
-						houghSpace.paintPixel(thetaIndex, Std.int(rho), Color.fromRGBAFloat(0, 0, 0, 0.01));
-						theta += Math.PI / 360;
-						thetaIndex++;
-					}
-				}
-			}
-		}
-		return {accumulator: accumulator, image: houghSpace};
-	}
+        for (row in 0...height) {
+            for (col in 0...width) {
+                var rgb = image.getPixel(col, row);
+                result[row][col] = new Pixel(rgb.red, rgb.green, rgb.blue);
+            }
+        }
+        
+        return result;
+    }
 
-	public static function detectMaximas(space:HoughSpace, ?threshold:Int = 30):HoughSpace {
-		space.maximums = space.accumulator.getMaximas(threshold);
-		return space;
-	}
+    /**
+     * Given an array of [[Pixel]]s, convert it to an array of booleans of the same size.
+     *
+     * Given pixel is converted fo `true` if it's color is darker than given threshold value.
+     */
+    private function binarize(arr:Array<Array<Pixel>>, width:Int, height:Int, threshold:Int):Array<Array<Bool>> {
+        var result:Array<Array<Bool>> = [for (i in 0...height) []];//new boolean[height][width]
+        final numChannels = 3;
+        for(y in 0...height) {
+            for(x in 0...width) {
+                var p = arr[y][x];
+                result[y][x] = (p.getR() + p.getG() + p.getB()) < threshold * numChannels;
+            }
+        }
+        return result;
+    }
 
-	public static function getRays(space:HoughSpace):HoughSpace {
-		final houghHeight = cast (Math.sqrt(2) * Math.max(space.image.height, space.image.width)) / 2;
-		final centerX = space.image.width / 2;
-		final centerY = space.image.height / 2;
-		space.rays = [];
-		for (max in space.maximums) {
-			var theta = degreesToRadians(max.y);
-			var r = max.x;
+    /**
+     * Given a binarized image, convert it to hough coordinates.
+     *
+     * @return Array of integers indexed by (r, θ). Each integer represents number
+     *         of points on the line described by the (r, θ) pair.
+     */
+    private function makeHoughArray(binarized:Array<Array<Bool>>, width:Int, height:Int, thetaSteps:Int):Array<Array<Int>> {
+        var rSteps:Int = Math.floor(Math.max(width, height) * Math.sqrt(2));
+        var thetaStep = Math.PI * 2 / thetaSteps;
+        var result:Array<Array<Int>> = [for (i in 0...rSteps) []];//new int[rSteps][thetaSteps]
+        for(theta in 0...thetaSteps) {
+            for(r in 0...rSteps) {
+                result[r][theta] = 0;
+            }
+        }
+        for(y in 0...height) {
+            for(x in 0...width) {
+                if(binarized[y][x]) {
+                    insertPoint(thetaSteps, rSteps, thetaStep, result, x, y);
+                }
+            }
+        }
+        return result;
+    }
 
-			final thetaSin = Math.sin(theta);
-			final thetaCos = Math.cos(theta);
+    /**
+     * Given an array representing lines in hough space, pick lines that are "good enough":
+     * - They must be above the given threshold.
+     *
+     */
+    private function pickLines(houghArray:Array<Array<Int>>, width:Int, height:Int, thetaSteps:Int, houghThreshold:Int):Array<Line> {
+        var rSteps:Int = Math.floor(Math.max(width, height) * Math.sqrt(2));
+        var thetaStep = Math.PI * 2 / thetaSteps;
 
-			if (theta < Math.PI * 0.25 || theta > Math.PI * 0.75) {
-				var x1 = 0, y1 = 0;
-				var x2 = 0, y2 = space.image.height - 1;
+        var result:Array<Line> = [];
 
-				x1 = cast((((r - houghHeight) - ((y1 - centerY) * thetaSin)) / thetaCos) + centerX);
-				x2 = cast((((r - houghHeight) - ((y2 - centerY) * thetaSin)) / thetaCos) + centerX);
+        for(theta in 0...thetaSteps) {
+            for(r in 0...rSteps) {
+                var elem = houghArray[r][theta];
+                var isBiggerThanNeighbors =
+                        (r == 0 || theta == 0 || elem >= houghArray[r - 1][theta - 1]) &&
+                                (r == rSteps - 1 || theta == 0 || elem >= houghArray[r + 1][theta - 1]) &&
+                                (r == 0 || theta == thetaSteps - 1 || elem >= houghArray[r - 1][theta + 1]) &&
+                                (r == rSteps - 1 || theta == thetaSteps - 1 || elem >= houghArray[r + 1][theta + 1]);
+                if(elem > houghThreshold &&
+                        isBiggerThanNeighbors) {
+                    trace(houghArray[r][theta] + " ");
+                    result.push(new Line(r, theta * thetaStep));
+                }
+            }
+        }
+        return result;
+    }
 
-				space.rays.push(Ray2D.from2Points({x: x1, y: y1}, {x: x2, y: y2}));
-			} else {
-				var x1 = 0, y1 = 0;
-				var x2 = space.image.width - 1, y2 = 0;
+    /**
+     * Given a point in the image space, increment the matching lines in the hough space.
+     */
+    private function insertPoint(thetaSteps:Int, rSteps:Int, thetaStep:Float, result:Array<Array<Int>>, x:Int, y:Int) {
+        for (ts in 0...thetaSteps) {
+            var theta = ts * thetaStep;
+            var r = Math.floor(x * Math.cos(theta) + y * Math.sin(theta));
+            if (r >= 0 && r < rSteps) {
+                result[r][ts]++;
+            }
+        }
+    }
 
-				y1 = cast((((r - houghHeight) - ((x1 - centerX) * thetaCos)) / thetaSin) + centerY);
-				y2 = cast((((r - houghHeight) - ((x2 - centerX) * thetaCos)) / thetaSin) + centerY);
+    /**
+     * Given an image, draw the detected lines on it.
+     */
+    private function drawLines(image:Image, width:Int, height:Int, lines:Array<Line>):Image {
+        for(line in lines) {
+            drawLine(width, height, image, line);
+        }
+        return image;
+    }
 
-				space.rays.push(Ray2D.from2Points({x: x1, y: y1}, {x: x2, y: y2}));
-			}
-		}
-		return space;
-	}
+    /**
+     * Given a 2d graphics, draw the given line on it.
+     */
+    private function drawLine(width:Int, height:Int, image:Image, line:Line) {
+        var x0 = line.getR() / Math.cos(line.getTheta());
+        var x1 = x0 - Math.tan(line.getTheta()) * height;
+        var y0 = line.getR() / Math.cos(Math.PI / 2 - line.getTheta());
+        var y1 = y0 - 1/Math.tan(line.getTheta()) * width;
+
+        var drawNothing =
+                ((x0 < 0 && x1 < 0)
+                        || (y0 < 0 && y1 < 0)
+                        || (x0 >= width && x1 >= width)
+                        || (y0 >= height && y1 >= height));
+
+        if ((y1 > y0) == (x1 > x0)) {
+            var tmp = x0;
+            x0 = x1;
+            x1 = tmp;
+        }
+
+        if (x0 < 0) x0 = 0;
+        if (x0 >= width) x0 = width;
+        if (x1 < 0) x1 = 0;
+        if (x1 >= width) x1 = width;
+        if (y0 < 0) y0 = 0;
+        if (y0 >= height) y0 = height;
+        if (y1 < 0) y1 = 0;
+        if (y1 >= height) y1 = height;
+        trace("Drawing Line: " + new Line2D(new vision.ds.Point2D(x0, y0), new vision.ds.Point2D(x1, y1)).toString());
+        if(!drawNothing) image.drawLine(cast x0, cast y0, cast x1, cast y1, Color.CYAN);
+    }
 }

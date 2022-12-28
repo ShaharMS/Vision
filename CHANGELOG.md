@@ -5,6 +5,7 @@
  - **Added `Int16Point2D`** - An abstract over a 32-bit integer.
  - **Added `UInt16Point2D`** - Same abstract, but coordinates range from `0` to `65535`
  - **Added `Color.makeRandom()`**
+ - **Fixed `Line2D.toString()` returning each point 4 times**
 
 ### `vision.algorithms`
 

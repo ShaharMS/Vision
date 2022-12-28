@@ -1,8 +1,6 @@
 package;
 
 import haxe.crypto.Base64;
-import sys.FileSystem;
-import sys.io.File;
 import haxe.Http;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.IntPoint2D;
@@ -18,7 +16,6 @@ import vision.tools.ImageTools;
 
 using vision.tools.ImageTools;
 
-import format.tga.Data.ImageType;
 import vision.ds.Queue;
 import vision.ds.Line2D;
 import vision.tools.MathTools;
@@ -44,6 +41,12 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			start = haxe.Timer.stamp();
+			printImage(HoughLineDetector.detect(360, 250, image.clone().cannyEdgeDetection(), 128));
+			end = haxe.Timer.stamp();
+			trace("Black and white took: " + MathTools.truncate(end - start, 4) + " seconds");
+		});
 		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);

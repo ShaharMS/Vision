@@ -565,8 +565,9 @@ abstract Image(ByteArray) {
 		var sx = (x1 < x2) ? 1 : -1;
 		var sy = (y1 < y2) ? 1 : -1;
 		var err = dx - dy;
-		while (true) {
-			setPixel(x1, y1, color);
+		var safety = 0;
+		while (true && safety++ < 10000) {
+			setSafePixel(x1, y1, color);
 			if (x1 == x2 && y1 == y2)
 				break;
 			var e2 = 2 * err;
