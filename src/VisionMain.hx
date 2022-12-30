@@ -42,8 +42,9 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			trace(MathTools.distanceFromPointToRay2D({x: 123, y: 1}, new Ray2D({x: 0, y: 0}, -1)));
 			start = haxe.Timer.stamp();
-			printImage(HoughLineDetector.detect(360, 250, image.clone().cannyEdgeDetection(), 128));
+			printImage(Hough.houghSpaceToImage(Hough.generateHoughSpace(image.clone().cannyEdgeDetection())));
 			end = haxe.Timer.stamp();
 			trace("Black and white took: " + MathTools.truncate(end - start, 4) + " seconds");
 		});

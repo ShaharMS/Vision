@@ -8,7 +8,9 @@ import vision.tools.MathTools;
 class Ray2D {
 
 	/**
-		The `Point2D` used in the constructor 
+		A point this `Ray2D` passes through. Initially set to the `Point2D` given in the constructor.
+
+		Changing this point's properties (or the point itself) moves the ray, while keeping its slope.
 	**/
 	@:noCompletion public var point:Point2D;
 

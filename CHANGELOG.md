@@ -26,6 +26,7 @@
  - **Added `movePixel()`**, allows moving a pixel from inside the image to another position, while resetting the old position. variations:
    - **`moveSafePixel()`**
    - **`moveFloatingPixel()`**
+ - **Fixed `Image.drawLine()` hanging in certain scenarios** 
 # 1.2.3
 
 ### `vision.ds`
