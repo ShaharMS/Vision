@@ -10,11 +10,11 @@
 ### `vision.algorithms`
 
  - **Fixed Bilinear interpolation failing with some aspect ratios**
- - **Added `Gassian.create2DKernalOfSize`**
- - **Added `Gassian.create1DKernalOfSize`**
+ - **Added `Gaussian.create2DKernalOfSize`**
+ - **Added `Gaussian.create1DKernalOfSize`**
  - **Added `Gaussian.fastBlur`, Optimized Version of `Vision.gaussianBlur`. More Bare-Bones**
  - **Deprecated `Gaussian.createXxXKernal` Functions**
- - **Deprecated `Gaussian.createKernalOfSize` in favour of `Gassian.create2DKernalOfSize`**
+ - **Deprecated `Gaussian.createKernalOfSize` in favour of `Gaussian.create2DKernalOfSize`**
 
 ### `vision.tools`
 

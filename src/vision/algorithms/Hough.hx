@@ -10,7 +10,7 @@ import vision.tools.MathTools.*;
 using vision.tools.MathTools;
 class Hough {
     public static function generateHoughSpace(image:Image):Array2D<Int> {
-        final maxRho = floor(sqrt(image.width * image.width + image.height * image.height));
+        final maxRho = 2 * floor(sqrt(image.width * image.width + image.height * image.height));
         final maxThetaIndex = 360; //calculating using radians is impossible, since array indices are integers.
         var accumulator = new Array2D<Int>(maxThetaIndex, maxRho);
 
@@ -27,9 +27,9 @@ class Hough {
                 if (thetaIndex < 0) thetaIndex = 360 + thetaIndex;
                 #if (!target.static) 
                 if (accumulator.get(Std.int(thetaIndex), Std.int(rho)) == null) 
-                    accumulator.set(Std.int(thetaIndex), Std.int(rho), 1);
+                    accumulator.set(Std.int(thetaIndex), Std.int(rho) + maxRho, 1);
                 else #end 
-                    accumulator.set(Std.int(thetaIndex), Std.int(rho), accumulator.get(Std.int(thetaIndex), Std.int(rho)) + 1);
+                    accumulator.set(Std.int(thetaIndex), Std.int(rho) + maxRho, accumulator.get(Std.int(thetaIndex), Std.int(rho)) + 1);
             }
         });
 
