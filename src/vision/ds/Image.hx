@@ -603,7 +603,9 @@ abstract Image(ByteArray) {
 		var sx = (x1 < x2) ? 1 : -1;
 		var sy = (y1 < y2) ? 1 : -1;
 		var err = dx - dy;
-		while (true) {
+
+		var safetyNet = 0;
+		while (true && safetyNet++ <= 10000) {
 			if (hasPixel(x1, y1)) {
 				setPixel(x1, y1, color);
 			}
@@ -1430,6 +1432,18 @@ abstract Image(ByteArray) {
 		}
 
 		return image;
+	}
+
+	@:to public function to2DArray():Array<Array<Color>> {
+		var arr = [];
+		for (i in 0...height) {
+			arr[i] = [];
+			for (j in 0...width) {
+				arr[i][j] = getPixel(j, i);
+			}
+		}
+
+		return arr;
 	}
 
 	public static function fromColorByteArrayAndData(array:ByteArray, width:Int, height:Int):Image {

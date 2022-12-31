@@ -45,6 +45,9 @@ class VisionMain {
 			trace(MathTools.distanceFromPointToRay2D({x: 123, y: 1}, new Ray2D({x: 0, y: 0}, -1)));
 			start = haxe.Timer.stamp();
 			printImage(Hough.mapLines(image.clone().mirror(), Hough.threshold(Hough.extractLocalMaximas(Hough.generateHoughSpace(image.clone().cannyEdgeDetection())), 254)));
+			//var l = new HoughTransform(cast Math.sqrt(image.width * image.width + image.height * image.height)).detectLines(image.clone().cannyEdgeDetection(), 0);
+			//for (line in l) image.drawRay2D(line, Color.CYAN);
+			//printImage(image);
 			end = haxe.Timer.stamp();
 			trace("Black and white took: " + MathTools.truncate(end - start, 4) + " seconds");
 		});
