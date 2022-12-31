@@ -22,10 +22,14 @@ class Hough {
             for (deg in 0...maxThetaIndex) {
                 calcLine.degrees = deg;
                 final rho = distanceFromPointToRay2D({x: 0, y: 0}, calcLine);
-                if (rho < 0) trace(rho);
-                final thetaIndex = new Point2D(0, 0).degreesFromPointToPoint2D(getClosestPointOnRay2D({x: 0, y: 0}, calcLine));
-                if (accumulator.get(Std.int(thetaIndex), Std.int(rho)) == null) accumulator.set(Std.int(thetaIndex), Std.int(rho), 1);
-                else accumulator.set(Std.int(thetaIndex), Std.int(rho), accumulator.get(Std.int(thetaIndex), Std.int(rho)) + 1);
+                if (rho < 0 || rho > maxRho)  trace(rho, x, y);
+                var thetaIndex = new Point2D(0, 0).degreesFromPointToPoint2D(getClosestPointOnRay2D({x: 0, y: 0}, calcLine));
+                if (thetaIndex < 0) thetaIndex = 360 + thetaIndex;
+                #if (!target.static) 
+                if (accumulator.get(Std.int(thetaIndex), Std.int(rho)) == null) 
+                    accumulator.set(Std.int(thetaIndex), Std.int(rho), 1);
+                else #end 
+                    accumulator.set(Std.int(thetaIndex), Std.int(rho), accumulator.get(Std.int(thetaIndex), Std.int(rho)) + 1);
             }
         });
 
