@@ -44,7 +44,7 @@ class VisionMain {
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(MathTools.distanceFromPointToRay2D({x: 123, y: 1}, new Ray2D({x: 0, y: 0}, -1)));
 			start = haxe.Timer.stamp();
-			printImage(Hough.houghSpaceToImage(Hough.extractLocalMaximas(Hough.generateHoughSpace(image.clone().cannyEdgeDetection()))));
+			printImage(Hough.mapLines(image.clone().mirror(), Hough.threshold(Hough.extractLocalMaximas(Hough.generateHoughSpace(image.clone().cannyEdgeDetection())), 254)));
 			end = haxe.Timer.stamp();
 			trace("Black and white took: " + MathTools.truncate(end - start, 4) + " seconds");
 		});

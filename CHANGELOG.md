@@ -23,6 +23,7 @@
 ### `Image.hx`
  
  - **Added Bitwise operators `|`, `&` and `^`**
+ - **Floating pixel operations are now safe** - Using out-of-bounds coordinates won't throw an error.
  - **Added `movePixel()`**, allows moving a pixel from inside the image to another position, while resetting the old position. variations:
    - **`moveSafePixel()`**
    - **`moveFloatingPixel()`**

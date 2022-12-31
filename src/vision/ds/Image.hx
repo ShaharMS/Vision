@@ -185,7 +185,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function getSafePixel(x:Int, y:Int):Color {
 		if (!hasPixel(x, y)) {
-			return getPixel(x.clamp(0, width), y.clamp(0, height));
+			return getPixel(x.clamp(0, width - 1), y.clamp(0, height - 1));
 		}
 		return getPixel(x, y);
 	}
@@ -198,7 +198,9 @@ abstract Image(ByteArray) {
 	/**
 		Gets the color of the pixel at the given coordinates.
 		These coordinates can also be of type `Float`, in which case
-		the value returned should be an interpolation of the surrounding, physical pixels:
+		the value returned should be an interpolation of the surrounding, physical pixels.
+
+		**This Operation is safe - Out of bound coordinates won't throw an error, and will instead use the closest pixel.**
 
 		### How Does This Work?
 
@@ -236,14 +238,11 @@ abstract Image(ByteArray) {
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
 
-		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 		@return The color of the pixel at the given coordinates.
 	**/
 	public inline function getFloatingPixel(x:Float, y:Float):Color {
-		#if !vision_quiet
-		if (!hasPixel(Math.ceil(x), Math.ceil(y)))
-			throw new OutOfBounds(cast this, {x: x, y: y});
-		#end
+
+		if (!hasPixel(Math.ceil(x), Math.ceil(y))) return getFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1));
 		final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
 		final red =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).red) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).red));
 		final green =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).green + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).green) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).green + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).green));
@@ -300,10 +299,10 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function setFloatingPixel(x:Float, y:Float, color:Color) {
-		#if !vision_quiet
-		if (!hasPixel(Math.ceil(x), Math.ceil(y)))
-			throw new OutOfBounds(cast this, {x: x, y: y});
-		#end
+		if (!hasPixel(Math.ceil(x), Math.ceil(y))) {
+			setFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1), color);
+			return;
+		}
 		final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
 
 		// (0, 0) strength: (1 - xFraction, 1 - yFraction)
@@ -363,9 +362,7 @@ abstract Image(ByteArray) {
 
 	public inline function paintFloatingPixel(x:Float, y:Float, color:Color) {
 		if (x < 0 || x >= width || y < 0 || y >= height) {
-			#if !vision_quiet
-			throw new OutOfBounds(cast this, new Point2D(x, y));
-			#end
+			paintFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1), color);
 		} else if (x.isInt() && y.isInt()) {
 			paintPixel(x.floor(), y.floor(), color);
 		} else {
@@ -467,6 +464,8 @@ abstract Image(ByteArray) {
 
 	/**
 		Moves the pixel at `(fromX, fromY)` to `(toX, toY)` and resets the color at `(fromX, fromY)`. Fractional values are allowed.
+		
+		This Operation is safe - Out of bound coordinates won't throw an error, and will instead use the closest pixel.
 
 		@param fromX The x-coordinate of the pixel to move.
 		@param fromY The y-coordinate of the pixel to move.

@@ -9,12 +9,10 @@ import vision.ds.Image;
 import vision.tools.MathTools.*;
 using vision.tools.MathTools;
 class Hough {
-    public static function generateHoughSpace(image:Image):Array2D<Int> {
+    public static function generateHoughSpace(image:Image):Image {
         final maxRho = floor(distanceBetweenPoints({x: 0, y: 0}, {x: image.width, y: image.height}));
         final maxThetaIndex = 360; //calculating using radians is impossible, since array indices are integers.
-        var accumulator = new Array2D<Int>(maxThetaIndex, maxRho);
-        trace(maxThetaIndex, maxRho);
-
+        var accumulator = new Image(maxThetaIndex + 1, maxRho);
 
         var calcLine = new Ray2D({x: 0, y: 0}, null, 0);
         image.forEachPixel((x, y, color) -> {
@@ -26,48 +24,48 @@ class Hough {
                 final rho = abs(distanceFromPointToRay2D({x: 0, y: 0}, calcLine));
                 var thetaIndex = new Point2D(0, 0).degreesFromPointToPoint2D(getClosestPointOnRay2D({x: 0, y: 0}, calcLine));
                 if (thetaIndex < 0) thetaIndex = 360 + thetaIndex;
-                final val = accumulator.get(Std.int(thetaIndex), Std.int(rho));
-                accumulator.set(Std.int(thetaIndex), Std.int(rho), (val == null ? 0 : val) + 1);
+                accumulator.setFloatingPixel(thetaIndex, rho, accumulator.getFloatingPixel(thetaIndex, rho) + 100);
             }
         });
 
         return accumulator;
     }
 
-    public static function extractLocalMaximas(space:Array2D<Int>):Array2D<Int> {
+    public static function extractLocalMaximas(space:Image):Image {
         for (x in 0...space.width) {
             for (y in 0...space.height) {
-                final value = space.get(x, y);
-                final neighbors = [space.get(x-1, y-1), space.get(x+0, y-1), space.get(x+1, y-1),
-                                   space.get(x-1, 0), space.get(x+1, 0),
-                                   space.get(x-1, y+1), space.get(x+0, y+1), space.get(x+1, y+1)];
+                final value = space.getPixel(x, y);
+                final neighbors = [space.getSafePixel(x-1, y-1), space.getSafePixel(x+0, y-1), space.getSafePixel(x+1, y-1),
+                                   space.getSafePixel(x-1, 0), space.getSafePixel(x+1, 0),
+                                   space.getSafePixel(x-1, y+1), space.getSafePixel(x+0, y+1), space.getSafePixel(x+1, y+1)];
                 for (i in 0...neighbors.length) {
                     if (neighbors[i] > value) {
-                        space.set(x, y, 0);
+                        space.setPixel(x, y, 0);
                     }
-                    // else {
-                    //     switch i {
-                    //         case 0: space.set(x - 1, y - 1, 0);
-                    //         case 1: space.set(x - 1, y, 0);
-                    //         case 2: space.set(x - 1, y + 1, 0);
-                    //         case 3: space.set(x, y - 1, 0);
-                    //         case 4: space.set(x, y + 1, 0);
-                    //         case 5: space.set(x + 1, y - 1, 0);
-                    //         case 6: space.set(x + 1, y, 0);
-                    //         case 7: space.set(x + 1, y + 1, 0);
-                    //     }
-                    // }
                 }
             }
         }
+        space.forEachPixel((x, y, color) -> if (color != 0) trace(color.toInt()));
         return space;
     }
 
-    public static function houghSpaceToImage(space:Array2D<Int>) {
-        var image = new Image(space.width, space.height);
-        image.forEachPixel((x, y, color) -> {
-            image.setPixel(x, y, space.get(x, y) * 1000);
+    public static function threshold(space:Image, value:Int) {
+        space.forEachPixel((x, y, color) -> {
+            if (color > value) space.setPixel(x, y, 0xFFFFFFFF) else space.setPixel(x, y, 0);
         });
+        return space;
+    }
+
+    public static function mapLines(image:Image, space:Image):Image {
+        space.forEachPixel((x, y, color) -> {
+            if (color == 0xFFFFFFFF) {
+                var radians = x.degreesToRadians();
+                var locX = y * cos(radians),  locY = y * sin(radians);
+                var ray = new Ray2D({x: locX, y: locY}, null, x != 0 ? x + 90 : 0);
+                image.drawRay2D(ray, Color.CYAN);
+            }
+        });
+
         return image;
     }
 }
