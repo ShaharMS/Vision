@@ -47,10 +47,12 @@ class VisionMain {
 			start = haxe.Timer.stamp();
 			//printImage(Hough.mapLines(image.clone(), Hough.threshold(Hough.extractLocalMaximas(Hough.generateHoughSpace(image.clone().cannyEdgeDetection())), 254)));
 			for (i in 7...20) {
-				printImage(SimpleHough.mapLines(image, SimpleHough.detectLines(image.clone().cannyEdgeDetection(), i * 5)));
+				start = haxe.Timer.stamp();
+				printImage(SimpleHough.mapLines(image.clone(), SimpleHough.detectLines(image.clone().cannyEdgeDetection(), i * 5)));
+				end = haxe.Timer.stamp();
+				trace("Hough Ray Detection, threshold: " + i * 5 +" took: " + MathTools.truncate(end - start, 4) + " seconds");
 			}
-			end = haxe.Timer.stamp();
-			trace("Black and white took: " + MathTools.truncate(end - start, 4) + " seconds");
+			
 		});
 		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
