@@ -1,5 +1,6 @@
 package;
 
+import vision.algorithms.SimpleHough;
 import haxe.crypto.Base64;
 import haxe.Http;
 import vision.algorithms.SimpleLineDetector;
@@ -44,10 +45,10 @@ class VisionMain {
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(MathTools.distanceFromPointToRay2D({x: 123, y: 1}, new Ray2D({x: 0, y: 0}, -1)));
 			start = haxe.Timer.stamp();
-			printImage(Hough.mapLines(image.clone(), Hough.threshold(Hough.extractLocalMaximas(Hough.generateHoughSpace(image.clone().cannyEdgeDetection())), 254)));
-			//var l = new HoughTransform(cast Math.sqrt(image.width * image.width + image.height * image.height)).detectLines(image.clone().cannyEdgeDetection(), 0);
-			//for (line in l) image.drawRay2D(line, Color.CYAN);
-			//printImage(image);
+			//printImage(Hough.mapLines(image.clone(), Hough.threshold(Hough.extractLocalMaximas(Hough.generateHoughSpace(image.clone().cannyEdgeDetection())), 254)));
+			for (i in 7...20) {
+				printImage(SimpleHough.mapLines(image, SimpleHough.detectLines(image.clone().cannyEdgeDetection(), i * 5)));
+			}
 			end = haxe.Timer.stamp();
 			trace("Black and white took: " + MathTools.truncate(end - start, 4) + " seconds");
 		});
