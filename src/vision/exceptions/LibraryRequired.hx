@@ -1,10 +1,8 @@
 package vision.exceptions;
 
-import haxe.EnumTools;
-
 class LibraryRequired extends VisionException {
-    public function new(libraries:Array<String>, classDotField:String, ?fieldType:String = "function") {
-        super('The $fieldType $classDotField requires the ${libraries[0]} haxelib.\n\tMake sure ${libraries[0] + if (libraries.length > 1) " and it's dependencies are" else " is"} installed & included:\n\n${getInclusionMethod(libraries)}' , "Missing Library Required");
+    public function new(library:String, dependencies:Array<String>, classDotField:String, ?fieldType:String = "function") {
+        super('The $fieldType $classDotField requires the ${library} haxelib.\n\tMake sure ${library + if (dependencies.length > 0) " and it's dependencies are" else " is"} installed & included:\n\n${getInclusionMethod([library].concat(dependencies))}' , "Missing Library Required");
     }
 
     function getInclusionMethod(libs:Array<String>):String {

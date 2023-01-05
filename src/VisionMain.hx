@@ -1,7 +1,6 @@
 package;
 
 import vision.exceptions.LibraryRequired;
-import opentype.OpenType;
 import vision.algorithms.SimpleHough;
 import haxe.crypto.Base64;
 import haxe.Http;
@@ -44,7 +43,7 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-		throw new LibraryRequired(["opentype.hx", "promhx", "asynctools", "buddy"], "VisionMain.main");
+		throw new LibraryRequired("opentype.hx", ["promhx", "asynctools", "buddy"], "VisionMain.main");
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(MathTools.distanceFromPointToRay2D({x: 123, y: 1}, new Ray2D({x: 0, y: 0}, -1)));
 			start = haxe.Timer.stamp();
