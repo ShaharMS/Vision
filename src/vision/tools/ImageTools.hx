@@ -118,7 +118,7 @@ class ImageTools {
 			} else #if !vision_quiet throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding"); #end
 			#else
 				#if !vision_quiet
-				throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
+				throw new LibraryRequired(["format"], "ImageTools.loadFromFile", "function");
 				#end
 			#end
 		#else
@@ -188,7 +188,7 @@ class ImageTools {
 			}
 			#else
 				#if !vision_quiet
-				throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
+				throw new LibraryRequired(["format"], "ImageTools.loadFromFile", "function");
 				#end
 			#end
 		#else
@@ -211,7 +211,7 @@ class ImageTools {
 			}
 			#else
 				#if !vision_quiet
-				throw new LibraryRequired("format", "ImageTools.loadFromFile", "function");
+				throw new LibraryRequired(["format"], "ImageTools.loadFromFile", "function");
 				#end
 			#end
 		#end

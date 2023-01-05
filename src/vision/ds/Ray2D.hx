@@ -12,7 +12,7 @@ class Ray2D {
 
 		Changing this point's properties (or the point itself) moves the ray, while keeping its slope.
 	**/
-	@:noCompletion public var point:Point2D;
+	public var point:Point2D;
 
 	/**
 		The direction of this `Ray2D`, in a rise-over-run format.

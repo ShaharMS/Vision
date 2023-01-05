@@ -3,6 +3,10 @@
 --main VisionMain
 
 --library format
+--library asynctools
+--library buddy
+--library promhx
+--library opentype.hx
 #--library console.hx
 -debug
 --dce full

@@ -1,11 +1,15 @@
 # 1.3.0
 
+### `vision.exceptions`
+
+ - **Renovated `LibraryRequired` to support dependencies and more accurate library inclusion methods**
 ### `vision.ds`
 
  - **Added `Int16Point2D`** - An abstract over a 32-bit integer.
  - **Added `UInt16Point2D`** - Same abstract, but coordinates range from `0` to `65535`
  - **Added `Color.makeRandom()`**
  - **Fixed `Line2D.toString()` returning each point 4 times**
+ - **Exposed `Ray2D.point` and updated documentation**
 
 ### `vision.algorithms`
 
@@ -19,6 +23,8 @@
 ### `vision.tools`
 
  - **Added `MathTools.isBetweenRange`**
+ - **Added `MathTools.getClosestPointOnRay2D`**
+ - **Fixed `MathTools.distanceFromPointOnRay2D`**
 
 ### `Image.hx`
  
