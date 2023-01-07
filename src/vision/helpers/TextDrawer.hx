@@ -1,6 +1,5 @@
 package vision.helpers;
 
-import opentype.OpenType;
 import haxe.io.Bytes;
 import vision.ds.Image;
 import vision.exceptions.LibraryRequired;
@@ -24,7 +23,7 @@ class TextDrawer {
     public static function drawTextOnImage(image:Image, x:Int, y:Int, size:Int, text:String, font:Bytes) {
         //for the near future :)
         #if (opentype.hx && buddy && promhx && asynctools)
-        final otFont = OpenType.parse(font);
+        final otFont = opentype.OpenType.parse(font);
         for (char in text.split("")) {
             var glyph = otFont.charToGlyph(char.charCodeAt(0));
             // Problem - glyph.path is an empty class, issue has been opened on opentype.hx's github https://github.com/Laerdal/opentype.hx/issues/2
