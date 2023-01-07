@@ -52,6 +52,7 @@ class VisionMain {
 				newI.drawLine2D(l, 0x00FFD5);
 			}
 			printImage(newI);
+			printImage(SimpleLineDetector.image);
 			end = haxe.Timer.stamp();
 			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 		});
