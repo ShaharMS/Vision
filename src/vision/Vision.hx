@@ -650,6 +650,7 @@ class Vision {
 				lines.push(SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength));
 			}
 		}
+		Vision.dilate(SimpleLineDetector.image);
 		for (l in lines) {
 			if (l == null) continue;
 			if (SimpleLineDetector.lineCoveragePercentage(SimpleLineDetector.image, l) < accuracy) continue;
