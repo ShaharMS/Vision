@@ -43,18 +43,17 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-		throw new LibraryRequired("opentype.hx", ["promhx", "asynctools", "buddy"], "VisionMain.main");
+
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
-			trace(MathTools.distanceFromPointToRay2D({x: 123, y: 1}, new Ray2D({x: 0, y: 0}, -1)));
 			start = haxe.Timer.stamp();
-			//printImage(Hough.mapLines(image.clone(), Hough.threshold(Hough.extractLocalMaximas(Hough.generateHoughSpace(image.clone().cannyEdgeDetection())), 254)));
-			for (i in 7...20) {
-				start = haxe.Timer.stamp();
-				printImage(SimpleHough.mapLines(image.clone(), SimpleHough.detectLines(image.clone().cannyEdgeDetection(), i * 5)));
-				end = haxe.Timer.stamp();
-				trace("Hough Ray Detection, threshold: " + i * 5 +" took: " + MathTools.truncate(end - start, 4) + " seconds");
-			}
-			
+			// trace(MathTools.distanceFromPointToRay2D({x: 123, y: 1}, new Ray2D({x: 0, y: 0}, -1)));
+			// for (i in 7...20) {
+			// 	start = haxe.Timer.stamp();
+			// 	printImage(SimpleHough.mapLines(image.clone(), SimpleHough.detectLines(image.clone().cannyEdgeDetection(), i * 5)));
+			// 	end = haxe.Timer.stamp();
+			// 	trace("Hough Ray Detection, threshold: " + i * 5 +" took: " + MathTools.truncate(end - start, 4) + " seconds");
+			// }
+			//image.drawText(10, 10, "Hey!", 20);
 		});
 		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {

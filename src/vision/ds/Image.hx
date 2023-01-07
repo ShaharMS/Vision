@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.Resource;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.tools.MathTools;
@@ -9,7 +10,7 @@ import haxe.Int64;
 import vision.ds.Color;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
-
+import vision.helpers.TextDrawer;
 using vision.tools.MathTools;
 
 /**
@@ -769,6 +770,21 @@ abstract Image(ByteArray) {
 			i += step;
 		}
 	}
+
+	// https://github.com/Laerdal/opentype.hx/issues/2
+	// /**
+	// 	Draws a string at position `(x, y)` with font-size `size`.
+
+	// 	Text drawing starts from the top-left corner of the text.
+
+	// 	@param x The x coordinate of the top-left corner of the text
+	// 	@param y The y coordinate of the top-left corner of the text
+	// 	@param text The text to draw
+	// 	@param size The font-size to use
+	// **/
+	// public function drawText(x:Int, y:Int, text:String, size:Int) {
+	// 	if (TextDrawer.reportDependencies()) TextDrawer.drawTextOnImage(cast this, x, y, size, text, Resource.getBytes("NotoSans-Regular.ttf"))
+	// }
 
 	/**
 	 	Fills a circle with the given color:
