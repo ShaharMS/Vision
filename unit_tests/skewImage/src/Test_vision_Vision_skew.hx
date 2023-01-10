@@ -20,7 +20,7 @@ class Test_vision_Vision_skew {
                 if (end - start < best) best = end - start;
                 sum += end - start;
             }
-            trace("----------vision.Vision.invert()----------");
+            trace("----------vision.Vision.skewImage()----------");
             trace("attempts: " + attempts);
             trace("worst: " + worst);
             trace("best: " + best);
