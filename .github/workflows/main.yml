@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        algo: ['general', 'combine', 'whiteNoise', 'saltAndPepperNoise', 'dropOutNoise', 'deepfry', 'laplacianEdgeDiffOperator', 'limitColorRanges', 'bilateralDenoise', 'simpleLine2DDetection', 'perwittEdgeDiffOperator', 'cannyEdgeDetection', 'invert', 'normalize', 'medianBlur', 'laplacianOfGaussianEdgeDetection', 'convolutionRidgeDetection', 'blackAndWhite', 'erode', 'nearestNeighborBlur', 'gaussianBlur', 'dilate', 'sharpen', 'grayscale', 'convolve', 'robertEdgeDiffOperator', 'replaceColorRanges', 'sobelEdgeDiffOperator', 'sobelEdgeDetection', 'contrast', 'perwittEdgeDetection']
+        algo: ['general', 'combine', 'whiteNoise', 'saltAndPepperNoise', 'dropOutNoise', 'deepfry', 'laplacianEdgeDiffOperator', 'limitColorRanges', 'bilateralDenoise', 'simpleLine2DDetection', 'perwittEdgeDiffOperator', 'cannyEdgeDetection', 'invert', 'normalize', 'medianBlur', 'laplacianOfGaussianEdgeDetection', 'convolutionRidgeDetection', 'blackAndWhite', 'erode', 'nearestNeighborBlur', 'gaussianBlur', 'dilate', 'sharpen', 'grayscale', 'convolve', 'robertEdgeDiffOperator', 'replaceColorRanges', 'sobelEdgeDiffOperator', 'sobelEdgeDetection', 'contrast', 'perwittEdgeDetection', 'skewImage']
         haxe-version: [4.2.5]
         target: [interp]
     steps:
