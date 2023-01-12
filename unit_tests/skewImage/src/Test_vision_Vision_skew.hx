@@ -1,7 +1,7 @@
 package;
 
-import vision.Image;
-import vision.ds.ImageTools;
+import vision.ds.Image;
+import vision.ds.tools.ImageTools;
 
 using vision.Vision;
 
