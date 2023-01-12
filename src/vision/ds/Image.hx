@@ -1234,9 +1234,9 @@ abstract Image(ByteArray) {
 		final view = (v != null ? v : view); //reduces calls to get_view
 		switch view.shape {
 			case CIRCLE:
-			case ROUNDED_SQUARE:
+			case SQUIRCLE:
 			case RECTANGLE | SQUARE: has = (x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
-			case ROUNDED_RECTANGLE:
+			case RECTCIRCLE:
 				var hasX = (x < (view.x + view.width - view.rounded) // not bigger
 					    && x >= (view.x - view.rounded)); // not less
 
@@ -1244,7 +1244,7 @@ abstract Image(ByteArray) {
 					    && y >= (view.y - view.rounded)); // not less
 				has = (hasX && hasY);
 			case RECTANGLE_INVERTED: has = !(x < (view.x + view.width) && y < (view.y + view.height) && x >= (view.x) && y >= (view.y));
-			case ROUNDED_RECTANGLE_INVERTED: // imma do it later
+			case RECTCIRCLE_INVERTED: // imma do it later
 			case RHOMBUS: has = ((x - view.x - view.width / 2).abs() / (view.width / 2) + (y - view.y - view.height / 2).abs() / (view.height / 2) <= 1);
 			case RHOMBUS_INVERTED: has = !((x - view.x - view.width / 2).abs() / (view.width / 2) + (y - view.y - view.height / 2).abs() / (view.height / 2) <= 1);
 			case ELLIPSE, ELLIPSE_INVERTED: {
