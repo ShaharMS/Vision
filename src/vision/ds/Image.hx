@@ -1323,8 +1323,10 @@ abstract Image(ByteArray) {
 			var newX = (x * MathTools.cos(angle) - y * MathTools.sin(angle));
 			var newY = (x * MathTools.sin(angle) + y * MathTools.cos(angle));
 			moveSafePixel(x, y, Std.int(newX), Std.int(newY), color);
-			if(debug)
+			if(debug) {
 				trace('new pixel at ($newX, $newY)');
+				trace('now to pixel (${Std.int(newX)}, ${Std.int(newY)}');
+			}
 			done.push({x: x, y: y, /*newX: Std.int(newX), newY: Std.int(newY),*/ color: color});
 			//}
 		});
