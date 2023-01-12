@@ -3,11 +3,11 @@ package vision.ds;
 enum abstract ImageViewShape(Int) from Int to Int {
     var CIRCLE;
     var SQUARE;
-    var ROUNDED_SQUARE;
+    var SQUIRCLE;
     var RECTANGLE;
-    var ROUNDED_RECTANGLE;
+    var RECTCIRLCE;
     var RECTANGLE_INVERTED;
-    var ROUNDED_RECTANGLE_INVERTED;
+    var ROUNDED_RECTCIRCLE;
     var ELLIPSE;
     var ELLIPSE_INVERTED;
     var RHOMBUS;
