@@ -206,16 +206,15 @@ class MathTools {
 	// Point2D Extensions.
 	//-----------------------------------------------------------------------------------------
 
-	public static inline function distanceFromPointToRay2D(point:Point2D, line:Ray2D) {
-		final cos:Float = cos(line.radians);
-		final sin:Float = sin(line.radians);
-		final x0:Float = line.point.x;
-		final y0:Float = line.point.y;
-		final x1:Float = point.x;
-		final y1:Float = point.y;
-		final numerator:Float = (x0 - x1) * cos + (y0 - y1) * sin;
-		final denominator:Float = sqrt(pow(x0 - x1, 2) + pow(y0 - y1, 2));
-		final distance:Float = numerator / denominator;
+	public static inline function distanceFromPointToRay2D(point:Point2D, ray:Ray2D) {
+		// Get the closest point on the ray to the given point
+		final closestPoint:Point2D = getClosestPointOnRay2D(point, ray);
+
+		// Calculate the distance between the closest point and the given point
+		final dx:Float = closestPoint.x - point.x;
+		final dy:Float = closestPoint.y - point.y;
+		final distance:Float = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+	
 		return distance;
 	}
 
@@ -265,6 +264,21 @@ class MathTools {
 		return sqrt(x * x + y * y);
 	}
 
+	public static function getClosestPointOnRay2D(point:Point2D, ray:Ray2D):Point2D {
+		// Vector from the origin of the ray to the given point
+		var vx:Float = point.x - ray.point.x;
+		var vy:Float = point.y - ray.point.y;
+	
+		// Projection of v onto the direction vector of the ray
+		var projection:Float = (vx * 1 + vy * ray.slope) / (1 + pow(ray.slope, 2));
+	
+		// Coordinates of the closest point on the ray
+		var x:Float = ray.point.x + projection * 1;
+		var y:Float = ray.point.y + projection * ray.slope;
+	
+		return new Point2D(x, y);
+	}
+	
 
 	//-----------------------------------------------------------------------------------------
 	// General

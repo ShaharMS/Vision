@@ -29,16 +29,21 @@ class Array2D<T> {
 
 		 - on dynamic targets, values are always `null`
 		 - on static targets, `0`, `0.0` or `false` are filled in for `Int`, `Float` and `Bool` respectively. Other types are filled in with `null`
-	    
-	    @param width The array's width
-	    @param height The array's height
+	
+		@param width The array's width
+		@param height The array's height
+		@param fillWith Optional, A custom value of type `T` to fill the created array with. If `fillWith` is not provided, the created array will contain the default values specified above.
 	**/
-	public inline function new(width:Int, height:Int) {
+	public inline function new(width:Int, height:Int, ?fillWith:T) {
 		@:bypassAccessor this.width = width;
 		@:bypassAccessor this.height = height;
 
+		trace(width, height);
 		this.inner = new Array();
 		inner.resize(width * height);
+		if (fillWith != null) {
+			for (i in 0...inner.length) inner[i] = fillWith;
+		}
 	}
 
 	/**
@@ -64,6 +69,11 @@ class Array2D<T> {
 	**/
 	public inline function iterator() {
 		return inner.iterator();
+	}
+
+	public inline function fill(value:T):Array2D<T> {
+		for (i in 0...inner.length) inner[i] = value;
+		return this;
 	}
 
 	inline function get_length():Int {

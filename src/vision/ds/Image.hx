@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.Resource;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.tools.MathTools;
@@ -9,7 +10,7 @@ import haxe.Int64;
 import vision.ds.Color;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
-
+import vision.helpers.TextDrawer;
 using vision.tools.MathTools;
 
 /**
@@ -185,7 +186,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function getSafePixel(x:Int, y:Int):Color {
 		if (!hasPixel(x, y)) {
-			return getPixel(x.clamp(0, width), y.clamp(0, height));
+			return getPixel(x.clamp(0, width - 1), y.clamp(0, height - 1));
 		}
 		return getPixel(x, y);
 	}
@@ -198,7 +199,9 @@ abstract Image(ByteArray) {
 	/**
 		Gets the color of the pixel at the given coordinates.
 		These coordinates can also be of type `Float`, in which case
-		the value returned should be an interpolation of the surrounding, physical pixels:
+		the value returned should be an interpolation of the surrounding, physical pixels.
+
+		**This Operation is safe - Out of bound coordinates won't throw an error, and will instead use the closest pixel.**
 
 		### How Does This Work?
 
@@ -236,14 +239,11 @@ abstract Image(ByteArray) {
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
 
-		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 		@return The color of the pixel at the given coordinates.
 	**/
 	public inline function getFloatingPixel(x:Float, y:Float):Color {
-		#if !vision_quiet
-		if (!hasPixel(Math.ceil(x), Math.ceil(y)))
-			throw new OutOfBounds(cast this, {x: x, y: y});
-		#end
+
+		if (!hasPixel(Math.ceil(x), Math.ceil(y))) return getFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1));
 		final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
 		final red =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).red) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).red));
 		final green =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).green + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).green) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).green + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).green));
@@ -300,10 +300,10 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function setFloatingPixel(x:Float, y:Float, color:Color) {
-		#if !vision_quiet
-		if (!hasPixel(Math.ceil(x), Math.ceil(y)))
-			throw new OutOfBounds(cast this, {x: x, y: y});
-		#end
+		if (!hasPixel(Math.ceil(x), Math.ceil(y))) {
+			setFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1), color);
+			return;
+		}
 		final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
 
 		// (0, 0) strength: (1 - xFraction, 1 - yFraction)
@@ -363,9 +363,7 @@ abstract Image(ByteArray) {
 
 	public inline function paintFloatingPixel(x:Float, y:Float, color:Color) {
 		if (x < 0 || x >= width || y < 0 || y >= height) {
-			#if !vision_quiet
-			throw new OutOfBounds(cast this, new Point2D(x, y));
-			#end
+			paintFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1), color);
 		} else if (x.isInt() && y.isInt()) {
 			paintPixel(x.floor(), y.floor(), color);
 		} else {
@@ -467,6 +465,8 @@ abstract Image(ByteArray) {
 
 	/**
 		Moves the pixel at `(fromX, fromY)` to `(toX, toY)` and resets the color at `(fromX, fromY)`. Fractional values are allowed.
+		
+		This Operation is safe - Out of bound coordinates won't throw an error, and will instead use the closest pixel.
 
 		@param fromX The x-coordinate of the pixel to move.
 		@param fromY The y-coordinate of the pixel to move.
@@ -565,8 +565,9 @@ abstract Image(ByteArray) {
 		var sx = (x1 < x2) ? 1 : -1;
 		var sy = (y1 < y2) ? 1 : -1;
 		var err = dx - dy;
-		while (true) {
-			setPixel(x1, y1, color);
+		var safety = 0;
+		while (true && safety++ < 10000) {
+			setSafePixel(x1, y1, color);
 			if (x1 == x2 && y1 == y2)
 				break;
 			var e2 = 2 * err;
@@ -603,7 +604,9 @@ abstract Image(ByteArray) {
 		var sx = (x1 < x2) ? 1 : -1;
 		var sy = (y1 < y2) ? 1 : -1;
 		var err = dx - dy;
-		while (true) {
+
+		var safetyNet = 0;
+		while (true && safetyNet++ <= 10000) {
 			if (hasPixel(x1, y1)) {
 				setPixel(x1, y1, color);
 			}
@@ -767,6 +770,21 @@ abstract Image(ByteArray) {
 			i += step;
 		}
 	}
+
+	// https://github.com/Laerdal/opentype.hx/issues/2
+	// /**
+	// 	Draws a string at position `(x, y)` with font-size `size`.
+
+	// 	Text drawing starts from the top-left corner of the text.
+
+	// 	@param x The x coordinate of the top-left corner of the text
+	// 	@param y The y coordinate of the top-left corner of the text
+	// 	@param text The text to draw
+	// 	@param size The font-size to use
+	// **/
+	// public function drawText(x:Int, y:Int, text:String, size:Int) {
+	// 	if (TextDrawer.reportDependencies()) TextDrawer.drawTextOnImage(cast this, x, y, size, text, Resource.getBytes("NotoSans-Regular.ttf"))
+	// }
 
 	/**
 	 	Fills a circle with the given color:
@@ -1460,6 +1478,18 @@ abstract Image(ByteArray) {
 		}
 
 		return image;
+	}
+
+	@:to public function to2DArray():Array<Array<Color>> {
+		var arr = [];
+		for (i in 0...height) {
+			arr[i] = [];
+			for (j in 0...width) {
+				arr[i][j] = getPixel(j, i);
+			}
+		}
+
+		return arr;
 	}
 
 	public static function fromColorByteArrayAndData(array:ByteArray, width:Int, height:Int):Image {
