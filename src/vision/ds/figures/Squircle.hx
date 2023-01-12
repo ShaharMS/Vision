@@ -3,7 +3,7 @@ package vision.ds.figures;
 //import vision.ds.figures.Rectangle;
 
 //@:structInit
-class RoundedRectangle /*extends Rectangle*/ {
+class Squircle /*extends Rectangle*/ {
 	/**
 		The `x` position of this `RoundedRectangle`
 	**/
