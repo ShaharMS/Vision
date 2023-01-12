@@ -1332,8 +1332,8 @@ abstract Image(ByteArray) {
 		return has;
 	}
 
-	public inline function skew(angle:Float, debug:Bool = false) {
-		var done:Array<{x:Int, y:Int, /*X:Int, newY:Int */color:Color}> = [];
+	public inline function skew/*Int*/(angle:Float, debug:Bool = false) { // i will turn it to that once i finsh it
+		//var done:Array<{x:Int, y:Int, /*X:Int, newY:Int */color:Color}> = [];
 		forEachPixel(function(x, y, color) {
 			if(debug)
 				trace('skewing pixel ($x, $y)');
@@ -1345,19 +1345,25 @@ abstract Image(ByteArray) {
 				trace('new pixel at ($newX, $newY)');
 				trace('now to pixel (${Std.int(newX)}, ${Std.int(newY)}');
 			}
-			done.push({x: x, y: y, /*newX: Std.int(newX), newY: Std.int(newY),*/ color: color});
+			//done.push({x: x, y: y, /*newX: Std.int(newX), newY: Std.int(newY),*/ color: color});
 			//}
 		});
 	}
 	// the same but better (wip)
-	public inline function skewFloat(angle:Float) {
-		var done:Array<{x:Float, y:Float, color:Color}> = [];
+	public inline function skewFloat(angle:Float, debug:Bool = false) {
+		//var done:Array<{x:Float, y:Float, color:Color}> = [];
 		forEachPixel(function(x, y, color) {
 			//if(!done.contains({x: x, y: y, color: color}) {
+			if(debug)
+				trace('skewing pixel ($x, $y)');
 			var newX = (x * MathTools.cos(angle) - y * MathTools.sin(angle));
 			var newY = (x * MathTools.sin(angle) + y * MathTools.cos(angle));
-			//moveFloatSafePixel(x, y, newX, newY, color);
-			done.push({x: x, y: y, color: color});
+			moveFloatingPixel(x, y, newX, newY, color);
+			if(debug) {
+				trace('new pixel at ($newX, $newY)');
+				trace('now to pixel (${Std.int(newX)}, ${Std.int(newY)}');
+			}
+			//done.push({x: x, y: y, color: color});
 			//}
 		});
 	}
