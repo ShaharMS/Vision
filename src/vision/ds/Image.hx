@@ -1314,13 +1314,17 @@ abstract Image(ByteArray) {
 		return has;
 	}
 
-	public inline function skew(angle:Float) {
+	public inline function skew(angle:Float, debug:Bool = false) {
 		var done:Array<{x:Int, y:Int, /*X:Int, newY:Int */color:Color}> = [];
 		forEachPixel(function(x, y, color) {
+			if(debug)
+				trace('skewing pixel (' + x + ', ' + y ')');
 			//if(!done.contains({x: x, y: y, color: color}) {
 			var newX = (x * MathTools.cos(angle) - y * MathTools.sin(angle));
 			var newY = (x * MathTools.sin(angle) + y * MathTools.cos(angle));
 			moveSafePixel(x, y, Std.int(newX), Std.int(newY), color);
+			if(debug)
+				trace('new pixel at (' + newX + ', ' + newY + ')');
 			done.push({x: x, y: y, /*newX: Std.int(newX), newY: Std.int(newY),*/ color: color});
 			//}
 		});
