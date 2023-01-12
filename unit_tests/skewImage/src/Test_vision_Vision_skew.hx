@@ -70,6 +70,6 @@ class Test_vision_Vision_skew {
     }
   }
   static function printImage(i) { 
-    trace('passed!');
+    trace(i);
   }
 }
