@@ -1315,27 +1315,25 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function skew(angle:Float) {
-		var done:Array<{x:Int, y:Int, color:Color}> = [];
-
+		var done:Array<{x:Int, y:Int, /*X:Int, newY:Int */color:Color}> = [];
 		forEachPixel(function(x, y, color) {
 			//if(!done.contains({x: x, y: y, color: color}) {
 			var newX = (x * MathTools.cos(angle) - y * MathTools.sin(angle));
 			var newY = (x * MathTools.sin(angle) + y * MathTools.cos(angle));
 			moveSafePixel(x, y, Std.int(newX), Std.int(newY), color);
-			done.push({x: Std.int(newX), y: Std.int(newY), color: color});
+			done.push({x: x, y: y, /*newX: Std.int(newX), newY: Std.int(newY),*/ color: color});
 			//}
 		});
 	}
 	// the same but better (wip)
 	public inline function skewFloat(angle:Float) {
 		var done:Array<{x:Float, y:Float, color:Color}> = [];
-
 		forEachPixel(function(x, y, color) {
 			//if(!done.contains({x: x, y: y, color: color}) {
 			var newX = (x * MathTools.cos(angle) - y * MathTools.sin(angle));
 			var newY = (x * MathTools.sin(angle) + y * MathTools.cos(angle));
 			//moveFloatSafePixel(x, y, newX, newY, color);
-			done.push({x: newX, y: newY, color: color});
+			done.push({x: x, y: y, color: color});
 			//}
 		});
 	}
