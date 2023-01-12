@@ -18,7 +18,7 @@ class Test_vision_Vision_skew {
               vision.tools.ImageTools.addToScreen(image, 50, 50);
               #end*/
                 start = haxe.Timer.stamp();
-                image.skew(90);
+                image.skew(90, true);
                 end = haxe.Timer.stamp();
                 if (end - start > worst) worst = end - start;
                 if (end - start < best) best = end - start;
