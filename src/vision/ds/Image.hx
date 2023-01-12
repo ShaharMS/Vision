@@ -1332,6 +1332,12 @@ abstract Image(ByteArray) {
 		return has;
 	}
 
+	/**
+		Rotates `this` image by the specified angle.
+		It will rotate from the pixel (0, 0) to the rest, so pixel (0, 0) will not move.
+
+		***I RECOMMEND TO USE THE `skewFloat()` FUNCTION INSTEAD OF THIS!!!!***
+	**/
 	public inline function skew/*Int*/(angle:Float, debug:Bool = false) { // i will turn it to that once i finsh it
 		//var done:Array<{x:Int, y:Int, /*X:Int, newY:Int */color:Color}> = [];
 		forEachPixel(function(x, y, color) {
@@ -1340,7 +1346,7 @@ abstract Image(ByteArray) {
 			var newY = (x * MathTools.sin(angle) + y * MathTools.cos(angle));
 			moveSafePixel(x, y, Std.int(newX), Std.int(newY), color);
 			if(debug) {
-				trace('pixel ($x, $y) to ($newX, $newY) | (${Std.int(newX)}, ${Std.int(newY)}');
+				trace('pixel ($x, $y) to ($newX, $newY) | (${Std.int(newX)}, ${Std.int(newY)})');
 			}
 			//done.push({x: x, y: y, /*newX: Std.int(newX), newY: Std.int(newY),*/ color: color});
 			//}
@@ -1356,7 +1362,7 @@ abstract Image(ByteArray) {
 			var newY = (x * MathTools.sin(angle) + y * MathTools.cos(angle));
 			moveFloatingPixel(x, y, newX, newY, color);
 			if(debug) {
-				trace('pixel ($x, $y) to ($newX, $newY) | (${Std.int(newX)}, ${Std.int(newY)}');
+				trace('pixel ($x, $y) to ($newX, $newY) | (${Std.int(newX)}, ${Std.int(newY)})');
 			}
 			//done.push({x: x, y: y, color: color});
 			//}
