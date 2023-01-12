@@ -22,11 +22,12 @@ class Test_vision_Vision_skew {
               #end*/
               angler = angles[i];
                 start = haxe.Timer.stamp();
-                image.skew(angler, true);
+                image.skew(angler/*, true*/);
                 end = haxe.Timer.stamp();
                 if (end - start > worst) worst = end - start;
                 if (end - start < best) best = end - start;
                 sum += end - start;
+              printImage(image);
             }
             trace("----------vision.Vision.skewImage()----------");
             trace("attempts: " + attempts);
@@ -57,6 +58,7 @@ class Test_vision_Vision_skew {
                 if (end - start > worst) worst = end - start;
                 if (end - start < best) best = end - start;
                 sum += end - start;
+              printImage(image);
             }
             trace("----------vision.Vision.skewFloatImage()----------");
             trace("attempts: " + attempts);
@@ -66,5 +68,8 @@ class Test_vision_Vision_skew {
             trace("------------------------------------------");
         });
     }
+  }
+  static function printImage(i) { 
+    trace('passed!');
   }
 }
