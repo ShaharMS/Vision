@@ -13,6 +13,10 @@ class Test_vision_Vision_skew {
         {
             for (i in 0...attempts)
             {
+              /*#if sys
+              #else
+              vision.tools.ImageTools.addToScreen(image, 50, 50);
+              #end*/
                 start = haxe.Timer.stamp();
                 image.skew(90);
                 end = haxe.Timer.stamp();
