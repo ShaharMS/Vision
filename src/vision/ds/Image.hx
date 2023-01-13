@@ -475,8 +475,10 @@ abstract Image(ByteArray) {
 		@param oldPixelResetColor After moving the pixel, the color of the pixel at `(fromX, fromY)` resets to `0x00000000`. To change that color, set this parameter
 	**/
 	public function moveFloatingPixel(fromX:Float, fromY:Float, toX:Float, toY:Float, oldPixelResetColor:Color) {
-		setFloatingPixel(toX, toY, getFloatingPixel(fromX, fromY));
-		setFloatingPixel(fromX, fromY, oldPixelResetColor);
+		try {
+			setFloatingPixel(toX, toY, getFloatingPixel(fromX, fromY));
+			setFloatingPixel(fromX, fromY, oldPixelResetColor);
+		} catch(e) {}
 	}
 
 	public function moveUnsafePixel(fromX:Int, fromY:Int, toX:Int, toY:Int, oldPixelResetColor:Color) {
