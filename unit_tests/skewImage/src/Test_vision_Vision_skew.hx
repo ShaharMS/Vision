@@ -86,7 +86,7 @@ class Test_vision_Vision_skew {
               angler = angles[i];
                 start = haxe.Timer.stamp();
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Reduced_Speed_Blank.svg/192px-Reduced_Speed_Blank.svg.png", function(second) {
-			image.stampSkewed(image.width / 2, image.height / 2, second, angler);
+			image.stampSkewed(Std.int(image.width / 2), Std.int(image.height / 2), second, angler);
 		});
                 end = haxe.Timer.stamp();
                 if (end - start > worst) worst = end - start;
