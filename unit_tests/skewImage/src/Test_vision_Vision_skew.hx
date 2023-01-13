@@ -2,6 +2,7 @@ package;
 
 import vision.ds.Image;
 import vision.tools.ImageTools;
+import vision.ds.Color;
 
 using vision.Vision;
 
@@ -58,7 +59,7 @@ class Test_vision_Vision_skew {
                 if (end - start > worst) worst = end - start;
                 if (end - start < best) best = end - start;
                 sum += end - start;
-		    image.forEachRotatedFloatingPixel(function(x:Float, y:Float, color:vision.ds.Color) {
+		    image.forEachRotatedFloatingPixelInView(function(x:Float, y:Float, color:Color) {
 			    trace('pixel ($x, $y, ${color.toString()})');
 		    }, angler);
               printImage(image);
