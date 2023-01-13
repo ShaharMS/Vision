@@ -1112,7 +1112,7 @@ abstract Image(ByteArray) {
 			for (y in Y...Y + image.height) {
 				final point = MathTools.rotatePoint2D({x: x, y: y}, angle);
 				try {
-					paintFloatingPixel(point.x, point.y, image.getFloatingPixel(point.x - X, point.y - Y));
+					paintFloatingPixel(point.x, point.y, image.getUnsafePixel(x - X, y - Y));
 				} catch(e) {}
 			}
 		}
