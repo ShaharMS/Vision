@@ -1206,7 +1206,28 @@ abstract Image(ByteArray) {
 		}
 	}
 
-	public inline function forEaxhRotatedPixel(callback:(x:Int, y:Int, color:Color) -> Void, angle:Float) {
+	public inline function forEachRotatedFloatingPixelInView(callback:(x:Float, y:Float, color:Color) -> Void, angle:Float) {
+		if (!hasView()) {
+			forEachRotatedFloatingPixel(callback, angle);
+			return;
+		}
+		for (x in 0...width) {
+			for (y in 0...height) {
+				if (hasPixelInView(x, y)) {
+					final point = MathTools.rotatePoint2D({x: x, y: y}, angle);
+					try {
+						if(getFloatingPixel(point.x, point.y) != 0x000000) {
+							callback(point.x, point.y, getFloatingPixel(point.x, point.y));
+						} else {
+							callback(point.x, point.y, getFloatingPixel(x, y));
+						}
+					} catch(e) {}
+				}
+			}
+		}
+	}
+
+	public inline function forEachRotatedPixel(callback:(x:Int, y:Int, color:Color) -> Void, angle:Float) {
 		for (x in 0...width) {
 			for (y in 0...height) {
 				final point = MathTools.rotatePoint2D({x: x, y: y}, angle);
