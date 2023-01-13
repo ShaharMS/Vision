@@ -64,7 +64,7 @@ class Line2D {
 	**/
 	@:keep
 	public inline function toString() {
-		return '\n ($start.x, $start.y) --> ($end.x, $end.y)';
+		return '\n (${start.x}, ${start.y}) --> (${end.x}, ${end.y})';
 	}
 
 	/**

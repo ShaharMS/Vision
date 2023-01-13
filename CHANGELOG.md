@@ -1,7 +1,39 @@
 # 1.3.0
 
+### `vision.exceptions`
 
+ - **Renovated `LibraryRequired` to support dependencies and more accurate library inclusion methods**
+### `vision.ds`
 
+ - **Added `Int16Point2D`** - An abstract over a 32-bit integer.
+ - **Added `UInt16Point2D`** - Same abstract, but coordinates range from `0` to `65535`
+ - **Added `Color.makeRandom()`**
+ - **Fixed `Line2D.toString()` returning each point 4 times**
+ - **Exposed `Ray2D.point` and updated documentation**
+
+### `vision.algorithms`
+
+ - **Fixed Bilinear interpolation failing with some aspect ratios**
+ - **Added `Gaussian.create2DKernalOfSize`**
+ - **Added `Gaussian.create1DKernalOfSize`**
+ - **Added `Gaussian.fastBlur`, Optimized Version of `Vision.gaussianBlur`. More Bare-Bones**
+ - **Deprecated `Gaussian.createXxXKernal` Functions**
+ - **Deprecated `Gaussian.createKernalOfSize` in favour of `Gaussian.create2DKernalOfSize`**
+
+### `vision.tools`
+
+ - **Added `MathTools.isBetweenRange`**
+ - **Added `MathTools.getClosestPointOnRay2D`**
+ - **Fixed `MathTools.distanceFromPointOnRay2D`**
+
+### `Image.hx`
+ 
+ - **Added Bitwise operators `|`, `&` and `^`**
+ - **Floating pixel operations are now safe** - Using out-of-bounds coordinates won't throw an error.
+ - **Added `movePixel()`**, allows moving a pixel from inside the image to another position, while resetting the old position. variations:
+   - **`moveSafePixel()`**
+   - **`moveFloatingPixel()`**
+ - **Fixed `Image.drawLine()` hanging in certain scenarios** 
 # 1.2.3
 
 ### `vision.ds`

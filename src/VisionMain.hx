@@ -1,5 +1,9 @@
 package;
 
+import vision.exceptions.LibraryRequired;
+import vision.algorithms.SimpleHough;
+import haxe.crypto.Base64;
+import haxe.Http;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.IntPoint2D;
 import vision.ds.Int16Point2D;
@@ -14,7 +18,6 @@ import vision.tools.ImageTools;
 
 using vision.tools.ImageTools;
 
-import format.tga.Data.ImageType;
 import vision.ds.Queue;
 import vision.ds.Line2D;
 import vision.tools.MathTools;
@@ -40,7 +43,20 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-		#if (true)
+
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			start = haxe.Timer.stamp();
+			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
+			var newI = image.clone();
+			for (l in lines) {
+				newI.drawLine2D(l, 0x00FFD5);
+			}
+			printImage(newI);
+			printImage(SimpleLineDetector.image);
+			end = haxe.Timer.stamp();
+			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+		});
+		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
@@ -228,8 +244,6 @@ class VisionMain {
 			trace("Deepfrying took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 		});
-		#end
-
 		#if draw_tests
 		printSectionDivider("Draw tests");
 		var image = new Image(250, 250, 0x000000);
@@ -350,6 +364,23 @@ class VisionMain {
 			cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
 		}
 		TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
+		#end
+		#end
+		#if (minify_js_output && eval)
+		var code = sys.io.File.getContent(FileSystem.absolutePath("bin/main.js"));
+		//make a post request to toptal's javascript minifier with the code found at ./bin/main.js
+		var httpReq = new Http("https://www.toptal.com/developers/javascript-minifier/api/raw");
+		httpReq.addHeader("Content-Type", "application/x-www-form-urlencoded");
+		httpReq.setPostData("input=" + "console.log(         1)");
+		httpReq.onData = s -> {
+			trace(s.length);
+			trace(Base64.urlDecode(s).length);
+			trace(s);
+		}
+		httpReq.onError = s -> trace(s);
+		httpReq.request(true);
+
+
 		#end
 	}
 	

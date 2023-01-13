@@ -1,21 +1,19 @@
 package vision.exceptions;
 
-import haxe.EnumTools;
-
 class LibraryRequired extends VisionException {
-    public function new(libraryName:String, classDotField:String, ?fieldType:String = "function") {
-        super('The $fieldType $classDotField requires the $libraryName haxelib. Make sure $libraryName is installed & included (${getInclusionMethod(libraryName)})' , "Missing Library Required");
+    public function new(library:String, dependencies:Array<String>, classDotField:String, ?fieldType:String = "function") {
+        super('The $fieldType $classDotField requires the ${library} haxelib.\n\tMake sure ${library + if (dependencies.length > 0) " and it's dependencies are" else " is"} installed & included:\n\n${getInclusionMethod([library].concat(dependencies))}' , "Missing Library Required");
     }
 
-    function getInclusionMethod(lib:String):String {
+    function getInclusionMethod(libs:Array<String>):String {
         #if (lime || openfl || flixel)
-        return '<haxelib name="$lib"/>'
+        return '${[for (lib in libs) '\t\t<haxelib name="$lib"/>\n'].join("")}';
         #elseif kha
-        return 'project.addLibrary(\'$lib\');'
+        return '${[for (lib in libs) '\t\tproject.addLibrary(\'$lib\');\n'].join("")}';
         #elseif ceramic
-        return 'Add `- $lib` to `plugins:`'
+        return '\t\tplugins:\n${[for (lib in libs) '\t\t\t- $lib\n'].join("")}';
         #else
-        return '--library $lib';
+        return '${[for (lib in libs) '\t\t--library $lib\n'].join("")}';
         #end
     }
 }
