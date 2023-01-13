@@ -60,7 +60,8 @@ class Test_vision_Vision_skew {
                 if (end - start < best) best = end - start;
                 sum += end - start;
 		    image.forEachRotatedFloatingPixelInView(function(x:Float, y:Float, color:Color) {
-			    trace('pixel ($x, $y, ${color.toString()})');
+			    if(y % 2 == 0)
+				    trace('pixel ($x, $y, ${color.toString()})');
 		    }, angler);
               printImage(image);
             }
