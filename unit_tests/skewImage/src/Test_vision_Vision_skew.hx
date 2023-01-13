@@ -53,11 +53,14 @@ class Test_vision_Vision_skew {
               #end*/
               angler = angles[i];
                 start = haxe.Timer.stamp();
-                image.skewFloat(angler, true);
+                image.skewFloat(angler);
                 end = haxe.Timer.stamp();
                 if (end - start > worst) worst = end - start;
                 if (end - start < best) best = end - start;
                 sum += end - start;
+		    image.forEachRotatedFloatingPixel(function(x:Float, y:Float, color:vision.ds.Color) {
+			    trace('pixel ($x, $y, ${color.toString()})');
+		    }, angler);
               printImage(image);
             }
             trace("----------vision.Vision.skewFloatImage()----------");
