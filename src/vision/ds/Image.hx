@@ -1107,6 +1107,18 @@ abstract Image(ByteArray) {
 		return cast this;
 	}
 
+	public inline function stampSkewed(X:Int, Y:Int, image:Image, angle:Float):Image {
+		for (x in X...X + image.width) {
+			for (y in Y...Y + image.height) {
+				final point = MathTools.rotatePoint2D({x: x, y: y}, angle);
+				try {
+					paintFloatingPixel(point.x, point.y, image.getUnsafePixel(point.x - X, point.y - Y));
+				} catch(e) {}
+			}
+		}
+		return cast this;
+	}
+
 	/**
 		Resizes the image according to `algorithm`, to `newWidth` by `newHeight`.
 
