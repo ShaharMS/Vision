@@ -1206,14 +1206,36 @@ abstract Image(ByteArray) {
 		}
 	}
 
+	public inline function forEaxhRotatedPixel(callback:(x:Int, y:Int, color:Color) -> Void, angle:Float) {
+		for (x in 0...width) {
+			for (y in 0...height) {
+				final point = MathTools.rotatePoint2D({x: x, y: y}, angle);
+				try {
+					if(getFloatingPixel(point.x, point.y) != 0x000000) {
+						callback(Std.int(point.x), Std.int(point.y), getFloatingPixel(point.x, point.y));
+					} else {
+						callback(Std.int(point.x), Std.int(point.y), getFloatingPixel(x, y));
+					}
+				} catch(e) {}
+			}
+		}
+	}
+
 	public inline function forEachRotatedFloatingPixel(callback:(x:Float, y:Float, color:Color) -> Void, angle:Float) {
 		for (x in 0...width) {
 			for (y in 0...height) {
 				final point = MathTools.rotatePoint2D({x: x, y: y}, angle);
-				callback(point.x, point.y, getUnsafePixel(x, y));
+				try {
+					if(getFloatingPixel(point.x, point.y) != 0x000000) {
+						callback(point.x, point.y, getFloatingPixel(point.x, point.y));
+					} else {
+						callback(point.x, point.y, getFloatingPixel(x, y));
+					}
+				} catch(e) {}
 			}
 		}
 	}
+
 	/**
 	    Returns an iterator over this image's pixels.
 	**/
