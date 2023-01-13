@@ -1206,6 +1206,14 @@ abstract Image(ByteArray) {
 		}
 	}
 
+	public inline function forEachRotatedFloatingPixel(callback:(x:Float, y:Float, color:Color) -> Void, angle:Float) {
+		for (x in 0...width) {
+			for (y in 0...height) {
+				final point = MathTools.rotatePoint2D({x: x, y: y}, angle);
+				callback(point.x, point.y, getUnsafePixel(x, y));
+			}
+		}
+	}
 	/**
 	    Returns an iterator over this image's pixels.
 	**/
