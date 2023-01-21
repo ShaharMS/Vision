@@ -2,8 +2,10 @@ package vision.exceptions;
 
 class LibraryRequired extends VisionException {
     public function new(library:String, dependencies:Array<String>, classDotField:String, ?fieldType:String = "function") {
-        
-        function getInclusionMethod(libs:Array<String>):String {
+        super('The $fieldType $classDotField requires the ${library} haxelib.\n\tMake sure ${library + if (dependencies.length > 0) " and it's dependencies are" else " is"} installed & included:\n\n${getInclusionMethod([library].concat(dependencies))}' , "Missing Library Required");
+    }
+
+    static extern inline function getInclusionMethod(libs:Array<String>):String {
             #if (lime || openfl || flixel)
             return '${[for (lib in libs) '\t\t<haxelib name="$lib"/>\n'].join("")}';
             #elseif kha
@@ -14,7 +16,4 @@ class LibraryRequired extends VisionException {
             return '${[for (lib in libs) '\t\t--library $lib\n'].join("")}';
             #end
         }
-        
-        super('The $fieldType $classDotField requires the ${library} haxelib.\n\tMake sure ${library + if (dependencies.length > 0) " and it's dependencies are" else " is"} installed & included:\n\n${getInclusionMethod([library].concat(dependencies))}' , "Missing Library Required");
-    }
 }
