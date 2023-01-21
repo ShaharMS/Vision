@@ -18,7 +18,7 @@ class Hough {
 		maxRho = 2 * ceil(sqrt(image.width * image.width + image.height * image.height)); 
 		final maxThetaIndex = 360; // calculating using radians is impossible, since array indices are integers.
 		var accumulator = new Image(maxThetaIndex + 1, maxRho);
-
+		#if (!java && !jvm)
 		var calcLine = new Ray2D({x: 0, y: 0}, null, 0);
 		image.forEachPixel((x, y, color) -> {
 			if (color.red != 255) return;
@@ -32,7 +32,7 @@ class Hough {
 				accumulator.setFloatingPixel(deg, rhoIndex, accumulator.getFloatingPixel(deg, rhoIndex) + 100);
 			}
 		});
-
+		#end
 		return accumulator;
 	}
 

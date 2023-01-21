@@ -5,6 +5,7 @@ import haxe.io.BytesOutput;
 import vision.ds.ByteArray;
 import vision.exceptions.ImageLoadingFailed;
 import vision.exceptions.ImageSavingFailed;
+import vision.exceptions.LibraryRequired;
 import vision.ds.ImageFormat;
 import vision.ds.Array2D;
 import vision.exceptions.Unimplemented;
