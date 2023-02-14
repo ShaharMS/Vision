@@ -114,8 +114,8 @@ abstract Image(ByteArray) {
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (0, width);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, width);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
 		var i = OFFSET;
 		while (i < this.length) {
@@ -1220,14 +1220,14 @@ abstract Image(ByteArray) {
 	/**
 	    Checks whether or not this image currently has a view
 
-		If `view`'s dimensions are all 0'ed out, or are the same as the image's dimensions, this will return false.
+		If `view`'s dimensions are all 0'ed out, or are greater than/the same as the image's dimensions, this will return false.
 	**/
 	public inline function hasView():Bool {
 		return (
 			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES) != 0 ||
 			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + DATA_GAP) != 0 ||
-			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES) != width ||
-			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP) != height ||
+			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES) != 0 ||
+			#if vision_higher_width_cap this.getInt32 #else this.getUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP) != 0 ||
 			this.get(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES) != 0
 		);
 	}
@@ -1235,7 +1235,7 @@ abstract Image(ByteArray) {
 	/**
 	    Sets the current `ImageView`, and returns this image.
 
-		If `view`'s dimensions are all 0'ed out, or are the same as the image's dimensions, `hasView()` will return false.
+		If `view`'s dimensions are all 0'ed out, or are greater than/the same as the image's dimensions, `hasView()` will return false.
 
 		If you want to remove the currently set `ImageView`, check out `removeView()`.
 
@@ -1245,8 +1245,8 @@ abstract Image(ByteArray) {
 	public inline function setView(view:ImageView):Image {
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, view.x);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, view.y);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, view.width == 0 ? view.width : view.width);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height == 0 ? view.height : view.height);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, view.width >= width ? 0 : view.width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height >= height ? 0 : view.width);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, view.shape);
 		return cast this;
 	}
@@ -1270,8 +1270,8 @@ abstract Image(ByteArray) {
 	public inline function removeView():Image {
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, width);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
 		return cast this;
 	}

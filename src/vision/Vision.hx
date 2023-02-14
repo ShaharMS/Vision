@@ -532,7 +532,7 @@ class Vision {
 		image.forEachPixelInView((x, y, _) -> {
 			var i = 0;
 			var red = 0., green = 0., blue = 0.;
-			for (color in image.getNeighborsOfPixelIter(x, y, maxLength)) {
+			for (color in image.getNeighborsOfPixel(x, y, maxLength).inner) {
 				red += flatMatrix[i] * color.red;
 				blue += flatMatrix[i] * color.blue;
 				green += flatMatrix[i] * color.green;
@@ -635,28 +635,47 @@ class Vision {
 		@return The line detected image.
 	**/
 	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermediate):Array<Line2D> {
-		final kernalSize = switch speedToAccuracyRatio {
-			case VeryLow_VeryFast: X1;
-			case Low_Fast: X3;
-			case Medium_Intermediate: X5;
-			case High_Slow: X7;
-			case VeryHigh_VerySlow: X9;
-		};
-		SimpleLineDetector.image = cannyEdgeDetection(image.clone().removeView(), 1, kernalSize, 0.05, 0.16) | cannyEdgeDetection(image.clone().removeView().mirror(), 1, kernalSize, 0.05, 0.16).mirror();
-		var lines:Array<Line2D> = [];
+        final kernalSize = switch speedToAccuracyRatio {
+            case VeryLow_VeryFast: X1;
+            case Low_Fast: X3;
+            case Medium_Intermediate: X5;
+            case High_Slow: X7;
+            case VeryHigh_VerySlow: X9;
+        }
+        var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
+        var lines:Array<Line2D> = [];
 		var actualLines:Array<Line2D> = [];
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				lines.push(SimpleLineDetector.findLineFromPoint(new Int16Point2D(x, y), minLineLength));
-			}
-		}
-		for (l in lines) {
-			if (l == null) continue;
-			if (SimpleLineDetector.lineCoveragePercentage(SimpleLineDetector.image, l) < accuracy) continue;
-			actualLines.push(l);
-		}
-		return actualLines;
-	}
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+				lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, new Int16Point2D(x, y), minLineLength));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, new Int16Point2D(x, y), minLineLength, true));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, new Int16Point2D(x, y), minLineLength, false, true));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, new Int16Point2D(x, y), minLineLength, true, true));
+            }
+        }
+        for (l in lines) {
+            if (l == null) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
+            actualLines.push(l);
+        }
+		lines = [];
+        //now, get a mirrored version
+        edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
+        for (x in 0...image.width) {
+            for (y in 0...image.height) {
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, new Int16Point2D(x, y), minLineLength));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, new Int16Point2D(x, y), minLineLength, true));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, new Int16Point2D(x, y), minLineLength, false, true));
+                lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, new Int16Point2D(x, y), minLineLength, true, true));
+            }
+        }
+        for (l in lines) {
+            if (l == null) continue;
+            if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
+            actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
+        }
+        return actualLines;
+    }
 
 	/**
 		Applies the sobel filter to an image.

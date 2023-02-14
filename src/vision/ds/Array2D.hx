@@ -38,7 +38,6 @@ class Array2D<T> {
 		@:bypassAccessor this.width = width;
 		@:bypassAccessor this.height = height;
 
-		trace(width, height);
 		this.inner = new Array();
 		inner.resize(width * height);
 		if (fillWith != null) {

@@ -44,19 +44,7 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 
-		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
-			start = haxe.Timer.stamp();
-			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
-			var newI = image.clone();
-			for (l in lines) {
-				newI.drawLine2D(l, 0x00FFD5);
-			}
-			printImage(newI);
-			printImage(SimpleLineDetector.image);
-			end = haxe.Timer.stamp();
-			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-		});
-		#if (false)
+		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");

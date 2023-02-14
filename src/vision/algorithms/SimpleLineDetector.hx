@@ -11,27 +11,24 @@ import vision.ds.IntPoint2D;
 class SimpleLineDetector {
 	public static var image:Image;
 
-	public static function findLineFromPoint(point:Int16Point2D, minLineLength:Float, filterMaximums:Bool = true):Line2D {
-
-		if (image.getUnsafePixel(point.x, point.y) == 0) return null;
-
+	public static function findLineFromPoint(image:Image, point:Int16Point2D, minLineLength:Float, preferTTB:Bool = false, preferRTL:Bool = false):Line2D {
 		final startX = point.x, startY = point.y;
-		var preferTTB = true;
-		var candidates:Array<Line2D> = [];
+		final yArr = preferTTB ? [0, 1, 2] : [0, -1, -2];
+		final xArr = preferRTL ? [0, -1, -2] : [0, 1, 2];
+		if (!image.hasPixel(point.x, point.y) || image.getPixel(point.x, point.y) == 0)
+			return null;
 
-		for (xArr in [[0, 1, 2], [0, -1, -2]]) {
-			for (yArr in [[0, 1, 2], [0, -1, -2]]) {
-				// now, were going to start looking for points around the point to find the entire line.
-				var prev:Null<Int16Point2D> = null;
-				var prev2:Null<Int16Point2D> = null;
-				var currentDirection:Null<Int16Point2D> = p();
-				function expand() {
-					if (currentDirection != null
-						&& image.hasPixel(point.x + currentDirection.x, point.y + currentDirection.y)
-						&& image.getPixel(point.x + currentDirection.x, point.y + currentDirection.y).red == 255) {
-						point.x = point.x + currentDirection.x;
-						point.y = point.y + currentDirection.y;
-						// cachedPoints[ttb | rtl << 1].push(point.copy());
+		// now, were going to start looking for points around the point to find the entire line.
+		var prev:Null<Int16Point2D> = null;
+		var prev2:Null<Int16Point2D> = null;
+		function expand() {
+			for (X in xArr) {
+				for (Y in yArr) {
+					if (X == 0 && Y == 0 || !image.hasPixel(point.x + X, point.y + Y))
+						continue;
+					if (image.getPixel(point.x + X, point.y + Y).red == 255) {
+						point.x = point.x + X;
+						point.y = point.y + Y;
 
 						// used to prevent infinite recursion
 						if (prev == null) {
@@ -40,56 +37,21 @@ class SimpleLineDetector {
 							prev2 = p(prev.x, prev.y);
 							prev = p(point.x, point.y);
 						}
-						if ((if (preferTTB) currentDirection.y else currentDirection.x) == 0) {
+						if ((if (preferTTB) Y else X) == 0) {
 							if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
 								return;
 							}
 						}
 						expand();
-					} else { // fallback, used for skewed/dotted/dashed lines
-						for (X in xArr) {
-							for (Y in yArr) {
-								if (X == 0 && Y == 0 || !image.hasPixel(point.x + X, point.y + Y)) continue;
-								if (image.getPixel(point.x + X, point.y + Y).red == 255) {
-									currentDirection = p(X, Y);
-									point.x = point.x + X;
-									point.y = point.y + Y;
-									// cachedPoints[ttb | rtl << 1].push(point.copy());
-
-									// used to prevent infinite recursion
-									if (prev == null) {
-										prev = p(point.x, point.y);
-									} else {
-										prev2 = p(prev.x, prev.y);
-										prev = p(point.x, point.y);
-									}
-									if ((if (preferTTB) Y else X) == 0) {
-										if ((point.x == prev.x && point.y == prev.y) || (point.x == prev2.x && point.y == prev2.y)) {
-											return;
-										}
-									}
-									expand();
-								}
-							}
-						}
 					}
 				}
-				expand();
-				var line = new Line2D({x: startX, y: startY}, point);
-
-				if (line.length > minLineLength) {
-					if (filterMaximums) 
-						candidates.push(line);
-					else
-						return line;
-				}
-				preferTTB = false;
 			}
 		}
-		if (filterMaximums) {
-			candidates.sort((a, b) -> Std.int(a.length - b.length));
-			candidates.reverse();
-			return candidates[0];
+		expand();
+		var line = new Line2D({x: startX, y: startY}, point);
+
+		if (line.length > minLineLength) {
+			return line;
 		}
 		return null;
 	}
@@ -100,7 +62,8 @@ class SimpleLineDetector {
 	**/
 	public static function lineCoveragePercentage(image:Image, line:Line2D):Float {
 		var coveredPixels = 0, totalPixels = 0;
-		if (line == null) return 0;
+		if (line == null)
+			return 0;
 		final p1 = IntPoint2D.fromPoint2D(line.start);
 		final p2 = IntPoint2D.fromPoint2D(line.end);
 		var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
@@ -109,10 +72,10 @@ class SimpleLineDetector {
 		var sx = (x1 < x2) ? 1 : -1;
 		var sy = (y1 < y2) ? 1 : -1;
 		var err = dx - dy;
-		// were going to check for the longest gap using an array of integers
-		// each time a gap is getting longer, we'll set the array at the index of the
-		// current length of the gap to 1
-		// then, the max length should be the length of the array
+		//were going to check for the longest gap using an array of integers
+		//each time a gap is getting longer, we'll set the array at the index of the
+		//current length of the gap to 1
+		//then, the max length should be the length of the array
 		var gapChecker:Array<Int> = [];
 		var currentGap = 1;
 		while (true) {
@@ -126,7 +89,8 @@ class SimpleLineDetector {
 				}
 			}
 			totalPixels++;
-			if (x1 == x2 && y1 == y2) break;
+			if (x1 == x2 && y1 == y2)
+				break;
 			var e2 = 2 * err;
 			if (e2 > -dy) {
 				err -= dy;
@@ -137,7 +101,7 @@ class SimpleLineDetector {
 				y1 += sy;
 			}
 		}
-		return (coveredPixels /*The biggest gap */ - gapChecker.length) / totalPixels * 100;
+		return (coveredPixels /*The biggest gap */- gapChecker.length) / totalPixels * 100;
 	}
 
 	static extern inline function p(x:Int = 0, y:Int = 0) {
