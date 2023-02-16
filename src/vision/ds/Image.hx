@@ -185,10 +185,7 @@ abstract Image(ByteArray) {
 		@return The color of the pixel at the given coordinates.
 	**/
 	public inline function getSafePixel(x:Int, y:Int):Color {
-		if (!hasPixel(x, y)) {
-			return getPixel(x.clamp(0, width - 1), y.clamp(0, height - 1));
-		}
-		return getPixel(x, y);
+		return getPixel(x.clamp(0, width - 1), y.clamp(0, height - 1));
 	}
 
 	@:allow(vision)
@@ -288,8 +285,8 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function setSafePixel(x:Int, y:Int, color:Color) {
-		x = x.boundInt(0, width - 1);
-		y = y.boundInt(0, height - 1);
+		x = x.clamp(0, width - 1);
+		y = y.clamp(0, height - 1);
 		if (hasView()) {
 			if (hasPixelInView(x, y)) {
 				setColorFromStartingBytePos((y * width + x) * 4, color);
@@ -395,7 +392,7 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function paintSafePixel(x:Int, y:Int, color:Int) {
-		paintPixel(x.boundInt(0, width - 1), y.boundInt(0, height - 1), color);
+		paintPixel(x.clamp(0, width - 1), y.clamp(0, height - 1), color);
 	}
 
 	@:allow(vision)

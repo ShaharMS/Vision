@@ -25,6 +25,7 @@
  - **Added `MathTools.isBetweenRange`**
  - **Added `MathTools.getClosestPointOnRay2D`**
  - **Fixed `MathTools.distanceFromPointOnRay2D`**
+ - **Fixed `MathTools.clamp`**
 
 ### `Image.hx`
  
@@ -35,6 +36,7 @@
    - **`moveFloatingPixel()`**
  - **Fixed `Image.drawLine()` hanging in certain scenarios** 
  - **Fixed inaccuracies in Image's view implementation, off-by-one pixels bugs should be fixed**
+ - **Fixed `getSafePixel()`, `setS`**
 # 1.2.3
 
 ### `vision.ds`
