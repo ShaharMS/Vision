@@ -8,7 +8,7 @@ class TextDrawer {
     
 
     /**
-     * Throws the correct error when dependencies of opentype.hx are missing, unless vison_quiet is defined
+     * Throws the correct error when dependencies of opentype.hx are missing, unless vision_quiet is defined
      */
     public static function reportDependencies() {
         #if ((!opentype.hx || !buddy || !promhx || !asynctools) && !vision_quiet)
