@@ -37,11 +37,19 @@
  - **Fixed `Image.drawLine()` hanging in certain scenarios** 
  - **Fixed inaccuracies in Image's view implementation, off-by-one pixels bugs should be fixed**
  - **Fixed `getSafePixel()`, `setS`**
+ - **Removed `fromColorByteArrayAndData()` Due to buggy behavior**
+ - **Added `fromBytes()` and `toBytes()` for easier cross-frameworking**
 # 1.2.3
 
 ### `vision.ds`
 
- - **Added `ImageVIew.toString()`**
+ - **Added `ImageView.toString()`**
+ - **Added `PixelFormat`** - Vision now supports importing/exporting differnt pixel formats! supports RGB, BGR and their different alpha position variants.
+ - **Added multiple get & set methods to `ByteArray`:**
+    - `getUInt8()`
+    - `setUInt8()`
+    - `getInt8()`
+    - `setInt8()`
  - **Improved doc comment for private static field `Image.OFFSET`**
 
 ### `vision.tools`

@@ -1430,7 +1430,7 @@ abstract Image(ByteArray) {
 	// Other From/Tos
 	//--------------------------------------------------------------------------
 
-	@:from public static function from2DArray(array:Array<Array<Color>>):Image {
+	@:from public static inline function from2DArray(array:Array<Array<Color>>):Image {
 		var maxLength = 0;
 		for (arr in array) {
 			if (arr.length > maxLength)
@@ -1447,7 +1447,7 @@ abstract Image(ByteArray) {
 		return image;
 	}
 
-	@:to public function to2DArray():Array<Array<Color>> {
+	@:to public inline function to2DArray():Array<Array<Color>> {
 		var arr = [];
 		for (i in 0...height) {
 			arr[i] = [];
@@ -1459,7 +1459,9 @@ abstract Image(ByteArray) {
 		return arr;
 	}
 
-	public static function fromColorByteArrayAndData(array:ByteArray, width:Int, height:Int):Image {
+	public static inline function fromBytes(bytes:ByteArray, width:Int, ?height:Int) {
+		var h = height != null ? height : (bytes.length / 4 / width).ceil();
+		var array = new ByteArray(width * h * 4 + OFFSET);
 		#if vision_higher_width_cap
 		array.setInt32(0, width);
 		array.setInt32(WIDTH_BYTES, 0);
@@ -1475,7 +1477,18 @@ abstract Image(ByteArray) {
 		array.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
 		array.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
 		#end
+
+		array.blit(OFFSET - 1, bytes, 0, bytes.length);
+
 		return cast array;
+	}
+
+	@:to overload public extern inline function toBytes():ByteArray {
+		return underlying.sub(OFFSET - 1, underlying.length - OFFSET);
+	}
+
+	overload public extern inline function toBytes(?format:PixelFormat = ARGB) {
+		return inline PixelFormat.convertPixelFormat(underlying.sub(OFFSET - 1, underlying.length - OFFSET), ARGB, format);
 	}
 
 	//--------------------------------------------------------------------------

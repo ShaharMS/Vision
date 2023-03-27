@@ -3,20 +3,16 @@
 --main VisionMain
 
 --library format
---library asynctools
---library buddy
---library promhx
---library opentype.hx
-#--library console.hx
+# --library console.hx
 -debug
 --dce full
-# --interp
+--interp
 # --define minify_js_output
 #--cpp bin/cpp
 #--define compile_unit_tests
 #--define radix_test
 
---js bin/main.js
+# --js bin/main.js
 --define feature_detection_tests
 --define draw_tests
 --define mirror_flip_tests

@@ -1,5 +1,7 @@
 package;
 
+import vision.ds.PixelFormat;
+import vision.ds.ByteArray;
 import vision.exceptions.LibraryRequired;
 import vision.algorithms.SimpleHough;
 import haxe.crypto.Base64;
@@ -44,7 +46,28 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 
-		#if (true)
+		var ba = new ByteArray(12);
+		ba[0] = 0;
+		ba[1] = 1;
+		ba[2] = 2;
+		ba[3] = 3;
+		ba[4] = 4;
+		ba[5] = 5;
+		ba[6] = 6;
+		ba[7] = 7;
+		ba[8] = 8;
+		ba[9] = 9;
+		ba[10] = 10;
+		ba[11] = 11;
+		trace([for (b in 0...ba.length) ba[b]]);
+		ba = PixelFormat.convertPixelFormat(ba, ARGB, BGRA);
+		trace([for (b in 0...ba.length) ba[b]]);
+		ba = PixelFormat.convertPixelFormat(ba, RGB, BGR);
+		trace([for (b in 0...ba.length) ba[b]]);
+		ba = PixelFormat.convertPixelFormat(ba, ARGB, BGR);
+		trace([for (b in 0...ba.length) ba[b]]);
+
+		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
