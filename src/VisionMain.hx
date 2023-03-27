@@ -50,6 +50,7 @@ class VisionMain {
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
+			var orgImage = image.clone();
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
@@ -169,8 +170,8 @@ class VisionMain {
 			#if feature_detection_tests
 			printSectionDivider("Feature detection tests");
 			start = haxe.Timer.stamp();
-			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 10);
-			var newI = image.clone();
+			var lines = Vision.simpleLine2DDetection(orgImage.clone(), 50, 10);
+			var newI = orgImage.clone();
 			for (l in lines) {
 				newI.drawLine2D(l, 0x00FFD5);
 			}
@@ -178,8 +179,8 @@ class VisionMain {
 			end = haxe.Timer.stamp();
 			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			var lines = SimpleHough.detectLines(image.clone(), 30);
-			var newI = image.clone();
+			var lines = SimpleHough.detectLines(orgImage.clone().cannyEdgeDetection(1, X5, 0.05, 0.16), 40);
+			var newI = orgImage.clone();
 			for (l in lines) {
 				newI.drawRay2D(l, 0x00FFD5);
 			}

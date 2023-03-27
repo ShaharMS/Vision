@@ -543,7 +543,7 @@ class ImageTools {
 
 	public static function fromHaxeUIImageData(image:haxe.ui.backend.ImageData):Image {
 		#if haxeui_flixel
-			return fromFlxSprite(image.);
+			return fromFlxSprite(image);
 		#elseif haxeui_openfl
 			return fromBitmapData(image);
 		#elseif haxeui_heaps

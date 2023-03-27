@@ -12,10 +12,10 @@ class SimpleHough {
         var rays:Array<Ray2D> = [];
 
         image.forEachPixel((x, y, color) -> {
-            if (color == 0xFFFFFFFF) {
-                for (deg in 0...360) {
+            if (color.red == 255) {
+                for (deg in 0...179) {
                     var ray = new Ray2D({x: x, y: y}, null, deg);
-                    var rayAsString = '${ray.xIntercept}|$deg';
+                    var rayAsString = '${Std.int(ray.xIntercept)}|$deg';
                     if (accumulator[rayAsString] == null) accumulator[rayAsString] = 1
                     else accumulator[rayAsString]++;
                 }
