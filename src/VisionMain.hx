@@ -46,28 +46,7 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 
-		var ba = new ByteArray(12);
-		ba[0] = 0;
-		ba[1] = 1;
-		ba[2] = 2;
-		ba[3] = 3;
-		ba[4] = 4;
-		ba[5] = 5;
-		ba[6] = 6;
-		ba[7] = 7;
-		ba[8] = 8;
-		ba[9] = 9;
-		ba[10] = 10;
-		ba[11] = 11;
-		trace([for (b in 0...ba.length) ba[b]]);
-		ba = PixelFormat.convertPixelFormat(ba, ARGB, BGRA);
-		trace([for (b in 0...ba.length) ba[b]]);
-		ba = PixelFormat.convertPixelFormat(ba, RGB, BGR);
-		trace([for (b in 0...ba.length) ba[b]]);
-		ba = PixelFormat.convertPixelFormat(ba, ARGB, BGR);
-		trace([for (b in 0...ba.length) ba[b]]);
-
-		#if (false)
+		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
@@ -198,6 +177,15 @@ class VisionMain {
 			printImage(newI);
 			end = haxe.Timer.stamp();
 			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			var lines = SimpleHough.detectLines(image.clone(), 30);
+			var newI = image.clone();
+			for (l in lines) {
+				newI.drawRay2D(l, 0x00FFD5);
+			}
+			printImage(newI);
+			end = haxe.Timer.stamp();
+			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().sobelEdgeDetection());
 			end = haxe.Timer.stamp();

@@ -455,7 +455,7 @@ class ImageTools {
 	#end
 	#if js
 	public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
-		var image:Image = Image.fromColorByteArrayAndData(new ByteArray(Image.OFFSET + (canvas.width + canvas.height) * 4), canvas.width, canvas.height);
+		var image:Image = Image.fromBytes(new ByteArray(Image.OFFSET + (canvas.width + canvas.height) * 4), canvas.width, canvas.height);
 
 		final imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
 

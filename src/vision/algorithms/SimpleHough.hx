@@ -15,7 +15,7 @@ class SimpleHough {
             if (color == 0xFFFFFFFF) {
                 for (deg in 0...360) {
                     var ray = new Ray2D({x: x, y: y}, null, deg);
-                    var rayAsString = '${Std.int(ray.xIntercept)}|$deg';
+                    var rayAsString = '${ray.xIntercept}|$deg';
                     if (accumulator[rayAsString] == null) accumulator[rayAsString] = 1
                     else accumulator[rayAsString]++;
                 }
