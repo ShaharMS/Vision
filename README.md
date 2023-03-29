@@ -15,7 +15,7 @@
 
 This Library is organized into 5 subfolders, and one important file:
 
- - [**`ds`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/ds) - contains Vision's data structures & types. Some functions &
+ - [**`ds`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/ds) - contains Vision's data structures & types. Some functions and
 Features require different return types which aren't basic - such as lines, rays or points.
 Those can be found inside this folder.
  - [**`tools`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/tools) - contains classes that extend the functionality of certain aspects of the library.
