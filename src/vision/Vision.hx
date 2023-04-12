@@ -674,7 +674,7 @@ class Vision {
             if (SimpleLineDetector.lineCoveragePercentage(edgeDetected, l) < accuracy) continue;
             actualLines.push(l.mirrorInsideRectangle({x: 0, y: 0, width: image.width, height: image.height}));
         }
-        return actualLines;
+        return SimpleLineDetector.correctLines(actualLines);
     }
 
 	/**

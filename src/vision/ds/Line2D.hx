@@ -60,6 +60,18 @@ class Line2D {
 	}
 
 	/**
+		Gets the intersection point between `this` and `line`.
+
+		If `this` and `line` don't intersect, `null` is returned.
+
+		@param line The second line to intersect with
+		@return A `Point2D` instance, `null` if `this` and `line` don't intersect
+	**/
+	public function intersect(line:Line2D):Point2D {
+		return MathTools.intersectionBetweenLine2Ds(this, line);		
+	}
+
+	/**
 		Returns a `String` representation of this `Line2D`.
 	**/
 	@:keep

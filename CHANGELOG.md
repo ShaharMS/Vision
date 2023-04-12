@@ -1,5 +1,22 @@
 # 1.3.0
 
+
+### `Vision.hx`
+ - **Tweaked `Vision.simpleLine2DDetection()`, should report less overlapping lines**
+
+### `Image.hx`
+ 
+ - **Added Bitwise operators `|`, `&` and `^`**
+ - **Floating pixel operations are now safe** - Using out-of-bounds coordinates won't throw an error.
+ - **Added `movePixel()`**, allows moving a pixel from inside the image to another position, while resetting the old position. variations:
+   - **`moveSafePixel()`**
+   - **`moveFloatingPixel()`**
+ - **Fixed `Image.drawLine()` hanging in certain scenarios** 
+ - **Fixed inaccuracies in Image's view implementation, off-by-one pixels bugs should be fixed**
+ - **Fixed `getSafePixel()`, `setS`**
+ - **Removed `fromColorByteArrayAndData()` Due to buggy behavior**
+ - **Added `fromBytes()` and `toBytes()` for easier cross-frameworking**
+ - **Improved doc comment for private static field `Image.OFFSET`**
 ### `vision.exceptions`
 
  - **Renovated `LibraryRequired` to support dependencies and more accurate library inclusion methods**
@@ -10,6 +27,12 @@
  - **Added `Color.makeRandom()`**
  - **Fixed `Line2D.toString()` returning each point 4 times**
  - **Exposed `Ray2D.point` and updated documentation**
+ - **Added multiple get & set methods to `ByteArray`:**
+    - `getUInt8()`
+    - `setUInt8()`
+    - `getInt8()`
+    - `setInt8()`
+ - **Added `Line2D.intersect()`** 
 
 ### `vision.algorithms`
 
@@ -27,30 +50,12 @@
  - **Fixed `MathTools.distanceFromPointOnRay2D`**
  - **Fixed `MathTools.clamp`**
 
-### `Image.hx`
- 
- - **Added Bitwise operators `|`, `&` and `^`**
- - **Floating pixel operations are now safe** - Using out-of-bounds coordinates won't throw an error.
- - **Added `movePixel()`**, allows moving a pixel from inside the image to another position, while resetting the old position. variations:
-   - **`moveSafePixel()`**
-   - **`moveFloatingPixel()`**
- - **Fixed `Image.drawLine()` hanging in certain scenarios** 
- - **Fixed inaccuracies in Image's view implementation, off-by-one pixels bugs should be fixed**
- - **Fixed `getSafePixel()`, `setS`**
- - **Removed `fromColorByteArrayAndData()` Due to buggy behavior**
- - **Added `fromBytes()` and `toBytes()` for easier cross-frameworking**
 # 1.2.3
 
 ### `vision.ds`
 
  - **Added `ImageView.toString()`**
  - **Added `PixelFormat`** - Vision now supports importing/exporting differnt pixel formats! supports RGB, BGR and their different alpha position variants.
- - **Added multiple get & set methods to `ByteArray`:**
-    - `getUInt8()`
-    - `setUInt8()`
-    - `getInt8()`
-    - `setInt8()`
- - **Improved doc comment for private static field `Image.OFFSET`**
 
 ### `vision.tools`
 
