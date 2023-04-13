@@ -16,6 +16,7 @@
  - **Fixed `getSafePixel()`, `setS`**
  - **Removed `fromColorByteArrayAndData()` Due to buggy behavior**
  - **Added `fromBytes()` and `toBytes()` for easier cross-frameworking**
+ - **Optimized `from2DArray()` and `to2DArray()`**
  - **Improved doc comment for private static field `Image.OFFSET`**
 ### `vision.exceptions`
 

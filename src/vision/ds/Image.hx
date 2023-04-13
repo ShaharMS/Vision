@@ -1307,7 +1307,7 @@ abstract Image(ByteArray) {
 					final c = Math.sqrt(a * a - b * b);
 					final f1 = new Point2D(view.x + view.width / 2 - c, view.y + view.height / 2);
 					final f2 = new Point2D(view.x + view.width / 2 + c, view.y + view.height / 2);
-					final p = new Point2D(x, y);
+					final p = new IntPoint2D(x, y);
 					has = f1.distanceBetweenPoints(p) + f2.distanceBetweenPoints(p) <= view.width;
 					if (view.shape == ELLIPSE_INVERTED) has = !has;
 				} else if (view.height > view.width) {
@@ -1316,7 +1316,7 @@ abstract Image(ByteArray) {
 					final c = Math.sqrt(a * a - b * b);
 					final f1 = new Point2D(view.x + view.width / 2, view.y + view.height / 2 - c);
 					final f2 = new Point2D(view.x + view.width / 2, view.y + view.height / 2 + c);
-					final p = new Point2D(x, y);
+					final p = new IntPoint2D(x, y);
 					has = f1.distanceBetweenPoints(p) + f2.distanceBetweenPoints(p) <= view.height;
 					if (view.shape == ELLIPSE_INVERTED) has = !has;
 				} else {
@@ -1430,65 +1430,93 @@ abstract Image(ByteArray) {
 	// Other From/Tos
 	//--------------------------------------------------------------------------
 
+	/**
+		Takes a 2D array of colors, and returns an image `array[0].length` pixels wide and `array.length` pixels tall.
+
+		The array is not altered.
+
+		@param array the 2-dimensional color array. Make sure `array[0]`'s length is your desired image width.
+		@return a new `Image`
+	**/
 	@:from public static inline function from2DArray(array:Array<Array<Color>>):Image {
-		var maxLength = 0;
-		for (arr in array) {
-			if (arr.length > maxLength)
-				maxLength = arr.length;
+
+		var h = array.length;
+		var w = array[0].length;
+
+		var byteArray:ByteArray = new ByteArray(w * h * 4 + OFFSET);
+		var flat = array.flatten();
+		for (i in 0...flat.length) {
+			var color = flat[i];
+			byteArray[OFFSET + i * 4] 	  = color.alpha;
+			byteArray[OFFSET + i * 4 + 1] = color.red;
+			byteArray[OFFSET + i * 4 + 2] = color.green;
+			byteArray[OFFSET + i * 4 + 3] = color.blue;
 		}
 
-		var image = new Image(array.length, maxLength);
-		for (x in 0...array.length) {
-			for (y in 0...array[x].length) {
-				image.setPixel(x, y, array[x][y]);
-			}
-		}
+		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (0, w);
+		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES, 0);
+		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
+		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
+		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
+		byteArray.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
 
-		return image;
+		return cast ByteArray;
 	}
 
+	/**
+		Returns a new, 2-dimensional array, with each cell containing the pixel on the image at it's indices (`array[x][y]` = `image.getPixel(x, y)`)
+		@return a 2D array of colors.
+	**/
 	@:to public inline function to2DArray():Array<Array<Color>> {
 		var arr = [];
 		for (i in 0...height) {
 			arr[i] = [];
 			for (j in 0...width) {
-				arr[i][j] = getPixel(j, i);
+				arr[i][j] = getUnsafePixel(j, i);
 			}
 		}
 
 		return arr;
 	}
 
+	/**
+		Takes a `ByteArray`/`haxe.io.Bytes` instance and some stats, and returns a new image instance
+		that correctly represents the colors inside `bytes` at the given size
+		@param bytes The byte array to be used. **Make it's color format is `ARGB`.** if it isn't, use `PixelFormat.convertPixelFormat(bytes, fromFormat, ARGB)`
+		@param width The width of the returned image.
+		@param height Optional, the height of the returned image. determined automatically, but overridable by setting this parameter
+	**/
 	public static inline function fromBytes(bytes:ByteArray, width:Int, ?height:Int) {
 		var h = height != null ? height : (bytes.length / 4 / width).ceil();
 		var array = new ByteArray(width * h * 4 + OFFSET);
-		#if vision_higher_width_cap
-		array.setInt32(0, width);
-		array.setInt32(WIDTH_BYTES, 0);
-		array.setInt32(WIDTH_BYTES + DATA_GAP, 0);
-		array.setInt32(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		array.setInt32(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
+		array.fill(0, array.length, 0);
+		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (0, width);
+		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES, 0);
+		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
+		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
+		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
 		array.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-		#else
-		array.setUInt16(0, width);
-		array.setUInt16(WIDTH_BYTES, 0);
-		array.setUInt16(WIDTH_BYTES + DATA_GAP, 0);
-		array.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES, width);
-		array.setUInt16(WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, height);
-		array.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-		#end
 
-		array.blit(OFFSET - 1, bytes, 0, bytes.length);
+		array.blit(OFFSET, bytes, 0, bytes.length);
 
 		return cast array;
 	}
 
+	/**
+		Returns a `ByteArray` of format `ARGB` of the pixels of this image.
+		@return A new `ByteArray`
+	**/
 	@:to overload public extern inline function toBytes():ByteArray {
-		return underlying.sub(OFFSET - 1, underlying.length - OFFSET);
+		return underlying.sub(OFFSET, underlying.length - OFFSET);
 	}
 
-	overload public extern inline function toBytes(?format:PixelFormat = ARGB) {
-		return inline PixelFormat.convertPixelFormat(underlying.sub(OFFSET - 1, underlying.length - OFFSET), ARGB, format);
+	/**
+		Returns a `ByteArray` of format `colorFormat` of the pixels of this image.
+		@param colorFormat The wanted color format of the returned `ByteArray`.
+		@return A new `ByteArray`
+	**/
+	overload public extern inline function toBytes(?colorFormat:PixelFormat = ARGB) {
+		return inline PixelFormat.convertPixelFormat(underlying.sub(OFFSET, underlying.length - OFFSET), ARGB, colorFormat);
 	}
 
 	//--------------------------------------------------------------------------
