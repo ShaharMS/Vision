@@ -3,16 +3,25 @@ package vision.ds;
 import vision.exceptions.VisionException;
 
 enum abstract PixelFormat(Int) from Int to Int {
-    var ARGB;
-    var RGBA;
-    var ABGR;
-    var BGRA;
-    var RGB;
-    var BGR;
+    /** 0xAARRGGBB **/ var ARGB;
+    /** 0xRRGGBBAA **/ var RGBA;
+    /** 0xAABBGGRR **/ var ABGR;
+    /** 0xBBGGRRAA **/ var BGRA;
+    /** 0x00RRGGBB **/ var RGB;
+    /** 0x00BBGGRR **/ var BGR;
 
 
 
-    public static function convertPixelFormat(bytes:ByteArray, from:PixelFormat, ?to:PixelFormat = ARGB) {
+    /**
+        Takes bytes of pixel format `from`, and turns them into bytes of pixel format `to`.
+        @param bytes the bytes to manipulate
+        @param from the current pixel format
+        @param to the desired pixel format
+
+        @returns the same, manipulated, pixel format
+        @throws UnknownPixelFormat if either `to` or `from` are invalid.
+    **/
+    public static function convertPixelFormat(bytes:ByteArray, from:PixelFormat, ?to:PixelFormat = ARGB):ByteArray {
 
         if (from == to) return bytes;
 

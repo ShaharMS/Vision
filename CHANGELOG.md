@@ -34,22 +34,25 @@
     - `getInt8()`
     - `setInt8()`
  - **Added `Line2D.intersect()`** 
+ - **Added `Line2D.distanceTo()`** 
+ - **Added `Eay2D.distanceTo()`** 
 
 ### `vision.algorithms`
 
  - **Fixed Bilinear interpolation failing with some aspect ratios**
- - **Added `Gaussian.create2DKernalOfSize`**
- - **Added `Gaussian.create1DKernalOfSize`**
- - **Added `Gaussian.fastBlur`, Optimized Version of `Vision.gaussianBlur`. More Bare-Bones**
- - **Deprecated `Gaussian.createXxXKernal` Functions**
- - **Deprecated `Gaussian.createKernalOfSize` in favour of `Gaussian.create2DKernalOfSize`**
+ - **Added `Gaussian.create2DKernalOfSize()`**
+ - **Added `Gaussian.create1DKernalOfSize()`**
+ - **Added `Gaussian.fastBlur`, Optimized Version of `Vision.gaussianBlur()`. More Bare-Bones**
+ - **Deprecated `Gaussian.createXxXKernal()` Functions**
+ - **Deprecated `Gaussian.createKernalOfSize()` in favor of `Gaussian.create2DKernalOfSize()`**
 
 ### `vision.tools`
 
- - **Added `MathTools.isBetweenRange`**
- - **Added `MathTools.getClosestPointOnRay2D`**
- - **Fixed `MathTools.distanceFromPointOnRay2D`**
- - **Fixed `MathTools.clamp`**
+ - **Added `MathTools.isBetweenRange()`**
+ - **Added `MathTools.getClosestPointOnRay2D()`**
+ - **Added `MathTools.distanceBetweenRays2D()`**
+ - **Fixed `MathTools.distanceFromPointOnRay2D()`**
+ - **Fixed `MathTools.clamp()`**
 
 # 1.2.3
 

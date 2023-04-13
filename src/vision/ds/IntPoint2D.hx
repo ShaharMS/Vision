@@ -1,8 +1,5 @@
 package vision.ds;
 
-import haxe.Int32;
-import haxe.Int64;
-import haxe.ds.Vector;
 import vision.ds.Point2D;
 
 #if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)

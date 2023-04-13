@@ -173,7 +173,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	**/
 	public var lightness(get, set):Float;
 
-	static var COLOR_REGEX = ~/^(0x|#)(([A-F0-9]{2}){3,4})$/i;
+	static var COLOR_REGEX:EReg = ~/^(0x|#)(([A-F0-9]{2}){3,4})$/i;
 
 	/**
 		Create a color from the least significant four bytes of an `Int`
@@ -330,7 +330,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Color1 The color to shift from
 		@param Color2 The color to shift to
 		@param Steps How many colors the gradient should have
-		@param Ease An optional easing function, such as those provided in FlxEase
+		@param Ease An optional easing function.
 		@return An array of colors of length Steps, shifting from Color1 to Color2
 	**/
 	public static function gradient(Color1:Color, Color2:Color, Steps:Int, ?Ease:Float->Float):Array<Color> {

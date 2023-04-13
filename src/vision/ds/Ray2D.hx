@@ -96,7 +96,17 @@ class Ray2D {
 		return MathTools.intersectionBetweenRay2Ds(this, ray);
 	}
 
+	/**
+		Gets the distance between `this` and `ray`.
 
+		If `this` and `ray` intersect, `0` is returned.
+
+		@param line The second line to intersect with
+		@return A `Float` representing the distance. `0` if `this` and `ray` intersect
+	**/
+	public function distanceTo(ray:Ray2D):Float {
+		return MathTools.distanceBetweenRays2D(this, ray);
+	}
 
 
 	inline function set_slope(value:Float):Float {

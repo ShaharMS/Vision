@@ -66,6 +66,13 @@ class MathTools {
 		return result;
 	}
 
+	public static inline function distanceBetweenRays2D(ray:Ray2D, ray2:Ray2D):Float {
+		if (ray.radians != ray2.radians) return 0;
+		final point = ray.point; // some point on the ray
+		final intersectionOfPerpendicularWithRay2 = intersectionBetweenRay2Ds(ray2, new Ray2D(point, null, ray.degrees + 90)); // baiscally, calculates the intersection between ray2 and the perpendicular to ray.
+		return distanceBetweenPoints(point, intersectionOfPerpendicularWithRay2); // this would be the shortest distance, since the perpendicular between two parallel lines is always the shortest line between them.
+	}
+
 	/**
 	 * Gets the point on `ray` , which is `distance` points away
 	 * from `startXPos`.

@@ -103,7 +103,21 @@ class Queue<T> {
 	}
 
 	/**
-		Returns a `String` representation of this `Queue`.
+		Returns a `String` representation of this `Queue`, for example:
+
+		```haxe
+		var queue = new Queue<Int>();
+		queue.enqueue(5);
+		queue.enqueue(7);
+		queue.enqueue(4);
+		trace(queue.toString());
+		```
+		
+		Outputs:
+
+		```txt
+		[4 -> 7 -> 5]
+		```
 	**/
 	public function toString():String {
 		var s = "[";
