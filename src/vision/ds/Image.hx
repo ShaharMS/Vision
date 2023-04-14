@@ -1460,7 +1460,7 @@ abstract Image(ByteArray) {
 		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
 		byteArray.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
 
-		return cast ByteArray;
+		return cast byteArray;
 	}
 
 	/**
