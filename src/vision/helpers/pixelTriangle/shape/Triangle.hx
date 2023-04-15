@@ -51,7 +51,7 @@ inline function fillTriangleUnsafe(image:Image, ax:Float, ay:Float, bx:Float, by
 	final tx = ay - by;
 	final ty = bx - ax;
 	final A = -by * cx + ay * (-bx + cx) + ax * (by - cy) + bx * cy;
-	finak yIter3:IteratorRange = boundIterator3(ay, by, cy);
+	final yIter3:IteratorRange = boundIterator3(ay, by, cy);
 	var foundY:Bool = false;
 	var s = 0.;
 	var t = 0.;

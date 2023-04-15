@@ -1,6 +1,8 @@
 package vision.ds;
 
+import vision.tools.MathTools;
 import vision.ds.Point2D;
+import haxe.Int64;
 
 #if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 private typedef Impl = haxe.Int64;
@@ -94,5 +96,17 @@ abstract IntPoint2D(Impl) {
 	**/
 	public inline function copy() {
 		return new IntPoint2D(x, y);
+	}
+
+	/**
+		Gets the distance between `this` and `point`.
+
+		If `this` and `point` are haxe the same `x` & `y` position, `0` is returned.
+
+		@param point The second point to calculate the distance to
+		@return A `Float` representing the distance. `0` if `this` and `point` are congruent.
+	**/
+	public inline function distanceTo(point:IntPoint2D):Float {
+		return MathTools.distanceBetweenPoints(cast this, point);
 	}
 }

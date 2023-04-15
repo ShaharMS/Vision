@@ -1,5 +1,6 @@
 package vision.algorithms;
 
+import vision.helpers.pixelTriangle.shape.Quad.quadFill;
 import vision.tools.MathTools;
 import vision.ds.Int16Point2D;
 import vision.ds.Line2D;
@@ -102,6 +103,7 @@ class SimpleLineDetector {
 	}
 
 	public static function correctLines(lines:Array<Line2D>, distanceThreshold:Float = 3, degError:Float = 7):Array<Line2D> {
+		trace('Original line Count: ${lines.length}');
 		var filteredLines:Array<Line2D> = [];
 
 		// Were going to use a series of filters:
@@ -128,9 +130,10 @@ class SimpleLineDetector {
 		}
 
 		lines = lines.filter(l -> l != null);
+		trace('First pass: ${lines.length}');
+
 
 		// Second: folowing lines: if A's end/start is close to B's start/end, and A is only `degError` degrees acuter/obtuser than B, A and B should be combined.
-		/*
 		for (i in 0...lines.length) {
 			var base = lines[i];
 			if (base == null) continue;
@@ -139,32 +142,39 @@ class SimpleLineDetector {
 				if (i == j) continue;
 				var candidate = lines[j];
 				if (candidate == null) continue;
-				if (MathTools.distanceBetweenLines2D(base, candidate) > distanceThreshold) continue;
 				if (Math.abs(candidate.degrees - base.degrees) > degError) continue;
-				var maxDist = MathTools.maxFloat( MathTools.distanceBetweenPoints(candidate.start, base.start), 
-										MathTools.distanceBetweenPoints(candidate.start, base.end),
-										MathTools.distanceBetweenPoints(candidate.end, base.start),
-										MathTools.distanceBetweenPoints(candidate.end, base.end));
-				if (MathTools.distanceBetweenPoints(candidate.start, base.start) == maxDist) {
-					lines[i] = new Line2D(candidate.start, base.start);
-					if (Math.abs(lines[i].degrees - base.degrees) > degError) {lines[i] = base; continue;}
+				if (MathTools.distanceBetweenLines2D(base, candidate) > distanceThreshold) continue;
+				var baseR, baseL;
+				if (base.start.x >= base.end.x) {
+					baseR = base.start;
+					baseL = base.end;
+				} else {
+					baseL = base.start;
+					baseR = base.end;
+				}
+				var candidateR, candidateL;
+				if (candidate.start.x >= candidate.end.x) {
+					candidateR = candidate.start;
+					candidateL = candidate.end;
+				} else {
+					candidateL = candidate.start;
+					candidateR = candidate.end;
+				}
+
+				if (baseL.distanceTo(candidateR) <= distanceThreshold) {
+					lines[i] = new Line2D(baseR, candidateL);
 					lines[j] = null;
-				} else if (MathTools.distanceBetweenPoints(candidate.end, base.start) == maxDist) {
-					lines[i] = new Line2D(candidate.end, base.start);
-					if (Math.abs(lines[i].degrees - base.degrees) > degError) {lines[i] = base; continue;}
+					continue;
+				}
+				if (baseR.distanceTo(candidateL) <= distanceThreshold) {
+					lines[i] = new Line2D(baseL, candidateR);
 					lines[j] = null;
-				} else if (MathTools.distanceBetweenPoints(candidate.start, base.end) == maxDist) {
-					lines[i] = new Line2D(candidate.start, base.end);
-					if (Math.abs(lines[i].degrees - base.degrees) > degError) {lines[i] = base; continue;}
-					lines[j] = null;
-				} else if (MathTools.distanceBetweenPoints(candidate.end, base.end) == maxDist) {
-					lines[i] = new Line2D(candidate.end, base.end);
-					if (Math.abs(lines[i].degrees - base.degrees) > degError) {lines[i] = base; continue;}
-					lines[j] = null;
+					continue;
 				}
 			}
 		}
-		*/
+		lines = lines.filter(l -> l != null);
+		trace('Second pass: ${lines.length}');
 		return lines;
 	}
 

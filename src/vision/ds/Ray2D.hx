@@ -101,7 +101,7 @@ class Ray2D {
 
 		If `this` and `ray` intersect, `0` is returned.
 
-		@param line The second line to intersect with
+		@param ray The second ray to calculate the distance to
 		@return A `Float` representing the distance. `0` if `this` and `ray` intersect
 	**/
 	public function distanceTo(ray:Ray2D):Float {

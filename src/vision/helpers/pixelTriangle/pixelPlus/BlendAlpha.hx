@@ -18,7 +18,7 @@
 	SOFTWARE.
  */
 
-package vision.heplers.pixelTriangle.pixelPlus;
+package vision.helpers.pixelTriangle.pixelPlus;
 
 import vision.ds.Image;
 import vision.ds.Color;

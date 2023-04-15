@@ -76,7 +76,7 @@ class Line2D {
 
 		If `this` and `line` intersect, `0` is returned.
 
-		@param line The second line to intersect with
+		@param line The second line to calculate the distance to
 		@return A `Float` representing the distance. `0` if `this` and `line` intersect
 	**/
 	public function distanceTo(line:Line2D):Float {

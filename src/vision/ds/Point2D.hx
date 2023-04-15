@@ -1,5 +1,7 @@
 package vision.ds;
 
+import vision.tools.MathTools;
+
 @:structInit
 class Point2D {
 	/**
@@ -28,7 +30,7 @@ class Point2D {
 	/**
 		Returns a `String` representations of this `Point2D`.
 	**/
-	public inline function toString() {
+	public inline function toString():String {
 		return '($x, $y)';
 	}
 
@@ -37,5 +39,17 @@ class Point2D {
 	**/
 	public inline function copy():Point2D {
 		return {x: x, y: y};
+	}
+
+	/**
+		Gets the distance between `this` and `point`.
+
+		If `this` and `point` are haxe the same `x` & `y` position, `0` is returned.
+
+		@param point The second point to calculate the distance to
+		@return A `Float` representing the distance. `0` if `this` and `point` are congruent.
+	**/
+	public inline function distanceTo(point:Point2D):Float {
+		return MathTools.distanceBetweenPoints(this, point);
 	}
 }
