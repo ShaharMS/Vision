@@ -64,8 +64,8 @@ class Line2D {
 
 		If `this` and `line` don't intersect, `null` is returned.
 
-		@param line The second line to intersect with
-		@return A `Point2D` instance, `null` if `this` and `line` don't intersect
+		@param line The second line to intersect with.
+		@return A `Point2D` instance, `null` if `this` and `line` don't intersect.
 	**/
 	public function intersect(line:Line2D):Point2D {
 		return MathTools.intersectionBetweenLine2Ds(this, line);		
@@ -76,8 +76,8 @@ class Line2D {
 
 		If `this` and `line` intersect, `0` is returned.
 
-		@param line The second line to calculate the distance to
-		@return A `Float` representing the distance. `0` if `this` and `line` intersect
+		@param line The second line to calculate the distance to.
+		@return A `Float` representing the distance. `0` if `this` and `line` intersect.
 	**/
 	public function distanceTo(line:Line2D):Float {
 		return MathTools.distanceBetweenLines2D(this, line);

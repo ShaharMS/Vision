@@ -101,12 +101,12 @@ abstract IntPoint2D(Impl) {
 	/**
 		Gets the distance between `this` and `point`.
 
-		If `this` and `point` are haxe the same `x` & `y` position, `0` is returned.
+		If `this` and `point` are have the same `x` & `y` position, `0` is returned.
 
 		@param point The second point to calculate the distance to
 		@return A `Float` representing the distance. `0` if `this` and `point` are congruent.
 	**/
 	public inline function distanceTo(point:IntPoint2D):Float {
-		return MathTools.distanceBetweenPoints(cast this, point);
+		return Math.sqrt(Math.pow(x - point.x, 2) + Math.pow(y - point.y, 2));
 	}
 }

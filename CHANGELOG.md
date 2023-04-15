@@ -1,3 +1,14 @@
+# 1.3.1
+
+### `vision.algorithms`
+
+ - **Improved `SimpleLineDetector`'s line filtering, reporting should be a bit better**
+
+### `vision.ds`
+
+ - **Fixed documentation on some classes**
+ - **Fixed compile error on `c++`, `cppia` & `c#`**
+ - **Added `distanceTo()` method to `Point2D` & `IntPoint2D`**
 # 1.3.0
 
 

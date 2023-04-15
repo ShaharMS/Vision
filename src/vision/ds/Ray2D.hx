@@ -64,6 +64,9 @@ class Ray2D {
 
 	/**
 		Constructs a `Ray2D` from 2 `Point2D`s
+
+		@param point1 First reference point, will be stored in the returned `Ray2D`'s `point` field.
+		@param point2 Second reference point, used to calculate the slope of the ray.
 	**/
 	public static inline function from2Points(point1:Point2D, point2:Point2D) {
 		var s = (point2.y - point1.y) / (point2.x - point1.x);
@@ -87,10 +90,10 @@ class Ray2D {
 	/**
 		Gets the intersection point between `this` and `ray`.
 
-		If `this` and `ray` don't intersect, `null` is returned.
+		If `this` and `ray` are parallel, `null` is returned.
 
-		@param ray The second ray to intersect with
-		@return A `Point2D` instance, `null` if `this` and `ray` don't intersect
+		@param ray The second ray to intersect with.
+		@return A `Point2D` instance, `null` if `this` and `ray` are parallel.
 	**/
 	public inline function intersect(ray:Ray2D):Point2D {
 		return MathTools.intersectionBetweenRay2Ds(this, ray);
@@ -101,8 +104,8 @@ class Ray2D {
 
 		If `this` and `ray` intersect, `0` is returned.
 
-		@param ray The second ray to calculate the distance to
-		@return A `Float` representing the distance. `0` if `this` and `ray` intersect
+		@param ray The second ray to calculate the distance to.
+		@return A `Float` representing the distance. `0` if `this` and `ray` intersect.
 	**/
 	public function distanceTo(ray:Ray2D):Float {
 		return MathTools.distanceBetweenRays2D(this, ray);

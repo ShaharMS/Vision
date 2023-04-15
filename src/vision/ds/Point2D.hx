@@ -44,7 +44,7 @@ class Point2D {
 	/**
 		Gets the distance between `this` and `point`.
 
-		If `this` and `point` are haxe the same `x` & `y` position, `0` is returned.
+		If `this` and `point` are have the same `x` & `y` position, `0` is returned.
 
 		@param point The second point to calculate the distance to
 		@return A `Float` representing the distance. `0` if `this` and `point` are congruent.

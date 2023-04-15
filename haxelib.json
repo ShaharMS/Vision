@@ -1,10 +1,10 @@
 {
     "name": "vision",
     "license": "MIT",
-    "version": "1.3.0",   
+    "version": "1.3.1",   
     "description": "Vision is a simple, powerful and flexible computer vision & image processing library for Haxe.",
     "contributors": ["ShaharMS"],
-    "releasenote": "Just a bunch of fix-arounds :) check out the changelog for more information.",
+    "releasenote": "Even more fixes...",
     "tags": ["cv", "computer-vision", "im", "image-manipulation", "cross", "cross-framework", "image", "image-processing", "ip", "feature-detection"],
     "classPath": "src",
     "dependencies": {},
