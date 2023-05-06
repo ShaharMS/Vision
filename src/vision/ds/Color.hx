@@ -205,7 +205,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Value	The channel value of the red, green & blue channels of the color
 		@return The color as a Color
 	**/
-	public static inline function from8Bit(Value:Int) {
+	public static inline function from8Bit(Value:Int):Color {
 		var color = new Color();
 		return color.setRGBA(Value, Value, Value, 1);
 	}
@@ -351,12 +351,11 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 
 	/**
 		Generate a random color, with randomized red, green, blue and optionally alpha values.
-
-		@param alphaLock When set to `false`, the alpha channel will get a randomized value to. `true` by default, which makes a color with `alpha = 255`.
-		@param alphaValue When `alphaLock` is true, you can provide this value to override the default alpha value. Since the first argument is optional, you can do `Color.makeRandom(128)` (a random color with `alpha` set to `128`)	
+		
+		@param alphaValue When it's `null`, the alpha value will be a random value, if not, the alpha value will be this param's value. Example: `Color.makeRandom(128)` (a random color with `alpha` set to `128`)	
 	**/
-	public static inline function makeRandom(?alphaLock:Bool = true, alphaValue:Int = 255) {
-		return Color.fromRGBAFloat(Math.random(), Math.random(), Math.random(), if (alphaLock) alphaValue else Math.random());
+	public static inline function makeRandom(alphaValue:Null<Int> = null):Color {
+		return Color.fromRGBAFloat(Math.random(), Math.random(), Math.random(), alphaValue == null ? Math.random() : alphaValue);
 	}
 
 	/**
@@ -517,34 +516,34 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	/**
 		Set RGB values as integers (0 to 255)
 
-		@param Red	The red value of the color from 0 to 255
-		@param Green	The green value of the color from 0 to 255
-		@param Blue	The green value of the color from 0 to 255
-		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
+		@param Red	The red value of the color from 0 to 255. If it's `-1`, this param will not change.
+		@param Green	The green value of the color from 0 to 255. If it's `-1`, this param will not change.
+		@param Blue	The green value of the color from 0 to 255. If it's `-1`, this param will not change.
+		@param Alpha	How opaque the color should be, from 0 to 255, default is 255. If it's `-1`, `this`'s alpha will not change.
 		@return This color
 	**/
-	public inline function setRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color {
-		red = Red;
-		green = Green;
-		blue = Blue;
-		alpha = Alpha;
+	public inline function setRGBA(Red:Int = -1, Green:Int = -1, Blue:Int = -1, Alpha:Int = -1):Color {
+		red = Red < 0 ? red : Red;
+		green = Green < 0 ? green : Green;
+		blue = Blue < 0 ? blue : Blue;
+		alpha = Alpha < 0 ? alpha : Alpha;
 		return this;
 	}
 
 	/**
 		Set RGB values as floats (0 to 1)
 
-		@param Red	The red value of the color from 0 to 1
-		@param Green	The green value of the color from 0 to 1
-		@param Blue	The green value of the color from 0 to 1
-		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
+		@param Red	The red value of the color from 0 to 1. If it's `-1`, this param will not change.
+		@param Green	The green value of the color from 0 to 1. If it's `-1`, this param will not change.
+		@param Blue	The green value of the color from 0 to 1. If it's `-1`, this param will not change.
+		@param Alpha	How opaque the color should be, from 0 to 1. If it's `-1`, this param will not change. Default is -1
 		@return This color
 	**/
-	public inline function setRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color {
-		redFloat = Red;
-		greenFloat = Green;
-		blueFloat = Blue;
-		alphaFloat = Alpha;
+	public inline function setRGBAFloat(Red:Float = -1, Green:Float = -1, Blue:Float = -1, Alpha:Float = -1):Color {
+		redFloat = Red < 0 ? redFloat : Red;
+		greenFloat = Green < 0 ? greenFloat : Green;
+		blueFloat = Blue < 0 ? blueFloat : Blue;
+		alphaFloat = Alpha < 0 ? alphaFloat : Alpha;
 		return this;
 	}
 
