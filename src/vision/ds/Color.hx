@@ -458,7 +458,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Return a 24 bit version of this color (i.e. without an alpha value)
+		Returns a 24 bit version of this color (i.e. without an alpha value)
 
 		@return A 24 bit version of this color
 	**/
@@ -467,7 +467,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Return a String representation of the color in the format
+		Returns a String representation of the color in the format
 
 		@param Alpha Whether to include the alpha value in the hes string
 		@param Prefix Whether to include "0x" prefix at start of string
@@ -479,7 +479,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Return a String representation of the color in the format #RRGGBB
+		Returns a String representation of the color in the format #RRGGBB
 
 		@return	A string of length 7 in the format #RRGGBB
 	**/
@@ -488,7 +488,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Get a darkened version of this color
+		Gets a darkened version of this color
 
 		@param	Factor Value from 0 to 1 of how much to progress toward black.
 		@return 	A darkened version of this color
@@ -501,7 +501,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Get a lightened version of this color
+		Gets a lightened version of this color
 
 		@param	Factor Value from 0 to 1 of how much to progress toward white.
 		@return 	A lightened version of this color
@@ -514,7 +514,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Get the inversion of this color
+		Gets the inversion of this color
 
 		@return The inversion of this color
 	**/
@@ -526,7 +526,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Set RGB values as integers (0 to 255)
+		Sets RGB values as integers (0 to 255)
 
 		@param Red	The red value of the color from 0 to 255. If it's `-1`, this param will not change.
 		@param Green	The green value of the color from 0 to 255. If it's `-1`, this param will not change.

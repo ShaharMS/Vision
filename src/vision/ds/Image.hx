@@ -337,7 +337,7 @@ abstract Image(ByteArray) {
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
 		@param color The color to set the pixel to. Pay attention to the alpha value.
-		@throws OutOfBounds if the coordinates are outside the bounds of the image.
+		@throws OutOfBounds If the coordinates are outside the bounds of the image.
 	**/
 	public inline function paintPixel(x:Int, y:Int, color:Color) {
 		if (x < 0 || x >= width || y < 0 || y >= height) {
@@ -363,8 +363,7 @@ abstract Image(ByteArray) {
 			paintFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1), color);
 		} else if (x.isInt() && y.isInt()) {
 			paintPixel(x.floor(), y.floor(), color);
-		} else {
-			
+		} else {			
 			final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
 
 			// (0, 0) strength: (1 - xFraction, 1 - yFraction)
@@ -377,7 +376,7 @@ abstract Image(ByteArray) {
 				for (posY in [0, 1]) {
 					if (posY == 1 && y == iy) continue;
 					var oldColor = getPixel(ix + posX, iy + posY);
-					color.alphaFloat = ((if (posX == 0) 1 - xFraction else xFraction) + (if (posY == 0) 1 - yFraction else yFraction)) / 2;
+					color.alphaFloat = ((posX == 0 ? 1 - xFraction : xFraction) + (posY == 0 ? 1 - yFraction : yFraction)) / 2;
 					var newColor = Color.fromRGBAFloat(
 						color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
 						color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat), 
@@ -387,7 +386,6 @@ abstract Image(ByteArray) {
 					setPixel(ix + posX, iy + posY, newColor);
 				}
 			}
-			
 		}
 	}
 
@@ -405,7 +403,6 @@ abstract Image(ByteArray) {
 			oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat
 		);
 		setUnsafePixel(x, y, newColor);
-		
 	}
 
 	//--------------------------------------------------------------------------
@@ -420,7 +417,7 @@ abstract Image(ByteArray) {
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
 
-		@return True if the coordinates are within the bounds of the image.
+		@return `true` if the coordinates are within the bounds of the image.
 	**/
 	public inline function hasPixel(x:Int, y:Int):Bool {
 		return (x >= 0 && y >= 0 && x < width && y < height);
@@ -439,9 +436,11 @@ abstract Image(ByteArray) {
 		@param fromY The y-coordinate of the pixel to move.
 		@param toX The x-coordinate of the pixel to set to the color of `(fromX, fromY)` to.
 		@param toY The y-coordinate of the pixel to set to the color of `(fromX, fromY)` to.
-		@param oldPixelResetColor After moving the pixel, the color of the pixel at `(fromX, fromY)` resets to `0x00000000`. To change that color, set this parameter
+		@param oldPixelResetColor moving the pixel, the color of the pixel at `(fromX, fromY)` resets to `0x00000000`. To change that color, set this parameter
+
+		@throws OutOfBounds If one of the given coordinates are outside the bounds of `this` image.
 	**/
-	public function movePixel(fromX:Int, fromY:Int, toX:Int, toY:Int, oldPixelResetColor:Color) {
+	public function movePixel(fromX:Int, fromY:Int, toX:Int, toY:Int, oldPixelResetColor:Color = Color.TRANSPARENT) {
 		setPixel(toX, toY, getPixel(fromX, fromY));
 		setPixel(fromX, fromY, oldPixelResetColor);
 	}
@@ -498,13 +497,13 @@ abstract Image(ByteArray) {
 	}
 
 	/**
-		Copies a pixel from the given image to this image.
+		Copies a pixel from the given image to `this` image.
 
 		@param image The image to copy the pixel to.
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
 
-		@throws OutOfBounds if the given coordinates are outside the bounds of one or both of the images
+		@throws OutOfBounds If the given coordinates are outside the bounds of one or both of the images
 		@return The color of the pixel at the given coordinates.
 	**/
 	public inline function copyPixelTo(image:Image, x:Int, y:Int):Color {
@@ -516,7 +515,7 @@ abstract Image(ByteArray) {
 
 		@param rect The rectangle specifying the portion of the image to return.
 
-		@throws OutOfBounds if the portion of the image to get is outside the bounds of the original image.
+		@throws OutOfBounds If the portion of the image to get is outside the bounds of the original image.
 		@return A new image containing the specified portion of the original image.
 	**/
 	public inline function getImagePortion(rect:Rectangle):Image {
@@ -535,7 +534,7 @@ abstract Image(ByteArray) {
 		@param rect The rectangle specifying the portion of the image to set.
 		@param image The image to set the portion of the image to.
 
-		@throws OutOfBounds if the portion of the image to set is outside the bounds of the original image.
+		@throws OutOfBounds If the portion of the image to set is outside the bounds of the original image.
 	**/
 	public inline function setImagePortion(rect:Rectangle, image:Image) {
 		for (x in rect.x...rect.x + rect.width) {
