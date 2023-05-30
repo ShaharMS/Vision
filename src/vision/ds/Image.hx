@@ -154,6 +154,16 @@ abstract Image(ByteArray) {
 
 
 
+	#if vision_quiet
+	/**
+		Gets the color of the pixel at the given coordinates.
+
+		@param x The x coordinate of the pixel.
+		@param y The y coordinate of the pixel.
+
+		@return The color of the pixel at the given coordinates.
+	**/
+	#else
 	/**
 		Gets the color of the pixel at the given coordinates.
 
@@ -163,12 +173,13 @@ abstract Image(ByteArray) {
 		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 		@return The color of the pixel at the given coordinates.
 	**/
+	#end
 	public inline function getPixel(x:Int, y:Int):Color {
 		if (!hasPixel(x, y)) {
-			#if !vision_quiet
-			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
-			#else
+			#if vision_quiet
 			return getSafePixel(x, y);
+			#else
+			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
 			#end
 		}
 		return getColorFromStartingBytePos((y * width + x) * 4);
@@ -239,7 +250,6 @@ abstract Image(ByteArray) {
 		@return The color of the pixel at the given coordinates.
 	**/
 	public inline function getFloatingPixel(x:Float, y:Float):Color {
-
 		if (!hasPixel(Math.ceil(x), Math.ceil(y))) return getFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1));
 		final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
 		final red =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).red) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).red));
@@ -252,11 +262,15 @@ abstract Image(ByteArray) {
 	
 
 	//--------------------------------------------------------------------------
-	// Setters
-	//--------------------------------------------------------------------------
+	#if vision_quiet
+	/**
+		Sets the color of the pixel at the given coordinates.
 
-
-
+		@param x The x coordinate of the pixel.
+		@param y The y coordinate of the pixel.
+		@param color The color to set the pixel to.
+	**/
+	#else
 	/**
 		Sets the color of the pixel at the given coordinates.
 
@@ -266,10 +280,10 @@ abstract Image(ByteArray) {
 
 		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 	**/
+	#end
 	public inline function setPixel(x:Int, y:Int, color:Color) {
 		if (!hasPixel(x, y)) {
-			#if vision_quiet
-			#else
+			#if !vision_quiet
 			throw new OutOfBounds(cast this, new IntPoint2D(x, y));
 			#end
 		} else {
@@ -284,20 +298,40 @@ abstract Image(ByteArray) {
 		
 	}
 
-	public inline function setSafePixel(x:Int, y:Int, color:Color) {
-		x = x.clamp(0, width - 1);
-		y = y.clamp(0, height - 1);
+	/**
+		Sets the color of the pixel at the given coordinates. This operation is safe.
+
+		@param x The x coordinate of the pixel.
+		@param y The y coordinate of the pixel.
+		@param color The color to set the pixel to.
+		@param clamp In case the point is out of bounds, clamp it or not. If false and the point is out of bounds, this action will do nothing.
+	**/
+	public inline function setSafePixel(x:Int, y:Int, color:Color, clamp:Bool = true) {
+		if(clamp) {
+			x = x.clamp(0, width - 1);
+			y = y.clamp(0, height - 1);
+		}
 		if (hasView()) {
-			if (hasPixelInView(x, y)) {
+			if (hasPixelInView(x, y) && hasPixel(x, y)) {
 				setColorFromStartingBytePos((y * width + x) * 4, color);
 			}
 		} else {
-			setColorFromStartingBytePos((y * width + x) * 4, color);
+			if(hasPixel(x, y))
+				setColorFromStartingBytePos((y * width + x) * 4, color);
 		}
 	}
 
-	public inline function setFloatingPixel(x:Float, y:Float, color:Color) {
-		if (!hasPixel(Math.ceil(x), Math.ceil(y))) {
+	/**
+		Sets the color of the pixel at the given coordinates. This operation is safe, this will not throw an error.
+		This function does not care about the view.
+
+		@param x The x coordinate of the pixel.
+		@param y The y coordinate of the pixel.
+		@param color The color to set the pixel to.
+		@param clamp In case the point is out of bounds, clamp it or not. If false and the point is out of bounds, this action will do nothing.
+	**/
+	public inline function setFloatingPixel(x:Float, y:Float, color:Color, clamp:Bool = true) {
+		if (!hasPixel(Math.ceil(x), Math.ceil(y)) && clamp) {
 			setFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1), color);
 			return;
 		}
@@ -326,6 +360,7 @@ abstract Image(ByteArray) {
 
 
 
+	#if vision_quiet
 	/**
 		Sets the color of a pixel, but doesn't completely overwrite the pixel:
 
@@ -337,8 +372,23 @@ abstract Image(ByteArray) {
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.
 		@param color The color to set the pixel to. Pay attention to the alpha value.
+	**/
+	#else
+	/**
+		Sets the color of a pixel, but doesn't completely overwrite the pixel:
+
+		- if the color of the new pixel is the same as the old pixel, the old pixel is kept.
+		- if the alpha of the new pixel is 0, the old pixel is kept.
+		- if the alpha of the new pixel is 255, the new pixel is kept.
+		- if the alpha of the new pixel is between 0 and 255, the new pixel is blended with the old pixel.
+
+		@param x The x coordinate of the pixel.
+		@param y The y coordinate of the pixel.
+		@param color The color to set the pixel to. Pay attention to the alpha value.
+
 		@throws OutOfBounds if the coordinates are outside the bounds of the image.
 	**/
+	#end
 	public inline function paintPixel(x:Int, y:Int, color:Color) {
 		if (x < 0 || x >= width || y < 0 || y >= height) {
 			#if !vision_quiet
@@ -358,13 +408,27 @@ abstract Image(ByteArray) {
 		}
 	}
 
-	public inline function paintFloatingPixel(x:Float, y:Float, color:Color) {
-		if (x < 0 || x >= width || y < 0 || y >= height) {
+	/**
+		Sets the color of a pixel, but doesn''t completely overwrite the pixel:
+
+		- if the color of the new pixel is the same as the old pixel, the old pixel is kept.
+		- if the alpha of the new pixel is 0, the old pixel is kept.
+		- if the alpha of the new pixel is 255, the new pixel is kept.
+		- if the alpha of the new pixel is between 0 and 255, the new pixel is blended with the old pixel.
+
+		This operation is safe.
+
+		@param x The x coordinate of the pixel.
+		@param y The y coordinate of the pixel.
+		@param color The color to set the pixel to. Pay attention to the alpha value.
+		@param bound If it should bound the point if it's out of bounds.
+	**/
+	public inline function paintFloatingPixel(x:Float, y:Float, color:Color, bound:Bool = true) {
+		if ((x < 0 || x >= width || y < 0 || y >= height) && bound) {
 			paintFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1), color);
 		} else if (x.isInt() && y.isInt()) {
 			paintPixel(x.floor(), y.floor(), color);
 		} else {
-			
 			final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
 
 			// (0, 0) strength: (1 - xFraction, 1 - yFraction)
@@ -391,8 +455,11 @@ abstract Image(ByteArray) {
 		}
 	}
 
-	public inline function paintSafePixel(x:Int, y:Int, color:Int) {
-		paintPixel(x.clamp(0, width - 1), y.clamp(0, height - 1), color);
+	public inline function paintSafePixel(x:Int, y:Int, color:Int, clamp:Bool = true) {
+		if(clamp)
+			paintPixel(x.clamp(0, width - 1), y.clamp(0, height - 1), color);
+		else if(hasPixel(x, y))
+			paintPixel(x, y, color);
 	}
 
 	@:allow(vision)
@@ -405,7 +472,6 @@ abstract Image(ByteArray) {
 			oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat
 		);
 		setUnsafePixel(x, y, newColor);
-		
 	}
 
 	//--------------------------------------------------------------------------
