@@ -42,24 +42,95 @@ class ImageTools {
 	 */
 	public static var defaultResizeAlgorithm:ImageResizeAlgorithm = BilinearInterpolation;
 
+	#if sys
+	#if vision_quiet
 	/**
 		Gets an image from a file. 
 
-		the given path can be an absolute path or a relative path. a URL is valid too.  
+		The given path can be an absolute path or a relative path. a URL is valid too.  
 
-		**Note: On `sys` targets, this function requires the `format` library, and only supports PNG.**
+		**Note: This function requires the `format` library, and only supports PNG.**
 
 		To install:  
 		  
 		`haxelib install format`
 
-		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
-		@param path the path to the image file. On `js`, it can only be a relative path/a URL
+		@param image Optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
+		@param path The path to the image file.
 
-		@returns the image object.
-		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
+		@returns The image object. A new one if `image` is null.
+	**/
+	#else
+	/**
+		Gets an image from a file. 
+
+		The given path can be an absolute path or a relative path. a URL is valid too.  
+
+		**Note: This function requires the `format` library, and only supports PNG.**
+
+		To install:  
+		  
+		`haxelib install format`
+
+		@param image Optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
+		@param path The path to the image file.
+
+		@returns The image object. A new one if `image` is null.
+		@throws LibraryRequired Thrown when used without installing & including `format`
 		@throws ImageLoadingFailed Thrown when trying to load a corrupted file.
 	**/
+	#end
+	#elseif (js)
+	#if vision_quiet
+	/**
+		Gets an image from a file. 
+
+		The given path can be an absolute path or a relative path. a URL is valid too.  
+
+		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
+		@param path the path to the image file. It can only be a relative path/a URL
+
+		@returns The image object. A new one if `image` is null.
+	**/
+	#else
+	/**
+		Gets an image from a file. 
+
+		The given path can be an absolute path or a relative path. a URL is valid too.  
+
+		@param image optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
+		@param path the path to the image file. It can only be a relative path/a URL
+
+		@returns The image object. A new one if `image` is null.
+		@throws ImageLoadingFailed Thrown when trying to load a corrupted file.
+	**/
+	#end
+	#else
+	#if vision_quiet
+	/**
+		Gets an image from a file. 
+
+		The given path can be an absolute path or a relative path. a URL is valid too.  
+
+		@param image Optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
+		@param path the path to the image file.
+
+		@returns The image object. A new one if `image` is null.
+	**/
+	#else
+	/**
+		Gets an image from a file. 
+
+		The given path can be an absolute path or a relative path. a URL is valid too.  
+
+		@param image Optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
+		@param path the path to the image file.
+
+		@returns The image object. A new one if `image` is null.
+		@throws ImageLoadingFailed Thrown when trying to load a corrupted file.
+	**/
+	#end
+	#end
 	public static function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
 		#if sys
 			#if format
@@ -170,8 +241,8 @@ class ImageTools {
 		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
 	**/
 	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
-		#if sys
-			#if format
+		#if format
+			#if sys
 			switch saveFormat {
 				case PNG: {
 					try {
@@ -186,14 +257,8 @@ class ImageTools {
 						#end
 					}
 				}
-			}
-			#else
-				#if !vision_quiet
-				throw new LibraryRequired("format", [], "ImageTools.loadFromFile", "function");
-				#end
-			#end
-		#else
-			#if format
+	        }
+            #else
 			switch saveFormat {
 				case PNG: {
 					try {
@@ -210,11 +275,9 @@ class ImageTools {
 					}
 				}
 			}
-			#else
-				#if !vision_quiet
-				throw new LibraryRequired("format", [], "ImageTools.loadFromFile", "function");
-				#end
-			#end
+            #end
+		#elseif !vision_quiet
+		throw new LibraryRequired("format", [], "ImageTools.loadFromFile", "function");
 		#end
 	}
 
@@ -226,16 +289,17 @@ class ImageTools {
 
 		#### Notice - JS Only
 
-		if you want to use this function to add an image to a web page,
+		If you want to use this function to add an image to a web page,
 		and also want to use different units than pixels, you can use the `units` parameter.
-
+		```
 			addToScreen(image, 50, 20, {xUnits: "vw", yUnits: "vh", zIndex: 1});
+		```
 
-		@param image the image to add.
-		@param x the x position of the image.
-		@param y the y position of the image.
+		@param image The image to add.
+		@param x The x position of the image.
+		@param y The y position of the image.
 
-		@returns the image object.
+		@returns The image object.
 	**/
 	public static function addToScreen(image:Image, x:Int, y:Int, ?units:{?xUnits:String, ?yUnits:String, ?zIndex:String}):Image {
 		#if sys
@@ -271,14 +335,14 @@ class ImageTools {
 	}
 
 	/**
-		Gets an `Array2D` of all neighboring pixels at `x, y`.
+		Gets an `Array2D` of all neighboring pixels at `(x, y)`.
 
 		The pixels are added to the Array2D from left to right, top to bottom.
 
 	    @param image The image to get the neighbors in.
 	    @param x The x position of the pixel.
 	    @param y The y position of the pixel.
-	    @param kernalSize the width & height of the kernal.
+	    @param kernalSize The width & height of the kernal.
 	    @return an `Array2D` of colors
 	**/
 	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
@@ -291,7 +355,7 @@ class ImageTools {
 	}
 
 	/**
-		Gets an iterator over all neighboring pixels at `x, y`.
+		Gets an iterator over all neighboring pixels at `(x, y)`.
 
 		The pixels are iterated on from left to right, top to bottom.
 
