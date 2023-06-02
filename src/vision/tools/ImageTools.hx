@@ -114,6 +114,7 @@ class ImageTools {
 
 		@param image Optional, if you don't want to create a new image instance (usage: `image.loadFromFile("path/to/image.png")`)
 		@param path the path to the image file.
+        @param onComplete (Optional) Callback when completed.
 
 		@returns The image object. A new one if `image` is null.
 	**/
@@ -131,7 +132,7 @@ class ImageTools {
 	**/
 	#end
 	#end
-	public static function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
+    public static function loadFromFile(?image:Image, path:String, ?callbacks:{?onComplete:Image->Void, ?onError:haxe.Exception->Void}) {
 		#if sys
 			#if format
 			if (path.contains("://") && path.split(".").pop().toUpperCase() == "PNG") {
@@ -147,18 +148,32 @@ class ImageTools {
 						image = new Image(header.width, header.height);
 						try {
 							image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length - 1);
-						} catch (e) #if !vision_quiet throw new ImageLoadingFailed(PNG, e.message);#end
+                        } catch (e) {
+                            if(callbacks != null)
+                                if(callbacks.onError != null)
+                                    callbacks.onError(e);
+                            #if !vision_quiet
+                                else
+                                    throw new ImageLoadingFailed(PNG, e.message);
+                            else
+                                throw new ImageLoadingFailed(PNG, e.message);
+                            #end
+                        }
 					} catch (e:haxe.Exception) {
-						#if vision_quiet
-						if(onComplete != null)
-							onComplete(new Image(100, 100));
-						#else
-						throw new ImageLoadingFailed(PNG, e.message);
-						#end
+                        if(callbacks != null)
+                            if(callbacks.onError != null)
+                                callbacks.onError(e);
+                        #if !vision_quiet
+                            else
+                                throw new ImageLoadingFailed(PNG, e.message);
+                        else
+                            throw new ImageLoadingFailed(PNG, e.message);
+                        #end
 					}
 
-					if(onComplete != null)
-						onComplete(image);
+                    if(callbacks != null)
+					    if(callbacks.onComplete != null)
+						     callbacks.onComplete(image);
 				}
 				httpRequest.onError = msg -> {
 					trace(msg);
@@ -177,15 +192,19 @@ class ImageTools {
 					// copy the ARGB bytes from the PNG to the image, without overwriting the first couple of bytes
 					image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length);
 
-					if(onComplete != null)
-						onComplete(image);
+                    if(callbacks != null)
+					    if(callbacks.onComplete != null)
+						     callbacks.onComplete(image);
 				} catch (e:haxe.Exception) {
-					#if vision_quiet
-					if(onComplete != null)
-						onComplete(new Image(100, 100));
-					#else
-					throw new ImageLoadingFailed(PNG, e.message);
-					#end
+                    if(callbacks != null)
+                        if(callbacks.onError != null)
+                            callbacks.onError(e);
+                    #if !vision_quiet
+                        else
+                            throw new ImageLoadingFailed(PNG, e.message);
+                    else
+                        throw new ImageLoadingFailed(PNG, e.message);
+                    #end
 				}
 			} else #if !vision_quiet throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding"); #end
 			#else
@@ -218,8 +237,9 @@ class ImageTools {
 				i += 4;
 			}
 
-			if(onComplete != null)
-				onComplete(image);
+            if(callbacks != null)
+			     if(callbacks.onComplete != null)
+				     callbacks.onComplete(image);
 		}
 		#end
 	}
