@@ -104,6 +104,11 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var MAROON:Color = 0xFF800000;
 
 	/**
+		![color](https://www.colorhexa.com/722F37.png)![color](https://www.colorhexa.com/722F37.png)
+	**/
+	public static inline var BORDEAUX:Color = 0xFF722F37;
+
+	/**
 		![color](https://www.colorhexa.com/000080.png)![color](https://www.colorhexa.com/000080.png)
 	**/
 	public static inline var NAVY:Color = 0xFF000080;
@@ -127,6 +132,26 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		![color](https://www.colorhexa.com/32CD32.png)![color](https://www.colorhexa.com/32CD32.png)
 	**/
 	public static inline var LIME:Color = 0xFF32CD32;
+
+	/**
+		![color](https://www.colorhexa.com/36454F.png)![color](https://www.colorhexa.com/36454F.png)
+	**/
+	public static inline var CHARCOAL:Color = 0xFF36454F;
+
+	/**
+		![color](https://www.colorhexa.com/353839.png)![color](https://www.colorhexa.com/353839.png)
+	**/
+	public static inline var ONYX:Color = 0xFF353839;
+
+	/**
+		![color](https://www.colorhexa.com/343434.png)![color](https://www.colorhexa.com/343434.png)
+	**/
+	public static inline var JET:Color = 0xFF343434;
+
+	/**
+		![color](https://www.colorhexa.com/0E0E10.png)![color](https://www.colorhexa.com/0E0E10.png)
+	**/
+	public static inline var JET_BLACK:Color = 0xFF0E0E10;
 
 	/**
 		![color](https://www.colorhexa.com/4169E1.png)![color](https://www.colorhexa.com/4169E1.png)
