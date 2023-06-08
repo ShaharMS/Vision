@@ -12,6 +12,7 @@ import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
 import vision.helpers.TextDrawer;
 using vision.tools.MathTools;
+import vision.tools.MathTools.*;
 
 /**
 	Represents a 2D image, as a matrix of Colors.
@@ -1138,6 +1139,64 @@ abstract Image(ByteArray) {
 				}
 		}
 
+		return cast this;
+	}
+
+	/**
+		Rotates this image's pixel by `angle` degrees\radians.  
+		Notice - rotating an image and then re-rotating to the image's previous state won't bring you exactly the same image.
+		@param by 
+		@param degrees 
+		@param expandImageBounds 
+	**/
+	public inline function rotate(angle:Float, ?degrees:Bool = true, expandImageBounds:Bool = true):Image {
+		final centerPoint = new Point2D(width / 2, height / 2);
+		final radians = if (degrees) angle.degreesToRadians() else angle;
+		trace(radians, angle);
+
+		// Get furthest bounds by rotating the corners, and taking the distance between the rotated corners' positions and the center.
+		var max:IntPoint2D = new IntPoint2D(0, 0);
+		// Top Left
+		{
+			var corner = new IntPoint2D(0, 0);
+			var rads = centerPoint.radiansFromPointToPoint2D(corner);
+			var length = corner.distanceTo(centerPoint);
+			var h = ceil(abs(length * sin(rads + radians)));
+			var w = ceil(abs(length * cos(rads + radians)));
+			if (h * 2 > max.y) max.y = h * 2; // Multiplying by 2 since h & w only measure
+			if (w * 2 > max.x) max.x = w * 2; // The distnce to x/y = 0.
+		}
+		// Top Right
+		{
+			var corner = new IntPoint2D(width - 1, 0);
+			var rads = centerPoint.radiansFromPointToPoint2D(corner);
+			var length = corner.distanceTo(centerPoint);
+			var h = ceil(abs(length * sin(rads + radians)));
+			var w = ceil(abs(length * cos(rads + radians)));
+			if (h * 2 > max.y) max.y = h * 2; // Multiplying by 2 since h & w only measure
+			if (w * 2 > max.x) max.x = w * 2; // The distnce to x/y = 0.
+		}
+
+
+		trace(max);
+		var img = new Image(max.x, max.y);
+		var imgCenterPoint = new IntPoint2D(ceil(max.x / 2), ceil(max.y / 2));
+		trace(img.width, img.height, abstract.width, abstract.height);
+		forEachPixel((x, y, color) -> {
+			var p = new IntPoint2D(x, y);
+			var rads = p.radiansFromPointToPoint2D(centerPoint);
+			var length = p.distanceTo(centerPoint);
+			var h = length * sin(rads + radians);
+			var w = length * cos(rads + radians);
+			img.setFloatingPixel(imgCenterPoint.x + w, imgCenterPoint.y + h, color);
+		});
+		if (!expandImageBounds) {
+			var gapXTop = floor((img.width - width) / 2), gapXBottom = ceil((img.width - width) / 2);
+			var gapYTop = floor((img.height - height) / 2), gapYBottom = ceil((img.height - height) / 2);
+			img = img.getImagePortion({x: gapXTop, y: gapYTop, width: img.width - gapXBottom - gapXTop, height: img.height - gapYBottom - gapYTop});
+			trace(img.height, height);
+		}
+		this = img.underlying;
 		return cast this;
 	}
 

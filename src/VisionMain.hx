@@ -108,6 +108,12 @@ class VisionMain {
 			printImage(image.clone().mirror().flip());
 			end = haxe.Timer.stamp();
 			trace("Image Mirroring & Flipping took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage({var i = image.clone(); i.rotate(1, true); i;});
+			printImage({var i = image.clone(); i.rotate(Math.PI / 3, false); i;});
+			printImage({var i = image.clone(); i.rotate(-Math.PI / 3, false, false); i;});
+			end = haxe.Timer.stamp();
+			trace("Image Rotation took: " + MathTools.truncate(end - start, 4) / 3 + " seconds");
 			#end
 
 			#if filter_tests

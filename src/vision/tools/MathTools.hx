@@ -1,5 +1,6 @@
 package vision.tools;
 
+import vision.ds.IntPoint2D;
 import haxe.ds.Vector;
 import vision.ds.Matrix;
 import vision.algorithms.Radix;
@@ -210,10 +211,10 @@ class MathTools {
 	}
 
 	//-----------------------------------------------------------------------------------------
-	// Point2D Extensions.
+	// Point2D Extensions
 	//-----------------------------------------------------------------------------------------
 
-	public static inline function distanceFromPointToRay2D(point:Point2D, ray:Ray2D) {
+	overload extern inline public static function distanceFromPointToRay2D(point:Point2D, ray:Ray2D) {
 		// Get the closest point on the ray to the given point
 		final closestPoint:Point2D = getClosestPointOnRay2D(point, ray);
 
@@ -225,7 +226,7 @@ class MathTools {
 		return distance;
 	}
 
-	public static function distanceFromPointToLine2D(point:Point2D, line:Line2D):Float {
+	overload extern inline public static function distanceFromPointToLine2D(point:Point2D, line:Line2D):Float {
 		final middle = new Point2D(line.end.x - line.start.x, line.end.y - line.start.y);
 		final denominator = middle.x * middle.x + middle.y * middle.y;
 		var ratio = ((point.x - line.start.x) * middle.x + (point.y - line.start.y) * middle.y) / denominator;
@@ -244,34 +245,149 @@ class MathTools {
 		return sqrt(dx * dx + dy * dy);
 	}
 
-	public static inline function radiansFromPointToLine2D(point:Point2D, line:Line2D):Float {
+	overload extern inline public static function radiansFromPointToLine2D(point:Point2D, line:Line2D):Float {
 		final angle:Float = atan2(line.end.y - line.start.y, line.end.x - line.start.x);
 		final angle2:Float = atan2(point.y - line.start.y, point.x - line.start.x);
 		return angle2 - angle;
 	}
 
-	public static inline function radiansFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+	overload extern inline public static function radiansFromPointToPoint2D(point1:Point2D, point2:Point2D) {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	public static inline function degreesFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+	overload extern inline public static function degreesFromPointToPoint2D(point1:Point2D, point2:Point2D) {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	public static inline function slopeFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+	overload extern inline public static function slopeFromPointToPoint2D(point1:Point2D, point2:Point2D) {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
-
-	public static inline function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
+	overload extern inline public static function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return sqrt(x * x + y * y);
 	}
 
-	public static function getClosestPointOnRay2D(point:Point2D, ray:Ray2D):Point2D {
+	overload extern inline public static function radiansFromPointToPoint2D(point1:Point2D, point2:IntPoint2D) {
+		final x:Float = point2.x - point1.x;
+		final y:Float = point2.y - point1.y;
+		return atan2(y, x);
+	}
+
+	overload extern inline public static function degreesFromPointToPoint2D(point1:Point2D, point2:IntPoint2D) {
+		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
+	}
+
+	overload extern inline public static function slopeFromPointToPoint2D(point1:Point2D, point2:IntPoint2D) {
+		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
+	}
+
+	overload extern inline public static function distanceBetweenPoints(point1:Point2D, point2:IntPoint2D):Float {
+		final x:Float = point2.x - point1.x;
+		final y:Float = point2.y - point1.y;
+		return sqrt(x * x + y * y);
+	}
+
+	overload extern inline public static function getClosestPointOnRay2D(point:Point2D, ray:Ray2D):Point2D {
+		// Vector from the origin of the ray to the given point
+		var vx:Float = point.x - ray.point.x;
+		var vy:Float = point.y - ray.point.y;
+	
+		// Projection of v onto the direction vector of the ray
+		var projection:Float = (vx * 1 + vy * ray.slope) / (1 + pow(ray.slope, 2));
+	
+		// Coordinates of the closest point on the ray
+		var x:Float = ray.point.x + projection * 1;
+		var y:Float = ray.point.y + projection * ray.slope;
+	
+		return new Point2D(x, y);
+	}
+
+	//-----------------------------------------------------------------------------------------
+	// IntPoint2D Extensions
+	//-----------------------------------------------------------------------------------------
+
+	overload extern inline public static function distanceFromPointToRay2D(point:IntPoint2D, ray:Ray2D) {
+		// Get the closest point on the ray to the given point
+		final closestPoint:Point2D = getClosestPointOnRay2D(point, ray);
+
+		// Calculate the distance between the closest point and the given point
+		final dx:Float = closestPoint.x - point.x;
+		final dy:Float = closestPoint.y - point.y;
+		final distance:Float = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+	
+		return distance;
+	}
+
+	overload extern inline public static function distanceFromPointToLine2D(point:IntPoint2D, line:Line2D):Float {
+		final middle = new Point2D(line.end.x - line.start.x, line.end.y - line.start.y);
+		final denominator = middle.x * middle.x + middle.y * middle.y;
+		var ratio = ((point.x - line.start.x) * middle.x + (point.y - line.start.y) * middle.y) / denominator;
+	
+		if (ratio > 1)
+			ratio = 1;
+		else if (ratio < 0)
+			ratio = 0;
+	
+		final x = line.start.x + ratio * middle.x;
+		final y = line.start.y + ratio * middle.y;
+	
+		final dx = x - point.x;
+		final dy = y - point.y;
+	
+		return sqrt(dx * dx + dy * dy);
+	}
+
+	overload extern inline public static function radiansFromPointToLine2D(point:IntPoint2D, line:Line2D):Float {
+		final angle:Float = atan2(line.end.y - line.start.y, line.end.x - line.start.x);
+		final angle2:Float = atan2(point.y - line.start.y, point.x - line.start.x);
+		return angle2 - angle;
+	}
+
+	overload extern inline public static function radiansFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D) {
+		final x:Float = point2.x - point1.x;
+		final y:Float = point2.y - point1.y;
+		return atan2(y, x);
+	}
+
+	overload extern inline public static function degreesFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D) {
+		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
+	}
+
+	overload extern inline public static function slopeFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D) {
+		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
+	}
+
+	overload extern inline public static function distanceBetweenPoints(point1:IntPoint2D, point2:IntPoint2D):Float {
+		final x:Float = point2.x - point1.x;
+		final y:Float = point2.y - point1.y;
+		return sqrt(x * x + y * y);
+	}
+	
+	overload extern inline public static function radiansFromPointToPoint2D(point1:IntPoint2D, point2:Point2D) {
+		final x:Float = point2.x - point1.x;
+		final y:Float = point2.y - point1.y;
+		return atan2(y, x);
+	}
+
+	overload extern inline public static function degreesFromPointToPoint2D(point1:IntPoint2D, point2:Point2D) {
+		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
+	}
+
+	overload extern inline public static function slopeFromPointToPoint2D(point1:IntPoint2D, point2:Point2D) {
+		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
+	}
+
+	overload extern inline public static function distanceBetweenPoints(point1:IntPoint2D, point2:Point2D):Float {
+		final x:Float = point2.x - point1.x;
+		final y:Float = point2.y - point1.y;
+		return sqrt(x * x + y * y);
+	}
+
+	overload extern inline public static function getClosestPointOnRay2D(point:IntPoint2D, ray:Ray2D):Point2D {
 		// Vector from the origin of the ray to the given point
 		var vx:Float = point.x - ray.point.x;
 		var vy:Float = point.y - ray.point.y;
@@ -353,7 +469,8 @@ class MathTools {
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
 	**/
 	public static function boundFloat(value:Float, min:Float, max:Float) {
-		return Math.min(Math.max(value, min), max);
+		var t = value < min ? min : value;
+  		return t > max ? max : t;
 	}
 
 	/**
