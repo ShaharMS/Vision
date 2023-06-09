@@ -241,12 +241,15 @@ abstract Image(ByteArray) {
 	**/
 	public inline function getFloatingPixel(x:Float, y:Float):Color {
 
-		if (!hasPixel(Math.ceil(x), Math.ceil(y))) return getFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1));
+		if (!hasPixel(Math.ceil(x), Math.ceil(y))) {
+			x = x.boundFloat(0, width - 1);
+			y = y.boundFloat(0, height - 1);
+		}
 		final yFraction = y - Std.int(y), xFraction = x - Std.int(x);
-		final red =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).red) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).red + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).red));
-		final green =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).green + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).green) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).green + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).green));
-		final blue =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).blue + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).blue) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).blue + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).blue));
-		final alpha =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).alpha + xFraction * getPixel(Std.int(x) + 1, Std.int(y)).alpha) + yFraction * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y) + 1).alpha + xFraction * getPixel(Std.int(x) + 1, Std.int(y) + 1).alpha));
+		final red =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).red + xFraction * getSafePixel(Std.int(x) + 1, Std.int(y)).red) + yFraction * ((1 - xFraction) * getSafePixel(Std.int(x), Std.int(y) + 1).red + xFraction * getSafePixel(Std.int(x) + 1, Std.int(y) + 1).red));
+		final green =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).green + xFraction * getSafePixel(Std.int(x) + 1, Std.int(y)).green) + yFraction * ((1 - xFraction) * getSafePixel(Std.int(x), Std.int(y) + 1).green + xFraction * getSafePixel(Std.int(x) + 1, Std.int(y) + 1).green));
+		final blue =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).blue + xFraction * getSafePixel(Std.int(x) + 1, Std.int(y)).blue) + yFraction * ((1 - xFraction) * getSafePixel(Std.int(x), Std.int(y) + 1).blue + xFraction * getSafePixel(Std.int(x) + 1, Std.int(y) + 1).blue));
+		final alpha =  Std.int((1 - yFraction) * ((1 - xFraction) * getPixel(Std.int(x), Std.int(y)).alpha + xFraction * getSafePixel(Std.int(x) + 1, Std.int(y)).alpha) + yFraction * ((1 - xFraction) * getSafePixel(Std.int(x), Std.int(y) + 1).alpha + xFraction * getSafePixel(Std.int(x) + 1, Std.int(y) + 1).alpha));
 		return Color.fromRGBA(red, green, blue, alpha);
 	}
 
@@ -1145,58 +1148,49 @@ abstract Image(ByteArray) {
 	/**
 		Rotates this image's pixel by `angle` degrees\radians.  
 		Notice - rotating an image and then re-rotating to the image's previous state won't bring you exactly the same image.
-		@param by 
+
+		@param angle 
 		@param degrees 
 		@param expandImageBounds 
 	**/
 	public inline function rotate(angle:Float, ?degrees:Bool = true, expandImageBounds:Bool = true):Image {
-		final centerPoint = new Point2D(width / 2, height / 2);
+		final center = new Point2D(width / 2, height / 2);
 		final radians = if (degrees) angle.degreesToRadians() else angle;
-		trace(radians, angle);
 
-		// Get furthest bounds by rotating the corners, and taking the distance between the rotated corners' positions and the center.
-		var max:IntPoint2D = new IntPoint2D(0, 0);
-		// Top Left
-		{
-			var corner = new IntPoint2D(0, 0);
-			var rads = centerPoint.radiansFromPointToPoint2D(corner);
-			var length = corner.distanceTo(centerPoint);
-			var h = ceil(abs(length * sin(rads + radians)));
-			var w = ceil(abs(length * cos(rads + radians)));
-			if (h * 2 > max.y) max.y = h * 2; // Multiplying by 2 since h & w only measure
-			if (w * 2 > max.x) max.x = w * 2; // The distnce to x/y = 0.
-		}
-		// Top Right
-		{
-			var corner = new IntPoint2D(width - 1, 0);
-			var rads = centerPoint.radiansFromPointToPoint2D(corner);
-			var length = corner.distanceTo(centerPoint);
-			var h = ceil(abs(length * sin(rads + radians)));
-			var w = ceil(abs(length * cos(rads + radians)));
-			if (h * 2 > max.y) max.y = h * 2; // Multiplying by 2 since h & w only measure
-			if (w * 2 > max.x) max.x = w * 2; // The distnce to x/y = 0.
-		}
+		// Calculate the dimensions of the rotated image
+        var sinTheta: Float = Math.sin(angle);
+        var cosTheta: Float = Math.cos(angle);
+        var newWidth: Int = Math.ceil(Math.abs(width * cosTheta) + Math.abs(height * sinTheta));
+        var newHeight: Int = Math.ceil(Math.abs(width * sinTheta) + Math.abs(height * cosTheta));
 
+        // Create a new image with black background
+        var rotatedImage: Image = new Image(newWidth, newHeight);
 
-		trace(max);
-		var img = new Image(max.x, max.y);
-		var imgCenterPoint = new IntPoint2D(ceil(max.x / 2), ceil(max.y / 2));
-		trace(img.width, img.height, abstract.width, abstract.height);
-		forEachPixel((x, y, color) -> {
-			var p = new IntPoint2D(x, y);
-			var rads = p.radiansFromPointToPoint2D(centerPoint);
-			var length = p.distanceTo(centerPoint);
-			var h = length * sin(rads + radians);
-			var w = length * cos(rads + radians);
-			img.setFloatingPixel(imgCenterPoint.x + w, imgCenterPoint.y + h, color);
-		});
-		if (!expandImageBounds) {
-			var gapXTop = floor((img.width - width) / 2), gapXBottom = ceil((img.width - width) / 2);
-			var gapYTop = floor((img.height - height) / 2), gapYBottom = ceil((img.height - height) / 2);
-			img = img.getImagePortion({x: gapXTop, y: gapYTop, width: img.width - gapXBottom - gapXTop, height: img.height - gapYBottom - gapYTop});
-			trace(img.height, height);
-		}
-		this = img.underlying;
+        // Calculate the center of the new image
+        var centerX: Float = newWidth / 2;
+        var centerY: Float = newHeight / 2;
+
+        // Calculate the center of the original image
+        var originalCenterX: Float = width / 2;
+        var originalCenterY: Float = height / 2;
+
+        // Iterate over each pixel of the rotated image
+        for (x in 0...rotatedImage.width) {
+            for (y in 0...rotatedImage.height) {
+                // Calculate the coordinates in the original image
+                var rotatedX: Float = cosTheta * (x - centerX) + sinTheta * (y - centerY) + originalCenterX;
+                var rotatedY: Float = -sinTheta * (x - centerX) + cosTheta * (y - centerY) + originalCenterY;
+
+                // Check if the calculated coordinates are within the bounds of the original image
+                if (rotatedX >= 0 && rotatedX < width && rotatedY >= 0 && rotatedY < height) {
+                    // Get the pixel value from the original image and set it in the rotated image
+                    var pixelValue: Int = getFloatingPixel(rotatedX, rotatedY);
+                    rotatedImage.setPixel(x, y, pixelValue);
+                }
+            }
+        }
+
+		this = rotatedImage.underlying;
 		return cast this;
 	}
 

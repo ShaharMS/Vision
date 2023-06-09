@@ -109,4 +109,29 @@ abstract IntPoint2D(Impl) {
 	public inline function distanceTo(point:IntPoint2D):Float {
 		return Math.sqrt(Math.pow(x - point.x, 2) + Math.pow(y - point.y, 2));
 	}
+
+	
+	/**
+		Gets the angle between `this` and `point`, in degrees.
+
+		If `this` and `point` are have the same `x` & `y` position, `0` is returned.
+
+		@param point The second point to calculate the angle to.
+		@return A `Float` representing the angle, in degrees. `0` if `this` and `point` are congruent.
+	**/
+	public inline function degreesTo(point:Point2D):Float {
+		return MathTools.degreesFromPointToPoint2D(cast(this, IntPoint2D), point);
+	}
+
+	/**
+		Gets the angle between `this` and `point`, in radians.
+
+		If `this` and `point` are have the same `x` & `y` position, `0` is returned.
+
+		@param point The second point to calculate the angle to.
+		@return A `Float` representing the angle, in radians. `0` if `this` and `point` are congruent.
+	**/
+	public inline function radiansTo(point:Point2D):Float {
+		return MathTools.degreesFromPointToPoint2D(cast(this, IntPoint2D), point);
+	}
 }

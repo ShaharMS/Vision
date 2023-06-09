@@ -759,8 +759,8 @@ class MathTools {
 	public static inline function ceil(v:Float):Int
 		return Math.ceil(v);
 
-	public static inline function cos(v:Float):Float
-		return Math.cos(v);
+	public static inline function cos(radians:Float):Float
+		return Math.cos(radians);
 
 	public static inline function exp(v:Float):Float
 		return Math.exp(v);
@@ -780,14 +780,14 @@ class MathTools {
 	public static inline function round(v:Float):Int
 		return Math.round(v);
 
-	public static inline function sin(v:Float):Float
-		return Math.sin(v);
+	public static inline function sin(radians:Float):Float
+		return Math.sin(radians);
 
 	public static inline function sqrt(v:Float):Float
 		return Math.sqrt(v);
 
-	public static inline function tan(v:Float):Float
-		return Math.tan(v);
+	public static inline function tan(radians:Float):Float
+		return Math.tan(radians);
 
 	public static inline function ffloor(v:Float):Float
 		return floor(v);

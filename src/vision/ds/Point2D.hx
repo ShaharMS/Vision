@@ -52,4 +52,28 @@ class Point2D {
 	public inline function distanceTo(point:Point2D):Float {
 		return MathTools.distanceBetweenPoints(this, point);
 	}
+
+	/**
+		Gets the angle between `this` and `point`, in degrees.
+
+		If `this` and `point` are have the same `x` & `y` position, `0` is returned.
+
+		@param point The second point to calculate the angle to.
+		@return A `Float` representing the angle, in degrees. `0` if `this` and `point` are congruent.
+	**/
+	public inline function degreesTo(point:Point2D):Float {
+		return MathTools.degreesFromPointToPoint2D(this, point);
+	}
+
+	/**
+		Gets the angle between `this` and `point`, in radians.
+
+		If `this` and `point` are have the same `x` & `y` position, `0` is returned.
+
+		@param point The second point to calculate the angle to.
+		@return A `Float` representing the angle, in radians. `0` if `this` and `point` are congruent.
+	**/
+	public inline function radiansTo(point:Point2D):Float {
+		return MathTools.degreesFromPointToPoint2D(this, point);
+	}
 }
