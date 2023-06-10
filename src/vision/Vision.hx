@@ -15,10 +15,10 @@ import vision.ds.Histogram;
 import vision.ds.specifics.AlgorithmSettings;
 import vision.algorithms.Perwitt;
 import vision.algorithms.Sobel;
-import vision.ds.Kernal2D;
+import vision.ds.Kernel2D;
 import vision.ds.canny.CannyObject;
 import vision.algorithms.SimpleLineDetector;
-import vision.ds.gaussian.GaussianKernalSize;
+import vision.ds.gaussian.GaussianKernelSize;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Ray2D;
 import vision.algorithms.Gaussian;
@@ -202,14 +202,14 @@ class Vision {
 	}
 
 	/**
-	    Loops over the given image's pixels with a kernal, and replaces the center pixel of that kernal with the "maximum value" inside that kernal:
+	    Loops over the given image's pixels with a kernel, and replaces the center pixel of that kernel with the "maximum value" inside that kernel:
 
 		**What does replacing with the maximum value mean?**
 
 		Basically, if a nearby pixel is lighter than the current pixel, the current pixel is replaced with the lighter pixel.
 		That check is applied to all neighboring pixels, resulting in each pixel's color being the lightest color in its surroundings. 
 		
-		**example:** an image being dilated with a 5x5 square kernal. you should see how each time the kernal moves, it picks the lightest colors inside of it, and continues.
+		**example:** an image being dilated with a 5x5 square kernel. you should see how each time the kernel moves, it picks the lightest colors inside of it, and continues.
 
 		![example](https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Grayscale_Morphological_Dilation.gif/220px-Grayscale_Morphological_Dilation.gif)
 
@@ -218,16 +218,16 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-dilate.png)|
 
 		@param image The image to operate on.
-		@param dilationRadius The radius of the kernal used for the dilation process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernal. The higher this value, the further each pixel checks for a nearby lighter pixel.
+		@param dilationRadius The radius of the kernel used for the dilation process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernel. The higher this value, the further each pixel checks for a nearby lighter pixel.
 		@param colorImportanceOrder Since there may be conflicts when calculating the difference in lightness between colors with similar values in different color channels (e.g. `0xFF0000` and `0x0000FF` - channel values are "similar", colors are not), this parameter is used to favor the given color channels. The default is `RedGreenBlue` - `red` is the most important, and is considered the "lightest", followed by green, and blue is considered the "darkest".
-		@param circularKernal When enabled, the kernal used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
+		@param circularKernel When enabled, the kernel used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
 		@return The dilated image. The original copy is not preserved.
 	**/
-	public static function dilate(image:Image, ?dilationRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernal:Bool = true):Image {
+	public static function dilate(image:Image, ?dilationRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernel:Bool = true):Image {
 		var intermediate = image.clone();
 		image.forEachPixelInView((x, y, c) -> {
 			var maxColor:Color = 0;
-			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1, circularKernal)) {
+			for (color in image.getNeighborsOfPixelIter(x, y, dilationRadius * 2 + 1, circularKernel)) {
 				color &= colorImportanceOrder;
 				final redLarger = color.red > maxColor.red ? 1 : 0;
 				final greenLarger = color.green > maxColor.green ? 1 : 0;
@@ -240,14 +240,14 @@ class Vision {
 	}
 
 	/**
-	    Loops over the given image's pixels with a kernal, and replaces the center pixel of that kernal with the "minimum value" inside that kernal:
+	    Loops over the given image's pixels with a kernel, and replaces the center pixel of that kernel with the "minimum value" inside that kernel:
 
 		**What does replacing with the minimum value mean?**
 
 		Basically, if a nearby pixel is darker than the current pixel, the current pixel is replaced with the darker pixel.
 		That check is applied to all neighboring pixels, resulting in each pixel's color being the darkest color in its surroundings. 
 		
-		**example:** an image being eroded with a square 5x5 kernal. You should see how each time the kernal moves, it picks the darkest colors inside of it, and continues.
+		**example:** an image being eroded with a square 5x5 kernel. You should see how each time the kernel moves, it picks the darkest colors inside of it, and continues.
 
 		![example](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Grayscale_Morphological_Erosion.gif/220px-Grayscale_Morphological_Erosion.gif)
 
@@ -256,16 +256,16 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-erode.png)|
 
 		@param image The image to operate on.
-		@param dilationRadius The radius of the kernal used for the erosion process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernal. The higher this value, the further each pixel checks for a nearby darker pixel.
+		@param dilationRadius The radius of the kernel used for the erosion process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernel. The higher this value, the further each pixel checks for a nearby darker pixel.
 		@param colorImportanceOrder Since there may be conflicts when calculating the difference in darkness between colors with similar values in different color channels (e.g. `0xFF0000` and `0x0000FF` - channel values are "similar", colors are not), this parameter is used to favor the given color channels. The default is `RedGreenBlue` - `red` is the most important, and is considered the "darkest", followed by green, and blue is considered the "lightest".
-		@param circularKernal When enabled, the kernal used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
+		@param circularKernel When enabled, the kernel used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
 		@return The eroded image. The original copy is not preserved.
 	**/
-	public static function erode(image:Image, ?erosionRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernal:Bool = true):Image {
+	public static function erode(image:Image, ?erosionRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernel:Bool = true):Image {
 		var intermediate = image.clone();
 		image.forEachPixelInView((x, y, c) -> {
 			var minColor:Color = 0xFFFFFFFF;
-			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, circularKernal)) {
+			for (color in image.getNeighborsOfPixelIter(x, y, erosionRadius * 2 + 1, circularKernel)) {
 				color &= colorImportanceOrder;
 				final redSmaller = color.red < minColor.red ? 1 : 0;
 				final greenSmaller = color.green < minColor.green ? 1 : 0;
@@ -461,11 +461,11 @@ class Vision {
 	}
 
 	/**
-		manipulates the image's pixel data by passing the pixels' value through a kernal.
+		manipulates the image's pixel data by passing the pixels' value through a kernel.
 
 		This is useful for many things, such as simple blurring, sharpening, noise maps, and more that comes to mind :).
 
-		There are a couple of preexisting matrices you can use, and also a custom tool to let you create your own kernals from scratch using enums.
+		There are a couple of preexisting matrices you can use, and also a custom tool to let you create your own kernels from scratch using enums.
 
 		### How does this work?
 
@@ -482,16 +482,16 @@ class Vision {
 		1. enjoy your convolved image :)
 
 		@param image the image to be manipulated
-		@param kernal the type/value of the kernal. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**,
+		@param kernel the type/value of the kernel. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**,
 		or just a matrix: both `convolve(image, BoxBlur)` and `convolve(image, [[1,1,1],[1,1,1],[1,1,1]])` are valid ways to represent a box blur.
 		@return A convolved version of the image. The original image is not preserved.
 	**/
-	public static function convolve(image:Image, kernal:EitherType<Kernal2D, Array<Array<Float>>> = Identity):Image {
+	public static function convolve(image:Image, kernel:EitherType<Kernel2D, Array<Array<Float>>> = Identity):Image {
 		var matrix:Array<Array<Float>>;
-		if (kernal is Array) {
-			matrix = cast kernal;
+		if (kernel is Array) {
+			matrix = cast kernel;
 		} else {
-			matrix = switch cast(kernal, Kernal2D) {
+			matrix = switch cast(kernel, Kernel2D) {
 				case Identity: [[0, 0, 0], [0, 1, 0], [0, 0, 0]];
 				case BoxBlur: [[1, 1, 1], [1, 1, 1], [1, 1, 1]];
 				case RidgeDetection: [[-1, -1, -1], [-1, 4, -1], [-1, -1, -1]];
@@ -512,7 +512,7 @@ class Vision {
 						[farEdge, midCorner, midEdge, midCorner, farEdge],
 						[farCorner, farEdge, edge, farEdge, farCorner]
 					];
-				case Custom(kernal): kernal;
+				case Custom(kernel): kernel;
 				case GaussianBlur(size, sigma): Gaussian.create2DKernelOfSize(size, sigma).inner.raise(size);
 				case LaplacianPositive: [[0, 1, 0], [1, -4, 1], [0, 1, 0]];
 				case LaplacianNegative: [[0, -1, 0], [-1, 4, -1], [0, -1, 0]];
@@ -586,13 +586,13 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%200.5%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%201%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%202%29.png)|
 
 		@param image The image to be blurred.
-		@param sigma The sigma value to use for the gaussian distribution on the kernal. a lower value will focus more on the center pixel, while a higher value will shift focus to the surrounding pixels more, effectively blurring it better.
-		@param kernalSize The size of the kernal (`width` & `height`)
-		@throws InvalidGaussianKernalSize if the kernal size is even, negative or `0`, this error is thrown.
+		@param sigma The sigma value to use for the gaussian distribution on the kernel. a lower value will focus more on the center pixel, while a higher value will shift focus to the surrounding pixels more, effectively blurring it better.
+		@param kernelSize The size of the kernel (`width` & `height`)
+		@throws InvalidGaussianKernelSize if the kernel size is even, negative or `0`, this error is thrown.
 		@return A blurred version of the image. The original image is not preserved.
 	**/
-	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = GaussianKernalSize.X5):Image {
-		return convolve(image, GaussianBlur(kernalSize, sigma));
+	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = GaussianKernelSize.X5):Image {
+		return convolve(image, GaussianBlur(kernelSize, sigma));
 	}
 
 	/**
@@ -603,18 +603,18 @@ class Vision {
 
 		Example of the filter in action:
 
-		| Original | `kernalSize = 5` | `kernalSize = 10` | `kernalSize = 15` |
+		| Original | `kernelSize = 5` | `kernelSize = 10` | `kernelSize = 15` |
 		|---|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%205%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%2010%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernalRadius%20=%2015%29.png)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernelRadius%20=%205%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernelRadius%20=%2010%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernelRadius%20=%2015%29.png)|
 
 		@param image The image to apply median blurring to.
-		@param kernalSize the width & height of the kernal in which we should search for the median. A radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
+		@param kernelSize the width & height of the kernel in which we should search for the median. A radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
 		@return A filtered version of the image, using median blurring. The original image is not preserved.
 	**/
-	public static function medianBlur(image:Image, kernalSize:Int = 5):Image {
+	public static function medianBlur(image:Image, kernelSize:Int = 5):Image {
 		var median = image.clone();
 		image.forEachPixelInView((x, y, color) -> {
-			var neighbors:Array<Int> = image.getNeighborsOfPixel(x, y, kernalSize).inner;
+			var neighbors:Array<Int> = image.getNeighborsOfPixel(x, y, kernelSize).inner;
 			ArraySort.sort(neighbors, (a, b) -> a - b);
 			median.setUnsafePixel(x, y, neighbors[Std.int(neighbors.length / 2)]);
 		});
@@ -635,14 +635,14 @@ class Vision {
 		@return The line detected image.
 	**/
 	public static function simpleLine2DDetection(image:Image, accuracy:Float = 50, minLineLength:Float = 10, ?speedToAccuracyRatio:AlgorithmSettings = Medium_Intermediate):Array<Line2D> {
-        final kernalSize = switch speedToAccuracyRatio {
+        final kernelSize = switch speedToAccuracyRatio {
             case VeryLow_VeryFast: X1;
             case Low_Fast: X3;
             case Medium_Intermediate: X5;
             case High_Slow: X7;
             case VeryHigh_VerySlow: X9;
         }
-        var edgeDetected = cannyEdgeDetection(image, 1, kernalSize, 0.05, 0.16);
+        var edgeDetected = cannyEdgeDetection(image, 1, kernelSize, 0.05, 0.16);
         var lines:Array<Line2D> = [];
 		var actualLines:Array<Line2D> = [];
         for (x in 0...image.width) {
@@ -660,7 +660,7 @@ class Vision {
         }
 		lines = [];
         //now, get a mirrored version
-        edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernalSize, 0.05, 0.16);
+        edgeDetected = cannyEdgeDetection(image.mirror(), 1, kernelSize, 0.05, 0.16);
         for (x in 0...image.width) {
             for (y in 0...image.height) {
                 lines.push(SimpleLineDetector.findLineFromPoint(edgeDetected, new Int16Point2D(x, y), minLineLength));
@@ -778,17 +778,17 @@ class Vision {
 
 		@param image The image to be edge detected.
 		@param sigma The sigma value to be used in the gaussian blur.
-		@param kernalSize This is used for the second step of the canny edge detection - gaussian blur. Unless you want to improve performance, this should remain unchanged.
+		@param kernelSize This is used for the second step of the canny edge detection - gaussian blur. Unless you want to improve performance, this should remain unchanged.
 		@param lowThreshold The low threshold value to be used in the hysteresis thresholding.
 		@param highThreshold The high threshold value to be used in the hysteresis thresholding.
 
-		@throws InvalidGaussianKernalSize thrown if the `kernalSize` is negative/divisible by `2`.
+		@throws InvalidGaussianKernelSize thrown if the `kernelSize` is negative/divisible by `2`.
 		@return The edge detected image.
 	**/
-	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, kernalSize:GaussianKernalSize = X5, lowThreshold:Float = 0.05, highThreshold:Float = 0.2):Image {
+	public static function cannyEdgeDetection(image:Image, sigma:Float = 1, kernelSize:GaussianKernelSize = X5, lowThreshold:Float = 0.05, highThreshold:Float = 0.2):Image {
 		var cannyObject:CannyObject = image.clone().removeView();
 		return blackAndWhite(cannyObject.grayscale()
-			.applyGaussian(kernalSize, sigma)
+			.applyGaussian(kernelSize, sigma)
 			.applySobelFilters()
 			.nonMaxSuppression()
 			.applyHysteresis(highThreshold, lowThreshold),
@@ -845,7 +845,7 @@ class Vision {
 		Detects edges within an image, using a gaussian blur & the laplacian filter.
 
 		This algorithm works a bit like a combination of canny & perwitt edge detection, by blurring the image first to remove noise, and then
-		going over the image with a kernal. With the default settings. This algorithm is the fastest when working with smaller images.
+		going over the image with a kernel. With the default settings. This algorithm is the fastest when working with smaller images.
 
 		There's no need to pre-process the image, just throw it into the function it will do the rest
 		(ie. the image doesn't need to be grayscale/black and white):
@@ -857,19 +857,19 @@ class Vision {
 		@param image The image to be processed.
 		@param threshold The threshold for detecting edges. The lower the value, the more pixels will be considered edges. Default is `5`.
 		@param filterPositive Which version of the laplacian filter should the function use: the negative (detects "outward" edges), or the positive (detects "inward" edges). Default is positive (`true`).
-		@param sigma The sigma value to use for the gaussian blur. A lower value will focus the kernal more on the center pixel, while a higher value will shift focus to the surrounding pixels more. **The higher the value, the blurrier the image.** Default is `1`.
-		@param kernalSize The size of the kernal (`width` & `height`) - a kernal size of `7`/ will produce a `7x7` kernal. Default is `GaussianKernalSize.X3`.
+		@param sigma The sigma value to use for the gaussian blur. A lower value will focus the kernel more on the center pixel, while a higher value will shift focus to the surrounding pixels more. **The higher the value, the blurrier the image.** Default is `1`.
+		@param kernelSize The size of the kernel (`width` & `height`) - a kernel size of `7`/ will produce a `7x7` kernel. Default is `GaussianKernelSize.X3`.
 		@return A new, black and white image, with white pixels being the detected edges.
 	**/
-	public static function laplacianOfGaussianEdgeDetection(image:Image, ?threshold:Int = 2, ?filterPositive:Bool = true, ?sigma:Float = 1, ?kernalSize:GaussianKernalSize = X3) {
-		return Laplacian.laplacianOfGaussian(image, kernalSize, sigma, threshold, filterPositive);
+	public static function laplacianOfGaussianEdgeDetection(image:Image, ?threshold:Int = 2, ?filterPositive:Bool = true, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = X3) {
+		return Laplacian.laplacianOfGaussian(image, kernelSize, sigma, threshold, filterPositive);
 	}
 
 	/**
 		Uses a fast, convolution-based method to detect ridges within an image.
 		
 		It does the detection by grayscaling & normalizing the image, and then
-		convolving it with a ridge detection kernal.
+		convolving it with a ridge detection kernel.
 
 		Useful as a fast alternative to other **edge** detection algorithms, since it usually
 		produces the most accurate edge representation while being the fastest (`1.5x` faster than sobel & perwitt, 
@@ -921,7 +921,7 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sharpen.png)|![After](https://spacebubble.io/vision/docs/valve-bilateralDenoise.png)|
 
 		@param image The image to operate on.
-		@param gaussianSigma The sigma to use when generating the gaussian kernal. This also decides the size of the kernal (The size of the kernal is always `Math.round(6 * gaussianSigma)`, and gets incremented if the resulting size is even)
+		@param gaussianSigma The sigma to use when generating the gaussian kernel. This also decides the size of the kernel (The size of the kernel is always `Math.round(6 * gaussianSigma)`, and gets incremented if the resulting size is even)
 		@param intensitySigma The intensity sigma decides how hard should the algorithm "try" to reduce the noise inside the image. A higher value causes a pixel that has vastly different color than it's surrounding to weigh much less, and pretty much get "ignored and overwritten". **tl;dr - a higher value reduces more noise, but may blur the image if too high.**
 
 	**/

@@ -25,14 +25,15 @@ class Array2D<T> {
 	public var length(get, set):Int;
 
 	/**
-	    Creates a new `Array2D` instance. The created array can be filled in with non-null values, and thats target-dependent:
+        Creates a new `Array2D` instance. The created array can be filled in with non-null values. 
+        if null is given, or no value is provided, the behavior is target-dependent:    
 
-		 - on dynamic targets, values are always `null`
-		 - on static targets, `0`, `0.0` or `false` are filled in for `Int`, `Float` and `Bool` respectively. Other types are filled in with `null`
-	
-		@param width The array's width
-		@param height The array's height
-		@param fillWith Optional, A custom value of type `T` to fill the created array with. If `fillWith` is not provided, the created array will contain the default values specified above.
+         - on dynamic targets, values are always `null`
+         - on static targets, `0`, `0.0` or `false` are filled in for `Int`, `Float` and `Bool` respectively. Other types are filled in with `null`
+        
+        @param width The array's width
+        @param height The array's height
+        @param fillWith Optional, A custom value of type `T` to fill the created array with. If `fillWith` is not provided, the created array will contain the default values specified above.
 	**/
 	public inline function new(width:Int, height:Int, ?fillWith:T) {
 		@:bypassAccessor this.width = width;

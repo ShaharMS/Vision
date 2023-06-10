@@ -1,5 +1,6 @@
 package;
 
+import vision.ds.Matrix2D;
 import vision.ds.PixelFormat;
 import vision.ds.ByteArray;
 import vision.exceptions.LibraryRequired;
@@ -11,7 +12,7 @@ import vision.ds.IntPoint2D;
 import vision.ds.Int16Point2D;
 import vision.algorithms.Laplacian;
 import vision.algorithms.BilateralFilter;
-import vision.ds.Kernal2D;
+import vision.ds.Kernel2D;
 import haxe.ds.ArraySort;
 import vision.algorithms.Radix;
 import vision.ds.Histogram;
@@ -371,22 +372,6 @@ class VisionMain {
 		}
 		TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
 		#end
-		#end
-		#if (minify_js_output && eval)
-		var code = sys.io.File.getContent(FileSystem.absolutePath("bin/main.js"));
-		//make a post request to toptal's javascript minifier with the code found at ./bin/main.js
-		var httpReq = new Http("https://www.toptal.com/developers/javascript-minifier/api/raw");
-		httpReq.addHeader("Content-Type", "application/x-www-form-urlencoded");
-		httpReq.setPostData("input=" + "console.log(         1)");
-		httpReq.onData = s -> {
-			trace(s.length);
-			trace(Base64.urlDecode(s).length);
-			trace(s);
-		}
-		httpReq.onError = s -> trace(s);
-		httpReq.request(true);
-
-
 		#end
 	}
 	

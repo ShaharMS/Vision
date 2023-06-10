@@ -10,7 +10,7 @@ class BilateralFilter {
 		Applies bilateral filtering.
 
 		@param image The image to work with
-		@param distanceSigma The sigma values used to generate the gaussian kernal. the kernal's size is 6`distanceSigma`, since 3`distanceSigma` is the radius
+		@param distanceSigma The sigma values used to generate the gaussian kernel. the kernel's size is 6`distanceSigma`, since 3`distanceSigma` is the radius
 		@param intensitySigma The sigma used to calculate the intensity vector
 		@return Image
 	**/
@@ -18,7 +18,7 @@ class BilateralFilter {
 		var gaussianKernelMatrix:Array2D<Float>;
 		var intensityVector:Vector<Float>;
 
-		// Using 3σ rule for filter radius - basically, a kernal radius larger than 3σ computes unnecessary pixels.
+		// Using 3σ rule for filter radius - basically, a kernel radius larger than 3σ computes unnecessary pixels.
 		var kernelSize:Int = cast Math.floor(6 * distanceSigma) + 1;
 		if (kernelSize % 2 == 0) kernelSize++;
 		gaussianKernelMatrix = Gaussian.create2DKernelOfSize(kernelSize, distanceSigma);
@@ -61,7 +61,7 @@ class BilateralFilter {
 				denominatorSum = 0.,
 				kernelPositionWeight = 0.;
 
-			// needed to transform the kernalSize into something a for loop can work with
+			// needed to transform the kernelSize into something a for loop can work with
 			final halfKernelSize = Math.floor(kernelSize / 2);
 			// SAFETY: x and y are within the bounds of the image
 			final kernelCenterIntensity = image.getUnsafePixel(x, y);

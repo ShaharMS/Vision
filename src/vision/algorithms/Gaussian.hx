@@ -3,22 +3,22 @@ package vision.algorithms;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.Array2D;
-import vision.exceptions.InvalidGaussianKernalSize;
+import vision.exceptions.InvalidGaussianKernelSize;
 
 /**
- * Gaussian kernal creation implementation, ported to Haxe by [Shahar Marcus](https://www.github.com/ShaharMS).
+ * Gaussian kernel creation implementation, ported to Haxe by [Shahar Marcus](https://www.github.com/ShaharMS).
  */
 class Gaussian {
 
-	@:deprecated("Gaussian.create1x1Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create1x1Kernal(sigma:Float):Array<Array<Float>> {
+	@:deprecated("Gaussian.create1x1Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
+	public static function create1x1Kernel(sigma:Float):Array<Array<Float>> {
 		return [[1]];
 	}
 
-	@:deprecated("Gaussian.create3x3Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create3x3Kernal(sigma:Float):Array<Array<Float>> {
+	@:deprecated("Gaussian.create3x3Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
+	public static function create3x3Kernel(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
-		var kernal:Array<Array<Float>> = [[], [], [], []];
+		var kernel:Array<Array<Float>> = [[], [], [], []];
 		// sum is for normalization
 		var sum = 0.0;
 
@@ -26,24 +26,24 @@ class Gaussian {
 		for (x in -1...2) {
 			for (y in -1...2) {
 				r = Math.sqrt(x * x + y * y);
-				kernal[x + 1][y + 1] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
-				sum += kernal[x + 1][y + 1];
+				kernel[x + 1][y + 1] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
+				sum += kernel[x + 1][y + 1];
 			}
 		}
 
 		// normalizing the kernel
 		for (i in 0...3) {
 			for (j in 0...3) {
-				kernal[i][j] /= sum;
+				kernel[i][j] /= sum;
 			}
 		}
-		return kernal;
+		return kernel;
 	}
 
-	@:deprecated("Gaussian.create5x5Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create5x5Kernal(sigma:Float):Array<Array<Float>> {
+	@:deprecated("Gaussian.create5x5Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
+	public static function create5x5Kernel(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
-		var kernal:Array<Array<Float>> = [[], [], [], [], [], []];
+		var kernel:Array<Array<Float>> = [[], [], [], [], [], []];
 		// sum is for normalization
 		var sum = 0.0;
 
@@ -51,24 +51,24 @@ class Gaussian {
 		for (x in -2...3) {
 			for (y in -2...3) {
 				r = Math.sqrt(x * x + y * y);
-				kernal[x + 2][y + 2] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
-				sum += kernal[x + 2][y + 2];
+				kernel[x + 2][y + 2] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
+				sum += kernel[x + 2][y + 2];
 			}
 		}
 
 		// normalizing the Kernel
 		for (i in 0...5) {
 			for (j in 0...5) {
-				kernal[i][j] /= sum;
+				kernel[i][j] /= sum;
 			}
 		}
-		return kernal;
+		return kernel;
 	}
 
-	@:deprecated("Gaussian.create7x7Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create7x7Kernal(sigma:Float):Array<Array<Float>> {
+	@:deprecated("Gaussian.create7x7Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
+	public static function create7x7Kernel(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
-		var kernal:Array<Array<Float>> = [[], [], [], [], [], [], [], []];
+		var kernel:Array<Array<Float>> = [[], [], [], [], [], [], [], []];
 		// sum is for normalization
 		var sum = 0.0;
 
@@ -76,24 +76,24 @@ class Gaussian {
 		for (x in -3...4) {
 			for (y in -3...4) {
 				r = Math.sqrt(x * x + y * y);
-				kernal[x + 3][y + 3] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
-				sum += kernal[x + 3][y + 3];
+				kernel[x + 3][y + 3] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
+				sum += kernel[x + 3][y + 3];
 			}
 		}
 
 		// normalizing the Kernel
 		for (i in 0...7) {
 			for (j in 0...7) {
-				kernal[i][j] /= sum;
+				kernel[i][j] /= sum;
 			}
 		}
-		return kernal;
+		return kernel;
 	}
 
-	@:deprecated("Gaussian.create9x9Kernal() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create9x9Kernal(sigma:Float):Array<Array<Float>> {
+	@:deprecated("Gaussian.create9x9Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
+	public static function create9x9Kernel(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
-		var kernal:Array<Array<Float>> = [[], [], [], [], [], [], [], [], [], []];
+		var kernel:Array<Array<Float>> = [[], [], [], [], [], [], [], [], [], []];
 		// sum is for normalization
 		var sum = 0.0;
 
@@ -101,21 +101,21 @@ class Gaussian {
 		for (x in -4...5) {
 			for (y in -4...5) {
 				r = Math.sqrt(x * x + y * y);
-				kernal[x + 4][y + 4] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
-				sum += kernal[x + 4][y + 4];
+				kernel[x + 4][y + 4] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
+				sum += kernel[x + 4][y + 4];
 			}
 		}
 
 		// normalizing the Kernel
 		for (i in 0...9) {
 			for (j in 0...9) {
-				kernal[i][j] /= sum;
+				kernel[i][j] /= sum;
 			}
 		}
-		return kernal;
+		return kernel;
 	}
-	@:deprecated("Gaussian.createKernalOfSize() is deprecated. use Gaussian.create2DKernalOfSize() instead")
-	public static function createKernalOfSize(size:Int, sigma:Int) {
+	@:deprecated("Gaussian.createKernelOfSize() is deprecated. use Gaussian.create2DKernelOfSize() instead")
+	public static function createKernelOfSize(size:Int, sigma:Int) {
 		return create2DKernelOfSize(size, sigma);
 	}
 	
@@ -124,30 +124,30 @@ class Gaussian {
 		if (size <= 0) size = -size;
 		if (size % 2 == 0) size++;
 		#else
-		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernalSize(size);
+		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernelSize(size);
 		#end
 		var r, s = 2.0 * sigma * sigma, sum = 0.;
-		var kernal:Array2D<Float> = new Array2D<Float>(size, size);
+		var kernel:Array2D<Float> = new Array2D<Float>(size, size);
 		// get the average of the parameter size, rounded down
 		var avg = Std.int((size - 1) / 2);
 
-		// generate the kernal
+		// generate the kernel
 		for (x in -avg...avg + 1) {
 			for (y in -avg...avg + 1) {
 				r = Math.sqrt(x * x + y * y);
-				kernal.set(x + avg, y + avg, (Math.exp(-(r * r) / s)) / (Math.PI * s));
-				sum += kernal.get(x + avg, y + avg);
+				kernel.set(x + avg, y + avg, (Math.exp(-(r * r) / s)) / (Math.PI * s));
+				sum += kernel.get(x + avg, y + avg);
 			}
 		}
 
-		// normalize the kernal
+		// normalize the kernel
 		for (i in 0...size) {
 			for (j in 0...size) {
-				kernal.set(i, j, kernal.get(i, j) / sum);
+				kernel.set(i, j, kernel.get(i, j) / sum);
 			}
 		}
 
-		return kernal;
+		return kernel;
 	}
 
 	public static function create1DKernelOfSize(size:Int, sigma:Float):Array<Float> {
@@ -155,7 +155,7 @@ class Gaussian {
 		if (size <= 0) size = -size;
 		if (size % 2 == 0) size++;
 		#else
-		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernalSize(size);
+		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernelSize(size);
 		#end
 		var r = size / 2, sum = 0.;
 		// kernel
@@ -178,7 +178,7 @@ class Gaussian {
 		if (size <= 0) size = -size;
 		if (size % 2 == 0) size++;
 		#else
-		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernalSize(size);
+		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernelSize(size);
 		#end
 		var radius = Std.int((size - 1) / 2);
 		// first pass - vertical

@@ -1,6 +1,6 @@
 package vision.ds.gaussian;
 
-enum abstract GaussianKernalSize(Int) from Int to Int {
+enum abstract GaussianKernelSize(Int) from Int to Int {
 	/**No blurring**/
 	var X1 = 1;
 

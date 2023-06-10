@@ -1,10 +1,10 @@
 package vision.ds;
 
-import vision.ds.gaussian.GaussianKernalSize;
+import vision.ds.gaussian.GaussianKernelSize;
 
-enum Kernal2D {
+enum Kernel2D {
 	/**
-	 * This kernal preserves the image's pixel data.
+	 * This kernel preserves the image's pixel data.
 	 * 
 	 * ```
 	 * 0  0  0
@@ -23,7 +23,7 @@ enum Kernal2D {
 	Identity;
 
 	/**
-	 * This kernal applies a nearest-neighbor style blurring to the image.
+	 * This kernel applies a nearest-neighbor style blurring to the image.
 	 * 
 	 * ```
 	 * 1  1  1
@@ -42,7 +42,7 @@ enum Kernal2D {
 	BoxBlur;
 
 	/**
-	 * This kernal applies a Positive Laplacian Operator:
+	 * This kernel applies a Positive Laplacian Operator:
 	 * 
 	 * ```
 	 * 0  1  0
@@ -61,7 +61,7 @@ enum Kernal2D {
 	LaplacianPositive;
 
 	/**
-	 * This kernal applies a Negative Laplacian Operator:
+	 * This kernel applies a Negative Laplacian Operator:
 	 * 
 	 * ```
 	 * 0  -1  0
@@ -80,9 +80,9 @@ enum Kernal2D {
 	LaplacianNegative;
 
 	/**
-	 * This kernal is often used to detect changes of surface level in an image.
+	 * This kernel is often used to detect changes of surface level in an image.
 	 * 
-	 * For a more aggressive kernal, see `RidgeDetectionAggressive`
+	 * For a more aggressive kernel, see `RidgeDetectionAggressive`
 	 * 
 	 * ```
 	 * -1  -1  -1
@@ -101,9 +101,9 @@ enum Kernal2D {
 	RidgeDetection;
 
 	/**
-	 * This kernal is often used to detect changes of surface level in an image.
+	 * This kernel is often used to detect changes of surface level in an image.
 	 * 
-	 * This kernal is more sensitive to surface changes than its softer counterpart.
+	 * This kernel is more sensitive to surface changes than its softer counterpart.
 	 * 
 	 * ```
 	 * -1  -1  -1
@@ -122,7 +122,7 @@ enum Kernal2D {
 	RidgeDetectionAggressive;
 
 	/**
-	 * This kernal is often used to sharpen, or "deepfry" an image. It highlights
+	 * This kernel is often used to sharpen, or "deepfry" an image. It highlights
 	 * the change in pixel values where colors in the image change dramatically
 	 * from one pixel to the other.
 	 * 
@@ -142,7 +142,7 @@ enum Kernal2D {
 	Sharpen;
 
 	/**
-	 * Based on the `Gaussian Blur`, this kernal does'nt actually blur the image, but
+	 * Based on the `Gaussian Blur`, this kernel does'nt actually blur the image, but
 	 * uses a similar filter to slightly sharpen the image, while retaining the image's
 	 * quality.
 	 * 
@@ -165,7 +165,7 @@ enum Kernal2D {
 	UnsharpMasking;
 
 	/**
-	 * Makes a 3x3 kernal, following this structure:
+	 * Makes a 3x3 kernel, following this structure:
 	 * 
 	 * |     |   1    |   2    |   3    |
 	 * |:---:| :---:  | :---:  | :---:  |
@@ -178,7 +178,7 @@ enum Kernal2D {
 	Assemble3x3(corner:Float, edge:Float, center:Float);
 
 	/**
-	 * Makes a 5x5 kernal, following this structure:
+	 * Makes a 5x5 kernel, following this structure:
 	 * 
 	 * |     |     1     |     2     |    3    |     4     |     5     |
 	 * |:---:|   :---:   |   :---:   |  :---:  |   :---:   |   :---:   |
@@ -197,7 +197,7 @@ enum Kernal2D {
 	Assemble5x5(farCorner:Float, farEdge:Float, edge:Float, midCorner:Float, midEdge:Float, center:Float);
 
 	/**
-	 * make a kernal without any special tools.
+	 * make a kernel without any special tools.
 	 * 
 	 * Usage:
 	 * 
@@ -207,12 +207,12 @@ enum Kernal2D {
 	 *          [0, 1, 0],
 	 *      ])
 	 */
-	Custom(kernal:Array<Array<Float>>);
+	Custom(kernel:Array<Array<Float>>);
 
 	/**
-	 * Generates a gaussian kernal of size `size`x`size`, and uses `sigma` for the distribution factor.
+	 * Generates a gaussian kernel of size `size`x`size`, and uses `sigma` for the distribution factor.
 	 * 
-	 * Example of an (approximated) 5x5 gaussian kernal:
+	 * Example of an (approximated) 5x5 gaussian kernel:
 	 * 
 	 * ```
 	 * 1  4  6  4  1
@@ -230,5 +230,5 @@ enum Kernal2D {
 	 * 
 	 * ![Post-Processed](https://upload.wikimedia.org/wikipedia/commons/2/28/Vd-Blur1.png)&nbsp;,&nbsp;![Post-Processed](https://upload.wikimedia.org/wikipedia/commons/0/04/Vd-Blur_Gaussian_5x5.png)
 	 */
-	GaussianBlur(size:GaussianKernalSize, sigma:Float);
+	GaussianBlur(size:GaussianKernelSize, sigma:Float);
 }

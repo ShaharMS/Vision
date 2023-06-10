@@ -105,11 +105,11 @@ class Canny {
 		return copy;
 	}
 
-	static function getNeighbors(kernalSize:Int, x:Int, y:Int, image:Image):Array<Array<Color>> {
+	static function getNeighbors(kernelSize:Int, x:Int, y:Int, image:Image):Array<Array<Color>> {
 		var neighbors:Array<Array<Color>> = [];
-		for (i in 0...kernalSize + 1)
+		for (i in 0...kernelSize + 1)
 			neighbors[i] = [];
-		final roundedDown = Std.int((kernalSize - 1) / 2);
+		final roundedDown = Std.int((kernelSize - 1) / 2);
 
 		for (X in -roundedDown...roundedDown + 1) {
 			for (Y in -roundedDown...roundedDown + 1) {

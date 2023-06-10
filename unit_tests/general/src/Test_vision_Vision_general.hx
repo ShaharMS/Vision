@@ -10,7 +10,7 @@ import vision.ds.Queue;
 import vision.ds.Histogram;
 import vision.ds.Ray2D;
 using vision.Vision;
-import vision.ds.Kernal2D;
+import vision.ds.Kernel2D;
 
 class Test_vision_Vision_general
 {

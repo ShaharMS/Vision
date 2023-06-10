@@ -1,3 +1,12 @@
+# 2.0.0
+
+## Breaking!
+
+ - **Typo fix: `Kernal` has been replaced by `Kernel` across the entire library**
+
+
+
+
 # 1.3.1
 
 ### `vision.algorithms`

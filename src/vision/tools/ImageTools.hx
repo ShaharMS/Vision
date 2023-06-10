@@ -278,13 +278,13 @@ class ImageTools {
 	    @param image The image to get the neighbors in.
 	    @param x The x position of the pixel.
 	    @param y The y position of the pixel.
-	    @param kernalSize the width & height of the kernal.
+	    @param kernelSize the width & height of the kernel.
 	    @return an `Array2D` of colors
 	**/
-	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernalSize:Int):Array2D<Color> {
-		var neighbors = new Array2D(kernalSize, kernalSize);
+	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernelSize:Int):Array2D<Color> {
+		var neighbors = new Array2D(kernelSize, kernelSize);
 		var i = 0;
-		for (neighbor in getNeighborsOfPixelIter(image, x, y, kernalSize)) {
+		for (neighbor in getNeighborsOfPixelIter(image, x, y, kernelSize)) {
 			neighbors.inner[i++] = neighbor;
 		}
 		return neighbors;
@@ -298,12 +298,12 @@ class ImageTools {
 		@param image The image to get the neighbors in.
 		@param x The x position of the pixel.
 		@param y The y position of the pixel.
-		@param kernalSize the width & height of the kernal.
-		@param circular Whether or not the kernal is a circle, or a square. to get more "accurate" neighbors, set this to `true`. `false` by default.
+		@param kernelSize the width & height of the kernel.
+		@param circular Whether or not the kernel is a circle, or a square. to get more "accurate" neighbors, set this to `true`. `false` by default.
 		@return an `Array2D` of colors
 	**/
-	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Iterator<Color> {
-		return new NeighborsIterator(image, x, y, kernalSize, circular);
+	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernelSize:Int, circular:Bool = false):Iterator<Color> {
+		return new NeighborsIterator(image, x, y, kernelSize, circular);
 	}
 
 	public static inline function grayscalePixel(pixel:Color):Color {
@@ -576,9 +576,9 @@ private class NeighborsIterator {
 	var Y:Int;
 	var circular:Bool;
 
-	public inline function new(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false) {
+	public inline function new(image:Image, x:Int, y:Int, kernelSize:Int, circular:Bool = false) {
 		this.image = image;
-		this.roundedDown = (kernalSize - 1) >> 1;
+		this.roundedDown = (kernelSize - 1) >> 1;
 		this.x = x;
 		this.y = y;
 		this.circular = circular;

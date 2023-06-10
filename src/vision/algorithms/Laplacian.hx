@@ -1,6 +1,6 @@
 package vision.algorithms;
 
-import vision.ds.gaussian.GaussianKernalSize;
+import vision.ds.gaussian.GaussianKernelSize;
 import vision.ds.Color;
 import vision.tools.ImageTools;
 import vision.ds.Image;
@@ -28,9 +28,9 @@ class Laplacian {
 		return edgeColors;
 	}
 
-    public static function laplacianOfGaussian(image:Image, kernalSize:GaussianKernalSize, sigma:Float, threshold:Float, positive:Bool) {
+    public static function laplacianOfGaussian(image:Image, kernelSize:GaussianKernelSize, sigma:Float, threshold:Float, positive:Bool) {
         var returned = new Image(image.width, image.height);
-        var blurred = Vision.gaussianBlur(image.clone().removeView(), sigma, kernalSize);
+        var blurred = Vision.gaussianBlur(image.clone().removeView(), sigma, kernelSize);
         var imageToProcess:Image;
         imageToProcess = convolveWithLaplacianOperator(blurred, positive);
         imageToProcess.forEachPixel((x, y, color) -> {
