@@ -80,42 +80,20 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
 	public inline function new(rows:Int, columns:Int) {
 		this = new Array2D(rows, columns);
 	}
-
-	@:op(A *= B) public inline function multiplyBy(mat:Matrix2D) {
-		if (columns != mat.rows) {
+    
+    @:op(A * B) public static inline function multiplyMatrices(a:Matrix2D, b:Matrix2D):Matrix2D {    
+		if (a.columns != b.rows) {
             throw "Matrix dimensions are not compatible for multiplication.";
         }
 
-        var result = new Matrix2D(rows, mat.columns);
+        var result = new Matrix2D(a.rows, b.columns);
 
         for (x in 0...result.columns) {
             for (y in 0...result.rows) {
                 var sum: Float = 0.0;
 
-                for (k in 0...columns) {
-                    sum += this.get(k, y) * mat.get(x, k);
-                }
-
-                result.set(x, y, sum);
-            }
-        }
-		this = result.underlying;
-		return this;
-	}
-
-	@:op(A * B) public static inline function multiply(mat1:Matrix2D, mat2:Matrix2D):Matrix2D {
-		if (mat1.columns != mat2.rows) {
-            throw "Matrix dimensions are not compatible for multiplication.";
-        }
-
-        var result = new Matrix2D(mat1.rows, mat2.columns);
-
-        for (x in 0...result.columns) {
-            for (y in 0...result.rows) {
-                var sum: Float = 0.0;
-
-                for (k in 0...mat1.columns) {
-                    sum += mat1.get(k, y) * mat2.get(x, k);
+                for (k in 0...a.columns) {
+                    sum += a.get(k, y) * b.get(x, k);
                 }
 
                 result.set(x, y, sum);
@@ -123,4 +101,94 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
         }
 		return result;
 	}
+	@:op(A + B) public static inline function addMatrices(a:Matrix2D, b:Matrix2D): Matrix2D {
+        if (a.rows != b.rows || a.columns != b.columns) {
+            throw "Matrix dimensions are not compatible for addition.";
+        }
+
+        var result = new Matrix2D(a.rows, a.columns);
+
+        for (x in 0...result.columns) {
+            for (y in 0...result.rows) {
+                result.set(x, y, a.get(x, y) + b.get(x, y));
+            }
+        }
+
+        return result;
+    }
+    @:op(A - B) public static inline function subtractMatrices(a:Matrix2D, b:Matrix2D): Matrix2D {
+        if (a.rows != b.rows || a.columns != b.columns) {
+            throw "Matrix dimensions are not compatible for subtraction.";
+        }
+
+        var result = new Matrix2D(a.rows, a.columns);
+
+        for (x in 0...result.columns) {
+            for (y in 0...result.rows) {
+                result.set(x, y, a.get(x, y) - b.get(x, y));
+            }
+        }
+
+        return result;
+    }
+    @:op(A / B) public static inline function divideMatrices(a:Matrix2D, b:Float): Matrix2D {
+        var result = new Matrix2D(a.rows, a.columns);
+
+        for (x in 0...result.columns) {
+            for (y in 0...result.rows) {
+                result.set(x, y, a.get(x, y) / b);
+            }
+        }
+
+        return result;
+    }
+	@:op(A *= B) public inline function multiply(b:Matrix2D) {
+        if (columns != b.rows) {
+            throw "Matrix dimensions are not compatible for multiplication.";
+        }
+
+        var result = new Matrix2D(rows, b.columns);
+
+        for (x in 0...result.columns) {
+            for (y in 0...result.rows) {
+                var sum: Float = 0.0;
+
+                for (k in 0...columns) {
+                    sum += this.get(k, y) * b.get(x, k);
+                }
+
+                result.set(x, y, sum);
+            }
+        }
+        this = result.underlying;
+    }
+	@:op(A += B) public inline function add_equals(b:Matrix2D) {
+        if (rows != b.rows || columns != b.columns) {
+            throw "Matrix dimensions are not compatible for addition.";
+        }
+
+        for (x in 0...columns) {
+            for (y in 0...rows) {
+                this.set(x, y, this.get(x, y) + b.get(x, y));
+            }
+        }
+    }
+	@:op(A -= B) public inline function subtract_equals(b:Matrix2D) {
+        if (rows != b.rows || columns != b.columns) {
+            throw "Matrix dimensions are not compatible for subtraction.";
+        }
+
+        for (x in 0...columns) {
+            for (y in 0...rows) {
+            	this.set(x, y, this.get(x, y) - b.get(x, y));
+            }
+        }
+    }
+	@:op(A /= B) public inline function divideBy(b:Float) {
+        for (x in 0...columns) {
+            for (y in 0...rows) {
+                this.set(x, y, this.get(x, y) / b);
+            }
+        }
+    }
 }
