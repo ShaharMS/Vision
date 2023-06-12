@@ -1,8 +1,7 @@
 package vision.ds;
 
 import vision.ds.Array2D;
-import haxe.ds.Vector;
-
+import vision.tools.MathTools.*;
 /**
 	Represents a transformation matrix, used for warping images in one way or another.  
 	A matrix warps an image by multiplying each point by the matrix, as follows:
@@ -34,6 +33,50 @@ import haxe.ds.Vector;
 **/
 @:forward(get, set, fill)
 abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
+
+    /**
+        Generates a rotation matrix of `angle` degrees/radians.
+
+        @param angle The angle at which to rotate. goes counter-clockwise.
+        @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
+    **/
+    public static inline function ROTATION(angle:Float, ?degrees:Bool = true) {
+        return Matrix2D.createTransformation(
+            [if (degrees) cosd(angle) else cos(angle), if (degrees) -sind(angle) else -sin(angle), 0],
+            [],
+            [0, 0, 1]
+        );
+    }
+
+    /**
+        Generates a translation matrix that displaces the graphic 
+        inside the image `x` pixels to the right and `y` pixels to the bottom.
+
+        @param x Displacement in pixels to the right. Default value is 1.
+        @param y Displacement in pixels to the bottom. Default value is 1.
+    **/
+    public static inline function TRANSLATION(x:Float = 0, y:Float = 0) {
+        return Matrix2D.createTransformation(
+            [1, 0, x],
+            [0, 1, y],
+            [0, 0, 1]
+        );
+    }
+
+    /**
+        Generates a scaling matrix that "stretches" the width to the new width of `scaleX` * `width`,
+        and the height to the new height of `scaleY` * `height`.
+        @param scaleX Scaling along the X axis. Default value is 1.
+        @param scaleY Scealing along the Y axis. Default value is 1.
+    **/
+    public static function SCALE(scaleX:Float = 1, scaleY:Float = 1) {
+        return Matrix2D.createTransformation(
+            [scaleX, 0,      0],
+            [0,      scaleY, 0],
+            [0,      0,      1]
+        );
+    }
+    
 
 	public static inline function createFilled(...rows:Array<Float>):Matrix2D {
 		var arr = new Array2D(rows[0].length, rows.length);
@@ -162,7 +205,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
         }
         this = result.underlying;
     }
-	@:op(A += B) public inline function add_equals(b:Matrix2D) {
+	@:op(A += B) public inline function add(b:Matrix2D) {
         if (rows != b.rows || columns != b.columns) {
             throw "Matrix dimensions are not compatible for addition.";
         }
@@ -173,7 +216,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
             }
         }
     }
-	@:op(A -= B) public inline function subtract_equals(b:Matrix2D) {
+	@:op(A -= B) public inline function subtract(b:Matrix2D) {
         if (rows != b.rows || columns != b.columns) {
             throw "Matrix dimensions are not compatible for subtraction.";
         }
@@ -184,7 +227,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
             }
         }
     }
-	@:op(A /= B) public inline function divideBy(b:Float) {
+	@:op(A /= B) public inline function divide(b:Float) {
         for (x in 0...columns) {
             for (y in 0...rows) {
                 this.set(x, y, this.get(x, y) / b);

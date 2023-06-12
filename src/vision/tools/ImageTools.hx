@@ -17,7 +17,6 @@ import js.html.CanvasElement;
 
 #end
 import haxe.ds.Vector;
-import vision.ds.Matrix;
 import vision.ds.IntPoint2D;
 import vision.ds.Point2D;
 import vision.ds.Color;

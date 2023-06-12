@@ -1537,7 +1537,7 @@ abstract Image(ByteArray) {
 		that correctly represents the colors inside `bytes` at the given size
 		@param bytes The byte array to be used. **Make it's color format is `ARGB`.** if it isn't, use `PixelFormat.convertPixelFormat(bytes, fromFormat, ARGB)`
 		@param width The width of the returned image.
-		@param height Optional, the height of the returned image. determined automatically, but overridable by setting this parameter
+		@param height Optional, the height of the returned image. determined automatically, can be overridden by setting this parameter
 	**/
 	public static inline function fromBytes(bytes:ByteArray, width:Int, ?height:Int) {
 		var h = height != null ? height : (bytes.length / 4 / width).ceil();

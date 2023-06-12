@@ -412,6 +412,9 @@ class VisionMain {
 	hr.style.display = "inline-block";
 	hr.style.width = 'calc(100% - ${divW}px)';
 	div.appendChild(hr);
+	Browser.console.log(title + ":\n----------------------------------------------------------------");
+	#else
+	trace(title + ":\n----------------------------------------------------------------");
 	#end
 	}
 }

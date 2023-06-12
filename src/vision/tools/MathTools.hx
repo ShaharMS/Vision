@@ -1,8 +1,8 @@
 package vision.tools;
 
+import vision.ds.Matrix2D;
 import vision.ds.IntPoint2D;
 import haxe.ds.Vector;
-import vision.ds.Matrix;
 import vision.algorithms.Radix;
 import haxe.Int64;
 import haxe.ds.ArraySort;
@@ -70,7 +70,7 @@ class MathTools {
 	public static inline function distanceBetweenRays2D(ray:Ray2D, ray2:Ray2D):Float {
 		if (ray.radians != ray2.radians) return 0;
 		final point = ray.point; // some point on the ray
-		final intersectionOfPerpendicularWithRay2 = intersectionBetweenRay2Ds(ray2, new Ray2D(point, null, ray.degrees + 90)); // baiscally, calculates the intersection between ray2 and the perpendicular to ray.
+		final intersectionOfPerpendicularWithRay2 = intersectionBetweenRay2Ds(ray2, new Ray2D(point, null, ray.degrees + 90)); // basically, calculates the intersection between ray2 and the perpendicular to ray.
 		return distanceBetweenPoints(point, intersectionOfPerpendicularWithRay2); // this would be the shortest distance, since the perpendicular between two parallel lines is always the shortest line between them.
 	}
 
@@ -484,27 +484,27 @@ class MathTools {
 	// Conversions
 	//-----------------------------------------------------------------------------------------
 
-	public static inline function slopeToDegrees(slope:Float) {
+	public static inline function slopeToDegrees(slope:Float):Float {
 		return atan(slope) * 180 / PI;
 	}
 
-	public static inline function slopeToRadians(slope:Float) {
+	public static inline function slopeToRadians(slope:Float):Float {
 		return atan(slope);
 	}
 
-	public static inline function degreesToSlope(degrees:Float) {
+	public static inline function degreesToSlope(degrees:Float):Float {
 		return tan(degrees * PI / 180);
 	}
 
-	public static inline function degreesToRadians(degrees:Float) {
+	public static inline function degreesToRadians(degrees:Float):Float {
 		return degrees * PI / 180;
 	}
 
-	public static inline function radiansToDegrees(radians:Float) {
+	public static inline function radiansToDegrees(radians:Float):Float {
 		return radians * 180 / PI;
 	}
 
-	public static inline function radiansToSlope(radians:Float) {
+	public static inline function radiansToSlope(radians:Float):Float {
 		return tan(radians);
 	}
 
@@ -522,6 +522,30 @@ class MathTools {
 
 	public static inline function sec(radians:Float):Float {
 		return 1 / cos(radians);
+	}
+
+	public static inline function sind(degrees:Float):Float {
+		return sin(inline degreesToRadians(degrees));
+	}
+
+	public static inline function cosd(degrees:Float):Float {
+		return cos(inline degreesToRadians(degrees));
+	}
+	
+	public static inline function tand(degrees:Float):Float {
+		return tan(inline degreesToRadians(degrees));
+	}
+
+	public static inline function cotand(degrees:Float):Float {
+		return cotan(inline degreesToRadians(degrees));
+	}
+
+	public static inline function cosecd(degrees:Float):Float {
+		return cosec(inline degreesToRadians(degrees));
+	}
+
+	public static inline function secd(degrees:Float):Float {
+		return sec(inline degreesToRadians(degrees));
 	}
 
 	//-----------------------------------------------------------------------------------------
@@ -547,23 +571,11 @@ class MathTools {
 	 * @param array
 	 * @return Array<T>
 	 */
-	 overload extern inline public static function flatten<T>(array:Array<Array<T>>):Array<T> {
+	overload extern inline public static function flatten<T>(array:Array<Array<T>>):Array<T> {
 		var flat = [];
 		for (item in array)
 			flat = flat.concat(item);
 		return flat;
-	}
-
-	/**
-	 * Takes a Matrix and flattens it into a Vector.
-	 * @param matrix
-	 * @return Vector<T>
-	 */
-	overload extern inline public static function flatten<T>(matrix:Matrix<T>):Vector<T> {
-		var flat = [];
-		for (item in matrix)
-			flat = flat.concat(item.toArray());
-		return Vector.fromArrayCopy(flat);
 	}
 
 	/**
@@ -577,21 +589,6 @@ class MathTools {
 		for (i in 0...array.length) {
 			if (raised[floor(i / delimiter)] == null) raised[floor(i / delimiter)] = [];
 			raised[floor(i / delimiter)][i % delimiter] = array[i];
-		}
-		return raised;
-	}
-
-	/**
-	 * Takes a Vector and turns it into a Matrix, while splitting into vectors every `delimiter` indexes
-	 * @param vector
-	 * @param delimiter
-	 * @return Array<T>
-	 */
-	 overload extern inline public static function raise<T>(vector:Vector<T>, delimiter:Int):Matrix<T> {
-		var raised = new Matrix(floor(vector.length / delimiter));
-		for (i in 0...vector.length) {
-			if (raised[floor(i / delimiter)] == null) raised[floor(i / delimiter)] = new Vector(i % delimiter);
-			raised[floor(i / delimiter)][i % delimiter] = vector[i];
 		}
 		return raised;
 	}
