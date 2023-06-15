@@ -491,7 +491,7 @@ class ImageTools {
 				data[i] = image.underlying[i + (Image.OFFSET + 1)];
 				data[i + 1] = image.underlying[i + (Image.OFFSET + 1) + 1];
 				data[i + 2] = image.underlying[i + (Image.OFFSET + 1) + 2];
-				data[i + 3] = 255;
+				data[i + 3] = image.underlying[i + (Image.OFFSET + 1) + 3];
 			}
 		}
 
