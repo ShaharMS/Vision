@@ -93,6 +93,10 @@ class VisionMain {
 			printImage(image.clone().dilate());
 			end = haxe.Timer.stamp();
 			trace("Dilation took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().dilate());
+			end = haxe.Timer.stamp();
+			trace("Dilation took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 
 			#if mirror_flip_tests

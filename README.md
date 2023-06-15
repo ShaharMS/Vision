@@ -65,7 +65,7 @@ using vision.tools.ImageTools;
 
 //...
 
-image.addToScreen(); //alternatively, you can do - ImageTools.addToScreen(image)
+image.addToScreen(0, 0); //alternatively, you can do - ImageTools.addToScreen(image, 0, 0)
 ```
 ---
 ### Basic Image Manipulation

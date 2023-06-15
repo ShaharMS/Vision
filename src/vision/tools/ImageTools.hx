@@ -254,15 +254,18 @@ class ImageTools {
 				data[i] = image.underlying[i + (@:privateAccess Image.OFFSET + 1)];
 				data[i + 1] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1];
 				data[i + 2] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2];
-				data[i + 3] = 255;
+				data[i + 3] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 3];
 			}
 		}
 
 		ctx.putImageData(imageData, 0, 0);
 
 		c.style.position = "absolute";
+		if (units == null) units = {};
+
 		c.style.top = (y + units.yUnits) != null ? y + units.yUnits : y + "px";
 		c.style.left = (x + units.xUnits) != null ? x + units.xUnits : x + "px";
+		if (units.zIndex != null) c.style.zIndex = units.zIndex;
 
 		js.Browser.document.body.appendChild(c);
 		#end
