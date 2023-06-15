@@ -1,5 +1,6 @@
 package vision.tools;
 
+import haxe.io.Path;
 import haxe.crypto.Base64;
 import haxe.io.BytesOutput;
 import vision.ds.ByteArray;
@@ -199,7 +200,7 @@ class ImageTools {
 						var canvas = image.toJsCanvas();
   						var i = canvas.toDataURL("image/png", 1.0).replace("image/png", "image/octet-stream");
   						var link = Browser.document.createAnchorElement();
-  						link.download = "my-image.png";
+  						link.download = new Path(pathWithFileName).file + ".png";
   						link.href = i;
   						link.click();
 					} catch (e:haxe.Exception) {
