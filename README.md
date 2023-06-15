@@ -25,7 +25,7 @@ are lacking/have unclear documentation, please open an issue about it**
  - [**`exceptions`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/exceptions) - contains the errors usually thrown by Vision. **Notice - those errors are present just to let you know if you did something unexpected. If you want to get 
 rid of them, define `vision_quiet`.**
  - [**`helpers`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/helpers) - contains some helper classes that may be used by Vision. Theres nothing preventing you from using them yourself though...
- - [**`Vision.hx`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/Vision.hx) - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the algorithms class, since the ones in `Vision` are less likely to break compatibility, and are usually more concise.
+ - [**`Vision.hx`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/Vision.hx) - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the wanted algorithm's class, since the ones in `Vision` are much less likely to break compatibility, are usually simpler to use, and have much better documentation.
 
 
 
@@ -59,7 +59,7 @@ ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/
 );
 ```
 
-Add that image to the screen (available in platforms & libraries that support drawing on screen):
+Add that image to the screen (available on platforms & libraries that support drawing on screen):
 ```haxe
 using vision.tools.ImageTools;
 
@@ -244,7 +244,7 @@ One of the problems i have with Haxe is the lack of non-game utilities and libra
 
 ### Contributions Are Welcomed.
 
-I'm not the best at *everything* I do, especially in fields like computer vision, with which im not the most familiar. That means there are bound to be mistakes/bugs. Because of that, every issue, pull request or code review is welcomed. **Help me make this library bigger and better for everyone :)**
+I'm not the best at everything I do, especially in fields like computer vision, with which im not the most familiar. That means there are bound to be mistakes/bugs. Because of that, every issue, pull request or code review is welcomed. **Help me make this library bigger and better for everyone :)**
 
 ### About Documentation 
 
@@ -266,4 +266,4 @@ If you see some code that you think is not understandable, or some place that la
 | `vision_quiet` | When enabled, no errors are thrown from this library's components, and an effort is made to return the "expected" value. For example, gaussian kernal's size would be incremented if even, and a `getPixel` call outside the bounds of the image should return the closest pixel to that point. | 1.0.0 - now |
 | `vision_allow_resize` | When enabled, you can resize an image by directly setting its width/height property. Bilinear interpolation is used by default. If you wish to change this, change `defaultResizeAlgorithm` in `ImageTools`.| 1.0.0 - now |
 | `vision_multithread` | Attempts to use multithreaded versions of some algorithms - might boost performance. Available on both web & sys. | 1.0.0 - now |
-| `vision_higher_width_cap` | allows using images wider than 65535 pixels, but makes the byte offset bigger (11 to 21 bytes). Also allows image views to be wider & taller than 65535 pixels. | 1.2.0 - now |
+| `vision_higher_width_cap` | allows using images wider than 65535 pixels, but makes the image byte offset bigger (11 to 21 bytes) (for more information about the byte offset, [click here](https://github.com/ShaharMS/Vision/blob/ed042871963e7456161c00017e4c2bf79a1f26cc/src/vision/ds/Image.hx#L37)). Also allows image views to be wider & taller than 65535 pixels. | 1.2.0 - now |
