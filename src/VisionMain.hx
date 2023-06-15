@@ -94,9 +94,12 @@ class VisionMain {
 			end = haxe.Timer.stamp();
 			trace("Dilation took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().dilate());
+			var i = image.clone();
+			i.forEachPixel((x, y, color) -> i.setPixel(x, y, color & 0x88FFFFFF));
+			i.saveToFile("test.png");
+			printImage(i);
 			end = haxe.Timer.stamp();
-			trace("Dilation took: " + MathTools.truncate(end - start, 4) + " seconds");
+			trace("Lightening took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 
 			#if mirror_flip_tests
