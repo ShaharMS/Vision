@@ -48,7 +48,7 @@ class VisionMain {
 		var start:Float, end:Float;
 
 		#if (true)
-		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+		ImageTools.loadFromFile("https://cdn.discordapp.com/attachments/1042872067328065598/1118997582505590804/m_6yk8hgxa_8.png", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
 			var orgImage = image.clone();
@@ -96,7 +96,7 @@ class VisionMain {
 			start = haxe.Timer.stamp();
 			var i = image.clone();
 			i.forEachPixel((x, y, color) -> i.setPixel(x, y, color & 0x88FFFFFF));
-			i.saveToFile("test.png");
+			//i.saveToFile("test.png");
 			printImage(i);
 			end = haxe.Timer.stamp();
 			trace("Lightening took: " + MathTools.truncate(end - start, 4) + " seconds");
