@@ -692,19 +692,19 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	inline function get_red():Int {
-		return (getThis() >> 16) & 0xff;
+		return (getThis() >> 24) & 0xFF;
 	}
 
 	inline function get_green():Int {
-		return (getThis() >> 8) & 0xff;
+		return (getThis() >> 16) & 0xFF;
 	}
 
 	inline function get_blue():Int {
-		return getThis() & 0xff;
+		return (getThis() >> 8) & 0xFF;
 	}
 
 	inline function get_alpha():Int {
-		return (getThis() >> 24) & 0xff;
+		return getThis() & 0xFF;
 	}
 
 	inline function get_redFloat():Float {
