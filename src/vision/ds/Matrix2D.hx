@@ -1,5 +1,6 @@
 package vision.ds;
 
+import vision.algorithms.GaussJordan;
 import vision.ds.Array2D;
 import vision.tools.MathTools.*;
 using vision.tools.MathTools;
@@ -32,8 +33,8 @@ using vision.tools.MathTools;
 	@see For a general purpose, not-necessarily-mathematic matrix - `Array2D`
 	@see For provided convolution matrices - `Kernel2D`
 **/
-@:forward(get, set, fill)
-abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
+@:forward(get, set, fill, width, height)
+abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float>{
 
     /**
         Generates a rotation matrix of `angle` degrees/radians.
@@ -70,7 +71,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
         @param scaleX Scaling along the X axis. Default value is 1.
         @param scaleY Scealing along the Y axis. Default value is 1.
     **/
-    public static function SCALE(scaleX:Float = 1, scaleY:Float = 1):Matrix2D {
+    public static inline function SCALE(scaleX:Float = 1, scaleY:Float = 1):Matrix2D {
         return Matrix2D.createTransformation(
             [scaleX, 0,      0],
             [0,      scaleY, 0],
@@ -79,13 +80,13 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
     }
 
     /**
-    	Generates a shearing matrix that "skews" the slope of the image's edges in the x & y axis by `-1/shear`.
+        Generates a shearing matrix that "skews" the slope of the image's edges in the x & y axis by `-1/shear`.
         For example, if `shearX` is `0.5`, the image is skewed horizontally, such that the slope of the two vertical edges becomes `-2`.
 
-    	@param shearX The amount of shearing done on the x-axis, or in other words, when dividing `-1` by `shearX`, determines the slope of the image on the vertical edges.
-    	@param shearY The amount of shearing done on the y-axis, or in other words, when dividing `-1` by `shearY`, determines the slope of the image on the horizontal edges.
+        @param shearX The amount of shearing done on the x-axis, or in other words, when dividing `-1` by `shearX`, determines the slope of the image on the vertical edges.
+        @param shearY The amount of shearing done on the y-axis, or in other words, when dividing `-1` by `shearY`, determines the slope of the image on the horizontal edges.
     **/
-    public static function SHEAR(shearX:Float = 0, shearY:Float = 0):Matrix2D {
+    public static inline function SHEAR(shearX:Float = 0, shearY:Float = 0):Matrix2D {
         return Matrix2D.createTransformation(
             [1,      shearX, 0],
             [shearY, 1,      0],
@@ -98,7 +99,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
     	@param angle The angle at which to reflect. goes counter-clockwise.
         @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
     **/
-    public static function REFLECTION(angle:Float, ?degrees:Bool = true):Matrix2D {
+    public static inline function REFLECTION(angle:Float, ?degrees:Bool = true):Matrix2D {
         angle *= 2;
         return Matrix2D.createTransformation(
             [if (degrees) cosd(angle) else cos(angle), if (degrees) sind(angle) else sin(angle), 0],
@@ -153,6 +154,14 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
 	public inline function new(rows:Int, columns:Int) {
 		this = new Array2D(rows, columns);
 	}
+
+    public inline function invert():Matrix2D {
+        return this = GaussJordan.invert(this);
+    }
+
+    public inline function clone():Matrix2D {
+        return cast this.clone();
+    }
     
     @:op(A * B) public static inline function multiplyMatrices(a:Matrix2D, b:Matrix2D):Matrix2D {    
 		if (a.columns != b.rows) {
@@ -215,7 +224,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
 
         return result;
     }
-	@:op(A *= B) public inline function multiply(b:Matrix2D) {
+	@:op(A *= B) public inline function multiply(b:Matrix2D):Matrix2D {
         if (columns != b.rows) {
             throw "Matrix dimensions are not compatible for multiplication.";
         }
@@ -234,7 +243,9 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
             }
         }
         this = result.underlying;
+        return cast this;
     }
+    
 	@:op(A += B) public inline function add(b:Matrix2D) {
         if (rows != b.rows || columns != b.columns) {
             throw "Matrix dimensions are not compatible for addition.";
@@ -245,7 +256,10 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
                 this.set(x, y, this.get(x, y) + b.get(x, y));
             }
         }
+
+        return cast this;
     }
+
 	@:op(A -= B) public inline function subtract(b:Matrix2D) {
         if (rows != b.rows || columns != b.columns) {
             throw "Matrix dimensions are not compatible for subtraction.";
@@ -256,16 +270,27 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
             	this.set(x, y, this.get(x, y) - b.get(x, y));
             }
         }
+
+        return cast this;
     }
+
 	@:op(A /= B) public inline function divide(b:Float) {
         for (x in 0...columns) {
             for (y in 0...rows) {
                 this.set(x, y, this.get(x, y) / b);
             }
         }
+
+        return cast this;
     }
 
     @:to function to_array_array_float():Array<Array<Float>> {
         return this.inner.raise(this.width);
+    }
+
+    @:from static function from_array_array_float(array:Array<Array<Float>>):Matrix2D {
+        var arr2d = new Array2D(array[0].length, array.length);
+        arr2d.inner = array.flatten();
+        return cast arr2d;
     }
 }

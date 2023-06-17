@@ -48,7 +48,7 @@ class VisionMain {
 		var start:Float, end:Float;
 
 		#if (true)
-		ImageTools.loadFromFile("https://cdn.discordapp.com/attachments/1042872067328065598/1118997582505590804/m_6yk8hgxa_8.png", image -> {
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
 			var orgImage = image.clone();
@@ -122,6 +122,10 @@ class VisionMain {
 			printImage({var i = image.clone(); i.rotate(-Math.PI / 3, false, false); i;});
 			end = haxe.Timer.stamp();
 			trace("Image Rotation took: " + MathTools.truncate(end - start, 4) / 3 + " seconds");
+			start = haxe.Timer.stamp();
+			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.SHEAR(0.2, 0)); i;});
+			end = haxe.Timer.stamp();
+			trace("Image Mirroring & Flipping took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 
 			#if filter_tests

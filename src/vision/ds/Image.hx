@@ -1,5 +1,7 @@
 package vision.ds;
 
+import vision.algorithms.GaussJordan;
+import vision.ds.Matrix2D;
 import haxe.Resource;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
@@ -1107,6 +1109,62 @@ abstract Image(ByteArray) {
 	}
 
 	/**
+		Applies a transformation matrix onto this image, optionally resizing it if needed (might be needed for, e.g., translation/rotation matrix).
+
+		A matrix can be a literal 2D array: `[[1, 0, 0], [0, 1, 0], [0, 0, 1]]`, an instance of `Array2D`, 
+		one of the premade matrices using the static properties on `Matrix2D`, or an instance of `Matrix2D`.
+
+		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
+		@param expandImageBounds When a transformation wants to set pixels otuside the bounds of `this` image, determines whether the image is widened to match the new pixel (`true`), or cuts it out (`false`). Defaults to `true`.
+		@returns `this` image, changed, and maybe resized if `expandImageBounds` is `true`.
+		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
+	**/
+	public inline function applyMatrix(matrix:Matrix2D, expandImageBounds:Bool = true) {
+		// Get the max values for bounds expansion
+		var mix = 0., max = 0., miy = 0., may = 0.;
+		for (corner in [new Point2D(-width / 2, height / 2), new Point2D(width / 2, height / 2), new Point2D(width / 2, -height / 2), new Point2D(-width / 2, -height / 2)]) {
+			var coords = [[corner.x, corner.y, 1]];
+			coords = matrix * coords;
+			if (coords[0][0] > max) max = coords[0][0];
+			if (coords[0][0] < mix) mix = coords[0][0];
+			if (coords[0][1] > may) may = coords[0][1];
+			if (coords[0][1] < miy) miy = coords[0][1];
+		}
+		
+		var img = new Image(abs(max - mix).ceil(), abs(may - miy).ceil());
+
+		for (x in 0...img.width) {
+			for (y in 0...img.height) {
+				var pixel = getInterpolatedPixel(cast this, matrix, x - (img.width - width), y - (img.height - height));
+                img.setSafePixel(x, y, pixel);
+			}
+		}
+
+		this = img.underlying;
+		return cast this;
+	}
+
+	static function getInterpolatedPixel(image: Image, transformationMatrix: Matrix2D, x: Float, y: Float) {
+        var numRows = image.height;
+        var numCols = image.width;
+
+        var transformedCoords = transformationMatrix.multiply([[x, y, 1]]);
+        var transformedX = transformedCoords.get(0, 0);
+        var transformedY = transformedCoords.get(1, 0);
+
+        var x0 = Math.floor(transformedX);
+        var y0 = Math.floor(transformedY);
+        var x1 = x0 + 1;
+        var y1 = y0 + 1;
+
+        if (x0 >= 0 && x1 < numCols && y0 >= 0 && y1 < numRows) {
+			return image.getFloatingPixel(transformedX, transformedY);
+        }
+
+        return 0; // Return 0 for pixels outside the transformed image boundaries
+    }
+
+	/**
 		Resizes the image according to `algorithm`, to `newWidth` by `newHeight`.
 
 		@param newWidth The width to resize to. if assigned to `-1`, the image resizes to the given `newHeight`, and keeps the aspect-ratio of the original image.
@@ -1158,33 +1216,33 @@ abstract Image(ByteArray) {
 		final radians = if (degrees) angle.degreesToRadians() else angle;
 
 		// Calculate the dimensions of the rotated image
-        var sinTheta: Float = Math.sin(angle);
-        var cosTheta: Float = Math.cos(angle);
-        var newWidth: Int = Math.ceil(Math.abs(width * cosTheta) + Math.abs(height * sinTheta));
-        var newHeight: Int = Math.ceil(Math.abs(width * sinTheta) + Math.abs(height * cosTheta));
+        var sinTheta:Float = Math.sin(angle);
+        var cosTheta:Float = Math.cos(angle);
+        var newWidth:Int = Math.ceil(Math.abs(width * cosTheta) + Math.abs(height * sinTheta));
+        var newHeight:Int = Math.ceil(Math.abs(width * sinTheta) + Math.abs(height * cosTheta));
 
         // Create a new image with black background
-        var rotatedImage: Image = new Image(newWidth, newHeight);
+        var rotatedImage:Image = new Image(newWidth, newHeight);
 
         // Calculate the center of the new image
-        var centerX: Float = newWidth / 2;
-        var centerY: Float = newHeight / 2;
+        var centerX:Float = newWidth / 2;
+        var centerY:Float = newHeight / 2;
 
         // Calculate the center of the original image
-        var originalCenterX: Float = width / 2;
-        var originalCenterY: Float = height / 2;
+        var originalCenterX:Float = width / 2;
+        var originalCenterY:Float = height / 2;
 
         // Iterate over each pixel of the rotated image
         for (x in 0...rotatedImage.width) {
             for (y in 0...rotatedImage.height) {
                 // Calculate the coordinates in the original image
-                var rotatedX: Float = cosTheta * (x - centerX) + sinTheta * (y - centerY) + originalCenterX;
-                var rotatedY: Float = -sinTheta * (x - centerX) + cosTheta * (y - centerY) + originalCenterY;
+                var rotatedX:Float = cosTheta * (x - centerX) + sinTheta * (y - centerY) + originalCenterX;
+                var rotatedY:Float = -sinTheta * (x - centerX) + cosTheta * (y - centerY) + originalCenterY;
 
                 // Check if the calculated coordinates are within the bounds of the original image
                 if (rotatedX >= 0 && rotatedX < width && rotatedY >= 0 && rotatedY < height) {
                     // Get the pixel value from the original image and set it in the rotated image
-                    var pixelValue: Int = getFloatingPixel(rotatedX, rotatedY);
+                    var pixelValue = getFloatingPixel(rotatedX, rotatedY);
                     rotatedImage.setPixel(x, y, pixelValue);
                 }
             }

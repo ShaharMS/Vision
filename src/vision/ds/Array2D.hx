@@ -76,6 +76,12 @@ class Array2D<T> {
 		return this;
 	}
 
+	public inline function clone():Array2D<T> {
+		var arr = new Array2D(width, height);
+		arr.inner = inner.copy();
+		return arr;
+	}
+
 	inline function get_length():Int {
 		return inner.length;
 	}
