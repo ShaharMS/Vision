@@ -4,7 +4,7 @@ import vision.ds.Array2D;
 import vision.tools.MathTools.*;
 /**
 	Represents a transformation matrix, used for warping images in one way or another.  
-	A matrix warps an image by multiplying each point by the matrix, as follows:
+	A matrix warps an image by multiplying each pixel's coordinates by the matrix, as follows:
 	```txt
 	┌             ┐   
 	│ a₀₀ a₀₁ a₀₂ │   ┌       ┐
@@ -40,10 +40,10 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
         @param angle The angle at which to rotate. goes counter-clockwise.
         @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
     **/
-    public static inline function ROTATION(angle:Float, ?degrees:Bool = true) {
+    public static inline function ROTATION(angle:Float, ?degrees:Bool = true):Matrix2D {
         return Matrix2D.createTransformation(
             [if (degrees) cosd(angle) else cos(angle), if (degrees) -sind(angle) else -sin(angle), 0],
-            [],
+            [if (degrees) sind(angle) else sin(angle), if (degrees) cosd(angle) else cos(angle), 0],
             [0, 0, 1]
         );
     }
@@ -55,7 +55,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
         @param x Displacement in pixels to the right. Default value is 1.
         @param y Displacement in pixels to the bottom. Default value is 1.
     **/
-    public static inline function TRANSLATION(x:Float = 0, y:Float = 0) {
+    public static inline function TRANSLATION(x:Float = 0, y:Float = 0):Matrix2D {
         return Matrix2D.createTransformation(
             [1, 0, x],
             [0, 1, y],
@@ -69,11 +69,40 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
         @param scaleX Scaling along the X axis. Default value is 1.
         @param scaleY Scealing along the Y axis. Default value is 1.
     **/
-    public static function SCALE(scaleX:Float = 1, scaleY:Float = 1) {
+    public static function SCALE(scaleX:Float = 1, scaleY:Float = 1):Matrix2D {
         return Matrix2D.createTransformation(
             [scaleX, 0,      0],
             [0,      scaleY, 0],
             [0,      0,      1]
+        );
+    }
+
+    /**
+    	Generates a shearing matrix that "skews" the slope of the image's edges in the x & y axis by `-1/shear`.
+        For example, if `shearX` is `0.5`, the image is skewed horizontally, such that the slope of the two vertical edges becomes `-2`.
+
+    	@param shearX The amount of shearing done on the x-axis, or in other words, when dividing `-1` by `shearX`, determines the slope of the image on the vertical edges.
+    	@param shearY The amount of shearing done on the y-axis, or in other words, when dividing `-1` by `shearY`, determines the slope of the image on the horizontal edges.
+    **/
+    public static function SHEAR(shearX:Float = 0, shearY:Float = 0):Matrix2D {
+        return Matrix2D.createTransformation(
+            [1,      shearX, 0],
+            [shearY, 1,      0],
+            [0,      0,      1]
+        );
+    }
+
+    /**
+    	Generates a reflection matrix that "mirrors" an image along the axis which is `angle` degrees/radians form the `x` axis.
+    	@param angle The angle at which to reflect. goes counter-clockwise.
+        @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
+    **/
+    public static function REFLECTION(angle:Float, ?degrees:Bool = true):Matrix2D {
+        angle *= 2;
+        return Matrix2D.createTransformation(
+            [if (degrees) cosd(angle) else cos(angle), if (degrees) sind(angle) else sin(angle), 0],
+            [if (degrees) sind(angle) else sin(angle), if (degrees) -cosd(angle) else -cos(angle), 0],
+            [0, 0, 1]
         );
     }
     
