@@ -2,6 +2,7 @@ package vision.ds;
 
 import vision.ds.Array2D;
 import vision.tools.MathTools.*;
+using vision.tools.MathTools;
 /**
 	Represents a transformation matrix, used for warping images in one way or another.  
 	A matrix warps an image by multiplying each pixel's coordinates by the matrix, as follows:
@@ -262,5 +263,9 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> {
                 this.set(x, y, this.get(x, y) / b);
             }
         }
+    }
+
+    @:to function to_array_array_float():Array<Array<Float>> {
+        return this.inner.raise(this.width);
     }
 }
