@@ -123,7 +123,12 @@ class VisionMain {
 			end = haxe.Timer.stamp();
 			trace("Image Rotation took: " + MathTools.truncate(end - start, 4) / 3 + " seconds");
 			start = haxe.Timer.stamp();
-			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.SHEAR(0.2, 0)); i;});
+			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.ROTATION(90)); i;});
+			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.SHEAR(0.5, 0)); i;});
+			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.TRANSLATION(30, 55)); i;});
+			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.REFLECTION(30)); i;});
+			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.SCALE(2, 1.5)); i;});
+
 			end = haxe.Timer.stamp();
 			trace("Image Mirroring & Flipping took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end

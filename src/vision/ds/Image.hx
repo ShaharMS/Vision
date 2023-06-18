@@ -1122,47 +1122,29 @@ abstract Image(ByteArray) {
 	public inline function applyMatrix(matrix:Matrix2D, expandImageBounds:Bool = true) {
 		// Get the max values for bounds expansion
 		var mix = 0., max = 0., miy = 0., may = 0.;
-		for (corner in [new Point2D(-width / 2, height / 2), new Point2D(width / 2, height / 2), new Point2D(width / 2, -height / 2), new Point2D(-width / 2, -height / 2)]) {
+		for (corner in [new Point2D(0, 0), new Point2D(0, height), new Point2D(width, 0), new Point2D(width, height)]) {
 			var coords = [[corner.x, corner.y, 1]];
 			coords = matrix * coords;
-			if (coords[0][0] > max) max = coords[0][0];
-			if (coords[0][0] < mix) mix = coords[0][0];
-			if (coords[0][1] > may) may = coords[0][1];
-			if (coords[0][1] < miy) miy = coords[0][1];
+			var c = coords.flatten();
+			if (c[0] > max) max = c[0];
+			if (c[0] < mix) mix = c[0];
+			if (c[1] > may) may = c[1];
+			if (c[1] < miy) miy = c[1];
 		}
 		
-		var img = new Image(abs(max - mix).ceil(), abs(may - miy).ceil());
+		trace(mix, max, miy, may);
+		var img = new Image(expandImageBounds ? abs(max - mix).round() : width, expandImageBounds ? abs(may - miy).round() : height);
 
-		for (x in 0...img.width) {
-			for (y in 0...img.height) {
-				var pixel = getInterpolatedPixel(cast this, matrix, x - (img.width - width), y - (img.height - height));
-                img.setSafePixel(x, y, pixel);
+		for (x in 0...width) {
+			for (y in 0...height) {
+				var coords = [[x, y, 1.]] * matrix;
+				img.setFloatingPixel(coords.get(0, 0), coords.get(0, 1), getPixel(x, y));
 			}
 		}
 
 		this = img.underlying;
 		return cast this;
 	}
-
-	static function getInterpolatedPixel(image: Image, transformationMatrix: Matrix2D, x: Float, y: Float) {
-        var numRows = image.height;
-        var numCols = image.width;
-
-        var transformedCoords = transformationMatrix.multiply([[x, y, 1]]);
-        var transformedX = transformedCoords.get(0, 0);
-        var transformedY = transformedCoords.get(1, 0);
-
-        var x0 = Math.floor(transformedX);
-        var y0 = Math.floor(transformedY);
-        var x1 = x0 + 1;
-        var y1 = y0 + 1;
-
-        if (x0 >= 0 && x1 < numCols && y0 >= 0 && y1 < numRows) {
-			return image.getFloatingPixel(transformedX, transformedY);
-        }
-
-        return 0; // Return 0 for pixels outside the transformed image boundaries
-    }
 
 	/**
 		Resizes the image according to `algorithm`, to `newWidth` by `newHeight`.
