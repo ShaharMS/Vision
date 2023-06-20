@@ -34,7 +34,7 @@ using vision.tools.MathTools;
 	@see For provided convolution matrices - `Kernel2D`
 **/
 @:forward(get, set, fill, width, height)
-abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float>{
+abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
     /**
         Generates a rotation matrix of `angle` degrees/radians.
@@ -289,6 +289,12 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float>{
     }
 
     @:from static function from_array_array_float(array:Array<Array<Float>>):Matrix2D {
+        var arr2d = new Array2D(array[0].length, array.length);
+        arr2d.inner = array.flatten();
+        return cast arr2d;
+    }
+
+    @:from static function from_array_array_int(array:Array<Array<Int>>):Matrix2D {
         var arr2d = new Array2D(array[0].length, array.length);
         arr2d.inner = array.flatten();
         return cast arr2d;

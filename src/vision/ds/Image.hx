@@ -243,7 +243,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function getFloatingPixel(x:Float, y:Float):Color {
 
-		if (!hasPixel(Math.ceil(x), Math.ceil(y))) {
+		if (!hasPixel(Math.ceil(x), Math.ceil(y)) || !hasPixel(Math.floor(x), Math.floor(y))) {
 			x = x.boundFloat(0, width - 1);
 			y = y.boundFloat(0, height - 1);
 		}
@@ -303,7 +303,7 @@ abstract Image(ByteArray) {
 	}
 
 	public inline function setFloatingPixel(x:Float, y:Float, color:Color) {
-		if (!hasPixel(Math.ceil(x), Math.ceil(y))) {
+		if (!hasPixel(Math.ceil(x), Math.ceil(y)) || !hasPixel(Math.floor(x), Math.floor(y))) {
 			setFloatingPixel(x.boundFloat(0, width - 1), y.boundFloat(0, height - 1), color);
 			return;
 		}
@@ -1082,7 +1082,7 @@ abstract Image(ByteArray) {
 		return cast this;
 	}
 
-	public inline  function flip():Image {
+	public inline function flip():Image {
 		var inter = clone();
 		forEachPixelInView((x, y, color) -> {
 			setUnsafePixel(x, y, inter.getUnsafePixel(x, inter.height - y - 1));
@@ -1121,7 +1121,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function applyMatrix(matrix:Matrix2D, expandImageBounds:Bool = true) {
 		// Get the max values for bounds expansion
-		var mix = 0., max = 0., miy = 0., may = 0.;
+		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
 		for (corner in [new Point2D(0, 0), new Point2D(0, height), new Point2D(width, 0), new Point2D(width, height)]) {
 			var coords = [[corner.x, corner.y, 1]];
 			coords = matrix * coords;
@@ -1133,12 +1133,16 @@ abstract Image(ByteArray) {
 		}
 		
 		trace(mix, max, miy, may);
-		var img = new Image(expandImageBounds ? abs(max - mix).round() : width, expandImageBounds ? abs(may - miy).round() : height);
-
+		var img = new Image(expandImageBounds ? abs(max - minFloat(mix, 0)).round() : width, expandImageBounds ? abs(may - minFloat(miy, 0)).round() : height);
+		var dx = (max - mix).abs().round(), dy = (may - miy).abs().round();
+		trace("image created");
 		for (x in 0...width) {
 			for (y in 0...height) {
-				var coords = [[x, y, 1.]] * matrix;
-				img.setFloatingPixel(coords.get(0, 0), coords.get(0, 1), getPixel(x, y));
+				// Center x & y so matrix positions make sense
+				var coords = (matrix * [[x - width / 2, y - height / 2, 1]]).underlying.inner;
+				//trace(x, y, coords[0], coords[1], Std.int(coords[0]), Std.int(coords[1]));
+				// Translate coordinates back to their original position
+				img.setFloatingPixel(coords[0] + dx / 2, coords[1] + dy / 2, getSafePixel(x, y));
 			}
 		}
 
