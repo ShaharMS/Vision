@@ -1146,6 +1146,9 @@ abstract Image(ByteArray) {
 			}
 		}
 
+		// Interpolate missing pixels, using bilinear interpolation. pixel radius is chosen by the ratio of the distance from `mix to max` to width, same for height.
+		img = BilinearInterpolation.interpolateMissingPixels(img, (abs(max - maxFloat(mix, 0)).round() / width).floor(), (abs(may - maxFloat(miy, 0)).round() / height).floor(), maxFloat(mix, 0).round(), maxFloat(miy, 0).round());
+		
 		this = img.underlying;
 		return cast this;
 	}
