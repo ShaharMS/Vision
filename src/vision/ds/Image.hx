@@ -1142,7 +1142,7 @@ abstract Image(ByteArray) {
 				var coords = (matrix * [[x - width / 2, y - height / 2, 1]]).underlying.inner;
 				//trace(x, y, coords[0], coords[1], Std.int(coords[0]), Std.int(coords[1]));
 				// Translate coordinates back to their original position
-				img.setFloatingPixel(coords[0] + dx / 2, coords[1] + dy / 2, getSafePixel(x, y));
+				img.setSafePixel((coords[0] + dx / 2).round(), (coords[1] + dy / 2).round(), getSafePixel(x, y));
 			}
 		}
 

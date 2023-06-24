@@ -116,9 +116,12 @@ class VisionMain {
 			printImage(image.clone().mirror().flip());
 			end = haxe.Timer.stamp();
 			trace("Image Mirroring & Flipping took: " + MathTools.truncate(end - start, 4) + " seconds");
+			#end
+
+			#if matrix_tests
+			printSectionDivider("Matrix application tests");
 			start = haxe.Timer.stamp();
-			printImage({var i = image.clone(); i.rotate(1, true); i;});
-			printImage({var i = image.clone(); i.rotate(Math.PI / 3, false); i;});
+			printImage({var i = image.clone(); i.rotate(Math.PI / 12, false); i;});
 			printImage({var i = image.clone(); i.rotate(-Math.PI / 3, false, false); i;});
 			end = haxe.Timer.stamp();
 			trace("Image Rotation took: " + MathTools.truncate(end - start, 4) / 3 + " seconds");
@@ -128,7 +131,6 @@ class VisionMain {
 			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.TRANSLATION(60, 55)); i;});
 			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.REFLECTION(30)); i;});
 			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.SCALE(5, 1.5)); i;});
-
 			end = haxe.Timer.stamp();
 			trace("Image Mirroring & Flipping took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
@@ -405,7 +407,7 @@ class VisionMain {
 				data[i] = image.getPixel(x, y).red;
 				data[i + 1] = image.getPixel(x, y).green;
 				data[i + 2] = image.getPixel(x, y).blue;
-				data[i + 3] = 255;
+				data[i + 3] = 255; //image.getPixel(x, y).alpha;
 			}
 		}
 		ctx.putImageData(imageData, 0, 0);
