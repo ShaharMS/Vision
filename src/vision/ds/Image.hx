@@ -1207,8 +1207,8 @@ abstract Image(ByteArray) {
 		// Calculate the dimensions of the rotated image
         var sinTheta:Float = Math.sin(angle);
         var cosTheta:Float = Math.cos(angle);
-        var newWidth:Int = Math.ceil(Math.abs(width * cosTheta) + Math.abs(height * sinTheta));
-        var newHeight:Int = Math.ceil(Math.abs(width * sinTheta) + Math.abs(height * cosTheta));
+        var newWidth:Int = if (expandImageBounds) Math.ceil(Math.abs(width * cosTheta) + Math.abs(height * sinTheta)) else width;
+        var newHeight:Int = if (expandImageBounds) Math.ceil(Math.abs(width * sinTheta) + Math.abs(height * cosTheta)) else height;
 
         // Create a new image with black background
         var rotatedImage:Image = new Image(newWidth, newHeight);
