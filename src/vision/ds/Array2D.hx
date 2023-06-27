@@ -82,6 +82,27 @@ class Array2D<T> {
 		return arr;
 	}
 
+	public inline function toString():String {
+		var str = "\n[[";
+		var counter = 0;
+		for (item in inner) {
+			if (counter < width) {
+				var add = ', $item';
+				if (counter == 0) add = add.substr(2);
+				str += add;
+				counter++;
+			} else {
+				counter = 0;
+				str += "],\n [";
+				var add = '$item';
+				str += add;
+				counter++;
+			}
+		}
+
+		return str.substring(0, str.length) + "]]";
+	}
+
 	inline function get_length():Int {
 		return inner.length;
 	}

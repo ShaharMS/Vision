@@ -36,6 +36,128 @@ using vision.tools.MathTools;
 @:forward(get, set, fill, width, height)
 abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
+	public var underlying(get, set):Array2D<Float>;
+
+	inline function get_underlying() {
+		return this;
+	}
+
+	inline function set_underlying(arr2d:Array2D<Float>) {
+		return this = arr2d;
+	}
+
+	public var rows(get, set):Int;
+
+	@:noCompletion inline function get_rows():Int {
+		return this.width;
+	} 
+	@:noCompletion inline function set_rows(amount:Int):Int {
+		return this.width = amount;
+	}
+
+	public var columns(get, set):Int;
+
+	@:noCompletion inline function get_columns():Int {
+		return this.height;
+	} 
+	@:noCompletion inline function set_columns(amount:Int):Int {
+		return this.height = amount;
+	}
+    
+    
+
+	public inline function new(rows:Int, columns:Int) {
+		this = new Array2D(rows, columns);
+	}
+
+    public inline function invert():Matrix2D {
+        return this = GaussJordan.invert(this);
+    }
+
+    public inline function clone():Matrix2D {
+        return cast this.clone();
+    }
+
+    public inline function toString(?precision:Int, pretty:Bool = true) {
+        if (!pretty) return this.toString();
+
+        // Get the longest item, this will be the cell width
+        var maxLen = 1; // Minimum space
+        for (item in underlying.inner) {
+            var len;
+            if (precision == -1) len = Std.string(item).length;
+            else len = Std.string(item.truncate(precision)).length;
+            if (len > maxLen) maxLen = len;
+        }
+
+        inline function multiplyString(s:String, times:Int) {
+            var st = "";
+            for (i in 0...times) st += s;
+            return st;
+        }
+
+        inline function fixItem(item:Float) {
+            if (precision != -1) item = item.truncate(precision);
+            var itemString = Std.string(item);
+            if (itemString.length < maxLen) itemString = multiplyString(' ', ((maxLen - itemString.length) / 2).floor()) + itemString + multiplyString(' ', ((maxLen - itemString.length) / 2).ceil());
+            return itemString;
+        }
+        
+        // The matrix's width on screen should be maxLen * mat width + walls + padding + (padding between items) * width
+        var top = '\n┌ ${multiplyString(' ', maxLen * columns + 2 * (columns - 1))} ┐';
+        var bottom = '└ ${multiplyString(' ', maxLen * columns + 2 * (columns - 1))} ┘';
+
+        // Now, rows
+
+        var rows:Array<String> = [""];
+        var counter = 0;
+        var floor = 0;
+        for (item in underlying.inner) {
+			if (counter < columns) {
+				var add = ', ${fixItem(item)}';
+				if (counter == 0) add = add.substr(2);
+				rows[floor] += add;
+				counter++;
+			} else {
+				counter = 0;
+				floor++;
+                rows[floor] = "";
+                var add = '${fixItem(item)}';
+				rows[floor] += add;
+				counter++;
+			}
+		}
+
+        var string = top + "\n";
+        for (r in rows) {
+            string += '│ $r │\n';
+        }
+        string += bottom;
+
+        return string;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //-----------------------------------------------------------------------------------------
+	// Static matrix creation
+	//-----------------------------------------------------------------------------------------
+
     /**
         Generates a rotation matrix of `angle` degrees/radians.
 
@@ -123,45 +245,18 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		return cast arr;
 	}
 
-	public var underlying(get, set):Array2D<Float>;
 
-	inline function get_underlying() {
-		return this;
-	}
 
-	inline function set_underlying(arr2d:Array2D<Float>) {
-		return this = arr2d;
-	}
 
-	public var rows(get, set):Int;
 
-	@:noCompletion inline function get_rows():Int {
-		return this.width;
-	} 
-	@:noCompletion inline function set_rows(amount:Int):Int {
-		return this.width = amount;
-	}
 
-	public var columns(get, set):Int;
 
-	@:noCompletion inline function get_columns():Int {
-		return this.height;
-	} 
-	@:noCompletion inline function set_columns(amount:Int):Int {
-		return this.height = amount;
-	} 
 
-	public inline function new(rows:Int, columns:Int) {
-		this = new Array2D(rows, columns);
-	}
 
-    public inline function invert():Matrix2D {
-        return this = GaussJordan.invert(this);
-    }
 
-    public inline function clone():Matrix2D {
-        return cast this.clone();
-    }
+    //-----------------------------------------------------------------------------------------
+	// Matrix math
+	//-----------------------------------------------------------------------------------------
     
     @:op(A * B) public static inline function multiplyMatrices(a:Matrix2D, b:Matrix2D):Matrix2D {    
 		if (a.columns != b.rows) {
@@ -283,6 +378,19 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
         return cast this;
     }
+
+
+
+
+
+
+
+
+
+
+    //-----------------------------------------------------------------------------------------
+	// From/To
+	//-----------------------------------------------------------------------------------------
 
     @:to function to_array_array_float():Array<Array<Float>> {
         return this.inner.raise(this.width);

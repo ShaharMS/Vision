@@ -23,7 +23,7 @@ class GaussJordan {
 			}
 
 			// Check if the matrix is invertible
-			if (Math.abs(augmentedMatrix.get(pivotRow, i)) < 1e-8) {
+			if (Math.abs(augmentedMatrix.get(pivotRow, i)) < 1e-12) {
 				throw "Matrix is not invertible";
 			}
 

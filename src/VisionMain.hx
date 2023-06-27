@@ -133,6 +133,10 @@ class VisionMain {
 			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.SCALE(5, 1.5)); i;});
 			end = haxe.Timer.stamp();
 			trace("Image Mirroring & Flipping took: " + MathTools.truncate(end - start, 4) + " seconds");
+
+			trace(Matrix2D.ROTATION(23).toString(4));
+			trace(Matrix2D.ROTATION(23).toString(-1));
+			trace(Matrix2D.ROTATION(23).toString(false));
 			#end
 
 			#if filter_tests
