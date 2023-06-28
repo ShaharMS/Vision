@@ -47,17 +47,31 @@ class Array2D<T> {
 	}
 
 	/**
-	    Gets the element at row `x`, column `y`
+	    Gets the element at column `x`, row `y`
 	**/
 	public inline function get(x:Int, y:Int):T {
 		return inner[(y * height) + x];
 	}
 
 	/**
-	    Sets the element at row `x`, column `y`
+	    Sets the element at column `x`, row `y`
 	**/
 	public inline function set(x:Int, y:Int, val:T) {
 		return inner[x + (y * height)] = val;
+	}
+
+	/**
+		returns the entire row at position `y`
+	**/
+	public inline function row(y:Int):Array<T> {
+		return [for (i in y * width... y * width + width) inner[i]];
+	}
+
+	/**
+		returns the entire coluumn at position `x`
+	**/
+	public inline function column(x:Int):Array<T> {
+		return [for (i in 0...height) inner[i * width + x]];
 	}
 
 	/**

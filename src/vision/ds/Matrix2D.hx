@@ -99,6 +99,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         inline function fixItem(item:Float) {
             if (precision != -1) item = item.truncate(precision);
             var itemString = Std.string(item);
+            if (precision != -1 && item != item.truncate(precision)) itemString += "…";
             if (itemString.length < maxLen) itemString = multiplyString(' ', ((maxLen - itemString.length) / 2).floor()) + itemString + multiplyString(' ', ((maxLen - itemString.length) / 2).ceil());
             return itemString;
         }
