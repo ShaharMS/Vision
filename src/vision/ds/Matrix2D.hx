@@ -1,5 +1,6 @@
 package vision.ds;
 
+import vision.exceptions.MatrixOperationError;
 import vision.algorithms.GaussJordan;
 import vision.ds.Array2D;
 import vision.tools.MathTools.*;
@@ -89,6 +90,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             else len = Std.string(item.truncate(precision)).length;
             if (len > maxLen) maxLen = len;
         }
+        maxLen++; //Include elipsis
 
         inline function multiplyString(s:String, times:Int) {
             var st = "";
@@ -97,8 +99,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         }
 
         inline function fixItem(item:Float) {
-            if (precision != -1) item = item.truncate(precision);
-            var itemString = Std.string(item);
+            var itemString = Std.string(if (precision != -1) item.truncate(precision) else item);
             if (precision != -1 && item != item.truncate(precision)) itemString += "…";
             if (itemString.length < maxLen) itemString = multiplyString(' ', ((maxLen - itemString.length) / 2).floor()) + itemString + multiplyString(' ', ((maxLen - itemString.length) / 2).ceil());
             return itemString;
@@ -261,7 +262,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     
     @:op(A * B) public static inline function multiplyMatrices(a:Matrix2D, b:Matrix2D):Matrix2D {    
 		if (a.columns != b.rows) {
-            throw "Matrix dimensions are not compatible for multiplication.";
+            throw new MatrixOperationError("mult", [a, b], Mult_MismatchingDimensions);
         }
 
         var result = new Matrix2D(a.rows, b.columns);
@@ -281,7 +282,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 	}
 	@:op(A + B) public static inline function addMatrices(a:Matrix2D, b:Matrix2D): Matrix2D {
         if (a.rows != b.rows || a.columns != b.columns) {
-            throw "Matrix dimensions are not compatible for addition.";
+            throw new MatrixOperationError("add", [a, b], Add_MismatchingDimensions);
         }
 
         var result = new Matrix2D(a.rows, a.columns);
@@ -296,7 +297,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     }
     @:op(A - B) public static inline function subtractMatrices(a:Matrix2D, b:Matrix2D): Matrix2D {
         if (a.rows != b.rows || a.columns != b.columns) {
-            throw "Matrix dimensions are not compatible for subtraction.";
+            throw new MatrixOperationError("sub", [a, b], Sub_MismatchingDimensions);
         }
 
         var result = new Matrix2D(a.rows, a.columns);
@@ -309,20 +310,29 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
         return result;
     }
-    @:op(A / B) public static inline function divideMatrices(a:Matrix2D, b:Float): Matrix2D {
-        var result = new Matrix2D(a.rows, a.columns);
+    @:op(A / B) public static inline function divideMatrices(a:Matrix2D, b:Matrix2D):Matrix2D {    
+		if (a.columns != b.rows) {
+            throw new MatrixOperationError("div", [a, b], Div_MismatchingDimensions);
+        }
+
+        var result = new Matrix2D(a.rows, b.columns);
 
         for (x in 0...result.columns) {
             for (y in 0...result.rows) {
-                result.set(x, y, a.get(x, y) / b);
+                var sum: Float = 0.0;
+
+                for (k in 0...a.columns) {
+                    sum += a.get(k, y) / b.get(x, k);
+                }
+
+                result.set(x, y, sum);
             }
         }
-
-        return result;
-    }
+		return result;
+	}
 	@:op(A *= B) public inline function multiply(b:Matrix2D):Matrix2D {
         if (columns != b.rows) {
-            throw "Matrix dimensions are not compatible for multiplication.";
+            throw new MatrixOperationError("mult", [this, b], Mult_MismatchingDimensions);
         }
 
         var result = new Matrix2D(rows, b.columns);
@@ -344,7 +354,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     
 	@:op(A += B) public inline function add(b:Matrix2D) {
         if (rows != b.rows || columns != b.columns) {
-            throw "Matrix dimensions are not compatible for addition.";
+            throw new MatrixOperationError("add", [this, b], Add_MismatchingDimensions);
         }
 
         for (x in 0...columns) {
@@ -358,7 +368,8 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
 	@:op(A -= B) public inline function subtract(b:Matrix2D) {
         if (rows != b.rows || columns != b.columns) {
-            throw "Matrix dimensions are not compatible for subtraction.";
+            throw new MatrixOperationError("sub", [this, b], Sub_MismatchingDimensions);
+
         }
 
         for (x in 0...columns) {
@@ -370,13 +381,25 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return cast this;
     }
 
-	@:op(A /= B) public inline function divide(b:Float) {
-        for (x in 0...columns) {
-            for (y in 0...rows) {
-                this.set(x, y, this.get(x, y) / b);
-            }
+	@:op(A /= B) public inline function divide(b:Matrix2D):Matrix2D {
+        if (columns != b.rows) {
+            throw new MatrixOperationError("div", [this, b], Div_MismatchingDimensions);
         }
 
+        var result = new Matrix2D(rows, b.columns);
+
+        for (x in 0...result.columns) {
+            for (y in 0...result.rows) {
+                var sum: Float = 0.0;
+
+                for (k in 0...columns) {
+                    sum += this.get(k, y) / b.get(x, k);
+                }
+
+                result.set(x, y, sum);
+            }
+        }
+        this = result.underlying;
         return cast this;
     }
 

@@ -137,6 +137,9 @@ class VisionMain {
 			trace(Matrix2D.ROTATION(23).toString(4));
 			trace(Matrix2D.ROTATION(23).toString(-1));
 			trace(Matrix2D.ROTATION(23).toString(false));
+			var m:Matrix2D = Matrix2D.multiplyMatrices([[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[3, 2.9], [4, 6.234523], [7.234, 9], [13, 12.45232]]);
+			trace(m);
+
 			#end
 
 			#if filter_tests
