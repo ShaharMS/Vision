@@ -727,9 +727,14 @@ class MathTools {
 		return v == Std.int(v);
 	}
 
-	//---------------------
+
+
+
+
+
+	//-----------------------------------------------------------------------------------------
 	// Math.hx compatibility
-	//---------------------
+	//-----------------------------------------------------------------------------------------
 
 
 	@:noCompletion static inline function get_NEGATIVE_INFINITY() return Math.NEGATIVE_INFINITY;
@@ -800,6 +805,28 @@ class MathTools {
 
 	public static inline function isNaN(f:Float):Bool
 		return Math.isNaN(f);
+
+
+
+
+
+	//-----------------------------------------------------------------------------------------
+	// Std.hx compatibility, extensions for boolean
+	//-----------------------------------------------------------------------------------------
+
+
+	public static function parseFloat(s:String):Float
+		return Std.parseFloat(s);
+
+	public static function parseInt(s:String):Float
+		return Std.parseInt(s);
+
+	public static function parseBool(s:String):Bool {
+		s = StringTools.trim(s).toLowerCase();
+		if (s == "true") return true;
+		if (s == "false") return false;
+		return null; // Also works when "null" is given :)
+	}
 }
 
 abstract Number(Dynamic) from Float from Int from UInt to Float to Int to UInt {}
