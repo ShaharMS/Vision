@@ -825,7 +825,7 @@ class MathTools {
 		s = StringTools.trim(s).toLowerCase();
 		if (s == "true") return true;
 		#if static
-		return false
+		return false;
 		#else
 		if (s == "false") return false;
 		return null; // Also works when "null" is given :)
