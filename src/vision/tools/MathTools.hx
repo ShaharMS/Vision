@@ -824,8 +824,12 @@ class MathTools {
 	public static function parseBool(s:String):Bool {
 		s = StringTools.trim(s).toLowerCase();
 		if (s == "true") return true;
+		#if static
+		return false
+		#else
 		if (s == "false") return false;
 		return null; // Also works when "null" is given :)
+		#end
 	}
 }
 
