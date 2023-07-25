@@ -12,10 +12,10 @@ class MatrixOperationError extends VisionException {
     	@param matrices the two offending matrices
     **/
     public function new(op:String, matrices:Array<Matrix2D>, offense:MatrixError) {
-        super(errorByType(op, matrices, offense), 'Matrix ${op.charAt(0).toUpperCase() + op.substr(1)} Error');
+        super(MatrixOperationError.errorByType(op, matrices, offense), 'Matrix ${op.charAt(0).toUpperCase() + op.substr(1)} Error');
     }
 
-    function errorByType(type:String, mats:Array<Matrix2D>, off:MatrixError):String {
+    public static function errorByType(type:String, mats:Array<Matrix2D>, off:MatrixError):String {
         var sign = "";
         switch type {
             case "mult" | "multiplication" | "Mult" | "Multiplication": sign = "×";
