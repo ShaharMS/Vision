@@ -140,10 +140,9 @@ class ImageTools {
 
 			var i = 0;
 			while (i < imageData.data.length) {
-				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 0] = imageData.data[i + 0];
-				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1] = imageData.data[i + 1];
-				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2] = imageData.data[i + 2];
-				image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 3] = imageData.data[i + 3];
+			  for (o in 0...4) {
+          image.underlying[i + (@:privateAccess Image.OFFSET + 1) + o] = imageData.data[i + o];
+        }
 				i += 4;
 			}
 
@@ -252,10 +251,8 @@ class ImageTools {
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
 				var i = (y * image.width + x) * 4;
-				data[i] = image.underlying[i + (@:privateAccess Image.OFFSET + 1)];
-				data[i + 1] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 1];
-				data[i + 2] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 2];
-				data[i + 3] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + 3];
+        for (o in 0...4)
+				  data[i + o] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + o];
 			}
 		}
 
@@ -465,10 +462,8 @@ class ImageTools {
 		{
 			var i = 0;
 			while (i < imageData.data.length) {
-				image.underlying[i + (Image.OFFSET + 1) + 0] = imageData.data[i + 0];
-				image.underlying[i + (Image.OFFSET + 1) + 1] = imageData.data[i + 1];
-				image.underlying[i + (Image.OFFSET + 1) + 2] = imageData.data[i + 2];
-				image.underlying[i + (Image.OFFSET + 1) + 3] = imageData.data[i + 3];
+        for (o in 0...4)
+				  image.underlying[i + (Image.OFFSET + 1) + o] = imageData.data[i + o];
 				i += 4;
 			}
 		}
@@ -488,10 +483,8 @@ class ImageTools {
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
 				var i = (y * image.width + x) * 4;
-				data[i] = image.underlying[i + (Image.OFFSET + 1)];
-				data[i + 1] = image.underlying[i + (Image.OFFSET + 1) + 1];
-				data[i + 2] = image.underlying[i + (Image.OFFSET + 1) + 2];
-				data[i + 3] = image.underlying[i + (Image.OFFSET + 1) + 3];
+        for (o in 0...4)
+				  data[i + o] = image.underlying[i + (Image.OFFSET + 1) + o];
 			}
 		}
 
