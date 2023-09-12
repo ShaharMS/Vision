@@ -498,10 +498,8 @@ class MathTools {
         	}
     	}
 
-	public static function factorial(value:Float, tryImproveApproximation:Bool = true):Float {
+	public static function factorial(value:Float):Float {
 		var val = gamma(value + 1);
-		if (tryImproveApproximation && value == Std.int(value)) return truncate(val, 11);
-		/* `value == Std.int(value)` a little strange, but this is only effective with small positive integers anyway, so shouldn't be a problem */
 		return val;
 	}
 
