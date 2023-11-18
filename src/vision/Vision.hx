@@ -1,5 +1,7 @@
 package vision;
 
+import vision.algorithms.BilinearInterpolation;
+import vision.ds.Matrix2D;
 import vision.ds.Int16Point2D;
 import haxe.ds.Vector;
 import vision.ds.specifics.WhiteNoiseRange;
@@ -28,6 +30,7 @@ import vision.ds.Line2D;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.tools.MathTools;
+import vision.tools.MathTools.*;
 
 using vision.tools.MathTools;
 using vision.tools.ImageTools;
@@ -186,14 +189,14 @@ class Vision {
 
 		Example:
 
-		| Original | `iterations = 2` |
-		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-deepfry.png)|
+		| Original | `iterations = 1` | `iterations = 2` |
+		|---|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After One Iteration](https://spacebubble.io/vision/docs/valve-sharpen.png)|![After Two Iterations](https://spacebubble.io/vision/docs/valve-deepfry.png)|
 
 		The higher the value, the more deepfried the image will look.
 		@param image The image to be deepfried.
 		@param iterations The amount of times the image gets sharpened. default is `2`.
-		@return The deepfried image. the original copy is not preserved.
+		@return The deepfried image. The original copy is not preserved.
 	**/
 	public static function deepfry(image:Image, iterations:Int = 2):Image {
 		for (i in 0...iterations)
@@ -282,7 +285,7 @@ class Vision {
 
 		every `100 / percentage` pixels or so, a randomly generated mask bitmask is applied to the color, using **color interpolation**
 		
-		| Original | Processed |
+		| Original | `percentage = 25` |
 		|---|---|
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-saltAndPepperNoise.png)
 		
@@ -338,7 +341,7 @@ class Vision {
 	}
 
 	/**
-		Applies white noise to an image. White noise is the "snow" screen you see on televisions when they pick up unwanted electric/radiated electromagnetic signals instead of the channels you ant to watch.
+		Applies white noise to an image. White noise is the "snow" screen you see on televisions when they pick up unwanted electric/radiated electromagnetic signals instead of the channels you want to watch.
 
 		Instead of applying white noise every couple of pixels, white noise is sort of "combined" with the image, according to `percentage`:
 		
@@ -544,6 +547,64 @@ class Vision {
 			convolved.setUnsafePixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
 		});
 		return image = convolved;
+	}
+
+	/**
+		Manipulates the image's pixel data by applying the given transformation matrix - 
+		a 3x3 "grid" used to Move the image's pixels from one position to another. 
+
+		Differs from `Vision.convolve` in that it doesn't change the pixels color (like a `BoxBlur`, for example), but instead modifies the position of pixels within the image.  
+		This makes it easy to rotate, scale or translate an image.
+
+		A matrix can be a literal 2D array: `[[1, 0, 0], [0, 1, 0], [0, 0, 1]]`, an instance of `Array2D`, 
+		an instance of `Matrix2D`, or one of our home-made matrices using the static properties on `Matrix2D` :).
+
+		**Some things to note:**
+		 - The matrix's size must be 3x3. If the matrix is not 3x3, an error will be thrown.
+		 - Some transformations can move pixels outside of the image's original bounds 
+		   (for example, rotation, translation)), so, depending on the value of `expandImageBounds`, the image may resize.
+		 - If you want to know how the pixel position-manipulation is done, see `Matrix2D`'s documentation.
+
+		Examples for some of the pre-made matrices:
+
+		| Original | Tilting | Rotation | Rotation (`!expandImageBounds`) |
+		|---|---|---|---| 
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Tilted](https://spacebubble.io/vision/docs/valve-matrixTilt.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-matrixRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-matrixRotate%28expandImageBounds%20=%20false%29.png)|
+
+		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
+		@param expandImageBounds When a transformation wants to set pixels outside the bounds of `this` image, determines whether the image is widened to match the new pixel (`true`), or cuts it out (`false`). Defaults to `true`.
+		@returns A new, manipulated image. The provided image remains unchanged.
+		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
+	**/
+	public static function applyMatrix(image:Image, matrix:Matrix2D, expandImageBounds:Bool = true) {
+		// Get the max values for bounds expansion
+		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
+		for (corner in [new Point2D(0, 0), new Point2D(0, image.height), new Point2D(image.width, 0), new Point2D(image.width, image.height)]) {
+			var coords = [[corner.x, corner.y, 1]];
+			coords = matrix * coords;
+			var c = coords.flatten();
+			if (c[0] > max) max = c[0];
+			if (c[0] < mix) mix = c[0];
+			if (c[1] > may) may = c[1];
+			if (c[1] < miy) miy = c[1];
+		}
+		
+		var img = new Image(expandImageBounds ? MathTools.round(MathTools.abs(max - MathTools.minFloat(mix, 0))) : image.width, expandImageBounds ? MathTools.round(MathTools.abs(may - MathTools.minFloat(miy, 0))) : image.height);
+		var dx = (max - mix).abs().round(), dy = (may - miy).abs().round();
+
+		for (x in 0...image.width) {
+			for (y in 0...image.height) {
+				// Center x & y so matrix positions make sense
+				var coords = (matrix * [[x - image.width / 2, y - image.height / 2, 1]]).underlying.inner;
+
+				// Translate coordinates back to their original position
+				img.setSafePixel((coords[0] + dx / 2).round(), (coords[1] + dy / 2).round(), image.getSafePixel(x, y));
+			}
+		}
+
+		// Interpolate missing pixels, using bilinear interpolation. pixel radius is chosen by the ratio of the distance from `mix to max` to width, same for height.
+		return BilinearInterpolation.interpolateMissingPixels(img, (abs(max - maxFloat(mix, 0)).round() / image.width).floor(), (abs(may - maxFloat(miy, 0)).round() / image.height).floor(), maxFloat(mix, 0).round(), maxFloat(miy, 0).round());
+		
 	}
 
 	/**
