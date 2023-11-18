@@ -29,7 +29,6 @@ class MatrixOperationError extends VisionException {
         var signRow = MathTools.ceil(MathTools.max(mats[0].rows + 2, mats[1].rows + 2) / 2);
         var currentRow = 0;
         for (r in rows) {
-            trace(r);
             if (r[0].length == 0) r[0] = [for (i in 0...r[1].length) " "].join("");
             if (r[1].length == 0) r[1] = [for (i in 0...r[0].length) " "].join("");
 

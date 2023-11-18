@@ -1132,10 +1132,9 @@ abstract Image(ByteArray) {
 			if (c[1] < miy) miy = c[1];
 		}
 		
-		trace(mix, max, miy, may);
 		var img = new Image(expandImageBounds ? abs(max - minFloat(mix, 0)).round() : width, expandImageBounds ? abs(may - minFloat(miy, 0)).round() : height);
 		var dx = (max - mix).abs().round(), dy = (may - miy).abs().round();
-		trace("image created");
+
 		for (x in 0...width) {
 			for (y in 0...height) {
 				// Center x & y so matrix positions make sense
