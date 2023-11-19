@@ -567,9 +567,9 @@ class Vision {
 
 		Examples for some of the pre-made matrices:
 
-		| Original | Tilting | Rotation | Rotation (`!expandImageBounds`) |
+		| Original | Shearing | Rotation | Rotation (`!expandImageBounds`) |
 		|---|---|---|---| 
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Tilted](https://spacebubble.io/vision/docs/valve-matrixTilt.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-matrixRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-matrixRotate%28expandImageBounds%20=%20false%29.png)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Tilted](https://spacebubble.io/vision/docs/valve-matrixShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-matrixRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-matrixRotate%28expandImageBounds%20=%20false%29.png)|
 
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
 		@param expandImageBounds When a transformation wants to set pixels outside the bounds of `this` image, determines whether the image is widened to match the new pixel (`true`), or cuts it out (`false`). Defaults to `true`.
@@ -814,7 +814,7 @@ class Vision {
 		
 		| Original | After Filtering (Positive) | After Filtering (Negative) |
 		|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20true%29.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20true%29.png)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20true%29.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20false%29.png)|
 
 		@param image The image to be operated on
 		@param filterPositive Which version of the laplacian filter should the function use: the negative (detects "outward" edges), or the positive (detects "inward" edges). Default is positive (`true`).

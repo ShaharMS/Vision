@@ -1198,6 +1198,32 @@ abstract Image(ByteArray) {
 		return cast this;
 	}
 
+
+	public inline function tilt(topLeft:Null<IntPoint2D> = null, topRight:Null<IntPoint2D> = null, bottomLeft:Null<IntPoint2D> = null, bottomRight:Null<IntPoint2D> = null):Image {
+		if (topLeft == null) topLeft = new IntPoint2D(0, 0);
+		if (topRight == null) topRight = new IntPoint2D(width - 1, 0);
+		if (bottomLeft == null) bottomLeft = new IntPoint2D(0, height - 1);
+		if (bottomRight == null) bottomRight = new IntPoint2D(width - 1, height - 1);
+
+		// We can easily tilt an image by calculating "the amount of movement" it takes for each corner to get
+		// into its new position, and moving the rest of the pixels by averaging between the corners, and taking
+		// the pixels distance to the center of the image into account.
+
+		// One thing that might make this hard is tilting beyond the original bounds of the image.
+
+		var minX = minFloat(topLeft.x, topRight.x, bottomLeft.x, bottomRight.y);
+		var minY = minFloat(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y);
+
+		function translateX(px) return px + abs(minX);
+		function translateY(py) return py + abs(minY);
+		
+		// TODO
+
+
+		return cast this;
+
+	}
+
 	//--------------------------------------------------------------------------
 	// Convenience
 	//--------------------------------------------------------------------------
