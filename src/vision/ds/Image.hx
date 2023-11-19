@@ -1211,14 +1211,46 @@ abstract Image(ByteArray) {
 
 		// One thing that might make this hard is tilting beyond the original bounds of the image.
 
-		var minX = minFloat(topLeft.x, topRight.x, bottomLeft.x, bottomRight.y);
+		var minX = minFloat(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x);
 		var minY = minFloat(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y);
+		if (minX > 0) minX = 0; if (minY > 0) minY = 0;
+
+		var imageCenter = new Point2D(width / 2, height / 2);
+
+		var tlRads = imageCenter.radiansTo(topLeft),
+			trRads = imageCenter.radiansTo(topRight),
+			blRads = imageCenter.radiansTo(bottomLeft),
+			brRads = imageCenter.radiansTo(bottomRight);
+
+		var tilted = new Image(minX.ceil() + width, minY.ceil() + height);
 
 		function translateX(px) return px + abs(minX);
 		function translateY(py) return py + abs(minY);
-		
-		// TODO
+		function getQuarter(px, py) {
+			/*
+				\ Q1 /
+				 \  /
+				 Q\/Q
+				 2/\4
+				 /  \
+				/ Q3 \
+			*/		
+			var degs = imageCenter.degreesTo(new Point2D(px, py));	
+			if (45 <= degs && degs < 135) return 1;
+			if (135 <= degs && degs < 225) return 2;
+			if (225 <= degs && degs < 315) return 3;
+			return 4;
+		}
 
+		forEachPixelInView((x, y, c) -> {
+			var dist = imageCenter.distanceTo(new Point2D(x, y));
+			var rad = imageCenter.radiansTo(new Point2D(x, y));
+			switch getQuarter(x, y) {
+				case 1: {
+
+				}
+			}
+		});
 
 		return cast this;
 
