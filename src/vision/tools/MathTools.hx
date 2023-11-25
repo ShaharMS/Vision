@@ -87,7 +87,7 @@ class MathTools {
 	 * @param distance The distance from `start` to the resulting point.
 	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
 	 */
-	public static inline function findPointAtDistanceUsingX(ray:Ray2D, startXPos:Float, distance:Float, goPositive:Bool = true) {
+	public static inline function findPointAtDistanceUsingX(ray:Ray2D, startXPos:Float, distance:Float, goPositive:Bool = true):Point2D {
 		// Were going to step one point to the right, and check how much distance was covered.
 		// After checking, were going to divide distance with the distance between start to start(y + 1)
 		// Make sure to not surpass `distance`
@@ -111,7 +111,7 @@ class MathTools {
 	 * @param distance The distance from `start` to the resulting point.
 	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
 	 */
-	 public static inline function findPointAtDistanceUsingY(ray:Ray2D, startYPos:Float, distance:Float, goPositive:Bool = true) {
+	 public static inline function findPointAtDistanceUsingY(ray:Ray2D, startYPos:Float, distance:Float, goPositive:Bool = true):Point2D {
 		// Were going to step one point to the right, and check how much distance was covered.
 		// After checking, were going to divide distance with the distance between start to start(y + 1)
 		// Make sure to not surpass `distance`
@@ -214,7 +214,7 @@ class MathTools {
 	// Point2D Extensions
 	//-----------------------------------------------------------------------------------------
 
-	overload extern inline public static function distanceFromPointToRay2D(point:Point2D, ray:Ray2D) {
+	overload extern inline public static function distanceFromPointToRay2D(point:Point2D, ray:Ray2D):Float {
 		// Get the closest point on the ray to the given point
 		final closestPoint:Point2D = getClosestPointOnRay2D(point, ray);
 
@@ -251,17 +251,17 @@ class MathTools {
 		return angle2 - angle;
 	}
 
-	overload extern inline public static function radiansFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+	overload extern inline public static function radiansFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	overload extern inline public static function degreesFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+	overload extern inline public static function degreesFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function slopeFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+	overload extern inline public static function slopeFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
@@ -271,17 +271,17 @@ class MathTools {
 		return sqrt(x * x + y * y);
 	}
 
-	overload extern inline public static function radiansFromPointToPoint2D(point1:Point2D, point2:IntPoint2D) {
+	overload extern inline public static function radiansFromPointToPoint2D(point1:Point2D, point2:IntPoint2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	overload extern inline public static function degreesFromPointToPoint2D(point1:Point2D, point2:IntPoint2D) {
+	overload extern inline public static function degreesFromPointToPoint2D(point1:Point2D, point2:IntPoint2D):Float {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function slopeFromPointToPoint2D(point1:Point2D, point2:IntPoint2D) {
+	overload extern inline public static function slopeFromPointToPoint2D(point1:Point2D, point2:IntPoint2D):Float {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
@@ -310,7 +310,7 @@ class MathTools {
 	// IntPoint2D Extensions
 	//-----------------------------------------------------------------------------------------
 
-	overload extern inline public static function distanceFromPointToRay2D(point:IntPoint2D, ray:Ray2D) {
+	overload extern inline public static function distanceFromPointToRay2D(point:IntPoint2D, ray:Ray2D):Float {
 		// Get the closest point on the ray to the given point
 		final closestPoint:Point2D = getClosestPointOnRay2D(point, ray);
 
@@ -347,17 +347,17 @@ class MathTools {
 		return angle2 - angle;
 	}
 
-	overload extern inline public static function radiansFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D) {
+	overload extern inline public static function radiansFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	overload extern inline public static function degreesFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D) {
+	overload extern inline public static function degreesFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D):Float {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function slopeFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D) {
+	overload extern inline public static function slopeFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D):Float {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
@@ -367,17 +367,17 @@ class MathTools {
 		return sqrt(x * x + y * y);
 	}
 	
-	overload extern inline public static function radiansFromPointToPoint2D(point1:IntPoint2D, point2:Point2D) {
+	overload extern inline public static function radiansFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	overload extern inline public static function degreesFromPointToPoint2D(point1:IntPoint2D, point2:Point2D) {
+	overload extern inline public static function degreesFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function slopeFromPointToPoint2D(point1:IntPoint2D, point2:Point2D) {
+	overload extern inline public static function slopeFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
@@ -407,7 +407,7 @@ class MathTools {
 	// General
 	//-----------------------------------------------------------------------------------------
 
-	public static inline function clamp(value:Int, mi:Int, ma:Int) {
+	public static inline function clamp(value:Int, mi:Int, ma:Int):Int {
 		return inline min(inline max(value, mi), ma);
 	}
 
@@ -434,7 +434,7 @@ class MathTools {
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public inline static function wrapInt(value:Int, min:Int, max:Int) {
+	public inline static function wrapInt(value:Int, min:Int, max:Int):Int {
 		var range = max - min + 1;
 
 		if (value < min)
@@ -447,7 +447,7 @@ class MathTools {
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public inline static function wrapFloat(value:Float, min:Float, max:Float) {
+	public inline static function wrapFloat(value:Float, min:Float, max:Float):Float {
 		var range = max - min;
 
 		if (value < min)
@@ -459,7 +459,7 @@ class MathTools {
 	/**
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
 	**/
-	public static function boundInt(value:Int, min:Int, max:Int) {
+	public static function boundInt(value:Int, min:Int, max:Int):Int {
 		if (value < min) return min;
 		if (value > max) return max;
 		return value;
@@ -468,7 +468,7 @@ class MathTools {
 	/**
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
 	**/
-	public static function boundFloat(value:Float, min:Float, max:Float) {
+	public static function boundFloat(value:Float, min:Float, max:Float):Float {
 		var t = value < min ? min : value;
   		return t > max ? max : t;
 	}
@@ -760,11 +760,11 @@ class MathTools {
 	//-----------------------------------------------------------------------------------------
 
 
-	@:noCompletion static inline function get_NEGATIVE_INFINITY() return Math.NEGATIVE_INFINITY;
-	@:noCompletion static inline function get_POSITIVE_INFINITY() return Math.POSITIVE_INFINITY;
-	@:noCompletion static inline function get_NaN() return Math.NaN;
-	@:noCompletion static inline function get_PI_OVER_2() return PI / 2;
-	@:noCompletion static inline function get_PI() return Math.PI;
+	@:noCompletion static inline function get_NEGATIVE_INFINITY():Float return Math.NEGATIVE_INFINITY;
+	@:noCompletion static inline function get_POSITIVE_INFINITY():Float return Math.POSITIVE_INFINITY;
+	@:noCompletion static inline function get_NaN():Float return Math.NaN;
+	@:noCompletion static inline function get_PI_OVER_2():Float return PI / 2;
+	@:noCompletion static inline function get_PI():Float return Math.PI;
 
 	public static inline function abs(v:Float):Float
 		return Math.abs(v);
