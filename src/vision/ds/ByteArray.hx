@@ -35,9 +35,19 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     }
 
     /**
-        Creates a new `ByteArray`
+        Creates a new `ByteArray`. Values are set to 0.
     **/
     public inline function new(length:Int) {
         this = Bytes.alloc(length);
+        this.fill(0);
+    }
+
+    public inline function resize(length:Int) {
+        var newBytes = Bytes.alloc(length);
+        newBytes.fill(0);
+        newBytes.blit(0, this, 0, this.length);
+        this = newBytes;
+    }
+        
     }
 }

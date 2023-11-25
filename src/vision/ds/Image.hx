@@ -1108,50 +1108,7 @@ abstract Image(ByteArray) {
 		return cast this;
 	}
 
-	/**
-		Applies a transformation matrix onto this image, optionally resizing it if needed (might be needed for, e.g., translation/rotation matrix).
-
-		A matrix can be a literal 2D array: `[[1, 0, 0], [0, 1, 0], [0, 0, 1]]`, an instance of `Array2D`, 
-		one of the premade matrices using the static properties on `Matrix2D`, or an instance of `Matrix2D`.
-
-		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
-		@param expandImageBounds When a transformation wants to set pixels otuside the bounds of `this` image, determines whether the image is widened to match the new pixel (`true`), or cuts it out (`false`). Defaults to `true`.
-		@returns `this` image, changed, and maybe resized if `expandImageBounds` is `true`.
-		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
-	**/
-	public inline function applyMatrix(matrix:Matrix2D, expandImageBounds:Bool = true) {
-		// Get the max values for bounds expansion
-		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
-		for (corner in [new Point2D(0, 0), new Point2D(0, height), new Point2D(width, 0), new Point2D(width, height)]) {
-			var coords = [[corner.x, corner.y, 1]];
-			coords = matrix * coords;
-			var c = coords.flatten();
-			if (c[0] > max) max = c[0];
-			if (c[0] < mix) mix = c[0];
-			if (c[1] > may) may = c[1];
-			if (c[1] < miy) miy = c[1];
-		}
-		
-		trace(mix, max, miy, may);
-		var img = new Image(expandImageBounds ? abs(max - minFloat(mix, 0)).round() : width, expandImageBounds ? abs(may - minFloat(miy, 0)).round() : height);
-		var dx = (max - mix).abs().round(), dy = (may - miy).abs().round();
-		trace("image created");
-		for (x in 0...width) {
-			for (y in 0...height) {
-				// Center x & y so matrix positions make sense
-				var coords = (matrix * [[x - width / 2, y - height / 2, 1]]).underlying.inner;
-				//trace(x, y, coords[0], coords[1], Std.int(coords[0]), Std.int(coords[1]));
-				// Translate coordinates back to their original position
-				img.setSafePixel((coords[0] + dx / 2).round(), (coords[1] + dy / 2).round(), getSafePixel(x, y));
-			}
-		}
-
-		// Interpolate missing pixels, using bilinear interpolation. pixel radius is chosen by the ratio of the distance from `mix to max` to width, same for height.
-		img = BilinearInterpolation.interpolateMissingPixels(img, (abs(max - maxFloat(mix, 0)).round() / width).floor(), (abs(may - maxFloat(miy, 0)).round() / height).floor(), maxFloat(mix, 0).round(), maxFloat(miy, 0).round());
-		
-		this = img.underlying;
-		return cast this;
-	}
+	
 
 	/**
 		Resizes the image according to `algorithm`, to `newWidth` by `newHeight`.
@@ -1196,9 +1153,9 @@ abstract Image(ByteArray) {
 		Rotates this image's pixel by `angle` degrees\radians.  
 		Notice - rotating an image and then re-rotating to the image's previous state won't bring you exactly the same image.
 
-		@param angle 
-		@param degrees 
-		@param expandImageBounds 
+		@param angle The angle to rotate by.
+		@param degrees if `true`, `angle` is in degrees. Otherwise, `angle` is in radians.
+		@param expandImageBounds Whether to expand the image's bounds to fit the rotated image. Default is `true`.
 	**/
 	public inline function rotate(angle:Float, ?degrees:Bool = true, expandImageBounds:Bool = true):Image {
 		final center = new Point2D(width / 2, height / 2);
@@ -1239,6 +1196,64 @@ abstract Image(ByteArray) {
 
 		this = rotatedImage.underlying;
 		return cast this;
+	}
+
+
+	public inline function tilt(topLeft:Null<IntPoint2D> = null, topRight:Null<IntPoint2D> = null, bottomLeft:Null<IntPoint2D> = null, bottomRight:Null<IntPoint2D> = null):Image {
+		if (topLeft == null) topLeft = new IntPoint2D(0, 0);
+		if (topRight == null) topRight = new IntPoint2D(width - 1, 0);
+		if (bottomLeft == null) bottomLeft = new IntPoint2D(0, height - 1);
+		if (bottomRight == null) bottomRight = new IntPoint2D(width - 1, height - 1);
+
+		// We can easily tilt an image by calculating "the amount of movement" it takes for each corner to get
+		// into its new position, and moving the rest of the pixels by averaging between the corners, and taking
+		// the pixels distance to the center of the image into account.
+
+		// One thing that might make this hard is tilting beyond the original bounds of the image.
+
+		var minX = minFloat(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x);
+		var minY = minFloat(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y);
+		if (minX > 0) minX = 0; if (minY > 0) minY = 0;
+
+		var imageCenter = new Point2D(width / 2, height / 2);
+
+		var tlRads = imageCenter.radiansTo(topLeft),
+			trRads = imageCenter.radiansTo(topRight),
+			blRads = imageCenter.radiansTo(bottomLeft),
+			brRads = imageCenter.radiansTo(bottomRight);
+
+		var tilted = new Image(minX.ceil() + width, minY.ceil() + height);
+
+		function translateX(px) return px + abs(minX);
+		function translateY(py) return py + abs(minY);
+		function getQuarter(px, py) {
+			/*
+				\ Q1 /
+				 \  /
+				 Q\/Q
+				 2/\4
+				 /  \
+				/ Q3 \
+			*/		
+			var degs = imageCenter.degreesTo(new Point2D(px, py));	
+			if (45 <= degs && degs < 135) return 1;
+			if (135 <= degs && degs < 225) return 2;
+			if (225 <= degs && degs < 315) return 3;
+			return 4;
+		}
+
+		forEachPixelInView((x, y, c) -> {
+			var dist = imageCenter.distanceTo(new Point2D(x, y));
+			var rad = imageCenter.radiansTo(new Point2D(x, y));
+			switch getQuarter(x, y) {
+				case 1: {
+
+				}
+			}
+		});
+
+		return cast this;
+
 	}
 
 	//--------------------------------------------------------------------------
