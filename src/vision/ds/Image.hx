@@ -1247,7 +1247,8 @@ abstract Image(ByteArray) {
 			var rad = imageCenter.radiansTo(new Point2D(x, y));
 			switch getQuarter(x, y) {
 				case 1: {
-
+					var tlDistance = new IntPoint2D(0, 0).distanceTo(new IntPoint2D(x, y));
+					var trDistance = new IntPoint2D(width - 1, 0).distanceTo(new IntPoint2D(x, y));
 				}
 			}
 		});
