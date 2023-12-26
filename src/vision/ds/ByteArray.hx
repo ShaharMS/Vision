@@ -48,6 +48,11 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
         newBytes.blit(0, this, 0, this.length);
         this = newBytes;
     }
-        
-    }
+
+	public inline function concat(array:ByteArray):ByteArray {
+		var newBytes = Bytes.alloc(this.length + array.length);
+		newBytes.blit(0, this, 0, this.length);
+		newBytes.blit(this.length, array, 0, array.length);
+		return newBytes;
+	}
 }
