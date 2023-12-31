@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.specifics.PointTransformationPair;
 import vision.algorithms.BilinearInterpolation;
 import vision.ds.Matrix2D;
 import vision.ds.Int16Point2D;
@@ -605,6 +606,10 @@ class Vision {
 		// Interpolate missing pixels, using bilinear interpolation. pixel radius is chosen by the ratio of the distance from `mix to max` to width, same for height.
 		return BilinearInterpolation.interpolateMissingPixels(img, (abs(max - maxFloat(mix, 0)).round() / image.width).floor(), (abs(may - maxFloat(miy, 0)).round() / image.height).floor(), maxFloat(mix, 0).round(), maxFloat(miy, 0).round());
 		
+	}
+
+	public static function warp(image:Image, pointPairs:Array<PointTransformationPair>) {
+
 	}
 
 	/**

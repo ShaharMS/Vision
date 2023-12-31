@@ -1199,64 +1199,6 @@ abstract Image(ByteArray) {
 	}
 
 
-	public inline function tilt(topLeft:Null<IntPoint2D> = null, topRight:Null<IntPoint2D> = null, bottomLeft:Null<IntPoint2D> = null, bottomRight:Null<IntPoint2D> = null):Image {
-		if (topLeft == null) topLeft = new IntPoint2D(0, 0);
-		if (topRight == null) topRight = new IntPoint2D(width - 1, 0);
-		if (bottomLeft == null) bottomLeft = new IntPoint2D(0, height - 1);
-		if (bottomRight == null) bottomRight = new IntPoint2D(width - 1, height - 1);
-
-		// We can easily tilt an image by calculating "the amount of movement" it takes for each corner to get
-		// into its new position, and moving the rest of the pixels by averaging between the corners, and taking
-		// the pixels distance to the center of the image into account.
-
-		// One thing that might make this hard is tilting beyond the original bounds of the image.
-
-		var minX = minFloat(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x);
-		var minY = minFloat(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y);
-		if (minX > 0) minX = 0; if (minY > 0) minY = 0;
-
-		var imageCenter = new Point2D(width / 2, height / 2);
-
-		var tlRads = imageCenter.radiansTo(topLeft),
-			trRads = imageCenter.radiansTo(topRight),
-			blRads = imageCenter.radiansTo(bottomLeft),
-			brRads = imageCenter.radiansTo(bottomRight);
-
-		var tilted = new Image(minX.ceil() + width, minY.ceil() + height);
-
-		function translateX(px) return px + abs(minX);
-		function translateY(py) return py + abs(minY);
-		function getQuarter(px, py) {
-			/*
-				\ Q1 /
-				 \  /
-				 Q\/Q
-				 2/\4
-				 /  \
-				/ Q3 \
-			*/		
-			var degs = imageCenter.degreesTo(new Point2D(px, py));	
-			if (45 <= degs && degs < 135) return 1;
-			if (135 <= degs && degs < 225) return 2;
-			if (225 <= degs && degs < 315) return 3;
-			return 4;
-		}
-
-		forEachPixelInView((x, y, c) -> {
-			var dist = imageCenter.distanceTo(new Point2D(x, y));
-			var rad = imageCenter.radiansTo(new Point2D(x, y));
-			switch getQuarter(x, y) {
-				case 1: {
-					var tlDistance = new IntPoint2D(0, 0).distanceTo(new IntPoint2D(x, y));
-					var trDistance = new IntPoint2D(width - 1, 0).distanceTo(new IntPoint2D(x, y));
-				}
-			}
-		});
-
-		return cast this;
-
-	}
-
 	//--------------------------------------------------------------------------
 	// Convenience
 	//--------------------------------------------------------------------------
