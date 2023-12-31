@@ -39,12 +39,12 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     **/
     public inline function new(length:Int) {
         this = Bytes.alloc(length);
-        this.fill(0);
+        this.fill(0, length, 0);
     }
 
     public inline function resize(length:Int) {
         var newBytes = Bytes.alloc(length);
-        newBytes.fill(0);
+        newBytes.fill(0, newBytes.length, 0);
         newBytes.blit(0, this, 0, this.length);
         this = newBytes;
     }
