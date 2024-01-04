@@ -34,6 +34,17 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
         return v * -(v >> 7);
     }
 
+
+    public inline function setBytes(pos:Int, array:ByteArray) {
+        this.blit(pos, array, 0, array.length);
+    }
+
+    public inline function getBytes(pos:Int, length:Int):ByteArray {
+        var array = new ByteArray(length);
+        array.blit(0, this, pos, length);
+        return array;
+    }
+
     /**
         Creates a new `ByteArray`. Values are set to 0.
     **/
@@ -55,4 +66,8 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
 		newBytes.blit(this.length, array, 0, array.length);
 		return newBytes;
 	}
+
+    public inline function toArray():Array<Int> {
+        return [for (i in 0...this.length) this.get(i)]; // Probably needs a change
+    }
 }
