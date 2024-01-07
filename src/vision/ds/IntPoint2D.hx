@@ -76,25 +76,25 @@ abstract IntPoint2D(Impl) {
 		return x;
 	}
 
-	@:to public inline function toPoint2D() {
+	@:to public inline function toPoint2D():Point2D {
 		return new Point2D(x, y);
 	}
 
-	@:from public static inline function fromPoint2D(p:Point2D) {
+	@:from public static inline function fromPoint2D(p:Point2D):IntPoint2D {
 		return new IntPoint2D(Std.int(p.x), Std.int(p.y));
 	}
 
 	/**
 		Returns a `String` representations of this `IntPoint2D`.
 	**/
-	public inline function toString() {
+	public inline function toString():String {
 		return '($x, $y)';
 	}
 
 	/**
 		Returns a new `IntPoint2D` instance, similar to this one.
 	**/
-	public inline function copy() {
+	public inline function copy():IntPoint2D {
 		return new IntPoint2D(x, y);
 	}
 

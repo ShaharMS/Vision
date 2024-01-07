@@ -158,19 +158,31 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	**/
 	public static inline var ROYAL_BLUE:Color = 0xFF4169E1;
 
+	// The red component of this color (0 - 255).
 	public var red(get, set):Int;
+	// The blue component of this color (0 - 255)
 	public var blue(get, set):Int;
+	// The green component of this color (0 - 255)
 	public var green(get, set):Int;
+	// The alpha component of this color (0 - 255)
 	public var alpha(get, set):Int;
 
+	// The red component of this color (0 - 1)
 	public var redFloat(get, set):Float;
+	// The blue component of this color (0 - 1)
 	public var blueFloat(get, set):Float;
+	// The green component of this color (0 - 1)
 	public var greenFloat(get, set):Float;
+	// The alpha component of this color (0 - 1)
 	public var alphaFloat(get, set):Float;
 
+	// The cyan component of this color (0 - 1)
 	public var cyan(get, set):Float;
+	// The magenta component of this color (0 - 1)
 	public var magenta(get, set):Float;
+	// The yellow component of this color (0 - 1)
 	public var yellow(get, set):Float;
+	// The black component of this color (0 - 1)
 	public var black(get, set):Float;
 
 	/**
@@ -230,7 +242,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Value	The channel value of the red, green & blue channels of the color
 		@return The color as a Color
 	**/
-	public static inline function from8Bit(Value:Int) {
+	public static inline function from8Bit(Value:Int):Color {
 		var color = new Color();
 		return color.setRGBA(Value, Value, Value, 1);
 	}
@@ -376,12 +388,11 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 
 	/**
 		Generate a random color, with randomized red, green, blue and optionally alpha values.
-
-		@param alphaLock When set to `false`, the alpha channel will get a randomized value to. `true` by default, which makes a color with `alpha = 255`.
-		@param alphaValue When `alphaLock` is true, you can provide this value to override the default alpha value. Since the first argument is optional, you can do `Color.makeRandom(128)` (a random color with `alpha` set to `128`)	
+		
+		@param alphaValue When it's below 0, the alpha value will be a random value, if not, the alpha value will be this param's value. Example: `Color.makeRandom(-1)` (a random color with `alpha` set to a random value), and `Color.makeRandom(128)` (a random color with `alpha` set to `128`), 
 	**/
-	public static inline function makeRandom(?alphaLock:Bool = true, alphaValue:Int = 255) {
-		return Color.fromRGBAFloat(Math.random(), Math.random(), Math.random(), if (alphaLock) alphaValue else Math.random());
+	public static inline function makeRandom(alphaValue:Int = 255):Color {
+		return Color.fromRGBAFloat(Math.random(), Math.random(), Math.random(), alphaValue < 0 ? Math.random() : alphaValue);
 	}
 
 	/**
@@ -472,7 +483,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Return a 24 bit version of this color (i.e. without an alpha value)
+		Returns a 24 bit version of this color (i.e. without an alpha value)
 
 		@return A 24 bit version of this color
 	**/
@@ -481,7 +492,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Return a String representation of the color in the format
+		Returns a String representation of the color in the format
 
 		@param Alpha Whether to include the alpha value in the hes string
 		@param Prefix Whether to include "0x" prefix at start of string
@@ -493,7 +504,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Return a String representation of the color in the format #RRGGBB
+		Returns a String representation of the color in the format #RRGGBB
 
 		@return	A string of length 7 in the format #RRGGBB
 	**/
@@ -502,7 +513,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Get a darkened version of this color
+		Gets a darkened version of this color
 
 		@param	Factor Value from 0 to 1 of how much to progress toward black.
 		@return 	A darkened version of this color
@@ -515,7 +526,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Get a lightened version of this color
+		Gets a lightened version of this color
 
 		@param	Factor Value from 0 to 1 of how much to progress toward white.
 		@return 	A lightened version of this color
@@ -528,7 +539,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Get the inversion of this color
+		Gets the inversion of this color
 
 		@return The inversion of this color
 	**/
@@ -540,36 +551,36 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-		Set RGB values as integers (0 to 255)
+		Sets RGB values as integers (0 to 255)
 
-		@param Red	The red value of the color from 0 to 255
-		@param Green	The green value of the color from 0 to 255
-		@param Blue	The green value of the color from 0 to 255
-		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
+		@param Red	The red value of the color from 0 to 255. If it's `-1`, this param will not change.
+		@param Green	The green value of the color from 0 to 255. If it's `-1`, this param will not change.
+		@param Blue	The green value of the color from 0 to 255. If it's `-1`, this param will not change.
+		@param Alpha	How opaque the color should be, from 0 to 255, default is 255. If it's `-1`, `this`'s alpha will not change.
 		@return This color
 	**/
-	public inline function setRGBA(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Color {
-		red = Red;
-		green = Green;
-		blue = Blue;
-		alpha = Alpha;
+	public inline function setRGBA(Red:Int = -1, Green:Int = -1, Blue:Int = -1, Alpha:Int = -1):Color {
+		red = Red < 0 ? red : Red;
+		green = Green < 0 ? green : Green;
+		blue = Blue < 0 ? blue : Blue;
+		alpha = Alpha < 0 ? alpha : Alpha;
 		return this;
 	}
 
 	/**
 		Set RGB values as floats (0 to 1)
 
-		@param Red	The red value of the color from 0 to 1
-		@param Green	The green value of the color from 0 to 1
-		@param Blue	The green value of the color from 0 to 1
-		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
+		@param Red	The red value of the color from 0 to 1. If it's `-1`, this param will not change.
+		@param Green	The green value of the color from 0 to 1. If it's `-1`, this param will not change.
+		@param Blue	The green value of the color from 0 to 1. If it's `-1`, this param will not change.
+		@param Alpha	How opaque the color should be, from 0 to 1. If it's `-1`, this param will not change. Default is -1
 		@return This color
 	**/
-	public inline function setRGBAFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Color {
-		redFloat = Red;
-		greenFloat = Green;
-		blueFloat = Blue;
-		alphaFloat = Alpha;
+	public inline function setRGBAFloat(Red:Float = -1, Green:Float = -1, Blue:Float = -1, Alpha:Float = -1):Color {
+		redFloat = Red < 0 ? redFloat : Red;
+		greenFloat = Green < 0 ? greenFloat : Green;
+		blueFloat = Blue < 0 ? blueFloat : Blue;
+		alphaFloat = Alpha < 0 ? alphaFloat : Alpha;
 		return this;
 	}
 
@@ -652,7 +663,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param simple When enabled, gets the gray by averaging this color's channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`
 	**/
 	public inline function grayscale(simple:Bool = false):Color {
-		final gray = if (simple) Std.int((red + green + blue) / 3) else Std.int(0.2126 * red + 0.7152 * green + 0.0722 * blue);
+		final gray = simple ? Std.int((red + green + blue) / 3) : Std.int(0.2126 * red + 0.7152 * green + 0.0722 * blue);
 		return this = setRGBA(gray, gray, gray, alpha);
 	}
 
@@ -664,11 +675,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public inline function blackOrWhite(threshold:Int = 128):Color {
 		final colorValue:Int = MathTools.max(red, green, blue);
 		var a = alpha;
-		if (colorValue > threshold) {
-			this = 0xFFFFFFFF;
-		} else {
-			this = 0xFF000000;
-		}
+		this = colorValue > threshold ? 0xFFFFFFFF : 0xFF000000;
 		alpha = a;
 		return this;
 	}
