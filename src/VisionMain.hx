@@ -132,7 +132,19 @@ class VisionMain {
 			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.REFLECTION(30));});
 			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.SCALE(5, 1.5));});
 			end = haxe.Timer.stamp();
-			trace("Image Mirroring & Flipping took: " + MathTools.truncate(end - start, 4) + " seconds");
+			trace("Simple Matrix Applications took: " + MathTools.truncate(end - start, 4) + " seconds");
+
+			start = haxe.Timer.stamp();
+			printImage(image.clone().warp([
+				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
+				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
+				{from: {x: 0, y: image.height}, to: {x: 30, y: image.height}},
+				{from: {x: image.width, y: image.height}, to: {x: image.width, y: 231}}
+
+			]));
+			end = haxe.Timer.stamp();
+			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
+
 
 			trace(Matrix2D.ROTATION(23).toString(4));
 			trace(Matrix2D.ROTATION(23).toString(-1));

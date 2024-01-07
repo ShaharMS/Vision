@@ -3,10 +3,10 @@ package vision.ds.specifics;
 @:structInit
 class PointTransformationPair {
     
-    var from:IntPoint2D;
-    var to:IntPoint2D;
+    public var from:Point2D;
+    public var to:Point2D;
 
-    public function new(from:IntPoint2D, to:IntPoint2D) {
+    public function new(from:Point2D, to:Point2D) {
         this.from = from;
         this.to = to;
     }

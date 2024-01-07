@@ -3,6 +3,11 @@ package vision.algorithms;
 import haxe.ds.Vector;
 import vision.ds.Array2D;
 
+/**
+    Solve a system of linear equations using Cramer's rule.
+
+    Ported from Java to Haxe, by [Shahar Marcus](https://www.github.com/ShaharMS)
+**/
 class Cramer {
     
     public static function solve(a:Array2D<Float>, b:Array<Float>):Array<Float> {
@@ -28,7 +33,7 @@ class Cramer {
             x[i] = det / detCohef;
         }
 
-        return x;
+        return x.toArray();
     }
 
     public static function calculateDeterminant(m:Array2D<Float>, size:Int):Float {

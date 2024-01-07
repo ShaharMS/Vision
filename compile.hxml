@@ -3,7 +3,6 @@
 --main VisionMain
 
 --library format
---library formula
 # --library console.hx
 -debug
 --dce full

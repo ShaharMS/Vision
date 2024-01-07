@@ -1,5 +1,6 @@
 package vision;
 
+import vision.algorithms.PerspectiveWarp;
 import vision.ds.specifics.PointTransformationPair;
 import vision.algorithms.BilinearInterpolation;
 import vision.ds.Matrix2D;
@@ -609,7 +610,14 @@ class Vision {
 	}
 
 	public static function warp(image:Image, pointPairs:Array<PointTransformationPair>) {
-
+		var src = [], dst = [];
+		for (pair in pointPairs) {
+			src.push(pair.from);
+			dst.push(pair.to);
+		}
+		var matrix = PerspectiveWarp.generateMatrix(src, dst);
+		trace(matrix);
+		return PerspectiveWarp.applyMatrix(image.clone(), matrix);
 	}
 
 	/**

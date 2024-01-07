@@ -75,6 +75,13 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return this = GaussJordan.invert(this);
     }
 
+    public inline function transformPoint(x:Float, y:Float):Point2D {
+        var transformedX: Float = this.get(0, 0) * x + this.get(0, 1) * y;// + this.get(0, 2);
+        var transformedY: Float = this.get(1, 0) * x + this.get(1, 1) * y;// + this.get(1, 2);
+
+        return { x: transformedX, y: transformedY };
+    }
+
     public inline function clone():Matrix2D {
         return cast this.clone();
     }

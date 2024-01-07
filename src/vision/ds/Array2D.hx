@@ -60,6 +60,12 @@ class Array2D<T> {
 		return inner[x + (y * height)] = val;
 	}
 
+	public inline function setMultiple(points:Array<IntPoint2D>, val:T) {
+		for (p in points) {
+			set(p.x, p.y, val);
+		}
+	}
+
 	/**
 		returns the entire row at position `y`
 	**/
