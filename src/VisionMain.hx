@@ -1,5 +1,6 @@
 package;
 
+import vision.algorithms.Cramer;
 import vision.ds.Matrix2D;
 import vision.ds.PixelFormat;
 import vision.ds.ByteArray;
@@ -47,7 +48,11 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 
-		#if (true)
+		var coefficients = [[1., 2], [3., 4]];
+        var solutions = [5., 11];
+		trace(Cramer.solveVariablesFor(coefficients, solutions));
+
+		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
@@ -139,7 +144,7 @@ class VisionMain {
 				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
 				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
 				{from: {x: 0, y: image.height}, to: {x: 30, y: image.height}},
-				{from: {x: image.width, y: image.height}, to: {x: image.width, y: 231}}
+				{from: {x: image.width, y: image.height}, to: {x: image.width, y: 151}}
 
 			]));
 			end = haxe.Timer.stamp();

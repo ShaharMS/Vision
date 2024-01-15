@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.exceptions.NotImplementedException;
 import vision.exceptions.MatrixOperationError;
 import vision.algorithms.GaussJordan;
 import vision.ds.Array2D;
@@ -75,18 +76,104 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return this = GaussJordan.invert(this);
     }
 
-    public inline function transformPoint(x:Float, y:Float):Point2D {
-        var transformedX: Float = this.get(0, 0) * x + this.get(0, 1) * y;// + this.get(0, 2);
-        var transformedY: Float = this.get(1, 0) * x + this.get(1, 1) * y;// + this.get(1, 2);
+    public inline function getDeterminant():Float {
+        var len = this.width;
 
-        return { x: transformedX, y: transformedY };
+        switch len {
+            case 0: return 1;
+            case 1: return this.get(0, 0);
+            case 2: return this.get(0, 0) * this.get(1, 1) - this.get(0, 1) * this.get(1, 0);
+            case _: {
+                var determinantSum = 0.;
+
+                var sign = 1;
+                for (i in 0...this.width) {
+                    var current = this.get(0, i);
+                    var childMatrix = getSubMatrix(0, 1);
+                    childMatrix.removeColumn(i);
+
+                    determinantSum += sign * current * childMatrix.getDeterminant();
+                    sign *= -1;
+                }
+
+                return determinantSum;
+            }
+        }
     }
 
     public inline function clone():Matrix2D {
         return cast this.clone();
     }
 
-    public inline function toString(?precision:Int, pretty:Bool = true) {
+    public inline function getSubMatrix(fromX:Int = 0, fromY:Int = 0, ?toX:Int, ?toY:Int):Matrix2D {
+        toX = toX != null ? toX : this.width;
+        toY = toY != null ? toY : this.height;
+
+        var subMatrix = new Array2D(toX - fromX, toY - fromY);
+        for (x in fromX...toX) for (y in fromY...toY) subMatrix.set(x - fromX, y - fromY, this.get(x, y));
+    
+        return subMatrix;
+    }
+
+    public inline function getColumn(x:Int):Array<Float> {
+        return this.column(x);
+    }
+
+    public inline function getRow(y:Int):Array<Float> {
+        return this.row(y);
+    }
+
+    public inline function setColumn(x:Int, arr:Array<Float>) {
+        for (y in 0...this.height) this.set(x, y, arr[y]);
+    }
+
+    public inline function setRow(y:Int, arr:Array<Float>) {
+        for (x in 0...this.width) this.set(x, y, arr[x]);
+    }
+
+    public inline function insertColumn(x:Int, arr:Array<Float>):Matrix2D {
+        var n = new Array2D(this.width + 1, this.height);
+        for (y in 0...this.height) {
+            for (i in 0...x) n.set(i, y, this.get(i, y));
+            for (i in x...this.width) n.set(i + 1, y, this.get(i, y));
+            n.set(x, y, arr[y]);
+        }
+
+        return this = n;
+    }
+
+    public inline function insertRow(y:Int, arr:Array<Float>):Matrix2D {
+        var n = new Array2D(this.width, this.height + 1);
+        for (x in 0...this.width) {
+            for (i in 0...y) n.set(x, i, this.get(x, i));
+            for (i in y...this.height) n.set(x, i + 1, this.get(x, i));
+            n.set(x, y, arr[x]);
+        }
+
+        return this = n;
+    }
+
+    public inline function removeColumn(x:Int):Matrix2D {
+        var n = new Array2D(this.width - 1, this.height);
+        for (y in 0...this.height) {
+            for (i in 0...x) n.set(i, y, this.get(i, y));
+            for (i in x...this.width - 1) n.set(i, y, this.get(i + 1, y));
+        }
+
+        return this = n;
+    }
+
+    public inline function removeRow(y:Int):Matrix2D {
+        var n = new Array2D(this.width, this.height - 1);
+        for (x in 0...this.width) {
+            for (i in 0...y) n.set(x, i, this.get(x, i));
+            for (i in y...this.height - 1) n.set(x, i, this.get(x, i + 1));
+        }
+
+        return this = n;
+    }
+
+    public inline function toString(precision:Int = 5, pretty:Bool = true) {
         if (!pretty) return this.toString();
 
         // Get the longest item, this will be the cell width
