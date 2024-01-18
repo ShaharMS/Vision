@@ -48,9 +48,16 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 
-		var coefficients = [[1., 2], [3., 4]];
-        var solutions = [5., 11];
+		var coefficients = [
+			[1., 2, 3, 4],
+			[5., 6, 7, 8],
+			[2., 6, 4, 8],
+			[3., 1, 1, 2]
+		];
+
+        var solutions = [10., 26, 22, 9];
 		trace(Cramer.solveVariablesFor(coefficients, solutions));
+		// 1 * 1.5555 + 2 * 0.7777 + 3 * -0.2222 + 4 * 1.8888=9.9995
 
 		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {

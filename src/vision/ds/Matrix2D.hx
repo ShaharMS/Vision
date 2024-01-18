@@ -88,7 +88,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
                 var sign = 1;
                 for (i in 0...this.width) {
-                    var current = this.get(0, i);
+                    var current = this.get(i, 0);
                     var childMatrix = getSubMatrix(0, 1);
                     childMatrix.removeColumn(i);
 
@@ -106,13 +106,16 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     }
 
     public inline function getSubMatrix(fromX:Int = 0, fromY:Int = 0, ?toX:Int, ?toY:Int):Matrix2D {
-        toX = toX != null ? toX : this.width;
-        toY = toY != null ? toY : this.height;
+        var copy = this.to2DArray();
 
-        var subMatrix = new Array2D(toX - fromX, toY - fromY);
-        for (x in fromX...toX) for (y in fromY...toY) subMatrix.set(x - fromX, y - fromY, this.get(x, y));
+        for (_ in 0...fromY) copy.shift();
+        for (_ in toX...copy.length) copy.pop();
+        for (row in copy) {
+            for (_ in 0...fromX) row.shift();
+            for (_ in toY...row.length) row.pop();
+        }
     
-        return subMatrix;
+        return Matrix2D.createFilled(...copy);
     }
 
     public inline function getColumn(x:Int):Array<Float> {
@@ -154,23 +157,24 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     }
 
     public inline function removeColumn(x:Int):Matrix2D {
-        var n = new Array2D(this.width - 1, this.height);
-        for (y in 0...this.height) {
-            for (i in 0...x) n.set(i, y, this.get(i, y));
-            for (i in x...this.width - 1) n.set(i, y, this.get(i + 1, y));
-        }
+        var underlyingArray:Array<Null<Float>> = cast this.inner.copy();
+        for (i in 0...this.height) underlyingArray[x + i * this.width] = null;
+        underlyingArray = underlyingArray.filter(x -> x != null);
+        this.width -= 1;
+        this.inner = underlyingArray;
 
-        return this = n;
+        return this;
     }
 
     public inline function removeRow(y:Int):Matrix2D {
-        var n = new Array2D(this.width, this.height - 1);
-        for (x in 0...this.width) {
-            for (i in 0...y) n.set(x, i, this.get(x, i));
-            for (i in y...this.height - 1) n.set(x, i, this.get(x, i + 1));
-        }
+        var underlyingArray:Array<Null<Float>> = cast this.inner.copy();
+        for (i in 0...this.width) underlyingArray[y + this.width * i] = null;
+        underlyingArray = underlyingArray.filter(x -> x != null);
 
-        return this = n;
+        this.height -= 1;
+        this.inner = underlyingArray;
+
+        return this;
     }
 
     public inline function toString(precision:Int = 5, pretty:Bool = true) {
@@ -200,8 +204,8 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         }
         
         // The matrix's width on screen should be maxLen * mat width + walls + padding + (padding between items) * width
-        var top = '\n┌ ${multiplyString(' ', maxLen * columns + 2 * (columns - 1))} ┐';
-        var bottom = '└ ${multiplyString(' ', maxLen * columns + 2 * (columns - 1))} ┘';
+        var top = '\n┌ ${multiplyString(' ', maxLen * columns + 2 * (columns - 1) - 1)} ┐';
+        var bottom = '└ ${multiplyString(' ', maxLen * columns + 2 * (columns - 1) - 1)} ┘';
 
         // Now, rows
 
@@ -226,7 +230,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
         var string = top + "\n";
         for (r in rows) {
-            string += '│ $r │\n';
+            string += '│ $r│\n';
         }
         string += bottom;
 
@@ -330,7 +334,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 	public static inline function createFilled(...rows:Array<Float>):Matrix2D {
 		var arr = new Array2D(rows[0].length, rows.length);
 		arr.inner = [];
-		for (r in rows) arr.inner.concat(r);
+		for (r in rows) arr.inner = arr.inner.concat(r); // WOAH that was a miss! need to report that
 		return cast arr;
 	}
 

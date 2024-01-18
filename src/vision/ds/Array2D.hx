@@ -141,4 +141,14 @@ class Array2D<T> {
 		inner.resize(width * value);
 		return height = value;
 	}
+
+
+	@:to public function to2DArray():Array<Array<T>> {
+		var arr = [];
+		for (y in 0...height) {
+			arr.push(this.row(y));
+		}
+
+		return arr;
+	}
 }
