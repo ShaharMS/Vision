@@ -48,16 +48,18 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 
-		var coefficients = [
-			[1., 2, 3, 4],
-			[5., 6, 7, 8],
-			[2., 6, 4, 8],
-			[3., 1, 1, 2]
-		];
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
+			start = haxe.Timer.stamp();
+			printImage(image.clone().warp([
+				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
+				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
+				{from: {x: 0, y: image.height}, to: {x: 30, y: image.height}},
+				{from: {x: image.width, y: image.height}, to: {x: image.width, y: 151}}
 
-        var solutions = [10., 26, 22, 9];
-		trace(Cramer.solveVariablesFor(coefficients, solutions));
-		// 1 * 1.5555 + 2 * 0.7777 + 3 * -0.2222 + 4 * 1.8888=9.9995
+			]));
+			end = haxe.Timer.stamp();
+			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
+		});
 
 		#if (false)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
