@@ -10,7 +10,7 @@ import vision.ds.Array2D;
     A solution can be provided, as long as there as many variables as there are equations.  
     Variables are solved as such:
 
-    given a system of 3 equations and 3 variables:
+    given a system of `n` equations and `n` variables:
     ```txt
     Ax + By + Cz = D
     Ex + Fy + Gz = H

@@ -726,9 +726,9 @@ class MathTools {
 	}
 
 	/**
-	 * Gets the median of the given values. For large arrays, Radix sort is used to boost performance (1000 elements or above)
+	 * Gets the median of the given values. For large arrays, Radix sort is used to boost performance (5000 elements or above)
 	 */
-	 extern overload public static inline function median<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
+	extern overload public static inline function median<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
 		if (values.length > 5000) {
 			return Radix.sort(values.copy())[floor(values.length / 2)];
 		}

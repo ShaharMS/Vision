@@ -42,10 +42,12 @@ class PerspectiveWarp {
 		x[8] = 1.;
 
 		for (i in 0...3) {
-			M.set(i, 0, x[i * 3]);
-			M.set(i, 1, x[i * 3 + 1]);
-			M.set(i, 2, x[i * 3 + 2]);
+			M.set(0, i, x[i * 3]);
+			M.set(1, i, x[i * 3 + 1]);
+			M.set(2, i, x[i * 3 + 2]);
 		}
+
+		trace(M);
 
 		return M;
 	}
@@ -55,8 +57,9 @@ class PerspectiveWarp {
 
 		for (y in 0...image.height) {
 			for (x in 0...image.width) {
-				var processed = matrix * [[x, y, 1]];
-				var transformedPoint = new Point2D(processed.get(0, 0) / processed.get(0, 2), processed.get(0, 1) / processed.get(0, 2));
+				var processed = matrix.transformPoint(new Point3D(x, y, 1));
+				var transformedPoint = new Point2D(processed.x / processed.z, processed.y / processed.z);
+				if (MathTools.random() > 0.99) trace(processed, transformedPoint);
 				var color:Int = image.getFloatingPixel(transformedPoint.x, transformedPoint.y);
 				outputImage.setPixel(x, y, color);
 			}

@@ -76,6 +76,24 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return this = GaussJordan.invert(this);
     }
 
+	overload extern public inline function transformPoint(point:Point3D):Point3D {
+		if (this.width != 3 || this.height != 3) throw ""; //Todo error
+		var x = point.x * (this.get(0, 0) + this.get(1, 0) + this.get(2, 0));
+		var y = point.y * (this.get(0, 1) + this.get(1, 1) + this.get(2, 1));
+		var z = point.z * (this.get(0, 2) + this.get(1, 2) + this.get(2, 2));
+
+		return new Point3D(x, y, z);
+	}
+
+	overload extern public inline function transformPoint(point:Point2D):Point2D {
+		if (this.width != 3 || this.height != 3) throw ""; //Todo error
+
+		var x = point.x * (this.get(0, 0) + this.get(1, 0) + this.get(2, 0));
+		var y = point.y * (this.get(0, 1) + this.get(1, 1) + this.get(2, 1));
+
+		return new Point2D(x, y);
+	}
+
     public inline function getDeterminant():Float {
         var len = this.width;
 
@@ -108,13 +126,19 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     public inline function getSubMatrix(fromX:Int = 0, fromY:Int = 0, ?toX:Int, ?toY:Int):Matrix2D {
         var copy = this.to2DArray();
 
+		toX = toX == null ? this.width : toX;
+		toY = toY == null ? this.height : toY;
+
+
         for (_ in 0...fromY) copy.shift();
         for (_ in toX...copy.length) copy.pop();
         for (row in copy) {
             for (_ in 0...fromX) row.shift();
             for (_ in toY...row.length) row.pop();
         }
+
     
+		if (copy.length == 0) return new Matrix2D(0, 0);
         return Matrix2D.createFilled(...copy);
     }
 
@@ -334,7 +358,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 	public static inline function createFilled(...rows:Array<Float>):Matrix2D {
 		var arr = new Array2D(rows[0].length, rows.length);
 		arr.inner = [];
-		for (r in rows) arr.inner = arr.inner.concat(r); // WOAH that was a miss! need to report that
+		for (r in rows) arr.inner = arr.inner.concat(r); // WOAH that was a miss! need to report that. was previously just `arr.inner.concat(r)`
 		return cast arr;
 	}
 

@@ -51,17 +51,17 @@ class VisionMain {
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			start = haxe.Timer.stamp();
 			printImage(image.clone().warp([
-				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
-				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
-				{from: {x: 0, y: image.height}, to: {x: 30, y: image.height}},
-				{from: {x: image.width, y: image.height}, to: {x: image.width, y: 151}}
+				{from: {x: 0, y: 0}, to: {x: 30, y: 0}},
+				{from: {x: image.width, y: 0}, to: {x: image.width - 20, y: 55}},
+				{from: {x: 0, y: image.height}, to: {x: 100, y: image.height}},
+				{from: {x: image.width, y: image.height}, to: {x: image.width, y: image.height}}
 
 			]));
 			end = haxe.Timer.stamp();
 			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
 		});
 
-		#if (false)
+		#if (true)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
