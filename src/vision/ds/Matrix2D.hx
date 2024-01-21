@@ -139,7 +139,10 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
     
 		if (copy.length == 0) return new Matrix2D(0, 0);
-        return Matrix2D.createFilled(...copy);
+		
+        var arr2d = new Array2D(copy.length, copy[0].length);
+		arr2d.inner = copy.flatten();
+		return arr2d;
     }
 
     public inline function getColumn(x:Int):Array<Float> {
