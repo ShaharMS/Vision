@@ -1,0 +1,7 @@
+--class-path src
+--main Main
+-debug
+--interp
+--library vision
+--library format
+        

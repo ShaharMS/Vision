@@ -48,20 +48,8 @@ class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
 
-		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
-			start = haxe.Timer.stamp();
-			printImage(image.clone().warp([
-				{from: {x: 0, y: 0}, to: {x: 30, y: 0}},
-				{from: {x: image.width, y: 0}, to: {x: image.width - 20, y: 55}},
-				{from: {x: 0, y: image.height}, to: {x: 100, y: image.height}},
-				{from: {x: image.width, y: image.height}, to: {x: image.width, y: image.height}}
-
-			]));
-			end = haxe.Timer.stamp();
-			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
-		});
-
 		#if (true)
+		#if (!compile_unit_tests)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
@@ -152,8 +140,8 @@ class VisionMain {
 			printImage(image.clone().warp([
 				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
 				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
-				{from: {x: 0, y: image.height}, to: {x: 30, y: image.height}},
-				{from: {x: image.width, y: image.height}, to: {x: image.width, y: 151}}
+				{from: {x: 0, y: image.height}, to: {x: 15, y: image.height - 10}},
+				{from: {x: image.width, y: image.height}, to: {x: image.width, y: 91}}
 
 			]));
 			end = haxe.Timer.stamp();
@@ -408,7 +396,7 @@ class VisionMain {
 		}
 		#end
 
-		#if (sys && compile_unit_tests)
+		#elseif (sys && compile_unit_tests)
 		//var s = Type.getClassFields(Vision);
 		//var st = "[";
 		//for (t in s) {
@@ -417,9 +405,21 @@ class VisionMain {
 		//trace(st.substring(0, st.length - 2) + "]");
 		var cases = TestCaseGenerator.generateFromClass(Vision);
 		for (i in 0...cases.length) {
-			cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
+			/*PC: */ 
+			try {
+				cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
+			} catch (e) {
+				trace("Working on laptop, path changed...");
+				cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shahar\\Documents\\GitHub\\Vision\\unit_tests", cases[i].method);
+
+			}
 		}
-		TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
+		try {
+			TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
+		} catch (e) {
+			trace("Working on laptop, path changed...");
+			TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shahar\\Documents\\GitHub\\Vision", "main_test");
+		}
 		#end
 		#end
 	}

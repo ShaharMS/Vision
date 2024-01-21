@@ -78,9 +78,9 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
 	overload extern public inline function transformPoint(point:Point3D):Point3D {
 		if (this.width != 3 || this.height != 3) throw ""; //Todo error
-		var x = point.x * (this.get(0, 0) + this.get(1, 0) + this.get(2, 0));
-		var y = point.y * (this.get(0, 1) + this.get(1, 1) + this.get(2, 1));
-		var z = point.z * (this.get(0, 2) + this.get(1, 2) + this.get(2, 2));
+		var x = point.x * this.get(0, 0) + point.y * this.get(1, 0) + point.z * this.get(2, 0);
+        var y = point.x * this.get(0, 1) + point.y * this.get(1, 1) + point.z * this.get(2, 1);
+        var z = point.x * this.get(0, 2) + point.y * this.get(1, 2) + point.z * this.get(2, 2);
 
 		return new Point3D(x, y, z);
 	}
@@ -88,10 +88,10 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 	overload extern public inline function transformPoint(point:Point2D):Point2D {
 		if (this.width != 3 || this.height != 3) throw ""; //Todo error
 
-		var x = point.x * (this.get(0, 0) + this.get(1, 0) + this.get(2, 0));
-		var y = point.y * (this.get(0, 1) + this.get(1, 1) + this.get(2, 1));
+        var x = point.x * this.get(0, 0) + point.y * this.get(1, 0) + 1 * this.get(2, 0);
+        var y = point.x * this.get(0, 1) + point.y * this.get(1, 1) + 1 * this.get(2, 1);
 
-		return new Point2D(x, y);
+        return new Point2D(x, y);
 	}
 
     public inline function getDeterminant():Float {

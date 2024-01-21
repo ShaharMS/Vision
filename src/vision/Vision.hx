@@ -578,7 +578,8 @@ class Vision {
 		@returns A new, manipulated image. The provided image remains unchanged.
 		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
 	**/
-	public static function applyMatrix(image:Image, matrix:Matrix2D, expandImageBounds:Bool = true) {
+	public static function applyMatrix(image:Image, ?matrix:Matrix2D, expandImageBounds:Bool = true) {
+		if (matrix == null) matrix = Matrix2D.ROTATION(0);
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
 		for (corner in [new Point2D(0, 0), new Point2D(0, image.height), new Point2D(image.width, 0), new Point2D(image.width, image.height)]) {
@@ -609,14 +610,24 @@ class Vision {
 		
 	}
 
-	public static function warp(image:Image, pointPairs:Array<PointTransformationPair>) {
+	public static function warp(image:Image, ?pointPairs:Array<PointTransformationPair>) {
+
+		if (pointPairs == null) {
+			pointPairs = [
+				{from: {x: 0, y: 0}, to: {x: 0, y: 0}},
+				{from: {x: 0, y: image.height}, to: {x: 0, y: image.height}},
+				{from: {x: image.width, y: 0}, to: {x: image.width, y: 0}},
+				{from: {x: image.width, y: image.height}, to: {x: image.width, y: image.height}}
+			];
+		}
+
 		var src = [], dst = [];
 		for (pair in pointPairs) {
 			src.push(pair.from);
 			dst.push(pair.to);
 		}
 		var matrix = PerspectiveWarp.generateMatrix(src, dst);
-		trace(matrix);
+
 		return PerspectiveWarp.applyMatrix(image.clone(), matrix);
 	}
 

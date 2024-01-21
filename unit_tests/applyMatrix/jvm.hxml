@@ -1,0 +1,7 @@
+
+--class-path src
+--main Test_vision_Vision_applyMatrix
+-debug
+--jvm jvm/main.jar
+--library vision
+--library format
