@@ -107,7 +107,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
                 var sign = 1;
                 for (i in 0...this.width) {
                     var current = this.get(i, 0);
-                    var childMatrix = getSubMatrix(0, 1);
+                    var childMatrix:Matrix2D = getSubMatrix(0, 1);
                     childMatrix.removeColumn(i);
 
                     determinantSum += sign * current * childMatrix.getDeterminant();
@@ -120,7 +120,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     }
 
     public inline function clone():Matrix2D {
-        return cast this.clone();
+        return this.clone();
     }
 
     public inline function getSubMatrix(fromX:Int = 0, fromY:Int = 0, ?toX:Int, ?toY:Int):Matrix2D {
@@ -359,14 +359,14 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		var arr = new Array2D(rows[0].length, rows.length);
 		arr.inner = [];
 		for (r in rows) arr.inner = arr.inner.concat(r); // WOAH that was a miss! need to report that. was previously just `arr.inner.concat(r)`
-		return cast arr;
+		return arr;
 	}
 
 	public static inline function createTransformation(xRow:Array<Float>, yRow:Array<Float>, ?homogeneousRow:Array<Float>):Matrix2D {
 		if (homogeneousRow == null) homogeneousRow = [0, 0, 1];
 		var arr = new Array2D(3 , 3, null);
 		arr.inner = xRow.concat(yRow).concat(homogeneousRow);
-		return cast arr;
+		return arr;
 	}
 
 
