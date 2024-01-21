@@ -19,9 +19,9 @@ class BilinearInterpolation {
 		return resized;
 	}
 
-	public static function interpolateMissingPixels(image:Image, kernalRadiusX:Int, kernalRadiusY:Int, minX:Int, minY:Int):Image {
+	public static function interpolateMissingPixels(image:Image, kernelRadiusX:Int, kernelRadiusY:Int, minX:Int, minY:Int):Image {
 		
-		if (kernalRadiusX == 0 && kernalRadiusY == 0) return image;
+		if (kernelRadiusX == 0 && kernelRadiusY == 0) return image;
 
 		var interpolated = image.clone();
 		for (x in minX...image.width) {
@@ -30,8 +30,8 @@ class BilinearInterpolation {
 				if (image.getPixel(x, y) !=  0x00000000) continue;
 
 				var neighborArray = [];
-				for (offX in -kernalRadiusX...kernalRadiusX + 1) {
-					for (offY in -kernalRadiusY...kernalRadiusY + 1) {
+				for (offX in -kernelRadiusX...kernelRadiusX + 1) {
+					for (offY in -kernelRadiusY...kernelRadiusY + 1) {
 						neighborArray.push(image.getSafePixel(x + offX, y + offY));
 					}
 				}

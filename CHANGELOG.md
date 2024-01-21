@@ -4,7 +4,66 @@
 
  - **Typo fix: `Kernal` has been replaced by `Kernel` across the entire library**
 
+### `Vision.hx`
 
+ - **Added `applyMatrix`**
+
+
+### `Image.hx`
+
+ - **Added `rotate()`**
+ - **Slight optimization for `getFloatingPixel()`, avoids recursive call for out-of-bounds coordinates**
+
+### `vision.ds`
+
+ - **Added `Matrix2D`, for better representation of transformation matrices. supports:**
+   - **`determinant()`**
+   - **`invert()`**
+   - **Mathmetical operations (`+`, `-`, `*` and `/`)**
+   - **Matrix generation function (`ROTATION`, `SHEAR`, `TRANSLATION`, `SCALE`, `REFLECTION`)**
+   - **Pretty printing of `Matrix2D`**
+   - **And more convenient functions**
+ - **Added new colors for `Color.hx` - _Bordeaux_, _Charcoal_, _Onyx_, _Jet_, _Jet Black_**
+ - **Documented `IntPoint2D` and `Point2D`**
+ - **Added `Array2D.clone()`**
+ - **Added `Array2D.toString()`**
+ - **Added `Array2D.row()` amd `Array2D.column()`**
+ - **Added `ByteArray.resize()`**
+ - **Added `ByteArray.concat()`**
+ - **Added `ByteArray.getBytes()` and `ByteArray.setBytes()`**
+ - **Added `ByteArray.toArray()`**
+ - **`ByteArrays` are now pre-filled with `0`**
+
+### `vision.tools`
+
+ - **Added `MathTools` trigometric functions using degrees:**
+   - **`sind()`**
+   - **`cosd()`**
+   - **`tand()`**
+   - **`cotand()`**
+   - **`cosecd()`**
+   - **`secd()`**
+ - **Added `MathTools.parseFloat()` for compatibility**
+ - **Added `MathTools.parseBool()` for comfort :)**
+ - **Added `MathTools.factorial()`**
+ - **Added `MathTools.gamma()`**
+ - **Removed `MathTools.flatten`'s `Matrix` variation, as it is no longer relevant**
+ - **Clarified parameter names in `MathTools`' compatibility functions**
+ - **Added return types to all `MathTools` functions**
+ - **Fixed `ImageTools.addToScreen()` not considering alpha**
+ - **Fixed canvas to image conversion not considering alpha**
+ - **Slight fix for file-name in `ImageTools.saveToFile` on web**
+  
+### `vision.algorithms`
+
+ - **Added `GaussJordan` for matrix inversion**
+ - **Added `BilinearInterpolation.interpolateMissingPixels()` for filling in of missing pixels in image**
+ - **Added `Cramer` for solving systems of linear equations**
+
+### `vision.exceptions`
+
+ - **Added `MatrixOperationError`**
+ - **Removed double mention of pixel position in `OutOfBounds` exception**
 
 
 # 1.3.1
