@@ -128,16 +128,16 @@ class VisionMain {
 			end = haxe.Timer.stamp();
 			trace("Image Rotation took: " + MathTools.truncate(end - start, 4) / 3 + " seconds");
 			start = haxe.Timer.stamp();
-			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.ROTATION(40));});
-			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.SHEAR(0.5, 0.3));});
-			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.TRANSLATION(60, 55));});
-			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.REFLECTION(30));});
-			printImage({var i = image.clone(); i.applyMatrix(Matrix2D.SCALE(5, 1.5));});
+			printImage({var i = image.clone(); i.affineWarp(Matrix2D.ROTATION(40));});
+			printImage({var i = image.clone(); i.affineWarp(Matrix2D.SHEAR(0.5, 0.3));});
+			printImage({var i = image.clone(); i.affineWarp(Matrix2D.TRANSLATION(60, 55));});
+			printImage({var i = image.clone(); i.affineWarp(Matrix2D.REFLECTION(30));});
+			printImage({var i = image.clone(); i.affineWarp(Matrix2D.SCALE(5, 1.5));});
 			end = haxe.Timer.stamp();
 			trace("Simple Matrix Applications took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			start = haxe.Timer.stamp();
-			printImage(image.clone().warp([
+			printImage(image.clone().perspectiveWarp([
 				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
 				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
 				{from: {x: 0, y: image.height}, to: {x: 15, y: image.height - 10}},

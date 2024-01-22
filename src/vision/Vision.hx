@@ -555,6 +555,9 @@ class Vision {
 		Manipulates the image's pixel data by applying the given transformation matrix - 
 		a 3x3 "grid" used to Move the image's pixels from one position to another. 
 
+		The given transformation matrix must be one that maps one parallel line to another. 
+		The clearest indicator of this is an empty last row, aside from a `1` at the end.
+
 		Differs from `Vision.convolve` in that it doesn't change the pixels color (like a `BoxBlur`, for example), but instead modifies the position of pixels within the image.  
 		This makes it easy to rotate, scale or translate an image.
 
@@ -571,14 +574,17 @@ class Vision {
 
 		| Original | Shearing | Rotation | Rotation (`!expandImageBounds`) |
 		|---|---|---|---| 
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Tilted](https://spacebubble.io/vision/docs/valve-matrixShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-matrixRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-matrixRotate%28expandImageBounds%20=%20false%29.png)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
 
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
 		@param expandImageBounds When a transformation wants to set pixels outside the bounds of `this` image, determines whether the image is widened to match the new pixel (`true`), or cuts it out (`false`). Defaults to `true`.
 		@returns A new, manipulated image. The provided image remains unchanged.
 		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
+
+		@see `Vision.convolve()` for color-manipulation matrices (or, kernels).
+		@see `Vision.perspectiveWarp()` for "3d" manipulations.
 	**/
-	public static function applyMatrix(image:Image, ?matrix:Matrix2D, expandImageBounds:Bool = true) {
+	public static function affineWarp(image:Image, ?matrix:Matrix2D, expandImageBounds:Bool = true) {
 		if (matrix == null) matrix = Matrix2D.ROTATION(0);
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
@@ -610,7 +616,7 @@ class Vision {
 		
 	}
 
-	public static function warp(image:Image, ?pointPairs:Array<PointTransformationPair>) {
+	public static function perspectiveWarp(image:Image, ?pointPairs:Array<PointTransformationPair>) {
 
 		if (pointPairs == null) {
 			pointPairs = [

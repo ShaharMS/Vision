@@ -6,7 +6,8 @@
 
 ### `Vision.hx`
 
- - **Added `applyMatrix`**
+ - **Added `affineWarp()`**
+ - **Added `perspectiveWarp()`**
 
 
 ### `Image.hx`
@@ -19,7 +20,7 @@
  - **Added `Matrix2D`, for better representation of transformation matrices. supports:**
    - **`determinant()`**
    - **`invert()`**
-   - **Mathmetical operations (`+`, `-`, `*` and `/`)**
+   - **Mathematical operations (`+`, `-`, `*` and `/`)**
    - **Matrix generation function (`ROTATION`, `SHEAR`, `TRANSLATION`, `SCALE`, `REFLECTION`)**
    - **Pretty printing of `Matrix2D`**
    - **And more convenient functions**
@@ -36,7 +37,7 @@
 
 ### `vision.tools`
 
- - **Added `MathTools` trigometric functions using degrees:**
+ - **Added `MathTools` trigonometric functions using degrees:**
    - **`sind()`**
    - **`cosd()`**
    - **`tand()`**
@@ -57,7 +58,7 @@
 ### `vision.algorithms`
 
  - **Added `GaussJordan` for matrix inversion**
- - **Added `BilinearInterpolation.interpolateMissingPixels()` for filling in of missing pixels in image**
+ - **Added `BilinearInterpolation.interpolateMissingPixels()` for filling in of missing pixels in images**
  - **Added `Cramer` for solving systems of linear equations**
 
 ### `vision.exceptions`
