@@ -96,7 +96,7 @@
    - **`moveFloatingPixel()`**
  - **Fixed `Image.drawLine()` hanging in certain scenarios** 
  - **Fixed inaccuracies in Image's view implementation, off-by-one pixels bugs should be fixed**
- - **Fixed `getSafePixel()`, `setS`**
+ - **Fixed `getSafePixel()`, `setSafePixel()`**
  - **Removed `fromColorByteArrayAndData()` Due to buggy behavior**
  - **Added `fromBytes()` and `toBytes()` for easier cross-frameworking**
  - **Optimized `from2DArray()` and `to2DArray()`**
@@ -118,7 +118,7 @@
     - `setInt8()`
  - **Added `Line2D.intersect()`** 
  - **Added `Line2D.distanceTo()`** 
- - **Added `Eay2D.distanceTo()`** 
+ - **Added `Ray2D.distanceTo()`** 
 
 ### `vision.algorithms`
 
@@ -155,9 +155,9 @@
 ### `vision.ds`
 
  - **Fix `DivideByZero` errors on PHP when using `Color.divide()`**
- - **Fix Historgrams simply not working**
+ - **Fix Histograms simply not working**
  - **Optimized `image.paintPixel()`**
- - **Fixed `image.stamp`, should now respect alpha values.**
+ - **Fixed `image.stamp()`, should now respect alpha values.**
 
 
 # 1.2.1
