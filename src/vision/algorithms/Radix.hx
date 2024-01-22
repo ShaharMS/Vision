@@ -88,19 +88,32 @@ class Radix {
 	/**
 		Sorts an array of `Int`s / `UInt`s / `Int64` using **Radix Sort**.
 	**/
-	public static function sort<T:Int, #if !cs Uint, #end Int64>(array:Array<T>) {
-		// Find the maximum number to know number of digits
-		final max = getMax(array, array.length);
-		var exp = 1;
+	public static function sort<T:Int, #if !cs Uint, #end Int64>(main:Array<T>) {
 
-		// Do counting sort for every digit. Note that
-		// instead of passing digit number, exp is passed.
-		// exp is 10^i where i is current digit number
-		while (max / exp > 0) {
-			array = countingSort(array, exp, array.length);
-			exp *= 10;
+		var negatives = [], positives = [];
+		for (i in 0...main.length) {
+			if (main[i] < 0)
+				negatives.push(-main[i]);
+			else
+				positives.push(main[i]);
 		}
 
-		return array;
+		for (array in [negatives, positives]) {
+			// Find the maximum number to know the number of digits
+			final max = getMax(array, array.length);
+			var exp = 1;
+	
+			// Do counting sort for every digit. Note that
+			// instead of passing digit number, exp is passed.
+			// exp is 10^i where i is current digit number
+			while (max / exp > 0) {
+				array = countingSort(array, exp, array.length);
+				exp *= 10;
+			}
+		}
+
+		negatives.reverse();
+		negatives = negatives.map(x -> -x);
+		return main = negatives.concat(positives);
 	}
 }

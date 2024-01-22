@@ -62,6 +62,7 @@
  - **Added `GaussJordan` for matrix inversion**
  - **Added `BilinearInterpolation.interpolateMissingPixels()` for filling in of missing pixels in images**
  - **Added `Cramer` for solving systems of linear equations**
+ - **Fixed `Radix.sort` not supporting negative numbers with `Int` and `Int64`**
 
 ### `vision.exceptions`
 
