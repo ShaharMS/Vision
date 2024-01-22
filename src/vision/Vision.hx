@@ -616,24 +616,17 @@ class Vision {
 		
 	}
 
-	public static function perspectiveWarp(image:Image, ?pointPairs:Array<PointTransformationPair>) {
+	public static function perspectiveWarp(image:Image, ?matrix:Matrix2D) {
 
-		if (pointPairs == null) {
-			pointPairs = [
+		if (matrix == null) {
+			matrix = Matrix2D.PERSPECTIVE([
 				{from: {x: 0, y: 0}, to: {x: 0, y: 0}},
 				{from: {x: 0, y: image.height}, to: {x: 0, y: image.height}},
 				{from: {x: image.width, y: 0}, to: {x: image.width, y: 0}},
 				{from: {x: image.width, y: image.height}, to: {x: image.width, y: image.height}}
-			];
+			]);
 		}
-
-		var src = [], dst = [];
-		for (pair in pointPairs) {
-			src.push(pair.from);
-			dst.push(pair.to);
-		}
-		var matrix = PerspectiveWarp.generateMatrix(src, dst);
-
+		
 		return PerspectiveWarp.applyMatrix(image.clone(), matrix);
 	}
 

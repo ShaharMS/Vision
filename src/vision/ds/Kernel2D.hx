@@ -142,9 +142,9 @@ enum Kernel2D {
 	Sharpen;
 
 	/**
-	 * Based on the `Gaussian Blur`, this kernel does'nt actually blur the image, but
+	 * Based on the `Gaussian Blur`, this kernel doesn't actually blur the image, but
 	 * uses a similar filter to slightly sharpen the image, while retaining the image's
-	 * quality.
+	 * quality. Can be used to slightly increase the quality of a blurry image.
 	 * 
 	 * ```
 	 * 1  4  6   4  1

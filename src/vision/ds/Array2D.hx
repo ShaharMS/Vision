@@ -60,6 +60,11 @@ class Array2D<T> {
 		return inner[x + (y * height)] = val;
 	}
 
+	/**
+	    Sets multiple elements at multiple positions, at the same time
+	    @param points the indices at which to set
+	    @param val the value to set
+	**/
 	public inline function setMultiple(points:Array<IntPoint2D>, val:T) {
 		for (p in points) {
 			set(p.x, p.y, val);
@@ -83,7 +88,7 @@ class Array2D<T> {
 	/**
 	    Returns an array iterator for this `Array2D`.
 	    
-		Values are iterated on from left to right, top to bottom:
+		Values are iterated on from left to right, top to bottom, for example (array of width 5, height 5):
 		
 		`(x, y)...(x + 5, y) -> (x, y + 1)...(x + 5, y + 1) -> (x, y + 2)...`
 	**/
@@ -91,17 +96,29 @@ class Array2D<T> {
 		return inner.iterator();
 	}
 
+	/**
+	    Fills the entire array with the provided value
+	    @param value the value to fill the array with
+	    @return this, filled `Array2D`
+	**/
 	public inline function fill(value:T):Array2D<T> {
 		for (i in 0...inner.length) inner[i] = value;
 		return this;
 	}
 
+	/**
+	    Clones this `Array2D`
+	    @return A new `Array2D`, similar to this one.
+	**/
 	public inline function clone():Array2D<T> {
 		var arr = new Array2D(width, height);
 		arr.inner = inner.copy();
 		return arr;
 	}
 
+	/**
+	    Gets a string representation of this `Array2D`@:noCompletion 
+	**/
 	public inline function toString():String {
 		var str = "\n[[";
 		var counter = 0;
@@ -123,21 +140,21 @@ class Array2D<T> {
 		return str.substring(0, str.length) + "]]";
 	}
 
-	inline function get_length():Int {
+	@:noCompletion inline function get_length():Int {
 		return inner.length;
 	}
 
-	inline function set_length(value:Int):Int {
+	@:noCompletion inline function set_length(value:Int):Int {
 		inner.resize(value);
 		return value;
 	}
 
-	inline function set_width(value:Int):Int {
+	@:noCompletion inline function set_width(value:Int):Int {
 		inner.resize(value * height);
 		return width = value;
 	}
 
-	inline function set_height(value:Int):Int {
+	@:noCompletion inline function set_height(value:Int):Int {
 		inner.resize(width * value);
 		return height = value;
 	}

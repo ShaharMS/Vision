@@ -17,13 +17,14 @@
 
 ### `vision.ds`
 
- - **Added `Matrix2D`, for better representation of transformation matrices. supports:**
-   - **`determinant()`**
+ - **Added `Matrix2D`** - for better representation of transformation matrices. supports:
+   - **`getDeterminant()`**
    - **`invert()`**
    - **Mathematical operations (`+`, `-`, `*` and `/`)**
-   - **Matrix generation function (`ROTATION`, `SHEAR`, `TRANSLATION`, `SCALE`, `REFLECTION`)**
+   - **Matrix generation function (`ROTATION`, `SHEAR`, `TRANSLATION`, `SCALE`, `REFLECTION`, `PERSPECTIVE`, `IDENTITY`)**
    - **Pretty printing of `Matrix2D`**
    - **And more convenient functions**
+ - **Added `Point3D`** - Representation of 3D point. 
  - **Added new colors for `Color.hx` - _Bordeaux_, _Charcoal_, _Onyx_, _Jet_, _Jet Black_**
  - **Documented `IntPoint2D` and `Point2D`**
  - **Added `Array2D.clone()`**
@@ -44,6 +45,7 @@
    - **`cotand()`**
    - **`cosecd()`**
    - **`secd()`**
+ - **Added `MathTools.distanceBetweenPoints()` for `Point3D`**
  - **Added `MathTools.parseFloat()` for compatibility**
  - **Added `MathTools.parseBool()` for comfort :)**
  - **Added `MathTools.factorial()`**

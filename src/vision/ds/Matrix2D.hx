@@ -1,5 +1,7 @@
 package vision.ds;
 
+import vision.algorithms.PerspectiveWarp;
+import vision.ds.specifics.PointTransformationPair;
 import haxe.exceptions.NotImplementedException;
 import vision.exceptions.MatrixOperationError;
 import vision.algorithms.GaussJordan;
@@ -38,6 +40,9 @@ using vision.tools.MathTools;
 @:forward(get, set, fill, width, height)
 abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
+	/**
+	    The underlying `Array2D` instance
+	**/
 	public var underlying(get, set):Array2D<Float>;
 
 	inline function get_underlying() {
@@ -48,34 +53,54 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		return this = arr2d;
 	}
 
+	/**
+	    The amount of rows this matrix contains. Equivalent to `this.height`
+	**/
 	public var rows(get, set):Int;
 
 	@:noCompletion inline function get_rows():Int {
-		return this.width;
+		return this.height;
 	} 
 	@:noCompletion inline function set_rows(amount:Int):Int {
-		return this.width = amount;
+		return this.height = amount;
 	}
 
+	/**
+        The amount of columns this matrix contains. Equivalent to `this.width`
+	**/
 	public var columns(get, set):Int;
 
 	@:noCompletion inline function get_columns():Int {
-		return this.height;
+		return this.width;
 	} 
 	@:noCompletion inline function set_columns(amount:Int):Int {
-		return this.height = amount;
+		return this.width = amount;
 	}
     
     
 
-	public inline function new(rows:Int, columns:Int) {
-		this = new Array2D(rows, columns);
+	/**
+	    Creates a new, empty `Matrix2D`
+	    @param width the amount of elements in each row
+	    @param height the amount of rows
+	**/
+	public inline function new(width:Int, height:Int) {
+		this = new Array2D(width, height);
 	}
 
+    /**
+        Inverts this `Matrix2D` using Gauss-Jordan elimination
+        @return this `Matrix2D`, after it has been inverted
+    **/
     public inline function invert():Matrix2D {
         return this = GaussJordan.invert(this);
     }
 
+	/**
+	    Multiplies the given point by this `Matrix2D`
+	    @param point any 3D point
+	    @return a new, transformed `Point3D` instance
+	**/
 	overload extern public inline function transformPoint(point:Point3D):Point3D {
 		if (this.width != 3 || this.height != 3) throw ""; //Todo error
 		var x = point.x * this.get(0, 0) + point.y * this.get(1, 0) + point.z * this.get(2, 0);
@@ -85,6 +110,11 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		return new Point3D(x, y, z);
 	}
 
+	/**
+        Multiplies the given point by this `Matrix2D`
+	    @param point any 2D point
+	    @return a new, transformed `Point2D` instance
+	**/
 	overload extern public inline function transformPoint(point:Point2D):Point2D {
 		if (this.width != 3 || this.height != 3) throw ""; //Todo error
 
@@ -94,6 +124,9 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return new Point2D(x, y);
 	}
 
+    /**
+        Gets the determinant of this `Matrix2D`.
+    **/
     public inline function getDeterminant():Float {
         var len = this.width;
 
@@ -119,10 +152,23 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         }
     }
 
+    /**
+        Return a copy of this `Matrix2D`    
+    **/
     public inline function clone():Matrix2D {
         return this.clone();
     }
 
+    /**
+        Returns a new matrix, containing the elements of this matrix, starting at 
+        (`fromX`, `fromY`) and ending at `toX`, `toY`.
+
+        @param fromX The `x` coordinate of the top left corner from which we start reading. Defaults to `0`.
+        @param fromY The `y` coordinate of the top left corner from which we start reading. Defaults to `0`.
+        @param toX The `x` coordinate of the bottom right corner at which we stop reading. Defaults to `this.width`.
+        @param toY The `y` coordinate of the bottom right corner at which we stop reading. Defaults to `this.height`.
+        @return Matrix2D
+    **/
     public inline function getSubMatrix(fromX:Int = 0, fromY:Int = 0, ?toX:Int, ?toY:Int):Matrix2D {
         var copy = this.to2DArray();
 
@@ -140,27 +186,54 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     
 		if (copy.length == 0) return new Matrix2D(0, 0);
 		
-        var arr2d = new Array2D(copy.length, copy[0].length);
+        var arr2d = new Array2D(copy[0].length, copy.length);
 		arr2d.inner = copy.flatten();
 		return arr2d;
     }
 
+    /**
+        Returns an array containing the elements at the column `x`, from top to bottom.
+    **/
     public inline function getColumn(x:Int):Array<Float> {
         return this.column(x);
     }
 
+    /**
+        Returns an array containing the elements at the row `y`, from left to right.    
+    **/
     public inline function getRow(y:Int):Array<Float> {
         return this.row(y);
     }
 
+    /**
+        Replaces the elements of the column at index `x` with the elements in `arr`
+
+        @param x the 0-based index of the column
+        @param arr the new column. Must be at least of the same length as the matrix' height
+    **/
     public inline function setColumn(x:Int, arr:Array<Float>) {
+        if (arr.length < this.height) throw ""; //Todo
         for (y in 0...this.height) this.set(x, y, arr[y]);
     }
 
+    /**
+        Replaces the elements of the row at index `y` with the elements in `arr`
+
+        @param y the 0-based index of the row
+        @param arr the new row. Must be at least of the same length as the matrix' width
+    **/
     public inline function setRow(y:Int, arr:Array<Float>) {
+        if (arr.length < this.width) throw ""; //Todo
         for (x in 0...this.width) this.set(x, y, arr[x]);
     }
 
+    /**
+        Inserts an entire column right before the column at index `x`.
+
+        @param x the 0-based index of the column to insert at
+        @param arr the column to insert
+        @return this modified `Matrix2D`
+    **/
     public inline function insertColumn(x:Int, arr:Array<Float>):Matrix2D {
         var n = new Array2D(this.width + 1, this.height);
         for (y in 0...this.height) {
@@ -172,6 +245,13 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return this = n;
     }
 
+    /**
+        Inserts an entire row right before the row at index `y`.
+
+        @param y the 0-based index of the row to insert at
+        @param arr the row to insert
+        @return this modified `Matrix2D`
+    **/
     public inline function insertRow(y:Int, arr:Array<Float>):Matrix2D {
         var n = new Array2D(this.width, this.height + 1);
         for (x in 0...this.width) {
@@ -183,6 +263,12 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return this = n;
     }
 
+    /**
+        Removes an entire column from this `Matrix2D`.
+
+        @param x the 0-based index of the column to remove
+        @return this modified `Matrix2D`
+    **/
     public inline function removeColumn(x:Int):Matrix2D {
         var underlyingArray:Array<Null<Float>> = cast this.inner.copy();
         for (i in 0...this.height) underlyingArray[x + i * this.width] = null;
@@ -193,6 +279,12 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return this;
     }
 
+    /**
+        Removes an entire row from this `Matrix2D`.
+
+        @param y the 0-based index of the row to remove
+        @return this modified `Matrix2D`
+    **/
     public inline function removeRow(y:Int):Matrix2D {
         var underlyingArray:Array<Null<Float>> = cast this.inner.copy();
         for (i in 0...this.width) underlyingArray[y + this.width * i] = null;
@@ -204,6 +296,13 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return this;
     }
 
+    /**
+        Returns a string representation of this `Matrix2D`.
+
+        @param precision How many numbers beyond the decimal point to display. Only relevant when `pretty` is set to `true`
+        @param pretty Whether to return a pretty-print of the matrix or not. 
+        A pretty print adds a distinct matrix border, centered numbers, and ellipsis where numbers are truncated.
+    **/
     public inline function toString(precision:Int = 5, pretty:Bool = true) {
         if (!pretty) return this.toString();
 
@@ -285,6 +384,18 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 	// Static matrix creation
 	//-----------------------------------------------------------------------------------------
 
+
+    /**
+        Generates an identity matrix.
+    **/
+    public static inline function IDENTITY():Matrix2D {
+        return Matrix2D.createTransformation(
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, 1]
+        );
+    }
+
     /**
         Generates a rotation matrix of `angle` degrees/radians.
 
@@ -356,8 +467,29 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             [0, 0, 1]
         );
     }
-    
 
+    /**
+        Generates a perspective warp matrix, that tweaks the perspective of an image, such
+        that points at `pointPairs[n].from` will end up in the position `pointPairs[n].to`.
+
+        @param pointPairs 4 pairs of points to "pin-point" the transform on. 
+    **/
+    public static inline function PERSPECTIVE(pointPairs:Array<PointTransformationPair>) {
+        var src = [], dst = [];
+		for (pair in pointPairs) {
+			src.push(pair.from);
+			dst.push(pair.to);
+		}
+		return PerspectiveWarp.generateMatrix(src, dst);
+    }
+
+
+	/**
+	    Creates a new `Matrix2D` filled with `rows`, and of `rows.length` height.
+
+	    @param rows multiple parameters of type `Array<Float>`, or a single, `Array<Array<Float>>` preceded by a `...` 
+	    @return A `Matrix2D` instance.
+	**/
 	public static inline function createFilled(...rows:Array<Float>):Matrix2D {
 		var arr = new Array2D(rows[0].length, rows.length);
 		arr.inner = [];
@@ -365,6 +497,17 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		return arr;
 	}
 
+	/**
+        Helper function to generate a transformation matrix, 
+        exists as sort of a guide for the creation of such matrix.
+
+        @param xRow The first row of the matrix. Will be the row deciding the transformed `x` position of a point.
+        @param yRow The second row of the matrix. Will be the row deciding the transformed `y` position of a point.
+        @param homogeneousRow The third row of the matrix. On affine transformations (or, ones that are entirely 2D)
+        This should be set to `[0, 0, 1]`. On perspective transformations, used to decide the `z` coordinate of a given point.
+        When casted back into a 2D point, the point's `z` coordinate is used as a denominator for the other `x` and `y` coordinates.
+        @return The newly created `Matrix2D`
+	**/
 	public static inline function createTransformation(xRow:Array<Float>, yRow:Array<Float>, ?homogeneousRow:Array<Float>):Matrix2D {
 		if (homogeneousRow == null) homogeneousRow = [0, 0, 1];
 		var arr = new Array2D(3 , 3, null);

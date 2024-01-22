@@ -3,11 +3,13 @@ package vision.ds;
 import vision.tools.MathTools;
 
 /**
- * A 2D point represented by 2, 16-bit integers.
- * 
- * An abstract over a 32-bit `Int`, with its first 16 bits representing
- * the X value, and the other bits representing the Y value
- */
+	A 2D point represented by 2, 16-bit integers.
+
+	An abstract over a 32-bit `Int`, with its first 16 bits representing
+	the X value, and the other bits representing the Y value
+
+	**Attention - this is a pass-by-value type**
+**/
 abstract Int16Point2D(Int) {
 	/**
 		The `x` position of this `Int16Point2D`
@@ -42,6 +44,9 @@ abstract Int16Point2D(Int) {
 		return y;
 	}
 
+	/**
+	    Returns a string representation of this `Int16Point2D`
+	**/
 	public inline function toString():String {
 		return '($x, $y)';
 	}

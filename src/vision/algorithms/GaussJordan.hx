@@ -3,6 +3,12 @@ package vision.algorithms;
 import vision.ds.Matrix2D;
 
 class GaussJordan {
+
+	/**
+	    Finds the inverse of a matrix, or, in other words, find another matrix for which `matrix * inverse = IDENTITY_MATRIX`
+	    @param matrix 
+	    @return Matrix2D
+	**/
 	public static function invert(matrix:Matrix2D):Matrix2D {
 		var n = matrix.height;
 

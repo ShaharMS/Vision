@@ -7,12 +7,12 @@ package vision.ds;
 class Pixel {
 
 	/**
-		The row on which the pixel is on 
+		The column on which the pixel is on 
 	**/
 	public var x:Int;
 
 	/**
-		The column on which the pixel is on 
+		The row on which the pixel is on 
 	**/
 	public var y:Int;
 

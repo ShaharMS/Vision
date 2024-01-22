@@ -1,5 +1,6 @@
 package vision.tools;
 
+import vision.ds.Point3D;
 import vision.ds.Matrix2D;
 import vision.ds.IntPoint2D;
 import haxe.ds.Vector;
@@ -402,6 +403,16 @@ class MathTools {
 		return new Point2D(x, y);
 	}
 	
+	//-----------------------------------------------------------------------------
+	// Point3D
+	//-----------------------------------------------------------------------------
+
+	overload extern inline public static function distanceBetweenPoints(point1:Point3D, point2:Point3D):Float {
+		final x:Float = point2.x - point1.x;
+		final y:Float = point2.y - point1.y;
+		final z:Float = point2.z - point1.z;
+		return sqrt(x * x + y * y + z * z);
+	}
 
 	//-----------------------------------------------------------------------------------------
 	// General

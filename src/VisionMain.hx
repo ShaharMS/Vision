@@ -137,13 +137,13 @@ class VisionMain {
 			trace("Simple Matrix Applications took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			start = haxe.Timer.stamp();
-			printImage(image.clone().perspectiveWarp([
+			printImage(image.clone().perspectiveWarp(Matrix2D.PERSPECTIVE([
 				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
 				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
 				{from: {x: 0, y: image.height}, to: {x: 15, y: image.height - 10}},
 				{from: {x: image.width, y: image.height}, to: {x: image.width, y: 91}}
 
-			]));
+			])));
 			end = haxe.Timer.stamp();
 			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
 

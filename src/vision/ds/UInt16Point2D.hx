@@ -1,11 +1,13 @@
 package vision.ds;
 
 /**
- * A 2D point represented by 2, unsigned, 16-bit integers.
- * 
- * An abstract over a 32-bit `Int`, with its first 16 bits representing
- * the X value, and the other bits representing the Y value
- */
+    A 2D point represented by 2, unsigned, 16-bit integers.
+
+    An abstract over a 32-bit `Int`, with its first 16 bits representing
+    the X value, and the other bits representing the Y value
+
+    **Attention - this is a pass-by-value type**
+**/
 @:structInit
 abstract UInt16Point2D(Int) {
 
