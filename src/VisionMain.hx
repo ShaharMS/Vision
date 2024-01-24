@@ -1,5 +1,6 @@
 package;
 
+import vision.ds.Array2D;
 import vision.algorithms.Cramer;
 import vision.ds.Matrix2D;
 import vision.ds.PixelFormat;
@@ -49,6 +50,7 @@ class VisionMain {
 		var start:Float, end:Float;
 
 		#if (true)
+		#if js
 		#if (!compile_unit_tests)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);
@@ -254,8 +256,7 @@ class VisionMain {
 			trace("Laplacian edge detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			#end
 		});
-		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png", image ->
-		{
+		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png", image -> {
 			#if convolve_tests
 			printSectionDivider("Convolution tests");
 			start = haxe.Timer.stamp();
@@ -335,6 +336,7 @@ class VisionMain {
 				printImage(stamped); 
 			});
 		});
+		#end
 		#end
 
 		#if ds_tests
@@ -422,6 +424,11 @@ class VisionMain {
 		}
 		#end
 		#end
+
+		//var a = new Array2D<Int>(3, 3);
+		//a[[0, 0]] = 1;
+		//trace(a[[0, 0]]);
+
 	}
 	
 	public static function printImage(image:Image) {

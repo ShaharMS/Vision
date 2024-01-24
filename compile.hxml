@@ -9,7 +9,7 @@
 #--interp
 #--cpp bin/cpp
 #--define compile_unit_tests
---define radix_test
+#--define radix_test
 
 #--js bin/main.js
 --interp
@@ -23,3 +23,5 @@
 #--define simple_tests
 #--define noise_tests
 #--define copy_paste_tests
+
+--define vision_fancy_array_access

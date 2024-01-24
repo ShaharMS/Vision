@@ -1,39 +1,42 @@
 package vision.ds;
 
 /**
-    A 2D array, faster than an `Array<Array<T>>`.
+	A 2D array, faster than an `Array<Array<T>>`.
 **/
+#if vision_fancy_array_access
+@:build(vision.helpers.Array2DMacro.build())
+#end
 class Array2D<T> {
 	/**
-	    The underlying `Array<T>` instance that holds the data.
+		The underlying `Array<T>` instance that holds the data.
 	**/
 	public var inner:Array<T>;
 
 	/**
-	    The 2D array's width.
+		The 2D array's width.
 	**/
 	public var width(default, set):Int;
 
 	/**
-	    The 2D array's height.
+		The 2D array's height.
 	**/
 	public var height(default, set):Int;
 
 	/**
-	    The amount of elements in this `Array2D`.
+		The amount of elements in this `Array2D`.
 	**/
 	public var length(get, set):Int;
 
 	/**
-        Creates a new `Array2D` instance. The created array can be filled in with non-null values. 
-        if null is given, or no value is provided, the behavior is target-dependent:    
+		Creates a new `Array2D` instance. The created array can be filled in with non-null values. 
+		if null is given, or no value is provided, the behavior is target-dependent:    
 
-         - on dynamic targets, values are always `null`
-         - on static targets, `0`, `0.0` or `false` are filled in for `Int`, `Float` and `Bool` respectively. Other types are filled in with `null`
-        
-        @param width The array's width
-        @param height The array's height
-        @param fillWith Optional, A custom value of type `T` to fill the created array with. If `fillWith` is not provided, the created array will contain the default values specified above.
+		 - on dynamic targets, values are always `null`
+		 - on static targets, `0`, `0.0` or `false` are filled in for `Int`, `Float` and `Bool` respectively. Other types are filled in with `null`
+
+		@param width The array's width
+		@param height The array's height
+		@param fillWith Optional, A custom value of type `T` to fill the created array with. If `fillWith` is not provided, the created array will contain the default values specified above.
 	**/
 	public inline function new(width:Int, height:Int, ?fillWith:T) {
 		@:bypassAccessor this.width = width;
@@ -42,28 +45,29 @@ class Array2D<T> {
 		this.inner = new Array();
 		inner.resize(width * height);
 		if (fillWith != null) {
-			for (i in 0...inner.length) inner[i] = fillWith;
+			for (i in 0...inner.length)
+				inner[i] = fillWith;
 		}
 	}
 
 	/**
-	    Gets the element at column `x`, row `y`
+		Gets the element at column `x`, row `y`
 	**/
 	public inline function get(x:Int, y:Int):T {
 		return inner[(y * height) + x];
 	}
 
 	/**
-	    Sets the element at column `x`, row `y`
+		Sets the element at column `x`, row `y`
 	**/
 	public inline function set(x:Int, y:Int, val:T) {
 		return inner[x + (y * height)] = val;
 	}
 
 	/**
-	    Sets multiple elements at multiple positions, at the same time
-	    @param points the indices at which to set
-	    @param val the value to set
+		Sets multiple elements at multiple positions, at the same time
+		@param points the indices at which to set
+		@param val the value to set
 	**/
 	public inline function setMultiple(points:Array<IntPoint2D>, val:T) {
 		for (p in points) {
@@ -75,7 +79,7 @@ class Array2D<T> {
 		returns the entire row at position `y`
 	**/
 	public inline function row(y:Int):Array<T> {
-		return [for (i in y * width... y * width + width) inner[i]];
+		return [for (i in y * width...y * width + width) inner[i]];
 	}
 
 	/**
@@ -86,10 +90,10 @@ class Array2D<T> {
 	}
 
 	/**
-	    Returns an array iterator for this `Array2D`.
-	    
+		Returns an array iterator for this `Array2D`.
+
 		Values are iterated on from left to right, top to bottom, for example (array of width 5, height 5):
-		
+
 		`(x, y)...(x + 5, y) -> (x, y + 1)...(x + 5, y + 1) -> (x, y + 2)...`
 	**/
 	public inline function iterator() {
@@ -97,18 +101,19 @@ class Array2D<T> {
 	}
 
 	/**
-	    Fills the entire array with the provided value
-	    @param value the value to fill the array with
-	    @return this, filled `Array2D`
+		Fills the entire array with the provided value
+		@param value the value to fill the array with
+		@return this, filled `Array2D`
 	**/
 	public inline function fill(value:T):Array2D<T> {
-		for (i in 0...inner.length) inner[i] = value;
+		for (i in 0...inner.length)
+			inner[i] = value;
 		return this;
 	}
 
 	/**
-	    Clones this `Array2D`
-	    @return A new `Array2D`, similar to this one.
+		Clones this `Array2D`
+		@return A new `Array2D`, similar to this one.
 	**/
 	public inline function clone():Array2D<T> {
 		var arr = new Array2D(width, height);
@@ -117,7 +122,7 @@ class Array2D<T> {
 	}
 
 	/**
-	    Gets a string representation of this `Array2D`@:noCompletion 
+		Gets a string representation of this `Array2D`@:noCompletion 
 	**/
 	public inline function toString():String {
 		var str = "\n[[";
@@ -159,6 +164,13 @@ class Array2D<T> {
 		return height = value;
 	}
 
+	@:noCompletion @:op([]) inline function get_item(index:Array<Int>) {
+		return inner[index[0] + (index[1] * height)];
+	}
+
+	@:noCompletion @:op([]) inline function set_item(index:Array<Int>, value:T) {
+		return inner[index[0] + (index[1] * height)] = value;
+	}
 
 	@:to public function to2DArray():Array<Array<T>> {
 		var arr = [];
