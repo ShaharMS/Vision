@@ -1,13 +1,52 @@
 package vision.ds;
 
+import haxe.Serializer;
 import haxe.io.BytesData;
 import haxe.io.Bytes;
 
 /**
-    An abstract over `haxe.io.Bytes`, allows array access, and adds a couple of functions.
+    An abstract over `haxe.io.Bytes`, allows array access, and adds a bunch of utility functions.
 **/
 @:forward
 abstract ByteArray(Bytes) from Bytes to Bytes {
+
+    /**
+        Generates an array of bytes based on a given value.
+        This is not restricted to any specific type, but the way each type is encoded varies:
+         - `Bool` is encoded as `0` or `1`
+         - Any numerical type is encoded using its respective `ByteArray` `set` function:
+            - **`Int`** - `setInt32`
+            - **`Float`** - `setDouble`...
+            
+         - `String` is encoded using `UTF-8`
+         - Any other object is stringified using `Serializer`, and the result is encoded using `UTF-8`.
+        @param value 
+    **/
+
+    /**
+        Generates a byte array of length 4
+        @param value 
+        @return ByteArray
+    **/
+    overload extern inline public static function from(value:Int):ByteArray {
+        var bytes = new ByteArray(4);
+        bytes.setInt32(0, value);
+        return bytes;
+    }
+    overload extern inline public static function from(value:Float):ByteArray {
+        var bytes = new ByteArray(8);
+        bytes.setDouble(0, value);
+        return bytes;
+    }
+    overload extern inline public static function from(value:Bool):ByteArray {
+        return value ? new ByteArray(1, 1) : new ByteArray(1, 0);   
+    }
+    overload extern inline public static function from(value:String):ByteArray {
+        return Bytes.ofString(value);
+    }
+    overload extern inline public static function from(value:Dynamic):ByteArray {
+        return Bytes.ofString(Serializer.run(value));
+    }
 
     /**
         Reads a byte at the specified index 
@@ -69,11 +108,11 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     }
 
     /**
-        Creates a new `ByteArray`. Values are set to 0.
+        Creates a new `ByteArray`. Values are set to `fillWith`, which defaults to `0`.
     **/
-    public inline function new(length:Int) {
+    public inline function new(length:Int, fillWith:Int = 0) {
         this = Bytes.alloc(length);
-        this.fill(0, length, 0);
+        this.fill(0, length, fillWith);
     }
 
     /**
@@ -83,17 +122,15 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     **/
     public inline function resize(length:Int) {
         var newBytes = Bytes.alloc(length);
-        newBytes.fill(0, newBytes.length, 0);
         newBytes.blit(0, this, 0, this.length);
         this = newBytes;
     }
 
 	/**
 	    Concatenates a byte array to this one. **Pay Attention** - 
-        this differs from `Array.concat` in that it does not create a new array, but modifies this one.
 	    
         @param array the array to concatenate.
-	    @return this modified `ByteArray`.
+	    @return a new `ByteArray`.
 	**/
 	public inline function concat(array:ByteArray):ByteArray {
 		var newBytes = Bytes.alloc(this.length + array.length);
@@ -101,6 +138,18 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
 		newBytes.blit(this.length, array, 0, array.length);
 		return newBytes;
 	}
+
+    /**
+        Checks if this `ByteArray` is empty, i.e. all bytes are 0.
+
+        @return true if empty, false otherwise
+    **/
+    public function isEmpty():Bool {
+        for (i in 0...this.length) {
+            if (this.get(i) != 0) return false;
+        }
+        return true;
+    } 
 
     /**
         Turns this `ByteArray` into an array of ints, from -255 to 255

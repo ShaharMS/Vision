@@ -33,6 +33,7 @@
  - **Added `ByteArray.resize()`**
  - **Added `ByteArray.concat()`**
  - **Added `ByteArray.getBytes()` and `ByteArray.setBytes()`**
+ - **Added `ByteArray.isEmpty()`**
  - **Added `ByteArray.toArray()`**
  - **`ByteArrays` are now pre-filled with `0`**
 
