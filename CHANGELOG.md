@@ -8,11 +8,15 @@
 
  - **Added `affineWarp()`**
  - **Added `perspectiveWarp()`**
+ - **Added `fisheyeDistortion()`**
+ - **Added `barrelDistortion()`**
+ - **Added `pincushionDistortion()`**
 
 
 ### `Image.hx`
 
  - **Added `rotate()`**
+ - **`hasPixel()` now receives `Float`s instead of `Int`s**
  - **Slight optimization for `getFloatingPixel()`, avoids recursive call for out-of-bounds coordinates**
 
 ### `vision.ds`

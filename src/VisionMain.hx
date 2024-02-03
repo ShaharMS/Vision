@@ -90,6 +90,16 @@ class VisionMain {
 			end = haxe.Timer.stamp();
 			trace("Image Cloning took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
+			printImage(image.clone().fisheyeDistortion());
+			end = haxe.Timer.stamp();
+			trace("Fisheye filter took: " + MathTools.truncate(end - start, 4) + " seconds");start = haxe.Timer.stamp();
+			printImage(image.clone().barrelDistortion());
+			end = haxe.Timer.stamp();
+			trace("Barrel distortion took: " + MathTools.truncate(end - start, 4) + " seconds");start = haxe.Timer.stamp();
+			printImage(image.clone().pincushionDistortion());
+			end = haxe.Timer.stamp();
+			trace("Pincushion distortion took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
 			printImage(image.clone().erode());
 			end = haxe.Timer.stamp();
 			trace("Erosion took: " + MathTools.truncate(end - start, 4) + " seconds");

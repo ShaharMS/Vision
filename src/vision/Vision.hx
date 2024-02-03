@@ -206,6 +206,66 @@ class Vision {
 		return image;
 	}
 
+	public static function fisheyeDistortion(image:Image, ?strength:Float = 1):Image {
+		var centerX = image.width / 2,
+			centerY = image.height / 2;
+		
+		var processed = new Image(image.width, image.height);
+
+		image.forEachPixelInView((x, y, color) -> {
+			var normalizedX = (x - centerX) / centerX;
+			var normalizedY = (y - centerY) / centerY;
+			// Because the x and y positions are normalized, `radius` 
+			// is the radius of the circle from the provided center point
+			var radius = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY);
+			radius = Math.pow(radius, strength);
+
+			if (radius > 1) { // Outside the circle
+				processed.setUnsafePixel(x, y, Color.BLACK);
+				return;
+			} 
+			// distance is less than 1, we are inside the circle
+			var ratio = Math.sin(radius * Math.PI / 2) / radius;
+			var sourceX = centerX + normalizedX * ratio * centerX;
+            var sourceY = centerY + normalizedY * ratio * centerY;
+            processed.setPixel(x, y, image.getFloatingPixel(sourceX, sourceY));
+		});
+
+		return processed;
+	}
+
+	public static function barrelDistortion(image:Image, ?strength:Float = 0.1) {
+		var centerX = image.width / 2,
+			centerY = image.height / 2;
+
+		var processed = new Image(image.width, image.height);
+
+		image.forEachPixelInView((x, y, color) -> {
+			// Translate pixel coordinates to centered coordinates
+            var normalizedX = (x - centerX);
+            var normalizedY = (y - centerY);
+			// So we'd be able to work in polar coords
+			var radius = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY);
+			var theta = Math.atan2(normalizedY, normalizedX);
+
+			var distortedRadius = radius * (1 + strength * (radius * radius) / (centerX * centerX));
+			
+			// Cast back to cartesian coords
+			var distortedX = centerX + distortedRadius * Math.cos(theta);
+			var distortedY = centerY + distortedRadius * Math.sin(theta);
+
+			if (!image.hasPixel(distortedX, distortedY)) return;
+			// (Unsafe setting is faster)
+			processed.setUnsafePixel(x, y, image.getFloatingPixel(distortedX, distortedY));
+		});
+
+		return processed;
+	}
+
+	public static function pincushionDistortion(image:Image, ?strength:Float = 0.1) {
+		return barrelDistortion(image, -strength);
+	}
+
 	/**
 	    Loops over the given image's pixels with a kernel, and replaces the center pixel of that kernel with the "maximum value" inside that kernel:
 
