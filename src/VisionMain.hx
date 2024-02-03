@@ -425,10 +425,6 @@ class VisionMain {
 		#end
 		#end
 
-		//var a = new Array2D<Int>(3, 3);
-		//a[[0, 0]] = 1;
-		//trace(a[[0, 0]]);
-
 	}
 	
 	public static function printImage(image:Image) {

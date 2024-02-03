@@ -1,13 +1,14 @@
 package vision.helpers;
 
-#if (vision_fancy_array_access && macro)
+#if (macro)
 import haxe.macro.Expr;
 import haxe.macro.Context;
-
+import haxe.macro.Compiler;
 using haxe.macro.ExprTools;
 
 class Array2DMacro {
 	public static function build() {
+		if (!Context.defined('vision_fancy_array_access')) return null;
 		var fields = Context.getBuildFields();
 
 		for (field in fields) {

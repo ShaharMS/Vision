@@ -30,11 +30,14 @@
  - **Added `Array2D.clone()`**
  - **Added `Array2D.toString()`**
  - **Added `Array2D.row()` amd `Array2D.column()`**
+ - **Added haxedef `vision_fancy_array_access`**, allowing more concise `Array2D` reading/writing
+ - **Added `ByteArray.from`**, for conversion of arbitrary values to `ByteArray`
  - **Added `ByteArray.resize()`**
  - **Added `ByteArray.concat()`**
  - **Added `ByteArray.getBytes()` and `ByteArray.setBytes()`**
  - **Added `ByteArray.isEmpty()`**
  - **Added `ByteArray.toArray()`**
+ - **Argument added to `ByteArray`'s constructor, `fillWith`**
  - **`ByteArrays` are now pre-filled with `0`**
 
 ### `vision.tools`

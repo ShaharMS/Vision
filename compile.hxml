@@ -24,4 +24,5 @@
 #--define noise_tests
 #--define copy_paste_tests
 
---define vision_fancy_array_access
+#--define vision_fancy_array_access
+--macro addGlobalMetadata('', '@:build(vision.helpers.Array2DMacro.build())')

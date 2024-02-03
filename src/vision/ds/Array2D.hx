@@ -1,10 +1,20 @@
 package vision.ds;
 
+#if !vision_fancy_array_access
 /**
 	A 2D array, faster than an `Array<Array<T>>`.
 **/
-#if vision_fancy_array_access
-@:build(vision.helpers.Array2DMacro.build())
+#else
+/**
+	A 2D array, faster than an `Array<Array<T>>`.
+
+	You have fancy array access turned on, so you can get/set elements using the following syntax:
+	```haxe
+	var arr = new Array2D(10, 10);
+	arr[[1, 5]] = 3;
+	trace(arr[[1, 5]]); // 3
+	```
+**/
 #end
 class Array2D<T> {
 	/**

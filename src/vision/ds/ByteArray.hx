@@ -11,39 +11,53 @@ import haxe.io.Bytes;
 abstract ByteArray(Bytes) from Bytes to Bytes {
 
     /**
-        Generates an array of bytes based on a given value.
-        This is not restricted to any specific type, but the way each type is encoded varies:
-         - `Bool` is encoded as `0` or `1`
-         - Any numerical type is encoded using its respective `ByteArray` `set` function:
-            - **`Int`** - `setInt32`
-            - **`Float`** - `setDouble`...
-            
-         - `String` is encoded using `UTF-8`
-         - Any other object is stringified using `Serializer`, and the result is encoded using `UTF-8`.
-        @param value 
-    **/
-
-    /**
-        Generates a byte array of length 4
-        @param value 
-        @return ByteArray
+        Generates a byte array of length 4, containing `value`.  
+        The value is stored in little-endian format.
+        @param value The given integer
+        @return The resulting `ByteArray`
     **/
     overload extern inline public static function from(value:Int):ByteArray {
         var bytes = new ByteArray(4);
         bytes.setInt32(0, value);
         return bytes;
     }
+
+    /**
+        Generates a byte array of length 8, containing `value`.
+        The value is stored in little-endian format.
+        @param value The given float
+        @return The resulting `ByteArray`
+    **/
     overload extern inline public static function from(value:Float):ByteArray {
         var bytes = new ByteArray(8);
         bytes.setDouble(0, value);
         return bytes;
     }
+
+    /**
+        If `value` is `true`, generates a byte array of length 1, containing 1.  
+        If `value` is `false`, generates a byte array of length 1, containing 0.
+    **/
     overload extern inline public static function from(value:Bool):ByteArray {
         return value ? new ByteArray(1, 1) : new ByteArray(1, 0);   
     }
-    overload extern inline public static function from(value:String):ByteArray {
+
+    /**
+        Encodes the given string into a byte array. `UTF-8` encoding is used by default.
+        If you want to use another type of encoding, provide the second parameter.
+        @param value The given string
+        @return The resulting `ByteArray`
+    **/
+    overload extern inline public static function from(value:String, ?encoding:haxe.io.Encoding):ByteArray {
         return Bytes.ofString(value);
     }
+
+    /**
+        Uses `haxe.io.Serializer` to stringify the given value, then encodes it into a byte array
+        using `UTF-8` encoding.
+        @param value The given object
+        @return The resulting `ByteArray`
+    **/
     overload extern inline public static function from(value:Dynamic):ByteArray {
         return Bytes.ofString(Serializer.run(value));
     }
