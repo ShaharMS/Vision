@@ -25,7 +25,7 @@ import vision.algorithms.SimpleLineDetector;
 import vision.ds.gaussian.GaussianKernelSize;
 import vision.ds.hough.HoughSpace;
 import vision.ds.Ray2D;
-import vision.algorithms.Gaussian;
+import vision.algorithms.Gauss;
 import vision.algorithms.Hough;
 import vision.ds.Point2D;
 import vision.ds.Line2D;
@@ -608,7 +608,7 @@ class Vision {
 						[farCorner, farEdge, edge, farEdge, farCorner]
 					];
 				case Custom(kernel): kernel;
-				case GaussianBlur(size, sigma): Gaussian.create2DKernelOfSize(size, sigma).inner.raise(size);
+				case GaussianBlur(size, sigma): Gauss.create2DKernelOfSize(size, sigma).inner.raise(size);
 				case LaplacianPositive: [[0, 1, 0], [1, -4, 1], [0, 1, 0]];
 				case LaplacianNegative: [[0, -1, 0], [-1, 4, -1], [0, -1, 0]];
 			}
@@ -755,9 +755,9 @@ class Vision {
 		You can modify the values of the matrix by passing a float to the `sigma` parameter.
 		The higher the value of `sigma`, the blurrier the image:
 		
-		| Original | `sigma = 0.5` | `sigma = 1` | `sigma = 2` |
-		|---|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%200.5%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%201%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%202%29.png)|
+		| Original | `sigma = 0.5` | `sigma = 1`| `sigma = 1`, `fast = true` | `sigma = 2` |
+		|---|---|---|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%200.5%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%201%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%201%47%20fast%20=%20true%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%202%29.png)|
 
 		@param image The image to be blurred.
 		@param sigma The sigma value to use for the gaussian distribution on the kernel. a lower value will focus more on the center pixel, while a higher value will shift focus to the surrounding pixels more, effectively blurring it better.
@@ -765,7 +765,8 @@ class Vision {
 		@throws InvalidGaussianKernelSize if the kernel size is even, negative or `0`, this error is thrown.
 		@return A blurred version of the image. The original image is not preserved.
 	**/
-	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = GaussianKernelSize.X5):Image {
+	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = GaussianKernelSize.X5, ?fast:Bool = false):Image {
+		if (fast) return Gauss.fastBlur(image, kernelSize, sigma);
 		return convolve(image, GaussianBlur(kernelSize, sigma));
 	}
 

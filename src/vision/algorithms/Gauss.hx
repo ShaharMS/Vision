@@ -8,7 +8,7 @@ import vision.exceptions.InvalidGaussianKernelSize;
 /**
  * Gaussian kernel creation implementation, ported to Haxe by [Shahar Marcus](https://www.github.com/ShaharMS).
  */
-class Gaussian {
+class Gauss {
 
 	@:deprecated("Gaussian.create1x1Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create1x1Kernel(sigma:Float):Array<Array<Float>> {

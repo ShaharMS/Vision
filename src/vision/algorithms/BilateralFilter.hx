@@ -21,7 +21,7 @@ class BilateralFilter {
 		// Using 3σ rule for filter radius - basically, a kernel radius larger than 3σ computes unnecessary pixels.
 		var kernelSize:Int = cast Math.floor(6 * distanceSigma) + 1;
 		if (kernelSize % 2 == 0) kernelSize++;
-		gaussianKernelMatrix = Gaussian.create2DKernelOfSize(kernelSize, distanceSigma);
+		gaussianKernelMatrix = Gauss.create2DKernelOfSize(kernelSize, distanceSigma);
 
 		/*
 			Precalculate the intensity vector for performance reasons.

@@ -27,7 +27,7 @@ import vision.ds.Queue;
 import vision.ds.Line2D;
 import vision.tools.MathTools;
 import haxe.Timer;
-import vision.algorithms.Gaussian;
+import vision.algorithms.Gauss;
 import vision.Vision;
 import vision.ds.Color;
 import vision.ds.Rectangle;
@@ -219,6 +219,10 @@ class VisionMain {
 			end = haxe.Timer.stamp();
 			trace("Gaussian blur took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
+			printImage(image.clone().gaussianBlur(1, true));
+			end = haxe.Timer.stamp();
+			trace("Fast Gaussian blur took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
 			printImage(image.clone().medianBlur(5));
 			end = haxe.Timer.stamp();
 			trace("Median blur took: " + MathTools.truncate(end - start, 4) + " seconds");
@@ -226,24 +230,6 @@ class VisionMain {
 
 			#if feature_detection_tests
 			printSectionDivider("Feature detection tests");
-			start = haxe.Timer.stamp();
-			var lines = Vision.simpleLine2DDetection(orgImage.clone(), 50, 10);
-			var newI = orgImage.clone();
-			for (l in lines) {
-				newI.drawLine2D(l, 0x00FFD5);
-			}
-			printImage(newI);
-			end = haxe.Timer.stamp();
-			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			start = haxe.Timer.stamp();
-			var lines = SimpleHough.detectLines(orgImage.clone().cannyEdgeDetection(1, X5, 0.05, 0.16), 40);
-			var newI = orgImage.clone();
-			for (l in lines) {
-				newI.drawRay2D(l, 0x00FFD5);
-			}
-			printImage(newI);
-			end = haxe.Timer.stamp();
-			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().sobelEdgeDetection());
 			end = haxe.Timer.stamp();
@@ -346,6 +332,34 @@ class VisionMain {
 				stamped.stamp(10, 30, st);
 				printImage(stamped); 
 			});
+		});
+		#end
+
+		#if (feature_detection_tests && js)
+		ImageTools.loadFromFile("./sudoku.jpg", sudoku -> {
+			printSectionDivider("Line detection tests");
+			var image = sudoku.resize(400);
+			printImage(image);
+			start = haxe.Timer.stamp();
+			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 30);
+			var newI = image.clone();
+			for (l in lines) {
+				newI.drawLine2D(l, 0x00FFD5);
+			}
+			printImage(newI);
+			end = haxe.Timer.stamp();
+			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			var lines = SimpleHough.detectLines(image.clone().cannyEdgeDetection(1, X5, 0.05, 0.16), 100);
+			var newI = image.clone();
+			for (l in lines) {
+				newI.drawRay2D(l, 0x00FFD5);
+			}
+			printImage(image.clone().cannyEdgeDetection(1, X5, 0.05, 0.16));
+			printImage(newI);
+			end = haxe.Timer.stamp();
+			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			
 		});
 		#end
 		#end

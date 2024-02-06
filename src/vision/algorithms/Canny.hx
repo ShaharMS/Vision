@@ -30,7 +30,7 @@ class Canny {
 	}
 
 	public static function applyGaussian(image:CannyObject, size:Int, sigma:Float):CannyObject {
-		return Gaussian.fastBlur(image, size, sigma);
+		return Gauss.fastBlur(image, size, sigma);
 	}
 
 	public static function applySobelFilters(image:CannyObject):CannyObject {

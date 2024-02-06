@@ -69,6 +69,7 @@
   
 ### `vision.algorithms`
 
+ - **Renamed `Gaussian` -> `Gauss`**
  - **Added `GaussJordan` for matrix inversion**
  - **Added `BilinearInterpolation.interpolateMissingPixels()` for filling in of missing pixels in images**
  - **Added `Cramer` for solving systems of linear equations**
