@@ -57,10 +57,6 @@ class VisionMain {
 			printSectionDivider("Test image, resized");
 			var orgImage = image.clone();
 			printImage(image);
-			var fishImg = image.clone().fisheyeDistortion();
-			printImage(fishImg);
-			var fishImg2 = {var a = image.clone(); a.resize(a.height, a.height); a.fisheyeDistortion();}
-			printImage(fishImg2);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
 			#if simple_tests
@@ -168,11 +164,6 @@ class VisionMain {
 			])));
 			end = haxe.Timer.stamp();
 			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
-
-
-			trace(Matrix2D.ROTATION(23).toString(4));
-			trace(Matrix2D.ROTATION(23).toString(-1));
-			trace(Matrix2D.ROTATION(23).toString(false));
 
 			#end
 

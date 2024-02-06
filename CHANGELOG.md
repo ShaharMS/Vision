@@ -33,8 +33,9 @@
  - **Documented `IntPoint2D` and `Point2D`**
  - **Added `Array2D.clone()`**
  - **Added `Array2D.toString()`**
- - **Added `Array2D.row()` amd `Array2D.column()`**
+ - **Added `Array2D.row()` and `Array2D.column()`**
  - **Added haxedef `vision_fancy_array_access`**, allowing more concise `Array2D` reading/writing
+ - **Fixed critical error with `Array2D` get & set methods**
  - **Added `ByteArray.from`**, for conversion of arbitrary values to `ByteArray`
  - **Added `ByteArray.resize()`**
  - **Added `ByteArray.concat()`**
@@ -64,6 +65,7 @@
  - **Fixed `ImageTools.addToScreen()` not considering alpha**
  - **Fixed canvas to image conversion not considering alpha**
  - **Slight fix for file-name in `ImageTools.saveToFile` on web**
+ - **Fixed `ImageTools.toShape()` referencing `openfl` when targeting `flash`**
   
 ### `vision.algorithms`
 

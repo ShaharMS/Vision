@@ -206,22 +206,22 @@ class Vision {
 		return image;
 	}
 
-	public static function fisheyeDistortion(image:Image, ?strength:Float = 1):Image {
+	public static function fisheyeDistortion(image:Image, ?strength:Float = 1.5):Image {
 		var centerX = image.width / 2,
 			centerY = image.height / 2;
 		
 		var processed = new Image(image.width, image.height);
-		var radius = Math.min(centerX, centerY);
+		var maxRadius = Math.min(centerX, centerY);
 
 		image.forEachPixelInView((x, y, color) -> {
-			var dx = (x - centerX) / radius;
-            var dy = (y - centerY) / radius;
+			var dx = (x - centerX) / maxRadius;
+            var dy = (y - centerY) / maxRadius;
             var distance = Math.sqrt(dx * dx + dy * dy);
-			
-            var r = Math.pow(distance, 1.1) / Math.pow(distance, 0.6);
 
-            var srcX = centerX + r * dx * radius;
-            var srcY = centerY + r * dy * radius;
+			var r = Math.pow(distance, distance * strength);
+
+            var srcX = centerX + r * dx * maxRadius;
+            var srcY = centerY + r * dy * maxRadius;
 
 			if (!image.hasPixel(srcX, srcY)) return;
             var color = image.getFloatingPixel(srcX, srcY);
@@ -679,7 +679,7 @@ class Vision {
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
 		for (corner in [new Point2D(0, 0), new Point2D(0, image.height), new Point2D(image.width, 0), new Point2D(image.width, image.height)]) {
-			var coords = [[corner.x, corner.y, 1]];
+			var coords:Array<Array<Float>> = [[corner.x], [corner.y], [1]];
 			coords = matrix * coords;
 			var c = coords.flatten();
 			if (c[0] > max) max = c[0];
@@ -694,7 +694,7 @@ class Vision {
 		for (x in 0...image.width) {
 			for (y in 0...image.height) {
 				// Center x & y so matrix positions make sense
-				var coords = (matrix * [[x - image.width / 2, y - image.height / 2, 1]]).underlying.inner;
+				var coords = (matrix * [[x - image.width / 2], [y - image.height / 2], [1.]]).underlying.inner;
 
 				// Translate coordinates back to their original position
 				img.setSafePixel((coords[0] + dx / 2).round(), (coords[1] + dy / 2).round(), image.getSafePixel(x, y));

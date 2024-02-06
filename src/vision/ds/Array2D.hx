@@ -64,14 +64,14 @@ class Array2D<T> {
 		Gets the element at column `x`, row `y`
 	**/
 	public inline function get(x:Int, y:Int):T {
-		return inner[(y * height) + x];
+		return inner[(y * width) + x];
 	}
 
 	/**
 		Sets the element at column `x`, row `y`
 	**/
 	public inline function set(x:Int, y:Int, val:T) {
-		return inner[x + (y * height)] = val;
+		return inner[x + (y * width)] = val;
 	}
 
 	/**

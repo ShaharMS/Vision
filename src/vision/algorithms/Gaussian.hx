@@ -121,7 +121,7 @@ class Gaussian {
 	
 	public static function create2DKernelOfSize(size:Int, sigma:Float):Array2D<Float> {
 		#if vision_quiet
-		if (size <= 0) size = -size;
+		if (size < 0) size = -size;
 		if (size % 2 == 0) size++;
 		#else
 		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernelSize(size);

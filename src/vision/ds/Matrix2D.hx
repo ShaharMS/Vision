@@ -533,19 +533,17 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             throw new MatrixOperationError("mult", [a, b], Mult_MismatchingDimensions);
         }
 
-        var result = new Matrix2D(a.rows, b.columns);
-
-        for (x in 0...result.columns) {
-            for (y in 0...result.rows) {
-                var sum: Float = 0.0;
-
-                for (k in 0...a.columns) {
+        var result = new Matrix2D(b.width, a.height);
+        for (y in 0...a.height) {
+            for (x in 0...b.width) {
+                var sum = 0.;
+                for (k in 0...a.width) {
                     sum += a.get(k, y) * b.get(x, k);
                 }
-
                 result.set(x, y, sum);
             }
         }
+
 		return result;
 	}
 	@:op(A + B) public static inline function addMatrices(a:Matrix2D, b:Matrix2D): Matrix2D {
@@ -553,7 +551,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             throw new MatrixOperationError("add", [a, b], Add_MismatchingDimensions);
         }
 
-        var result = new Matrix2D(a.rows, a.columns);
+        var result = new Matrix2D(a.columns, b.rows);
 
         for (x in 0...result.columns) {
             for (y in 0...result.rows) {
@@ -568,7 +566,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             throw new MatrixOperationError("sub", [a, b], Sub_MismatchingDimensions);
         }
 
-        var result = new Matrix2D(a.rows, a.columns);
+        var result = new Matrix2D(a.columns, b.rows);
 
         for (x in 0...result.columns) {
             for (y in 0...result.rows) {
@@ -583,19 +581,18 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             throw new MatrixOperationError("div", [a, b], Div_MismatchingDimensions);
         }
 
-        var result = new Matrix2D(a.rows, b.columns);
+        var result = new Matrix2D(b.width, a.height);
 
-        for (x in 0...result.columns) {
-            for (y in 0...result.rows) {
-                var sum: Float = 0.0;
-
-                for (k in 0...a.columns) {
+        for (y in 0...a.height) {
+            for (x in 0...b.width) {
+                var sum = 0.;
+                for (k in 0...a.width) {
                     sum += a.get(k, y) / b.get(x, k);
                 }
-
                 result.set(x, y, sum);
             }
         }
+
 		return result;
 	}
 	@:op(A *= B) public inline function multiply(b:Matrix2D):Matrix2D {
@@ -603,16 +600,14 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             throw new MatrixOperationError("mult", [this, b], Mult_MismatchingDimensions);
         }
 
-        var result = new Matrix2D(rows, b.columns);
+        var result = new Matrix2D(b.width, this.height);
 
-        for (x in 0...result.columns) {
-            for (y in 0...result.rows) {
-                var sum: Float = 0.0;
-
-                for (k in 0...columns) {
+        for (y in 0...this.height) {
+            for (x in 0...b.width) {
+                var sum = 0.;
+                for (k in 0...this.width) {
                     sum += this.get(k, y) * b.get(x, k);
                 }
-
                 result.set(x, y, sum);
             }
         }
@@ -654,19 +649,18 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             throw new MatrixOperationError("div", [this, b], Div_MismatchingDimensions);
         }
 
-        var result = new Matrix2D(rows, b.columns);
+        var result = new Matrix2D(b.width, this.height);
 
-        for (x in 0...result.columns) {
-            for (y in 0...result.rows) {
-                var sum: Float = 0.0;
-
-                for (k in 0...columns) {
-                    sum += this.get(k, y) / b.get(x, k);
+        for (y in 0...this.height) {
+            for (x in 0...b.width) {
+                var sum = 0.;
+                for (k in 0...this.width) {
+                    sum += this.get(k, y) * b.get(x, k);
                 }
-
                 result.set(x, y, sum);
             }
         }
+
         this = result.underlying;
         return cast this;
     }
