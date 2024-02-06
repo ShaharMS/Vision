@@ -57,6 +57,10 @@ class VisionMain {
 			printSectionDivider("Test image, resized");
 			var orgImage = image.clone();
 			printImage(image);
+			var fishImg = image.clone().fisheyeDistortion();
+			printImage(fishImg);
+			var fishImg2 = {var a = image.clone(); a.resize(a.height, a.height); a.fisheyeDistortion();}
+			printImage(fishImg2);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
 			#if simple_tests
@@ -92,13 +96,19 @@ class VisionMain {
 			start = haxe.Timer.stamp();
 			printImage(image.clone().fisheyeDistortion());
 			end = haxe.Timer.stamp();
-			trace("Fisheye filter took: " + MathTools.truncate(end - start, 4) + " seconds");start = haxe.Timer.stamp();
+			trace("Fisheye filter took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
 			printImage(image.clone().barrelDistortion());
 			end = haxe.Timer.stamp();
-			trace("Barrel distortion took: " + MathTools.truncate(end - start, 4) + " seconds");start = haxe.Timer.stamp();
+			trace("Barrel distortion took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
 			printImage(image.clone().pincushionDistortion());
 			end = haxe.Timer.stamp();
 			trace("Pincushion distortion took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().mustacheDistortion());
+			end = haxe.Timer.stamp();
+			trace("Mustache distortion took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().erode());
 			end = haxe.Timer.stamp();

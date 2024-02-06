@@ -381,7 +381,7 @@ class ImageTools {
 	#end
 
 	#if openfl
-	public static function toShape(image:Image):openfl.display.Shape {
+	public static function toShape(image:Image):flash.display.Shape {
 		var s:openfl.display.Shape = cast toSprite(image);
 		var sh = new openfl.display.Shape();
 		sh.graphics.drawGraphicsData(s.graphics.readGraphicsData());

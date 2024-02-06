@@ -20,7 +20,7 @@
 #--define blur_tests
 #--define filter_tests
 #--define convolve_tests
---define simple_tests
+#--define simple_tests
 #--define noise_tests
 #--define copy_paste_tests
 
