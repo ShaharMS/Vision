@@ -152,12 +152,59 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         }
     }
 
+	/**
+		Returns the trace of this `Matrix2D`.
+
+		Trace is the sum of the diagonal elements of the matrix.
+		
+		@throws MatrixOperationError if the matrix is not a square matrix
+	**/
+	public inline function getTrace():Float {
+		if (this.width != this.height) throw ""; //Todo error
+		var sum = 0.;
+		for (i in 0...this.width) 
+			sum += this.get(i, i);
+
+		return sum;
+	}
+	
+
+    /**
+    	Multiplies this `Matrix2D` with a given scalar (a number).
+    **/
+	public inline function multiplyWithScalar(scalar:Float):Matrix2D {
+		for (i in 0... this.inner.length) {
+			this.inner[i] *= scalar;
+		}
+		return this;
+	}
+
+	//--------------------------------------------------------------
+	// Convenience methods
+	//--------------------------------------------------------------
+
+
     /**
         Return a copy of this `Matrix2D`    
     **/
     public inline function clone():Matrix2D {
         return this.clone();
     }
+
+    /**
+    	Manipulates each element of this `Matrix2D` with the given function, and
+		returns a new `Matrix2D` with the manipulated elements.
+
+		@param mappingFunction the function to apply to each element. Should take a `Float`, and return a `Float`.
+    **/
+	public inline function map(mappingFunction:Float -> Float):Matrix2D {
+		var m = new Matrix2D(this.width, this.height);
+		for (i in 0...this.inner.length) {
+			m.underlying.inner[i] = mappingFunction(this.inner[i]);
+		}
+
+		return m;
+	}
 
     /**
         Returns a new matrix, containing the elements of this matrix, starting at 

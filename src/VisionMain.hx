@@ -1,5 +1,6 @@
 package;
 
+import vision.algorithms.Harris;
 import vision.ds.Array2D;
 import vision.algorithms.Cramer;
 import vision.ds.Matrix2D;
@@ -48,7 +49,6 @@ using vision.tools.MathTools;
 class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
-
 		#if (true)
 		#if js
 		#if (!compile_unit_tests)
@@ -230,6 +230,12 @@ class VisionMain {
 
 			#if feature_detection_tests
 			printSectionDivider("Feature detection tests");
+			start = haxe.Timer.stamp();
+			var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 0.1, 3, 1);
+			var resp = data.corners.visualize(Color.TRANSPARENT, Color.RED);
+			printImage(image.clone().stamp(0, 0, resp));
+			end = haxe.Timer.stamp();
+			trace("Harris corners took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().sobelEdgeDetection());
 			end = haxe.Timer.stamp();

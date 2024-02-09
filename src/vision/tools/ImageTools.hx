@@ -272,14 +272,14 @@ class ImageTools {
 
 	/**
 		Gets an `Array2D` of all neighboring pixels at `x, y`.
-
+		
 		The pixels are added to the Array2D from left to right, top to bottom.
-
-	    @param image The image to get the neighbors in.
-	    @param x The x position of the pixel.
-	    @param y The y position of the pixel.
-	    @param kernelSize the width & height of the kernel.
-	    @return an `Array2D` of colors
+		
+		@param image The image to get the neighbors in.
+		@param x The x position of the pixel.
+		@param y The y position of the pixel.
+		@param kernelSize the width & height of the kernel.
+		@return an `Array2D` of colors
 	**/
 	public static inline function getNeighborsOfPixel(image:Image, x:Int, y:Int, kernelSize:Int):Array2D<Color> {
 		var neighbors = new Array2D(kernelSize, kernelSize);
