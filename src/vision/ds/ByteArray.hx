@@ -1,5 +1,6 @@
 package vision.ds;
 
+import vision.tools.MathTools;
 import haxe.Serializer;
 import haxe.io.BytesData;
 import haxe.io.Bytes;
@@ -136,7 +137,7 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     **/
     public inline function resize(length:Int) {
         var newBytes = Bytes.alloc(length);
-        newBytes.blit(0, this, 0, this.length);
+        newBytes.blit(0, this, 0, MathTools.min(newBytes.length, this.length));
         this = newBytes;
     }
 
