@@ -59,6 +59,16 @@ class VisionMain {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
+
+			printSectionDivider("Feature detection tests");
+			start = haxe.Timer.stamp();
+			var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 3, 1);
+			var resp = data.corners.visualize(Color.TRANSPARENT, Color.RED);
+			printImage(image.clone().stamp(0, 0, resp));
+			printImage(data.corners.visualize());
+			end = haxe.Timer.stamp();
+			trace("Harris corners took: " + MathTools.truncate(end - start, 4) + " seconds");
+
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
 			start = haxe.Timer.stamp();
@@ -231,7 +241,7 @@ class VisionMain {
 			#if feature_detection_tests
 			printSectionDivider("Feature detection tests");
 			start = haxe.Timer.stamp();
-			var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 0.1, 3, 1);
+			var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 3, 1);
 			var resp = data.corners.visualize(Color.TRANSPARENT, Color.RED);
 			printImage(image.clone().stamp(0, 0, resp));
 			end = haxe.Timer.stamp();

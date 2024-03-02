@@ -92,6 +92,17 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     }
 
     /**
+        Writes an unsigned, 32-bit integer at the specified index
+    **/
+    public inline function setUInt32(pos:Int, value:UInt) {
+        return this.setInt32(pos, value);
+    }
+
+    public inline function getUInt32(pos:Int):UInt {
+        return this.getInt32(pos);
+    }
+
+    /**
         Writes a signed, 8-bit integer at the specified index
     **/
     public inline function setInt8(pos:Int, v:Int) {

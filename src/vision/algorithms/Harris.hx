@@ -15,7 +15,7 @@ class Harris {
 	
 
 
-	public static function generateHarrisCorners(image:Image, initialEdgeFilterType:EdgeFilterType, k:Float, delta:Float, windowSize:Int, sigma:Float):{responses:Heatmap, corners:Heatmap} {
+	public static function generateHarrisCorners(image:Image, initialEdgeFilterType:EdgeFilterType, k:Float, windowSize:Int, sigma:Float):{responses:Heatmap, corners:Heatmap} {
 		var corners = new Image(image.width, image.height);
 
 		var edgeImage = applyFilter(image.clone(), initialEdgeFilterType);
@@ -42,8 +42,8 @@ class Harris {
 				for (wy in -avg...avg + 1) {
 					var matrix:Matrix2D = 
 						[
-							[getValueOfImageDerivativeAt(image, x, y, delta, true).pow(2), getValueOfImageDerivativeAt(image, x, y, delta, true) * getValueOfImageDerivativeAt(image, x + wx, y + wy, delta, false)],
-							[getValueOfImageDerivativeAt(image, x, y, delta, true) * getValueOfImageDerivativeAt(image, x + wx, y + wy, delta, false), getValueOfImageDerivativeAt(image, x + wx, y + wy, delta, false).pow(2)]
+							[getValueOfImageDerivativeAt(image, x + wx, y + wy, true).pow(2), getValueOfImageDerivativeAt(image, x + wx, y + wy, true) * getValueOfImageDerivativeAt(image, x + wx, y + wy, false)],
+							[getValueOfImageDerivativeAt(image, x + wx, y + wy, true) * getValueOfImageDerivativeAt(image, x + wx, y + wy, false), getValueOfImageDerivativeAt(image, x + wx, y + wy, false).pow(2)]
 						];
 					matrix.multiplyWithScalar(averageUsingGaussianDistribution(image, x, y, windowSize, sigma));
 					matrices.push(matrix);
@@ -91,13 +91,10 @@ class Harris {
 		@param delta The small value to add to the coordinate. This can be optimized for more/less aggressive corner detection.
 		@param xDirection Whether to use the x direction or the y direction, since we need both slopes represented (on the `x` and `y` axis)
 	**/
-	public static function getValueOfImageDerivativeAt(image:Image, x:Float, y:Float, delta:Float = 0.1, xDirection:Bool = true) {
+	public static function getValueOfImageDerivativeAt(image:Image, x:Float, y:Float, xDirection:Bool = true) {
 		var rise1 = image.getFloatingPixel(x, y);
-		var rise2 = xDirection ? image.getFloatingPixel(x + delta, y) : image.getFloatingPixel(x, y + delta);
-		var run1 = xDirection ? x : y;
-		var run2 = run1 + delta;
-
-		return (rise2.red - rise1.red) / (run2 - run1); // both `rise` variables are grayscale colors, all color channels are the same
+		var rise2 = xDirection ? image.getFloatingPixel(x + 1, y) : image.getFloatingPixel(x, y + 1);
+		return (rise2.red - rise1.red) / 1; // both `rise` variables are grayscale colors, all color channels are the same. We always run 1 pixel.
 	}
 
 	public static function averageUsingGaussianDistribution(image:Image, x:Int, y:Int , kernelSize:GaussianKernelSize = X3, sigma:Float = 1) {
