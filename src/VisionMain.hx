@@ -48,6 +48,13 @@ using vision.tools.MathTools;
 
 class VisionMain {
 	static function main() {
+		trace(Matrix2D.PERSPECTIVE([
+			{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
+			{from: {x: 300, y: 0}, to: {x: 300, y: 55}},
+			{from: {x: 0, y: 150}, to: {x: 15, y: 150 - 10}},
+			{from: {x: 300, y: 150}, to: {x: 300, y: 91}}
+
+		]).toString());
 		var start:Float, end:Float;
 		#if (true)
 		#if js

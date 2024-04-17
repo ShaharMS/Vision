@@ -47,7 +47,7 @@ class ImageTools {
 
 		the given path can be an absolute path or a relative path. a URL is valid too.  
 
-		**Note: On `sys` targets, this function requires the `format` library, and only supports PNG.**
+		**Note: On Non-`js` targets, this function requires the `format` library, and only supports PNG.**
 
 		To install:  
 		  
@@ -61,7 +61,7 @@ class ImageTools {
 		@throws ImageLoadingFailed Thrown when trying to load a corrupted file.
 	**/
 	public static function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
-		#if sys
+		#if (!js)
 			#if format
 			if (path.contains("://") && path.split(".").pop().toUpperCase() == "PNG") {
 				var httpRequest = new sys.Http(path);
@@ -169,7 +169,7 @@ class ImageTools {
 		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
 	**/
 	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
-		#if sys
+		#if (!js)
 			#if format
 			switch saveFormat {
 				case PNG: {
@@ -237,7 +237,7 @@ class ImageTools {
 		@returns the image object.
 	**/
 	public static function addToScreen(image:Image, x:Int, y:Int, ?units:{?xUnits:String, ?yUnits:String, ?zIndex:String}):Image {
-		#if sys
+		#if (!js)
 		#else
 		var c = js.Browser.document.createCanvasElement();
 

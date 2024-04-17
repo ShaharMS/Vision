@@ -706,15 +706,32 @@ class Vision {
 		
 	}
 
+	/**
+	    Manipulates the image's pixel data by applying the given transformation matrix - 
+		a 3x3 "grid" used to Move the image's pixels from one position to another. 
+
+		Differs from `affineWarp()` in one, major way: while`affineWarp()` only supports two-dimensional, parallel-to-parallel transformations.
+		`perspectiveWarp` supports transformations in all three dimensions.
+
+		It also differs from `Vision.convolve` in that it doesn't change the pixels color (like a `BoxBlur`, for example), 
+		but instead modifies the position of pixels within the image.
+
+		A matrix can be a literal 2D array: `[[1, 0, 0], [0, 1, 0], [0, 0, 1]]`, an instance of `Array2D`, 
+		an instance of `Matrix2D`, or one of our home-made matrices using the static properties on `Matrix2D` :).
+
+		Examples for some of the pre-made matrices:
+
+		| Original | Depth | Perspective | Rotation (`!expandImageBounds`) |
+		|---|---|---|---| 
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
+
+	    @param image 
+	    @param matrix 
+	**/
 	public static function perspectiveWarp(image:Image, ?matrix:Matrix2D) {
 
 		if (matrix == null) {
-			matrix = Matrix2D.PERSPECTIVE([
-				{from: {x: 0, y: 0}, to: {x: 0, y: 0}},
-				{from: {x: 0, y: image.height}, to: {x: 0, y: image.height}},
-				{from: {x: image.width, y: 0}, to: {x: image.width, y: 0}},
-				{from: {x: image.width, y: image.height}, to: {x: image.width, y: image.height}}
-			]);
+			matrix = Matrix2D.DEPTH(1);
 		}
 		
 		return PerspectiveWarp.applyMatrix(image.clone(), matrix);

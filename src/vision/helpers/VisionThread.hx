@@ -4,7 +4,7 @@ import vision.exceptions.MultithreadFailure;
 import haxe.Exception;
 #if js
 import js.lib.Promise;
-#elseif (js || target.threaded)
+#elseif (sys)
 import sys.thread.Thread;
 #end
 
@@ -62,7 +62,7 @@ class VisionThread {
 			job();
 			jobDone = true;
 		});
-		#elseif (js || target.threaded)
+		#elseif (sys)
 		underlying = Thread.create(() -> {
 			try {
 				job();

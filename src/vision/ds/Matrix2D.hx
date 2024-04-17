@@ -155,9 +155,9 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 	/**
 		Returns the trace of this `Matrix2D`.
 
-		Trace is the sum of the diagonal elements of the matrix.
+		Trace is the sum of the elements on the diagonal, spanning from `(0, 0)` to `(w, h)` when `w = h`.
 		
-		@throws MatrixOperationError if the matrix is not a square matrix
+		@throws MatrixOperationError if the matrix is not a square matrix, i.e. `w != h`
 	**/
 	public inline function getTrace():Float {
 		if (this.width != this.height) throw ""; //Todo error
@@ -461,8 +461,8 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         Generates a translation matrix that displaces the graphic 
         inside the image `x` pixels to the right and `y` pixels to the bottom.
 
-        @param x Displacement in pixels to the right. Default value is 1.
-        @param y Displacement in pixels to the bottom. Default value is 1.
+        @param x Displacement in pixels to the right. Default value is 0.
+        @param y Displacement in pixels to the bottom. Default value is 0.
     **/
     public static inline function TRANSLATION(x:Float = 0, y:Float = 0):Matrix2D {
         return Matrix2D.createTransformation(
@@ -487,7 +487,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     }
 
     /**
-        Generates a shearing matrix that "skews" the slope of the image's edges in the x & y axis by `-1/shear`.
+        Generates a shearing matrix that "skews" the slope of the image's edges in the x, y and z axis by `-1/shear`.
         For example, if `shearX` is `0.5`, the image is skewed horizontally, such that the slope of the two vertical edges becomes `-2`.
 
         @param shearX The amount of shearing done on the x-axis, or in other words, when dividing `-1` by `shearX`, determines the slope of the image on the vertical edges.
@@ -530,6 +530,20 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		return PerspectiveWarp.generateMatrix(src, dst);
     }
 
+    /**
+        Generates a translation matrix, that displaces the graphic in only the `z` axis.
+        a positive `z` moves the graphic backwards, 
+        while a value that approaches 0 moves the graphic forward.
+
+        @param z  Displacement in pixels to the back.
+    **/
+    public static inline function DEPTH(z:Float) {
+        return Matrix2D.createTransformation(
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, z]
+        );
+    }
 
 	/**
 	    Creates a new `Matrix2D` filled with `rows`, and of `rows.length` height.
