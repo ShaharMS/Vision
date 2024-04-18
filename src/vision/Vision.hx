@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.specifics.ImageExpansionMode;
 import vision.algorithms.PerspectiveWarp;
 import vision.ds.specifics.PointTransformationPair;
 import vision.algorithms.BilinearInterpolation;
@@ -667,14 +668,14 @@ class Vision {
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
 
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
-		@param expandImageBounds When a transformation wants to set pixels outside the bounds of `this` image, determines whether the image is widened to match the new pixel (`true`), or cuts it out (`false`). Defaults to `true`.
+		@param expansionMode how to expand the image if the matrix moves the image outside of its original bounds, or never reaches the original bounds. Defaults to `ImageExpansionMode.SAME_SIZE`.
 		@returns A new, manipulated image. The provided image remains unchanged.
 		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
 
 		@see `Vision.convolve()` for color-manipulation matrices (or, kernels).
 		@see `Vision.perspectiveWarp()` for "3d" manipulations.
 	**/
-	public static function affineWarp(image:Image, ?matrix:Matrix2D, expandImageBounds:Bool = true) {
+	public static function affineWarp(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = SAME_SIZE) {
 		if (matrix == null) matrix = Matrix2D.ROTATION(0);
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
@@ -688,22 +689,30 @@ class Vision {
 			if (c[1] < miy) miy = c[1];
 		}
 		
-		var img = new Image(expandImageBounds ? MathTools.round(MathTools.abs(max - MathTools.minFloat(mix, 0))) : image.width, expandImageBounds ? MathTools.round(MathTools.abs(may - MathTools.minFloat(miy, 0))) : image.height);
-		var dx = (max - mix).abs().round(), dy = (may - miy).abs().round();
-
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
+		var img = switch expansionMode {
+			case SAME_SIZE: new Image(image.width, image.height);
+			case EXPAND: new Image(Math.max(image.width, max - mix + 1).ceil(), Math.max(image.height, may - miy + 1).ceil());
+			case SHRINK: new Image(Math.min(image.width, max - mix + 1).ceil(), Math.min(image.height, may - miy + 1).ceil());
+			case RESIZE: new Image((max - mix + 1).round(), (may - miy + 1).round());
+		}
+		var ratioX = image.width / (max - mix + 1), ratioY = image.height / (may - miy + 1);
+		trace(ratioX, ratioY);
+		var x = 0., y = 0.;
+		while (x < image.width) {
+			while(y < image.height) {
 				// Center x & y so matrix positions make sense
-				var coords = (matrix * [[x - image.width / 2], [y - image.height / 2], [1.]]).underlying.inner;
+				var coords = matrix.transformPoint(new Point2D(x, y));
 
 				// Translate coordinates back to their original position
-				img.setSafePixel((coords[0] + dx / 2).round(), (coords[1] + dy / 2).round(), image.getSafePixel(x, y));
+				img.setSafePixel(coords.x.round(), coords.y.round(), image.getFloatingPixel(x, y));
+				y += ratioY;
 			}
+			x += ratioX;
+			y = 0;
 		}
 
 		// Interpolate missing pixels, using bilinear interpolation. pixel radius is chosen by the ratio of the distance from `mix to max` to width, same for height.
-		return BilinearInterpolation.interpolateMissingPixels(img, (abs(max - maxFloat(mix, 0)).round() / image.width).floor(), (abs(may - maxFloat(miy, 0)).round() / image.height).floor(), maxFloat(mix, 0).round(), maxFloat(miy, 0).round());
-		
+		return img;
 	}
 
 	/**

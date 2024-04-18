@@ -1,5 +1,6 @@
 package;
 
+import format.swf.Data.Matrix;
 import vision.algorithms.Harris;
 import vision.ds.Array2D;
 import vision.algorithms.Cramer;
@@ -158,12 +159,8 @@ class VisionMain {
 			#if matrix_tests
 			printSectionDivider("Matrix application tests");
 			start = haxe.Timer.stamp();
-			printImage({var i = image.clone(); i.rotate(Math.PI / 12, false); i;});
-			printImage({var i = image.clone(); i.rotate(-Math.PI / 3, false, false); i;});
-			end = haxe.Timer.stamp();
-			trace("Image Rotation took: " + MathTools.truncate(end - start, 4) / 3 + " seconds");
-			start = haxe.Timer.stamp();
 			printImage({var i = image.clone(); i.affineWarp(Matrix2D.ROTATION(40));});
+			printImage({var i = image.clone(); i.affineWarp(Matrix2D.ROTATION(40), RESIZE);});
 			printImage({var i = image.clone(); i.affineWarp(Matrix2D.SHEAR(0.5, 0.3));});
 			printImage({var i = image.clone(); i.affineWarp(Matrix2D.TRANSLATION(60, 55));});
 			printImage({var i = image.clone(); i.affineWarp(Matrix2D.REFLECTION(30));});
@@ -180,6 +177,8 @@ class VisionMain {
 
 			])));
 			end = haxe.Timer.stamp();
+			printImage(image.clone().perspectiveWarp(Matrix2D.DEPTH(2)));
+			printImage(image.clone().perspectiveWarp(Matrix2D.DEPTH(0.9)));
 			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			#end

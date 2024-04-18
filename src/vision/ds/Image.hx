@@ -1268,6 +1268,10 @@ abstract Image(ByteArray) {
 		return new PixelIterator(cast this);
 	}
 
+	public inline function center():Point2D {
+		return new Point2D(width / 2, height / 2);
+	}
+
 	//--------------------------------------------------------------------------
 	// Image View
 	//--------------------------------------------------------------------------

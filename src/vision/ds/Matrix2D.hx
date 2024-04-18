@@ -106,7 +106,6 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		var x = point.x * this.get(0, 0) + point.y * this.get(1, 0) + point.z * this.get(2, 0);
         var y = point.x * this.get(0, 1) + point.y * this.get(1, 1) + point.z * this.get(2, 1);
         var z = point.x * this.get(0, 2) + point.y * this.get(1, 2) + point.z * this.get(2, 2);
-
 		return new Point3D(x, y, z);
 	}
 
@@ -448,11 +447,12 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
         @param angle The angle at which to rotate. goes counter-clockwise.
         @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
+		@param origin The point around which to rotate. Defaults to `(0, 0)`, which means the top-left corner.
     **/
-    public static inline function ROTATION(angle:Float, ?degrees:Bool = true):Matrix2D {
+    public static inline function ROTATION(angle:Float, ?degrees:Bool = true, ?origin:Point2D = null):Matrix2D {
         return Matrix2D.createTransformation(
-            [if (degrees) cosd(angle) else cos(angle), if (degrees) -sind(angle) else -sin(angle), 0],
-            [if (degrees) sind(angle) else sin(angle), if (degrees) cosd(angle) else cos(angle), 0],
+            [if (degrees) cosd(angle) else cos(angle), if (degrees) -sind(angle) else -sin(angle), origin != null ? origin.x : 0],
+            [if (degrees) sind(angle) else sin(angle), if (degrees) cosd(angle) else cos(angle), origin != null ? origin.y : 0],
             [0, 0, 1]
         );
     }
@@ -505,12 +505,13 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     	Generates a reflection matrix that "mirrors" an image along the axis which is `angle` degrees/radians form the `x` axis.
     	@param angle The angle at which to reflect. goes counter-clockwise.
         @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
+		@param origin The point around which to reflect. Defaults to `(0, 0)`, which means the top-left corner.
     **/
-    public static inline function REFLECTION(angle:Float, ?degrees:Bool = true):Matrix2D {
+    public static inline function REFLECTION(angle:Float, ?degrees:Bool = true, ?origin:Point2D = null):Matrix2D {
         angle *= 2;
         return Matrix2D.createTransformation(
-            [if (degrees) cosd(angle) else cos(angle), if (degrees) sind(angle) else sin(angle), 0],
-            [if (degrees) sind(angle) else sin(angle), if (degrees) -cosd(angle) else -cos(angle), 0],
+            [if (degrees) cosd(angle) else cos(angle), if (degrees) sind(angle) else sin(angle), origin != null ? origin.x : 0],
+            [if (degrees) sind(angle) else sin(angle), if (degrees) -cosd(angle) else -cos(angle), origin != null ? origin.y : 0],
             [0, 0, 1]
         );
     }
