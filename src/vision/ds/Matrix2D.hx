@@ -547,6 +547,20 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     }
 
 	/**
+		Generates a tilt matrix, moves the vanishing point of the image from the top-right corner,
+		giving a 3d effect.
+		@param tiltX The amount to tilt the image along the X axis.
+		@param tiltY The amount to tilt the image along the Y axis.
+	**/
+	public static inline function TILT(tiltX:Float, tiltY:Float) {
+		return Matrix2D.createTransformation(
+			[1	  , 0	 , 0],
+			[0	  , 1	 , 0],
+			[tiltX, tiltY, 1]
+		);
+	}
+
+	/**
 	    Creates a new `Matrix2D` filled with `rows`, and of `rows.length` height.
 
 	    @param rows multiple parameters of type `Array<Float>`, or a single, `Array<Array<Float>>` preceded by a `...` 

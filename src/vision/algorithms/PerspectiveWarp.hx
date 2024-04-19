@@ -15,7 +15,7 @@ import vision.ds.specifics.PointTransformationPair;
 
 class PerspectiveWarp {
 
-	public static function generateMatrix(sourcePoints:Array<Point2D>, destinationPoints:Array<Point2D>):Matrix2D {
+	public static function generateMatrix(destinationPoints:Array<Point2D>, sourcePoints:Array<Point2D>):Matrix2D {
 		if (sourcePoints.length != 4 || sourcePoints.length != 4) throw ""; // todo
 
 		var M = new Matrix2D(3, 3);

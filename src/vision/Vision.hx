@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.Point3D;
 import vision.ds.specifics.ImageExpansionMode;
 import vision.algorithms.PerspectiveWarp;
 import vision.ds.specifics.PointTransformationPair;
@@ -36,6 +37,7 @@ import vision.tools.MathTools;
 import vision.tools.MathTools.*;
 
 using vision.tools.MathTools;
+using Math;
 using vision.tools.ImageTools;
 using vision.algorithms.Canny;
 
@@ -675,7 +677,7 @@ class Vision {
 		@see `Vision.convolve()` for color-manipulation matrices (or, kernels).
 		@see `Vision.perspectiveWarp()` for "3d" manipulations.
 	**/
-	public static function affineWarp(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = SAME_SIZE) {
+	public static function affineWarp(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = RESIZE) {
 		if (matrix == null) matrix = Matrix2D.ROTATION(0);
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
@@ -691,9 +693,9 @@ class Vision {
 		
 		var img = switch expansionMode {
 			case SAME_SIZE: new Image(image.width, image.height);
-			case EXPAND: new Image(Math.max(image.width, max - mix + 1).ceil(), Math.max(image.height, may - miy + 1).ceil());
-			case SHRINK: new Image(Math.min(image.width, max - mix + 1).ceil(), Math.min(image.height, may - miy + 1).ceil());
-			case RESIZE: new Image((max - mix + 1).round(), (may - miy + 1).round());
+			case EXPAND: new Image(Math.max(image.width, max - mix.min(0) + 1).floor(), Math.max(image.height, may - miy.min(0) + 1).floor());
+			case SHRINK: new Image(Math.min(image.width, max - mix + 1).floor(), Math.min(image.height, may - miy + 1).floor());
+			case RESIZE: new Image((max - mix.min(0) + 1).floor(), (may - miy.min(0) + 1).floor());
 		}
 		var ratioX = image.width / (max - mix + 1), ratioY = image.height / (may - miy + 1);
 		trace(ratioX, ratioY);
@@ -737,13 +739,46 @@ class Vision {
 	    @param image 
 	    @param matrix 
 	**/
-	public static function perspectiveWarp(image:Image, ?matrix:Matrix2D) {
+	public static function projectiveWarp(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = RESIZE):Image {
 
-		if (matrix == null) {
-			matrix = Matrix2D.DEPTH(1);
+		if (matrix == null) matrix = Matrix2D.ROTATION(0);
+		// Get the max values for bounds expansion
+		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
+		for (corner in [new Point3D(0, 0, 1), new Point3D(0, image.height, 1), new Point3D(image.width, 0, 1), new Point3D(image.width, image.height, 1)]) {
+			var c = matrix.transformPoint(corner);
+			c.x /= c.z;
+			c.y /= c.z;
+			if (c.x > max) max = c.x;
+			if (c.x < mix) mix = c.x;
+			if (c.y > may) may = c.y;
+			if (c.y < miy) miy = c.y;
 		}
-		
-		return PerspectiveWarp.applyMatrix(image.clone(), matrix);
+		trace(mix, max, miy, may);
+		var img = switch expansionMode {
+			case SAME_SIZE: new Image(image.width, image.height);
+			case EXPAND: new Image(Math.max(image.width, max - mix.min(0) + 1).floor(), Math.max(image.height, may - miy.min(0) + 1).floor());
+			case SHRINK: new Image(Math.min(image.width, max - mix + 1).floor(), Math.min(image.height, may - miy + 1).floor());
+			case RESIZE: new Image((max - mix.min(0) + 1).floor(), (may - miy.min(0) + 1).floor());
+		}
+		var ratioX = image.width / (max - mix.min(0) + 1), ratioY = image.height / (may - miy.min(0) + 1);
+		trace(ratioX, ratioY);
+		var x = 0., y = 0.;
+		while (x < image.width) {
+			while(y < image.height) {
+				// Center x & y so matrix positions make sense
+				var coords = matrix.transformPoint(new Point3D(x, y, 1));
+				coords.x /= coords.z;
+				coords.y /= coords.z;
+				// Translate coordinates back to their original position
+				img.setSafePixel(coords.x.round(), coords.y.round(), image.getFloatingPixel(x, y));
+				y += ratioY;
+			}
+			x += ratioX;
+			y = 0;
+		}
+
+		// Interpolate missing pixels, using bilinear interpolation. pixel radius is chosen by the ratio of the distance from `mix to max` to width, same for height.
+		return img;
 	}
 
 	/**

@@ -65,17 +65,17 @@ class VisionMain {
 			printSectionDivider("Test image, resized");
 			var orgImage = image.clone();
 			printImage(image);
-			image = image.resize(150, 112, BilinearInterpolation);
-			printImage(image);
+			//image = image.resize(150, 112, BilinearInterpolation);
+			//printImage(image);
 
-			printSectionDivider("Feature detection tests");
-			start = haxe.Timer.stamp();
-			var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 3, 1);
-			var resp = data.corners.visualize(Color.TRANSPARENT, Color.RED);
-			printImage(image.clone().stamp(0, 0, resp));
-			printImage(data.corners.visualize());
-			end = haxe.Timer.stamp();
-			trace("Harris corners took: " + MathTools.truncate(end - start, 4) + " seconds");
+			//printSectionDivider("Feature detection tests");
+			//start = haxe.Timer.stamp();
+			//var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 3, 1);
+			//var resp = data.corners.visualize(Color.TRANSPARENT, Color.RED);
+			//printImage(image.clone().stamp(0, 0, resp));
+			//printImage(data.corners.visualize());
+			//end = haxe.Timer.stamp();
+			//trace("Harris corners took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
@@ -169,7 +169,7 @@ class VisionMain {
 			trace("Simple Matrix Applications took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			start = haxe.Timer.stamp();
-			printImage(image.clone().perspectiveWarp(Matrix2D.PERSPECTIVE([
+			printImage(image.clone().projectiveWarp(Matrix2D.PERSPECTIVE([
 				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
 				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
 				{from: {x: 0, y: image.height}, to: {x: 15, y: image.height - 10}},
@@ -177,8 +177,8 @@ class VisionMain {
 
 			])));
 			end = haxe.Timer.stamp();
-			printImage(image.clone().perspectiveWarp(Matrix2D.DEPTH(2)));
-			printImage(image.clone().perspectiveWarp(Matrix2D.DEPTH(0.9)));
+			printImage(image.clone().projectiveWarp(Matrix2D.DEPTH(2)));
+			printImage(image.clone().projectiveWarp(Matrix2D.DEPTH(0.9)));
 			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			#end
