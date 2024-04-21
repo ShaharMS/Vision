@@ -7,7 +7,7 @@
 ### `Vision.hx`
 
  - **Added `affineTransform()`**
- - **Added `perspectiveWarp()`**
+ - **Added `projectiveTransform()`**
  - **Added `fisheyeDistortion()`**
  - **Added `barrelDistortion()`**
  - **Added `pincushionDistortion()`**
@@ -18,6 +18,8 @@
  - **Added `rotate()`**
  - **`hasPixel()` now receives `Float`s instead of `Int`s**
  - **Slight optimization for `getFloatingPixel()`, avoids recursive call for out-of-bounds coordinates**
+ - **Added `center()`**, returns a point representing the center of the image
+ - **Added `pixelToRelative()` & `relativeToPixel()`**, converts between pixel and relative coordinates for an image
 
 ### `vision.ds`
 
@@ -46,6 +48,7 @@
  - **Added `ByteArray.resize()`**
  - **Added `ByteArray.concat()`**
  - **Added `ByteArray.getBytes()` and `ByteArray.setBytes()`**
+ - **Added `ByteArray.getUInt32()` and `ByteArray.setUInt32()`**
  - **Added `ByteArray.isEmpty()`**
  - **Added `ByteArray.toArray()`**
  - **Argument added to `ByteArray`'s constructor, `fillWith`**

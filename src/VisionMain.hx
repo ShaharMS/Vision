@@ -65,9 +65,8 @@ class VisionMain {
 			printSectionDivider("Test image, resized");
 			var orgImage = image.clone();
 			printImage(image);
-			//printImage(image.clone().projectiveTransform(Matrix2D.TILT(0, -0.4), SAME_SIZE));
-			//image = image.resize(150, 112, BilinearInterpolation);
-			//printImage(image);
+			image = image.resize(150, 112, BilinearInterpolation);
+			printImage(image);
 
 			//printSectionDivider("Feature detection tests");
 			//start = haxe.Timer.stamp();
