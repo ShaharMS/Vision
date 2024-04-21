@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.specifics.TransformationMatrixOrigination;
 import vision.ds.Point3D;
 import vision.ds.specifics.ImageExpansionMode;
 import vision.algorithms.PerspectiveWarp;
@@ -667,17 +668,19 @@ class Vision {
 
 		| Original | Shearing | Rotation | Rotation (`!expandImageBounds`) |
 		|---|---|---|---| 
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineTransformShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineTransformRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineTransformRotate%28expandImageBounds%20=%20false%29.png)|
 
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
 		@param expansionMode how to expand the image if the matrix moves the image outside of its original bounds, or never reaches the original bounds. Defaults to `ImageExpansionMode.SAME_SIZE`.
+		@param originPoint **OPTION 1**: the point in the image to use as the origin of the transformation matrix. Before a point is passed to the matrix, it's coordinates are incremented by this point, and after the matrix is applied, it's coordinates are decremented by this point. Useful for rotation transformations. Defaults to `(0, 0)`.
+		@param originMode **OPTION 2**: To avoid bloat, you can provide a pre-made representation of the origin point, via `TransformationMatrixOrigination` enum. Defaults to `TransformationMatrixOrigination.TOP_LEFT`.
 		@returns A new, manipulated image. The provided image remains unchanged.
 		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
 
 		@see `Vision.convolve()` for color-manipulation matrices (or, kernels).
 		@see `Vision.perspectiveWarp()` for "3d" manipulations.
 	**/
-	public static function affineWarp(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = RESIZE) {
+	public static function affineTransform(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = RESIZE, ?originPoint:Point2D, ?originMode:TransformationMatrixOrigination = CENTER) {
 		if (matrix == null) matrix = Matrix2D.ROTATION(0);
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
@@ -698,13 +701,26 @@ class Vision {
 			case RESIZE: new Image((max - mix.min(0) + 1).floor(), (may - miy.min(0) + 1).floor());
 		}
 		var ratioX = image.width / (max - mix + 1), ratioY = image.height / (may - miy + 1);
-		trace(ratioX, ratioY);
+
+		var offset = originPoint != null ? originPoint : switch (originMode) {
+			case TOP_LEFT: new Point2D(0, 0);
+			case TOP_RIGHT: new Point2D(image.width, 0);
+			case BOTTOM_LEFT: new Point2D(0, image.height);
+			case BOTTOM_RIGHT: new Point2D(image.width, image.height);
+			case CENTER: new Point2D(image.width / 2, image.height / 2);
+			case TOP_CENTER: new Point2D(image.width / 2, 0);
+			case BOTTOM_CENTER: new Point2D(image.width / 2, image.height);
+			case LEFT_CENTER: new Point2D(0, image.height / 2);
+			case RIGHT_CENTER: new Point2D(image.width, image.height / 2);
+		}
+
 		var x = 0., y = 0.;
 		while (x < image.width) {
 			while(y < image.height) {
 				// Center x & y so matrix positions make sense
-				var coords = matrix.transformPoint(new Point2D(x, y));
-
+				var coords = matrix.transformPoint(new Point2D(x - offset.x, y - offset.y));
+				coords.x += offset.x * (1 / ratioX);
+				coords.y += offset.y * (1 / ratioY);
 				// Translate coordinates back to their original position
 				img.setSafePixel(coords.x.round(), coords.y.round(), image.getFloatingPixel(x, y));
 				y += ratioY;
@@ -721,7 +737,7 @@ class Vision {
 	    Manipulates the image's pixel data by applying the given transformation matrix - 
 		a 3x3 "grid" used to Move the image's pixels from one position to another. 
 
-		Differs from `affineWarp()` in one, major way: while`affineWarp()` only supports two-dimensional, parallel-to-parallel transformations.
+		Differs from `affineTransform()` in one, major way: while`affineTransform()` only supports two-dimensional, parallel-to-parallel transformations.
 		`perspectiveWarp` supports transformations in all three dimensions.
 
 		It also differs from `Vision.convolve` in that it doesn't change the pixels color (like a `BoxBlur`, for example), 
@@ -739,11 +755,12 @@ class Vision {
 	    @param image 
 	    @param matrix 
 	**/
-	public static function projectiveWarp(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = RESIZE):Image {
+	public static function projectiveTransform(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = RESIZE):Image {
 
 		if (matrix == null) matrix = Matrix2D.ROTATION(0);
 		// Get the max values for bounds expansion
-		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
+		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY,
+			miz = MathTools.POSITIVE_INFINITY, maz = MathTools.NEGATIVE_INFINITY;
 		for (corner in [new Point3D(0, 0, 1), new Point3D(0, image.height, 1), new Point3D(image.width, 0, 1), new Point3D(image.width, image.height, 1)]) {
 			var c = matrix.transformPoint(corner);
 			c.x /= c.z;
@@ -752,6 +769,8 @@ class Vision {
 			if (c.x < mix) mix = c.x;
 			if (c.y > may) may = c.y;
 			if (c.y < miy) miy = c.y;
+			if (c.z > maz) maz = c.z;
+			if (c.z < miz) miz = c.z;
 		}
 		trace(mix, max, miy, may);
 		var img = switch expansionMode {
@@ -760,8 +779,7 @@ class Vision {
 			case SHRINK: new Image(Math.min(image.width, max - mix + 1).floor(), Math.min(image.height, may - miy + 1).floor());
 			case RESIZE: new Image((max - mix.min(0) + 1).floor(), (may - miy.min(0) + 1).floor());
 		}
-		var ratioX = image.width / (max - mix.min(0) + 1), ratioY = image.height / (may - miy.min(0) + 1);
-		trace(ratioX, ratioY);
+		var ratioX = image.width / (max - mix.min(0) + 1) / maz.max(1), ratioY = image.height / (may - miy.min(0) + 1) / maz.max(1);
 		var x = 0., y = 0.;
 		while (x < image.width) {
 			while(y < image.height) {

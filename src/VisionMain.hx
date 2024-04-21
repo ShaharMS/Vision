@@ -65,6 +65,7 @@ class VisionMain {
 			printSectionDivider("Test image, resized");
 			var orgImage = image.clone();
 			printImage(image);
+			//printImage(image.clone().projectiveTransform(Matrix2D.TILT(0, -0.4), SAME_SIZE));
 			//image = image.resize(150, 112, BilinearInterpolation);
 			//printImage(image);
 
@@ -159,17 +160,17 @@ class VisionMain {
 			#if matrix_tests
 			printSectionDivider("Matrix application tests");
 			start = haxe.Timer.stamp();
-			printImage({var i = image.clone(); i.affineWarp(Matrix2D.ROTATION(40));});
-			printImage({var i = image.clone(); i.affineWarp(Matrix2D.ROTATION(40), RESIZE);});
-			printImage({var i = image.clone(); i.affineWarp(Matrix2D.SHEAR(0.5, 0.3));});
-			printImage({var i = image.clone(); i.affineWarp(Matrix2D.TRANSLATION(60, 55));});
-			printImage({var i = image.clone(); i.affineWarp(Matrix2D.REFLECTION(30));});
-			printImage({var i = image.clone(); i.affineWarp(Matrix2D.SCALE(5, 1.5));});
+			printImage({var i = image.clone(); i.affineTransform(Matrix2D.ROTATION(40));});
+			printImage({var i = image.clone(); i.affineTransform(Matrix2D.ROTATION(40), RESIZE);});
+			printImage({var i = image.clone(); i.affineTransform(Matrix2D.SHEAR(0.5, 0.3));});
+			printImage({var i = image.clone(); i.affineTransform(Matrix2D.TRANSLATION(60, 55));});
+			printImage({var i = image.clone(); i.affineTransform(Matrix2D.REFLECTION(30));});
+			printImage({var i = image.clone(); i.affineTransform(Matrix2D.SCALE(5, 1.5));});
 			end = haxe.Timer.stamp();
 			trace("Simple Matrix Applications took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			start = haxe.Timer.stamp();
-			printImage(image.clone().projectiveWarp(Matrix2D.PERSPECTIVE([
+			printImage(image.clone().projectiveTransform(Matrix2D.PERSPECTIVE([
 				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
 				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
 				{from: {x: 0, y: image.height}, to: {x: 15, y: image.height - 10}},
@@ -177,8 +178,11 @@ class VisionMain {
 
 			])));
 			end = haxe.Timer.stamp();
-			printImage(image.clone().projectiveWarp(Matrix2D.DEPTH(2)));
-			printImage(image.clone().projectiveWarp(Matrix2D.DEPTH(0.9)));
+			var i = 0.1;
+			while (i <= 2) {
+				printImage(image.clone().projectiveTransform(Matrix2D.DEPTH(i, image.relativeToPixel(0.3, 0.8)), SAME_SIZE));
+				i += 0.1;
+			} 
 			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			#end

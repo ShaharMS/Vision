@@ -1268,9 +1268,51 @@ abstract Image(ByteArray) {
 		return new PixelIterator(cast this);
 	}
 
+	/**
+	    Returns a `Point2D` representing the center of the image
+	**/
 	public inline function center():Point2D {
 		return new Point2D(width / 2, height / 2);
 	}
+
+	/**
+		Converts a `Point2D` from pixel coordinates (for example, `(121, 435)`) to relative coordinates, for this image (for example, `(0.5, 0.5)`).
+		@param point A `Point2D` in pixel coordinates
+		@return A `Point2D` in relative coordinates, such that: `R = (Px / W, Py / H)`
+	**/
+	overload extern public inline function pixelToRelative(point:Point2D):Point2D {
+		return new Point2D(point.x / width, point.y / height);
+	}
+
+	/**
+		Converts a `Point2D` from relative coordinates (for example, `(0.5, 0.5)`) to pixel coordinates, for this image (for example, `(121, 435)`).
+		@param x The X component of the `Point2D` in relative coordinates
+		@param y The Y component of the `Point2D` in relative coordinates
+		@return A `Point2D` in pixel coordinates, such that: `P = (x * W, y * H)`
+	**/
+	overload extern public inline function pixelToRelative(x:Float, y:Float):Point2D {
+		return new Point2D(x / width, y / height);
+	}
+
+	/**
+		Converts a `Point2D` from relative coordinates (for example, `(0.5, 0.5)`) to pixel coordinates, for this image (for example, `(121, 435)`).
+		@param point A `Point2D` in relative coordinates
+		@return A `Point2D` in pixel coordinates, such that: `P = (Rx * W, Ry * H)`
+	**/
+	overload extern public inline function relativeToPixel(point:Point2D):Point2D {
+		return new Point2D(point.x * width, point.y * height);
+	}
+
+	/**
+		Converts a `Point2D` from pixel coordinates (for example, `(121, 435)`) to relative coordinates, for this image (for example, `(0.5, 0.5)`).
+		@param x The X component of the `Point2D` in pixel coordinates
+		@param y The Y component of the `Point2D` in pixel coordinates
+		@return A `Point2D` in relative coordinates, such that: `R = (x / W, y / H)`
+	**/
+	overload extern public inline function relativeToPixel(x:Float, y:Float):Point2D {
+		return new Point2D(x * width, y * height);
+	}
+
 
 	//--------------------------------------------------------------------------
 	// Image View

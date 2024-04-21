@@ -537,28 +537,15 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         while a value that approaches 0 moves the graphic forward.
 
         @param z  Displacement in pixels to the back.
+		@param towards The point the graphic goes towards, as in, when `z` approaches positive infinity, the graphic goes towards that point. Defaults to `(0, 0)`.
     **/
-    public static inline function DEPTH(z:Float) {
+    public static inline function DEPTH(z:Float, ?towards:Point2D) {
         return Matrix2D.createTransformation(
-            [1, 0, 0],
-            [0, 1, 0],
+            [1, 0, towards != null ? towards.x * (z - 1) : 0],
+            [0, 1, towards != null ? towards.y * (z - 1) : 0],
             [0, 0, z]
         );
     }
-
-	/**
-		Generates a tilt matrix, moves the vanishing point of the image from the top-right corner,
-		giving a 3d effect.
-		@param tiltX The amount to tilt the image along the X axis.
-		@param tiltY The amount to tilt the image along the Y axis.
-	**/
-	public static inline function TILT(tiltX:Float, tiltY:Float) {
-		return Matrix2D.createTransformation(
-			[1	  , 0	 , 0],
-			[0	  , 1	 , 0],
-			[tiltX, tiltY, 1]
-		);
-	}
 
 	/**
 	    Creates a new `Matrix2D` filled with `rows`, and of `rows.length` height.

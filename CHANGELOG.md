@@ -6,7 +6,7 @@
 
 ### `Vision.hx`
 
- - **Added `affineWarp()`**
+ - **Added `affineTransform()`**
  - **Added `perspectiveWarp()`**
  - **Added `fisheyeDistortion()`**
  - **Added `barrelDistortion()`**
