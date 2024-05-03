@@ -48,19 +48,4 @@ class PerspectiveWarp {
 
 		return M;
 	}
-
-	public static function applyMatrix(image:Image, matrix:Matrix2D) {
-		var outputImage:Image = new Image(image.width, image.height);
-
-		for (y in 0...image.height) {
-			for (x in 0...image.width) {
-				var processed = matrix.transformPoint(new Point3D(x, y, 1));
-				var transformedPoint = new Point2D(processed.x / processed.z, processed.y / processed.z);
-				var color:Int = image.hasPixel(transformedPoint.x.floor(), transformedPoint.y.floor()) ? image.getFloatingPixel(transformedPoint.x, transformedPoint.y) : 0x00000000;
-				outputImage.setPixel(x, y, color);
-			}
-		}
-
-		return outputImage;
-	}
 }

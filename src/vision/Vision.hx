@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.TransformationMatrix;
 import vision.ds.specifics.TransformationMatrixOrigination;
 import vision.ds.Point3D;
 import vision.ds.specifics.ImageExpansionMode;
@@ -680,13 +681,13 @@ class Vision {
 		@see `Vision.convolve()` for color-manipulation matrices (or, kernels).
 		@see `Vision.perspectiveWarp()` for "3d" manipulations.
 	**/
-	public static function affineTransform(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = RESIZE, ?originPoint:Point2D, ?originMode:TransformationMatrixOrigination = CENTER) {
+	public static function affineTransform(image:Image, ?matrix:TransformationMatrix, expansionMode:ImageExpansionMode = RESIZE, ?originPoint:Point2D, ?originMode:TransformationMatrixOrigination = CENTER) {
 		if (matrix == null) matrix = Matrix2D.ROTATION(0);
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
 		for (corner in [new Point2D(0, 0), new Point2D(0, image.height), new Point2D(image.width, 0), new Point2D(image.width, image.height)]) {
 			var coords:Array<Array<Float>> = [[corner.x], [corner.y], [1]];
-			coords = matrix * coords;
+			coords = matrix.underlying * coords;
 			var c = coords.flatten();
 			if (c[0] > max) max = c[0];
 			if (c[0] < mix) mix = c[0];
@@ -755,7 +756,7 @@ class Vision {
 	    @param image 
 	    @param matrix 
 	**/
-	public static function projectiveTransform(image:Image, ?matrix:Matrix2D, expansionMode:ImageExpansionMode = RESIZE):Image {
+	public static function projectiveTransform(image:Image, ?matrix:TransformationMatrix, expansionMode:ImageExpansionMode = RESIZE):Image {
 
 		if (matrix == null) matrix = Matrix2D.ROTATION(0);
 		// Get the max values for bounds expansion
