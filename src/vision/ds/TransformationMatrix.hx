@@ -6,33 +6,140 @@ import vision.ds.Matrix2D;
 @:forward(getRow, getColumn, setRow, setColumn, map, clone, fill, toString)
 abstract TransformationMatrix(Matrix2D) to Matrix2D {
     
+    /**
+		The underlying `Matrix2D` instance.
+		you can safely use this for mathematical operations.
+    **/
     public var underlying(get, never):Matrix2D;
     inline function get_underlying() return this;
 
+    /**
+        The top-left element in this matrix, at position `(0, 0)`:
+
+		```haxe
+		┌          ┐
+		│ a  ᵇ  ᵗˣ │
+		│ ᶜ  ᵈ  ᵗʸ │
+		│ ᵉ  ᶠ  1  │
+		└          ┘
+		```
+
+		Used for manipulation on the X axis, using a given point's X value.
+    **/
     public var a(get, set):Float;
     inline function get_a() return this.get(0, 0);
     inline function set_a(a:Float) return this.set(0, 0, a);
 
+    /**
+        The top-middle element in this matrix, at position `(0, 1)`:
+
+		```haxe
+		┌          ┐
+		│ ᵃ  b  ᵗˣ │
+		│ ᶜ  ᵈ  ᵗʸ │
+		│ ᵉ  ᶠ  1  │
+		└          ┘
+		```
+
+		Used for manipulation on the X axis, using a given point's Y value.
+    **/
     public var b(get, set):Float;
     inline function get_b() return this.get(0, 1);
     inline function set_b(b:Float) return this.set(0, 1, b);
 
+    /**
+		The middle-left element in this matrix, at position `(1, 0)`:
+
+		```haxe
+		┌          ┐
+		│ ᵃ  ᵇ  ᵗˣ │
+		│ c  ᵈ  ᵗʸ │
+		│ ᵉ  ᶠ  1  │
+		└          ┘
+		```
+
+		Used for manipulation on the Y axis, using a given point's X value.
+    **/
     public var c(get, set):Float;
-    inline function get_c() return this.get(0, 1);
+    inline function get_c() return this.get(1, 0);
     inline function set_c(c:Float) return this.set(1, 0, c);
 
+	/**
+		The center element in this matrix, at position `(1, 1)`:
+
+		```haxe
+		┌          ┐
+		│ ᵃ  ᵇ  ᵗˣ │
+		│ ᶜ  d  ᵗʸ │
+		│ ᵉ  ᶠ  1  │
+		└          ┘
+		```
+
+		Used for manipulation on the Y axis, using a given point's Y value.
+    **/
     public var d(get, set):Float;
     inline function get_d() return this.get(1, 1);
     inline function set_d(d:Float) return this.set(1, 1, d);
 
+	/**
+		The bottom-left element in this matrix, at position `(0, 2)`:
+
+		```haxe
+		┌          ┐
+		│ ᵃ  ᵇ  ᵗˣ │
+		│ ᶜ  ᵈ  ᵗʸ │
+		│ e  ᶠ  1  │
+		└          ┘
+		```
+
+		Used for manipulation on the Z axis, using a given point's X value.
+		The higher a pixel's value on the Z axis, the "deeper" it is in the image, 
+		or in other terms, the closer it is to the vanishing point.
+		
+		The vanishing point is decided when we apply the matrix to each pixel - it is the X
+		and Y offsets we add to each point before the main calculation. It also plays a 
+		role in rotations and reflections, by acting like the rotation/reflection center.
+    **/
     public var e(get, set):Float;
     inline function get_e() return this.get(0, 2);
     inline function set_e(e:Float) return this.set(0, 2, e);
 
+	/**
+		The bottom-middle element in this matrix, at position `(1, 2)`:
+
+		```haxe
+		┌          ┐
+		│ ᵃ  ᵇ  ᵗˣ │
+		│ ᶜ  ᵈ  ᵗʸ │
+		│ ᵉ  f  1  │
+		└          ┘
+		```
+
+		Used for manipulation on the Z axis, using a given point's Y value.
+		The higher a pixel's value on the Z axis, the "deeper" it is in the image, 
+		or in other terms, the closer it is to the vanishing point.
+		
+		The vanishing point is decided when we apply the matrix to each pixel - it is the X
+		and Y offsets we add to each point before the main calculation. It also plays a 
+		role in rotations and reflections, by acting like the rotation/reflection center.
+    **/
     public var f(get, set):Float;
     inline function get_f() return this.get(1, 2);
     inline function set_f(f:Float) return this.set(1, 2, f);
 
+	/**
+		The top-left element in this matrix, at position `(2, 0)`:
+
+		```haxe
+		┌          ┐
+		│ ᵃ  ᵇ  tx │
+		│ ᶜ  ᵈ  ᵗʸ │
+		│ ᵉ  ᶠ  1  │
+		└          ┘
+		```
+
+		Used for manipulation on the Y axis, using a given point's Y value.
+    **/
     public var tx(get, set):Float;
     inline function get_tx() return this.get(2, 0);
     inline function set_tx(tx:Float) return this.set(2, 0, tx);
