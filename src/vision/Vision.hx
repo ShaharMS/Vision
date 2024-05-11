@@ -1,6 +1,6 @@
 package vision;
 
-import vision.ds.TransformationMatrix;
+import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
 import vision.ds.Point3D;
 import vision.ds.specifics.ImageExpansionMode;
@@ -671,6 +671,7 @@ class Vision {
 		|---|---|---|---| 
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineTransformShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineTransformRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineTransformRotate%28expandImageBounds%20=%20false%29.png)|
 
+		@param image The image to manipulate.
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
 		@param expansionMode how to expand the image if the matrix moves the image outside of its original bounds, or never reaches the original bounds. Defaults to `ImageExpansionMode.SAME_SIZE`.
 		@param originPoint **OPTION 1**: the point in the image to use as the origin of the transformation matrix. Before a point is passed to the matrix, it's coordinates are incremented by this point, and after the matrix is applied, it's coordinates are decremented by this point. Useful for rotation transformations. Defaults to `(0, 0)`.
@@ -681,8 +682,8 @@ class Vision {
 		@see `Vision.convolve()` for color-manipulation matrices (or, kernels).
 		@see `Vision.perspectiveWarp()` for "3d" manipulations.
 	**/
-	public static function affineTransform(image:Image, ?matrix:TransformationMatrix, expansionMode:ImageExpansionMode = RESIZE, ?originPoint:Point2D, ?originMode:TransformationMatrixOrigination = CENTER) {
-		if (matrix == null) matrix = Matrix2D.ROTATION(0);
+	public static function affineTransform(image:Image, ?matrix:TransformationMatrix2D, expansionMode:ImageExpansionMode = RESIZE, ?originPoint:Point2D, ?originMode:TransformationMatrixOrigination = CENTER) {
+		if (matrix == null) matrix = Matrix2D.IDENTITY();
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
 		for (corner in [new Point2D(0, 0), new Point2D(0, image.height), new Point2D(image.width, 0), new Point2D(image.width, image.height)]) {
@@ -753,12 +754,13 @@ class Vision {
 		|---|---|---|---| 
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
 
-	    @param image 
-	    @param matrix 
+	    @param image The image to manipulate.
+		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
+		
 	**/
-	public static function projectiveTransform(image:Image, ?matrix:TransformationMatrix, expansionMode:ImageExpansionMode = RESIZE):Image {
+	public static function projectiveTransform(image:Image, ?matrix:TransformationMatrix2D, expansionMode:ImageExpansionMode = RESIZE):Image {
 
-		if (matrix == null) matrix = Matrix2D.ROTATION(0);
+		if (matrix == null) matrix = Matrix2D.IDENTITY();
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY,
 			miz = MathTools.POSITIVE_INFINITY, maz = MathTools.NEGATIVE_INFINITY;

@@ -24,7 +24,7 @@ class SimpleHough {
 
         for (key => value in accumulator) { 
             if (value >= threshold) {
-                var x = Std.parseFloat(key.split(",")[0]);
+                var x = Std.parseFloat(key.split("|")[0]);
                 var y = 0;
                 var deg = Std.parseInt(key.split("|")[1]);
                 rays.push(new Ray2D({x: x, y: y}, null, deg));

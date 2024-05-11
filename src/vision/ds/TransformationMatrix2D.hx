@@ -4,7 +4,7 @@ import vision.ds.Matrix2D;
 
 @:forward.variance
 @:forward(getRow, getColumn, setRow, setColumn, map, clone, fill, toString)
-abstract TransformationMatrix(Matrix2D) to Matrix2D {
+abstract TransformationMatrix2D(Matrix2D) to Matrix2D {
     
     /**
 		The underlying `Matrix2D` instance.
@@ -138,12 +138,25 @@ abstract TransformationMatrix(Matrix2D) to Matrix2D {
 		└          ┘
 		```
 
-		Used for manipulation on the Y axis, using a given point's Y value.
+		Used for translation on the X axis, or in other words, moving pixels horizontally.
     **/
     public var tx(get, set):Float;
     inline function get_tx() return this.get(2, 0);
     inline function set_tx(tx:Float) return this.set(2, 0, tx);
 
+	/**
+		The middle-left element in this matrix, at position `(2, 0)`:
+
+		```haxe
+		┌          ┐
+		│ ᵃ  ᵇ  ᵗˣ │
+		│ ᶜ  ᵈ  ty │
+		│ ᵉ  ᶠ  1  │
+		└          ┘
+		```
+
+		Used for translation on the Y axis, or in other words, moving pixels vertically.
+    **/
     public var ty(get, set):Float;
     inline function get_ty() return this.get(2, 1);
     inline function set_ty(ty:Float) return this.set(2, 1, ty);
@@ -153,9 +166,12 @@ abstract TransformationMatrix(Matrix2D) to Matrix2D {
     }
 
     /**
-	    Multiplies the given point by this `Matrix2D`
-	    @param point any 3D point
-	    @return a new, transformed `Point3D` instance
+		Multiplies the given point by this `Matrix2D`:  
+		The `x` coordinate is multiplied by the first row, 
+		the `y` coordinate is multiplied by the second row,
+		and the `z` coordinate is multiplied by the last row,
+		@param point any 3D point
+		@return a new, transformed `Point3D` instance
 	**/
 	overload extern public inline function transformPoint(point:Point3D):Point3D {
 		if (this.width != 3 || this.height != 3) throw ""; //Todo error
@@ -166,9 +182,12 @@ abstract TransformationMatrix(Matrix2D) to Matrix2D {
 	}
 
 	/**
-        Multiplies the given point by this `Matrix2D`
-	    @param point any 2D point
-	    @return a new, transformed `Point2D` instance
+        Multiplies the given point by this `Matrix2D`:  
+		The `x` coordinate is multiplied by the first row, 
+		and the `y` coordinate is multiplied by the second row.  
+		The last row is ignored.
+		@param point any 2D point
+		@return a new, transformed `Point2D` instance
 	**/
 	overload extern public inline function transformPoint(point:Point2D):Point2D {
 		if (this.width != 3 || this.height != 3) throw ""; //Todo error
@@ -188,9 +207,9 @@ abstract TransformationMatrix(Matrix2D) to Matrix2D {
                 value = m.get(i % 3, (i / 3).floor());
             f.set(i % 3, (i / 3).floor(), value);
         }
-        return new TransformationMatrix(f);
+        return new TransformationMatrix2D(f);
         #else
-        return new TransformationMatrix(m);
+        return new TransformationMatrix2D(m);
         #end
     }
 }

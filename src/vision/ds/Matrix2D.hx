@@ -407,7 +407,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     /**
         Generates an identity matrix.
     **/
-    public static inline function IDENTITY():TransformationMatrix {
+    public static inline function IDENTITY():TransformationMatrix2D {
         return Matrix2D.createTransformation(
             [1, 0, 0],
             [0, 1, 0],
@@ -422,7 +422,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
 		@param origin The point around which to rotate. Defaults to `(0, 0)`, which means the top-left corner.
     **/
-    public static inline function ROTATION(angle:Float, ?degrees:Bool = true, ?origin:Point2D = null):TransformationMatrix {
+    public static inline function ROTATION(angle:Float, ?degrees:Bool = true, ?origin:Point2D = null):TransformationMatrix2D {
         return Matrix2D.createTransformation(
             [if (degrees) cosd(angle) else cos(angle), if (degrees) -sind(angle) else -sin(angle), origin != null ? origin.x : 0],
             [if (degrees) sind(angle) else sin(angle), if (degrees) cosd(angle) else cos(angle), origin != null ? origin.y : 0],
@@ -437,7 +437,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @param x Displacement in pixels to the right. Default value is 0.
         @param y Displacement in pixels to the bottom. Default value is 0.
     **/
-    public static inline function TRANSLATION(x:Float = 0, y:Float = 0):TransformationMatrix {
+    public static inline function TRANSLATION(x:Float = 0, y:Float = 0):TransformationMatrix2D {
         return Matrix2D.createTransformation(
             [1, 0, x],
             [0, 1, y],
@@ -451,7 +451,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @param scaleX Scaling along the X axis. Default value is 1.
         @param scaleY Scealing along the Y axis. Default value is 1.
     **/
-    public static inline function SCALE(scaleX:Float = 1, scaleY:Float = 1):TransformationMatrix {
+    public static inline function SCALE(scaleX:Float = 1, scaleY:Float = 1):TransformationMatrix2D {
         return Matrix2D.createTransformation(
             [scaleX, 0,      0],
             [0,      scaleY, 0],
@@ -466,7 +466,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @param shearX The amount of shearing done on the x-axis, or in other words, when dividing `-1` by `shearX`, determines the slope of the image on the vertical edges.
         @param shearY The amount of shearing done on the y-axis, or in other words, when dividing `-1` by `shearY`, determines the slope of the image on the horizontal edges.
     **/
-    public static inline function SHEAR(shearX:Float = 0, shearY:Float = 0):TransformationMatrix {
+    public static inline function SHEAR(shearX:Float = 0, shearY:Float = 0):TransformationMatrix2D {
         return Matrix2D.createTransformation(
             [1,      shearX, 0],
             [shearY, 1,      0],
@@ -480,7 +480,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
 		@param origin The point around which to reflect. Defaults to `(0, 0)`, which means the top-left corner.
     **/
-    public static inline function REFLECTION(angle:Float, ?degrees:Bool = true, ?origin:Point2D = null):TransformationMatrix {
+    public static inline function REFLECTION(angle:Float, ?degrees:Bool = true, ?origin:Point2D = null):TransformationMatrix2D {
         angle *= 2;
         return Matrix2D.createTransformation(
             [if (degrees) cosd(angle) else cos(angle), if (degrees) sind(angle) else sin(angle), origin != null ? origin.x : 0],
@@ -495,7 +495,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
         @param pointPairs 4 pairs of points to "pin-point" the transform on. 
     **/
-    public static inline function PERSPECTIVE(pointPairs:Array<PointTransformationPair>):TransformationMatrix {
+    public static inline function PERSPECTIVE(pointPairs:Array<PointTransformationPair>):TransformationMatrix2D {
         var src = [], dst = [];
 		for (pair in pointPairs) {
 			src.push(pair.from);

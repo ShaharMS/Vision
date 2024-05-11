@@ -68,6 +68,28 @@ class VisionMain {
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
 
+			printSectionDivider("Feature detection tests");
+			start = haxe.Timer.stamp();
+			var lines = Vision.simpleLine2DDetection(orgImage.clone(), 50, 10);
+			var newI = orgImage.clone();
+			for (l in lines) {
+				newI.drawLine2D(l, 0x00FFD5);
+			}
+			printImage(newI);
+			end = haxe.Timer.stamp();
+			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(newI.clone().cannyEdgeDetection(5, X5, 0.3, 0.6));
+			var lines = SimpleHough.detectLines(orgImage.clone().cannyEdgeDetection(5, X5, 0.3, 0.6), 20);
+			var newI = orgImage.clone();
+			for (l in lines) {
+				newI.drawRay2D(l, 0x00FFD5);
+			}
+			printImage(newI);
+			end = haxe.Timer.stamp();
+			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			
+
 			//printSectionDivider("Feature detection tests");
 			//start = haxe.Timer.stamp();
 			//var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 3, 1);
@@ -249,6 +271,24 @@ class VisionMain {
 
 			#if feature_detection_tests
 			printSectionDivider("Feature detection tests");
+			start = haxe.Timer.stamp();
+			var lines = Vision.simpleLine2DDetection(orgImage.clone(), 50, 10);
+			var newI = orgImage.clone();
+			for (l in lines) {
+				newI.drawLine2D(l, 0x00FFD5);
+			}
+			printImage(newI);
+			end = haxe.Timer.stamp();
+			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			var lines = SimpleHough.detectLines(orgImage.clone().cannyEdgeDetection(1, X5, 0.05, 0.16), 40);
+			var newI = orgImage.clone();
+			for (l in lines) {
+				newI.drawRay2D(l, 0x00FFD5);
+			}
+			printImage(newI);
+			end = haxe.Timer.stamp();
+			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 3, 1);
 			var resp = data.corners.visualize(Color.TRANSPARENT, Color.RED);
