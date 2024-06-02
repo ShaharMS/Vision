@@ -3,6 +3,15 @@ package vision.ds;
 import vision.tools.MathTools;
 
 abstract Color(Int) from Int from UInt to Int to UInt {
+	#if (!vision_hlc_color_compile)
+	#if hl
+	/**
+		**WARNING:** using this color, or compiling this source file without DCE in hashlink/c
+		may result in compilation errors post c code generation due to conflicting #defines.
+
+		Use `Color.TRANSPARENT_COLOR` instead.
+	**/
+	#else
 	/**
 		&nbsp;  
 		&nbsp;  
@@ -16,12 +25,33 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		&nbsp;  
 		&nbsp;  
 	**/
+	#end
 	public static inline var TRANSPARENT:Color = 0x00000000;
+	#end
 
+	/**
+		&nbsp;  
+		&nbsp;  
+		&nbsp;  
+		&nbsp;  
+		&nbsp;  
+		&nbsp;  
+		&nbsp;  
+		&nbsp;  
+		&nbsp;  
+		&nbsp;  
+		&nbsp;  
+	**/
+	public static inline var TRANSPARENT_COLOR:Color = 0x00000000;
 	/**
 		![color](https://www.colorhexa.com/ffffff.png)![color](https://www.colorhexa.com/ffffff.png)
 	**/
 	public static inline var WHITE:Color = 0xFFFFFFFF;
+
+	/**
+		![color](https://www.colorhexa.com/ffffe4.png)![color](https://www.colorhexa.com/ffffe4.png)
+	**/
+	public static inline var OFFWHITE:Color = 0xFFFFFFE4;
 
 	/**
 		![color](https://www.colorhexa.com/808080.png)![color](https://www.colorhexa.com/808080.png)

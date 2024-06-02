@@ -53,6 +53,8 @@
  - **Added `ByteArray.toArray()`**
  - **Argument added to `ByteArray`'s constructor, `fillWith`**
  - **`ByteArrays` are now pre-filled with `0`**
+ - **Added colors for `Color.hx`** - Off-white
+ - **Added define to fix `hl/c` compilation of class `Color.hx`**
 
 ### `vision.tools`
 
