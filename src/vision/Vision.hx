@@ -173,6 +173,50 @@ class Vision {
 	}
 
 	/**
+	    Smooths out an image, by averaging the pixel values around each pixel, and
+		interpolating it with the currently processed pixel.
+
+		This is a lower quality, but faster alternative to `Vision.bilateralDenoise`.
+
+		| Original | Processed |
+		|---|---|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-smooth.png)|
+
+		@param image The image to be smoothed.
+		@param strength The strength of the smoothing. Higher values will result in more smoothing. Ranges from 0 to 1. Default is `0.1`.
+		@param affectAlpha If `true`, the alpha channel will be smoothed as well. Defaults to `false`.
+		@param kernelRadius The radius of the smoothing kernel. Higher values will result in more smoothing. Default is `1`, which uses a 3x3 kernel.
+		@param circularKernel If `true`, the kernel will be circular. If `false`, the kernel will be square.
+		@param iterations The number of times the smoothing should be applied. Higher values will result in more smoothing. Default is `1`.
+		@return The smoothed image. The given image is modified.	
+	**/
+	public static function smooth(image:Image, strength:Float = 0.1, affectAlpha:Bool = false, kernelRadius:Int = 1, circularKernel:Bool = true, iterations:Int = 1):Image {
+		var size = kernelRadius * 2 + 1;
+		for (_ in 0...iterations) {
+			image.forEachPixelInView((x, y, pixel) -> {
+				var r = 0., g = 0., b = 0., a = 0., denominator = 0;
+				for (c in image.getNeighborsOfPixelIter(x, y, size, circularKernel)) {
+					denominator++;
+					r += c.red;
+					g += c.green;
+					b += c.blue;
+					if (affectAlpha) a += c.alpha;
+				}
+
+				r /= denominator;
+				g /= denominator;
+				b /= denominator;
+				if (affectAlpha) a /= denominator else a = pixel.alpha;
+				image.setUnsafePixel(x, y, Color.interpolate(pixel, Color.fromRGBA(Std.int(r), Std.int(g), Std.int(b), Std.int(a)), strength));
+			});
+		}
+
+		return image;
+	}
+
+	
+
+	/**
 		Returns a sharpened version of the provided image.
 
 		When an image is sharpened. it's color differences are exaggerated. The more times
@@ -669,13 +713,13 @@ class Vision {
 
 		| Original | Shearing | Rotation | Rotation (`!expandImageBounds`) |
 		|---|---|---|---| 
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineTransformShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineTransformRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineTransformRotate%28expandImageBounds%20=%20false%29.png)|
+		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
 
 		@param image The image to manipulate.
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
 		@param expansionMode how to expand the image if the matrix moves the image outside of its original bounds, or never reaches the original bounds. Defaults to `ImageExpansionMode.SAME_SIZE`.
 		@param originPoint **OPTION 1**: the point in the image to use as the origin of the transformation matrix. Before a point is passed to the matrix, it's coordinates are incremented by this point, and after the matrix is applied, it's coordinates are decremented by this point. Useful for rotation transformations. Defaults to `(0, 0)`.
-		@param originMode **OPTION 2**: To avoid bloat, you can provide a pre-made representation of the origin point, via `TransformationMatrixOrigination` enum. Defaults to `TransformationMatrixOrigination.TOP_LEFT`.
+		@param originMode **OPTION 2**: To avoid code-bloat, you can provide a pre-made representation of the origin point, via `TransformationMatrixOrigination` enum. Defaults to `TransformationMatrixOrigination.TOP_LEFT`.
 		@returns A new, manipulated image. The provided image remains unchanged.
 		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
 
@@ -754,9 +798,9 @@ class Vision {
 		|---|---|---|---| 
 		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
 
-	    @param image The image to manipulate.
+		@param image The image to manipulate.
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
-		
+		@param expansionMode How to expand the image's bounds when the resulting image after transformation canges dimensions. Defaults to `RESIZE`.
 	**/
 	public static function projectiveTransform(image:Image, ?matrix:TransformationMatrix2D, expansionMode:ImageExpansionMode = RESIZE):Image {
 

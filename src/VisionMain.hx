@@ -64,41 +64,13 @@ class VisionMain {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
 			var orgImage = image.clone();
-			printImage(image);
-			image = image.resize(150, 112, BilinearInterpolation);
-			printImage(image);
+			// printImage(image);
+			// image = image.resize(150, 112, BilinearInterpolation);
+			// printImage(image);
 
-			printSectionDivider("Feature detection tests");
-			start = haxe.Timer.stamp();
-			var lines = Vision.simpleLine2DDetection(orgImage.clone(), 50, 10);
-			var newI = orgImage.clone();
-			for (l in lines) {
-				newI.drawLine2D(l, 0x00FFD5);
-			}
-			printImage(newI);
-			end = haxe.Timer.stamp();
-			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			start = haxe.Timer.stamp();
-			printImage(newI.clone().cannyEdgeDetection(5, X5, 0.3, 0.6));
-			var lines = SimpleHough.detectLines(orgImage.clone().cannyEdgeDetection(5, X5, 0.3, 0.6), 20);
-			var newI = orgImage.clone();
-			for (l in lines) {
-				newI.drawRay2D(l, 0x00FFD5);
-			}
-			printImage(newI);
-			end = haxe.Timer.stamp();
-			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			printImage(image.clone().sharpen().cannyEdgeDetection(1, X5, 0.05, 0.25));
+			printImage(image.cannyEdgeDetection());
 			
-
-			//printSectionDivider("Feature detection tests");
-			//start = haxe.Timer.stamp();
-			//var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 3, 1);
-			//var resp = data.corners.visualize(Color.TRANSPARENT, Color.RED);
-			//printImage(image.clone().stamp(0, 0, resp));
-			//printImage(data.corners.visualize());
-			//end = haxe.Timer.stamp();
-			//trace("Harris corners took: " + MathTools.truncate(end - start, 4) + " seconds");
-
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
 			start = haxe.Timer.stamp();
@@ -117,6 +89,10 @@ class VisionMain {
 			printImage(image.clone().contrast());
 			end = haxe.Timer.stamp();
 			trace("Contrast took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().smooth());
+			end = haxe.Timer.stamp();
+			trace("Smoothing took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().sharpen());
 			end = haxe.Timer.stamp();

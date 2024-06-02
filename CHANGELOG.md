@@ -11,6 +11,7 @@
  - **Added `fisheyeDistortion()`**
  - **Added `barrelDistortion()`**
  - **Added `pincushionDistortion()`**
+ - **Added `smooth()`**
 
 
 ### `Image.hx`
