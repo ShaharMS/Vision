@@ -422,26 +422,23 @@ class Vision {
 	public static function barrelDistortion(image:Image, ?strength:Float = 0.2) {
 		var centerX = image.width / 2,
 			centerY = image.height / 2;
-
+		var maxRadius = Math.min(centerX, centerY);
 		var processed = new Image(image.width, image.height);
+		processed.copyViewFrom(image);
 
 		image.forEachPixelInView((x, y, color) -> {
-			// Translate pixel coordinates to centered coordinates
-            var normalizedX = (x - centerX);
-            var normalizedY = (y - centerY);
-			// So we'd be able to work in polar coords
-			var radius = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY);
-			var theta = Math.atan2(normalizedY, normalizedX);
+			var dx = (x - centerX) / maxRadius;
+            var dy = (y - centerY) / maxRadius;
+            var distance = Math.sqrt(dx * dx + dy * dy);
 
-			var distortedRadius = radius * (1 + strength * (radius * radius) / (centerX * centerX));
-			
-			// Cast back to cartesian coords
-			var distortedX = centerX + distortedRadius * Math.cos(theta);
-			var distortedY = centerY + distortedRadius * Math.sin(theta);
+			var r = Math.pow(distance, distance * strength);
 
-			if (!image.hasPixel(distortedX, distortedY)) return;
-			// (Unsafe setting is faster)
-			processed.setUnsafePixel(x, y, image.getFloatingPixel(distortedX, distortedY));
+            var srcX = centerX + r * dx * maxRadius;
+            var srcY = centerY + r * dy * maxRadius;
+
+			if (!image.hasPixel(srcX, srcY)) return;
+            var color = image.getFloatingPixel(srcX, srcY);
+            processed.setPixel(x, y, color);
 		});
 
 		return processed;
@@ -452,33 +449,31 @@ class Vision {
 	}
 
 	public static function mustacheDistortion(image:Image, amplitude:Float = 0.2) {
-		// Basically the same algorithm as barrel distortion, but strength somewhat alternates
 		var centerX = image.width / 2,
 			centerY = image.height / 2;
-
+		var maxRadius = Math.min(centerX, centerY);
+		var maxDistance = {
+			var dx = (image.width - centerX) / maxRadius;
+			var dy = (image.height - centerY) / maxRadius;
+			Math.sqrt(dx * dx + dy * dy);
+		};
 		var processed = new Image(image.width, image.height);
-
-		var maxRadius = new IntPoint2D(0, 0).distanceTo(new Point2D(centerX, centerY));
+		processed.copyViewFrom(image);
 
 		image.forEachPixelInView((x, y, color) -> {
-			// Translate pixel coordinates to centered coordinates
-            var normalizedX = (x - centerX);
-            var normalizedY = (y - centerY);
-			// So we'd be able to work in polar coords
-			var radius = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY);
-			var theta = Math.atan2(normalizedY, normalizedX);
+			var dx = (x - centerX) / maxRadius;
+            var dy = (y - centerY) / maxRadius;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+			var strength = (-distance + maxDistance / 2) * amplitude;
 
-			var strength = amplitude - amplitude * (radius / maxRadius);
+			var r = Math.pow(distance, distance * strength);
 
-			var distortedRadius = radius * (1 + strength * (radius * radius) / (centerX * centerX));
-			
-			// Cast back to cartesian coords
-			var distortedX = centerX + distortedRadius * Math.cos(theta);
-			var distortedY = centerY + distortedRadius * Math.sin(theta);
+            var srcX = centerX + r * dx * maxRadius;
+            var srcY = centerY + r * dy * maxRadius;
 
-			if (!image.hasPixel(distortedX, distortedY)) return;
-			// (Unsafe setting is faster)
-			processed.setUnsafePixel(x, y, image.getFloatingPixel(distortedX, distortedY));
+			if (!image.hasPixel(srcX, srcY)) return;
+            var color = image.getFloatingPixel(srcX, srcY);
+            processed.setPixel(x, y, color);
 		});
 
 		return processed;

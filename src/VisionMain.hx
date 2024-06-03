@@ -49,13 +49,6 @@ using vision.tools.MathTools;
 
 class VisionMain {
 	static function main() {
-		trace(Matrix2D.PERSPECTIVE([
-			{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
-			{from: {x: 300, y: 0}, to: {x: 300, y: 55}},
-			{from: {x: 0, y: 150}, to: {x: 15, y: 150 - 10}},
-			{from: {x: 300, y: 150}, to: {x: 300, y: 91}}
-
-		]).toString());
 		var start:Float, end:Float;
 		#if (true)
 		#if js
@@ -67,8 +60,8 @@ class VisionMain {
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-			printImage(image.clone().sharpen().cannyEdgeDetection(1, X5, 0.05, 0.25));
-			printImage(image.cannyEdgeDetection());
+			// printImage(image.clone().sharpen().cannyEdgeDetection(1, X5, 0.05, 0.25));
+			// printImage(image.cannyEdgeDetection());
 			
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
