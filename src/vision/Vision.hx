@@ -61,7 +61,7 @@ class Vision {
 		
 		| Original | Combined With Default |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-combine.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-combine.png)|
 
 		@param image The image to combine on. When this function returns, that image should be modified
 		@param with The second image to combine with. That image is preserved throughout the function.
@@ -88,7 +88,7 @@ class Vision {
 
 		| Original | `simpleGrayscale` | `!simpleGrayscale` default) |
 		|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale.png)|![After](https://spacebubble.io/vision/docs/valve-grayscale&vision_better_grayscale.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-grayscale.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-grayscale&vision_better_grayscale.png)|
 
 		@param image The image to be grayscaled.
 		@param simpleGrayscale When enabled, gets the gray by averaging pixel's color-channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`.
@@ -119,7 +119,7 @@ class Vision {
 
 		| Original | Inverted |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-invert.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-invert.png)|
 
 		@param image The image to be inverted.
 
@@ -133,13 +133,29 @@ class Vision {
 	}
 
 	/**
+		Makes an image look "old".
+
+		Does so by interpolating each pixel with `Color.SEPIA`.
+
+		| Original | `strength = 0.25` |
+		|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-sepia.png)|
+	**/
+	public static function sepia(image:Image, strength:Float = 0.25) {
+		image.forEachPixelInView((x, y, pixel) -> {
+			image.setUnsafePixel(x, y, Color.interpolate(pixel, Color.SEPIA, strength));
+		});
+		return image;
+	}
+
+	/**
 		Converts an image to COMPLETE black and white.
 
 		It does so by taking the color channel with the highest value, and checking if that maximum surpasses `threshold`.
 
 		| Original | `threshold = 128` |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-blackAndWhite.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-blackAndWhite.png)|
 
 		@param image The image to be converted.
 		@param threshold The threshold for converting to black and white: `threshold` is the maximum average of the three color components, that will still be considered black. `threshold` is a value between 0 and 255. The higher the value, the more "sensitive" the conversion. The default value is 128.
@@ -164,7 +180,7 @@ class Vision {
 
 		| Original | Processed |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-contrast.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-contrast.png)|
 
 		@param image The image to be contrasted.
 	**/
@@ -180,7 +196,7 @@ class Vision {
 
 		| Original | Processed |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-smooth.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-smooth.png)|
 
 		@param image The image to be smoothed.
 		@param strength The strength of the smoothing. Higher values will result in more smoothing. Ranges from 0 to 1. Default is `0.1`.
@@ -214,7 +230,80 @@ class Vision {
 		return image;
 	}
 
+	/**
+		Pixelates an image, by "skipping" every `pixelSize` pixels, and filling 
+		in the missing space by either averaging out the remaining pixel and the 
+		missing ones, or just using the original.
+
+		| Original | Processed |
+		|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-pixelate.png)|
+
+		@param image The image to pixelate
+		@param averagePixels Whether to use pixel averaging to get resulting pixels, or just use the original, remaining pixel.
+		@param pixelSize the new "pixel size"
+		@param affectAlpha Whether this effect applies to the alpha channel of each pixel or not
+		@return The given image, pixelated. The original image is modified.
+	**/
+	public static function pixelate(image:Image, averagePixels:Bool = true, pixelSize:Int = 2, affectAlpha:Bool = true):Image {
+		var blockSize = pixelSize * pixelSize;
+		image.forEachPixelInView((x, y, pixel) -> {
+			if (x % pixelSize != 0 || y % pixelSize != 0) return;
+			var r = 0., g = 0., b = 0., a = 0.;
+			for (offX in 0...pixelSize) {
+				for (offY in 0...pixelSize) {
+					var c = image.getSafePixel(x + offX, y + offY);
+					r += c.red;
+					g += c.green;
+					b += c.blue;
+					if (affectAlpha) a += c.alpha;
+				}
+			}
+
+			r /= blockSize;
+			g /= blockSize;
+			b /= blockSize;
+			if (affectAlpha) a /= blockSize else a = pixel.alpha;
+			var color = Color.fromRGBA(Std.int(r), Std.int(g), Std.int(b), Std.int(a));
+			for (offX in 0...pixelSize) {
+				for (offY in 0...pixelSize) {
+					if (affectAlpha) color.alpha = image.getSafePixel(x + offX, y + offY).alpha;
+					image.setSafePixel(x + offX, y + offY, color);
+				}
+			}
+		});
+
+		return image;
+	}
+
 	
+	/**
+		Posterizes an image - reduces the amount of colors an image uses by reducing
+		the amount of bits each color channel uses. Usually, a color is represented
+		using 4 channels of 8 bits, resulting in an integer, containing the red, green, 
+		blue and alpha channel. This functions reduces the amount of bits used by
+		each channel for each pixel.
+		
+		| Original | Processed (16-bit colors, 4 bits per channel) |
+		|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-posterize.png)|
+
+		@param image The image to be posterized.
+		@param bitsPerChannel The number of bits per channel. Defaults to `4`. Ranges from `1` to `8`.
+		@param affectAlpha If `true`, the alpha channel will be posterized as well. Defaults to `true`.
+	**/
+	public static function posterize(image:Image, bitsPerChannel:Int = 4, affectAlpha:Bool = true) {
+		var denominator = (256 / bitsPerChannel).floor(); // Is an integer anyways.
+		image.forEachPixelInView((x, y, pixel) -> {
+			var r = (pixel.red / denominator).round() * denominator;
+			var g = (pixel.green / denominator).round() * denominator;
+			var b = (pixel.blue / denominator).round() * denominator;
+			var a = affectAlpha ? (pixel.alpha / denominator).round() * denominator : pixel.alpha;
+			image.setUnsafePixel(x, y, Color.fromRGBA(r, g, b, a));
+		});
+
+		return image;
+	}
 
 	/**
 		Returns a sharpened version of the provided image.
@@ -226,7 +315,7 @@ class Vision {
 
 		| Original | Sharpened |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sharpen.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-sharpen.png)|
 
 		@param image The image to be contrasted.
 		@return The sharpened image. The original copy is not preserved.
@@ -242,7 +331,7 @@ class Vision {
 
 		| Original | `iterations = 1` | `iterations = 2` |
 		|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After One Iteration](https://spacebubble.io/vision/docs/valve-sharpen.png)|![After Two Iterations](https://spacebubble.io/vision/docs/valve-deepfry.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After One Iteration](https://spacebubble-io.pages.dev/vision/docs/valve-sharpen.png)|![After Two Iterations](https://spacebubble-io.pages.dev/vision/docs/valve-deepfry.png)|
 
 		The higher the value, the more deepfried the image will look.
 		@param image The image to be deepfried.
@@ -254,12 +343,62 @@ class Vision {
 			image = sharpen(image);
 		return image;
 	}
+	
+	/**
+		Applies a vignette effect to the image.
+		
+		Vignette is a visual effect that makes the edges of the image gradually become
+		of a certain color, usually to draw attention to the center.
 
+		| Original | `ratioDependent = true` | `ratioDependent = false` |
+		|---|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-vignette%28ratioDependent%20=%20true%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-vignette%28ratioDependent%20=%20false%29.png)|
+		
+		@param image The image to apply vignettev on
+		@param strength in percentage, the amount of the image that has vignette, from the edge. Ranges from `0` to `1`. Defaults to `0.2`
+		@param intensity Determines how quickly vignette sets in when a pixel is supposed to be affected. The higher the value, 
+		the quicker it turns to the target color. The closer the value is to `0`, the slower it 
+		turns into the target color, and the less effected the edges.
+		@param ratioDependent DEtermines if the effect should always treat the image as a square, 
+		and thus be circular (`false`) or if it should consider different dimensions, 
+		and appear "elliptical" (`true`) 
+		@param color The target color for the vignette effect
+		@return the given image, with vignette applied. The original image is modified.
+	**/
+	public static function vignette(image:Image, ?strength:Float = 0.2, ?intensity:Float = 1, ratioDependent:Bool = false, color:Color = Color.BLACK):Image {
+		var center = image.center();
+		var maxDistance = center.distanceTo({x: ratioDependent ? image.width : image.width.min(image.height), y: ratioDependent ? image.height : image.width.min(image.height)});
+		var minDistance = maxDistance * (1 - strength);
+		var denominator = maxDistance - minDistance;
+		image.forEachPixelInView((x, y, pixel) -> {
+			var distance = center.distanceTo({x: x, y: y});
+			if (distance > minDistance) {
+				var color = Color.interpolate(pixel, color, ((distance - minDistance) / denominator) * intensity);
+				image.setUnsafePixel(x, y, color);
+			}
+		});
+		
+		return image;
+	}
+
+	/**
+	    Applies a fish-eye effect to an image from it's center, with a given strength.
+
+		| Original | `strength = 1` | `strength = 2` |
+		|---|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-fisheyeDistortion%28strength%20=%201%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-fisheyeDistortion%28strength%20=%202%29.png)|
+
+
+	    @param image 
+	    @param strength 
+	    @return Image
+	**/
 	public static function fisheyeDistortion(image:Image, ?strength:Float = 1.5):Image {
 		var centerX = image.width / 2,
 			centerY = image.height / 2;
 		
 		var processed = new Image(image.width, image.height);
+		processed.copyViewFrom(image);
 		var maxRadius = Math.min(centerX, centerY);
 
 		image.forEachPixelInView((x, y, color) -> {
@@ -359,7 +498,7 @@ class Vision {
 
 		| Original | Dilated |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-dilate.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-dilate.png)|
 
 		@param image The image to operate on.
 		@param dilationRadius The radius of the kernel used for the dilation process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernel. The higher this value, the further each pixel checks for a nearby lighter pixel.
@@ -397,7 +536,7 @@ class Vision {
 
 		| Original | Eroded |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-erode.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-erode.png)|
 
 		@param image The image to operate on.
 		@param dilationRadius The radius of the kernel used for the erosion process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernel. The higher this value, the further each pixel checks for a nearby darker pixel.
@@ -428,7 +567,7 @@ class Vision {
 		
 		| Original | `percentage = 25` |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-saltAndPepperNoise.png)
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-saltAndPepperNoise.png)
 		
 		@param image The image to apply salt&pepper noise on.
 		@param percentage How much of the image should be "corrupted", in percentages between 0 to 100 - 0 means no change, 100 means fully "corrupted". Default is 25.
@@ -462,7 +601,7 @@ class Vision {
 		
 		| Original | Processed |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-dropOutNoise.png)
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-dropOutNoise.png)
 		
 		@param image The image to apply salt&pepper noise on
 		@param percentage How much of the image should be "corrupted", in percentages between 0 to 100 - 0 means no change, 100 means fully "corrupted". Default is 5
@@ -488,7 +627,7 @@ class Vision {
 		
 		| Original | Processed |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-whiteNoise.png)
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-whiteNoise.png)
 		
 		@param image The image to apply salt&pepper noise on
 		@param percentage How white-noisy the resulting image should be, or, the ratio between the contributions of each pixel from the original image and the white noise to the final image, from 0 to 100: a lower value will make the first image's pixels contribute more to the the final image, thus making the resulting image less noisy, and vice-versa.
@@ -713,7 +852,7 @@ class Vision {
 
 		| Original | Shearing | Rotation | Rotation (`!expandImageBounds`) |
 		|---|---|---|---| 
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![Sheared](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
 
 		@param image The image to manipulate.
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
@@ -796,7 +935,7 @@ class Vision {
 
 		| Original | Depth | Perspective | Rotation (`!expandImageBounds`) |
 		|---|---|---|---| 
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![Sheared](https://spacebubble.io/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble.io/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![Sheared](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
 
 		@param image The image to manipulate.
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
@@ -857,7 +996,7 @@ class Vision {
 
 		| Original | `iterations = 1` | `iterations = 4` |
 		|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-nearestNeighborBlur%28iterations%20=%201%29.png)|![After](https://spacebubble.io/vision/docs/valve-nearestNeighborBlur%28iterations%20=%204%29.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-nearestNeighborBlur%28iterations%20=%201%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-nearestNeighborBlur%28iterations%20=%204%29.png)|
 
 		@param image The image to be blurred.
 		@param iterations The number of times the algorithm will be run. The more iterations, the more blurry the image will be, and the higher the "blur range". **For example:** a value of 3 will produce a blur range of 3 pixels on each object.
@@ -883,7 +1022,7 @@ class Vision {
 		
 		| Original | `sigma = 0.5` | `sigma = 1`| `sigma = 1`, `fast = true` | `sigma = 2` |
 		|---|---|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%200.5%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%201%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%201%47%20fast%20=%20true%29.png)|![After](https://spacebubble.io/vision/docs/valve-gaussianBlur%28sigma%20=%202%29.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-gaussianBlur%28sigma%20=%200.5%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-gaussianBlur%28sigma%20=%201%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-gaussianBlur%28sigma%20=%201%47%20fast%20=%20true%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-gaussianBlur%28sigma%20=%202%29.png)|
 
 		@param image The image to be blurred.
 		@param sigma The sigma value to use for the gaussian distribution on the kernel. a lower value will focus more on the center pixel, while a higher value will shift focus to the surrounding pixels more, effectively blurring it better.
@@ -906,7 +1045,7 @@ class Vision {
 
 		| Original | `kernelSize = 5` | `kernelSize = 10` | `kernelSize = 15` |
 		|---|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernelRadius%20=%205%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernelRadius%20=%2010%29.png)|![After](https://spacebubble.io/vision/docs/valve-medianBlur%28kernelRadius%20=%2015%29.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-medianBlur%28kernelRadius%20=%205%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-medianBlur%28kernelRadius%20=%2010%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-medianBlur%28kernelRadius%20=%2015%29.png)|
 
 		@param image The image to apply median blurring to.
 		@param kernelSize the width & height of the kernel in which we should search for the median. A radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
@@ -990,7 +1129,7 @@ class Vision {
 
 		| Original | After Filtering |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sobelEdgeDiffOperator.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-sobelEdgeDiffOperator.png)|
 
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.
@@ -1011,7 +1150,7 @@ class Vision {
 		
 		| Original | After Filtering |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-perwittEdgeDiffOperator.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-perwittEdgeDiffOperator.png)|
 
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.
@@ -1033,7 +1172,7 @@ class Vision {
 		
 		| Original | After Filtering |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-robertEdgeDiffOperator.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-robertEdgeDiffOperator.png)|
 
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.
@@ -1054,7 +1193,7 @@ class Vision {
 		
 		| Original | After Filtering (Positive) | After Filtering (Negative) |
 		|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20true%29.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20false%29.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20true%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-laplacianEdgeDiffOperator%28filterPositive%20=%20false%29.png)|
 
 		@param image The image to be operated on
 		@param filterPositive Which version of the laplacian filter should the function use: the negative (detects "outward" edges), or the positive (detects "inward" edges). Default is positive (`true`).
@@ -1075,7 +1214,7 @@ class Vision {
 
 		| Original | Edge Detected (default settings) |
 		|---|:---:|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-cannyEdgeDetection.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-cannyEdgeDetection.png)|
 
 		@param image The image to be edge detected.
 		@param sigma The sigma value to be used in the gaussian blur.
@@ -1108,7 +1247,7 @@ class Vision {
 
 		| Before | After |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sobelEdgeDetection.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-sobelEdgeDetection.png)|
 
 		@param image The image to be processed.
 		@param threshold The threshold for detecting edges. The lower the value, 
@@ -1130,7 +1269,7 @@ class Vision {
 
 		| Before | After |
 		|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-perwittEdgeDetection.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-perwittEdgeDetection.png)|
 
 		@param image The image to be processed.
 		@param threshold The threshold for detecting edges. The lower the value, 
@@ -1153,7 +1292,7 @@ class Vision {
 
 		| Original | After Filtering (Positive) | After Filtering (Negative) |
 		|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianOfGaussianEdgeDetection%28filterPositive%20=%20true%29.png)|![After](https://spacebubble.io/vision/docs/valve-laplacianOfGaussianEdgeDetection%28filterPositive%20=%20true%29.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-laplacianOfGaussianEdgeDetection%28filterPositive%20=%20true%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-laplacianOfGaussianEdgeDetection%28filterPositive%20=%20true%29.png)|
 
 		@param image The image to be processed.
 		@param threshold The threshold for detecting edges. The lower the value, the more pixels will be considered edges. Default is `5`.
@@ -1180,11 +1319,11 @@ class Vision {
 		  
 		| Algorithm | Output | Time Complexity |
 		|:---:|---|:---:|
-		|None|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-original.png)| - |
-		|**`perwittEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-perwittEdgeDetection.png)| `O(width*height)` |
-		|**`sobelEdgeDetection`**|![Sobel Edge Detection](https://spacebubble.io/vision/docs/valve-sobelEdgeDetection.png)| `O(width*height)` |
-		|**`cannyEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-cannyEdgeDetection.png)| `O(width*height log(width* height))` |
-		|**`convolutionRidgeDetection`**|![Perwitt Edge Detection](https://spacebubble.io/vision/docs/valve-convolutionRidgeDetection.png)| `O(width*height)` |
+		|None|![Perwitt Edge Detection](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)| - |
+		|**`perwittEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble-io.pages.dev/vision/docs/valve-perwittEdgeDetection.png)| `O(width*height)` |
+		|**`sobelEdgeDetection`**|![Sobel Edge Detection](https://spacebubble-io.pages.dev/vision/docs/valve-sobelEdgeDetection.png)| `O(width*height)` |
+		|**`cannyEdgeDetection`**|![Perwitt Edge Detection](https://spacebubble-io.pages.dev/vision/docs/valve-cannyEdgeDetection.png)| `O(width*height log(width* height))` |
+		|**`convolutionRidgeDetection`**|![Perwitt Edge Detection](https://spacebubble-io.pages.dev/vision/docs/valve-convolutionRidgeDetection.png)| `O(width*height)` |
 
 		@param image the image to be ridge detected on.
 		@param normalizationRangeStart Optional, if you want to change the normalization range's start color. `0x44444444` by default.
@@ -1219,7 +1358,7 @@ class Vision {
 
 		| Original | Sharpened | Sharpened (Denoised) |
 		|---|---|---|
-		|![Before](https://spacebubble.io/vision/docs/valve-original.png)|![After](https://spacebubble.io/vision/docs/valve-sharpen.png)|![After](https://spacebubble.io/vision/docs/valve-bilateralDenoise.png)|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-sharpen.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-bilateralDenoise.png)|
 
 		@param image The image to operate on.
 		@param gaussianSigma The sigma to use when generating the gaussian kernel. This also decides the size of the kernel (The size of the kernel is always `Math.round(6 * gaussianSigma)`, and gets incremented if the resulting size is even)

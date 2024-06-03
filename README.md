@@ -33,7 +33,7 @@ rid of them, define `vision_quiet`.**
 
 For more tutorials (or further details about the tutorials here) check out the links below:
 
- - [`Vision` Tutorials On The Haxe Learning Center](https://spacebubble.io/haxe/?name=Vision)
+ - [`Vision` Tutorials On The Haxe Learning Center](https://spacebubble-io.pages.dev/haxe/?name=Vision)
 
 ---
 ### Creating an image

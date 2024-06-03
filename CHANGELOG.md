@@ -12,6 +12,10 @@
  - **Added `barrelDistortion()`**
  - **Added `pincushionDistortion()`**
  - **Added `smooth()`**
+ - **Added `posterize()`**
+ - **Added `sepia()`**
+ - **Added `pixelate()`**
+ - **Added `vignette()`**
 
 
 ### `Image.hx`
@@ -21,6 +25,7 @@
  - **Slight optimization for `getFloatingPixel()`, avoids recursive call for out-of-bounds coordinates**
  - **Added `center()`**, returns a point representing the center of the image
  - **Added `pixelToRelative()` & `relativeToPixel()`**, converts between pixel and relative coordinates for an image
+ - **Added `copyViewFrom()`**
 
 ### `vision.ds`
 
@@ -54,8 +59,8 @@
  - **Added `ByteArray.toArray()`**
  - **Argument added to `ByteArray`'s constructor, `fillWith`**
  - **`ByteArrays` are now pre-filled with `0`**
- - **Added colors for `Color.hx`** - Off-white
- - **Added define to fix `hl/c` compilation of class `Color.hx`**
+ - **Added colors for `Color.hx`** - Off-white, Sepia
+ - **Added haxedef to fix `hl/c` compilation of class `Color.hx`**
 
 ### `vision.tools`
 

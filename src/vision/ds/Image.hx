@@ -1378,6 +1378,20 @@ abstract Image(ByteArray) {
 	}
 
 	/**
+	    Copies the view from the given `Image` into this image.
+	**/
+	public inline function copyViewFrom(from:Image):Image {
+		var view = from.getView();
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, view.x);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, view.y);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, view.width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height);
+		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, view.shape);
+
+		return cast this;
+	}
+
+	/**
 	    Checks whether or not the given pixel in coordinates `(x, y)` is inside the given `ImageView`, 
 		or inside currently set `ImageView` (if `v` is `null`).
 

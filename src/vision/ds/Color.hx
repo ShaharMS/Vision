@@ -99,6 +99,11 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var BROWN:Color = 0xFF8B4513;
 
 	/**
+	    ![color](https://www.colorhexa.com/704214.png)![color](https://www.colorhexa.com/704214.png)
+	**/
+	public static inline var SEPIA:Color = 0xFF704214;
+
+	/**
 		![color](https://www.colorhexa.com/FFC0CB.png)![color](https://www.colorhexa.com/FFC0CB.png)
 	**/
 	public static inline var PINK:Color = 0xFFFFC0CB;

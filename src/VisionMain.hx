@@ -64,10 +64,9 @@ class VisionMain {
 			trace(image.width, image.height);
 			printSectionDivider("Test image, resized");
 			var orgImage = image.clone();
-			// printImage(image);
-			// image = image.resize(150, 112, BilinearInterpolation);
-			// printImage(image);
-
+			printImage(image);
+			image = image.resize(150, 112, BilinearInterpolation);
+			printImage(image);
 			printImage(image.clone().sharpen().cannyEdgeDetection(1, X5, 0.05, 0.25));
 			printImage(image.cannyEdgeDetection());
 			
@@ -82,9 +81,21 @@ class VisionMain {
 			end = haxe.Timer.stamp();
 			trace("Grayscale took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
+			printImage(Vision.sepia(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("Sepia took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(Vision.pixelate(image.clone()));
+			end = haxe.Timer.stamp();
+			trace("Pixelation took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
 			printImage(Vision.invert(image.clone()));
 			end = haxe.Timer.stamp();
 			trace("Inversion took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().posterize());
+			end = haxe.Timer.stamp();
+			trace("Posterization took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().contrast());
 			end = haxe.Timer.stamp();
@@ -105,6 +116,10 @@ class VisionMain {
 			printImage(image.clone());
 			end = haxe.Timer.stamp();
 			trace("Image Cloning took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().vignette(true));
+			end = haxe.Timer.stamp();
+			trace("Vignette filter took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().fisheyeDistortion());
 			end = haxe.Timer.stamp();
