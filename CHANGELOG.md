@@ -37,7 +37,7 @@
    - **Pretty printing of `Matrix2D`**
    - **And more convenient functions**
  - **Added `Point3D`** - Representation of 3D point.
- - **Added `Heatmap`** - used for drawing heatmaps & extracting data from matrices of values. supports:
+ - **Added `Heatmap`** - used for drawing heat-maps & extracting data from matrices of values. supports:
    - **`lowerBound`, `upperBound`**
    - **`getDataRange()`**
    - **`getLocalMaximums()`, `getLocalMinimums()`**
@@ -170,7 +170,7 @@
 ### `vision.ds`
 
  - **Added `ImageView.toString()`**
- - **Added `PixelFormat`** - Vision now supports importing/exporting differnt pixel formats! supports RGB, BGR and their different alpha position variants.
+ - **Added `PixelFormat`** - Vision now supports importing/exporting different pixel formats! supports RGB, BGR and their different alpha position variants.
 
 ### `vision.tools`
 

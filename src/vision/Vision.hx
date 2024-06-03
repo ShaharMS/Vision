@@ -231,7 +231,7 @@ class Vision {
 	}
 
 	/**
-		Pixelates an image, by "skipping" every `pixelSize` pixels, and filling 
+		"Pixel-art"ifies an image, by "skipping" every `pixelSize` pixels, and filling 
 		in the missing space by either averaging out the remaining pixel and the 
 		missing ones, or just using the original.
 
@@ -278,7 +278,7 @@ class Vision {
 
 	
 	/**
-		Posterizes an image - reduces the amount of colors an image uses by reducing
+		"Posterizes" an image - reduces the amount of colors an image uses by reducing
 		the amount of bits each color channel uses. Usually, a color is represented
 		using 4 channels of 8 bits, resulting in an integer, containing the red, green, 
 		blue and alpha channel. This functions reduces the amount of bits used by
@@ -354,7 +354,7 @@ class Vision {
 		|---|---|---|
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-vignette%28ratioDependent%20=%20true%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-vignette%28ratioDependent%20=%20false%29.png)|
 		
-		@param image The image to apply vignettev on
+		@param image The image to apply vignette on
 		@param strength in percentage, the amount of the image that has vignette, from the edge. Ranges from `0` to `1`. Defaults to `0.2`
 		@param intensity Determines how quickly vignette sets in when a pixel is supposed to be affected. The higher the value, 
 		the quicker it turns to the target color. The closer the value is to `0`, the slower it 
@@ -934,7 +934,7 @@ class Vision {
 
 		@param image The image to manipulate.
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
-		@param expansionMode How to expand the image's bounds when the resulting image after transformation canges dimensions. Defaults to `RESIZE`.
+		@param expansionMode How to expand the image's bounds when the resulting image after transformation changes dimensions. Defaults to `RESIZE`.
 	**/
 	public static function projectiveTransform(image:Image, ?matrix:TransformationMatrix2D, expansionMode:ImageExpansionMode = RESIZE):Image {
 

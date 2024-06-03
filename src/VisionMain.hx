@@ -1,47 +1,13 @@
 package;
 
-import format.swf.Data.Matrix;
-import vision.algorithms.Harris;
-import vision.ds.Array2D;
-import vision.algorithms.Cramer;
-import vision.ds.Matrix2D;
-import vision.ds.PixelFormat;
-import vision.ds.ByteArray;
-import vision.exceptions.LibraryRequired;
-import vision.algorithms.SimpleHough;
-import haxe.crypto.Base64;
-import haxe.Http;
-import vision.algorithms.SimpleLineDetector;
-import vision.ds.IntPoint2D;
-import vision.ds.Int16Point2D;
-import vision.algorithms.Laplacian;
-import vision.algorithms.BilateralFilter;
-import vision.ds.Kernel2D;
-import haxe.ds.ArraySort;
-import vision.algorithms.Radix;
-import vision.ds.Histogram;
-import vision.exceptions.MultithreadFailure;
-import vision.tools.ImageTools;
-
 using vision.tools.ImageTools;
 
-import vision.ds.Queue;
-import vision.ds.Line2D;
-import vision.tools.MathTools;
-import haxe.Timer;
-import vision.algorithms.Gauss;
-import vision.Vision;
-import vision.ds.Color;
-import vision.ds.Rectangle;
-import vision.ds.Point2D;
-import vision.ds.Ray2D;
 #if js
 import js.html.File;
 import js.html.FileSystem;
 import js.html.Document;
 import js.Browser;
 #end
-import vision.algorithms.Hough;
 import vision.ds.Image;
 
 using vision.Vision;
