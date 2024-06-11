@@ -193,6 +193,43 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	**/
 	public static inline var ROYAL_BLUE:Color = 0xFF4169E1;
 
+	/**
+		![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)
+	**/
+	public static inline var SADDLE_BROWN:Color = 0xFF8B4513;
+	
+	/**
+		![color](https://www.colorhexa.com/FF6347.png)![color](https://www.colorhexa.com/FF6347.png)
+	**/
+	public static inline var TOMATO:Color = 0xFFFF6347;
+
+	/**
+		![color](https://www.colorhexa.com/FFDAB9.png)![color](https://www.colorhexa.com/FFDAB9.png)
+	**/
+	public static inline var CORNSILK:Color = 0xFFFFDAB9;
+
+	/**
+		![color](https://www.colorhexa.com/FF7F50.png)![color](https://www.colorhexa.com/FF7F50.png)
+	**/
+	public static inline var CORAL:Color = 0xFFFF7F50;
+
+	/**
+		![color](https://www.colorhexa.com/47E3FF.png)![color](https://www.colorhexa.com/47E3FF.png)
+	**/
+	public static inline var TURQUOISE:Color = 0xFF47E3FF; 
+
+	/**
+		![color](https://www.colorhexa.com/7F00FF.png)![color](https://www.colorhexa.com/7F00FF.png)
+	**/
+	public static inline var VIOLET:Color = 0xFF7F00FF;
+
+	/**
+		![color](https://www.colorhexa.com/51428F.png)![color](https://www.colorhexa.com/51428F.png)
+	**/
+	public static inline var INDIGO:Color = 0xFF51428F;
+
+	
+
 	public var red(get, set):Int;
 	public var blue(get, set):Int;
 	public var green(get, set):Int;

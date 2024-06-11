@@ -4,7 +4,7 @@
 
 --library format
 # --library console.hx
--debug
+--debug
 --dce full
 #--interp
 #--cpp bin/cpp
