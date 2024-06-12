@@ -464,7 +464,7 @@ class VisionMain {
 		}
 		#end
 		#end
-
+		trace("You are in `interp` mode most probably. No tests were run.");
 	}
 	
 	public static function printImage(image:Image) {

@@ -389,9 +389,9 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-fisheyeDistortion%28strength%20=%201%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-fisheyeDistortion%28strength%20=%202%29.png)|
 
 
-	    @param image 
-	    @param strength 
-	    @return Image
+	    @param image The image to apply the distortion to
+	    @param strength The "amount" of warping done to the image. A higher value means pixels closer to the center are more distorted.    @return Image
+		@returns the image, with fish-eye effect. The original image is preserved.	
 	**/
 	public static function fisheyeDistortion(image:Image, ?strength:Float = 1.5):Image {
 		var centerX = image.width / 2,
@@ -419,6 +419,25 @@ class Vision {
 		return processed;
 	}
 
+	/**
+		Applies a perspective perception change, such that the pixels closer to the 
+		center of the image appear closer, and pixels that are closer to the corners appear further.
+
+		This causes a bulging effect on straight lines, as seen in the following graph image:  
+		![barrel effect](https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Barrel_distortion.svg/100px-Barrel_distortion.svg.png)
+		
+		This shows the library's implementation in effect, with `strength = 0.2`:
+
+		| Original | Processed|
+		|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![Processed](https://spacebubble-io.pages.dev/vision/docs/valve-barrelDistortion.png)|
+
+		@param image The image to distort
+		@param strength The amount of distortion to apply. The higher the value the more distortion 
+		there is. A negative value implies `Vision.pincushionDistortion`. 
+		Values converging to 0 distort the image less and less. Default is `0.2`.
+		@returns A distorted copy of the given image.
+	**/
 	public static function barrelDistortion(image:Image, ?strength:Float = 0.2) {
 		var centerX = image.width / 2,
 			centerY = image.height / 2;
@@ -444,10 +463,47 @@ class Vision {
 		return processed;
 	}
 
+	/**
+		Applies a perspective perception change, such that the pixels closer to the 
+		center of the image appear further, and pixels that are closer to the corners appear closer, 
+		similar to when taking an image of the inside of a spherical object.
+
+		This causes an inward rounding effect on straight lines, as seen in the following graph image:  
+		![pincushion effect](https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Pincushion_distortion.svg/100px-Pincushion_distortion.svg.png)
+		
+		This shows the library's implementation in effect, with `strength = 0.2`:
+
+		| Original | Processed|
+		|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![Processed](https://spacebubble-io.pages.dev/vision/docs/valve-pincushionDistortion.png)|
+
+		@param image The image to distort
+		@param strength The amount of distortion to apply. The higher the value, the more distortion 
+		there is. A negative value implies `Vision.barrelDistortion`. 
+		Values converging to 0 distort the image less and less. Default is `0.2`.
+		@returns A distorted copy of the given image. The original image is preserved.
+	**/
 	public static function pincushionDistortion(image:Image, ?strength:Float = 0.2) {
 		return barrelDistortion(image, -strength);
 	}
 
+	/**
+		A combination of `Vision.barrelDistortion` & `Vision.pincushionDistortion`, where the former
+		affects the portion closer to the center of the image, and the latter affects the edges:  
+		![mustache effect](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Mustache_distortion.svg/100px-Mustache_distortion.svg.png)
+	
+		For reference, here are the two mentioned distortions, held in reference to this one:
+
+		| Original | Barrel | Pincushion | Mustache |
+		|---|---|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![Processed](https://spacebubble-io.pages.dev/vision/docs/valve-barrelDistortion.png)|![Processed](https://spacebubble-io.pages.dev/vision/docs/valve-pincushionDistortion.png)|![Processed](https://spacebubble-io.pages.dev/vision/docs/valve-mustacheDistortion.png)|
+	
+		@param image The image to distort
+		@param strength The amount of distortion to apply. The higher the value, the more distortion 
+		there is. A negative value flips the effect. 
+		Values converging to 0 distort the image less and less. Default is `0.2`.
+		@returns A distorted copy of the image. The original image is preserved.
+	**/
 	public static function mustacheDistortion(image:Image, amplitude:Float = 0.2) {
 		var centerX = image.width / 2,
 			centerY = image.height / 2;
