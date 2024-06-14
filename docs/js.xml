@@ -40538,16 +40538,16 @@
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0x00000000</e></m></meta>
 		<haxe_doc><![CDATA[&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;]]></haxe_doc>
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;]]></haxe_doc>
 	</TRANSPARENT>
 	<TRANSPARENT_COLOR public="1" get="inline" set="null" expr="0x00000000" line="45" static="1">
 		<x path="vision.ds.Color"/>
@@ -40564,191 +40564,491 @@
 		&nbsp;  
 		&nbsp;]]></haxe_doc>
 	</TRANSPARENT_COLOR>
-	<WHITE public="1" get="inline" set="null" expr="0xFFFFFFFF" line="49" static="1">
+	<WHITE public="1" get="inline" set="null" expr="0xFFFFFFFF" line="50" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFFFFFF</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/ffffff.png)![color](https://www.colorhexa.com/ffffff.png)</haxe_doc>
 	</WHITE>
-	<OFFWHITE public="1" get="inline" set="null" expr="0xFFFFFFE4" line="54" static="1">
+	<OFFWHITE public="1" get="inline" set="null" expr="0xFFFFFFE4" line="55" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFFFFE4</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/ffffe4.png)![color](https://www.colorhexa.com/ffffe4.png)</haxe_doc>
 	</OFFWHITE>
-	<GRAY public="1" get="inline" set="null" expr="0xFF808080" line="59" static="1">
+	<GRAY public="1" get="inline" set="null" expr="0xFF808080" line="60" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF808080</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/808080.png)![color](https://www.colorhexa.com/808080.png)</haxe_doc>
 	</GRAY>
-	<BLACK public="1" get="inline" set="null" expr="0xFF000000" line="64" static="1">
+	<BLACK public="1" get="inline" set="null" expr="0xFF000000" line="65" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF000000</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/000000.png)![color](https://www.colorhexa.com/000000.png)</haxe_doc>
 	</BLACK>
-	<GREEN public="1" get="inline" set="null" expr="0xFF00FF00" line="69" static="1">
+	<GREEN public="1" get="inline" set="null" expr="0xFF00FF00" line="70" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF00FF00</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/00ff00.png)![color](https://www.colorhexa.com/00ff00.png)</haxe_doc>
 	</GREEN>
-	<YELLOW public="1" get="inline" set="null" expr="0xFFFFFF00" line="74" static="1">
+	<YELLOW public="1" get="inline" set="null" expr="0xFFFFFF00" line="75" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFFFF00</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/FFFF00.png)![color](https://www.colorhexa.com/FFFF00.png)</haxe_doc>
 	</YELLOW>
-	<ORANGE public="1" get="inline" set="null" expr="0xFFFFA500" line="79" static="1">
+	<ORANGE public="1" get="inline" set="null" expr="0xFFFFA500" line="80" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFFA500</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/FFA500.png)![color](https://www.colorhexa.com/FFA500.png)</haxe_doc>
 	</ORANGE>
-	<RED public="1" get="inline" set="null" expr="0xFFFF0000" line="84" static="1">
+	<RED public="1" get="inline" set="null" expr="0xFFFF0000" line="85" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFF0000</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/FF0000.png)![color](https://www.colorhexa.com/FF0000.png)</haxe_doc>
 	</RED>
-	<PURPLE public="1" get="inline" set="null" expr="0xFF800080" line="89" static="1">
+	<PURPLE public="1" get="inline" set="null" expr="0xFF800080" line="90" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF800080</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/800080.png)![color](https://www.colorhexa.com/800080.png)</haxe_doc>
 	</PURPLE>
-	<BLUE public="1" get="inline" set="null" expr="0xFF0000FF" line="94" static="1">
+	<BLUE public="1" get="inline" set="null" expr="0xFF0000FF" line="95" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF0000FF</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/0000ff.png)![color](https://www.colorhexa.com/0000ff.png)</haxe_doc>
 	</BLUE>
-	<BROWN public="1" get="inline" set="null" expr="0xFF8B4513" line="99" static="1">
+	<BROWN public="1" get="inline" set="null" expr="0xFF8B4513" line="100" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF8B4513</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)</haxe_doc>
 	</BROWN>
-	<SEPIA public="1" get="inline" set="null" expr="0xFF704214" line="104" static="1">
+	<SEPIA public="1" get="inline" set="null" expr="0xFF704214" line="105" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF704214</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/704214.png)![color](https://www.colorhexa.com/704214.png)</haxe_doc>
 	</SEPIA>
-	<PINK public="1" get="inline" set="null" expr="0xFFFFC0CB" line="109" static="1">
+	<PINK public="1" get="inline" set="null" expr="0xFFFFC0CB" line="110" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFFC0CB</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/FFC0CB.png)![color](https://www.colorhexa.com/FFC0CB.png)</haxe_doc>
 	</PINK>
-	<MAGENTA public="1" get="inline" set="null" expr="0xFFFF00FF" line="114" static="1">
+	<MAGENTA public="1" get="inline" set="null" expr="0xFFFF00FF" line="115" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFF00FF</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)</haxe_doc>
 	</MAGENTA>
-	<CYAN public="1" get="inline" set="null" expr="0xFF00FFFF" line="119" static="1">
+	<CYAN public="1" get="inline" set="null" expr="0xFF00FFFF" line="120" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF00FFFF</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)</haxe_doc>
 	</CYAN>
-	<SILVER public="1" get="inline" set="null" expr="0xC0C0C0" line="124" static="1">
+	<SILVER public="1" get="inline" set="null" expr="0xC0C0C0" line="125" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xC0C0C0</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/C0C0C0.png)![color](https://www.colorhexa.com/C0C0C0.png)</haxe_doc>
 	</SILVER>
-	<GOLD public="1" get="inline" set="null" expr="0xFFFFD700" line="129" static="1">
+	<GOLD public="1" get="inline" set="null" expr="0xFFFFD700" line="130" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFFD700</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/FFD700.png)![color](https://www.colorhexa.com/FFD700.png)</haxe_doc>
 	</GOLD>
-	<OLIVE public="1" get="inline" set="null" expr="0xFF808000" line="134" static="1">
+	<OLIVE public="1" get="inline" set="null" expr="0xFF808000" line="135" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF808000</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/808000.png)![color](https://www.colorhexa.com/808000.png)</haxe_doc>
 	</OLIVE>
-	<MAROON public="1" get="inline" set="null" expr="0xFF800000" line="139" static="1">
+	<MAROON public="1" get="inline" set="null" expr="0xFF800000" line="140" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF800000</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/800000.png)![color](https://www.colorhexa.com/800000.png)</haxe_doc>
 	</MAROON>
-	<BORDEAUX public="1" get="inline" set="null" expr="0xFF722F37" line="144" static="1">
+	<BORDEAUX public="1" get="inline" set="null" expr="0xFF722F37" line="145" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF722F37</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/722F37.png)![color](https://www.colorhexa.com/722F37.png)</haxe_doc>
 	</BORDEAUX>
-	<NAVY public="1" get="inline" set="null" expr="0xFF000080" line="149" static="1">
+	<NAVY public="1" get="inline" set="null" expr="0xFF000080" line="150" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF000080</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/000080.png)![color](https://www.colorhexa.com/000080.png)</haxe_doc>
 	</NAVY>
-	<TEAL public="1" get="inline" set="null" expr="0xFF008080" line="154" static="1">
+	<TEAL public="1" get="inline" set="null" expr="0xFF008080" line="155" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF008080</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/008080.png)![color](https://www.colorhexa.com/008080.png)</haxe_doc>
 	</TEAL>
-	<FUCHSIA public="1" get="inline" set="null" expr="0xFFFF00FF" line="159" static="1">
+	<FUCHSIA public="1" get="inline" set="null" expr="0xFFFF00FF" line="160" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFF00FF</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)</haxe_doc>
 	</FUCHSIA>
-	<AQUA public="1" get="inline" set="null" expr="0xFF00FFFF" line="164" static="1">
+	<AQUA public="1" get="inline" set="null" expr="0xFF00FFFF" line="165" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF00FFFF</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)</haxe_doc>
 	</AQUA>
-	<LIME public="1" get="inline" set="null" expr="0xFF32CD32" line="169" static="1">
+	<LIME public="1" get="inline" set="null" expr="0xFF32CD32" line="170" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF32CD32</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/32CD32.png)![color](https://www.colorhexa.com/32CD32.png)</haxe_doc>
 	</LIME>
-	<CHARCOAL public="1" get="inline" set="null" expr="0xFF36454F" line="174" static="1">
+	<CHARCOAL public="1" get="inline" set="null" expr="0xFF36454F" line="175" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF36454F</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/36454F.png)![color](https://www.colorhexa.com/36454F.png)</haxe_doc>
 	</CHARCOAL>
-	<ONYX public="1" get="inline" set="null" expr="0xFF353839" line="179" static="1">
+	<ONYX public="1" get="inline" set="null" expr="0xFF353839" line="180" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF353839</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/353839.png)![color](https://www.colorhexa.com/353839.png)</haxe_doc>
 	</ONYX>
-	<JET public="1" get="inline" set="null" expr="0xFF343434" line="184" static="1">
+	<JET public="1" get="inline" set="null" expr="0xFF343434" line="185" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF343434</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/343434.png)![color](https://www.colorhexa.com/343434.png)</haxe_doc>
 	</JET>
-	<JET_BLACK public="1" get="inline" set="null" expr="0xFF0E0E10" line="189" static="1">
+	<JET_BLACK public="1" get="inline" set="null" expr="0xFF0E0E10" line="190" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF0E0E10</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/0E0E10.png)![color](https://www.colorhexa.com/0E0E10.png)</haxe_doc>
 	</JET_BLACK>
-	<ROYAL_BLUE public="1" get="inline" set="null" expr="0xFF4169E1" line="194" static="1">
+	<ROYAL_BLUE public="1" get="inline" set="null" expr="0xFF4169E1" line="195" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF4169E1</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/4169E1.png)![color](https://www.colorhexa.com/4169E1.png)</haxe_doc>
 	</ROYAL_BLUE>
-	<SADDLE_BROWN public="1" get="inline" set="null" expr="0xFF8B4513" line="199" static="1">
+	<CHARTREUSE public="1" get="inline" set="null" expr="0xFF7FFF00" line="200" static="1">
 		<x path="vision.ds.Color"/>
-		<meta><m n=":value"><e>0xFF8B4513</e></m></meta>
-		<haxe_doc>![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)</haxe_doc>
-	</SADDLE_BROWN>
-	<TOMATO public="1" get="inline" set="null" expr="0xFFFF6347" line="204" static="1">
+		<meta><m n=":value"><e>0xFF7FFF00</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/7FFF00.png)![color](https://www.colorhexa.com/7FFF00.png)</haxe_doc>
+	</CHARTREUSE>
+	<CERULEAN public="1" get="inline" set="null" expr="0xFF007BA7" line="205" static="1">
 		<x path="vision.ds.Color"/>
-		<meta><m n=":value"><e>0xFFFF6347</e></m></meta>
-		<haxe_doc>![color](https://www.colorhexa.com/FF6347.png)![color](https://www.colorhexa.com/FF6347.png)</haxe_doc>
-	</TOMATO>
-	<CORNSILK public="1" get="inline" set="null" expr="0xFFFFDAB9" line="209" static="1">
+		<meta><m n=":value"><e>0xFF007BA7</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/007BA7.png)![color](https://www.colorhexa.com/007BA7.png)</haxe_doc>
+	</CERULEAN>
+	<PERIWINKLE public="1" get="inline" set="null" expr="0xFFCCCCFF" line="210" static="1">
 		<x path="vision.ds.Color"/>
-		<meta><m n=":value"><e>0xFFFFDAB9</e></m></meta>
-		<haxe_doc>![color](https://www.colorhexa.com/FFDAB9.png)![color](https://www.colorhexa.com/FFDAB9.png)</haxe_doc>
-	</CORNSILK>
-	<CORAL public="1" get="inline" set="null" expr="0xFFFF7F50" line="214" static="1">
+		<meta><m n=":value"><e>0xFFCCCCFF</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/CCCCFF.png)![color](https://www.colorhexa.com/CCCCFF.png)</haxe_doc>
+	</PERIWINKLE>
+	<VERMILION public="1" get="inline" set="null" expr="0xFFE34234" line="215" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFE34234</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/E34234.png)![color](https://www.colorhexa.com/E34234.png)</haxe_doc>
+	</VERMILION>
+	<MAUVE public="1" get="inline" set="null" expr="0xFFE0B0FF" line="220" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFE0B0FF</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/E0B0FF.png)![color](https://www.colorhexa.com/E0B0FF.png)</haxe_doc>
+	</MAUVE>
+	<AZURE public="1" get="inline" set="null" expr="0xFF007FFF" line="225" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF007FFF</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/007FFF.png)![color](https://www.colorhexa.com/007FFF.png)</haxe_doc>
+	</AZURE>
+	<TANGERINE public="1" get="inline" set="null" expr="0xFFF28500" line="230" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFF28500</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/F28500.png)![color](https://www.colorhexa.com/F28500.png)</haxe_doc>
+	</TANGERINE>
+	<INDIGO public="1" get="inline" set="null" expr="0xFF4B0082" line="235" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF4B0082</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/4B0082.png)![color](https://www.colorhexa.com/4B0082.png)</haxe_doc>
+	</INDIGO>
+	<MARIGOLD public="1" get="inline" set="null" expr="0xFFEAA221" line="240" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFEAA221</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/EAA221.png)![color](https://www.colorhexa.com/EAA221.png)</haxe_doc>
+	</MARIGOLD>
+	<COBALT public="1" get="inline" set="null" expr="0xFF0047AB" line="245" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF0047AB</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/0047AB.png)![color](https://www.colorhexa.com/0047AB.png)</haxe_doc>
+	</COBALT>
+	<LAVENDER public="1" get="inline" set="null" expr="0xFFE6E6FA" line="250" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFE6E6FA</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/E6E6FA.png)![color](https://www.colorhexa.com/E6E6FA.png)</haxe_doc>
+	</LAVENDER>
+	<TURQUOISE public="1" get="inline" set="null" expr="0xFF40E0D0" line="255" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF40E0D0</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/40E0D0.png)![color](https://www.colorhexa.com/40E0D0.png)</haxe_doc>
+	</TURQUOISE>
+	<OCHRE public="1" get="inline" set="null" expr="0xFFCC7722" line="260" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFCC7722</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/CC7722.png)![color](https://www.colorhexa.com/CC7722.png)</haxe_doc>
+	</OCHRE>
+	<AQUAMARINE public="1" get="inline" set="null" expr="0xFF7FFFD4" line="265" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF7FFFD4</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/7FFFD4.png)![color](https://www.colorhexa.com/7FFFD4.png)</haxe_doc>
+	</AQUAMARINE>
+	<RUSSET public="1" get="inline" set="null" expr="0xFF80461B" line="270" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF80461B</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/80461B.png)![color](https://www.colorhexa.com/80461B.png)</haxe_doc>
+	</RUSSET>
+	<TOPAZ public="1" get="inline" set="null" expr="0xFFFFC87C" line="275" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFFC87C</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FFC87C.png)![color](https://www.colorhexa.com/FFC87C.png)</haxe_doc>
+	</TOPAZ>
+	<APRICOT public="1" get="inline" set="null" expr="0xFFFBCEB1" line="280" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFBCEB1</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FBCEB1.png)![color](https://www.colorhexa.com/FBCEB1.png)</haxe_doc>
+	</APRICOT>
+	<AMETHYST public="1" get="inline" set="null" expr="0xFF9966CC" line="285" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF9966CC</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/9966CC.png)![color](https://www.colorhexa.com/9966CC.png)</haxe_doc>
+	</AMETHYST>
+	<SAFFRON public="1" get="inline" set="null" expr="0xFFF4C430" line="290" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFF4C430</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/F4C430.png)![color](https://www.colorhexa.com/F4C430.png)</haxe_doc>
+	</SAFFRON>
+	<LILAC public="1" get="inline" set="null" expr="0xFFC8A2C8" line="295" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFC8A2C8</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/C8A2C8.png)![color](https://www.colorhexa.com/C8A2C8.png)</haxe_doc>
+	</LILAC>
+	<CRIMSON public="1" get="inline" set="null" expr="0xFFDC143C" line="300" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFDC143C</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/DC143C.png)![color](https://www.colorhexa.com/DC143C.png)</haxe_doc>
+	</CRIMSON>
+	<SLATE public="1" get="inline" set="null" expr="0xFF708090" line="305" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF708090</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/708090.png)![color](https://www.colorhexa.com/708090.png)</haxe_doc>
+	</SLATE>
+	<JADE public="1" get="inline" set="null" expr="0xFF00A86B" line="310" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF00A86B</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/00A86B.png)![color](https://www.colorhexa.com/00A86B.png)</haxe_doc>
+	</JADE>
+	<CORAL public="1" get="inline" set="null" expr="0xFFFF7F50" line="315" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFFFF7F50</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/FF7F50.png)![color](https://www.colorhexa.com/FF7F50.png)</haxe_doc>
 	</CORAL>
-	<TURQUOISE public="1" get="inline" set="null" expr="0xFF47E3FF" line="219" static="1">
+	<BURGUNDY public="1" get="inline" set="null" expr="0xFF800020" line="320" static="1">
 		<x path="vision.ds.Color"/>
-		<meta><m n=":value"><e>0xFF47E3FF</e></m></meta>
-		<haxe_doc>![color](https://www.colorhexa.com/47E3FF.png)![color](https://www.colorhexa.com/47E3FF.png)</haxe_doc>
-	</TURQUOISE>
-	<VIOLET public="1" get="inline" set="null" expr="0xFF7F00FF" line="224" static="1">
+		<meta><m n=":value"><e>0xFF800020</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/800020.png)![color](https://www.colorhexa.com/800020.png)</haxe_doc>
+	</BURGUNDY>
+	<SIENNA public="1" get="inline" set="null" expr="0xFF882D17" line="325" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF882D17</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/882D17.png)![color](https://www.colorhexa.com/882D17.png)</haxe_doc>
+	</SIENNA>
+	<IVORY public="1" get="inline" set="null" expr="0xFFFFFFF0" line="330" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFFFFF0</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FFFFF0.png)![color](https://www.colorhexa.com/FFFFF0.png)</haxe_doc>
+	</IVORY>
+	<MULBERRY public="1" get="inline" set="null" expr="0xFFC54B8C" line="335" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFC54B8C</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/C54B8C.png)![color](https://www.colorhexa.com/C54B8C.png)</haxe_doc>
+	</MULBERRY>
+	<SANDALWOOD public="1" get="inline" set="null" expr="0xFFAA8D6F" line="340" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFAA8D6F</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/AA8D6F.png)![color](https://www.colorhexa.com/AA8D6F.png)</haxe_doc>
+	</SANDALWOOD>
+	<GARNET public="1" get="inline" set="null" expr="0xFF733635" line="345" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF733635</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/733635.png)![color](https://www.colorhexa.com/733635.png)</haxe_doc>
+	</GARNET>
+	<PEWTER public="1" get="inline" set="null" expr="0xFF8BA8B7" line="350" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF8BA8B7</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/8BA8B7.png)![color](https://www.colorhexa.com/8BA8B7.png)</haxe_doc>
+	</PEWTER>
+	<CARNATION public="1" get="inline" set="null" expr="0xFFFFA6C9" line="355" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFFA6C9</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FFA6C9.png)![color](https://www.colorhexa.com/FFA6C9.png)</haxe_doc>
+	</CARNATION>
+	<CITRINE public="1" get="inline" set="null" expr="0xFFE4D00A" line="360" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFE4D00A</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/E4D00A.png)![color](https://www.colorhexa.com/E4D00A.png)</haxe_doc>
+	</CITRINE>
+	<CELADON public="1" get="inline" set="null" expr="0xFFACE1AF" line="365" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFACE1AF</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/ACE1AF.png)![color](https://www.colorhexa.com/ACE1AF.png)</haxe_doc>
+	</CELADON>
+	<HELIOTROPE public="1" get="inline" set="null" expr="0xFFDF73FF" line="370" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFDF73FF</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/DF73FF.png)![color](https://www.colorhexa.com/DF73FF.png)</haxe_doc>
+	</HELIOTROPE>
+	<PUCE public="1" get="inline" set="null" expr="0xFFCC8899" line="375" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFCC8899</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/CC8899.png)![color](https://www.colorhexa.com/CC8899.png)</haxe_doc>
+	</PUCE>
+	<CINNABAR public="1" get="inline" set="null" expr="0xFFE34234" line="380" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFE34234</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/E34234.png)![color](https://www.colorhexa.com/E34234.png)</haxe_doc>
+	</CINNABAR>
+	<VIRIDIAN public="1" get="inline" set="null" expr="0xFF40826D" line="385" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF40826D</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/40826D.png)![color](https://www.colorhexa.com/40826D.png)</haxe_doc>
+	</VIRIDIAN>
+	<ECRU public="1" get="inline" set="null" expr="0xFFC2B280" line="390" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFC2B280</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/C2B280.png)![color](https://www.colorhexa.com/C2B280.png)</haxe_doc>
+	</ECRU>
+	<ALABASTER public="1" get="inline" set="null" expr="0xFFEDEAE0" line="395" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFEDEAE0</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/EDEAE0.png)![color](https://www.colorhexa.com/EDEAE0.png)</haxe_doc>
+	</ALABASTER>
+	<SAPPHIRE public="1" get="inline" set="null" expr="0xFF0F52BA" line="400" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF0F52BA</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/0F52BA.png)![color](https://www.colorhexa.com/0F52BA.png)</haxe_doc>
+	</SAPPHIRE>
+	<PEARL public="1" get="inline" set="null" expr="0xFFEAE0C8" line="405" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFEAE0C8</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/EAE0C8.png)![color](https://www.colorhexa.com/EAE0C8.png)</haxe_doc>
+	</PEARL>
+	<SALMON public="1" get="inline" set="null" expr="0xFFFA8072" line="410" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFA8072</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FA8072.png)![color](https://www.colorhexa.com/FA8072.png)</haxe_doc>
+	</SALMON>
+	<UMBER public="1" get="inline" set="null" expr="0xFF635147" line="415" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF635147</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/635147.png)![color](https://www.colorhexa.com/635147.png)</haxe_doc>
+	</UMBER>
+	<TURMERIC public="1" get="inline" set="null" expr="0xFFE4D00A" line="420" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFE4D00A</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/E4D00A.png)![color](https://www.colorhexa.com/E4D00A.png)</haxe_doc>
+	</TURMERIC>
+	<MAHOGANY public="1" get="inline" set="null" expr="0xFFC04000" line="425" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFC04000</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/C04000.png)![color](https://www.colorhexa.com/C04000.png)</haxe_doc>
+	</MAHOGANY>
+	<PERSIMMON public="1" get="inline" set="null" expr="0xFFFF6347" line="430" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFF6347</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FF6347.png)![color](https://www.colorhexa.com/FF6347.png)</haxe_doc>
+	</PERSIMMON>
+	<ROSEWOOD public="1" get="inline" set="null" expr="0xFF65000B" line="435" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF65000B</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/65000B.png)![color](https://www.colorhexa.com/65000B.png)</haxe_doc>
+	</ROSEWOOD>
+	<CARAMEL public="1" get="inline" set="null" expr="0xFFFFD700" line="440" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFFD700</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FFD700.png)![color](https://www.colorhexa.com/FFD700.png)</haxe_doc>
+	</CARAMEL>
+	<DANDELION public="1" get="inline" set="null" expr="0xFFF0E130" line="445" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFF0E130</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/F0E130.png)![color](https://www.colorhexa.com/F0E130.png)</haxe_doc>
+	</DANDELION>
+	<FERN public="1" get="inline" set="null" expr="0xFF71BC78" line="450" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF71BC78</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/71BC78.png)![color](https://www.colorhexa.com/71BC78.png)</haxe_doc>
+	</FERN>
+	<LAPIS public="1" get="inline" set="null" expr="0xFF26619C" line="455" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF26619C</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/26619C.png)![color](https://www.colorhexa.com/26619C.png)</haxe_doc>
+	</LAPIS>
+	<DENIM public="1" get="inline" set="null" expr="0xFF1560BD" line="460" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF1560BD</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/1560BD.png)![color](https://www.colorhexa.com/1560BD.png)</haxe_doc>
+	</DENIM>
+	<SABLE public="1" get="inline" set="null" expr="0xFF8E6D7B" line="465" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF8E6D7B</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/8E6D7B.png)![color](https://www.colorhexa.com/8E6D7B.png)</haxe_doc>
+	</SABLE>
+	<ORCHID public="1" get="inline" set="null" expr="0xFFDA70D6" line="470" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFDA70D6</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/DA70D6.png)![color](https://www.colorhexa.com/DA70D6.png)</haxe_doc>
+	</ORCHID>
+	<TAWNY public="1" get="inline" set="null" expr="0xFFCD5700" line="475" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFCD5700</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/CD5700.png)![color](https://www.colorhexa.com/CD5700.png)</haxe_doc>
+	</TAWNY>
+	<PINE public="1" get="inline" set="null" expr="0xFF01796F" line="480" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF01796F</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/01796F.png)![color](https://www.colorhexa.com/01796F.png)</haxe_doc>
+	</PINE>
+	<LEMON public="1" get="inline" set="null" expr="0xFFFFF700" line="485" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFFF700</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FFF700.png)![color](https://www.colorhexa.com/FFF700.png)</haxe_doc>
+	</LEMON>
+	<SCARLET public="1" get="inline" set="null" expr="0xFFFF2400" line="490" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFF2400</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FF2400.png)![color](https://www.colorhexa.com/FF2400.png)</haxe_doc>
+	</SCARLET>
+	<TAUPE public="1" get="inline" set="null" expr="0xFF483C32" line="495" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF483C32</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/483C32.png)![color](https://www.colorhexa.com/483C32.png)</haxe_doc>
+	</TAUPE>
+	<CERISE public="1" get="inline" set="null" expr="0xFFDE3163" line="500" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFDE3163</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/DE3163.png)![color](https://www.colorhexa.com/DE3163.png)</haxe_doc>
+	</CERISE>
+	<AMBER public="1" get="inline" set="null" expr="0xFFFFBF00" line="505" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFFBF00</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FFBF00.png)![color](https://www.colorhexa.com/FFBF00.png)</haxe_doc>
+	</AMBER>
+	<CINNAMON public="1" get="inline" set="null" expr="0xFFD2691E" line="510" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFD2691E</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/D2691E.png)![color](https://www.colorhexa.com/D2691E.png)</haxe_doc>
+	</CINNAMON>
+	<SADDLE_BROWN public="1" get="inline" set="null" expr="0xFF8B4513" line="515" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFF8B4513</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)</haxe_doc>
+	</SADDLE_BROWN>
+	<TOMATO public="1" get="inline" set="null" expr="0xFFFF6347" line="520" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFF6347</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FF6347.png)![color](https://www.colorhexa.com/FF6347.png)</haxe_doc>
+	</TOMATO>
+	<CORNSILK public="1" get="inline" set="null" expr="0xFFFFDAB9" line="525" static="1">
+		<x path="vision.ds.Color"/>
+		<meta><m n=":value"><e>0xFFFFDAB9</e></m></meta>
+		<haxe_doc>![color](https://www.colorhexa.com/FFDAB9.png)![color](https://www.colorhexa.com/FFDAB9.png)</haxe_doc>
+	</CORNSILK>
+	<VIOLET public="1" get="inline" set="null" expr="0xFF7F00FF" line="530" static="1">
 		<x path="vision.ds.Color"/>
 		<meta><m n=":value"><e>0xFF7F00FF</e></m></meta>
 		<haxe_doc>![color](https://www.colorhexa.com/7F00FF.png)![color](https://www.colorhexa.com/7F00FF.png)</haxe_doc>
 	</VIOLET>
-	<INDIGO public="1" get="inline" set="null" expr="0xFF51428F" line="229" static="1">
-		<x path="vision.ds.Color"/>
-		<meta><m n=":value"><e>0xFF51428F</e></m></meta>
-		<haxe_doc>![color](https://www.colorhexa.com/51428F.png)![color](https://www.colorhexa.com/51428F.png)</haxe_doc>
-	</INDIGO>
 	<red public="1" get="accessor" set="accessor" static="1"><x path="Int"/></red>
 	<blue public="1" get="accessor" set="accessor" static="1"><x path="Int"/></blue>
 	<green public="1" get="accessor" set="accessor" static="1"><x path="Int"/></green>
@@ -40781,11 +41081,11 @@
 		<x path="Float"/>
 		<haxe_doc>The lightness of the color (from 0 to 1)</haxe_doc>
 	</lightness>
-	<COLOR_REGEX expr="~/^(0x|#)(([A-F0-9]{2}){3,4})$/" line="273" static="1">
+	<COLOR_REGEX expr="~/^(0x|#)(([A-F0-9]{2}){3,4})$/" line="572" static="1">
 		<c path="EReg"/>
 		<meta><m n=":value"><e>~/^(0x|#)(([A-F0-9]{2}){3,4})$/</e></m></meta>
 	</COLOR_REGEX>
-	<fromInt public="1" get="inline" set="null" line="281" static="1">
+	<fromInt public="1" get="inline" set="null" line="580" static="1">
 		<f a="value">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -40795,7 +41095,7 @@
 		@param value `Int` with bytes in the format 0xAARRGGBB
 		@return	The color as a `Color`</haxe_doc>
 	</fromInt>
-	<fromRGBA public="1" get="inline" set="null" line="294" static="1">
+	<fromRGBA public="1" get="inline" set="null" line="593" static="1">
 		<f a="Red:Green:Blue:?Alpha" v=":::255">
 			<x path="Int"/>
 			<x path="Int"/>
@@ -40812,7 +41112,7 @@
 		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
 		@return The color as a Color</haxe_doc>
 	</fromRGBA>
-	<from8Bit public="1" get="inline" set="null" line="305" static="1">
+	<from8Bit public="1" get="inline" set="null" line="604" static="1">
 		<f a="Value">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -40822,7 +41122,7 @@
 		@param Value	The channel value of the red, green & blue channels of the color
 		@return The color as a Color]]></haxe_doc>
 	</from8Bit>
-	<fromRGBAFloat public="1" get="inline" set="null" line="319" static="1">
+	<fromRGBAFloat public="1" get="inline" set="null" line="618" static="1">
 		<f a="Red:Green:Blue:?Alpha" v=":::1">
 			<x path="Float"/>
 			<x path="Float"/>
@@ -40839,7 +41139,7 @@
 		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
 		@return The color as a `Color`</haxe_doc>
 	</fromRGBAFloat>
-	<fromCMYK public="1" get="inline" set="null" line="334" static="1">
+	<fromCMYK public="1" get="inline" set="null" line="633" static="1">
 		<f a="Cyan:Magenta:Yellow:Black:?Alpha" v="::::1">
 			<x path="Float"/>
 			<x path="Float"/>
@@ -40858,7 +41158,7 @@
 		@param Alpha		How opaque the color should be, from 0 to 1, default is 1
 		@return The color as a `Color`</haxe_doc>
 	</fromCMYK>
-	<fromHSB public="1" set="method" line="348" static="1">
+	<fromHSB public="1" set="method" line="647" static="1">
 		<f a="Hue:Saturation:Brightness:?Alpha" v=":::1">
 			<x path="Float"/>
 			<x path="Float"/>
@@ -40875,7 +41175,7 @@
 		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255, default is 1.
 		@return	The color as a `Color`</haxe_doc>
 	</fromHSB>
-	<fromHSL public="1" get="inline" set="null" line="362" static="1">
+	<fromHSL public="1" get="inline" set="null" line="661" static="1">
 		<f a="Hue:Saturation:Lightness:?Alpha" v=":::1">
 			<x path="Float"/>
 			<x path="Float"/>
@@ -40892,7 +41192,7 @@
 		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255, default is 1.
 		@return	The color as a `Color`</haxe_doc>
 	</fromHSL>
-	<fromString public="1" set="method" line="382" static="1">
+	<fromString public="1" set="method" line="681" static="1">
 		<f a="str">
 			<c path="String"/>
 			<x path="Null"><x path="vision.ds.Color"/></x>
@@ -40911,7 +41211,7 @@
 		@param	str 	The string to be parsed
 		@return	A `Color` or `null` if the `String` couldn't be parsed]]></haxe_doc>
 	</fromString>
-	<getHSBColorWheel public="1" set="method" line="403" static="1">
+	<getHSBColorWheel public="1" set="method" line="702" static="1">
 		<f a="?Alpha" v="255">
 			<x path="Int"/>
 			<c path="Array"><x path="vision.ds.Color"/></c>
@@ -40922,7 +41222,7 @@
 		@param	Alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque) (default)
 		@return	HSB color wheel as Array of Colors</haxe_doc>
 	</getHSBColorWheel>
-	<interpolate public="1" get="inline" set="null" line="415" static="1">
+	<interpolate public="1" get="inline" set="null" line="714" static="1">
 		<f a="Color1:Color2:?Factor" v="::0.5">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -40937,7 +41237,7 @@
 		@param 	Factor Value from 0 to 1 representing how much to shift Color1 toward Color2, default is 0.5
 		@return	The interpolated color as a `Color`</haxe_doc>
 	</interpolate>
-	<gradient public="1" set="method" line="433" static="1">
+	<gradient public="1" set="method" line="732" static="1">
 		<f a="Color1:Color2:Steps:?Ease">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -40956,7 +41256,7 @@
 		@param Ease An optional easing function.
 		@return An array of colors of length Steps, shifting from Color1 to Color2</haxe_doc>
 	</gradient>
-	<makeRandom public="1" get="inline" set="null" line="455" static="1">
+	<makeRandom public="1" get="inline" set="null" line="754" static="1">
 		<f a="?alphaLock:?alphaValue" v="true:255">
 			<x path="Bool"/>
 			<x path="Int"/>
@@ -40968,7 +41268,7 @@
 		@param alphaLock When set to `false`, the alpha channel will get a randomized value to. `true` by default, which makes a color with `alpha = 255`.
 		@param alphaValue When `alphaLock` is true, you can provide this value to override the default alpha value. Since the first argument is optional, you can do `Color.makeRandom(128)` (a random color with `alpha` set to `128`)</haxe_doc>
 	</makeRandom>
-	<multiply public="1" get="inline" set="null" line="463" static="1">
+	<multiply public="1" get="inline" set="null" line="762" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -40977,7 +41277,7 @@
 		<meta><m n=":op"><e>A * B</e></m></meta>
 		<haxe_doc>Multiply the RGB and alpha channels of two Colors</haxe_doc>
 	</multiply>
-	<add public="1" get="inline" set="null" line="472" static="1">
+	<add public="1" get="inline" set="null" line="771" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -40986,7 +41286,7 @@
 		<meta><m n=":op"><e>A + B</e></m></meta>
 		<haxe_doc>Add the RGB and alpha channels of two Colors</haxe_doc>
 	</add>
-	<subtract public="1" get="inline" set="null" line="480" static="1">
+	<subtract public="1" get="inline" set="null" line="779" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -40995,7 +41295,7 @@
 		<meta><m n=":op"><e>A - B</e></m></meta>
 		<haxe_doc>Subtract the RGB and alpha channels of one Color from another</haxe_doc>
 	</subtract>
-	<divide public="1" get="inline" set="null" line="490" static="1">
+	<divide public="1" get="inline" set="null" line="789" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41006,7 +41306,7 @@
 	 * 
 	 * If a color channel value on the right hand side is `0`, the left hand side's channel will get divided by `1`.</haxe_doc>
 	</divide>
-	<getComplementHarmony public="1" get="inline" set="null" line="500" static="1">
+	<getComplementHarmony public="1" get="inline" set="null" line="800" static="1">
 		<f a="this">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41016,7 +41316,7 @@
 
 		@return	The complimentary color</haxe_doc>
 	</getComplementHarmony>
-	<getAnalogousHarmony public="1" get="inline" set="null" line="511" static="1">
+	<getAnalogousHarmony public="1" get="inline" set="null" line="811" static="1">
 		<f a="this:?Threshold" v=":30">
 			<x path="Int"/>
 			<x path="Int"/>
@@ -41029,7 +41329,7 @@
 		@param	Threshold Control how adjacent the colors will be (default +- 30 degrees)
 		@return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)</haxe_doc>
 	</getAnalogousHarmony>
-	<getSplitComplementHarmony public="1" get="inline" set="null" line="525" static="1">
+	<getSplitComplementHarmony public="1" get="inline" set="null" line="825" static="1">
 		<f a="this:?Threshold" v=":30">
 			<x path="Int"/>
 			<x path="Int"/>
@@ -41042,7 +41342,7 @@
 		@param	Threshold Control how adjacent the colors will be to the Complement (default +- 30 degrees)
 		@return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)</haxe_doc>
 	</getSplitComplementHarmony>
-	<getTriadicHarmony public="1" get="inline" set="null" line="539" static="1">
+	<getTriadicHarmony public="1" get="inline" set="null" line="839" static="1">
 		<f a="this">
 			<x path="Int"/>
 			<t path="vision.ds.TriadicHarmony"/>
@@ -41052,7 +41352,7 @@
 
 		@return 	Object containing 3 properties: color1 (the original color), color2 and color3 (the equidistant colors)</haxe_doc>
 	</getTriadicHarmony>
-	<to24Bit public="1" get="inline" set="null" line="551" static="1">
+	<to24Bit public="1" get="inline" set="null" line="851" static="1">
 		<f a="this">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41061,7 +41361,7 @@
 
 		@return A 24 bit version of this color</haxe_doc>
 	</to24Bit>
-	<toHexString public="1" get="inline" set="null" line="562" static="1">
+	<toHexString public="1" get="inline" set="null" line="862" static="1">
 		<f a="this:?Alpha:?Prefix" v=":true:true">
 			<x path="Int"/>
 			<x path="Bool"/>
@@ -41075,7 +41375,7 @@
 		@param Prefix Whether to include "0x" prefix at start of string
 		@return	A string of length 10 in the format 0xAARRGGBB</haxe_doc>
 	</toHexString>
-	<toWebString public="1" get="inline" set="null" line="572" static="1">
+	<toWebString public="1" get="inline" set="null" line="871" static="1">
 		<f a="this">
 			<x path="Int"/>
 			<c path="String"/>
@@ -41084,7 +41384,7 @@
 
 		@return	A string of length 7 in the format #RRGGBB</haxe_doc>
 	</toWebString>
-	<darken public="1" set="method" line="582" static="1">
+	<darken public="1" set="method" line="881" static="1">
 		<f a="this:?Factor" v=":0.2">
 			<x path="Int"/>
 			<x path="Float"/>
@@ -41096,7 +41396,7 @@
 		@param	Factor Value from 0 to 1 of how much to progress toward black.
 		@return 	A darkened version of this color</haxe_doc>
 	</darken>
-	<lighten public="1" get="inline" set="null" line="595" static="1">
+	<lighten public="1" get="inline" set="null" line="894" static="1">
 		<f a="this:?Factor" v=":0.2">
 			<x path="Int"/>
 			<x path="Float"/>
@@ -41108,7 +41408,7 @@
 		@param	Factor Value from 0 to 1 of how much to progress toward white.
 		@return 	A lightened version of this color</haxe_doc>
 	</lighten>
-	<invert public="1" get="inline" set="null" line="607" static="1">
+	<invert public="1" get="inline" set="null" line="906" static="1">
 		<f a="this">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41117,7 +41417,7 @@
 
 		@return The inversion of this color</haxe_doc>
 	</invert>
-	<setRGBA public="1" get="inline" set="null" line="623" static="1">
+	<setRGBA public="1" get="inline" set="null" line="922" static="1">
 		<f a="this:Red:Green:Blue:?Alpha" v="::::255">
 			<x path="Int"/>
 			<x path="Int"/>
@@ -41135,7 +41435,7 @@
 		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
 		@return This color</haxe_doc>
 	</setRGBA>
-	<setRGBAFloat public="1" get="inline" set="null" line="640" static="1">
+	<setRGBAFloat public="1" get="inline" set="null" line="939" static="1">
 		<f a="this:Red:Green:Blue:?Alpha" v="::::1">
 			<x path="Int"/>
 			<x path="Float"/>
@@ -41153,7 +41453,7 @@
 		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
 		@return This color</haxe_doc>
 	</setRGBAFloat>
-	<setCMYK public="1" get="inline" set="null" line="658" static="1">
+	<setCMYK public="1" get="inline" set="null" line="957" static="1">
 		<f a="this:Cyan:Magenta:Yellow:Black:?Alpha" v=":::::1">
 			<x path="Int"/>
 			<x path="Float"/>
@@ -41173,7 +41473,7 @@
 		@param Alpha		How opaque the color should be, from 0 to 1, default is 1
 		@return This color</haxe_doc>
 	</setCMYK>
-	<setHSB public="1" get="inline" set="null" line="675" static="1">
+	<setHSB public="1" get="inline" set="null" line="974" static="1">
 		<f a="this:Hue:Saturation:Brightness:Alpha">
 			<x path="Int"/>
 			<x path="Float"/>
@@ -41190,7 +41490,7 @@
 		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
 		@return	This color</haxe_doc>
 	</setHSB>
-	<setHSL public="1" get="inline" set="null" line="690" static="1">
+	<setHSL public="1" get="inline" set="null" line="989" static="1">
 		<f a="this:Hue:Saturation:Lightness:Alpha">
 			<x path="Int"/>
 			<x path="Float"/>
@@ -41207,7 +41507,7 @@
 		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255
 		@return	This color</haxe_doc>
 	</setHSL>
-	<setHSChromaMatch get="inline" set="null" line="699" static="1">
+	<setHSChromaMatch get="inline" set="null" line="998" static="1">
 		<f a="this:Hue:Saturation:Chroma:Match:Alpha">
 			<x path="Int"/>
 			<x path="Float"/>
@@ -41219,7 +41519,7 @@
 		</f>
 		<haxe_doc>Private utility function to perform common operations between setHSB and setHSL</haxe_doc>
 	</setHSChromaMatch>
-	<grayscale public="1" get="inline" set="null" line="726" static="1">
+	<grayscale public="1" get="inline" set="null" line="1019" static="1">
 		<f a="this:?simple" v=":false">
 			<x path="Int"/>
 			<x path="Bool"/>
@@ -41228,7 +41528,7 @@
 		<meta><m n=":value"><e>{ simple : false }</e></m></meta>
 		<haxe_doc>@param simple When enabled, gets the gray by averaging this color's channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`</haxe_doc>
 	</grayscale>
-	<blackOrWhite public="1" get="inline" set="null" line="736" static="1">
+	<blackOrWhite public="1" get="inline" set="null" line="1029" static="1">
 		<f a="this:?threshold" v=":128">
 			<x path="Int"/>
 			<x path="Int"/>
@@ -41239,7 +41539,7 @@
 
 		@param threshold The threshold for converting to black and white: `threshold` is the maximum average of the three color components, that will still be considered black. `threshold` is a value between 0 and 255. The higher the value, the more "sensitive" the conversion. The default value is 128.</haxe_doc>
 	</blackOrWhite>
-	<_new public="1" get="inline" set="null" line="748" static="1">
+	<_new public="1" get="inline" set="null" line="1041" static="1">
 		<f a="?value" v="0">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41249,189 +41549,189 @@
 			<m n=":noCompletion"/>
 		</meta>
 	</_new>
-	<getThis get="inline" set="null" line="752" static="1"><f a="this">
+	<getThis get="inline" set="null" line="1045" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></getThis>
-	<validate get="inline" set="null" line="760" static="1"><f a="this">
+	<validate get="inline" set="null" line="1053" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Void"/>
 </f></validate>
-	<get_red get="inline" set="null" line="766" static="1"><f a="this">
+	<get_red get="inline" set="null" line="1059" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></get_red>
-	<get_green get="inline" set="null" line="770" static="1"><f a="this">
+	<get_green get="inline" set="null" line="1063" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></get_green>
-	<get_blue get="inline" set="null" line="774" static="1"><f a="this">
+	<get_blue get="inline" set="null" line="1067" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></get_blue>
-	<get_alpha get="inline" set="null" line="778" static="1"><f a="this">
+	<get_alpha get="inline" set="null" line="1071" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></get_alpha>
-	<get_redFloat get="inline" set="null" line="782" static="1"><f a="this">
+	<get_redFloat get="inline" set="null" line="1075" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_redFloat>
-	<get_greenFloat get="inline" set="null" line="786" static="1"><f a="this">
+	<get_greenFloat get="inline" set="null" line="1079" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_greenFloat>
-	<get_blueFloat get="inline" set="null" line="790" static="1"><f a="this">
+	<get_blueFloat get="inline" set="null" line="1083" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_blueFloat>
-	<get_alphaFloat get="inline" set="null" line="794" static="1"><f a="this">
+	<get_alphaFloat get="inline" set="null" line="1087" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_alphaFloat>
-	<set_red get="inline" set="null" line="798" static="1"><f a="this:value">
+	<set_red get="inline" set="null" line="1091" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></set_red>
-	<set_green get="inline" set="null" line="805" static="1"><f a="this:value">
+	<set_green get="inline" set="null" line="1098" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></set_green>
-	<set_blue get="inline" set="null" line="812" static="1"><f a="this:value">
+	<set_blue get="inline" set="null" line="1105" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></set_blue>
-	<set_alpha get="inline" set="null" line="819" static="1"><f a="this:value">
+	<set_alpha get="inline" set="null" line="1112" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></set_alpha>
-	<set_redFloat get="inline" set="null" line="826" static="1"><f a="this:value">
+	<set_redFloat get="inline" set="null" line="1119" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_redFloat>
-	<set_greenFloat get="inline" set="null" line="831" static="1"><f a="this:value">
+	<set_greenFloat get="inline" set="null" line="1124" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_greenFloat>
-	<set_blueFloat get="inline" set="null" line="836" static="1"><f a="this:value">
+	<set_blueFloat get="inline" set="null" line="1129" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_blueFloat>
-	<set_alphaFloat get="inline" set="null" line="841" static="1"><f a="this:value">
+	<set_alphaFloat get="inline" set="null" line="1134" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_alphaFloat>
-	<get_cyan get="inline" set="null" line="846" static="1"><f a="this">
+	<get_cyan get="inline" set="null" line="1139" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_cyan>
-	<get_magenta get="inline" set="null" line="850" static="1"><f a="this">
+	<get_magenta get="inline" set="null" line="1143" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_magenta>
-	<get_yellow get="inline" set="null" line="854" static="1"><f a="this">
+	<get_yellow get="inline" set="null" line="1147" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_yellow>
-	<get_black get="inline" set="null" line="858" static="1"><f a="this">
+	<get_black get="inline" set="null" line="1151" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_black>
-	<set_cyan get="inline" set="null" line="862" static="1"><f a="this:value">
+	<set_cyan get="inline" set="null" line="1155" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_cyan>
-	<set_magenta get="inline" set="null" line="867" static="1"><f a="this:value">
+	<set_magenta get="inline" set="null" line="1160" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_magenta>
-	<set_yellow get="inline" set="null" line="872" static="1"><f a="this:value">
+	<set_yellow get="inline" set="null" line="1165" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_yellow>
-	<set_black get="inline" set="null" line="877" static="1"><f a="this:value">
+	<set_black get="inline" set="null" line="1170" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_black>
-	<get_hue set="method" line="882" static="1"><f a="this">
+	<get_hue set="method" line="1175" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_hue>
-	<get_brightness get="inline" set="null" line="892" static="1"><f a="this">
+	<get_brightness get="inline" set="null" line="1185" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_brightness>
-	<get_saturation get="inline" set="null" line="896" static="1"><f a="this">
+	<get_saturation get="inline" set="null" line="1189" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_saturation>
-	<get_lightness get="inline" set="null" line="900" static="1"><f a="this">
+	<get_lightness get="inline" set="null" line="1193" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_lightness>
-	<set_hue get="inline" set="null" line="904" static="1"><f a="this:value">
+	<set_hue get="inline" set="null" line="1197" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_hue>
-	<set_saturation get="inline" set="null" line="909" static="1"><f a="this:value">
+	<set_saturation get="inline" set="null" line="1202" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_saturation>
-	<set_brightness get="inline" set="null" line="914" static="1"><f a="this:value">
+	<set_brightness get="inline" set="null" line="1207" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_brightness>
-	<set_lightness get="inline" set="null" line="919" static="1"><f a="this:value">
+	<set_lightness get="inline" set="null" line="1212" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_lightness>
-	<set_rgb get="inline" set="null" line="924" static="1"><f a="this:value">
+	<set_rgb get="inline" set="null" line="1217" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="vision.ds.Color"/>
 	<x path="vision.ds.Color"/>
 </f></set_rgb>
-	<get_rgb get="inline" set="null" line="930" static="1"><f a="this">
+	<get_rgb get="inline" set="null" line="1223" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="vision.ds.Color"/>
 </f></get_rgb>
-	<maxColor get="inline" set="null" line="934" static="1"><f a="this">
+	<maxColor get="inline" set="null" line="1227" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></maxColor>
-	<minColor get="inline" set="null" line="938" static="1"><f a="this">
+	<minColor get="inline" set="null" line="1231" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></minColor>
-	<boundChannel get="inline" set="null" line="942" static="1"><f a="this:value">
+	<boundChannel get="inline" set="null" line="1235" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></boundChannel>
-	<toString public="1" set="method" line="946" static="1"><f a="this">
+	<toString public="1" set="method" line="1239" static="1"><f a="this">
 	<x path="Int"/>
 	<c path="String"/>
 </f></toString>
-	<toInt public="1" set="method" line="954" static="1"><f a="this">
+	<toInt public="1" set="method" line="1247" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></toInt>
-	<color_greater_than_color get="inline" set="null" line="963" static="1">
+	<color_greater_than_color get="inline" set="null" line="1256" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41439,7 +41739,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 	</color_greater_than_color>
-	<color_greater_than_int get="inline" set="null" line="968" static="1">
+	<color_greater_than_int get="inline" set="null" line="1261" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41447,7 +41747,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 	</color_greater_than_int>
-	<int_greater_than_color get="inline" set="null" line="973" static="1">
+	<int_greater_than_color get="inline" set="null" line="1266" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41455,7 +41755,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 	</int_greater_than_color>
-	<color_greater_than_float get="inline" set="null" line="978" static="1">
+	<color_greater_than_float get="inline" set="null" line="1271" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Float"/>
@@ -41463,7 +41763,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 	</color_greater_than_float>
-	<float_greater_than_color get="inline" set="null" line="983" static="1">
+	<float_greater_than_color get="inline" set="null" line="1276" static="1">
 		<f a="lhs:rhs">
 			<x path="Float"/>
 			<x path="vision.ds.Color"/>
@@ -41471,7 +41771,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 	</float_greater_than_color>
-	<color_greater_than_equal_color get="inline" set="null" line="988" static="1">
+	<color_greater_than_equal_color get="inline" set="null" line="1281" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41479,7 +41779,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 	</color_greater_than_equal_color>
-	<color_greater_than_equal_int get="inline" set="null" line="993" static="1">
+	<color_greater_than_equal_int get="inline" set="null" line="1286" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41487,7 +41787,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 	</color_greater_than_equal_int>
-	<int_greater_than_equal_color get="inline" set="null" line="998" static="1">
+	<int_greater_than_equal_color get="inline" set="null" line="1291" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41495,7 +41795,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 	</int_greater_than_equal_color>
-	<color_greater_than_equal_float get="inline" set="null" line="1003" static="1">
+	<color_greater_than_equal_float get="inline" set="null" line="1296" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Float"/>
@@ -41503,7 +41803,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 	</color_greater_than_equal_float>
-	<float_greater_than_equal_color get="inline" set="null" line="1008" static="1">
+	<float_greater_than_equal_color get="inline" set="null" line="1301" static="1">
 		<f a="lhs:rhs">
 			<x path="Float"/>
 			<x path="vision.ds.Color"/>
@@ -41511,7 +41811,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 	</float_greater_than_equal_color>
-	<color_less_than_color get="inline" set="null" line="1013" static="1">
+	<color_less_than_color get="inline" set="null" line="1306" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41519,7 +41819,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 	</color_less_than_color>
-	<color_less_than_int get="inline" set="null" line="1018" static="1">
+	<color_less_than_int get="inline" set="null" line="1311" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41527,7 +41827,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 	</color_less_than_int>
-	<int_less_than_color get="inline" set="null" line="1023" static="1">
+	<int_less_than_color get="inline" set="null" line="1316" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41535,7 +41835,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 	</int_less_than_color>
-	<color_less_than_float get="inline" set="null" line="1028" static="1">
+	<color_less_than_float get="inline" set="null" line="1321" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Float"/>
@@ -41543,7 +41843,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 	</color_less_than_float>
-	<float_less_than_color get="inline" set="null" line="1033" static="1">
+	<float_less_than_color get="inline" set="null" line="1326" static="1">
 		<f a="lhs:rhs">
 			<x path="Float"/>
 			<x path="vision.ds.Color"/>
@@ -41551,7 +41851,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 	</float_less_than_color>
-	<color_less_than_equal_color get="inline" set="null" line="1038" static="1">
+	<color_less_than_equal_color get="inline" set="null" line="1331" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41559,7 +41859,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 	</color_less_than_equal_color>
-	<color_less_than_equal_int get="inline" set="null" line="1043" static="1">
+	<color_less_than_equal_int get="inline" set="null" line="1336" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41567,7 +41867,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 	</color_less_than_equal_int>
-	<int_less_than_equal_color get="inline" set="null" line="1048" static="1">
+	<int_less_than_equal_color get="inline" set="null" line="1341" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41575,7 +41875,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 	</int_less_than_equal_color>
-	<color_less_than_equal_float get="inline" set="null" line="1053" static="1">
+	<color_less_than_equal_float get="inline" set="null" line="1346" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Float"/>
@@ -41583,7 +41883,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 	</color_less_than_equal_float>
-	<float_less_than_equal_color get="inline" set="null" line="1058" static="1">
+	<float_less_than_equal_color get="inline" set="null" line="1351" static="1">
 		<f a="lhs:rhs">
 			<x path="Float"/>
 			<x path="vision.ds.Color"/>
@@ -41591,7 +41891,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 	</float_less_than_equal_color>
-	<color_equal_color get="inline" set="null" line="1063" static="1">
+	<color_equal_color get="inline" set="null" line="1356" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41599,7 +41899,7 @@
 		</f>
 		<meta><m n=":op"><e>A == B</e></m></meta>
 	</color_equal_color>
-	<color_equal_int get="inline" set="null" line="1068" static="1">
+	<color_equal_int get="inline" set="null" line="1361" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41607,7 +41907,7 @@
 		</f>
 		<meta><m n=":op"><e>A == B</e></m></meta>
 	</color_equal_int>
-	<int_equal_color get="inline" set="null" line="1073" static="1">
+	<int_equal_color get="inline" set="null" line="1366" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41615,7 +41915,7 @@
 		</f>
 		<meta><m n=":op"><e>A == B</e></m></meta>
 	</int_equal_color>
-	<color_equal_float get="inline" set="null" line="1078" static="1">
+	<color_equal_float get="inline" set="null" line="1371" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Float"/>
@@ -41623,7 +41923,7 @@
 		</f>
 		<meta><m n=":op"><e>A == B</e></m></meta>
 	</color_equal_float>
-	<float_equal_color get="inline" set="null" line="1083" static="1">
+	<float_equal_color get="inline" set="null" line="1376" static="1">
 		<f a="lhs:rhs">
 			<x path="Float"/>
 			<x path="vision.ds.Color"/>
@@ -41631,7 +41931,7 @@
 		</f>
 		<meta><m n=":op"><e>A == B</e></m></meta>
 	</float_equal_color>
-	<color_not_equal_color get="inline" set="null" line="1088" static="1">
+	<color_not_equal_color get="inline" set="null" line="1381" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41639,7 +41939,7 @@
 		</f>
 		<meta><m n=":op"><e>A != B</e></m></meta>
 	</color_not_equal_color>
-	<color_not_equal_int get="inline" set="null" line="1093" static="1">
+	<color_not_equal_int get="inline" set="null" line="1386" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41647,7 +41947,7 @@
 		</f>
 		<meta><m n=":op"><e>A != B</e></m></meta>
 	</color_not_equal_int>
-	<int_not_equal_color get="inline" set="null" line="1098" static="1">
+	<int_not_equal_color get="inline" set="null" line="1391" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41655,7 +41955,7 @@
 		</f>
 		<meta><m n=":op"><e>A != B</e></m></meta>
 	</int_not_equal_color>
-	<color_not_equal_float get="inline" set="null" line="1103" static="1">
+	<color_not_equal_float get="inline" set="null" line="1396" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Float"/>
@@ -41663,7 +41963,7 @@
 		</f>
 		<meta><m n=":op"><e>A != B</e></m></meta>
 	</color_not_equal_float>
-	<float_not_equal_color get="inline" set="null" line="1108" static="1">
+	<float_not_equal_color get="inline" set="null" line="1401" static="1">
 		<f a="lhs:rhs">
 			<x path="Float"/>
 			<x path="vision.ds.Color"/>
@@ -41671,7 +41971,7 @@
 		</f>
 		<meta><m n=":op"><e>A != B</e></m></meta>
 	</float_not_equal_color>
-	<color_bitwise_and_color get="inline" set="null" line="1113" static="1">
+	<color_bitwise_and_color get="inline" set="null" line="1406" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41679,7 +41979,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A & B]]></e></m></meta>
 	</color_bitwise_and_color>
-	<color_bitwise_and_int get="inline" set="null" line="1118" static="1">
+	<color_bitwise_and_int get="inline" set="null" line="1411" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41687,7 +41987,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A & B]]></e></m></meta>
 	</color_bitwise_and_int>
-	<int_bitwise_and_color get="inline" set="null" line="1123" static="1">
+	<int_bitwise_and_color get="inline" set="null" line="1416" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41695,7 +41995,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A & B]]></e></m></meta>
 	</int_bitwise_and_color>
-	<color_bitwise_or_color get="inline" set="null" line="1128" static="1">
+	<color_bitwise_or_color get="inline" set="null" line="1421" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41703,7 +42003,7 @@
 		</f>
 		<meta><m n=":op"><e>A | B</e></m></meta>
 	</color_bitwise_or_color>
-	<color_bitwise_or_int get="inline" set="null" line="1133" static="1">
+	<color_bitwise_or_int get="inline" set="null" line="1426" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41711,7 +42011,7 @@
 		</f>
 		<meta><m n=":op"><e>A | B</e></m></meta>
 	</color_bitwise_or_int>
-	<int_bitwise_or_color get="inline" set="null" line="1138" static="1">
+	<int_bitwise_or_color get="inline" set="null" line="1431" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41719,7 +42019,7 @@
 		</f>
 		<meta><m n=":op"><e>A | B</e></m></meta>
 	</int_bitwise_or_color>
-	<color_bitwise_xor_color get="inline" set="null" line="1143" static="1">
+	<color_bitwise_xor_color get="inline" set="null" line="1436" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41727,7 +42027,7 @@
 		</f>
 		<meta><m n=":op"><e>A ^ B</e></m></meta>
 	</color_bitwise_xor_color>
-	<color_bitwise_xor_int get="inline" set="null" line="1148" static="1">
+	<color_bitwise_xor_int get="inline" set="null" line="1441" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41735,7 +42035,7 @@
 		</f>
 		<meta><m n=":op"><e>A ^ B</e></m></meta>
 	</color_bitwise_xor_int>
-	<int_bitwise_xor_color get="inline" set="null" line="1153" static="1">
+	<int_bitwise_xor_color get="inline" set="null" line="1446" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41743,7 +42043,7 @@
 		</f>
 		<meta><m n=":op"><e>A ^ B</e></m></meta>
 	</int_bitwise_xor_color>
-	<color_bitwise_left_shift_color get="inline" set="null" line="1158" static="1">
+	<color_bitwise_left_shift_color get="inline" set="null" line="1451" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41751,7 +42051,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A << B]]></e></m></meta>
 	</color_bitwise_left_shift_color>
-	<color_bitwise_left_shift_int get="inline" set="null" line="1163" static="1">
+	<color_bitwise_left_shift_int get="inline" set="null" line="1456" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41759,7 +42059,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A << B]]></e></m></meta>
 	</color_bitwise_left_shift_int>
-	<int_bitwise_left_shift_color get="inline" set="null" line="1168" static="1">
+	<int_bitwise_left_shift_color get="inline" set="null" line="1461" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41767,7 +42067,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A << B]]></e></m></meta>
 	</int_bitwise_left_shift_color>
-	<color_bitwise_right_shift_color get="inline" set="null" line="1173" static="1">
+	<color_bitwise_right_shift_color get="inline" set="null" line="1466" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41775,7 +42075,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >> B]]></e></m></meta>
 	</color_bitwise_right_shift_color>
-	<color_bitwise_right_shift_int get="inline" set="null" line="1178" static="1">
+	<color_bitwise_right_shift_int get="inline" set="null" line="1471" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41783,7 +42083,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >> B]]></e></m></meta>
 	</color_bitwise_right_shift_int>
-	<int_bitwise_right_shift_color get="inline" set="null" line="1183" static="1">
+	<int_bitwise_right_shift_color get="inline" set="null" line="1476" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41791,7 +42091,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >> B]]></e></m></meta>
 	</int_bitwise_right_shift_color>
-	<color_bitwise_unsigned_right_shift_color get="inline" set="null" line="1188" static="1">
+	<color_bitwise_unsigned_right_shift_color get="inline" set="null" line="1481" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="vision.ds.Color"/>
@@ -41799,7 +42099,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >>> B]]></e></m></meta>
 	</color_bitwise_unsigned_right_shift_color>
-	<color_bitwise_unsigned_right_shift_int get="inline" set="null" line="1193" static="1">
+	<color_bitwise_unsigned_right_shift_int get="inline" set="null" line="1486" static="1">
 		<f a="lhs:rhs">
 			<x path="vision.ds.Color"/>
 			<x path="Int"/>
@@ -41807,7 +42107,7 @@
 		</f>
 		<meta><m n=":op"><e><![CDATA[A >>> B]]></e></m></meta>
 	</color_bitwise_unsigned_right_shift_int>
-	<int_bitwise_unsigned_right_shift_color get="inline" set="null" line="1198" static="1">
+	<int_bitwise_unsigned_right_shift_color get="inline" set="null" line="1491" static="1">
 		<f a="lhs:rhs">
 			<x path="Int"/>
 			<x path="vision.ds.Color"/>
@@ -41823,16 +42123,16 @@
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0x00000000</e></m></meta>
 			<haxe_doc><![CDATA[&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;]]></haxe_doc>
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;]]></haxe_doc>
 		</TRANSPARENT>
 		<TRANSPARENT_COLOR public="1" get="inline" set="null" expr="0x00000000" line="45" static="1">
 			<x path="vision.ds.Color"/>
@@ -41849,191 +42149,491 @@
 		&nbsp;  
 		&nbsp;]]></haxe_doc>
 		</TRANSPARENT_COLOR>
-		<WHITE public="1" get="inline" set="null" expr="0xFFFFFFFF" line="49" static="1">
+		<WHITE public="1" get="inline" set="null" expr="0xFFFFFFFF" line="50" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFFFFFF</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/ffffff.png)![color](https://www.colorhexa.com/ffffff.png)</haxe_doc>
 		</WHITE>
-		<OFFWHITE public="1" get="inline" set="null" expr="0xFFFFFFE4" line="54" static="1">
+		<OFFWHITE public="1" get="inline" set="null" expr="0xFFFFFFE4" line="55" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFFFFE4</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/ffffe4.png)![color](https://www.colorhexa.com/ffffe4.png)</haxe_doc>
 		</OFFWHITE>
-		<GRAY public="1" get="inline" set="null" expr="0xFF808080" line="59" static="1">
+		<GRAY public="1" get="inline" set="null" expr="0xFF808080" line="60" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF808080</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/808080.png)![color](https://www.colorhexa.com/808080.png)</haxe_doc>
 		</GRAY>
-		<BLACK public="1" get="inline" set="null" expr="0xFF000000" line="64" static="1">
+		<BLACK public="1" get="inline" set="null" expr="0xFF000000" line="65" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF000000</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/000000.png)![color](https://www.colorhexa.com/000000.png)</haxe_doc>
 		</BLACK>
-		<GREEN public="1" get="inline" set="null" expr="0xFF00FF00" line="69" static="1">
+		<GREEN public="1" get="inline" set="null" expr="0xFF00FF00" line="70" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF00FF00</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/00ff00.png)![color](https://www.colorhexa.com/00ff00.png)</haxe_doc>
 		</GREEN>
-		<YELLOW public="1" get="inline" set="null" expr="0xFFFFFF00" line="74" static="1">
+		<YELLOW public="1" get="inline" set="null" expr="0xFFFFFF00" line="75" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFFFF00</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/FFFF00.png)![color](https://www.colorhexa.com/FFFF00.png)</haxe_doc>
 		</YELLOW>
-		<ORANGE public="1" get="inline" set="null" expr="0xFFFFA500" line="79" static="1">
+		<ORANGE public="1" get="inline" set="null" expr="0xFFFFA500" line="80" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFFA500</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/FFA500.png)![color](https://www.colorhexa.com/FFA500.png)</haxe_doc>
 		</ORANGE>
-		<RED public="1" get="inline" set="null" expr="0xFFFF0000" line="84" static="1">
+		<RED public="1" get="inline" set="null" expr="0xFFFF0000" line="85" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFF0000</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/FF0000.png)![color](https://www.colorhexa.com/FF0000.png)</haxe_doc>
 		</RED>
-		<PURPLE public="1" get="inline" set="null" expr="0xFF800080" line="89" static="1">
+		<PURPLE public="1" get="inline" set="null" expr="0xFF800080" line="90" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF800080</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/800080.png)![color](https://www.colorhexa.com/800080.png)</haxe_doc>
 		</PURPLE>
-		<BLUE public="1" get="inline" set="null" expr="0xFF0000FF" line="94" static="1">
+		<BLUE public="1" get="inline" set="null" expr="0xFF0000FF" line="95" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF0000FF</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/0000ff.png)![color](https://www.colorhexa.com/0000ff.png)</haxe_doc>
 		</BLUE>
-		<BROWN public="1" get="inline" set="null" expr="0xFF8B4513" line="99" static="1">
+		<BROWN public="1" get="inline" set="null" expr="0xFF8B4513" line="100" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF8B4513</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)</haxe_doc>
 		</BROWN>
-		<SEPIA public="1" get="inline" set="null" expr="0xFF704214" line="104" static="1">
+		<SEPIA public="1" get="inline" set="null" expr="0xFF704214" line="105" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF704214</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/704214.png)![color](https://www.colorhexa.com/704214.png)</haxe_doc>
 		</SEPIA>
-		<PINK public="1" get="inline" set="null" expr="0xFFFFC0CB" line="109" static="1">
+		<PINK public="1" get="inline" set="null" expr="0xFFFFC0CB" line="110" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFFC0CB</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/FFC0CB.png)![color](https://www.colorhexa.com/FFC0CB.png)</haxe_doc>
 		</PINK>
-		<MAGENTA public="1" get="inline" set="null" expr="0xFFFF00FF" line="114" static="1">
+		<MAGENTA public="1" get="inline" set="null" expr="0xFFFF00FF" line="115" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFF00FF</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)</haxe_doc>
 		</MAGENTA>
-		<CYAN public="1" get="inline" set="null" expr="0xFF00FFFF" line="119" static="1">
+		<CYAN public="1" get="inline" set="null" expr="0xFF00FFFF" line="120" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF00FFFF</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)</haxe_doc>
 		</CYAN>
-		<SILVER public="1" get="inline" set="null" expr="0xC0C0C0" line="124" static="1">
+		<SILVER public="1" get="inline" set="null" expr="0xC0C0C0" line="125" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xC0C0C0</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/C0C0C0.png)![color](https://www.colorhexa.com/C0C0C0.png)</haxe_doc>
 		</SILVER>
-		<GOLD public="1" get="inline" set="null" expr="0xFFFFD700" line="129" static="1">
+		<GOLD public="1" get="inline" set="null" expr="0xFFFFD700" line="130" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFFD700</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/FFD700.png)![color](https://www.colorhexa.com/FFD700.png)</haxe_doc>
 		</GOLD>
-		<OLIVE public="1" get="inline" set="null" expr="0xFF808000" line="134" static="1">
+		<OLIVE public="1" get="inline" set="null" expr="0xFF808000" line="135" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF808000</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/808000.png)![color](https://www.colorhexa.com/808000.png)</haxe_doc>
 		</OLIVE>
-		<MAROON public="1" get="inline" set="null" expr="0xFF800000" line="139" static="1">
+		<MAROON public="1" get="inline" set="null" expr="0xFF800000" line="140" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF800000</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/800000.png)![color](https://www.colorhexa.com/800000.png)</haxe_doc>
 		</MAROON>
-		<BORDEAUX public="1" get="inline" set="null" expr="0xFF722F37" line="144" static="1">
+		<BORDEAUX public="1" get="inline" set="null" expr="0xFF722F37" line="145" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF722F37</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/722F37.png)![color](https://www.colorhexa.com/722F37.png)</haxe_doc>
 		</BORDEAUX>
-		<NAVY public="1" get="inline" set="null" expr="0xFF000080" line="149" static="1">
+		<NAVY public="1" get="inline" set="null" expr="0xFF000080" line="150" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF000080</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/000080.png)![color](https://www.colorhexa.com/000080.png)</haxe_doc>
 		</NAVY>
-		<TEAL public="1" get="inline" set="null" expr="0xFF008080" line="154" static="1">
+		<TEAL public="1" get="inline" set="null" expr="0xFF008080" line="155" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF008080</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/008080.png)![color](https://www.colorhexa.com/008080.png)</haxe_doc>
 		</TEAL>
-		<FUCHSIA public="1" get="inline" set="null" expr="0xFFFF00FF" line="159" static="1">
+		<FUCHSIA public="1" get="inline" set="null" expr="0xFFFF00FF" line="160" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFF00FF</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/FF00FF.png)![color](https://www.colorhexa.com/FF00FF.png)</haxe_doc>
 		</FUCHSIA>
-		<AQUA public="1" get="inline" set="null" expr="0xFF00FFFF" line="164" static="1">
+		<AQUA public="1" get="inline" set="null" expr="0xFF00FFFF" line="165" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF00FFFF</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/00FFFF.png)![color](https://www.colorhexa.com/00FFFF.png)</haxe_doc>
 		</AQUA>
-		<LIME public="1" get="inline" set="null" expr="0xFF32CD32" line="169" static="1">
+		<LIME public="1" get="inline" set="null" expr="0xFF32CD32" line="170" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF32CD32</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/32CD32.png)![color](https://www.colorhexa.com/32CD32.png)</haxe_doc>
 		</LIME>
-		<CHARCOAL public="1" get="inline" set="null" expr="0xFF36454F" line="174" static="1">
+		<CHARCOAL public="1" get="inline" set="null" expr="0xFF36454F" line="175" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF36454F</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/36454F.png)![color](https://www.colorhexa.com/36454F.png)</haxe_doc>
 		</CHARCOAL>
-		<ONYX public="1" get="inline" set="null" expr="0xFF353839" line="179" static="1">
+		<ONYX public="1" get="inline" set="null" expr="0xFF353839" line="180" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF353839</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/353839.png)![color](https://www.colorhexa.com/353839.png)</haxe_doc>
 		</ONYX>
-		<JET public="1" get="inline" set="null" expr="0xFF343434" line="184" static="1">
+		<JET public="1" get="inline" set="null" expr="0xFF343434" line="185" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF343434</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/343434.png)![color](https://www.colorhexa.com/343434.png)</haxe_doc>
 		</JET>
-		<JET_BLACK public="1" get="inline" set="null" expr="0xFF0E0E10" line="189" static="1">
+		<JET_BLACK public="1" get="inline" set="null" expr="0xFF0E0E10" line="190" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF0E0E10</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/0E0E10.png)![color](https://www.colorhexa.com/0E0E10.png)</haxe_doc>
 		</JET_BLACK>
-		<ROYAL_BLUE public="1" get="inline" set="null" expr="0xFF4169E1" line="194" static="1">
+		<ROYAL_BLUE public="1" get="inline" set="null" expr="0xFF4169E1" line="195" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF4169E1</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/4169E1.png)![color](https://www.colorhexa.com/4169E1.png)</haxe_doc>
 		</ROYAL_BLUE>
-		<SADDLE_BROWN public="1" get="inline" set="null" expr="0xFF8B4513" line="199" static="1">
+		<CHARTREUSE public="1" get="inline" set="null" expr="0xFF7FFF00" line="200" static="1">
 			<x path="vision.ds.Color"/>
-			<meta><m n=":value"><e>0xFF8B4513</e></m></meta>
-			<haxe_doc>![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)</haxe_doc>
-		</SADDLE_BROWN>
-		<TOMATO public="1" get="inline" set="null" expr="0xFFFF6347" line="204" static="1">
+			<meta><m n=":value"><e>0xFF7FFF00</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/7FFF00.png)![color](https://www.colorhexa.com/7FFF00.png)</haxe_doc>
+		</CHARTREUSE>
+		<CERULEAN public="1" get="inline" set="null" expr="0xFF007BA7" line="205" static="1">
 			<x path="vision.ds.Color"/>
-			<meta><m n=":value"><e>0xFFFF6347</e></m></meta>
-			<haxe_doc>![color](https://www.colorhexa.com/FF6347.png)![color](https://www.colorhexa.com/FF6347.png)</haxe_doc>
-		</TOMATO>
-		<CORNSILK public="1" get="inline" set="null" expr="0xFFFFDAB9" line="209" static="1">
+			<meta><m n=":value"><e>0xFF007BA7</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/007BA7.png)![color](https://www.colorhexa.com/007BA7.png)</haxe_doc>
+		</CERULEAN>
+		<PERIWINKLE public="1" get="inline" set="null" expr="0xFFCCCCFF" line="210" static="1">
 			<x path="vision.ds.Color"/>
-			<meta><m n=":value"><e>0xFFFFDAB9</e></m></meta>
-			<haxe_doc>![color](https://www.colorhexa.com/FFDAB9.png)![color](https://www.colorhexa.com/FFDAB9.png)</haxe_doc>
-		</CORNSILK>
-		<CORAL public="1" get="inline" set="null" expr="0xFFFF7F50" line="214" static="1">
+			<meta><m n=":value"><e>0xFFCCCCFF</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/CCCCFF.png)![color](https://www.colorhexa.com/CCCCFF.png)</haxe_doc>
+		</PERIWINKLE>
+		<VERMILION public="1" get="inline" set="null" expr="0xFFE34234" line="215" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFE34234</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/E34234.png)![color](https://www.colorhexa.com/E34234.png)</haxe_doc>
+		</VERMILION>
+		<MAUVE public="1" get="inline" set="null" expr="0xFFE0B0FF" line="220" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFE0B0FF</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/E0B0FF.png)![color](https://www.colorhexa.com/E0B0FF.png)</haxe_doc>
+		</MAUVE>
+		<AZURE public="1" get="inline" set="null" expr="0xFF007FFF" line="225" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF007FFF</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/007FFF.png)![color](https://www.colorhexa.com/007FFF.png)</haxe_doc>
+		</AZURE>
+		<TANGERINE public="1" get="inline" set="null" expr="0xFFF28500" line="230" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFF28500</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/F28500.png)![color](https://www.colorhexa.com/F28500.png)</haxe_doc>
+		</TANGERINE>
+		<INDIGO public="1" get="inline" set="null" expr="0xFF4B0082" line="235" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF4B0082</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/4B0082.png)![color](https://www.colorhexa.com/4B0082.png)</haxe_doc>
+		</INDIGO>
+		<MARIGOLD public="1" get="inline" set="null" expr="0xFFEAA221" line="240" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFEAA221</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/EAA221.png)![color](https://www.colorhexa.com/EAA221.png)</haxe_doc>
+		</MARIGOLD>
+		<COBALT public="1" get="inline" set="null" expr="0xFF0047AB" line="245" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF0047AB</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/0047AB.png)![color](https://www.colorhexa.com/0047AB.png)</haxe_doc>
+		</COBALT>
+		<LAVENDER public="1" get="inline" set="null" expr="0xFFE6E6FA" line="250" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFE6E6FA</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/E6E6FA.png)![color](https://www.colorhexa.com/E6E6FA.png)</haxe_doc>
+		</LAVENDER>
+		<TURQUOISE public="1" get="inline" set="null" expr="0xFF40E0D0" line="255" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF40E0D0</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/40E0D0.png)![color](https://www.colorhexa.com/40E0D0.png)</haxe_doc>
+		</TURQUOISE>
+		<OCHRE public="1" get="inline" set="null" expr="0xFFCC7722" line="260" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFCC7722</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/CC7722.png)![color](https://www.colorhexa.com/CC7722.png)</haxe_doc>
+		</OCHRE>
+		<AQUAMARINE public="1" get="inline" set="null" expr="0xFF7FFFD4" line="265" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF7FFFD4</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/7FFFD4.png)![color](https://www.colorhexa.com/7FFFD4.png)</haxe_doc>
+		</AQUAMARINE>
+		<RUSSET public="1" get="inline" set="null" expr="0xFF80461B" line="270" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF80461B</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/80461B.png)![color](https://www.colorhexa.com/80461B.png)</haxe_doc>
+		</RUSSET>
+		<TOPAZ public="1" get="inline" set="null" expr="0xFFFFC87C" line="275" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFFC87C</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FFC87C.png)![color](https://www.colorhexa.com/FFC87C.png)</haxe_doc>
+		</TOPAZ>
+		<APRICOT public="1" get="inline" set="null" expr="0xFFFBCEB1" line="280" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFBCEB1</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FBCEB1.png)![color](https://www.colorhexa.com/FBCEB1.png)</haxe_doc>
+		</APRICOT>
+		<AMETHYST public="1" get="inline" set="null" expr="0xFF9966CC" line="285" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF9966CC</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/9966CC.png)![color](https://www.colorhexa.com/9966CC.png)</haxe_doc>
+		</AMETHYST>
+		<SAFFRON public="1" get="inline" set="null" expr="0xFFF4C430" line="290" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFF4C430</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/F4C430.png)![color](https://www.colorhexa.com/F4C430.png)</haxe_doc>
+		</SAFFRON>
+		<LILAC public="1" get="inline" set="null" expr="0xFFC8A2C8" line="295" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFC8A2C8</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/C8A2C8.png)![color](https://www.colorhexa.com/C8A2C8.png)</haxe_doc>
+		</LILAC>
+		<CRIMSON public="1" get="inline" set="null" expr="0xFFDC143C" line="300" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFDC143C</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/DC143C.png)![color](https://www.colorhexa.com/DC143C.png)</haxe_doc>
+		</CRIMSON>
+		<SLATE public="1" get="inline" set="null" expr="0xFF708090" line="305" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF708090</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/708090.png)![color](https://www.colorhexa.com/708090.png)</haxe_doc>
+		</SLATE>
+		<JADE public="1" get="inline" set="null" expr="0xFF00A86B" line="310" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF00A86B</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/00A86B.png)![color](https://www.colorhexa.com/00A86B.png)</haxe_doc>
+		</JADE>
+		<CORAL public="1" get="inline" set="null" expr="0xFFFF7F50" line="315" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFFFF7F50</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/FF7F50.png)![color](https://www.colorhexa.com/FF7F50.png)</haxe_doc>
 		</CORAL>
-		<TURQUOISE public="1" get="inline" set="null" expr="0xFF47E3FF" line="219" static="1">
+		<BURGUNDY public="1" get="inline" set="null" expr="0xFF800020" line="320" static="1">
 			<x path="vision.ds.Color"/>
-			<meta><m n=":value"><e>0xFF47E3FF</e></m></meta>
-			<haxe_doc>![color](https://www.colorhexa.com/47E3FF.png)![color](https://www.colorhexa.com/47E3FF.png)</haxe_doc>
-		</TURQUOISE>
-		<VIOLET public="1" get="inline" set="null" expr="0xFF7F00FF" line="224" static="1">
+			<meta><m n=":value"><e>0xFF800020</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/800020.png)![color](https://www.colorhexa.com/800020.png)</haxe_doc>
+		</BURGUNDY>
+		<SIENNA public="1" get="inline" set="null" expr="0xFF882D17" line="325" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF882D17</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/882D17.png)![color](https://www.colorhexa.com/882D17.png)</haxe_doc>
+		</SIENNA>
+		<IVORY public="1" get="inline" set="null" expr="0xFFFFFFF0" line="330" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFFFFF0</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FFFFF0.png)![color](https://www.colorhexa.com/FFFFF0.png)</haxe_doc>
+		</IVORY>
+		<MULBERRY public="1" get="inline" set="null" expr="0xFFC54B8C" line="335" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFC54B8C</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/C54B8C.png)![color](https://www.colorhexa.com/C54B8C.png)</haxe_doc>
+		</MULBERRY>
+		<SANDALWOOD public="1" get="inline" set="null" expr="0xFFAA8D6F" line="340" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFAA8D6F</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/AA8D6F.png)![color](https://www.colorhexa.com/AA8D6F.png)</haxe_doc>
+		</SANDALWOOD>
+		<GARNET public="1" get="inline" set="null" expr="0xFF733635" line="345" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF733635</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/733635.png)![color](https://www.colorhexa.com/733635.png)</haxe_doc>
+		</GARNET>
+		<PEWTER public="1" get="inline" set="null" expr="0xFF8BA8B7" line="350" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF8BA8B7</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/8BA8B7.png)![color](https://www.colorhexa.com/8BA8B7.png)</haxe_doc>
+		</PEWTER>
+		<CARNATION public="1" get="inline" set="null" expr="0xFFFFA6C9" line="355" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFFA6C9</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FFA6C9.png)![color](https://www.colorhexa.com/FFA6C9.png)</haxe_doc>
+		</CARNATION>
+		<CITRINE public="1" get="inline" set="null" expr="0xFFE4D00A" line="360" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFE4D00A</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/E4D00A.png)![color](https://www.colorhexa.com/E4D00A.png)</haxe_doc>
+		</CITRINE>
+		<CELADON public="1" get="inline" set="null" expr="0xFFACE1AF" line="365" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFACE1AF</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/ACE1AF.png)![color](https://www.colorhexa.com/ACE1AF.png)</haxe_doc>
+		</CELADON>
+		<HELIOTROPE public="1" get="inline" set="null" expr="0xFFDF73FF" line="370" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFDF73FF</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/DF73FF.png)![color](https://www.colorhexa.com/DF73FF.png)</haxe_doc>
+		</HELIOTROPE>
+		<PUCE public="1" get="inline" set="null" expr="0xFFCC8899" line="375" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFCC8899</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/CC8899.png)![color](https://www.colorhexa.com/CC8899.png)</haxe_doc>
+		</PUCE>
+		<CINNABAR public="1" get="inline" set="null" expr="0xFFE34234" line="380" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFE34234</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/E34234.png)![color](https://www.colorhexa.com/E34234.png)</haxe_doc>
+		</CINNABAR>
+		<VIRIDIAN public="1" get="inline" set="null" expr="0xFF40826D" line="385" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF40826D</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/40826D.png)![color](https://www.colorhexa.com/40826D.png)</haxe_doc>
+		</VIRIDIAN>
+		<ECRU public="1" get="inline" set="null" expr="0xFFC2B280" line="390" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFC2B280</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/C2B280.png)![color](https://www.colorhexa.com/C2B280.png)</haxe_doc>
+		</ECRU>
+		<ALABASTER public="1" get="inline" set="null" expr="0xFFEDEAE0" line="395" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFEDEAE0</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/EDEAE0.png)![color](https://www.colorhexa.com/EDEAE0.png)</haxe_doc>
+		</ALABASTER>
+		<SAPPHIRE public="1" get="inline" set="null" expr="0xFF0F52BA" line="400" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF0F52BA</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/0F52BA.png)![color](https://www.colorhexa.com/0F52BA.png)</haxe_doc>
+		</SAPPHIRE>
+		<PEARL public="1" get="inline" set="null" expr="0xFFEAE0C8" line="405" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFEAE0C8</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/EAE0C8.png)![color](https://www.colorhexa.com/EAE0C8.png)</haxe_doc>
+		</PEARL>
+		<SALMON public="1" get="inline" set="null" expr="0xFFFA8072" line="410" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFA8072</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FA8072.png)![color](https://www.colorhexa.com/FA8072.png)</haxe_doc>
+		</SALMON>
+		<UMBER public="1" get="inline" set="null" expr="0xFF635147" line="415" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF635147</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/635147.png)![color](https://www.colorhexa.com/635147.png)</haxe_doc>
+		</UMBER>
+		<TURMERIC public="1" get="inline" set="null" expr="0xFFE4D00A" line="420" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFE4D00A</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/E4D00A.png)![color](https://www.colorhexa.com/E4D00A.png)</haxe_doc>
+		</TURMERIC>
+		<MAHOGANY public="1" get="inline" set="null" expr="0xFFC04000" line="425" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFC04000</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/C04000.png)![color](https://www.colorhexa.com/C04000.png)</haxe_doc>
+		</MAHOGANY>
+		<PERSIMMON public="1" get="inline" set="null" expr="0xFFFF6347" line="430" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFF6347</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FF6347.png)![color](https://www.colorhexa.com/FF6347.png)</haxe_doc>
+		</PERSIMMON>
+		<ROSEWOOD public="1" get="inline" set="null" expr="0xFF65000B" line="435" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF65000B</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/65000B.png)![color](https://www.colorhexa.com/65000B.png)</haxe_doc>
+		</ROSEWOOD>
+		<CARAMEL public="1" get="inline" set="null" expr="0xFFFFD700" line="440" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFFD700</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FFD700.png)![color](https://www.colorhexa.com/FFD700.png)</haxe_doc>
+		</CARAMEL>
+		<DANDELION public="1" get="inline" set="null" expr="0xFFF0E130" line="445" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFF0E130</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/F0E130.png)![color](https://www.colorhexa.com/F0E130.png)</haxe_doc>
+		</DANDELION>
+		<FERN public="1" get="inline" set="null" expr="0xFF71BC78" line="450" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF71BC78</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/71BC78.png)![color](https://www.colorhexa.com/71BC78.png)</haxe_doc>
+		</FERN>
+		<LAPIS public="1" get="inline" set="null" expr="0xFF26619C" line="455" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF26619C</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/26619C.png)![color](https://www.colorhexa.com/26619C.png)</haxe_doc>
+		</LAPIS>
+		<DENIM public="1" get="inline" set="null" expr="0xFF1560BD" line="460" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF1560BD</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/1560BD.png)![color](https://www.colorhexa.com/1560BD.png)</haxe_doc>
+		</DENIM>
+		<SABLE public="1" get="inline" set="null" expr="0xFF8E6D7B" line="465" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF8E6D7B</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/8E6D7B.png)![color](https://www.colorhexa.com/8E6D7B.png)</haxe_doc>
+		</SABLE>
+		<ORCHID public="1" get="inline" set="null" expr="0xFFDA70D6" line="470" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFDA70D6</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/DA70D6.png)![color](https://www.colorhexa.com/DA70D6.png)</haxe_doc>
+		</ORCHID>
+		<TAWNY public="1" get="inline" set="null" expr="0xFFCD5700" line="475" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFCD5700</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/CD5700.png)![color](https://www.colorhexa.com/CD5700.png)</haxe_doc>
+		</TAWNY>
+		<PINE public="1" get="inline" set="null" expr="0xFF01796F" line="480" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF01796F</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/01796F.png)![color](https://www.colorhexa.com/01796F.png)</haxe_doc>
+		</PINE>
+		<LEMON public="1" get="inline" set="null" expr="0xFFFFF700" line="485" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFFF700</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FFF700.png)![color](https://www.colorhexa.com/FFF700.png)</haxe_doc>
+		</LEMON>
+		<SCARLET public="1" get="inline" set="null" expr="0xFFFF2400" line="490" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFF2400</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FF2400.png)![color](https://www.colorhexa.com/FF2400.png)</haxe_doc>
+		</SCARLET>
+		<TAUPE public="1" get="inline" set="null" expr="0xFF483C32" line="495" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF483C32</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/483C32.png)![color](https://www.colorhexa.com/483C32.png)</haxe_doc>
+		</TAUPE>
+		<CERISE public="1" get="inline" set="null" expr="0xFFDE3163" line="500" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFDE3163</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/DE3163.png)![color](https://www.colorhexa.com/DE3163.png)</haxe_doc>
+		</CERISE>
+		<AMBER public="1" get="inline" set="null" expr="0xFFFFBF00" line="505" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFFBF00</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FFBF00.png)![color](https://www.colorhexa.com/FFBF00.png)</haxe_doc>
+		</AMBER>
+		<CINNAMON public="1" get="inline" set="null" expr="0xFFD2691E" line="510" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFD2691E</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/D2691E.png)![color](https://www.colorhexa.com/D2691E.png)</haxe_doc>
+		</CINNAMON>
+		<SADDLE_BROWN public="1" get="inline" set="null" expr="0xFF8B4513" line="515" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFF8B4513</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)</haxe_doc>
+		</SADDLE_BROWN>
+		<TOMATO public="1" get="inline" set="null" expr="0xFFFF6347" line="520" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFF6347</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FF6347.png)![color](https://www.colorhexa.com/FF6347.png)</haxe_doc>
+		</TOMATO>
+		<CORNSILK public="1" get="inline" set="null" expr="0xFFFFDAB9" line="525" static="1">
+			<x path="vision.ds.Color"/>
+			<meta><m n=":value"><e>0xFFFFDAB9</e></m></meta>
+			<haxe_doc>![color](https://www.colorhexa.com/FFDAB9.png)![color](https://www.colorhexa.com/FFDAB9.png)</haxe_doc>
+		</CORNSILK>
+		<VIOLET public="1" get="inline" set="null" expr="0xFF7F00FF" line="530" static="1">
 			<x path="vision.ds.Color"/>
 			<meta><m n=":value"><e>0xFF7F00FF</e></m></meta>
 			<haxe_doc>![color](https://www.colorhexa.com/7F00FF.png)![color](https://www.colorhexa.com/7F00FF.png)</haxe_doc>
 		</VIOLET>
-		<INDIGO public="1" get="inline" set="null" expr="0xFF51428F" line="229" static="1">
-			<x path="vision.ds.Color"/>
-			<meta><m n=":value"><e>0xFF51428F</e></m></meta>
-			<haxe_doc>![color](https://www.colorhexa.com/51428F.png)![color](https://www.colorhexa.com/51428F.png)</haxe_doc>
-		</INDIGO>
 		<red public="1" get="accessor" set="accessor" static="1"><x path="Int"/></red>
 		<blue public="1" get="accessor" set="accessor" static="1"><x path="Int"/></blue>
 		<green public="1" get="accessor" set="accessor" static="1"><x path="Int"/></green>
@@ -42066,11 +42666,11 @@
 			<x path="Float"/>
 			<haxe_doc>The lightness of the color (from 0 to 1)</haxe_doc>
 		</lightness>
-		<COLOR_REGEX expr="~/^(0x|#)(([A-F0-9]{2}){3,4})$/" line="273" static="1">
+		<COLOR_REGEX expr="~/^(0x|#)(([A-F0-9]{2}){3,4})$/" line="572" static="1">
 			<c path="EReg"/>
 			<meta><m n=":value"><e>~/^(0x|#)(([A-F0-9]{2}){3,4})$/</e></m></meta>
 		</COLOR_REGEX>
-		<fromInt public="1" get="inline" set="null" line="281" static="1">
+		<fromInt public="1" get="inline" set="null" line="580" static="1">
 			<f a="value">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42080,7 +42680,7 @@
 		@param value `Int` with bytes in the format 0xAARRGGBB
 		@return	The color as a `Color`</haxe_doc>
 		</fromInt>
-		<fromRGBA public="1" get="inline" set="null" line="294" static="1">
+		<fromRGBA public="1" get="inline" set="null" line="593" static="1">
 			<f a="Red:Green:Blue:?Alpha" v=":::255">
 				<x path="Int"/>
 				<x path="Int"/>
@@ -42097,7 +42697,7 @@
 		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
 		@return The color as a Color</haxe_doc>
 		</fromRGBA>
-		<from8Bit public="1" get="inline" set="null" line="305" static="1">
+		<from8Bit public="1" get="inline" set="null" line="604" static="1">
 			<f a="Value">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42107,7 +42707,7 @@
 		@param Value	The channel value of the red, green & blue channels of the color
 		@return The color as a Color]]></haxe_doc>
 		</from8Bit>
-		<fromRGBAFloat public="1" get="inline" set="null" line="319" static="1">
+		<fromRGBAFloat public="1" get="inline" set="null" line="618" static="1">
 			<f a="Red:Green:Blue:?Alpha" v=":::1">
 				<x path="Float"/>
 				<x path="Float"/>
@@ -42124,7 +42724,7 @@
 		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
 		@return The color as a `Color`</haxe_doc>
 		</fromRGBAFloat>
-		<fromCMYK public="1" get="inline" set="null" line="334" static="1">
+		<fromCMYK public="1" get="inline" set="null" line="633" static="1">
 			<f a="Cyan:Magenta:Yellow:Black:?Alpha" v="::::1">
 				<x path="Float"/>
 				<x path="Float"/>
@@ -42143,7 +42743,7 @@
 		@param Alpha		How opaque the color should be, from 0 to 1, default is 1
 		@return The color as a `Color`</haxe_doc>
 		</fromCMYK>
-		<fromHSB public="1" set="method" line="348" static="1">
+		<fromHSB public="1" set="method" line="647" static="1">
 			<f a="Hue:Saturation:Brightness:?Alpha" v=":::1">
 				<x path="Float"/>
 				<x path="Float"/>
@@ -42160,7 +42760,7 @@
 		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255, default is 1.
 		@return	The color as a `Color`</haxe_doc>
 		</fromHSB>
-		<fromHSL public="1" get="inline" set="null" line="362" static="1">
+		<fromHSL public="1" get="inline" set="null" line="661" static="1">
 			<f a="Hue:Saturation:Lightness:?Alpha" v=":::1">
 				<x path="Float"/>
 				<x path="Float"/>
@@ -42177,7 +42777,7 @@
 		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255, default is 1.
 		@return	The color as a `Color`</haxe_doc>
 		</fromHSL>
-		<fromString public="1" set="method" line="382" static="1">
+		<fromString public="1" set="method" line="681" static="1">
 			<f a="str">
 				<c path="String"/>
 				<x path="Null"><x path="vision.ds.Color"/></x>
@@ -42196,7 +42796,7 @@
 		@param	str 	The string to be parsed
 		@return	A `Color` or `null` if the `String` couldn't be parsed]]></haxe_doc>
 		</fromString>
-		<getHSBColorWheel public="1" set="method" line="403" static="1">
+		<getHSBColorWheel public="1" set="method" line="702" static="1">
 			<f a="?Alpha" v="255">
 				<x path="Int"/>
 				<c path="Array"><x path="vision.ds.Color"/></c>
@@ -42207,7 +42807,7 @@
 		@param	Alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque) (default)
 		@return	HSB color wheel as Array of Colors</haxe_doc>
 		</getHSBColorWheel>
-		<interpolate public="1" get="inline" set="null" line="415" static="1">
+		<interpolate public="1" get="inline" set="null" line="714" static="1">
 			<f a="Color1:Color2:?Factor" v="::0.5">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42222,7 +42822,7 @@
 		@param 	Factor Value from 0 to 1 representing how much to shift Color1 toward Color2, default is 0.5
 		@return	The interpolated color as a `Color`</haxe_doc>
 		</interpolate>
-		<gradient public="1" set="method" line="433" static="1">
+		<gradient public="1" set="method" line="732" static="1">
 			<f a="Color1:Color2:Steps:?Ease">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42241,7 +42841,7 @@
 		@param Ease An optional easing function.
 		@return An array of colors of length Steps, shifting from Color1 to Color2</haxe_doc>
 		</gradient>
-		<makeRandom public="1" get="inline" set="null" line="455" static="1">
+		<makeRandom public="1" get="inline" set="null" line="754" static="1">
 			<f a="?alphaLock:?alphaValue" v="true:255">
 				<x path="Bool"/>
 				<x path="Int"/>
@@ -42253,7 +42853,7 @@
 		@param alphaLock When set to `false`, the alpha channel will get a randomized value to. `true` by default, which makes a color with `alpha = 255`.
 		@param alphaValue When `alphaLock` is true, you can provide this value to override the default alpha value. Since the first argument is optional, you can do `Color.makeRandom(128)` (a random color with `alpha` set to `128`)</haxe_doc>
 		</makeRandom>
-		<multiply public="1" get="inline" set="null" line="463" static="1">
+		<multiply public="1" get="inline" set="null" line="762" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42262,7 +42862,7 @@
 			<meta><m n=":op"><e>A * B</e></m></meta>
 			<haxe_doc>Multiply the RGB and alpha channels of two Colors</haxe_doc>
 		</multiply>
-		<add public="1" get="inline" set="null" line="472" static="1">
+		<add public="1" get="inline" set="null" line="771" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42271,7 +42871,7 @@
 			<meta><m n=":op"><e>A + B</e></m></meta>
 			<haxe_doc>Add the RGB and alpha channels of two Colors</haxe_doc>
 		</add>
-		<subtract public="1" get="inline" set="null" line="480" static="1">
+		<subtract public="1" get="inline" set="null" line="779" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42280,7 +42880,7 @@
 			<meta><m n=":op"><e>A - B</e></m></meta>
 			<haxe_doc>Subtract the RGB and alpha channels of one Color from another</haxe_doc>
 		</subtract>
-		<divide public="1" get="inline" set="null" line="490" static="1">
+		<divide public="1" get="inline" set="null" line="789" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42291,7 +42891,7 @@
 	 * 
 	 * If a color channel value on the right hand side is `0`, the left hand side's channel will get divided by `1`.</haxe_doc>
 		</divide>
-		<getComplementHarmony public="1" get="inline" set="null" line="500" static="1">
+		<getComplementHarmony public="1" get="inline" set="null" line="800" static="1">
 			<f a="this">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42301,7 +42901,7 @@
 
 		@return	The complimentary color</haxe_doc>
 		</getComplementHarmony>
-		<getAnalogousHarmony public="1" get="inline" set="null" line="511" static="1">
+		<getAnalogousHarmony public="1" get="inline" set="null" line="811" static="1">
 			<f a="this:?Threshold" v=":30">
 				<x path="Int"/>
 				<x path="Int"/>
@@ -42314,7 +42914,7 @@
 		@param	Threshold Control how adjacent the colors will be (default +- 30 degrees)
 		@return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)</haxe_doc>
 		</getAnalogousHarmony>
-		<getSplitComplementHarmony public="1" get="inline" set="null" line="525" static="1">
+		<getSplitComplementHarmony public="1" get="inline" set="null" line="825" static="1">
 			<f a="this:?Threshold" v=":30">
 				<x path="Int"/>
 				<x path="Int"/>
@@ -42327,7 +42927,7 @@
 		@param	Threshold Control how adjacent the colors will be to the Complement (default +- 30 degrees)
 		@return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)</haxe_doc>
 		</getSplitComplementHarmony>
-		<getTriadicHarmony public="1" get="inline" set="null" line="539" static="1">
+		<getTriadicHarmony public="1" get="inline" set="null" line="839" static="1">
 			<f a="this">
 				<x path="Int"/>
 				<t path="vision.ds.TriadicHarmony"/>
@@ -42337,7 +42937,7 @@
 
 		@return 	Object containing 3 properties: color1 (the original color), color2 and color3 (the equidistant colors)</haxe_doc>
 		</getTriadicHarmony>
-		<to24Bit public="1" get="inline" set="null" line="551" static="1">
+		<to24Bit public="1" get="inline" set="null" line="851" static="1">
 			<f a="this">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42346,7 +42946,7 @@
 
 		@return A 24 bit version of this color</haxe_doc>
 		</to24Bit>
-		<toHexString public="1" get="inline" set="null" line="562" static="1">
+		<toHexString public="1" get="inline" set="null" line="862" static="1">
 			<f a="this:?Alpha:?Prefix" v=":true:true">
 				<x path="Int"/>
 				<x path="Bool"/>
@@ -42360,7 +42960,7 @@
 		@param Prefix Whether to include "0x" prefix at start of string
 		@return	A string of length 10 in the format 0xAARRGGBB</haxe_doc>
 		</toHexString>
-		<toWebString public="1" get="inline" set="null" line="572" static="1">
+		<toWebString public="1" get="inline" set="null" line="871" static="1">
 			<f a="this">
 				<x path="Int"/>
 				<c path="String"/>
@@ -42369,7 +42969,7 @@
 
 		@return	A string of length 7 in the format #RRGGBB</haxe_doc>
 		</toWebString>
-		<darken public="1" set="method" line="582" static="1">
+		<darken public="1" set="method" line="881" static="1">
 			<f a="this:?Factor" v=":0.2">
 				<x path="Int"/>
 				<x path="Float"/>
@@ -42381,7 +42981,7 @@
 		@param	Factor Value from 0 to 1 of how much to progress toward black.
 		@return 	A darkened version of this color</haxe_doc>
 		</darken>
-		<lighten public="1" get="inline" set="null" line="595" static="1">
+		<lighten public="1" get="inline" set="null" line="894" static="1">
 			<f a="this:?Factor" v=":0.2">
 				<x path="Int"/>
 				<x path="Float"/>
@@ -42393,7 +42993,7 @@
 		@param	Factor Value from 0 to 1 of how much to progress toward white.
 		@return 	A lightened version of this color</haxe_doc>
 		</lighten>
-		<invert public="1" get="inline" set="null" line="607" static="1">
+		<invert public="1" get="inline" set="null" line="906" static="1">
 			<f a="this">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42402,7 +43002,7 @@
 
 		@return The inversion of this color</haxe_doc>
 		</invert>
-		<setRGBA public="1" get="inline" set="null" line="623" static="1">
+		<setRGBA public="1" get="inline" set="null" line="922" static="1">
 			<f a="this:Red:Green:Blue:?Alpha" v="::::255">
 				<x path="Int"/>
 				<x path="Int"/>
@@ -42420,7 +43020,7 @@
 		@param Alpha	How opaque the color should be, from 0 to 255, default is 255
 		@return This color</haxe_doc>
 		</setRGBA>
-		<setRGBAFloat public="1" get="inline" set="null" line="640" static="1">
+		<setRGBAFloat public="1" get="inline" set="null" line="939" static="1">
 			<f a="this:Red:Green:Blue:?Alpha" v="::::1">
 				<x path="Int"/>
 				<x path="Float"/>
@@ -42438,7 +43038,7 @@
 		@param Alpha	How opaque the color should be, from 0 to 1, default is 1
 		@return This color</haxe_doc>
 		</setRGBAFloat>
-		<setCMYK public="1" get="inline" set="null" line="658" static="1">
+		<setCMYK public="1" get="inline" set="null" line="957" static="1">
 			<f a="this:Cyan:Magenta:Yellow:Black:?Alpha" v=":::::1">
 				<x path="Int"/>
 				<x path="Float"/>
@@ -42458,7 +43058,7 @@
 		@param Alpha		How opaque the color should be, from 0 to 1, default is 1
 		@return This color</haxe_doc>
 		</setCMYK>
-		<setHSB public="1" get="inline" set="null" line="675" static="1">
+		<setHSB public="1" get="inline" set="null" line="974" static="1">
 			<f a="this:Hue:Saturation:Brightness:Alpha">
 				<x path="Int"/>
 				<x path="Float"/>
@@ -42475,7 +43075,7 @@
 		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
 		@return	This color</haxe_doc>
 		</setHSB>
-		<setHSL public="1" get="inline" set="null" line="690" static="1">
+		<setHSL public="1" get="inline" set="null" line="989" static="1">
 			<f a="this:Hue:Saturation:Lightness:Alpha">
 				<x path="Int"/>
 				<x path="Float"/>
@@ -42492,7 +43092,7 @@
 		@param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255
 		@return	This color</haxe_doc>
 		</setHSL>
-		<setHSChromaMatch get="inline" set="null" line="699" static="1">
+		<setHSChromaMatch get="inline" set="null" line="998" static="1">
 			<f a="this:Hue:Saturation:Chroma:Match:Alpha">
 				<x path="Int"/>
 				<x path="Float"/>
@@ -42504,7 +43104,7 @@
 			</f>
 			<haxe_doc>Private utility function to perform common operations between setHSB and setHSL</haxe_doc>
 		</setHSChromaMatch>
-		<grayscale public="1" get="inline" set="null" line="726" static="1">
+		<grayscale public="1" get="inline" set="null" line="1019" static="1">
 			<f a="this:?simple" v=":false">
 				<x path="Int"/>
 				<x path="Bool"/>
@@ -42513,7 +43113,7 @@
 			<meta><m n=":value"><e>{ simple : false }</e></m></meta>
 			<haxe_doc>@param simple When enabled, gets the gray by averaging this color's channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`</haxe_doc>
 		</grayscale>
-		<blackOrWhite public="1" get="inline" set="null" line="736" static="1">
+		<blackOrWhite public="1" get="inline" set="null" line="1029" static="1">
 			<f a="this:?threshold" v=":128">
 				<x path="Int"/>
 				<x path="Int"/>
@@ -42524,7 +43124,7 @@
 
 		@param threshold The threshold for converting to black and white: `threshold` is the maximum average of the three color components, that will still be considered black. `threshold` is a value between 0 and 255. The higher the value, the more "sensitive" the conversion. The default value is 128.</haxe_doc>
 		</blackOrWhite>
-		<_new public="1" get="inline" set="null" line="748" static="1">
+		<_new public="1" get="inline" set="null" line="1041" static="1">
 			<f a="?value" v="0">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42534,189 +43134,189 @@
 				<m n=":noCompletion"/>
 			</meta>
 		</_new>
-		<getThis get="inline" set="null" line="752" static="1"><f a="this">
+		<getThis get="inline" set="null" line="1045" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></getThis>
-		<validate get="inline" set="null" line="760" static="1"><f a="this">
+		<validate get="inline" set="null" line="1053" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Void"/>
 </f></validate>
-		<get_red get="inline" set="null" line="766" static="1"><f a="this">
+		<get_red get="inline" set="null" line="1059" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></get_red>
-		<get_green get="inline" set="null" line="770" static="1"><f a="this">
+		<get_green get="inline" set="null" line="1063" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></get_green>
-		<get_blue get="inline" set="null" line="774" static="1"><f a="this">
+		<get_blue get="inline" set="null" line="1067" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></get_blue>
-		<get_alpha get="inline" set="null" line="778" static="1"><f a="this">
+		<get_alpha get="inline" set="null" line="1071" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></get_alpha>
-		<get_redFloat get="inline" set="null" line="782" static="1"><f a="this">
+		<get_redFloat get="inline" set="null" line="1075" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_redFloat>
-		<get_greenFloat get="inline" set="null" line="786" static="1"><f a="this">
+		<get_greenFloat get="inline" set="null" line="1079" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_greenFloat>
-		<get_blueFloat get="inline" set="null" line="790" static="1"><f a="this">
+		<get_blueFloat get="inline" set="null" line="1083" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_blueFloat>
-		<get_alphaFloat get="inline" set="null" line="794" static="1"><f a="this">
+		<get_alphaFloat get="inline" set="null" line="1087" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_alphaFloat>
-		<set_red get="inline" set="null" line="798" static="1"><f a="this:value">
+		<set_red get="inline" set="null" line="1091" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></set_red>
-		<set_green get="inline" set="null" line="805" static="1"><f a="this:value">
+		<set_green get="inline" set="null" line="1098" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></set_green>
-		<set_blue get="inline" set="null" line="812" static="1"><f a="this:value">
+		<set_blue get="inline" set="null" line="1105" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></set_blue>
-		<set_alpha get="inline" set="null" line="819" static="1"><f a="this:value">
+		<set_alpha get="inline" set="null" line="1112" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></set_alpha>
-		<set_redFloat get="inline" set="null" line="826" static="1"><f a="this:value">
+		<set_redFloat get="inline" set="null" line="1119" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_redFloat>
-		<set_greenFloat get="inline" set="null" line="831" static="1"><f a="this:value">
+		<set_greenFloat get="inline" set="null" line="1124" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_greenFloat>
-		<set_blueFloat get="inline" set="null" line="836" static="1"><f a="this:value">
+		<set_blueFloat get="inline" set="null" line="1129" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_blueFloat>
-		<set_alphaFloat get="inline" set="null" line="841" static="1"><f a="this:value">
+		<set_alphaFloat get="inline" set="null" line="1134" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_alphaFloat>
-		<get_cyan get="inline" set="null" line="846" static="1"><f a="this">
+		<get_cyan get="inline" set="null" line="1139" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_cyan>
-		<get_magenta get="inline" set="null" line="850" static="1"><f a="this">
+		<get_magenta get="inline" set="null" line="1143" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_magenta>
-		<get_yellow get="inline" set="null" line="854" static="1"><f a="this">
+		<get_yellow get="inline" set="null" line="1147" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_yellow>
-		<get_black get="inline" set="null" line="858" static="1"><f a="this">
+		<get_black get="inline" set="null" line="1151" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_black>
-		<set_cyan get="inline" set="null" line="862" static="1"><f a="this:value">
+		<set_cyan get="inline" set="null" line="1155" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_cyan>
-		<set_magenta get="inline" set="null" line="867" static="1"><f a="this:value">
+		<set_magenta get="inline" set="null" line="1160" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_magenta>
-		<set_yellow get="inline" set="null" line="872" static="1"><f a="this:value">
+		<set_yellow get="inline" set="null" line="1165" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_yellow>
-		<set_black get="inline" set="null" line="877" static="1"><f a="this:value">
+		<set_black get="inline" set="null" line="1170" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_black>
-		<get_hue set="method" line="882" static="1"><f a="this">
+		<get_hue set="method" line="1175" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_hue>
-		<get_brightness get="inline" set="null" line="892" static="1"><f a="this">
+		<get_brightness get="inline" set="null" line="1185" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_brightness>
-		<get_saturation get="inline" set="null" line="896" static="1"><f a="this">
+		<get_saturation get="inline" set="null" line="1189" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_saturation>
-		<get_lightness get="inline" set="null" line="900" static="1"><f a="this">
+		<get_lightness get="inline" set="null" line="1193" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></get_lightness>
-		<set_hue get="inline" set="null" line="904" static="1"><f a="this:value">
+		<set_hue get="inline" set="null" line="1197" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_hue>
-		<set_saturation get="inline" set="null" line="909" static="1"><f a="this:value">
+		<set_saturation get="inline" set="null" line="1202" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_saturation>
-		<set_brightness get="inline" set="null" line="914" static="1"><f a="this:value">
+		<set_brightness get="inline" set="null" line="1207" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_brightness>
-		<set_lightness get="inline" set="null" line="919" static="1"><f a="this:value">
+		<set_lightness get="inline" set="null" line="1212" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Float"/>
 	<x path="Float"/>
 </f></set_lightness>
-		<set_rgb get="inline" set="null" line="924" static="1"><f a="this:value">
+		<set_rgb get="inline" set="null" line="1217" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="vision.ds.Color"/>
 	<x path="vision.ds.Color"/>
 </f></set_rgb>
-		<get_rgb get="inline" set="null" line="930" static="1"><f a="this">
+		<get_rgb get="inline" set="null" line="1223" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="vision.ds.Color"/>
 </f></get_rgb>
-		<maxColor get="inline" set="null" line="934" static="1"><f a="this">
+		<maxColor get="inline" set="null" line="1227" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></maxColor>
-		<minColor get="inline" set="null" line="938" static="1"><f a="this">
+		<minColor get="inline" set="null" line="1231" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Float"/>
 </f></minColor>
-		<boundChannel get="inline" set="null" line="942" static="1"><f a="this:value">
+		<boundChannel get="inline" set="null" line="1235" static="1"><f a="this:value">
 	<x path="Int"/>
 	<x path="Int"/>
 	<x path="Int"/>
 </f></boundChannel>
-		<toString public="1" set="method" line="946" static="1"><f a="this">
+		<toString public="1" set="method" line="1239" static="1"><f a="this">
 	<x path="Int"/>
 	<c path="String"/>
 </f></toString>
-		<toInt public="1" set="method" line="954" static="1"><f a="this">
+		<toInt public="1" set="method" line="1247" static="1"><f a="this">
 	<x path="Int"/>
 	<x path="Int"/>
 </f></toInt>
-		<color_greater_than_color get="inline" set="null" line="963" static="1">
+		<color_greater_than_color get="inline" set="null" line="1256" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42724,7 +43324,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 		</color_greater_than_color>
-		<color_greater_than_int get="inline" set="null" line="968" static="1">
+		<color_greater_than_int get="inline" set="null" line="1261" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -42732,7 +43332,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 		</color_greater_than_int>
-		<int_greater_than_color get="inline" set="null" line="973" static="1">
+		<int_greater_than_color get="inline" set="null" line="1266" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42740,7 +43340,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 		</int_greater_than_color>
-		<color_greater_than_float get="inline" set="null" line="978" static="1">
+		<color_greater_than_float get="inline" set="null" line="1271" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Float"/>
@@ -42748,7 +43348,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 		</color_greater_than_float>
-		<float_greater_than_color get="inline" set="null" line="983" static="1">
+		<float_greater_than_color get="inline" set="null" line="1276" static="1">
 			<f a="lhs:rhs">
 				<x path="Float"/>
 				<x path="vision.ds.Color"/>
@@ -42756,7 +43356,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A > B]]></e></m></meta>
 		</float_greater_than_color>
-		<color_greater_than_equal_color get="inline" set="null" line="988" static="1">
+		<color_greater_than_equal_color get="inline" set="null" line="1281" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42764,7 +43364,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 		</color_greater_than_equal_color>
-		<color_greater_than_equal_int get="inline" set="null" line="993" static="1">
+		<color_greater_than_equal_int get="inline" set="null" line="1286" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -42772,7 +43372,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 		</color_greater_than_equal_int>
-		<int_greater_than_equal_color get="inline" set="null" line="998" static="1">
+		<int_greater_than_equal_color get="inline" set="null" line="1291" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42780,7 +43380,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 		</int_greater_than_equal_color>
-		<color_greater_than_equal_float get="inline" set="null" line="1003" static="1">
+		<color_greater_than_equal_float get="inline" set="null" line="1296" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Float"/>
@@ -42788,7 +43388,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 		</color_greater_than_equal_float>
-		<float_greater_than_equal_color get="inline" set="null" line="1008" static="1">
+		<float_greater_than_equal_color get="inline" set="null" line="1301" static="1">
 			<f a="lhs:rhs">
 				<x path="Float"/>
 				<x path="vision.ds.Color"/>
@@ -42796,7 +43396,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >= B]]></e></m></meta>
 		</float_greater_than_equal_color>
-		<color_less_than_color get="inline" set="null" line="1013" static="1">
+		<color_less_than_color get="inline" set="null" line="1306" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42804,7 +43404,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 		</color_less_than_color>
-		<color_less_than_int get="inline" set="null" line="1018" static="1">
+		<color_less_than_int get="inline" set="null" line="1311" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -42812,7 +43412,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 		</color_less_than_int>
-		<int_less_than_color get="inline" set="null" line="1023" static="1">
+		<int_less_than_color get="inline" set="null" line="1316" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42820,7 +43420,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 		</int_less_than_color>
-		<color_less_than_float get="inline" set="null" line="1028" static="1">
+		<color_less_than_float get="inline" set="null" line="1321" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Float"/>
@@ -42828,7 +43428,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 		</color_less_than_float>
-		<float_less_than_color get="inline" set="null" line="1033" static="1">
+		<float_less_than_color get="inline" set="null" line="1326" static="1">
 			<f a="lhs:rhs">
 				<x path="Float"/>
 				<x path="vision.ds.Color"/>
@@ -42836,7 +43436,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A < B]]></e></m></meta>
 		</float_less_than_color>
-		<color_less_than_equal_color get="inline" set="null" line="1038" static="1">
+		<color_less_than_equal_color get="inline" set="null" line="1331" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42844,7 +43444,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 		</color_less_than_equal_color>
-		<color_less_than_equal_int get="inline" set="null" line="1043" static="1">
+		<color_less_than_equal_int get="inline" set="null" line="1336" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -42852,7 +43452,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 		</color_less_than_equal_int>
-		<int_less_than_equal_color get="inline" set="null" line="1048" static="1">
+		<int_less_than_equal_color get="inline" set="null" line="1341" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42860,7 +43460,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 		</int_less_than_equal_color>
-		<color_less_than_equal_float get="inline" set="null" line="1053" static="1">
+		<color_less_than_equal_float get="inline" set="null" line="1346" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Float"/>
@@ -42868,7 +43468,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 		</color_less_than_equal_float>
-		<float_less_than_equal_color get="inline" set="null" line="1058" static="1">
+		<float_less_than_equal_color get="inline" set="null" line="1351" static="1">
 			<f a="lhs:rhs">
 				<x path="Float"/>
 				<x path="vision.ds.Color"/>
@@ -42876,7 +43476,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A <= B]]></e></m></meta>
 		</float_less_than_equal_color>
-		<color_equal_color get="inline" set="null" line="1063" static="1">
+		<color_equal_color get="inline" set="null" line="1356" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42884,7 +43484,7 @@
 			</f>
 			<meta><m n=":op"><e>A == B</e></m></meta>
 		</color_equal_color>
-		<color_equal_int get="inline" set="null" line="1068" static="1">
+		<color_equal_int get="inline" set="null" line="1361" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -42892,7 +43492,7 @@
 			</f>
 			<meta><m n=":op"><e>A == B</e></m></meta>
 		</color_equal_int>
-		<int_equal_color get="inline" set="null" line="1073" static="1">
+		<int_equal_color get="inline" set="null" line="1366" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42900,7 +43500,7 @@
 			</f>
 			<meta><m n=":op"><e>A == B</e></m></meta>
 		</int_equal_color>
-		<color_equal_float get="inline" set="null" line="1078" static="1">
+		<color_equal_float get="inline" set="null" line="1371" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Float"/>
@@ -42908,7 +43508,7 @@
 			</f>
 			<meta><m n=":op"><e>A == B</e></m></meta>
 		</color_equal_float>
-		<float_equal_color get="inline" set="null" line="1083" static="1">
+		<float_equal_color get="inline" set="null" line="1376" static="1">
 			<f a="lhs:rhs">
 				<x path="Float"/>
 				<x path="vision.ds.Color"/>
@@ -42916,7 +43516,7 @@
 			</f>
 			<meta><m n=":op"><e>A == B</e></m></meta>
 		</float_equal_color>
-		<color_not_equal_color get="inline" set="null" line="1088" static="1">
+		<color_not_equal_color get="inline" set="null" line="1381" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42924,7 +43524,7 @@
 			</f>
 			<meta><m n=":op"><e>A != B</e></m></meta>
 		</color_not_equal_color>
-		<color_not_equal_int get="inline" set="null" line="1093" static="1">
+		<color_not_equal_int get="inline" set="null" line="1386" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -42932,7 +43532,7 @@
 			</f>
 			<meta><m n=":op"><e>A != B</e></m></meta>
 		</color_not_equal_int>
-		<int_not_equal_color get="inline" set="null" line="1098" static="1">
+		<int_not_equal_color get="inline" set="null" line="1391" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42940,7 +43540,7 @@
 			</f>
 			<meta><m n=":op"><e>A != B</e></m></meta>
 		</int_not_equal_color>
-		<color_not_equal_float get="inline" set="null" line="1103" static="1">
+		<color_not_equal_float get="inline" set="null" line="1396" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Float"/>
@@ -42948,7 +43548,7 @@
 			</f>
 			<meta><m n=":op"><e>A != B</e></m></meta>
 		</color_not_equal_float>
-		<float_not_equal_color get="inline" set="null" line="1108" static="1">
+		<float_not_equal_color get="inline" set="null" line="1401" static="1">
 			<f a="lhs:rhs">
 				<x path="Float"/>
 				<x path="vision.ds.Color"/>
@@ -42956,7 +43556,7 @@
 			</f>
 			<meta><m n=":op"><e>A != B</e></m></meta>
 		</float_not_equal_color>
-		<color_bitwise_and_color get="inline" set="null" line="1113" static="1">
+		<color_bitwise_and_color get="inline" set="null" line="1406" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42964,7 +43564,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A & B]]></e></m></meta>
 		</color_bitwise_and_color>
-		<color_bitwise_and_int get="inline" set="null" line="1118" static="1">
+		<color_bitwise_and_int get="inline" set="null" line="1411" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -42972,7 +43572,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A & B]]></e></m></meta>
 		</color_bitwise_and_int>
-		<int_bitwise_and_color get="inline" set="null" line="1123" static="1">
+		<int_bitwise_and_color get="inline" set="null" line="1416" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -42980,7 +43580,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A & B]]></e></m></meta>
 		</int_bitwise_and_color>
-		<color_bitwise_or_color get="inline" set="null" line="1128" static="1">
+		<color_bitwise_or_color get="inline" set="null" line="1421" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -42988,7 +43588,7 @@
 			</f>
 			<meta><m n=":op"><e>A | B</e></m></meta>
 		</color_bitwise_or_color>
-		<color_bitwise_or_int get="inline" set="null" line="1133" static="1">
+		<color_bitwise_or_int get="inline" set="null" line="1426" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -42996,7 +43596,7 @@
 			</f>
 			<meta><m n=":op"><e>A | B</e></m></meta>
 		</color_bitwise_or_int>
-		<int_bitwise_or_color get="inline" set="null" line="1138" static="1">
+		<int_bitwise_or_color get="inline" set="null" line="1431" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -43004,7 +43604,7 @@
 			</f>
 			<meta><m n=":op"><e>A | B</e></m></meta>
 		</int_bitwise_or_color>
-		<color_bitwise_xor_color get="inline" set="null" line="1143" static="1">
+		<color_bitwise_xor_color get="inline" set="null" line="1436" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -43012,7 +43612,7 @@
 			</f>
 			<meta><m n=":op"><e>A ^ B</e></m></meta>
 		</color_bitwise_xor_color>
-		<color_bitwise_xor_int get="inline" set="null" line="1148" static="1">
+		<color_bitwise_xor_int get="inline" set="null" line="1441" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -43020,7 +43620,7 @@
 			</f>
 			<meta><m n=":op"><e>A ^ B</e></m></meta>
 		</color_bitwise_xor_int>
-		<int_bitwise_xor_color get="inline" set="null" line="1153" static="1">
+		<int_bitwise_xor_color get="inline" set="null" line="1446" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -43028,7 +43628,7 @@
 			</f>
 			<meta><m n=":op"><e>A ^ B</e></m></meta>
 		</int_bitwise_xor_color>
-		<color_bitwise_left_shift_color get="inline" set="null" line="1158" static="1">
+		<color_bitwise_left_shift_color get="inline" set="null" line="1451" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -43036,7 +43636,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A << B]]></e></m></meta>
 		</color_bitwise_left_shift_color>
-		<color_bitwise_left_shift_int get="inline" set="null" line="1163" static="1">
+		<color_bitwise_left_shift_int get="inline" set="null" line="1456" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -43044,7 +43644,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A << B]]></e></m></meta>
 		</color_bitwise_left_shift_int>
-		<int_bitwise_left_shift_color get="inline" set="null" line="1168" static="1">
+		<int_bitwise_left_shift_color get="inline" set="null" line="1461" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -43052,7 +43652,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A << B]]></e></m></meta>
 		</int_bitwise_left_shift_color>
-		<color_bitwise_right_shift_color get="inline" set="null" line="1173" static="1">
+		<color_bitwise_right_shift_color get="inline" set="null" line="1466" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -43060,7 +43660,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >> B]]></e></m></meta>
 		</color_bitwise_right_shift_color>
-		<color_bitwise_right_shift_int get="inline" set="null" line="1178" static="1">
+		<color_bitwise_right_shift_int get="inline" set="null" line="1471" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -43068,7 +43668,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >> B]]></e></m></meta>
 		</color_bitwise_right_shift_int>
-		<int_bitwise_right_shift_color get="inline" set="null" line="1183" static="1">
+		<int_bitwise_right_shift_color get="inline" set="null" line="1476" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>
@@ -43076,7 +43676,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >> B]]></e></m></meta>
 		</int_bitwise_right_shift_color>
-		<color_bitwise_unsigned_right_shift_color get="inline" set="null" line="1188" static="1">
+		<color_bitwise_unsigned_right_shift_color get="inline" set="null" line="1481" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="vision.ds.Color"/>
@@ -43084,7 +43684,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >>> B]]></e></m></meta>
 		</color_bitwise_unsigned_right_shift_color>
-		<color_bitwise_unsigned_right_shift_int get="inline" set="null" line="1193" static="1">
+		<color_bitwise_unsigned_right_shift_int get="inline" set="null" line="1486" static="1">
 			<f a="lhs:rhs">
 				<x path="vision.ds.Color"/>
 				<x path="Int"/>
@@ -43092,7 +43692,7 @@
 			</f>
 			<meta><m n=":op"><e><![CDATA[A >>> B]]></e></m></meta>
 		</color_bitwise_unsigned_right_shift_int>
-		<int_bitwise_unsigned_right_shift_color get="inline" set="null" line="1198" static="1">
+		<int_bitwise_unsigned_right_shift_color get="inline" set="null" line="1491" static="1">
 			<f a="lhs:rhs">
 				<x path="Int"/>
 				<x path="vision.ds.Color"/>

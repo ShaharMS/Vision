@@ -4,28 +4,28 @@ import vision.tools.MathTools;
 
 abstract Color(Int) from Int from UInt to Int to UInt {
 	#if (!vision_hlc_color_compile)
-	#if hl
-	/**
-		**WARNING:** using this color, or compiling this source file without DCE in hashlink/c
-		may result in compilation errors post c code generation due to conflicting #defines.
+		#if hl
+		/**
+			**WARNING:** using this color, or compiling this source file without DCE in hashlink/c
+			may result in compilation errors post c code generation due to conflicting #defines.
 
-		Use `Color.TRANSPARENT_COLOR` instead.
-	**/
-	#else
-	/**
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-		&nbsp;  
-	**/
-	#end
+			Use `Color.TRANSPARENT_COLOR` instead.
+		**/
+		#else
+		/**
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+			&nbsp;  
+		**/
+		#end
 	public static inline var TRANSPARENT:Color = 0x00000000;
 	#end
 
@@ -43,6 +43,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		&nbsp;  
 	**/
 	public static inline var TRANSPARENT_COLOR:Color = 0x00000000;
+
 	/**
 		![color](https://www.colorhexa.com/ffffff.png)![color](https://www.colorhexa.com/ffffff.png)
 	**/
@@ -99,7 +100,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var BROWN:Color = 0xFF8B4513;
 
 	/**
-	    ![color](https://www.colorhexa.com/704214.png)![color](https://www.colorhexa.com/704214.png)
+		![color](https://www.colorhexa.com/704214.png)![color](https://www.colorhexa.com/704214.png)
 	**/
 	public static inline var SEPIA:Color = 0xFF704214;
 
@@ -194,10 +195,325 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var ROYAL_BLUE:Color = 0xFF4169E1;
 
 	/**
+		![color](https://www.colorhexa.com/7FFF00.png)![color](https://www.colorhexa.com/7FFF00.png)
+	**/
+	public static inline var CHARTREUSE:Color = 0xFF7FFF00;
+
+	/**
+		![color](https://www.colorhexa.com/007BA7.png)![color](https://www.colorhexa.com/007BA7.png)
+	**/
+	public static inline var CERULEAN:Color = 0xFF007BA7;
+
+	/**
+		![color](https://www.colorhexa.com/CCCCFF.png)![color](https://www.colorhexa.com/CCCCFF.png)
+	**/
+	public static inline var PERIWINKLE:Color = 0xFFCCCCFF;
+
+	/**
+		![color](https://www.colorhexa.com/E34234.png)![color](https://www.colorhexa.com/E34234.png)
+	**/
+	public static inline var VERMILION:Color = 0xFFE34234;
+
+	/**
+		![color](https://www.colorhexa.com/E0B0FF.png)![color](https://www.colorhexa.com/E0B0FF.png)
+	**/
+	public static inline var MAUVE:Color = 0xFFE0B0FF;
+
+	/**
+		![color](https://www.colorhexa.com/007FFF.png)![color](https://www.colorhexa.com/007FFF.png)
+	**/
+	public static inline var AZURE:Color = 0xFF007FFF;
+
+	/**
+		![color](https://www.colorhexa.com/F28500.png)![color](https://www.colorhexa.com/F28500.png)
+	**/
+	public static inline var TANGERINE:Color = 0xFFF28500;
+
+	/**
+		![color](https://www.colorhexa.com/4B0082.png)![color](https://www.colorhexa.com/4B0082.png)
+	**/
+	public static inline var INDIGO:Color = 0xFF4B0082;
+
+	/**
+		![color](https://www.colorhexa.com/EAA221.png)![color](https://www.colorhexa.com/EAA221.png)
+	**/
+	public static inline var MARIGOLD:Color = 0xFFEAA221;
+
+	/**
+		![color](https://www.colorhexa.com/0047AB.png)![color](https://www.colorhexa.com/0047AB.png)
+	**/
+	public static inline var COBALT:Color = 0xFF0047AB;
+
+	/**
+		![color](https://www.colorhexa.com/E6E6FA.png)![color](https://www.colorhexa.com/E6E6FA.png)
+	**/
+	public static inline var LAVENDER:Color = 0xFFE6E6FA;
+
+	/**
+		![color](https://www.colorhexa.com/40E0D0.png)![color](https://www.colorhexa.com/40E0D0.png)
+	**/
+	public static inline var TURQUOISE:Color = 0xFF40E0D0;
+
+	/**
+		![color](https://www.colorhexa.com/CC7722.png)![color](https://www.colorhexa.com/CC7722.png)
+	**/
+	public static inline var OCHRE:Color = 0xFFCC7722;
+
+	/**
+		![color](https://www.colorhexa.com/7FFFD4.png)![color](https://www.colorhexa.com/7FFFD4.png)
+	**/
+	public static inline var AQUAMARINE:Color = 0xFF7FFFD4;
+
+	/**
+		![color](https://www.colorhexa.com/80461B.png)![color](https://www.colorhexa.com/80461B.png)
+	**/
+	public static inline var RUSSET:Color = 0xFF80461B;
+
+	/**
+		![color](https://www.colorhexa.com/FFC87C.png)![color](https://www.colorhexa.com/FFC87C.png)
+	**/
+	public static inline var TOPAZ:Color = 0xFFFFC87C;
+
+	/**
+		![color](https://www.colorhexa.com/FBCEB1.png)![color](https://www.colorhexa.com/FBCEB1.png)
+	**/
+	public static inline var APRICOT:Color = 0xFFFBCEB1;
+
+	/**
+		![color](https://www.colorhexa.com/9966CC.png)![color](https://www.colorhexa.com/9966CC.png)
+	**/
+	public static inline var AMETHYST:Color = 0xFF9966CC;
+
+	/**
+		![color](https://www.colorhexa.com/F4C430.png)![color](https://www.colorhexa.com/F4C430.png)
+	**/
+	public static inline var SAFFRON:Color = 0xFFF4C430;
+
+	/**
+		![color](https://www.colorhexa.com/C8A2C8.png)![color](https://www.colorhexa.com/C8A2C8.png)
+	**/
+	public static inline var LILAC:Color = 0xFFC8A2C8;
+
+	/**
+		![color](https://www.colorhexa.com/DC143C.png)![color](https://www.colorhexa.com/DC143C.png)
+	**/
+	public static inline var CRIMSON:Color = 0xFFDC143C;
+
+	/**
+		![color](https://www.colorhexa.com/708090.png)![color](https://www.colorhexa.com/708090.png)
+	**/
+	public static inline var SLATE:Color = 0xFF708090;
+
+	/**
+		![color](https://www.colorhexa.com/00A86B.png)![color](https://www.colorhexa.com/00A86B.png)
+	**/
+	public static inline var JADE:Color = 0xFF00A86B;
+
+	/**
+		![color](https://www.colorhexa.com/FF7F50.png)![color](https://www.colorhexa.com/FF7F50.png)
+	**/
+	public static inline var CORAL:Color = 0xFFFF7F50;
+
+	/**
+		![color](https://www.colorhexa.com/800020.png)![color](https://www.colorhexa.com/800020.png)
+	**/
+	public static inline var BURGUNDY:Color = 0xFF800020;
+
+	/**
+		![color](https://www.colorhexa.com/882D17.png)![color](https://www.colorhexa.com/882D17.png)
+	**/
+	public static inline var SIENNA:Color = 0xFF882D17;
+
+	/**
+		![color](https://www.colorhexa.com/FFFFF0.png)![color](https://www.colorhexa.com/FFFFF0.png)
+	**/
+	public static inline var IVORY:Color = 0xFFFFFFF0;
+
+	/**
+		![color](https://www.colorhexa.com/C54B8C.png)![color](https://www.colorhexa.com/C54B8C.png)
+	**/
+	public static inline var MULBERRY:Color = 0xFFC54B8C;
+
+	/**
+		![color](https://www.colorhexa.com/AA8D6F.png)![color](https://www.colorhexa.com/AA8D6F.png)
+	**/
+	public static inline var SANDALWOOD:Color = 0xFFAA8D6F;
+
+	/**
+		![color](https://www.colorhexa.com/733635.png)![color](https://www.colorhexa.com/733635.png)
+	**/
+	public static inline var GARNET:Color = 0xFF733635;
+
+	/**
+		![color](https://www.colorhexa.com/8BA8B7.png)![color](https://www.colorhexa.com/8BA8B7.png)
+	**/
+	public static inline var PEWTER:Color = 0xFF8BA8B7;
+
+	/**
+		![color](https://www.colorhexa.com/FFA6C9.png)![color](https://www.colorhexa.com/FFA6C9.png)
+	**/
+	public static inline var CARNATION:Color = 0xFFFFA6C9;
+
+	/**
+		![color](https://www.colorhexa.com/E4D00A.png)![color](https://www.colorhexa.com/E4D00A.png)
+	**/
+	public static inline var CITRINE:Color = 0xFFE4D00A;
+
+	/**
+		![color](https://www.colorhexa.com/ACE1AF.png)![color](https://www.colorhexa.com/ACE1AF.png)
+	**/
+	public static inline var CELADON:Color = 0xFFACE1AF;
+
+	/**
+		![color](https://www.colorhexa.com/DF73FF.png)![color](https://www.colorhexa.com/DF73FF.png)
+	**/
+	public static inline var HELIOTROPE:Color = 0xFFDF73FF;
+
+	/**
+		![color](https://www.colorhexa.com/CC8899.png)![color](https://www.colorhexa.com/CC8899.png)
+	**/
+	public static inline var PUCE:Color = 0xFFCC8899;
+
+	/**
+		![color](https://www.colorhexa.com/E34234.png)![color](https://www.colorhexa.com/E34234.png)
+	**/
+	public static inline var CINNABAR:Color = 0xFFE34234;
+
+	/**
+		![color](https://www.colorhexa.com/40826D.png)![color](https://www.colorhexa.com/40826D.png)
+	**/
+	public static inline var VIRIDIAN:Color = 0xFF40826D;
+
+	/**
+		![color](https://www.colorhexa.com/C2B280.png)![color](https://www.colorhexa.com/C2B280.png)
+	**/
+	public static inline var ECRU:Color = 0xFFC2B280;
+
+	/**
+		![color](https://www.colorhexa.com/EDEAE0.png)![color](https://www.colorhexa.com/EDEAE0.png)
+	**/
+	public static inline var ALABASTER:Color = 0xFFEDEAE0;
+
+	/**
+		![color](https://www.colorhexa.com/0F52BA.png)![color](https://www.colorhexa.com/0F52BA.png)
+	**/
+	public static inline var SAPPHIRE:Color = 0xFF0F52BA;
+
+	/**
+		![color](https://www.colorhexa.com/EAE0C8.png)![color](https://www.colorhexa.com/EAE0C8.png)
+	**/
+	public static inline var PEARL:Color = 0xFFEAE0C8;
+
+	/**
+		![color](https://www.colorhexa.com/FA8072.png)![color](https://www.colorhexa.com/FA8072.png)
+	**/
+	public static inline var SALMON:Color = 0xFFFA8072;
+
+	/**
+		![color](https://www.colorhexa.com/635147.png)![color](https://www.colorhexa.com/635147.png)
+	**/
+	public static inline var UMBER:Color = 0xFF635147;
+
+	/**
+		![color](https://www.colorhexa.com/E4D00A.png)![color](https://www.colorhexa.com/E4D00A.png)
+	**/
+	public static inline var TURMERIC:Color = 0xFFE4D00A;
+
+	/**
+		![color](https://www.colorhexa.com/C04000.png)![color](https://www.colorhexa.com/C04000.png)
+	**/
+	public static inline var MAHOGANY:Color = 0xFFC04000;
+
+	/**
+		![color](https://www.colorhexa.com/FF6347.png)![color](https://www.colorhexa.com/FF6347.png)
+	**/
+	public static inline var PERSIMMON:Color = 0xFFFF6347;
+
+	/**
+		![color](https://www.colorhexa.com/65000B.png)![color](https://www.colorhexa.com/65000B.png)
+	**/
+	public static inline var ROSEWOOD:Color = 0xFF65000B;
+
+	/**
+		![color](https://www.colorhexa.com/FFD700.png)![color](https://www.colorhexa.com/FFD700.png)
+	**/
+	public static inline var CARAMEL:Color = 0xFFFFD700;
+
+	/**
+		![color](https://www.colorhexa.com/F0E130.png)![color](https://www.colorhexa.com/F0E130.png)
+	**/
+	public static inline var DANDELION:Color = 0xFFF0E130;
+
+	/**
+		![color](https://www.colorhexa.com/71BC78.png)![color](https://www.colorhexa.com/71BC78.png)
+	**/
+	public static inline var FERN:Color = 0xFF71BC78;
+
+	/**
+		![color](https://www.colorhexa.com/26619C.png)![color](https://www.colorhexa.com/26619C.png)
+	**/
+	public static inline var LAPIS:Color = 0xFF26619C;
+
+	/**
+		![color](https://www.colorhexa.com/1560BD.png)![color](https://www.colorhexa.com/1560BD.png)
+	**/
+	public static inline var DENIM:Color = 0xFF1560BD;
+
+	/**
+		![color](https://www.colorhexa.com/8E6D7B.png)![color](https://www.colorhexa.com/8E6D7B.png)
+	**/
+	public static inline var SABLE:Color = 0xFF8E6D7B;
+
+	/**
+		![color](https://www.colorhexa.com/DA70D6.png)![color](https://www.colorhexa.com/DA70D6.png)
+	**/
+	public static inline var ORCHID:Color = 0xFFDA70D6;
+
+	/**
+		![color](https://www.colorhexa.com/CD5700.png)![color](https://www.colorhexa.com/CD5700.png)
+	**/
+	public static inline var TAWNY:Color = 0xFFCD5700;
+
+	/**
+		![color](https://www.colorhexa.com/01796F.png)![color](https://www.colorhexa.com/01796F.png)
+	**/
+	public static inline var PINE:Color = 0xFF01796F;
+
+	/**
+		![color](https://www.colorhexa.com/FFF700.png)![color](https://www.colorhexa.com/FFF700.png)
+	**/
+	public static inline var LEMON:Color = 0xFFFFF700;
+
+	/**
+		![color](https://www.colorhexa.com/FF2400.png)![color](https://www.colorhexa.com/FF2400.png)
+	**/
+	public static inline var SCARLET:Color = 0xFFFF2400;
+
+	/**
+		![color](https://www.colorhexa.com/483C32.png)![color](https://www.colorhexa.com/483C32.png)
+	**/
+	public static inline var TAUPE:Color = 0xFF483C32;
+
+	/**
+		![color](https://www.colorhexa.com/DE3163.png)![color](https://www.colorhexa.com/DE3163.png)
+	**/
+	public static inline var CERISE:Color = 0xFFDE3163;
+
+	/**
+		![color](https://www.colorhexa.com/FFBF00.png)![color](https://www.colorhexa.com/FFBF00.png)
+	**/
+	public static inline var AMBER:Color = 0xFFFFBF00;
+
+	/**
+		![color](https://www.colorhexa.com/D2691E.png)![color](https://www.colorhexa.com/D2691E.png)
+	**/
+	public static inline var CINNAMON:Color = 0xFFD2691E;
+
+	/**
 		![color](https://www.colorhexa.com/8B4513.png)![color](https://www.colorhexa.com/8B4513.png)
 	**/
 	public static inline var SADDLE_BROWN:Color = 0xFF8B4513;
-	
+
 	/**
 		![color](https://www.colorhexa.com/FF6347.png)![color](https://www.colorhexa.com/FF6347.png)
 	**/
@@ -209,26 +525,9 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var CORNSILK:Color = 0xFFFFDAB9;
 
 	/**
-		![color](https://www.colorhexa.com/FF7F50.png)![color](https://www.colorhexa.com/FF7F50.png)
-	**/
-	public static inline var CORAL:Color = 0xFFFF7F50;
-
-	/**
-		![color](https://www.colorhexa.com/47E3FF.png)![color](https://www.colorhexa.com/47E3FF.png)
-	**/
-	public static inline var TURQUOISE:Color = 0xFF47E3FF; 
-
-	/**
 		![color](https://www.colorhexa.com/7F00FF.png)![color](https://www.colorhexa.com/7F00FF.png)
 	**/
 	public static inline var VIOLET:Color = 0xFF7F00FF;
-
-	/**
-		![color](https://www.colorhexa.com/51428F.png)![color](https://www.colorhexa.com/51428F.png)
-	**/
-	public static inline var INDIGO:Color = 0xFF51428F;
-
-	
 
 	public var red(get, set):Int;
 	public var blue(get, set):Int;
@@ -488,7 +787,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	 */
 	@:op(A / B)
 	public static inline function divide(lhs:Color, rhs:Color):Color {
-		return Color.fromRGBA(Std.int(lhs.red / rhs.red == 0 ? 1 : rhs.red), Std.int(lhs.green / rhs.green == 0 ? 1 : rhs.green), Std.int(lhs.blue / rhs.blue == 0 ? 1 : rhs.blue), Std.int(lhs.alpha / rhs.alpha == 0 ? 1 : rhs.alpha));
+		return Color.fromRGBA(Std.int(lhs.red / rhs.red == 0 ? 1 : rhs.red), Std.int(lhs.green / rhs.green == 0 ? 1 : rhs.green),
+			Std.int(lhs.blue / rhs.blue == 0 ? 1 : rhs.blue), Std.int(lhs.alpha / rhs.alpha == 0 ? 1 : rhs.alpha));
 	}
 
 	/**
@@ -560,8 +860,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@return	A string of length 10 in the format 0xAARRGGBB
 	**/
 	public inline function toHexString(Alpha:Bool = true, Prefix:Bool = true):String {
-		return (Prefix ? "0x" : "") + (Alpha ? StringTools.hex(alpha,
-			2) : "") + StringTools.hex(red, 2) + StringTools.hex(green, 2) + StringTools.hex(blue, 2);
+		return (Prefix ? "0x" : "") + (Alpha ? StringTools.hex(alpha, 2) : "") + StringTools.hex(red, 2) + StringTools.hex(green, 2) + StringTools.hex(blue, 2);
 	}
 
 	/**
@@ -703,18 +1002,12 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		Chroma += Match;
 
 		switch (Std.int(hueD)) {
-			case 0:
-				setRGBAFloat(Chroma, mid, Match, Alpha);
-			case 1:
-				setRGBAFloat(mid, Chroma, Match, Alpha);
-			case 2:
-				setRGBAFloat(Match, Chroma, mid, Alpha);
-			case 3:
-				setRGBAFloat(Match, mid, Chroma, Alpha);
-			case 4:
-				setRGBAFloat(mid, Match, Chroma, Alpha);
-			case 5:
-				setRGBAFloat(Chroma, Match, mid, Alpha);
+			case 0: setRGBAFloat(Chroma, mid, Match, Alpha);
+			case 1: setRGBAFloat(mid, Chroma, Match, Alpha);
+			case 2: setRGBAFloat(Match, Chroma, mid, Alpha);
+			case 3: setRGBAFloat(Match, mid, Chroma, Alpha);
+			case 4: setRGBAFloat(mid, Match, Chroma, Alpha);
+			case 5: setRGBAFloat(Chroma, Match, mid, Alpha);
 		}
 
 		return this;

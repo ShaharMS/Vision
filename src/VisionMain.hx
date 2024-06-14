@@ -1,5 +1,6 @@
 package;
 
+import vision.ds.Color;
 using vision.tools.ImageTools;
 
 #if js
