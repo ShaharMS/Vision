@@ -1,0 +1,7 @@
+
+--class-path src
+--main Test_vision_Vision_posterize
+-debug
+--lua lua/main.lua
+--library vision
+--library format

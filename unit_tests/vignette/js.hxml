@@ -1,0 +1,7 @@
+
+--class-path src
+--main Test_vision_Vision_vignette
+-debug
+--js js/main.js
+--library vision
+--library format

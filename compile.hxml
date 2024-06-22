@@ -3,12 +3,14 @@
 --main VisionMain
 
 --library format
+
 # --library console.hx
 --debug
 --dce full
 --interp
+
 #--cpp bin/cpp
-#--define compile_unit_tests
+--define compile_unit_tests
 #--define radix_test
 
 #--js bin/main.js

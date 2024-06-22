@@ -4832,59 +4832,6 @@
 </f></extractMatrix>
 		<meta><m n=":directlyUsed"/></meta>
 	</class>
-	<class path="vision.algorithms.Harris" params="" file="src/vision/algorithms/Harris.hx">
-		<generateHarrisCorners public="1" set="method" line="18" static="1"><f a="image:initialEdgeFilterType:k:windowSize:sigma">
-	<x path="vision.ds.Image"/>
-	<x path="vision.ds.specifics.EdgeFilterType"/>
-	<x path="Float"/>
-	<x path="Int"/>
-	<x path="Float"/>
-	<a>
-		<responses><c path="vision.ds.Heatmap"/></responses>
-		<corners><c path="vision.ds.Heatmap"/></corners>
-	</a>
-</f></generateHarrisCorners>
-		<harrisResponseFunction public="1" set="method" line="71" static="1"><f a="matrix:k">
-	<x path="vision.ds.Matrix2D"/>
-	<x path="Float"/>
-	<x path="Float"/>
-</f></harrisResponseFunction>
-		<applyFilter public="1" set="method" line="75" static="1"><f a="image:type">
-	<x path="vision.ds.Image"/>
-	<x path="vision.ds.specifics.EdgeFilterType"/>
-	<x path="vision.ds.Image"/>
-</f></applyFilter>
-		<getValueOfImageDerivativeAt public="1" set="method" line="94" static="1">
-			<f a="image:x:y:?xDirection" v=":::true">
-				<x path="vision.ds.Image"/>
-				<x path="Float"/>
-				<x path="Float"/>
-				<x path="Bool"/>
-				<x path="Float"/>
-			</f>
-			<meta><m n=":value"><e>{ xDirection : true }</e></m></meta>
-			<haxe_doc>An integral part of the harris response function is the image's color change rate at a specific coordinate + some small value (in our case, `delta`).
-		The rate of color change is the same thing as the slope of a function, hence the name of this function. The two match up well, since we only
-		need the rate of change in either the `x` or `y` direction.
-
-		
-		@param image A gray scale image
-		@param coordinate The coordinate of the pixel
-		@param delta The small value to add to the coordinate. This can be optimized for more/less aggressive corner detection.
-		@param xDirection Whether to use the x direction or the y direction, since we need both slopes represented (on the `x` and `y` axis)</haxe_doc>
-		</getValueOfImageDerivativeAt>
-		<averageUsingGaussianDistribution public="1" set="method" line="100" static="1">
-			<f a="image:x:y:?kernelSize:?sigma" v=":::X3:1">
-				<x path="vision.ds.Image"/>
-				<x path="Int"/>
-				<x path="Int"/>
-				<x path="vision.ds.gaussian.GaussianKernelSize"/>
-				<x path="Float"/>
-				<x path="Float"/>
-			</f>
-			<meta><m n=":value"><e>{ sigma : 1, kernelSize : X3 }</e></m></meta>
-		</averageUsingGaussianDistribution>
-	</class>
 	<class path="vision.algorithms.Hough" params="" file="src/vision/algorithms/Hough.hx">
 		<maxRho static="1"><x path="Int"/></maxRho>
 		<generateHoughSpace public="1" set="method" line="17" static="1"><f a="image">
@@ -8933,7 +8880,6 @@
 		</new>
 		<haxe_doc>A class used both for matrix data visualization using colors, and for finding
 	certain elements in a matrix, e.g. finding local maximums/minimums.</haxe_doc>
-		<meta><m n=":directlyUsed"/></meta>
 	</class>
 	<class path="vision.ds.Histogram" params="" file="src/vision/ds/Histogram.hx">
 		<underlying><c path="Array"><x path="Null"><x path="Int"/></x></c></underlying>
