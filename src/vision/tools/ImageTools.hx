@@ -63,7 +63,7 @@ class ImageTools {
 	public static function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
 		#if (!js)
 			#if format
-			if (path.contains("://") && path.split(".").pop().toUpperCase() == "PNG") {
+			if (path.contains("://") && path.split(".").pop().split("?").shift().toUpperCase() == "PNG") {
 				var httpRequest = new sys.Http(path);
 				httpRequest.addHeader("User-Agent", "Vision");
 				httpRequest.onBytes = (data) -> {
@@ -93,7 +93,7 @@ class ImageTools {
 					trace(msg);
 				}
 				httpRequest.request();
-			} else if (path.split(".").pop().toUpperCase() == "PNG") {
+			} else if (path.split(".").pop().split("?").shift().toUpperCase() == "PNG") {
 				try {
 					final handle = sys.io.File.getBytes(path);
 					final reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));

@@ -22,6 +22,7 @@
 - **Added `rotate()`**
 - **`hasPixel()` now receives `Float`s instead of `Int`s**
 - **Slight optimization for `getFloatingPixel()`, avoids recursive call for out-of-bounds coordinates**
+- **Fixed `paintPixel` and `paintFloatingPixel` multiplying colors channels incorrectly**
 - **Added `center()`**, returns a point representing the center of the image
 - **Added `pixelToRelative()` & `relativeToPixel()`**, converts between pixel and relative coordinates for an image
 - **Added `copyViewFrom()`**

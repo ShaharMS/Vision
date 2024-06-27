@@ -352,14 +352,16 @@ abstract Image(ByteArray) {
 			#end
 		} else if (color.alphaFloat == 1) {
 			setPixel(x, y, color);
-		} else if (color.alphaFloat == 0) {
-			return;
+		} 
+		var oldColor = getPixel(x, y);
+		if (oldColor.alphaFloat == 0) {
+			setPixel(x, y, color);
 		} else {
 			var oldColor = getPixel(x, y);
 			var newColor = Color.fromRGBAFloat(
-				color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
-				color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat), 
-				color.blueFloat * color.alphaFloat + oldColor.blueFloat * (1 - color.alphaFloat), 
+				color.redFloat * (1 - oldColor.alphaFloat) + oldColor.redFloat * oldColor.alphaFloat,
+				color.greenFloat * (1 - oldColor.alphaFloat) + oldColor.greenFloat * oldColor.alphaFloat, 
+				color.blueFloat * (1 - oldColor.alphaFloat) + oldColor.blueFloat * oldColor.alphaFloat, 
 				oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat
 			);
 			setPixel(x, y, newColor);
@@ -387,9 +389,9 @@ abstract Image(ByteArray) {
 					var oldColor = getPixel(ix + posX, iy + posY);
 					color.alphaFloat = ((if (posX == 0) 1 - xFraction else xFraction) + (if (posY == 0) 1 - yFraction else yFraction)) / 2;
 					var newColor = Color.fromRGBAFloat(
-						color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
-						color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat), 
-						color.blueFloat * color.alphaFloat + oldColor.blueFloat * (1 - color.alphaFloat), 
+						color.redFloat * (1 - oldColor.alphaFloat) + oldColor.redFloat * oldColor.alphaFloat,
+						color.greenFloat * (1 - oldColor.alphaFloat) + oldColor.greenFloat * oldColor.alphaFloat, 
+						color.blueFloat * (1 - oldColor.alphaFloat) + oldColor.blueFloat * oldColor.alphaFloat, 
 						oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat
 					);
 					setPixel(ix + posX, iy + posY, newColor);
