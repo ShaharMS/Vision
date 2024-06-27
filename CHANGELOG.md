@@ -25,6 +25,8 @@
 - **Added `center()`**, returns a point representing the center of the image
 - **Added `pixelToRelative()` & `relativeToPixel()`**, converts between pixel and relative coordinates for an image
 - **Added `copyViewFrom()`**
+- **Added `fillEllipse()`**
+- **Fixed ellipses drawing incorrectly in some `drawEllipse` calls**
 
 ### `vision.ds`
 

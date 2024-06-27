@@ -3592,7 +3592,7 @@
 	</abstract>
 	<typedef path="sys.thread._Thread.ThreadHandle" params="" file="C:\HaxeToolkit\haxe\std/neko/_std/sys/thread/Thread.hx" private="1" module="sys.thread.Thread"><x path="sys.thread._Thread.NativeThreadHandle"/></typedef>
 	<class path="vision.Vision" params="" file="src/vision/Vision.hx">
-		<combine public="1" set="method" line="70" static="1">
+		<combine public="1" set="method" line="68" static="1">
 			<f a="image:?with:?percentage" v="::50">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Image"/>
@@ -3612,7 +3612,7 @@
 		@param with The second image to combine with. That image is preserved throughout the function.
 		@param percentage The ratio between the contributions of each pixel within the two images, from 0 to 100: a lower value will make the first image's pixels contribute more to the the final image, thus making that image more similar to the first image, and vice-versa.</haxe_doc>
 		</combine>
-		<grayscale public="1" set="method" line="98" static="1">
+		<grayscale public="1" set="method" line="96" static="1">
 			<f a="image:?simpleGrayscale" v=":false">
 				<x path="vision.ds.Image"/>
 				<x path="Bool"/>
@@ -3634,7 +3634,7 @@
 
 		@return The grayscaled image.]]></haxe_doc>
 		</grayscale>
-		<invert public="1" set="method" line="128" static="1">
+		<invert public="1" set="method" line="126" static="1">
 			<f a="image">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Image"/>
@@ -3660,7 +3660,7 @@
 
 		@return The inverted image.</haxe_doc>
 		</invert>
-		<sepia public="1" set="method" line="144" static="1">
+		<sepia public="1" set="method" line="142" static="1">
 			<f a="image:?strength" v=":0.25">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -3675,7 +3675,7 @@
 		|---|---|
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-sepia.png)|</haxe_doc>
 		</sepia>
-		<blackAndWhite public="1" set="method" line="165" static="1">
+		<blackAndWhite public="1" set="method" line="163" static="1">
 			<f a="image:?threshold" v=":128">
 				<x path="vision.ds.Image"/>
 				<x path="Int"/>
@@ -3695,7 +3695,7 @@
 
 		@return The converted image.</haxe_doc>
 		</blackAndWhite>
-		<contrast public="1" set="method" line="187" static="1">
+		<contrast public="1" set="method" line="185" static="1">
 			<f a="image">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Image"/>
@@ -3709,7 +3709,7 @@
 
 		@param image The image to be contrasted.</haxe_doc>
 		</contrast>
-		<smooth public="1" set="method" line="209" static="1">
+		<smooth public="1" set="method" line="207" static="1">
 			<f a="image:?strength:?affectAlpha:?kernelRadius:?circularKernel:?iterations" v=":0.1:false:1:true:1">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -3737,7 +3737,7 @@
 		@param iterations The number of times the smoothing should be applied. Higher values will result in more smoothing. Default is `1`.
 		@return The smoothed image. The given image is modified.</haxe_doc>
 		</smooth>
-		<pixelate public="1" set="method" line="248" static="1">
+		<pixelate public="1" set="method" line="246" static="1">
 			<f a="image:?averagePixels:?pixelSize:?affectAlpha" v=":true:2:true">
 				<x path="vision.ds.Image"/>
 				<x path="Bool"/>
@@ -3760,7 +3760,7 @@
 		@param affectAlpha Whether this effect applies to the alpha channel of each pixel or not
 		@return The given image, pixelated. The original image is modified.</haxe_doc>
 		</pixelate>
-		<posterize public="1" set="method" line="295" static="1">
+		<posterize public="1" set="method" line="293" static="1">
 			<f a="image:?bitsPerChannel:?affectAlpha" v=":4:true">
 				<x path="vision.ds.Image"/>
 				<x path="Int"/>
@@ -3782,7 +3782,7 @@
 		@param bitsPerChannel The number of bits per channel. Defaults to `4`. Ranges from `1` to `8`.
 		@param affectAlpha If `true`, the alpha channel will be posterized as well. Defaults to `true`.</haxe_doc>
 		</posterize>
-		<sharpen public="1" set="method" line="323" static="1">
+		<sharpen public="1" set="method" line="321" static="1">
 			<f a="image">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Image"/>
@@ -3801,7 +3801,7 @@
 		@param image The image to be contrasted.
 		@return The sharpened image. The original copy is not preserved.</haxe_doc>
 		</sharpen>
-		<deepfry public="1" set="method" line="341" static="1">
+		<deepfry public="1" set="method" line="339" static="1">
 			<f a="image:?iterations" v=":2">
 				<x path="vision.ds.Image"/>
 				<x path="Int"/>
@@ -3821,7 +3821,7 @@
 		@param iterations The amount of times the image gets sharpened. default is `2`.
 		@return The deepfried image. The original copy is not preserved.</haxe_doc>
 		</deepfry>
-		<vignette public="1" set="method" line="368" static="1">
+		<vignette public="1" set="method" line="366" static="1">
 			<f a="image:?strength:?intensity:?ratioDependent:?color" v=":0.2:1:false:Color.BLACK">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -3851,7 +3851,7 @@
 		@param color The target color for the vignette effect
 		@return the given image, with vignette applied. The original image is modified.</haxe_doc>
 		</vignette>
-		<fisheyeDistortion public="1" set="method" line="396" static="1">
+		<fisheyeDistortion public="1" set="method" line="394" static="1">
 			<f a="image:?strength" v=":1.5">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -3869,7 +3869,7 @@
 	    @param strength The "amount" of warping done to the image. A higher value means pixels closer to the center are more distorted.    @return Image
 		@returns the image, with fish-eye effect. The original image is preserved.</haxe_doc>
 		</fisheyeDistortion>
-		<barrelDistortion public="1" set="method" line="441" static="1">
+		<barrelDistortion public="1" set="method" line="439" static="1">
 			<f a="image:?strength" v=":0.2">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -3894,7 +3894,7 @@
 		Values converging to 0 distort the image less and less. Default is `0.2`.
 		@returns A distorted copy of the given image.</haxe_doc>
 		</barrelDistortion>
-		<pincushionDistortion public="1" set="method" line="486" static="1">
+		<pincushionDistortion public="1" set="method" line="484" static="1">
 			<f a="image:?strength" v=":0.2">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -3920,7 +3920,7 @@
 		Values converging to 0 distort the image less and less. Default is `0.2`.
 		@returns A distorted copy of the given image. The original image is preserved.</haxe_doc>
 		</pincushionDistortion>
-		<mustacheDistortion public="1" set="method" line="507" static="1">
+		<mustacheDistortion public="1" set="method" line="505" static="1">
 			<f a="image:?amplitude" v=":0.2">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -3943,7 +3943,7 @@
 		Values converging to 0 distort the image less and less. Default is `0.2`.
 		@returns A distorted copy of the image. The original image is preserved.]]></haxe_doc>
 		</mustacheDistortion>
-		<dilate public="1" set="method" line="560" static="1">
+		<dilate public="1" set="method" line="558" static="1">
 			<f a="image:?dilationRadius:?colorImportanceOrder:?circularKernel" v=":2:RedGreenBlue:true">
 				<x path="vision.ds.Image"/>
 				<x path="Int"/>
@@ -3973,7 +3973,7 @@
 		@param circularKernel When enabled, the kernel used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
 		@return The dilated image. The original copy is not preserved.</haxe_doc>
 		</dilate>
-		<erode public="1" set="method" line="598" static="1">
+		<erode public="1" set="method" line="596" static="1">
 			<f a="image:?erosionRadius:?colorImportanceOrder:?circularKernel" v=":2:RedGreenBlue:true">
 				<x path="vision.ds.Image"/>
 				<x path="Int"/>
@@ -4003,7 +4003,7 @@
 		@param circularKernel When enabled, the kernel used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
 		@return The eroded image. The original copy is not preserved.</haxe_doc>
 		</erode>
-		<saltAndPepperNoise public="1" set="method" line="629" static="1">
+		<saltAndPepperNoise public="1" set="method" line="627" static="1">
 			<f a="image:?percentage" v=":25">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -4024,7 +4024,7 @@
 
 		@see Color.interpolate()]]></haxe_doc>
 		</saltAndPepperNoise>
-		<dropOutNoise public="1" set="method" line="661" static="1">
+		<dropOutNoise public="1" set="method" line="659" static="1">
 			<f a="image:?percentage:?threshold" v=":5:128">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -4046,7 +4046,7 @@
 		@param percentage How much of the image should be "corrupted", in percentages between 0 to 100 - 0 means no change, 100 means fully "corrupted". Default is 5
 		@return The noisy image. The original copy is not preserved.]]></haxe_doc>
 		</dropOutNoise>
-		<whiteNoise public="1" set="method" line="688" static="1">
+		<whiteNoise public="1" set="method" line="686" static="1">
 			<f a="image:?percentage:?whiteNoiseRange" v=":25:RANGE_16">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -4067,7 +4067,7 @@
 		@param whiteNoiseRange The number of shades of gray used to generate the white noise. Shouldn't really effect performance, but you may want to change it to get a "higher/lower quality" white noise.
 		@return The noisy image. The original copy is not preserved.]]></haxe_doc>
 		</whiteNoise>
-		<normalize public="1" set="method" line="729" static="1">
+		<normalize public="1" set="method" line="727" static="1">
 			<f a="image:?rangeStart:?rangeEnd" v=":0x00000000:0xFFFFFFFF">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Color"/>
@@ -4096,7 +4096,7 @@
 		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF`
 		@return The normalized image. The original copy is not preserved.]]></haxe_doc>
 		</normalize>
-		<limitColorRanges public="1" set="method" line="759" static="1">
+		<limitColorRanges public="1" set="method" line="757" static="1">
 			<f a="image:?rangeStart:?rangeEnd" v=":0x00000000:0xFFFFFFFF">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Color"/>
@@ -4112,7 +4112,7 @@
 		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF`
 		@return The normalized image. The original copy is not preserved.</haxe_doc>
 		</limitColorRanges>
-		<replaceColorRanges public="1" set="method" line="780" static="1">
+		<replaceColorRanges public="1" set="method" line="778" static="1">
 			<f a="image:?ranges">
 				<x path="vision.ds.Image"/>
 				<c path="Array"><a>
@@ -4132,7 +4132,7 @@
 		@param ranges array of color ranges & replacement colors.
 		@return A processed version of the image. The original image is not preserved.]]></haxe_doc>
 		</replaceColorRanges>
-		<convolve public="1" set="method" line="823" static="1">
+		<convolve public="1" set="method" line="821" static="1">
 			<f a="image:?kernel" v=":Identity">
 				<x path="vision.ds.Image"/>
 				<x path="haxe.extern.EitherType">
@@ -4167,7 +4167,7 @@
 		or just a matrix: both `convolve(image, BoxBlur)` and `convolve(image, [[1,1,1],[1,1,1],[1,1,1]])` are valid ways to represent a box blur.
 		@return A convolved version of the image. The original image is not preserved.</haxe_doc>
 		</convolve>
-		<affineTransform public="1" set="method" line="919" static="1">
+		<affineTransform public="1" set="method" line="917" static="1">
 			<f a="image:?matrix:?expansionMode:?originPoint:?originMode" v="::RESIZE::CENTER">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.TransformationMatrix2D"/>
@@ -4212,7 +4212,7 @@
 		@see `Vision.convolve()` for color-manipulation matrices (or, kernels).
 		@see `Vision.perspectiveWarp()` for "3d" manipulations.</haxe_doc>
 		</affineTransform>
-		<projectiveTransform public="1" set="method" line="995" static="1">
+		<projectiveTransform public="1" set="method" line="993" static="1">
 			<f a="image:?matrix:?expansionMode" v="::RESIZE">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.TransformationMatrix2D"/>
@@ -4242,7 +4242,7 @@
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
 		@param expansionMode How to expand the image's bounds when the resulting image after transformation changes dimensions. Defaults to `RESIZE`.</haxe_doc>
 		</projectiveTransform>
-		<nearestNeighborBlur public="1" set="method" line="1057" static="1">
+		<nearestNeighborBlur public="1" set="method" line="1055" static="1">
 			<f a="image:?iterations" v=":1">
 				<x path="vision.ds.Image"/>
 				<x path="Int"/>
@@ -4266,7 +4266,7 @@
 
 		@return A blurred version of the image. The original image is not preserved.</haxe_doc>
 		</nearestNeighborBlur>
-		<gaussianBlur public="1" set="method" line="1084" static="1">
+		<gaussianBlur public="1" set="method" line="1082" static="1">
 			<f a="image:?sigma:?kernelSize:?fast" v=":1:GaussianKernelSize.X5:false">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -4296,7 +4296,7 @@
 		@throws InvalidGaussianKernelSize if the kernel size is even, negative or `0`, this error is thrown.
 		@return A blurred version of the image. The original image is not preserved.]]></haxe_doc>
 		</gaussianBlur>
-		<medianBlur public="1" set="method" line="1105" static="1">
+		<medianBlur public="1" set="method" line="1103" static="1">
 			<f a="image:?kernelSize" v=":5">
 				<x path="vision.ds.Image"/>
 				<x path="Int"/>
@@ -4318,7 +4318,7 @@
 		@param kernelSize the width & height of the kernel in which we should search for the median. A radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
 		@return A filtered version of the image, using median blurring. The original image is not preserved.]]></haxe_doc>
 		</medianBlur>
-		<simpleLine2DDetection public="1" set="method" line="1128" static="1">
+		<simpleLine2DDetection public="1" set="method" line="1126" static="1">
 			<f a="image:?accuracy:?minLineLength:?speedToAccuracyRatio" v=":50:10:Medium_Intermediate">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -4338,7 +4338,7 @@
 
 		@return The line detected image.</haxe_doc>
 		</simpleLine2DDetection>
-		<sobelEdgeDiffOperator public="1" set="method" line="1188" static="1">
+		<sobelEdgeDiffOperator public="1" set="method" line="1186" static="1">
 			<f a="image">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Image"/>
@@ -4359,7 +4359,7 @@
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.</haxe_doc>
 		</sobelEdgeDiffOperator>
-		<perwittEdgeDiffOperator public="1" set="method" line="1209" static="1">
+		<perwittEdgeDiffOperator public="1" set="method" line="1207" static="1">
 			<f a="image">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Image"/>
@@ -4380,7 +4380,7 @@
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.</haxe_doc>
 		</perwittEdgeDiffOperator>
-		<robertEdgeDiffOperator public="1" set="method" line="1231" static="1">
+		<robertEdgeDiffOperator public="1" set="method" line="1229" static="1">
 			<f a="image">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Image"/>
@@ -4402,7 +4402,7 @@
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.</haxe_doc>
 		</robertEdgeDiffOperator>
-		<laplacianEdgeDiffOperator public="1" set="method" line="1253" static="1">
+		<laplacianEdgeDiffOperator public="1" set="method" line="1251" static="1">
 			<f a="image:?filterPositive" v=":true">
 				<x path="vision.ds.Image"/>
 				<x path="Bool"/>
@@ -4426,7 +4426,7 @@
 		@param filterPositive Which version of the laplacian filter should the function use: the negative (detects "outward" edges), or the positive (detects "inward" edges). Default is positive (`true`).
 		@return A new image, containing the gradients of the edges as whitened pixels.</haxe_doc>
 		</laplacianEdgeDiffOperator>
-		<cannyEdgeDetection public="1" set="method" line="1279" static="1">
+		<cannyEdgeDetection public="1" set="method" line="1277" static="1">
 			<f a="image:?sigma:?kernelSize:?lowThreshold:?highThreshold" v=":1:X5:0.05:0.2">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -4457,7 +4457,7 @@
 		@throws InvalidGaussianKernelSize thrown if the `kernelSize` is negative/divisible by `2`.
 		@return The edge detected image.</haxe_doc>
 		</cannyEdgeDetection>
-		<sobelEdgeDetection public="1" set="method" line="1309" static="1">
+		<sobelEdgeDetection public="1" set="method" line="1307" static="1">
 			<f a="image:?threshold" v=":500">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -4483,7 +4483,7 @@
 
 		@return The image with edges detected. This image is returned as a new, black and white image.</haxe_doc>
 		</sobelEdgeDetection>
-		<perwittEdgeDetection public="1" set="method" line="1331" static="1">
+		<perwittEdgeDetection public="1" set="method" line="1329" static="1">
 			<f a="image:?threshold" v=":100">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -4507,7 +4507,7 @@
 
 		@return The image with edges detected. This image is returned as a new, black and white image.</haxe_doc>
 		</perwittEdgeDetection>
-		<laplacianOfGaussianEdgeDetection public="1" set="method" line="1355" static="1">
+		<laplacianOfGaussianEdgeDetection public="1" set="method" line="1353" static="1">
 			<f a="image:?threshold:?filterPositive:?sigma:?kernelSize" v=":2:true:1:X3">
 				<x path="vision.ds.Image"/>
 				<x path="Int"/>
@@ -4536,7 +4536,7 @@
 		@param kernelSize The size of the kernel (`width` & `height`) - a kernel size of `7`/ will produce a `7x7` kernel. Default is `GaussianKernelSize.X3`.
 		@return A new, black and white image, with white pixels being the detected edges.]]></haxe_doc>
 		</laplacianOfGaussianEdgeDetection>
-		<convolutionRidgeDetection public="1" set="method" line="1385" static="1">
+		<convolutionRidgeDetection public="1" set="method" line="1383" static="1">
 			<f a="image:?normalizationRangeStart:?normalizationRangeEnd:?refine" v=":0xFF444444:0xFFBBBBBB:false">
 				<x path="vision.ds.Image"/>
 				<x path="vision.ds.Color"/>
@@ -4570,7 +4570,7 @@
 		@param refine Appends an iterative pixel check to the algorithm, which removes isolated ridge pixels. `false` by default for performance reasons.
 		@return The ridge-highlighted version of the image. **The original copy is preserved**.]]></haxe_doc>
 		</convolutionRidgeDetection>
-		<bilateralDenoise public="1" set="method" line="1419" static="1">
+		<bilateralDenoise public="1" set="method" line="1417" static="1">
 			<f a="image:?gaussianSigma:?intensitySigma" v=":0.8:50">
 				<x path="vision.ds.Image"/>
 				<x path="Float"/>
@@ -4831,27 +4831,6 @@
 	<x path="vision.ds.Matrix2D"/>
 </f></extractMatrix>
 		<meta><m n=":directlyUsed"/></meta>
-	</class>
-	<class path="vision.algorithms.Hough" params="" file="src/vision/algorithms/Hough.hx">
-		<maxRho static="1"><x path="Int"/></maxRho>
-		<generateHoughSpace public="1" set="method" line="17" static="1"><f a="image">
-	<x path="vision.ds.Image"/>
-	<x path="vision.ds.Image"/>
-</f></generateHoughSpace>
-		<extractLocalMaximas public="1" set="method" line="39" static="1"><f a="space">
-	<x path="vision.ds.Image"/>
-	<x path="vision.ds.Image"/>
-</f></extractLocalMaximas>
-		<threshold public="1" set="method" line="64" static="1"><f a="space:value">
-	<x path="vision.ds.Image"/>
-	<x path="Int"/>
-	<x path="vision.ds.Image"/>
-</f></threshold>
-		<mapLines public="1" set="method" line="71" static="1"><f a="image:space">
-	<x path="vision.ds.Image"/>
-	<x path="vision.ds.Image"/>
-	<x path="vision.ds.Image"/>
-</f></mapLines>
 	</class>
 	<class path="vision.algorithms.Laplacian" params="" file="src/vision/algorithms/Laplacian.hx">
 		<convolveWithLaplacianOperator public="1" set="method" line="10" static="1"><f a="image:positive">
@@ -14061,179 +14040,6 @@
 			<haxe_doc>Highest-quality blurring, worst performance</haxe_doc>
 		</X9>
 		<meta><m n=":enum"/></meta>
-	</class>
-	<abstract path="vision.ds.hough.HoughAccumulator" params="" file="src/vision/ds/hough/HoughAccumulator.hx">
-		<from><icast><c path="Array"><c path="Array"><x path="Int"/></c></c></icast></from>
-		<this><c path="Array"><c path="Array"><x path="Int"/></c></c></this>
-		<to><icast><c path="Array"><c path="Array"><x path="Int"/></c></c></icast></to>
-		<haxe_doc>Used for the accumulator array of the hough transform.
-
-	ranges should follow this format:
-
-	- ρ: from `-d` to `d`
-	- θ: from `0` to `180`
-
-	(ρ - rho, θ - theta)
-
-	the underlying array will be accessed with `array[rho][theta]`</haxe_doc>
-		<impl><class path="vision.ds.hough._HoughAccumulator.HoughAccumulator_Impl_" params="" file="src/vision/ds/hough/HoughAccumulator.hx" private="1" module="vision.ds.hough.HoughAccumulator" final="1">
-	<rhoMax public="1" get="accessor" set="null" static="1"><x path="Int"/></rhoMax>
-	<get_rhoMax set="method" line="20" static="1"><f a="this">
-	<c path="Array"><c path="Array"><x path="Int"/></c></c>
-	<x path="Int"/>
-</f></get_rhoMax>
-	<_new public="1" set="method" line="24" static="1">
-		<f a="maxRho">
-			<x path="Int"/>
-			<x path="vision.ds.hough.HoughAccumulator"/>
-		</f>
-		<meta><m n=":noCompletion"/></meta>
-	</_new>
-	<incrementCell public="1" set="method" line="38" static="1">
-		<f a="this:rho:thetaIndex">
-			<c path="Array"><c path="Array"><x path="Int"/></c></c>
-			<x path="Float"/>
-			<x path="Int"/>
-			<x path="Void"/>
-		</f>
-		<haxe_doc>* Increments the value of the cell located in `rho`,`theta`.
-	 * 
-	 * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.</haxe_doc>
-	</incrementCell>
-	<decrementCell public="1" set="method" line="48" static="1">
-		<f a="this:rho:thetaIndex">
-			<c path="Array"><c path="Array"><x path="Int"/></c></c>
-			<x path="Float"/>
-			<x path="Int"/>
-			<x path="Void"/>
-		</f>
-		<haxe_doc>* Decrements the value of the cell located in `rho`,`theta`.
-	 * 
-	 * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.</haxe_doc>
-	</decrementCell>
-	<setCell public="1" set="method" line="58" static="1">
-		<f a="this:rho:thetaIndex:value">
-			<c path="Array"><c path="Array"><x path="Int"/></c></c>
-			<x path="Float"/>
-			<x path="Int"/>
-			<x path="Int"/>
-			<x path="Void"/>
-		</f>
-		<haxe_doc>* Sets the value of the cell located in `rho`,`theta`.
-	 * 
-	 * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.</haxe_doc>
-	</setCell>
-	<getMaximas public="1" set="method" line="67" static="1">
-		<f a="this:threshold">
-			<c path="Array"><c path="Array"><x path="Int"/></c></c>
-			<x path="Int"/>
-			<c path="Array"><x path="vision.ds.IntPoint2D"/></c>
-		</f>
-		<haxe_doc>* Retrieves the positions of all the cell containing a value which is a local maximum
-	 * 
-	 * @return an array of `IntPoint2D`s, containing the locations of the cells. `point.x` is `rho`, `point.y` is the theta's index.</haxe_doc>
-	</getMaximas>
-	<cellIterator public="1" set="method" line="91" static="1"><f a="this">
-	<c path="Array"><c path="Array"><x path="Int"/></c></c>
-	<c path="haxe.iterators.ArrayIterator"><c path="Array"><x path="Int"/></c></c>
-</f></cellIterator>
-</class></impl>
-	</abstract>
-	<class path="vision.ds.hough._HoughAccumulator.HoughAccumulator_Impl_" params="" file="src/vision/ds/hough/HoughAccumulator.hx" private="1" module="vision.ds.hough.HoughAccumulator" final="1">
-		<rhoMax public="1" get="accessor" set="null" static="1"><x path="Int"/></rhoMax>
-		<get_rhoMax set="method" line="20" static="1"><f a="this">
-	<c path="Array"><c path="Array"><x path="Int"/></c></c>
-	<x path="Int"/>
-</f></get_rhoMax>
-		<_new public="1" set="method" line="24" static="1">
-			<f a="maxRho">
-				<x path="Int"/>
-				<x path="vision.ds.hough.HoughAccumulator"/>
-			</f>
-			<meta><m n=":noCompletion"/></meta>
-		</_new>
-		<incrementCell public="1" set="method" line="38" static="1">
-			<f a="this:rho:thetaIndex">
-				<c path="Array"><c path="Array"><x path="Int"/></c></c>
-				<x path="Float"/>
-				<x path="Int"/>
-				<x path="Void"/>
-			</f>
-			<haxe_doc>* Increments the value of the cell located in `rho`,`theta`.
-	 * 
-	 * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.</haxe_doc>
-		</incrementCell>
-		<decrementCell public="1" set="method" line="48" static="1">
-			<f a="this:rho:thetaIndex">
-				<c path="Array"><c path="Array"><x path="Int"/></c></c>
-				<x path="Float"/>
-				<x path="Int"/>
-				<x path="Void"/>
-			</f>
-			<haxe_doc>* Decrements the value of the cell located in `rho`,`theta`.
-	 * 
-	 * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.</haxe_doc>
-		</decrementCell>
-		<setCell public="1" set="method" line="58" static="1">
-			<f a="this:rho:thetaIndex:value">
-				<c path="Array"><c path="Array"><x path="Int"/></c></c>
-				<x path="Float"/>
-				<x path="Int"/>
-				<x path="Int"/>
-				<x path="Void"/>
-			</f>
-			<haxe_doc>* Sets the value of the cell located in `rho`,`theta`.
-	 * 
-	 * The `theta` value is not actually the floating value in radians, but the `index` of `theta`.</haxe_doc>
-		</setCell>
-		<getMaximas public="1" set="method" line="67" static="1">
-			<f a="this:threshold">
-				<c path="Array"><c path="Array"><x path="Int"/></c></c>
-				<x path="Int"/>
-				<c path="Array"><x path="vision.ds.IntPoint2D"/></c>
-			</f>
-			<haxe_doc>* Retrieves the positions of all the cell containing a value which is a local maximum
-	 * 
-	 * @return an array of `IntPoint2D`s, containing the locations of the cells. `point.x` is `rho`, `point.y` is the theta's index.</haxe_doc>
-		</getMaximas>
-		<cellIterator public="1" set="method" line="91" static="1"><f a="this">
-	<c path="Array"><c path="Array"><x path="Int"/></c></c>
-	<c path="haxe.iterators.ArrayIterator"><c path="Array"><x path="Int"/></c></c>
-</f></cellIterator>
-	</class>
-	<class path="vision.ds.hough.HoughSpace" params="" file="src/vision/ds/hough/HoughSpace.hx">
-		<accumulator public="1" set="null">
-			<x path="vision.ds.hough.HoughAccumulator"/>
-			<haxe_doc>The Hough space is a 2D array of `Int`.
-		The accumulator is that array.</haxe_doc>
-		</accumulator>
-		<image public="1" set="null">
-			<x path="vision.ds.Image"/>
-			<haxe_doc>This isn't really the accumulator, but it is used to visualize the Hough space.
-		the reason this and the accumulator are separate is because the accumulator's value
-		is more "predictable" - represented as `Int` and not colors.</haxe_doc>
-		</image>
-		<maximums public="1">
-			<c path="Array"><x path="vision.ds.IntPoint2D"/></c>
-			<haxe_doc>The "maximums" of the Hough space:
-
-		when a certain point in the accumulator is greater than a given value,
-		the point is considered a maximum, and the value is added to the maximums array.</haxe_doc>
-		</maximums>
-		<rays public="1">
-			<c path="Array"><c path="vision.ds.Ray2D"/></c>
-			<haxe_doc>The rays detected from the accumulator.
-
-		Those are defined only when using the ~~`getHoughSpaceWithRays`~~ method.
-
-		@see ~~getHoughSpaceWithRays()~~</haxe_doc>
-		</rays>
-		<new public="1" set="method" line="35"><f a="accumulator:image">
-	<x path="vision.ds.hough.HoughAccumulator"/>
-	<x path="vision.ds.Image"/>
-	<x path="Void"/>
-</f></new>
-		<meta><m n=":structInit"/></meta>
 	</class>
 	<enum path="vision.ds.specifics.AlgorithmSettings" params="" file="src/vision/ds/specifics/AlgorithmSettings.hx">
 		<VeryLow_VeryFast><haxe_doc>Lowest quality, best performance</haxe_doc></VeryLow_VeryFast>

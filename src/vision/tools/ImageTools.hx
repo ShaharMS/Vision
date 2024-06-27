@@ -185,6 +185,7 @@ class ImageTools {
 						#end
 					}
 				}
+				case BMP:
 			}
 			#else
 				#if !vision_quiet
@@ -208,6 +209,7 @@ class ImageTools {
 						#end
 					}
 				}
+				case BMP:
 			}
 			#else
 				#if !vision_quiet

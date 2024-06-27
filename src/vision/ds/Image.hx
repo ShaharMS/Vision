@@ -352,6 +352,8 @@ abstract Image(ByteArray) {
 			#end
 		} else if (color.alphaFloat == 1) {
 			setPixel(x, y, color);
+		} else if (color.alphaFloat == 0) {
+			return;
 		} else {
 			var oldColor = getPixel(x, y);
 			var newColor = Color.fromRGBAFloat(
@@ -504,7 +506,7 @@ abstract Image(ByteArray) {
 	}
 
 	/**
-		Copies a pixel from the given image to this image.
+		Copies a pixel from this image to the given image.
 
 		@param image The image to copy the pixel to.
 		@param x The x coordinate of the pixel.
@@ -792,9 +794,9 @@ abstract Image(ByteArray) {
 	/**
 	 	Fills a circle with the given color:
 
-		 - The center of the circle is at (X, Y)
-		 - The radius of the circle is r
-		 - Anti-aliasing will not be used.
+		- The center of the circle is at (X, Y)
+		- The radius of the circle is r
+		- Anti-aliasing will not be used.
 
 		@param x The x coordinate of the center of the circle.
 		@param y The y coordinate of the center of the circle.
@@ -835,9 +837,9 @@ abstract Image(ByteArray) {
 	/**
 		Draws a circle of the given color:
 
-		 - The center of the circle is at (X, Y)
-		 - The radius of the circle is r
-		 - Anti-aliasing will not be used.
+		- The center of the circle is at (X, Y)
+		- The radius of the circle is r
+		- Anti-aliasing will not be used.
 
 		@param x The x coordinate of the center of the circle.
 		@param y The y coordinate of the center of the circle.
@@ -861,12 +863,28 @@ abstract Image(ByteArray) {
 		} while (x < 0);
 	}
 
+	public inline function fillEllipse(centerX:Int, centerY:Int, radiusX:Int, radiusY:Int, color:Color) {
+		var perimeter = Math.PI * (3 * (radiusX + radiusY) - Math.sqrt((3 * radiusX + radiusY) * (radiusX + 3 * radiusY)));
+		var step = Math.PI * 2 / perimeter;
+		var rads = 0.;
+
+		var previousX = -1, previousY = -1;
+
+		while (rads <= Math.PI * 2) {
+			var x = centerX + (Math.cos(rads) * radiusX).round();
+			drawLine(x, centerY - (Math.sin(rads) * radiusY).round(), x, centerY + (Math.sin(rads) * radiusY).round(), color);
+			rads += step;
+		}
+		// 2 Passes of same lines to resolve empyt lines forming.
+	}
+
 	/**
 		Draws an ellipse of the given color:
 
-		 - The center of the ellipse is at (X, Y)
-		 - The radius of the ellipse is r
-		 - Anti-aliasing will not be used.
+		- The center of the ellipse is at (X, Y)
+		- The radius of the ellipse is determined at each angle using `cos(angle) * radiusX + sin(angle) * radiusY`
+		- Anti-aliasing will not be used.  
+
 
 		@param centerX The x coordinate of the center of the ellipse.
 		@param centerY The y coordinate of the center of the ellipse.
@@ -875,72 +893,24 @@ abstract Image(ByteArray) {
 		@param color The color to draw the ellipse with.
 	**/
 	public inline function drawEllipse(centerX:Int, centerY:Int, radiusX:Int, radiusY:Int, color:Color) {
-		var x:Int,
-			y:Int,
-			xChange:Float,
-			yChange:Float,
-			ellipseError:Float,
-			twoASquare:Float,
-			twoBSquare:Float,
-			stoppingX:Float,
-			stoppingY:Float;
-		twoASquare = 2 * radiusX * radiusX;
-		twoBSquare = 2 * radiusY * radiusY;
-		x = radiusX - 1;
-		// weird fix for that one pixel bulging
-		var b = true;
-		y = 0;
-		xChange = radiusY * radiusY * (1 - 2 * radiusX);
-		yChange = radiusX * radiusX;
-		ellipseError = 0;
-		stoppingX = twoBSquare * radiusX;
-		stoppingY = 0;
-		while (stoppingX >= stoppingY) {
-			setPixel(centerX + x, centerY + y, color);
-			setPixel(centerX - x, centerY + y, color);
-			setPixel(centerX + x, centerY - y, color);
-			setPixel(centerX - x, centerY - y, color);
-			if (b) {
-				x++;
-				b = false;
+		var perimeter = Math.PI * (3 * (radiusX + radiusY) - Math.sqrt((3 * radiusX + radiusY) * (radiusX + 3 * radiusY)));
+		var step = Math.PI * 2 / perimeter;
+		var rads = 0.;
+
+		var previousX = -1, previousY = -1;
+		while (rads <= Math.PI * 2) {
+			var x = Math.cos(rads) * radiusX + centerX;
+			var y = Math.sin(rads) * radiusY + centerY;
+			if (previousX != -1 && Math.sqrt(Math.pow(previousX - x, 2) + Math.pow(previousY - y, 2)) > 1) {
+				drawLine(previousX, previousY, x.round(), y.round(), color);
+			} else {
+				setPixel(x.round(), y.round(), color);
 			}
-			if (ellipseError <= 0) {
-				y++;
-				stoppingY += twoASquare;
-				ellipseError += yChange;
-				yChange += twoASquare;
-			}
-			if (ellipseError > 0) {
-				x--;
-				stoppingX -= twoBSquare;
-				ellipseError += xChange;
-				xChange += twoBSquare;
-			}
-		}
-		ellipseError = radiusY * radiusY / 4 - radiusX * radiusX * (radiusY - 0.5);
-		x = 0;
-		y = radiusY;
-		xChange = radiusY * radiusY;
-		yChange = radiusX * radiusX * (1 - 2 * radiusY);
-		stoppingX = 0;
-		stoppingY = twoASquare * radiusY;
-		while (stoppingX <= stoppingY) {
-			setPixel(centerX + x, centerY + y, color);
-			setPixel(centerX - x, centerY + y, color);
-			setPixel(centerX + x, centerY - y, color);
-			setPixel(centerX - x, centerY - y, color);
-			if (ellipseError <= 0) {
-				x++;
-				stoppingX += twoBSquare;
-				ellipseError += xChange;
-				xChange += twoBSquare;
-			}
-			if (ellipseError > 0) {
-				y--;
-				stoppingY -= twoASquare;
-				ellipseError += yChange;
-				yChange += twoASquare;
-			}
+			
+			previousX = x.round();
+			previousY = y.round();
+
+			rads += step;
 		}
 	}
 

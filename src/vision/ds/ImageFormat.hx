@@ -9,4 +9,9 @@ enum abstract ImageFormat(Int) {
         PNG encoding
     **/
     var PNG;
+
+    /**
+        BMP encoding
+    **/
+    var BMP;
 }
