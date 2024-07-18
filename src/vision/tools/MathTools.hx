@@ -146,7 +146,7 @@ class MathTools {
 		final distance3:Float = distanceFromLineToPoint2D(line2, line1.start);
 		final distance4:Float = distanceFromLineToPoint2D(line2, line1.end);
 
-		final distance:Float = minFloat(distance1, distance2, distance3, distance4);
+		final distance:Float = min(distance1, distance2, distance3, distance4);
 		return distance;
 	}
 
@@ -491,24 +491,32 @@ class MathTools {
 		return (abs(cast number) / cast number) > 0;
 	}
 
+	/**
+		Estimates the gamma function for the given decimal value `x`.
+	**/
 	public static function gamma(x:Float):Float {
-        	var g = 7.0, p = [
-				0.99999999999980993, 676.5203681218851, -1259.1392167224028,
-            			771.32342877765313, -176.61502916214059, 12.507343278686905, 
-				-0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    	var g = 7.0, p = [
+			0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+        			771.32342877765313, -176.61502916214059, 12.507343278686905, 
+			-0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
 
-        	if (x < 0.5) return Math.PI / (Math.sin(Math.PI * x) * gamma(1 - x));
-        	else {
-            		x--;
-            		var a = p[0];
-            		var t = x + g + 0.5;
-            		for (i in 1...p.length) {
-                		a += p[i] / (x + i);
-            		}
-            		return Math.sqrt(Math.PI * 2) * Math.pow(t, x + 0.5) * Math.exp(-t) * a;
-        	}
+    	if (x < 0.5) return Math.PI / (Math.sin(Math.PI * x) * gamma(1 - x));
+    	else {
+        		x--;
+        		var a = p[0];
+        		var t = x + g + 0.5;
+        		for (i in 1...p.length) {
+            		a += p[i] / (x + i);
+        		}
+        		return Math.sqrt(Math.PI * 2) * Math.pow(t, x + 0.5) * Math.exp(-t) * a;
     	}
+    }
 
+	/**
+		Uses the gamma function to calculate the factorial of the given value.
+		@param value The value to calculate the factorial of
+		@return It's factorial
+	**/
 	public static function factorial(value:Float):Float {
 		var val = gamma(value + 1);
 		return val;
@@ -600,71 +608,8 @@ class MathTools {
 	// Utilities For Number Arrays
 	//-----------------------------------------------------------------------------------------
 
-	/**
-	 * Takes a 2D array and flattens it to a regular, 1D array.
-	 * @param array
-	 * @return Array<T>
-	 */
-	overload extern inline public static function flatten<T>(array:Array<Array<T>>):Array<T> {
-		var flat = [];
-		for (item in array)
-			flat = flat.concat(item);
-		return flat;
-	}
-
-	/**
-	 * Takes a 1D array and turns it into a 2D array, while splitting into arrays every `delimiter` indexes
-	 * @param array
-	 * @param delimiter
-	 * @return Array<T>
-	 */
-	overload extern inline public static function raise<T>(array:Array<T>, delimiter:Int):Array<Array<T>> {
-		var raised = [];
-		for (i in 0...array.length) {
-			if (raised[floor(i / delimiter)] == null) raised[floor(i / delimiter)] = [];
-			raised[floor(i / delimiter)][i % delimiter] = array[i];
-		}
-		return raised;
-	}
-
-	overload extern inline public static function minFloat(...values:Float):Float {
-		var min:Float = values[0];
-		for (i in 0...values.length) {
-			if (values[i] < min)
-				min = values[i];
-		}
-		return min;
-	}
-
-	overload extern inline public static function minFloat(values:Array<Float>):Float {
-		var min:Float = values[0];
-		for (i in 0...values.length) {
-			if (values[i] < min)
-				min = values[i];
-		}
-		return min;
-	}
-
-	overload extern inline public static function min(...values:Int):Int {
-		var min:Int = values[0];
-		for (i in 0...values.length) {
-			if (values[i] < min)
-				min = values[i];
-		}
-		return min;
-	}
-
-	overload extern inline public static function min(values:Array<Int>):Int {
-		var min:Int = values[0];
-		for (i in 0...values.length) {
-			if (values[i] < min)
-				min = values[i];
-		}
-		return min;
-	}
-
-	overload extern inline public static function maxFloat(...values:Float):Float {
-		var max:Float = values[0];
+	overload extern inline public static function max<T:Float, #if !cs Uint, #end Int64, Int>(value:T, ...values:T):T {
+		var max:T = value;
 		for (i in 0...values.length) {
 			if (values[i] > max)
 				max = values[i];
@@ -672,42 +617,16 @@ class MathTools {
 		return max;
 	}
 
-	overload extern inline public static function maxFloat(values:Array<Float>):Float {
-		var max:Float = values[0];
+	public static function min<T:Float, #if !cs Uint, #end Int64, Int>(value:T, ...values:T):T {
+		var min:T = value;
 		for (i in 0...values.length) {
-			if (values[i] > max)
-				max = values[i];
+			if (values[i] < min)
+				min = values[i];
 		}
-		return max;
+		return min;
 	}
 
-	overload extern inline public static function max(...values:Int):Int {
-		var max:Int = values[0];
-		for (i in 0...values.length) {
-			if (values[i] > max)
-				max = values[i];
-		}
-		return max;
-	}
-
-	overload extern inline public static function max(values:Array<Int>):Int {
-		var max:Int = values[0];
-		for (i in 0...values.length) {
-			if (values[i] > max)
-				max = values[i];
-		}
-		return max;
-	}
-
-	overload extern inline public static function average(...values:Float):Float {
-		var sum = 0.;
-		for (v in values) {
-			sum += v;
-		}
-		return sum / values.length;
-	}
-
-	overload extern public static inline function average<T:Int, #if !cs Uint, #end Int64, Float>(values:Array<T>):StdTypes.Float {
+	public static inline function average(...values:Float):Float {
 		var sum = 0.;
 		for (v in values) {
 			sum += v;
@@ -716,20 +635,8 @@ class MathTools {
 	}
 
 	/**
-	 * Gets the median of the given values. For large arrays, Radix sort is used to boost performance (1000 elements or above)
-	 */
-	extern overload public static inline function median<T:Int, #if !cs UInt, #end Int64>(...values:T):T {
-		if (values.length > 5000) {
-			return Radix.sort(values.toArray())[floor(values.length / 2)];
-		}
-		var s = values.toArray();
-		ArraySort.sort(s , (a, b) -> a - b);
-		return s[floor(values.length / 2)];
-	}
-
-	/**
-	 * Gets the median of the given values.
-	 */
+	    Gets the median of the given values.
+	**/
 	extern overload public static inline function median(...values:Float) {
 		var s = values.toArray();
 		ArraySort.sort(s , (a, b) -> Std.int(a - b));
@@ -737,23 +644,14 @@ class MathTools {
 	}
 
 	/**
-	 * Gets the median of the given values. For large arrays, Radix sort is used to boost performance (5000 elements or above)
-	 */
-	extern overload public static inline function median<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
+	    Gets the median of the given values. For large arrays, Radix sort is used to boost performance (5000 elements or above)
+	**/
+	extern overload public static inline function median<T:Int, #if !cs UInt, #end Int64>(...values:T):T {
 		if (values.length > 5000) {
-			return Radix.sort(values.copy())[floor(values.length / 2)];
+			return Radix.sort(values.toArray())[floor(values.length / 2)];
 		}
-		var s = values.copy();
+		var s = values.toArray();
 		ArraySort.sort(s , (a, b) -> a - b);
-		return s[floor(values.length / 2)];
-	}
-
-	/**
-	 * Gets the median of the given values.
-	 */
-	extern overload public static inline function median(values:Array<Float>) {
-		var s = values.copy();
-		ArraySort.sort(s , (a, b) -> Std.int(a - b));
 		return s[floor(values.length / 2)];
 	}
 

@@ -1,5 +1,6 @@
 package vision.tools;
 
+import vision.helpers.FormatImageLoader;
 import haxe.io.Path;
 import haxe.crypto.Base64;
 import haxe.io.BytesOutput;
@@ -59,64 +60,52 @@ class ImageTools {
 		@returns the image object.
 		@throws LibraryRequired Thrown when used on `sys` targets without installing & including `format`
 		@throws ImageLoadingFailed Thrown when trying to load a corrupted file.
+		@throws WebResponseError Thrown when a file loading attempt from a URL fails.
+		@throws Unimplemented Thrown when used with unsupported file types.
 	**/
 	public static function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
 		#if (!js)
 			#if format
-			if (path.contains("://") && path.split(".").pop().split("?").shift().toUpperCase() == "PNG") {
+			var func:ByteArray -> Image;
+			if (path.contains("://")) {
+				func = switch path.split(".").pop().split("?").shift().toUpperCase() {
+					case "PNG": FormatImageLoader.png;
+					case "BMP": FormatImageLoader.bmp;
+					case var type: {
+						#if !vision_quiet
+						throw new Unimplemented('Using `ImageTools.loadFromFile` with a file of type `${type}`');
+						#end
+						FormatImageLoader.png; // vision_quiet gonna vision_quiet i guess lol
+					}
+				}
 				var httpRequest = new sys.Http(path);
 				httpRequest.addHeader("User-Agent", "Vision");
 				httpRequest.onBytes = (data) -> {
-					try {
-						var reader = new format.png.Reader(new haxe.io.BytesInput(data));
-						var data = reader.read();
-						var header = format.png.Tools.getHeader(data);
-						var bytes = format.png.Tools.extract32(data);
-						format.png.Tools.reverseBytes(bytes);
-						image = new Image(header.width, header.height);
-						try {
-							image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length - 1);
-						} catch (e) #if !vision_quiet throw new ImageLoadingFailed(PNG, e.message);#end
-					} catch (e:haxe.Exception) {
-						#if vision_quiet
-						if(onComplete != null)
-							onComplete(new Image(100, 100));
-						#else
-						throw new ImageLoadingFailed(PNG, e.message);
-						#end
-					}
-
 					if(onComplete != null)
-						onComplete(image);
+						onComplete(func(data));
 				}
 				httpRequest.onError = msg -> {
-					trace(msg);
-				}
-				httpRequest.request();
-			} else if (path.split(".").pop().split("?").shift().toUpperCase() == "PNG") {
-				try {
-					final handle = sys.io.File.getBytes(path);
-					final reader = new format.png.Reader(new haxe.io.BytesInput(sys.io.File.getBytes(path)));
-					final data = reader.read();
-					final header = format.png.Tools.getHeader(data);
-					final bytes = format.png.Tools.extract32(data);
-					format.png.Tools.reverseBytes(bytes);
-					var image = new Image(header.width, header.height);
-
-					// copy the ARGB bytes from the PNG to the image, without overwriting the first couple of bytes
-					image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length);
-
-					if(onComplete != null)
-						onComplete(image);
-				} catch (e:haxe.Exception) {
-					#if vision_quiet
-					if(onComplete != null)
-						onComplete(new Image(100, 100));
-					#else
-					throw new ImageLoadingFailed(PNG, e.message);
+					#if !vision_quiet
+					throw new WebResponseError(path, msg);
 					#end
 				}
-			} else #if !vision_quiet throw new Unimplemented(path.split(".").pop().toUpperCase() + " Decoding"); #end
+				httpRequest.request();
+			} else {
+				final handle = sys.io.File.getBytes(path);
+				func = switch path.split(".").pop().split("?").shift().toUpperCase() {
+					case "PNG": FormatImageLoader.png;
+					case "BMP": FormatImageLoader.bmp;
+					case var type: {
+						#if !vision_quiet
+						throw new Unimplemented('Using `ImageTools.loadFromFile` with a file of type `${type}`');
+						#end
+						FormatImageLoader.png; // vision_quiet gonna vision_quiet i guess lol
+					}
+				}
+
+				if(onComplete != null)
+					onComplete(func(handle));
+			}
 			#else
 				#if !vision_quiet
 				throw new LibraryRequired("format", [], "ImageTools.loadFromFile", "function");
@@ -141,8 +130,8 @@ class ImageTools {
 			var i = 0;
 			while (i < imageData.data.length) {
 			  for (o in 0...4) {
-          image.underlying[i + (@:privateAccess Image.OFFSET + 1) + o] = imageData.data[i + o];
-        }
+          		image.underlying[i + (@:privateAccess Image.OFFSET + 1) + o] = imageData.data[i + o];
+        		}
 				i += 4;
 			}
 

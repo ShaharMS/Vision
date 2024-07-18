@@ -12,8 +12,8 @@ import haxe.Int64;
 import vision.ds.Color;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
-import vision.helpers.TextDrawer;
 using vision.tools.MathTools;
+using vision.tools.ArrayTools;
 import vision.tools.MathTools.*;
 
 /**
@@ -830,8 +830,8 @@ abstract Image(ByteArray) {
 
 		for (y in 0...values.length) {
 			if (values[y] == null) continue;
-			var min:Int = MathTools.min(values[y]);
-			var max:Int = MathTools.max(values[y]);
+			var min:Int = values[y].min();
+			var max:Int = values[y].max();
 			for (i in min...max + 1) setPixel(i, y, color);
 		}
 	}

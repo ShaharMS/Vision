@@ -8,6 +8,7 @@ import vision.algorithms.GaussJordan;
 import vision.ds.Array2D;
 import vision.tools.MathTools.*;
 using vision.tools.MathTools;
+using vision.tools.ArrayTools;
 /**
 	Represents a transformation matrix, used for warping images in one way or another.  
 	A matrix warps an image by multiplying each pixel's coordinates by the matrix, as follows:

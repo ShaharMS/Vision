@@ -39,13 +39,6 @@
   - **Pretty printing of `Matrix2D`**
   - **And more convenient functions**
 - **Added `Point3D`** - Representation of 3D point.
-- **Added `Heatmap`** - used for drawing heat-maps & extracting data from matrices of values. supports:
-  - **`lowerBound`, `upperBound`**
-  - **`getDataRange()`**
-  - **`getLocalMaximums()`, `getLocalMinimums()`**
-  - **`normalize()`**
-  - **`visualize()`**
-- **Added new colors for `Color.hx` - _Bordeaux_, _Charcoal_, _Onyx_, _Jet_, _Jet Black_**
 - **Documented `IntPoint2D` and `Point2D`**
 - **Added `Array2D.clone()`**
 - **Added `Array2D.toString()`**
@@ -66,6 +59,7 @@
 
 ### `vision.tools`
 
+- **Added `ArrayTools`, contains several function moved from `MathTools` Related to Arrays.**
 - **Added `MathTools` trigonometric functions using degrees:**
   - **`sind()`**
   - **`cosd()`**
@@ -97,6 +91,7 @@
 ### `vision.exceptions`
 
 - **Added `MatrixOperationError`**
+- **Added `WebResponseError`**
 - **Removed double mention of pixel position in `OutOfBounds` exception**
 
 # 1.3.1

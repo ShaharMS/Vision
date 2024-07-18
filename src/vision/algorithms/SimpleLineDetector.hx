@@ -1,6 +1,5 @@
 package vision.algorithms;
 
-import vision.helpers.pixelTriangle.shape.Quad.quadFill;
 import vision.tools.MathTools;
 import vision.ds.Int16Point2D;
 import vision.ds.Line2D;

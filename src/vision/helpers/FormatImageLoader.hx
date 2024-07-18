@@ -1,5 +1,4 @@
 package vision.helpers;
-import format.png.Reader;
 #if format
 import haxe.io.BytesInput;
 import vision.ds.Image;

@@ -37,6 +37,7 @@ import vision.tools.MathTools;
 import vision.tools.MathTools.*;
 
 using vision.tools.MathTools;
+using vision.tools.ArrayTools;
 using Math;
 using vision.tools.ImageTools;
 using vision.algorithms.Canny;

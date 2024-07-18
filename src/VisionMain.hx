@@ -1,9 +1,12 @@
 package;
 
+import vision.algorithms.SimpleHough;
+import vision.ds.Matrix2D;
 import vision.ds.Color;
 import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Ray2D;
+import vision.ds.Kernel2D;
 using vision.tools.ImageTools;
 
 #if js
@@ -153,11 +156,6 @@ class VisionMain {
 
 			])));
 			end = haxe.Timer.stamp();
-			var i = 0.1;
-			while (i <= 2) {
-				printImage(image.clone().projectiveTransform(Matrix2D.DEPTH(i, image.relativeToPixel(0.3, 0.8)), SAME_SIZE));
-				i += 0.1;
-			} 
 			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			#end
@@ -243,12 +241,6 @@ class VisionMain {
 			printImage(newI);
 			end = haxe.Timer.stamp();
 			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			start = haxe.Timer.stamp();
-			var data = Harris.generateHarrisCorners(image.clone(), SOBEL, 0.05, 3, 1);
-			var resp = data.corners.visualize(Color.TRANSPARENT, Color.RED);
-			printImage(image.clone().stamp(0, 0, resp));
-			end = haxe.Timer.stamp();
-			trace("Harris corners took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().sobelEdgeDetection());
 			end = haxe.Timer.stamp();
