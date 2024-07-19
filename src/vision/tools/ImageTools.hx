@@ -11,6 +11,7 @@ import vision.exceptions.LibraryRequired;
 import vision.ds.ImageFormat;
 import vision.ds.Array2D;
 import vision.exceptions.Unimplemented;
+import vision.exceptions.WebResponseError;
 import vision.ds.ImageResizeAlgorithm;
 #if js
 import js.lib.Promise;
