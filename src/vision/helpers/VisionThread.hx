@@ -11,7 +11,7 @@ import sys.thread.Thread;
 class VisionThread {
 	static var COUNT:Int = 0;
 
-	var underlying:#if js Promise<Void> #elseif (js || target.threaded) Thread #else Dynamic #end;
+	var underlying:#if js Promise<Void> #elseif (target.threaded) Thread #else Dynamic #end;
 
 	/**
 	 * The currently assigned job. should be a function with 0 parameters and no return type (`Void` `->` `Void`)

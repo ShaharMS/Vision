@@ -39,8 +39,8 @@ using StringTools;
 @:access(vision.ds.Image)
 class ImageTools {
 	/**
-	 * The default algorithm to use when resizing an image by "brute force" (setting its `width`/`height` when `vision_allow_resize` is defined)
-	 */
+		The default algorithm to use when resizing an image by "brute force" (setting its `width`/`height` when `vision_allow_resize` is defined)
+	**/
 	public static var defaultResizeAlgorithm:ImageResizeAlgorithm = BilinearInterpolation;
 
 	/**
@@ -99,7 +99,7 @@ class ImageTools {
 						#if !vision_quiet
 						throw new Unimplemented('Using `ImageTools.loadFromFile` with a file of type `${type}`');
 						#end
-						FormatImageLoader.png; // vision_quiet gonna vision_quiet i guess lol
+						FormatImageLoader.png;
 					}
 				}
 
@@ -174,7 +174,11 @@ class ImageTools {
 						#end
 					}
 				}
-				case BMP:
+				case BMP: {
+					#if !vision_quiet
+					throw new Unimplemented('Using `ImageTools.saveToFile` with `BMP` format');
+					#end
+				}
 			}
 			#else
 				#if !vision_quiet
@@ -198,7 +202,11 @@ class ImageTools {
 						#end
 					}
 				}
-				case BMP:
+				case BMP: {
+					#if !vision_quiet
+					throw new Unimplemented('Using `ImageTools.saveToFile` with `BMP` format');
+					#end
+				}
 			}
 			#else
 				#if !vision_quiet

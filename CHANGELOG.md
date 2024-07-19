@@ -22,7 +22,7 @@
 - **Added `rotate()`**
 - **`hasPixel()` now receives `Float`s instead of `Int`s**
 - **Slight optimization for `getFloatingPixel()`, avoids recursive call for out-of-bounds coordinates**
-- **Fixed `paintPixel` and `paintFloatingPixel` multiplying colors channels incorrectly**
+- **Fixed `paintPixel` and `paintFloatingPixel` multiplying color's alpha channels incorrectly**
 - **Added `center()`**, returns a point representing the center of the image
 - **Added `pixelToRelative()` & `relativeToPixel()`**, converts between pixel and relative coordinates for an image
 - **Added `copyViewFrom()`**
@@ -83,6 +83,7 @@
 ### `vision.algorithms`
 
 - **Renamed `Gaussian` -> `Gauss`**
+- **Renamed `Laplacian` -> `Laplace`**
 - **Added `GaussJordan` for matrix inversion**
 - **Added `BilinearInterpolation.interpolateMissingPixels()` for filling in of missing pixels in images**
 - **Added `Cramer` for solving systems of linear equations**

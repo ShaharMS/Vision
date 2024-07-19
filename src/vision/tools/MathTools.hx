@@ -76,18 +76,18 @@ class MathTools {
 	}
 
 	/**
-	 * Gets the point on `ray` , which is `distance` points away
-	 * from `startXPos`.
-	 * 
-	 * In order to avoid returning two points (since
-	 * any point on the ray has 2 points with the exact same distance from it),
-	 * you have the `goPositive` value.
-	 * 
-	 * 
-	 * @param startXPos The `x` position to start from.
-	 * @param distance The distance from `start` to the resulting point.
-	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
-	 */
+		Gets the point on `ray` , which is `distance` points away
+		from `startXPos`.
+		
+		In order to avoid returning two points (since
+		any point on the ray has 2 points with the exact same distance from it),
+		you have the `goPositive` value.
+		
+		
+		@param startXPos The `x` position to start from.
+		@param distance The distance from `start` to the resulting point.
+		@param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
+	**/
 	public static inline function findPointAtDistanceUsingX(ray:Ray2D, startXPos:Float, distance:Float, goPositive:Bool = true):Point2D {
 		// Were going to step one point to the right, and check how much distance was covered.
 		// After checking, were going to divide distance with the distance between start to start(y + 1)
@@ -100,18 +100,18 @@ class MathTools {
 	}
 
 	/**
-	 * Gets the point on `ray` , which is `distance` points away
-	 * from `startYPos`.
-	 * 
-	 * In order to avoid returning two points (since
-	 * any point on the ray has 2 points with the exact same distance from it),
-	 * you have the `goPositive` value.
-	 * 
-	 * 
-	 * @param startYPos The `y` position to start from.
-	 * @param distance The distance from `start` to the resulting point.
-	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
-	 */
+		Gets the point on `ray` , which is `distance` points away
+		from `startYPos`.
+		
+		In order to avoid returning two points (since
+		any point on the ray has 2 points with the exact same distance from it),
+		you have the `goPositive` value.
+		
+		
+		@param startYPos The `y` position to start from.
+		@param distance The distance from `start` to the resulting point.
+		@param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
+	**/
 	 public static inline function findPointAtDistanceUsingY(ray:Ray2D, startYPos:Float, distance:Float, goPositive:Bool = true):Point2D {
 		// Were going to step one point to the right, and check how much distance was covered.
 		// After checking, were going to divide distance with the distance between start to start(y + 1)

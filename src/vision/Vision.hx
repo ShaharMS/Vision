@@ -11,7 +11,7 @@ import vision.ds.Matrix2D;
 import vision.ds.Int16Point2D;
 import haxe.ds.Vector;
 import vision.ds.specifics.WhiteNoiseRange;
-import vision.algorithms.Laplacian;
+import vision.algorithms.Laplace;
 import vision.ds.specifics.ColorImportanceOrder;
 import vision.algorithms.BilateralFilter;
 import vision.algorithms.RobertsCross;
@@ -1250,7 +1250,7 @@ class Vision {
 		@return A new image, containing the gradients of the edges as whitened pixels.
 	**/
 	public static function laplacianEdgeDiffOperator(image:Image, filterPositive:Bool = true) {
-		return Laplacian.convolveWithLaplacianOperator(image.clone(), filterPositive);
+		return Laplace.convolveWithLaplacianOperator(image.clone(), filterPositive);
 	}
 
 	/**
@@ -1352,7 +1352,7 @@ class Vision {
 		@return A new, black and white image, with white pixels being the detected edges.
 	**/
 	public static function laplacianOfGaussianEdgeDetection(image:Image, ?threshold:Int = 2, ?filterPositive:Bool = true, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = X3) {
-		return Laplacian.laplacianOfGaussian(image, kernelSize, sigma, threshold, filterPositive);
+		return Laplace.laplacianOfGaussian(image, kernelSize, sigma, threshold, filterPositive);
 	}
 
 	/**

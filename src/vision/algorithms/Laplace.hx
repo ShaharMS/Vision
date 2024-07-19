@@ -5,7 +5,7 @@ import vision.ds.Color;
 import vision.tools.ImageTools;
 import vision.ds.Image;
 
-class Laplacian {
+class Laplace {
     
     public static function convolveWithLaplacianOperator(image:Image, positive:Bool) {
 		var edgeColors:Image = new Image(image.width, image.height);
