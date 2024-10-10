@@ -5,6 +5,7 @@ import sys.FileSystem;
 #end
 using StringTools;
 
+@:noCompletion
 class TestCase {
     public var originalFile:{
         ?pack:String,

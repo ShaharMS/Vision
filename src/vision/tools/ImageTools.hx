@@ -1,6 +1,8 @@
 package vision.tools;
 
+#if format
 import vision.helpers.FormatImageLoader;
+#end
 import haxe.io.Path;
 import haxe.crypto.Base64;
 import haxe.io.BytesOutput;

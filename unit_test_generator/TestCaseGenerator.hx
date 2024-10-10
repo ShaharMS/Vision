@@ -6,6 +6,7 @@ import sys.FileSystem;
 #end
 using StringTools;
 
+@:noCompletion
 class TestCaseGenerator {
     
     static var packageRegex = ~/package *([a-zA-Z0-9\._]+);/;
