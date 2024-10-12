@@ -1,3 +1,15 @@
+# 2.1.0
+
+### `Vision.hx`
+
+ - **Added `filterForColorChannel()`**
+
+
+### `vision.ds`
+
+ - **Added `ColorChannel.hx` enum**
+ - **Added `Color.fromFloat()`**
+
 # 2.0.0
 
 ## Breaking!

@@ -1,5 +1,6 @@
 package vision;
 
+import vision.ds.specifics.ColorChannel;
 import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
 import vision.ds.Point3D;
@@ -791,6 +792,29 @@ class Vision {
 			});
 		}
 		return image;
+	}
+
+	public static function filterForColorChannel(image:Image, channel:ColorChannel) {
+		var output = image.clone();
+
+		image.forEachPixelInView((x, y, color) -> {
+			var colorValue = switch channel {
+				case RED: Color.from8Bit(color.red);
+				case GREEN: Color.from8Bit(color.green);
+				case BLUE: Color.from8Bit(color.blue);
+				case ALPHA: Color.from8Bit(color.alpha);
+				case CYAN: Color.fromFloat(color.cyan);
+				case MAGENTA: Color.fromFloat(color.magenta);
+				case YELLOW: Color.fromFloat(color.yellow);
+				case HUE: Color.fromHSB(color.hue, 1, 1);
+				case SATURATION: Color.fromFloat(color.saturation);
+				case BRIGHTNESS: Color.fromFloat(color.brightness);
+			}
+
+			output.setUnsafePixel(x, y, colorValue);
+		});
+
+		return output;
 	}
 
 	/**
