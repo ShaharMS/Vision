@@ -2,11 +2,12 @@ package vision.tools;
 
 import haxe.ds.ArraySort;
 import vision.algorithms.Radix;
+
 using vision.tools.MathTools;
+
 import vision.tools.MathTools.*;
 
 class ArrayTools {
-    
 	/**
 		Takes a 2D array and flattens it to a regular, 1D array.
 		@param array
@@ -41,7 +42,7 @@ class ArrayTools {
 		@param predicate A function that takes an element and returns true if the element should be used as a delimiter.
 		@return An array of one higer dimension.
 	**/
-	overload extern inline public static function raise<T>(array:Array<T>, predicateOpensArray:Bool, predicate:T -> Bool):Array<Array<T>> {
+	overload extern inline public static function raise<T>(array:Array<T>, predicateOpensArray:Bool, predicate:T->Bool):Array<Array<T>> {
 		var raised:Array<Array<T>> = [];
 		var temp:Array<T> = [];
 
@@ -57,51 +58,110 @@ class ArrayTools {
 		if (temp.length > 0) raised.push(temp);
 		return raised;
 	}
-	
-	public static inline function min<T:Int, #if !cs Uint, #end Int64, Float>(values:Array<T>):T {
-		var min:T = values[0];
+
+	public overload extern static inline function min<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
+		var min = values[0];
 		for (i in 0...values.length) {
-			if (values[i] < min)
-				min = values[i];
+			if (values[i] < min) min = values[i];
 		}
 		return min;
 	}
 
-	public static inline function max<T:Int, #if !cs Uint, #end Int64, Float>(values:Array<T>):T {
-		var max:T = values[0];
+	public overload extern static inline function min(values:Array<Float>):Float {
+		var min = values[0];
 		for (i in 0...values.length) {
-			if (values[i] > max)
-				max = values[i];
+			if (values[i] < min) min = values[i];
+		}
+		return min;
+	}
+
+	public overload extern static inline function min<T>(values:Array<T>, valueFunction:T->Float):T {
+		var min = values[0];
+		var minValue = valueFunction(min);
+		for (i in 0...values.length) {
+			var currentValue = valueFunction(values[i]);
+			if (currentValue < minValue) {
+				min = values[i];
+				minValue = currentValue;
+			}
+		}
+
+		return min;
+	}
+
+	public overload extern static inline function max<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
+		var max = values[0];
+		for (i in 0...values.length) {
+			if (values[i] > max) max = values[i];
 		}
 		return max;
 	}
 
-	public static inline function average<T:Int, #if !cs Uint, #end Int64, Float>(values:Array<T>):StdTypes.Float {
+	public overload extern static inline function max(values:Array<Float>):Float {
+		var max = values[0];
+		for (i in 0...values.length) {
+			if (values[i] > max) max = values[i];
+		}
+		return max;
+	}
+
+	public overload extern static inline function max<T>(values:Array<T>, valueFunction:T->Float):T {
+		var max = values[0];
+		var maxValue = valueFunction(max);
+		for (i in 0...values.length) {
+			var currentValue = valueFunction(values[i]);
+			if (currentValue > maxValue) {
+				max = values[i];
+				maxValue = currentValue;
+			}
+		}
+
+		return max;
+	}
+
+	public overload extern static inline function average<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):Float {
 		var sum = 0.;
 		for (v in values) {
 			sum += v;
 		}
 		return sum / values.length;
 	}
-	
+
+	public overload extern static inline function average(values:Array<Float>):Float {
+		var sum = 0.;
+		for (v in values) {
+			sum += v;
+		}
+		return sum / values.length;
+	}
+
+	public overload extern static inline function average<T>(values:Array<T>, valueFunction:T->Float):Float {
+		var sum = 0.;
+		for (v in values) {
+			sum += valueFunction(v);
+		}
+		return sum / values.length;
+	}
+
 	/**
-        Gets the median of the given values. For large arrays, Radix sort is used to boost performance (5000 elements or above)
+		Gets the median of the given values. For large arrays, Radix sort is used to boost performance (5000 elements or above)
 	**/
 	extern overload public static inline function median<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
 		if (values.length > 5000) {
 			return Radix.sort(values.copy())[floor(values.length / 2)];
 		}
 		var s = values.copy();
-		ArraySort.sort(s , (a, b) -> a - b);
+		ArraySort.sort(s, (a, b) -> a - b);
 		return s[floor(values.length / 2)];
 	}
 
 	/**
-	    Gets the median of the given values.
+		Gets the median of the given values.
 	**/
 	extern overload public static inline function median(values:Array<Float>) {
 		var s = values.copy();
-		ArraySort.sort(s , (a, b) -> Std.int(a - b));
+		ArraySort.sort(s, (a, b) -> Std.int(a - b));
 		return s[floor(values.length / 2)];
 	}
+
 }
