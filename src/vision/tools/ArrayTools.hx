@@ -59,7 +59,8 @@ class ArrayTools {
 		return raised;
 	}
 
-	public overload extern static inline function min<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
+
+	public overload extern static inline function min(values:Array<Float>):Float {
 		var min = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min) min = values[i];
@@ -67,7 +68,7 @@ class ArrayTools {
 		return min;
 	}
 
-	public overload extern static inline function min(values:Array<Float>):Float {
+	public overload extern static inline function min(values:Array<Int>):Int {
 		var min = values[0];
 		for (i in 0...values.length) {
 			if (values[i] < min) min = values[i];
@@ -89,7 +90,7 @@ class ArrayTools {
 		return min;
 	}
 
-	public overload extern static inline function max<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
+	public overload extern static inline function max(values:Array<Int>):Int {
 		var max = values[0];
 		for (i in 0...values.length) {
 			if (values[i] > max) max = values[i];
@@ -119,7 +120,7 @@ class ArrayTools {
 		return max;
 	}
 
-	public overload extern static inline function average<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):Float {
+	public overload extern static inline function average(values:Array<Int>):Float {
 		var sum = 0.;
 		for (v in values) {
 			sum += v;
@@ -135,18 +136,10 @@ class ArrayTools {
 		return sum / values.length;
 	}
 
-	public overload extern static inline function average<T>(values:Array<T>, valueFunction:T->Float):Float {
-		var sum = 0.;
-		for (v in values) {
-			sum += valueFunction(v);
-		}
-		return sum / values.length;
-	}
-
 	/**
 		Gets the median of the given values. For large arrays, Radix sort is used to boost performance (5000 elements or above)
 	**/
-	extern overload public static inline function median<T:Int, #if !cs UInt, #end Int64>(values:Array<T>):T {
+	extern overload public static inline function median(values:Array<Int>):Int {
 		if (values.length > 5000) {
 			return Radix.sort(values.copy())[floor(values.length / 2)];
 		}
@@ -158,7 +151,7 @@ class ArrayTools {
 	/**
 		Gets the median of the given values.
 	**/
-	extern overload public static inline function median(values:Array<Float>) {
+	extern overload public static inline function median(values:Array<Float>):Float {
 		var s = values.copy();
 		ArraySort.sort(s, (a, b) -> Std.int(a - b));
 		return s[floor(values.length / 2)];
