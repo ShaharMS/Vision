@@ -1,5 +1,6 @@
 package vision.tools;
 
+import haxe.extern.EitherType;
 import haxe.ds.ArraySort;
 import vision.algorithms.Radix;
 
@@ -59,19 +60,10 @@ class ArrayTools {
 		return raised;
 	}
 
-
-	public overload extern static inline function min(values:Array<Float>):Float {
+	public overload extern static inline function min<T:EitherType<Int ,Float>>(values:Array<T>):T {
 		var min = values[0];
 		for (i in 0...values.length) {
-			if (values[i] < min) min = values[i];
-		}
-		return min;
-	}
-
-	public overload extern static inline function min(values:Array<Int>):Int {
-		var min = values[0];
-		for (i in 0...values.length) {
-			if (values[i] < min) min = values[i];
+			if ((values[i] - min) < 0) min = values[i];
 		}
 		return min;
 	}
@@ -90,18 +82,10 @@ class ArrayTools {
 		return min;
 	}
 
-	public overload extern static inline function max(values:Array<Int>):Int {
+	public overload extern static inline function max<T:EitherType<Int ,Float>>(values:Array<T>):T {
 		var max = values[0];
 		for (i in 0...values.length) {
-			if (values[i] > max) max = values[i];
-		}
-		return max;
-	}
-
-	public overload extern static inline function max(values:Array<Float>):Float {
-		var max = values[0];
-		for (i in 0...values.length) {
-			if (values[i] > max) max = values[i];
+			if ((values[i] - max) > 0) max = values[i];
 		}
 		return max;
 	}
@@ -120,18 +104,10 @@ class ArrayTools {
 		return max;
 	}
 
-	public overload extern static inline function average(values:Array<Int>):Float {
+	public overload extern static inline function average<T:EitherType<Int, Float>>(values:Array<T>):Float {
 		var sum = 0.;
 		for (v in values) {
-			sum += v;
-		}
-		return sum / values.length;
-	}
-
-	public overload extern static inline function average(values:Array<Float>):Float {
-		var sum = 0.;
-		for (v in values) {
-			sum += v;
+			sum += cast v;
 		}
 		return sum / values.length;
 	}
