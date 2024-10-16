@@ -3,16 +3,23 @@
 ### `Vision.hx`
 
  - **Added `filterForColorChannel()`**
+ - **Added `kmeansGroupImageColors()`**
 
+### `Image.hx`
+
+ - **Added `toArray()`**
 
 ### `vision.ds`
 
  - **Added `ColorChannel.hx` enum**
  - **Added `Color.fromFloat()`**
+ - **Added `Color.distanceBetween()`**
+ - **Added `Color.differenceBetween()`**
+ - **Added `Color.getAverage()`**
 
-## `vision.tools`
+### `vision.tools`
 
- - **Fixed `ArrayTools` `min`/`max` methods**
+ - **Fixed `ArrayTools` `min`/`max`/`average` methods**
 
 # 2.0.0
 

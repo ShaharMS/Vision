@@ -1569,6 +1569,15 @@ abstract Image(ByteArray) {
 		return arr;
 	}
 
+	@:to public inline function toArray():Array<Color> {
+		var array:Array<Color> = [];
+		var i = OFFSET;
+		while (i < this.length) {
+			array[i] = this.getInt32(i);
+			i += 4;
+		}
+		return array;
+	}
 	/**
 		Takes a `ByteArray`/`haxe.io.Bytes` instance and some stats, and returns a new image instance
 		that correctly represents the colors inside `bytes` at the given size

@@ -1,5 +1,6 @@
 package vision;
 
+import vision.algorithms.KMeans;
 import vision.ds.specifics.ColorChannel;
 import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
@@ -815,6 +816,13 @@ class Vision {
 		});
 
 		return output;
+	}
+
+	public static function kmeansGroupImageColors(image:Image, groupCount:Int = 16, considerTransparency:Bool = false) {
+		return KMeans.generateClustersUsingConvergence(image.toArray(), 
+			groupCount, 
+			(a, b) -> Color.distanceBetween(a, b, considerTransparency),
+			(array) -> Color.getAverage(array, considerTransparency));
 	}
 
 	/**
