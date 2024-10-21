@@ -4,6 +4,7 @@
 
  - **Added `filterForColorChannel()`**
  - **Added `kmeansGroupImageColors()`**
+ - **Added `simpleImageSimilarity()`**
 
 ### `Image.hx`
 

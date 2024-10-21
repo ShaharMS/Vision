@@ -1,5 +1,7 @@
 package vision;
 
+import vision.exceptions.Unimplemented;
+import vision.ds.specifics.SimilarityScoringMechanism;
 import vision.algorithms.KMeans;
 import vision.ds.specifics.ColorChannel;
 import vision.ds.TransformationMatrix2D;
@@ -818,13 +820,6 @@ class Vision {
 		return output;
 	}
 
-	public static function kmeansGroupImageColors(image:Image, groupCount:Int = 16, considerTransparency:Bool = false) {
-		return KMeans.generateClustersUsingConvergence(image.toArray(), 
-			groupCount, 
-			(a, b) -> Color.distanceBetween(a, b, considerTransparency),
-			(array) -> Color.getAverage(array, considerTransparency));
-	}
-
 	/**
 		manipulates the image's pixel data by passing the pixels' value through a kernel.
 
@@ -1450,4 +1445,49 @@ class Vision {
 	public static function bilateralDenoise(image:Image, gaussianSigma:Float = 0.8, intensitySigma:Float = 50):Image {
 		return BilateralFilter.filter(image, gaussianSigma, intensitySigma);
 	}
+
+
+	public static function simpleImageSimilarity(image:Image, ?compared:Image, scoringMechanism:SimilarityScoringMechanism = HIGHEST_COLOR_DIFFERENCE):Float {
+		var image1 = image.clone(), image2 = (compared ?? image).clone();
+		image1.resize(4, 4, BilinearInterpolation);
+		image2.resize(4, 4, BilinearInterpolation);
+		var array1 = image1.toArray(), array2 = image2.toArray();
+		var distances = [];
+		for (i in 0...16) {
+			distances.push(Color.differenceBetween(array1[i], array2[i], false));
+		}
+		
+		return switch scoringMechanism {
+			case HIGHEST_COLOR_DIFFERENCE: distances.max();
+			case AVERAGE_COLOR_DIFFERENCE: distances.average();
+			case SUM_BASELINE_OVERSHOOTS: {
+				var averages = distances.average();
+				var overshoot = 0.;
+				for (i in 0...16) {
+					overshoot += Math.max(0, distances[i] - averages);
+				}
+				overshoot;
+			}
+		}
+		
+	}
+
+	public static function kmeansGroupImageColors(image:Image, groupCount:Int = 16, considerTransparency:Bool = false):Array<Array<Color>> {
+		return KMeans.generateClustersUsingConvergence(image.toArray(), 
+			groupCount, 
+			(a, b) -> Color.distanceBetween(a, b, considerTransparency),
+			(array) -> Color.getAverage(array, considerTransparency));
+	}
+
+	public static function kmeansGroupSimilarImages(images:Array<Image>, groupCount:Int = 16):Array<Array<Image>> {
+		var clusterMap:Map<Image, Array<Color>> = new Map<Image, Array<Color>>();
+		for (image in images) {
+			var kmeans = Vision.kmeansGroupImageColors(image, groupCount);
+			var clusterCenters = kmeans.map((array) -> Color.getAverage(array, false));
+			clusterMap.set(image, clusterCenters);
+		}
+
+		throw new Unimplemented("kmeansGroupSimilarImages");
+	}
+
 }
