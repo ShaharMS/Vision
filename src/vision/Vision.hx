@@ -1,5 +1,7 @@
 package vision;
 
+import haxe.io.Bytes;
+import haxe.crypto.Sha256;
 import vision.exceptions.Unimplemented;
 import vision.ds.specifics.SimilarityScoringMechanism;
 import vision.algorithms.KMeans;
@@ -1480,12 +1482,33 @@ class Vision {
 	}
 
 	public static function kmeansGroupSimilarImages(images:Array<Image>, groupCount:Int = 16):Array<Array<Image>> {
-		var clusterMap:Map<Image, Array<Color>> = new Map<Image, Array<Color>>();
+		var clusterMap:Map<Bytes, Array<Color>> = new Map();
 		for (image in images) {
 			var kmeans = Vision.kmeansGroupImageColors(image, groupCount);
 			var clusterCenters = kmeans.map((array) -> Color.getAverage(array, false));
-			clusterMap.set(image, clusterCenters);
+
+			var hash = Sha256.make(image);
+			if (!clusterMap.exists(hash)) 
+				clusterMap.set(hash, clusterCenters);
 		}
+
+		var kmeansOfImages = KMeans.generateClustersUsingConvergence(
+			[for (key in clusterMap.keys()) key],
+			groupCount,
+			(ha, hb) -> {
+				var a = clusterMap.get(ha);
+				var b = clusterMap.get(hb);
+				return a.distanceTo(b, (c1, c2) -> Color.distanceBetween(c1, c2, false));
+			},
+			(hashArrays) -> {
+				var arrays = hashArrays.map((hash) -> clusterMap.get(hash));
+				var average = [];
+				for (i in 0...arrays[0].length) {
+					average.push(Color.getAverage([for (array in arrays) array[i]], false));
+				}
+				return average;  
+			}
+		);
 
 		throw new Unimplemented("kmeansGroupSimilarImages");
 	}

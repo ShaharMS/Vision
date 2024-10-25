@@ -141,6 +141,12 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		return sum;
 	}
 	
+    public inline function getAverage():Float {
+        var sum = 0.;
+        for (i in this.iterator()) 
+            sum += i;
+        return sum / this.inner.length;
+    }
 
     /**
     	Multiplies this `Matrix2D` with a given scalar (a number).

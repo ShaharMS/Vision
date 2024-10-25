@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.Int64;
 import vision.tools.MathTools;
 import haxe.Serializer;
 import haxe.io.BytesData;
@@ -20,6 +21,12 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     overload extern inline public static function from(value:Int):ByteArray {
         var bytes = new ByteArray(4);
         bytes.setInt32(0, value);
+        return bytes;
+    }
+
+    overload extern inline public static function from(value:Int64):ByteArray {
+        var bytes = new ByteArray(8);
+        bytes.setInt64(0, value);
         return bytes;
     }
 
