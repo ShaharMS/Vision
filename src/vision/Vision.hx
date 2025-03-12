@@ -1,5 +1,8 @@
 package vision;
 
+import vision.algorithms.ImageHashing;
+import vision.ds.ByteArray;
+import vision.ds.kmeans.ColorCluster;
 import haxe.io.Bytes;
 import haxe.crypto.Sha256;
 import vision.exceptions.Unimplemented;
@@ -1474,43 +1477,75 @@ class Vision {
 		
 	}
 
-	public static function kmeansGroupImageColors(image:Image, groupCount:Int = 16, considerTransparency:Bool = false):Array<Array<Color>> {
-		return KMeans.generateClustersUsingConvergence(image.toArray(), 
-			groupCount, 
-			(a, b) -> Color.distanceBetween(a, b, considerTransparency),
-			(array) -> Color.getAverage(array, considerTransparency));
+	public static function kmeansPosterize(image:Image, maxColorCount:Int = 16):Image {
+		var clusters = KMeans.getImageColorClusters(image, maxColorCount);
+		trace(clusters.map(cluster -> cluster.items.map(color -> color.toHexString())));
+		var posterized = new Image(image.width, image.height);
+		image.forEachPixelInView((x, y, _) -> {
+			var color = image.getUnsafePixel(x, y);
+			if (Math.random() > 0.98) trace(color.toHexString());
+			for (cluster in clusters) {
+				if (cluster.items.contains(color) || color == cluster.centroid) {
+					trace('Found at $x, $y pixel: $color. replacing with: ${cluster.centroid}');
+					posterized.setUnsafePixel(x, y, cluster.centroid);
+					break;
+				}
+			}
+		});
+
+		return posterized;
 	}
 
-	public static function kmeansGroupSimilarImages(images:Array<Image>, groupCount:Int = 16):Array<Array<Image>> {
-		var clusterMap:Map<Bytes, Array<Color>> = new Map();
-		for (image in images) {
-			var kmeans = Vision.kmeansGroupImageColors(image, groupCount);
-			var clusterCenters = kmeans.map((array) -> Color.getAverage(array, false));
+	public static function kmeansGroupImageColors(image:Image, groupCount:Int = 16, considerTransparency:Bool = false):Array<ColorCluster> {
+		return KMeans.getImageColorClusters(image, groupCount);
+	}
 
-			var hash = Sha256.make(image);
-			if (!clusterMap.exists(hash)) 
-				clusterMap.set(hash, clusterCenters);
+	public static function kmeansGroupSimilarImages(images:Array<Image>, imageGroupCount:Int = 16, colorGroupCount:Int = 16, imageHashSize:Int = 64):Array<Array<Image>> {
+		// Some images may have the same hash
+		var imageHashToImageIndex:Map<ByteArray, Array<Int>> = new Map();
+
+		for (i in 0...images.length) {
+			var image = images[i];
+			var hash = ImageHashing.ahash(image, imageHashSize);
+			if (imageHashToImageIndex.exists(hash)) {
+				imageHashToImageIndex.get(hash).push(i);
+			} else {
+				imageHashToImageIndex.set(hash, [i]);
+			}
+
 		}
 
-		var kmeansOfImages = KMeans.generateClustersUsingConvergence(
-			[for (key in clusterMap.keys()) key],
-			groupCount,
-			(ha, hb) -> {
-				var a = clusterMap.get(ha);
-				var b = clusterMap.get(hb);
-				return a.distanceTo(b, (c1, c2) -> Color.distanceBetween(c1, c2, false));
-			},
-			(hashArrays) -> {
-				var arrays = hashArrays.map((hash) -> clusterMap.get(hash));
-				var average = [];
-				for (i in 0...arrays[0].length) {
-					average.push(Color.getAverage([for (array in arrays) array[i]], false));
+		var clusters = KMeans.generateClustersUsingConvergence(
+			[for (hash in imageHashToImageIndex.keys()) hash],
+			imageGroupCount,
+			(hash1, hash2) -> {
+				var distance = 0.;
+				for (i in 0...imageHashSize) {
+					distance += Math.abs(hash1.getUInt8(i) - hash2.getUInt8(i));
 				}
-				return average;  
+				return distance;
+			},
+			(hashes) -> {
+				var result = new ByteArray(imageHashSize);
+				for (i in 0...imageHashSize) {
+					var sum = 0;
+					for (j in 0...hashes.length) {
+						sum += hashes[j].getUInt8(i);
+					}
+					result[i] = Math.round(sum / hashes.length);
+				}
+
+				return result;
 			}
 		);
-
-		throw new Unimplemented("kmeansGroupSimilarImages");
+		
+		return clusters.map(
+			hashCluster -> hashCluster.flatMap(
+				hash -> imageHashToImageIndex.get(hash).map(
+					index -> images[index]
+				)
+			)
+		);
 	}
 
 }

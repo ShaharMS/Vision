@@ -19,7 +19,7 @@ class ImageHashing {
     
     public static function ahash(image:Image, hashByteSize:Int = 16):ByteArray {
         var clone = image.clone();
-        var length = Math.floor(Math.sqrt(hashByteSize));
+        var length = Math.floor(Math.sqrt(hashByteSize / 4));
 
         // Resize
         clone.resize(length, length, BilinearInterpolation);
@@ -32,11 +32,7 @@ class ImageHashing {
             }
         }
 
-        var bytes = new ByteArray(hashByteSize);
-        for (i in 0...Math.round(Math.pow(length, 2))) 
-            bytes[i] = clone.getUnsafePixel(i % length, Math.floor(i / length));
-
-        return bytes;
+        return clone.toBytes();
     }
 
     public static function phash(image:Image):ByteArray {

@@ -140,4 +140,20 @@ class ArrayTools {
 		}
 		return sum;
 	}
+
+	public static function flatMap<T, K>(array:Array<T>, mappingFunction:(T) -> Array<K>):Array<K> {
+		var result = [];
+		for (i in 0...array.length) {
+			result = result.concat(mappingFunction(array[i]));
+		}
+		return result;
+	}
+
+	public static function distinct<T>(array:Array<T>):Array<T> {
+		var result = [];
+		for (i in 0...array.length) {
+			if (!result.contains(array[i])) result.push(array[i]);
+		}
+		return result;
+	}
 }
