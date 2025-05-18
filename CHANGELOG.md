@@ -3,7 +3,9 @@
 ### `Vision.hx`
 
  - **Added `filterForColorChannel()`**
+ - **Added `kmeansPosterize()`**
  - **Added `kmeansGroupImageColors()`**
+ - **Added `kmeansGroupSimilarImages()`**
  - **Added `simpleImageSimilarity()`**
 
 ### `Image.hx`
@@ -13,14 +15,27 @@
 ### `vision.ds`
 
  - **Added `ColorChannel.hx` enum**
+ - **Added proper credit for `Color.hx`**
  - **Added `Color.fromFloat()`**
  - **Added `Color.distanceBetween()`**
  - **Added `Color.differenceBetween()`**
  - **Added `Color.getAverage()`**
+ - **Added `ByteArray.from()` Overload for `Int64`**
+ - **Added `Matrix2D.getAverage`**
 
 ### `vision.tools`
 
  - **Fixed `ArrayTools` `min`/`max`/`average` methods**
+ - **Added `ArrayTools.distinct()`**
+ - **Added `ArrayTools.flatMap()`**
+ - **Added `ArrayTools.distanceTo()`**
+
+### `vision.algorithms`
+
+ - **Added `KMeans` class for kmeans color clustering**
+ - **Added `ImageHashing` class.** The following hashing methods are implemented:
+   - **`ahash`**
+   - **`phash`**
 
 # 2.0.0
 
