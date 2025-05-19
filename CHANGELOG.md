@@ -2,6 +2,7 @@
 
 ### `Vision.hx`
 
+ - **Added `tint()`**
  - **Added `filterForColorChannel()`**
  - **Added `kmeansPosterize()`**
  - **Added `kmeansGroupImageColors()`**

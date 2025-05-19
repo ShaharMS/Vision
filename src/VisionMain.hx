@@ -39,6 +39,14 @@ using vision.tools.MathTools;
 			end = haxe.Timer.stamp();
 			trace("Kmeans Posterization took: " + MathTools.truncate(end - start, 4) + " seconds");
 			
+			start = haxe.Timer.stamp();
+			final __i2 = image.clone();
+			__i2.tint(Color.LAVENDER, 50);
+			printImage(__i2);
+			end = haxe.Timer.stamp();
+			trace("Similarity check took: " + MathTools.truncate(end - start, 4) + " seconds, Result: " + image.simpleImageSimilarity(__i2, AVERAGE_COLOR_DIFFERENCE));
+			
+
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
 			start = haxe.Timer.stamp();

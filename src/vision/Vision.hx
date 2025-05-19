@@ -87,6 +87,19 @@ class Vision {
 		});
 		return image;
 	}
+
+	public static function tint(image:Image, withColor:Color = 0x00000000, percentage:Float = 50):Image {
+		final translated = percentage / 100;
+		image.forEachPixelInView((x, y, pixel) -> {
+			pixel.red = Math.round((pixel.red * (1 - translated) + withColor.red * translated));
+			pixel.blue = Math.round((pixel.blue * (1 - translated) + withColor.blue * translated));
+			pixel.green = Math.round((pixel.green * (1 - translated) + withColor.green * translated));
+			image.setUnsafePixel(x, y, pixel);
+		});
+		return image;
+	}
+
+
 	/**
 		Grayscales an image, by averaging the color channels of each pixel.
 
@@ -1452,7 +1465,7 @@ class Vision {
 	}
 
 
-	public static function simpleImageSimilarity(image:Image, ?compared:Image, scoringMechanism:SimilarityScoringMechanism = HIGHEST_COLOR_DIFFERENCE):Float {
+	public static function simpleImageSimilarity(image:Image, ?compared:Image, scoringMechanism:SimilarityScoringMechanism = SUM_BASELINE_OVERSHOOTS):Float {
 		var image1 = image.clone(), image2 = (compared ?? image).clone();
 		image1.resize(4, 4, BilinearInterpolation);
 		image2.resize(4, 4, BilinearInterpolation);
