@@ -1479,14 +1479,11 @@ class Vision {
 
 	public static function kmeansPosterize(image:Image, maxColorCount:Int = 16):Image {
 		var clusters = KMeans.getImageColorClusters(image, maxColorCount);
-		trace(clusters.map(cluster -> cluster.items.map(color -> color.toHexString())));
 		var posterized = new Image(image.width, image.height);
 		image.forEachPixelInView((x, y, _) -> {
 			var color = image.getUnsafePixel(x, y);
-			if (Math.random() > 0.98) trace(color.toHexString());
 			for (cluster in clusters) {
 				if (cluster.items.contains(color) || color == cluster.centroid) {
-					trace('Found at $x, $y pixel: $color. replacing with: ${cluster.centroid}');
 					posterized.setUnsafePixel(x, y, cluster.centroid);
 					break;
 				}

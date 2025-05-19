@@ -33,8 +33,11 @@ using vision.tools.MathTools;
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-			// printImage(image.clone().sharpen().cannyEdgeDetection(1, X5, 0.05, 0.25));
-			// printImage(image.cannyEdgeDetection());
+			
+			start = haxe.Timer.stamp();
+			printImage(image.clone().kmeansPosterize(6));
+			end = haxe.Timer.stamp();
+			trace("Kmeans Posterization took: " + MathTools.truncate(end - start, 4) + " seconds");
 			
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
