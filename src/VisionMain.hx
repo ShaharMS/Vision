@@ -35,13 +35,15 @@ using vision.tools.MathTools;
 			printImage(image);
 			
 			start = haxe.Timer.stamp();
-			printImage(image.clone().kmeansPosterize(6));
+			printImage(image.clone().kmeansPosterize(4));
+			printImage(image.clone().kmeansPosterize(8));
+			printImage(image.clone().kmeansPosterize(16));
 			end = haxe.Timer.stamp();
 			trace("Kmeans Posterization took: " + MathTools.truncate(end - start, 4) + " seconds");
 			
 			start = haxe.Timer.stamp();
 			final __i2 = image.clone();
-			__i2.tint(Color.LAVENDER, 50);
+			__i2.tint(Color.AMETHYST, 20);
 			printImage(__i2);
 			end = haxe.Timer.stamp();
 			trace("Similarity check took: " + MathTools.truncate(end - start, 4) + " seconds, Result: " + image.simpleImageSimilarity(__i2, AVERAGE_COLOR_DIFFERENCE));
