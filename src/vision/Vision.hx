@@ -831,7 +831,18 @@ class Vision {
 		return image;
 	}
 
-	public static function filterForColorChannel(image:Image, channel:ColorChannel) {
+	/**
+		Returns a grayscaled image containing only the values of a given color channel.
+
+		| Original | `channel = RED` | `channel = GREEN`
+		| --- | --- | --- |
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-filterForColorChannel%28channel%20=%20RED%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-filterForColorChannel%28channel%20=%20GREEN%29.png)
+
+		@param image The image to be processed
+		@param channel The color channel to be isolated
+		@return The processed image. The original image is not preserved
+	**/
+	public static function filterForColorChannel(image:Image, channel:ColorChannel = ColorChannel.RED):Image {
 		var output = image.clone();
 
 		image.forEachPixelInView((x, y, color) -> {

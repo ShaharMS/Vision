@@ -33,6 +33,7 @@ using vision.tools.MathTools;
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
+			printImage(image.filterForColorChannel(RED));
 			
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
