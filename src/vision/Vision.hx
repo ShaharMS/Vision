@@ -1069,7 +1069,6 @@ class Vision {
 			if (c.z > maz) maz = c.z;
 			if (c.z < miz) miz = c.z;
 		}
-		trace(mix, max, miy, may);
 		var img = switch expansionMode {
 			case SAME_SIZE: new Image(image.width, image.height);
 			case EXPAND: new Image(Math.max(image.width, max - mix.min(0) + 1).floor(), Math.max(image.height, may - miy.min(0) + 1).floor());
@@ -1505,11 +1504,9 @@ class Vision {
 		image1.resize(4, 4, BilinearInterpolation);
 		image2.resize(4, 4, BilinearInterpolation);
 		var array1 = image1.toArray(), array2 = image2.toArray();
-		trace(array1, array2);
 		var distances = [];
 		for (i in 0...16) {
 			distances.push(1 - Color.differenceBetween(array1[i], array2[i], false));
-			trace(array1[i], array2[i]);
 		}
 		
 		return switch scoringMechanism {

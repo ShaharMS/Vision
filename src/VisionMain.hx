@@ -24,7 +24,7 @@ using vision.tools.MathTools;
 	static function main() {
 		var start:Float, end:Float;
 		#if (true)
-		#if js
+		#if (js || interp)
 		#if (!compile_unit_tests)
 		ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Valve_original_%281%29.PNG/300px-Valve_original_%281%29.PNG", image -> {
 			trace(image.width, image.height);

@@ -102,7 +102,6 @@ class SimpleLineDetector {
 	}
 
 	public static function correctLines(lines:Array<Line2D>, distanceThreshold:Float = 3, degError:Float = 7):Array<Line2D> {
-		trace('Original line Count: ${lines.length}');
 		var filteredLines:Array<Line2D> = [];
 
 		// Were going to use a series of filters:
@@ -129,7 +128,6 @@ class SimpleLineDetector {
 		}
 
 		lines = lines.filter(l -> l != null);
-		trace('First pass: ${lines.length}');
 
 
 		// Second: folowing lines: if A's end/start is close to B's start/end, and A is only `degError` degrees acuter/obtuser than B, A and B should be combined.
@@ -173,7 +171,6 @@ class SimpleLineDetector {
 			}
 		}
 		lines = lines.filter(l -> l != null);
-		trace('Second pass: ${lines.length}');
 		return lines;
 	}
 

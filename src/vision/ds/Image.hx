@@ -1097,7 +1097,6 @@ abstract Image(ByteArray) {
 		} else if (newHeight == -1) {
 			newHeight = Std.int(((newWidth / width) * height));
 		} 
-		trace(newWidth, newHeight);
 		if (algorithm == null)
 			algorithm = ImageTools.defaultResizeAlgorithm;
 		switch algorithm {

@@ -157,7 +157,7 @@ class MathTools {
 		final distance3:Float = distanceFromLineToPoint2D(line2, line1.start);
 		final distance4:Float = distanceFromLineToPoint2D(line2, line1.end);
 
-		final distance:Float = ArrayTools.min([distance1, distance2, distance3, distance4]);
+		final distance:Float = min(distance1, distance2, distance3, distance4);
 		return distance;
 	}
 
@@ -423,7 +423,7 @@ class MathTools {
 	//-----------------------------------------------------------------------------------------
 
 	public static inline function clamp(value:Int, mi:Int, ma:Int):Int {
-		return inline ArrayTools.min(([inline ArrayTools.max(([value, mi] : Array<Int>)), ma] : Array<Int>));
+		return inline min(inline max(value, mi), ma);
 	}
 
 	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
@@ -641,7 +641,7 @@ class MathTools {
 	public static function toFloat(value:Int64):Float {
 		var isNegative = false;
 		if (value < 0) {
-			if (value < 0i64) return -9223372036854775808.0; // most -ve value can't be made +ve
+			if (value < 0i64) return -9223372036854775808; // most -ve value can't be made +ve
 			isNegative = true;
 			value = -value;
 		}
