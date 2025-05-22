@@ -46,6 +46,18 @@ using vision.tools.MathTools;
 			trace("Kmeans Posterization took: " + MathTools.truncate(end - start, 4) + " seconds");
 			
 			start = haxe.Timer.stamp();
+			var colors = image.kmeansGroupImageColors(16);
+			var newImage = new Image(160, 160);
+			for (x in 0...4) {
+				for (y in 0...4) {
+					newImage.fillRect(x * 40, y * 40, 40, 40, colors[y * 4 + x].centroid);
+				}
+			}
+			printImage(newImage);
+			end = haxe.Timer.stamp();
+			trace("Kmeans grouping took: " + MathTools.truncate(end - start, 4) + " seconds");
+
+			start = haxe.Timer.stamp();
 			final __i2 = image.clone();
 			__i2.tint(Color.AMETHYST, 20);
 			printImage(__i2);
