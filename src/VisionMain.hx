@@ -47,10 +47,28 @@ using vision.tools.MathTools;
 			
 			start = haxe.Timer.stamp();
 			var colors = image.kmeansGroupImageColors(16);
-			var newImage = new Image(160, 160);
+			var newImage = new Image(100, 100);
 			for (x in 0...4) {
 				for (y in 0...4) {
-					newImage.fillRect(x * 40, y * 40, 40, 40, colors[y * 4 + x].centroid);
+					newImage.fillRect(x * 25, y * 25, 25, 25, colors[y * 4 + x].centroid);
+				}
+			}
+			printImage(newImage);
+
+			var colors = image.kmeansGroupImageColors(8);
+			var newImage = new Image(100, 100);
+			for (x in 0...4) {
+				for (y in 0...2) {
+					newImage.fillRect(x * 25, y * 50, 25, 50, colors[y * 2 + x].centroid);
+				}
+			}
+			printImage(newImage);
+
+			var colors = image.kmeansGroupImageColors(4);
+			var newImage = new Image(100, 100);
+			for (x in 0...2) {
+				for (y in 0...2) {
+					newImage.fillRect(x * 50, y * 50, 50, 50, colors[y * 2 + x].centroid);
 				}
 			}
 			printImage(newImage);
@@ -62,7 +80,7 @@ using vision.tools.MathTools;
 			__i2.tint(Color.AMETHYST, 20);
 			printImage(__i2);
 			end = haxe.Timer.stamp();
-			trace("Similarity check took: " + MathTools.truncate(end - start, 4) + " seconds, Result: " + image.simpleImageSimilarity(__i2, AVERAGE_COLOR_DIFFERENCE));
+			trace("Similarity check took: " + MathTools.truncate(end - start, 4) + " seconds, Result: " + image.simpleImageSimilarity(__i2, HIGHEST_COLOR_DIFFERENCE));
 			
 
 			#if simple_tests

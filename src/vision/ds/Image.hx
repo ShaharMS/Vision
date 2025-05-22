@@ -1573,7 +1573,7 @@ abstract Image(ByteArray) {
 		var array:Array<Color> = [];
 		var i = OFFSET;
 		while (i < this.length) {
-			array[i] = Color.fromRGBA(this[i + 1], this[i + 2], this[i + 3], this[i]);
+			array.push(Color.fromRGBA(this[i + 1], this[i + 2], this[i + 3], this[i]));
 			i += 4;
 		}
 		return array;
