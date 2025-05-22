@@ -641,13 +641,13 @@ class MathTools {
 	public static function toFloat(value:Int64):Float {
 		var isNegative = false;
 		if (value < 0) {
-			if (value < 0i64) return -9223372036854775808; // most -ve value can't be made +ve
+			if (value < Int64.make(0, 0)) return -9223372036854775808; // most -ve value can't be made +ve
 			isNegative = true;
 			value = -value;
 		}
 		var multiplier = 1.0, ret = 0.0;
 		for (_ in 0...64) {
-			if (Int64.and(value, 1i64) != 0i64) ret += multiplier;
+			if (Int64.and(value, Int64.make(1, 0)) != Int64.make(0, 0)) ret += multiplier;
 			multiplier *= 2.0;
 			value = Int64.shr(value, 1);
 		}

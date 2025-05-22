@@ -129,7 +129,7 @@ class ArrayTools {
 	}
 
 	public overload extern static inline function average(values:Array<Int64>):Float {
-		var sum = 0i64;
+		var sum = Int64.make(0, 0);
 		for (v in values) {
 			sum += v;
 		}
