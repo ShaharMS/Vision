@@ -11,7 +11,7 @@ jobs:
         haxe-version: [4.2.5]
         target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Setup Haxe (${{ matrix.haxe-version }})
         uses: krdlab/setup-haxe@v1
         with:
