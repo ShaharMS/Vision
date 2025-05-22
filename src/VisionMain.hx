@@ -504,7 +504,7 @@ using vision.tools.MathTools;
 		for (i in 0...cases.length) {
 			/*PC: */ 
 			try {
-				cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shaha\\Desktop\\Github\\Vision\\unit_tests", cases[i].method);
+				cases[i].writeCrossPlatformHaxeProject("C:\\Users\\Marcus\\Documents\\Github\\Vision\\unit_tests", cases[i].method);
 			} catch (e) {
 				trace("Working on laptop, path changed...");
 				cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shahar\\Documents\\GitHub\\Vision\\unit_tests", cases[i].method);
@@ -512,7 +512,7 @@ using vision.tools.MathTools;
 			}
 		}
 		try {
-			TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shaha\\Desktop\\Github\\Vision", "main_test");
+			TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\Marcus\\Documents\\Github\\Vision", "main_test");
 		} catch (e) {
 			trace("Working on laptop, path changed...");
 			TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shahar\\Documents\\GitHub\\Vision", "main_test");

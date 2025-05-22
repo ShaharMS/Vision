@@ -6,7 +6,6 @@
  - **Added `filterForColorChannel()`**
  - **Added `kmeansPosterize()`**
  - **Added `kmeansGroupImageColors()`**
- - **Added `kmeansGroupSimilarImages()`**
  - **Added `simpleImageSimilarity()`**
 
 ### `Image.hx`

@@ -7,14 +7,17 @@ class Main {
         trace("----------Launching Tests----------\n");
         start = haxe.Timer.stamp();
         tests.Test_vision_Vision_laplacianEdgeDiffOperator.main();
+		tests.Test_vision_Vision_filterForColorChannel.main();
 		tests.Test_vision_Vision_limitColorRanges.main();
 		tests.Test_vision_Vision_bilateralDenoise.main();
 		tests.Test_vision_Vision_whiteNoise.main();
 		tests.Test_vision_Vision_deepfry.main();
 		tests.Test_vision_Vision_vignette.main();
 		tests.Test_vision_Vision_simpleLine2DDetection.main();
+		tests.Test_vision_Vision_kmeansPosterize.main();
 		tests.Test_vision_Vision_combine.main();
 		tests.Test_vision_Vision_perwittEdgeDiffOperator.main();
+		tests.Test_vision_Vision_simpleImageSimilarity.main();
 		tests.Test_vision_Vision_cannyEdgeDetection.main();
 		tests.Test_vision_Vision_projectiveTransform.main();
 		tests.Test_vision_Vision_posterize.main();
@@ -30,6 +33,7 @@ class Main {
 		tests.Test_vision_Vision_erode.main();
 		tests.Test_vision_Vision_nearestNeighborBlur.main();
 		tests.Test_vision_Vision_mustacheDistortion.main();
+		tests.Test_vision_Vision_tint.main();
 		tests.Test_vision_Vision_gaussianBlur.main();
 		tests.Test_vision_Vision_pixelate.main();
 		tests.Test_vision_Vision_sepia.main();
@@ -39,6 +43,7 @@ class Main {
 		tests.Test_vision_Vision_convolve.main();
 		tests.Test_vision_Vision_robertEdgeDiffOperator.main();
 		tests.Test_vision_Vision_replaceColorRanges.main();
+		tests.Test_vision_Vision_kmeansGroupImageColors.main();
 		tests.Test_vision_Vision_sobelEdgeDiffOperator.main();
 		tests.Test_vision_Vision_sobelEdgeDetection.main();
 		tests.Test_vision_Vision_pincushionDistortion.main();
@@ -49,6 +54,6 @@ class Main {
 		tests.Test_vision_Vision_affineTransform.main();
         end = haxe.Timer.stamp();
         trace("-----------------------------------\n");
-        trace("41 Tests, " + ((end - start) + "") + "s");
+        trace("46 Tests, " + ((end - start) + "") + "s");
     }
 }
