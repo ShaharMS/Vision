@@ -26,14 +26,20 @@
 
 ### `vision.tools`
 
- - **Fixed `ArrayTools` `min`/`max`/`average` methods**
+ - **Fixed `ArrayTools` `min`/`max`/`average`/`median` methods**
+ - **`MathTools` `min`/`max`/`average`/`median` now reference `ArrayTools`**
  - **Added `ArrayTools.distinct()`**
  - **Added `ArrayTools.flatMap()`**
  - **Added `ArrayTools.distanceTo()`**
+ - **Added `MathTools.SQRT2`**
+ - **Added `MathTools.SQRT3`**
+ - **Added `MathTools.toFloat` for `Int64`**
+
 
 ### `vision.algorithms`
 
  - **Added `KMeans` class for kmeans color clustering**
+ - **Fixed `Radix` not supporting number types correctly** 
  - **Added `ImageHashing` class.** The following hashing methods are implemented:
    - **`ahash`**
    - **`phash`**

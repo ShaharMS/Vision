@@ -1,5 +1,9 @@
 package vision.algorithms;
 
+import vision.tools.ArrayTools;
+import haxe.extern.EitherType;
+import haxe.Int64;
+
 /**
 	An implementation of radix sort in Haxe, by [Shahar Marcus](https://www.github.com/ShaharMS).
 
@@ -31,16 +35,8 @@ class Radix {
 	 * @param endIndex optional, an index after which we stop checking for a maximum 
 	 * (useful if the range in which the maximum value is present is known)
 	 */
-	static function getMax<T:Int, #if !cs Uint, #end Int64>(array:Array<T>, ?endIndex:Int) {
-		if (endIndex == null)
-			endIndex = array.length;
-
-		var potential = array[0];
-		for (i in 1...endIndex)
-			if (array[i] > potential)
-				potential = array[i];
-
-		return potential;
+	static function getMax<T:EitherType<Int, Int64>>(array:Array<T>, ?endIndex:Int) {
+		return ArrayTools.max(array.slice(0, endIndex));
 	}
 
 	/**
@@ -49,7 +45,7 @@ class Radix {
 	 * @param exp Represents the digit's "place" on which were going to count - `10` will count on the last digit, `100` will count on the second-to-last, etc.
 	 * @param endIndex optional, an index after which we stop sorting
 	 */
-	static function countingSort<T:Int, #if !cs Uint, #end Int64>(array:Array<T>, exp:Int, ?endIndex:Int) {
+	static function countingSort<T:EitherType<Int, Int64>>(array:Array<T>, exp:Int, ?endIndex:Int) {
 		if (endIndex == null)
 			endIndex = array.length;
 
@@ -88,8 +84,53 @@ class Radix {
 	/**
 		Sorts an array of `Int`s / `UInt`s / `Int64` using **Radix Sort**.
 	**/
-	public static function sort<T:Int, #if !cs Uint, #end Int64>(main:Array<T>) {
+	public static overload extern inline function sort(main:Array<Int>) {
 
+		var negatives = [], positives = [];
+		for (i in 0...main.length) {
+			if (main[i] < 0)
+				negatives.push(-main[i]);
+			else
+				positives.push(main[i]);
+		}
+
+		for (array in [negatives, positives]) {
+			// Find the maximum number to know the number of digits
+			final max = getMax(array, array.length);
+			var exp = 1;
+	
+			// Do counting sort for every digit. Note that
+			// instead of passing digit number, exp is passed.
+			// exp is 10^i where i is current digit number
+			while (max / exp > 0) {
+				array = countingSort(array, exp, array.length);
+				exp *= 10;
+			}
+		}
+
+		negatives.reverse();
+		negatives = negatives.map(x -> -x);
+		return main = negatives.concat(positives);
+	}
+
+	public static overload extern inline function sort(main:Array<UInt>) {
+		// Find the maximum number to know the number of digits
+		final max = getMax(main, main.length);
+		var exp = 1;
+	
+		// Do counting sort for every digit. Note that
+		// instead of passing digit number, exp is passed.
+		// exp is 10^i where i is current digit number
+		while (max / exp > 0) {
+			main = countingSort(main, exp, main.length);
+			exp *= 10;
+		}
+
+		return main;
+	}
+
+	public static overload extern inline function sort(main:Array<Int64>) {
+		
 		var negatives = [], positives = [];
 		for (i in 0...main.length) {
 			if (main[i] < 0)

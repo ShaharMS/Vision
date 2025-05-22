@@ -1,5 +1,6 @@
 package vision.tools;
 
+import haxe.ds.Either;
 import vision.ds.Point3D;
 import vision.ds.Matrix2D;
 import vision.ds.IntPoint2D;
@@ -20,16 +21,24 @@ import vision.ds.Point2D;
 	both at the same time.
 **/
 class MathTools {
-
 	//-----------------------------------------------------------------------------------------
 	// Constants
 	//-----------------------------------------------------------------------------------------
-	
 	public static var PI(get, null):Float;
 	public static var PI_OVER_2(get, never):Float;
 	public static var NEGATIVE_INFINITY(get, null):Float;
 	public static var POSITIVE_INFINITY(get, null):Float;
 	public static var NaN(get, null):Float;
+
+	public static var SQRT2(get, null):Float;
+
+	@:noCompletion static function get_SQRT2()
+		return 1.4142135623730951;
+
+	public static var SQRT3(get, null):Float;
+
+	@:noCompletion static function get_SQRT3()
+		return 1.7320508075688772;
 
 	//-----------------------------------------------------------------------------------------
 	// Ray2D Extensions
@@ -71,19 +80,21 @@ class MathTools {
 	public static inline function distanceBetweenRays2D(ray:Ray2D, ray2:Ray2D):Float {
 		if (ray.radians != ray2.radians) return 0;
 		final point = ray.point; // some point on the ray
-		final intersectionOfPerpendicularWithRay2 = intersectionBetweenRay2Ds(ray2, new Ray2D(point, null, ray.degrees + 90)); // basically, calculates the intersection between ray2 and the perpendicular to ray.
-		return distanceBetweenPoints(point, intersectionOfPerpendicularWithRay2); // this would be the shortest distance, since the perpendicular between two parallel lines is always the shortest line between them.
+		final intersectionOfPerpendicularWithRay2 = intersectionBetweenRay2Ds(ray2,
+			new Ray2D(point, null, ray.degrees + 90)); // basically, calculates the intersection between ray2 and the perpendicular to ray.
+		return distanceBetweenPoints(point,
+			intersectionOfPerpendicularWithRay2); // this would be the shortest distance, since the perpendicular between two parallel lines is always the shortest line between them.
 	}
 
 	/**
 		Gets the point on `ray` , which is `distance` points away
 		from `startXPos`.
-		
+
 		In order to avoid returning two points (since
 		any point on the ray has 2 points with the exact same distance from it),
 		you have the `goPositive` value.
-		
-		
+
+
 		@param startXPos The `x` position to start from.
 		@param distance The distance from `start` to the resulting point.
 		@param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
@@ -102,17 +113,17 @@ class MathTools {
 	/**
 		Gets the point on `ray` , which is `distance` points away
 		from `startYPos`.
-		
+
 		In order to avoid returning two points (since
 		any point on the ray has 2 points with the exact same distance from it),
 		you have the `goPositive` value.
-		
-		
+
+
 		@param startYPos The `y` position to start from.
 		@param distance The distance from `start` to the resulting point.
 		@param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
 	**/
-	 public static inline function findPointAtDistanceUsingY(ray:Ray2D, startYPos:Float, distance:Float, goPositive:Bool = true):Point2D {
+	public static inline function findPointAtDistanceUsingY(ray:Ray2D, startYPos:Float, distance:Float, goPositive:Bool = true):Point2D {
 		// Were going to step one point to the right, and check how much distance was covered.
 		// After checking, were going to divide distance with the distance between start to start(y + 1)
 		// Make sure to not surpass `distance`
@@ -146,7 +157,7 @@ class MathTools {
 		final distance3:Float = distanceFromLineToPoint2D(line2, line1.start);
 		final distance4:Float = distanceFromLineToPoint2D(line2, line1.end);
 
-		final distance:Float = min(distance1, distance2, distance3, distance4);
+		final distance:Float = ArrayTools.min([distance1, distance2, distance3, distance4]);
 		return distance;
 	}
 
@@ -161,17 +172,14 @@ class MathTools {
 		final x4 = line2.end.x, y4 = line2.end.y;
 		final denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
 
-		if ((x1 == x2 && y1 == y2) || (x3 == x4 && y3 == y4))
-			return null;
-		if (denominator == 0)
-			return null; // if the denominator is 0, the lines are parallel
+		if ((x1 == x2 && y1 == y2) || (x3 == x4 && y3 == y4)) return null;
+		if (denominator == 0) return null; // if the denominator is 0, the lines are parallel
 
 		final ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
 		final ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
 
 		// is the intersection along the segments?
-		if (ua < 0 || ua > 1 || ub < 0 || ub > 1)
-			return null;
+		if (ua < 0 || ua > 1 || ub < 0 || ub > 1) return null;
 
 		// Return an object with the x and y coordinates of the intersection
 		final x = x1 + ua * (x2 - x1);
@@ -223,7 +231,7 @@ class MathTools {
 		final dx:Float = closestPoint.x - point.x;
 		final dy:Float = closestPoint.y - point.y;
 		final distance:Float = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-	
+
 		return distance;
 	}
 
@@ -231,18 +239,16 @@ class MathTools {
 		final middle = new Point2D(line.end.x - line.start.x, line.end.y - line.start.y);
 		final denominator = middle.x * middle.x + middle.y * middle.y;
 		var ratio = ((point.x - line.start.x) * middle.x + (point.y - line.start.y) * middle.y) / denominator;
-	
-		if (ratio > 1)
-			ratio = 1;
-		else if (ratio < 0)
-			ratio = 0;
-	
+
+		if (ratio > 1) ratio = 1;
+		else if (ratio < 0) ratio = 0;
+
 		final x = line.start.x + ratio * middle.x;
 		final y = line.start.y + ratio * middle.y;
-	
+
 		final dx = x - point.x;
 		final dy = y - point.y;
-	
+
 		return sqrt(dx * dx + dy * dy);
 	}
 
@@ -296,14 +302,14 @@ class MathTools {
 		// Vector from the origin of the ray to the given point
 		var vx:Float = point.x - ray.point.x;
 		var vy:Float = point.y - ray.point.y;
-	
+
 		// Projection of v onto the direction vector of the ray
 		var projection:Float = (vx * 1 + vy * ray.slope) / (1 + pow(ray.slope, 2));
-	
+
 		// Coordinates of the closest point on the ray
 		var x:Float = ray.point.x + projection * 1;
 		var y:Float = ray.point.y + projection * ray.slope;
-	
+
 		return new Point2D(x, y);
 	}
 
@@ -319,7 +325,7 @@ class MathTools {
 		final dx:Float = closestPoint.x - point.x;
 		final dy:Float = closestPoint.y - point.y;
 		final distance:Float = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-	
+
 		return distance;
 	}
 
@@ -327,18 +333,16 @@ class MathTools {
 		final middle = new Point2D(line.end.x - line.start.x, line.end.y - line.start.y);
 		final denominator = middle.x * middle.x + middle.y * middle.y;
 		var ratio = ((point.x - line.start.x) * middle.x + (point.y - line.start.y) * middle.y) / denominator;
-	
-		if (ratio > 1)
-			ratio = 1;
-		else if (ratio < 0)
-			ratio = 0;
-	
+
+		if (ratio > 1) ratio = 1;
+		else if (ratio < 0) ratio = 0;
+
 		final x = line.start.x + ratio * middle.x;
 		final y = line.start.y + ratio * middle.y;
-	
+
 		final dx = x - point.x;
 		final dy = y - point.y;
-	
+
 		return sqrt(dx * dx + dy * dy);
 	}
 
@@ -367,7 +371,7 @@ class MathTools {
 		final y:Float = point2.y - point1.y;
 		return sqrt(x * x + y * y);
 	}
-	
+
 	overload extern inline public static function radiansFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
@@ -392,17 +396,17 @@ class MathTools {
 		// Vector from the origin of the ray to the given point
 		var vx:Float = point.x - ray.point.x;
 		var vy:Float = point.y - ray.point.y;
-	
+
 		// Projection of v onto the direction vector of the ray
 		var projection:Float = (vx * 1 + vy * ray.slope) / (1 + pow(ray.slope, 2));
-	
+
 		// Coordinates of the closest point on the ray
 		var x:Float = ray.point.x + projection * 1;
 		var y:Float = ray.point.y + projection * ray.slope;
-	
+
 		return new Point2D(x, y);
 	}
-	
+
 	//-----------------------------------------------------------------------------
 	// Point3D
 	//-----------------------------------------------------------------------------
@@ -419,7 +423,7 @@ class MathTools {
 	//-----------------------------------------------------------------------------------------
 
 	public static inline function clamp(value:Int, mi:Int, ma:Int):Int {
-		return inline min(inline max(value, mi), ma);
+		return inline ArrayTools.min(([inline ArrayTools.max(([value, mi] : Array<Int>)), ma] : Array<Int>));
 	}
 
 	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
@@ -431,8 +435,7 @@ class MathTools {
 				range.end = temp;
 			}
 			between = (value > range.start) && (value > range.end);
-			if (between)
-				return true;
+			if (between) return true;
 		}
 		return false;
 	}
@@ -448,8 +451,7 @@ class MathTools {
 	public inline static function wrapInt(value:Int, min:Int, max:Int):Int {
 		var range = max - min + 1;
 
-		if (value < min)
-			value += range * Std.int((min - value) / range + 1);
+		if (value < min) value += range * Std.int((min - value) / range + 1);
 
 		return min + (value - min) % range;
 	}
@@ -461,8 +463,7 @@ class MathTools {
 	public inline static function wrapFloat(value:Float, min:Float, max:Float):Float {
 		var range = max - min;
 
-		if (value < min)
-			value += range * (min - value) / range + 1;
+		if (value < min) value += range * (min - value) / range + 1;
 
 		return min + (value - min) % range;
 	}
@@ -481,11 +482,11 @@ class MathTools {
 	**/
 	public static function boundFloat(value:Float, min:Float, max:Float):Float {
 		var t = value < min ? min : value;
-  		return t > max ? max : t;
+		return t > max ? max : t;
 	}
 
 	/**
-	 	Returns `true` if `number` is positive, `false` if negative
+		Returns `true` if `number` is positive, `false` if negative
 	**/
 	@:generic public static inline function isPositive<T:Number>(number:T):Bool {
 		return (abs(cast number) / cast number) > 0;
@@ -495,22 +496,23 @@ class MathTools {
 		Estimates the gamma function for the given decimal value `x`.
 	**/
 	public static function gamma(x:Float):Float {
-    	var g = 7.0, p = [
-			0.99999999999980993, 676.5203681218851, -1259.1392167224028,
-        			771.32342877765313, -176.61502916214059, 12.507343278686905, 
-			-0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+		var g = 7.0, p = [
+			 0.99999999999980993,     676.5203681218851, -1259.1392167224028,
+			  771.32342877765313,   -176.61502916214059,  12.507343278686905,
+			-0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7
+		];
 
-    	if (x < 0.5) return Math.PI / (Math.sin(Math.PI * x) * gamma(1 - x));
-    	else {
-        		x--;
-        		var a = p[0];
-        		var t = x + g + 0.5;
-        		for (i in 1...p.length) {
-            		a += p[i] / (x + i);
-        		}
-        		return Math.sqrt(Math.PI * 2) * Math.pow(t, x + 0.5) * Math.exp(-t) * a;
-    	}
-    }
+		if (x < 0.5) return Math.PI / (Math.sin(Math.PI * x) * gamma(1 - x));
+		else {
+			x--;
+			var a = p[0];
+			var t = x + g + 0.5;
+			for (i in 1...p.length) {
+				a += p[i] / (x + i);
+			}
+			return Math.sqrt(Math.PI * 2) * Math.pow(t, x + 0.5) * Math.exp(-t) * a;
+		}
+	}
 
 	/**
 		Uses the gamma function to calculate the factorial of the given value.
@@ -573,7 +575,7 @@ class MathTools {
 	public static inline function cosd(degrees:Float):Float {
 		return cos(inline degreesToRadians(degrees));
 	}
-	
+
 	public static inline function tand(degrees:Float):Float {
 		return tan(inline degreesToRadians(degrees));
 	}
@@ -600,7 +602,7 @@ class MathTools {
 	}
 
 	public static inline function cropDecimal(number:Float):Int {
-		if(number < 0) return Math.ceil(number);
+		if (number < 0) return Math.ceil(number);
 		return Math.floor(number);
 	}
 
@@ -608,72 +610,68 @@ class MathTools {
 	// Utilities For Number Arrays
 	//-----------------------------------------------------------------------------------------
 
-	overload extern inline public static function max<T:Float, #if !cs Uint, #end Int64, Int>(value:T, ...values:T):T {
-		var max:T = value;
-		for (i in 0...values.length) {
-			if (values[i] > max)
-				max = values[i];
-		}
-		return max;
-	}
+	overload extern inline public static function max(value:Int, ...values:Int) return ArrayTools.max(values.toArray().concat([value]));
+	overload extern inline public static function max(value:Float, ...values:Float) return ArrayTools.max(values.toArray().concat([value]));
+	overload extern inline public static function max(value:Int64, ...values:Int64) return ArrayTools.max(values.toArray().concat([value]));
 
-	public static function min<T:Float, #if !cs Uint, #end Int64, Int>(value:T, ...values:T):T {
-		var min:T = value;
-		for (i in 0...values.length) {
-			if (values[i] < min)
-				min = values[i];
-		}
-		return min;
-	}
+	overload extern inline public static function min(value:Int, ...values:Int) return ArrayTools.min(values.toArray().concat([value]));
+	overload extern inline public static function min(value:Float, ...values:Float) return ArrayTools.min(values.toArray().concat([value]));
+	overload extern inline public static function min(value:Int64, ...values:Int64) return ArrayTools.min(values.toArray().concat([value]));
 
-	public static inline function average(...values:Float):Float {
-		var sum = 0.;
-		for (v in values) {
-			sum += v;
-		}
-		return sum / values.length;
-	}
+	overload extern inline public static function average(value:Int, ...values:Int) return ArrayTools.average(values.toArray().concat([value]));
+	overload extern inline public static function average(value:Float, ...values:Float) return ArrayTools.average(values.toArray().concat([value]));
+	overload extern inline public static function average(value:Int64, ...values:Int64) return ArrayTools.average(values.toArray().concat([value]));
 
-	/**
-	    Gets the median of the given values.
-	**/
-	extern overload public static inline function median(...values:Float) {
-		var s = values.toArray();
-		ArraySort.sort(s , (a, b) -> Std.int(a - b));
-		return s[floor(values.length / 2)];
-	}
+	overload extern inline public static function median(value:Int, ...values:Int) return ArrayTools.median(values.toArray().concat([value]));
+	overload extern inline public static function median(value:Float, ...values:Float) return ArrayTools.median(values.toArray().concat([value]));
+	overload extern inline public static function median(value:Int64, ...values:Int64) return ArrayTools.median(values.toArray().concat([value]));
 
-	/**
-	    Gets the median of the given values. For large arrays, Radix sort is used to boost performance (5000 elements or above)
-	**/
-	extern overload public static inline function median<T:Int, #if !cs UInt, #end Int64>(...values:T):T {
-		if (values.length > 5000) {
-			return Radix.sort(values.toArray())[floor(values.length / 2)];
-		}
-		var s = values.toArray();
-		ArraySort.sort(s , (a, b) -> a - b);
-		return s[floor(values.length / 2)];
-	}
+
+	// ----------------------------------------------------------------------------------------
+	// Utilities For Number Types
+	// ----------------------------------------------------------------------------------------
 
 	public static inline function isInt(v:Float) {
 		return v == Std.int(v);
 	}
 
-
-
-
-
+	/**
+		Int64 to Float, from `thx.core`, by Elliot Stoneham
+	**/
+	public static function toFloat(value:Int64):Float {
+		var isNegative = false;
+		if (value < 0) {
+			if (value < 0i64) return -9223372036854775808.0; // most -ve value can't be made +ve
+			isNegative = true;
+			value = -value;
+		}
+		var multiplier = 1.0, ret = 0.0;
+		for (_ in 0...64) {
+			if (Int64.and(value, 1i64) != 0i64) ret += multiplier;
+			multiplier *= 2.0;
+			value = Int64.shr(value, 1);
+		}
+		return (isNegative ? -1 : 1) * ret;
+	}
 
 	//-----------------------------------------------------------------------------------------
 	// Math.hx compatibility
 	//-----------------------------------------------------------------------------------------
 
+	@:noCompletion static inline function get_NEGATIVE_INFINITY():Float
+		return Math.NEGATIVE_INFINITY;
 
-	@:noCompletion static inline function get_NEGATIVE_INFINITY():Float return Math.NEGATIVE_INFINITY;
-	@:noCompletion static inline function get_POSITIVE_INFINITY():Float return Math.POSITIVE_INFINITY;
-	@:noCompletion static inline function get_NaN():Float return Math.NaN;
-	@:noCompletion static inline function get_PI_OVER_2():Float return PI / 2;
-	@:noCompletion static inline function get_PI():Float return Math.PI;
+	@:noCompletion static inline function get_POSITIVE_INFINITY():Float
+		return Math.POSITIVE_INFINITY;
+
+	@:noCompletion static inline function get_NaN():Float
+		return Math.NaN;
+
+	@:noCompletion static inline function get_PI_OVER_2():Float
+		return PI / 2;
+
+	@:noCompletion static inline function get_PI():Float
+		return Math.PI;
 
 	public static inline function abs(v:Float):Float
 		return Math.abs(v);
@@ -738,14 +736,9 @@ class MathTools {
 	public static inline function isNaN(f:Float):Bool
 		return Math.isNaN(f);
 
-
-
-
-
 	//-----------------------------------------------------------------------------------------
 	// Std.hx compatibility, extensions for boolean
 	//-----------------------------------------------------------------------------------------
-
 
 	public static function parseFloat(s:String):Float
 		return Std.parseFloat(s);

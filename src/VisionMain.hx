@@ -33,6 +33,10 @@ using vision.tools.MathTools;
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
+
+			trace(Color.differenceBetween(Color.BLACK, Color.WHITE, false));
+			trace(Color.differenceBetween(Color.BLACK, Color.BLACK));
+			trace(Color.differenceBetween(Color.PURPLE, Color.PURPLE));
 			
 			start = haxe.Timer.stamp();
 			printImage(image.clone().kmeansPosterize(4));

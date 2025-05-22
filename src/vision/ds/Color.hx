@@ -818,12 +818,12 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 
 	public static inline function differenceBetween(lhs:Color, rhs:Color, considerTransparency:Bool = true):Float {
 		var diff = Math.sqrt(
-			Math.pow(lhs.red - rhs.red, 2) +
-			Math.pow(lhs.green - rhs.green, 2) +
-			Math.pow(lhs.blue - rhs.blue, 2) +
-			(considerTransparency ? Math.pow(lhs.alpha - rhs.alpha, 2) : 0));
+			Math.pow(lhs.redFloat - rhs.redFloat, 2) +
+			Math.pow(lhs.greenFloat - rhs.greenFloat, 2) +
+			Math.pow(lhs.blueFloat - rhs.blueFloat, 2) +
+			(considerTransparency ? Math.pow(lhs.alphaFloat - rhs.alphaFloat, 2) : 0));
 
-		return diff / (considerTransparency ? 510 : 441.67295593);
+		return diff / (considerTransparency ? 2 : MathTools.SQRT3);
 	}
 
 	public static inline function getAverage(fromColors:Array<Color>, considerTransparency:Bool = true) {

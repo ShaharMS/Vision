@@ -1,11 +1,11 @@
 package vision.tools;
 
+import haxe.Int64;
 import haxe.extern.EitherType;
 import haxe.ds.ArraySort;
 import vision.algorithms.Radix;
 
 using vision.tools.MathTools;
-
 import vision.tools.MathTools.*;
 
 class ArrayTools {
@@ -68,6 +68,14 @@ class ArrayTools {
 		return min;
 	}
 
+	public overload extern static inline function min(values:Array<Int64>):Int64 {
+		var min = values[0];
+		for (i in 0...values.length) {
+			if ((values[i] - min) < 0) min = values[i];
+		}
+		return min;
+	}
+
 	public overload extern static inline function min<T>(values:Array<T>, valueFunction:T->Float):T {
 		var min = values[0];
 		var minValue = valueFunction(min);
@@ -83,6 +91,14 @@ class ArrayTools {
 	}
 
 	public overload extern static inline function max<T:EitherType<Int ,Float>>(values:Array<T>):T {
+		var max = values[0];
+		for (i in 0...values.length) {
+			if ((values[i] - max) > 0) max = values[i];
+		}
+		return max;
+	}
+
+	public overload extern static inline function max(values:Array<Int64>):Int64 {
 		var max = values[0];
 		for (i in 0...values.length) {
 			if ((values[i] - max) > 0) max = values[i];
@@ -112,6 +128,16 @@ class ArrayTools {
 		return sum / values.length;
 	}
 
+	public overload extern static inline function average(values:Array<Int64>):Float {
+		var sum = 0i64;
+		for (v in values) {
+			sum += v;
+		}
+		
+		final result = Int64.divMod(sum, values.length);
+		return result.quotient.toFloat() + result.modulus.toFloat() / values.length;
+	}
+
 	/**
 		Gets the median of the given values. For large arrays, Radix sort is used to boost performance (5000 elements or above)
 	**/
@@ -121,6 +147,16 @@ class ArrayTools {
 		}
 		var s = values.copy();
 		ArraySort.sort(s, (a, b) -> a - b);
+		return s[floor(values.length / 2)];
+	}
+
+	extern overload public static inline function median(values:Array<Int64>):Int64 {
+		if (values.length > 5000) {
+			return Radix.sort(values.copy())[floor(values.length / 2)];
+		}
+		var s = values.copy();
+		ArraySort.sort(s, (a, b) -> a.low - b.low);
+		ArraySort.sort(s, (a, b) -> a.high - b.high);
 		return s[floor(values.length / 2)];
 	}
 
