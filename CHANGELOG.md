@@ -40,9 +40,14 @@
 
  - **Added `KMeans` class for kmeans color clustering**
  - **Fixed `Radix` not supporting number types correctly** 
+ - **Fixed `Cramer` not considering `vision_quiet` and added informative error messages**
  - **Added `ImageHashing` class.** The following hashing methods are implemented:
    - **`ahash`**
    - **`phash`**
+
+### `vision.exceptions`
+ - **Added `InvalidCramerSetuo` exception**
+ - **Added `InvalidCramerCoefficientsMatrix` exception**
 
 # 2.0.0
 
