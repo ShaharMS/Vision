@@ -1500,7 +1500,7 @@ class Vision {
 		@return A number between 0 and 1 representing the similarity. `0` is the least similar, `1` means identical.
 	**/
 	public static function simpleImageSimilarity(image:Image, ?compared:Image, scoringMechanism:SimilarityScoringMechanism = AVERAGE_COLOR_DIFFERENCE):Float {
-		var image1 = image.clone(), image2 = (compared ?? image).clone();
+		var image1 = image.clone(), image2 = (compared == null ? image : compared).clone();
 		image1.resize(4, 4, BilinearInterpolation);
 		image2.resize(4, 4, BilinearInterpolation);
 		var array1 = image1.toArray(), array2 = image2.toArray();
