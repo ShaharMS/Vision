@@ -33,56 +33,7 @@ using vision.tools.MathTools;
 			printImage(image);
 			image = image.resize(150, 112, BilinearInterpolation);
 			printImage(image);
-
-			trace(Color.differenceBetween(Color.BLACK, Color.WHITE, false));
-			trace(Color.differenceBetween(Color.BLACK, Color.BLACK));
-			trace(Color.differenceBetween(Color.PURPLE, Color.PURPLE));
 			
-			start = haxe.Timer.stamp();
-			printImage(image.clone().kmeansPosterize(4));
-			printImage(image.clone().kmeansPosterize(8));
-			printImage(image.clone().kmeansPosterize(16));
-			end = haxe.Timer.stamp();
-			trace("Kmeans Posterization took: " + MathTools.truncate(end - start, 4) + " seconds");
-			
-			start = haxe.Timer.stamp();
-			var colors = image.kmeansGroupImageColors(16);
-			var newImage = new Image(100, 100);
-			for (x in 0...4) {
-				for (y in 0...4) {
-					newImage.fillRect(x * 25, y * 25, 25, 25, colors[y * 4 + x].centroid);
-				}
-			}
-			printImage(newImage);
-
-			var colors = image.kmeansGroupImageColors(8);
-			var newImage = new Image(100, 100);
-			for (x in 0...4) {
-				for (y in 0...2) {
-					newImage.fillRect(x * 25, y * 50, 25, 50, colors[y * 2 + x].centroid);
-				}
-			}
-			printImage(newImage);
-
-			var colors = image.kmeansGroupImageColors(4);
-			var newImage = new Image(100, 100);
-			for (x in 0...2) {
-				for (y in 0...2) {
-					newImage.fillRect(x * 50, y * 50, 50, 50, colors[y * 2 + x].centroid);
-				}
-			}
-			printImage(newImage);
-			end = haxe.Timer.stamp();
-			trace("Kmeans grouping took: " + MathTools.truncate(end - start, 4) + " seconds");
-
-			start = haxe.Timer.stamp();
-			final __i2 = image.clone();
-			__i2.tint(Color.AMETHYST, 20);
-			printImage(__i2);
-			end = haxe.Timer.stamp();
-			trace("Similarity check took: " + MathTools.truncate(end - start, 4) + " seconds, Result: " + image.simpleImageSimilarity(__i2, HIGHEST_COLOR_DIFFERENCE));
-			
-
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
 			start = haxe.Timer.stamp();
@@ -209,6 +160,63 @@ using vision.tools.MathTools;
 			end = haxe.Timer.stamp();
 			trace("Warping took: " + MathTools.truncate(end - start, 4) + " seconds");
 
+			#end
+
+			#if kmeans_tests
+			printSectionDivider("Image K-means color clustering tests");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().kmeansPosterize(4));
+			end = haxe.Timer.stamp();
+			trace("Kmeans Posterization (4 colors) took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().kmeansPosterize(8));
+			end = haxe.Timer.stamp();
+			trace("Kmeans Posterization (8 colors) took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			printImage(image.clone().kmeansPosterize(16));
+			end = haxe.Timer.stamp();
+			trace("Kmeans Posterization (16 colors) took: " + MathTools.truncate(end - start, 4) + " seconds");
+			
+			start = haxe.Timer.stamp();
+			var colors = image.kmeansGroupImageColors(16);
+			var newImage = new Image(100, 100);
+			for (x in 0...4) {
+				for (y in 0...4) {
+					newImage.fillRect(x * 25, y * 25, 25, 25, colors[y * 4 + x].centroid);
+				}
+			}
+			printImage(newImage);
+			end = haxe.Timer.stamp();
+			trace("Kmeans grouping (16 colors) took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			var colors = image.kmeansGroupImageColors(8);
+			var newImage = new Image(100, 100);
+			for (x in 0...4) {
+				for (y in 0...2) {
+					newImage.fillRect(x * 25, y * 50, 25, 50, colors[y * 2 + x].centroid);
+				}
+			}
+			printImage(newImage);
+			end = haxe.Timer.stamp();
+			trace("Kmeans grouping (8 colors) took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			var colors = image.kmeansGroupImageColors(4);
+			var newImage = new Image(100, 100);
+			for (x in 0...2) {
+				for (y in 0...2) {
+					newImage.fillRect(x * 50, y * 50, 50, 50, colors[y * 2 + x].centroid);
+				}
+			}
+			printImage(newImage);
+			end = haxe.Timer.stamp();
+			trace("Kmeans grouping (4 colors) took: " + MathTools.truncate(end - start, 4) + " seconds");
+
+			start = haxe.Timer.stamp();
+			final __i2 = image.clone();
+			__i2.tint(Color.AMETHYST, 20);
+			printImage(__i2);
+			end = haxe.Timer.stamp();
+			trace("Similarity check took: " + MathTools.truncate(end - start, 4) + " seconds, Result: " + image.simpleImageSimilarity(__i2, HIGHEST_COLOR_DIFFERENCE));
 			#end
 
 			#if filter_tests
@@ -390,7 +398,7 @@ using vision.tools.MathTools;
 				printImage(sip);
 				var stamped = image.clone();
 				var st = test.clone();
-				st.forEachPixel((x, y, color) -> {color.alpha = 128; st.setPixel(x, y, color);});
+				st.forEachPixel((x, y, color) -> {color.alpha = 200; st.setPixel(x, y, color);});
 				stamped.stamp(10, 30, st);
 				printImage(stamped); 
 			});

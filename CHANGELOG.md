@@ -12,6 +12,7 @@
 ### `Image.hx`
 
  - **Added `toArray()`**
+ - **Fixed regression in `Image.paintPixel()` where `alpha` wasn't considered correctly**
 
 ### `vision.ds`
 
