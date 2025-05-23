@@ -1,5 +1,13 @@
 package vision;
 
+import vision.algorithms.ImageHashing;
+import vision.ds.ByteArray;
+import vision.ds.kmeans.ColorCluster;
+import haxe.io.Bytes;
+import haxe.crypto.Sha256;
+import vision.exceptions.Unimplemented;
+import vision.ds.specifics.SimilarityScoringMechanism;
+import vision.algorithms.KMeans;
 import vision.ds.specifics.ColorChannel;
 import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
@@ -79,6 +87,32 @@ class Vision {
 		});
 		return image;
 	}
+
+	/**
+		Overlays a color on an image, according to `percentage`, as well as the color's `alpha` channel.
+		
+		| Original | Tinted With `Color.AMETHYST` |
+		|---|:---:|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-tint.png)|
+		
+		@param image The image to tint
+		@param withColor The color to tint the image with. Each channel is considered separately, so a color with `alpha` of 0 won't affect other color channels.
+		@param percentage The amount by which to tint. `100` yields an image completely colored with `withColor`, while `0` yields the original image. Default is `50`
+		@return The tinted image. The original image is modified.
+	**/
+	public static function tint(image:Image, withColor:Color = Color.BLACK, percentage:Float = 50):Image {
+		final translated = percentage / 100;
+		image.forEachPixelInView((x, y, pixel) -> {
+			pixel.red = Math.round((pixel.red * (1 - translated) + withColor.red * translated));
+			pixel.blue = Math.round((pixel.blue * (1 - translated) + withColor.blue * translated));
+			pixel.green = Math.round((pixel.green * (1 - translated) + withColor.green * translated));
+			pixel.alpha = Math.round((pixel.alpha * (1 - translated) + withColor.alpha * translated));
+			image.setUnsafePixel(x, y, pixel);
+		});
+		return image;
+	}
+
+
 	/**
 		Grayscales an image, by averaging the color channels of each pixel.
 
@@ -283,6 +317,9 @@ class Vision {
 		using 4 channels of 8 bits, resulting in an integer, containing the red, green, 
 		blue and alpha channel. This functions reduces the amount of bits used by
 		each channel for each pixel.
+
+		It is important to note that this function does not reduce the amount of memory
+		used by the image. Each color still takes up 4 bytes.
 		
 		| Original | Processed (16-bit colors, 4 bits per channel) |
 		|---|---|
@@ -794,7 +831,18 @@ class Vision {
 		return image;
 	}
 
-	public static function filterForColorChannel(image:Image, channel:ColorChannel) {
+	/**
+		Returns a grayscaled image containing only the values of a given color channel.
+
+		| Original | `channel = RED` | `channel = GREEN`
+		| --- | --- | --- |
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-filterForColorChannel%28channel%20=%20RED%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-filterForColorChannel%28channel%20=%20GREEN%29.png)
+
+		@param image The image to be processed
+		@param channel The color channel to be isolated
+		@return The processed image. The original image is not preserved
+	**/
+	public static function filterForColorChannel(image:Image, channel:ColorChannel = ColorChannel.RED):Image {
 		var output = image.clone();
 
 		image.forEachPixelInView((x, y, color) -> {
@@ -1032,7 +1080,6 @@ class Vision {
 			if (c.z > maz) maz = c.z;
 			if (c.z < miz) miz = c.z;
 		}
-		trace(mix, max, miy, may);
 		var img = switch expansionMode {
 			case SAME_SIZE: new Image(image.width, image.height);
 			case EXPAND: new Image(Math.max(image.width, max - mix.min(0) + 1).floor(), Math.max(image.height, may - miy.min(0) + 1).floor());
@@ -1441,5 +1488,109 @@ class Vision {
 	**/
 	public static function bilateralDenoise(image:Image, gaussianSigma:Float = 0.8, intensitySigma:Float = 50):Image {
 		return BilateralFilter.filter(image, gaussianSigma, intensitySigma);
+	}
+
+
+	/**
+		Finds image similarity percentage by resizing the image to 4x4 and comparing each 
+		corresponding pixel according to the `scoringMechanism`.
+
+		| Original | Compared |
+		|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-tint.png)|
+		
+		| Scoring Mechanism | Result |
+		|---|---|
+		|**`HIGHEST_COLOR_DIFFERENCE`**|`0.9709168686780562`|
+		|**`AVERAGE_COLOR_DIFFERENCE`**|`0.9420740592210519`|
+		|**`SUM_BASELINE_OVERSHOOTS`**|`0.878687357613296`|
+		
+		@param image The first image to compare
+		@param compared The second image to compare. If not provided, the first image will be compared to itself
+		@param scoringMechanism The mechanism by which the similarity is calculated. Default is `AVERAGE_COLOR_DIFFERENCE`
+		@return A number between 0 and 1 representing the similarity. `0` is the least similar, `1` means identical.
+	**/
+	public static function simpleImageSimilarity(image:Image, ?compared:Image, scoringMechanism:SimilarityScoringMechanism = AVERAGE_COLOR_DIFFERENCE):Float {
+		var image1 = image.clone(), image2 = (compared == null ? image : compared).clone();
+		image1.resize(4, 4, BilinearInterpolation);
+		image2.resize(4, 4, BilinearInterpolation);
+		var array1 = image1.toArray(), array2 = image2.toArray();
+		var distances = [];
+		for (i in 0...16) {
+			distances.push(1 - Color.differenceBetween(array1[i], array2[i], false));
+		}
+		
+		return switch scoringMechanism {
+			case HIGHEST_COLOR_DIFFERENCE: distances.max();
+			case AVERAGE_COLOR_DIFFERENCE: distances.average();
+			case SUM_BASELINE_OVERSHOOTS: {
+				var averages = distances.average();
+				var overshoot = 1.;
+				for (i in 0...16) {
+					overshoot -= Math.max(0, distances[i] - averages);
+				}
+				overshoot;
+			}
+		}
+		
+	}
+
+	/**
+		Uses K-Means image color clustering to posterize an image.
+
+		This type of posteriztion is different from the default `posterize` method,
+		as it reduces the amount of colors used by the image, instead of the
+		amount of bits used by each color channel.
+
+		K-means is a clustering algorithm that groups similar pixels together, 
+		by picking a couple of colors from the image, and iteratively seeing 
+		which are the most similar to each of those colors, 
+		and optimizing these colors to be the most similar to those pixels.
+
+		| Original | `maxColorCount = 16` | `maxColorCount = 8` | `maxColorCount = 4` |
+		|---|---|---|---|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansPosterize%28maxColorCount%20=%2016%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansPosterize%28maxColorCount%20=%208%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansPosterize%28maxColorCount%20=%204%29.png)|
+	
+		@param image The image to posterize
+		@param maxColorCount The amount of colors to use for the resulting image. At the algorithm's level, this also means the amount of color clusters to calculate. Defaults to `16`
+		@return A posterized version of the image. The original image is preserved
+	**/
+	public static function kmeansPosterize(image:Image, maxColorCount:Int = 16):Image {
+		var clusters = KMeans.getImageColorClusters(image, maxColorCount);
+		var posterized = new Image(image.width, image.height);
+		image.forEachPixelInView((x, y, _) -> {
+			var color = image.getUnsafePixel(x, y);
+			for (cluster in clusters) {
+				if (cluster.items.contains(color) || color == cluster.centroid) {
+					posterized.setUnsafePixel(x, y, cluster.centroid);
+					break;
+				}
+			}
+		});
+
+		return posterized;
+	}
+
+	/**
+		Uses K-Means image color clustering to group the colors of an image.	
+	
+		K-means is a clustering algorithm that groups similar pixels together, 
+		by picking a couple of colors from the image, and iteratively seeing 
+		which are the most similar to each of those colors, 
+		and optimizing these colors to be the most similar to those pixels.
+
+		The following table shows the effect of the `groupCount` parameter:
+
+		| Original | `groupCount = 16` | `groupCount = 8` |`groupCount = 4` |
+		|---|:---:|:---:|:---:|
+		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansGroupImageColors%28groupCount%20=%2016%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansGroupImageColors%28groupCount%20=%208%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansGroupImageColors%28groupCount%20=%204%29.png)|
+
+		@param image The image to try color grouping on
+		@param groupCount The amount of color groups we want to find. The more groups, the more accurate the grouping will be, but only to a certain point (an image with only 4 distinct colors won't have more than 4 groups). Defaults to `16`
+		@param considerTransparency Whether or not to consider transparency in the grouping. Defaults to `false`
+		@return An array of color clusters. Each cluster contains both it's colors and the centroid used to group them.
+	**/
+	public static function kmeansGroupImageColors(image:Image, groupCount:Int = 16, considerTransparency:Bool = false):Array<ColorCluster> {
+		return KMeans.getImageColorClusters(image, groupCount);
 	}
 }

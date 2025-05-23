@@ -359,9 +359,9 @@ abstract Image(ByteArray) {
 		} else {
 			var oldColor = getPixel(x, y);
 			var newColor = Color.fromRGBAFloat(
-				color.redFloat * (1 - oldColor.alphaFloat) + oldColor.redFloat * oldColor.alphaFloat,
-				color.greenFloat * (1 - oldColor.alphaFloat) + oldColor.greenFloat * oldColor.alphaFloat, 
-				color.blueFloat * (1 - oldColor.alphaFloat) + oldColor.blueFloat * oldColor.alphaFloat, 
+				color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
+				color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat), 
+				color.blueFloat * color.alphaFloat + oldColor.blueFloat * (1 - color.alphaFloat), 
 				oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat
 			);
 			setPixel(x, y, newColor);
@@ -389,9 +389,9 @@ abstract Image(ByteArray) {
 					var oldColor = getPixel(ix + posX, iy + posY);
 					color.alphaFloat = ((if (posX == 0) 1 - xFraction else xFraction) + (if (posY == 0) 1 - yFraction else yFraction)) / 2;
 					var newColor = Color.fromRGBAFloat(
-						color.redFloat * (1 - oldColor.alphaFloat) + oldColor.redFloat * oldColor.alphaFloat,
-						color.greenFloat * (1 - oldColor.alphaFloat) + oldColor.greenFloat * oldColor.alphaFloat, 
-						color.blueFloat * (1 - oldColor.alphaFloat) + oldColor.blueFloat * oldColor.alphaFloat, 
+						color.redFloat * color.alphaFloat + oldColor.redFloat * (1 - color.alphaFloat),
+						color.greenFloat * color.alphaFloat + oldColor.greenFloat * (1 - color.alphaFloat), 
+						color.blueFloat * color.alphaFloat + oldColor.blueFloat * (1 - color.alphaFloat), 
 						oldColor.alphaFloat + (1 - oldColor.alphaFloat) * color.alphaFloat
 					);
 					setPixel(ix + posX, iy + posY, newColor);
@@ -1097,7 +1097,6 @@ abstract Image(ByteArray) {
 		} else if (newHeight == -1) {
 			newHeight = Std.int(((newWidth / width) * height));
 		} 
-		trace(newWidth, newHeight);
 		if (algorithm == null)
 			algorithm = ImageTools.defaultResizeAlgorithm;
 		switch algorithm {
@@ -1569,6 +1568,15 @@ abstract Image(ByteArray) {
 		return arr;
 	}
 
+	@:to public inline function toArray():Array<Color> {
+		var array:Array<Color> = [];
+		var i = OFFSET;
+		while (i < this.length) {
+			array.push(Color.fromRGBA(this[i + 1], this[i + 2], this[i + 3], this[i]));
+			i += 4;
+		}
+		return array;
+	}
 	/**
 		Takes a `ByteArray`/`haxe.io.Bytes` instance and some stats, and returns a new image instance
 		that correctly represents the colors inside `bytes` at the given size

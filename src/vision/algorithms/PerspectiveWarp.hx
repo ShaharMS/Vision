@@ -1,17 +1,9 @@
 package vision.algorithms;
 
-import haxe.io.Float32Array;
-import vision.ds.Image;
 import vision.ds.Matrix2D;
-import vision.ds.Array2D;
-import vision.tools.MathTools;
+import vision.ds.Point2D;
 
 using vision.tools.MathTools;
-
-import haxe.ds.Vector;
-import vision.ds.Point3D;
-import vision.ds.Point2D;
-import vision.ds.specifics.PointTransformationPair;
 
 class PerspectiveWarp {
 

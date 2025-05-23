@@ -1,7 +1,14 @@
 package vision.ds;
 
+import vision.tools.ArrayTools;
 import vision.tools.MathTools;
 
+/**
+	An Abstract over an integer, with many properties and methods
+	related to colors.
+
+	Originally Ported from HaxeFlixel.
+**/
 abstract Color(Int) from Int from UInt to Int to UInt {
 	#if (!vision_hlc_color_compile)
 		#if hl
@@ -799,6 +806,36 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline function divide(lhs:Color, rhs:Color):Color {
 		return Color.fromRGBA(Std.int(lhs.red / rhs.red == 0 ? 1 : rhs.red), Std.int(lhs.green / rhs.green == 0 ? 1 : rhs.green),
 			Std.int(lhs.blue / rhs.blue == 0 ? 1 : rhs.blue), Std.int(lhs.alpha / rhs.alpha == 0 ? 1 : rhs.alpha));
+	}
+
+	public static inline function distanceBetween(lhs:Color, rhs:Color, considerTransparency:Bool = true):Float {
+		return Math.sqrt(
+			Math.pow(lhs.red - rhs.red, 2) +
+			Math.pow(lhs.green - rhs.green, 2) +
+			Math.pow(lhs.blue - rhs.blue, 2) +
+			(considerTransparency ? Math.pow(lhs.alpha - rhs.alpha, 2) : 0));
+	}
+
+	public static inline function differenceBetween(lhs:Color, rhs:Color, considerTransparency:Bool = true):Float {
+		var diff = Math.sqrt(
+			Math.pow(lhs.redFloat - rhs.redFloat, 2) +
+			Math.pow(lhs.greenFloat - rhs.greenFloat, 2) +
+			Math.pow(lhs.blueFloat - rhs.blueFloat, 2) +
+			(considerTransparency ? Math.pow(lhs.alphaFloat - rhs.alphaFloat, 2) : 0));
+
+		return diff / (considerTransparency ? 2 : MathTools.SQRT3);
+	}
+
+	public static inline function getAverage(fromColors:Array<Color>, considerTransparency:Bool = true) {
+		var reds = [], blues = [], greens = [], alphas = [];
+		for (color in fromColors) {
+			reds.push(color.redFloat);
+			greens.push(color.greenFloat);
+			blues.push(color.blueFloat);
+			if (considerTransparency) alphas.push(color.alphaFloat);
+		}
+
+		return Color.fromRGBAFloat(ArrayTools.average(reds), ArrayTools.average(greens), ArrayTools.average(blues), considerTransparency ? ArrayTools.average(alphas) : 1);
 	}
 
 	/**

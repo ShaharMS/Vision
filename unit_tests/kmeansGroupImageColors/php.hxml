@@ -1,0 +1,7 @@
+
+--class-path src
+--main Test_vision_Vision_kmeansGroupImageColors
+-debug
+--php php
+--library vision
+--library format

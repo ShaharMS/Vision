@@ -11,7 +11,7 @@ jobs:
         haxe-version: [4.2.5]
         target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Setup Haxe (${{ matrix.haxe-version }})
         uses: krdlab/setup-haxe@v1
         with:
@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        algo: ['general', 'laplacianEdgeDiffOperator', 'limitColorRanges', 'bilateralDenoise', 'whiteNoise', 'deepfry', 'vignette', 'simpleLine2DDetection', 'combine', 'perwittEdgeDiffOperator', 'cannyEdgeDetection', 'projectiveTransform', 'posterize', 'invert', 'saltAndPepperNoise', 'normalize', 'smooth', 'medianBlur', 'laplacianOfGaussianEdgeDetection', 'convolutionRidgeDetection', 'blackAndWhite', 'fisheyeDistortion', 'erode', 'nearestNeighborBlur', 'mustacheDistortion', 'gaussianBlur', 'pixelate', 'sepia', 'dilate', 'sharpen', 'grayscale', 'convolve', 'robertEdgeDiffOperator', 'replaceColorRanges', 'sobelEdgeDiffOperator', 'sobelEdgeDetection', 'pincushionDistortion', 'barrelDistortion', 'contrast', 'perwittEdgeDetection', 'dropOutNoise', 'affineTransform']
+        algo: ['general', 'laplacianEdgeDiffOperator', 'limitColorRanges', 'bilateralDenoise', 'whiteNoise', 'deepfry', 'vignette', 'simpleLine2DDetection', 'combine', 'perwittEdgeDiffOperator', 'cannyEdgeDetection', 'projectiveTransform', 'posterize', 'invert', 'saltAndPepperNoise', 'normalize', 'smooth', 'medianBlur', 'laplacianOfGaussianEdgeDetection', 'convolutionRidgeDetection', 'blackAndWhite', 'fisheyeDistortion', 'erode', 'nearestNeighborBlur', 'mustacheDistortion', 'gaussianBlur', 'pixelate', 'sepia', 'dilate', 'sharpen', 'grayscale', 'convolve', 'robertEdgeDiffOperator', 'replaceColorRanges', 'sobelEdgeDiffOperator', 'sobelEdgeDetection', 'pincushionDistortion', 'barrelDistortion', 'contrast', 'perwittEdgeDetection', 'dropOutNoise', 'affineTransform', 'tint', 'filterForColorChannel', 'kmeansPosterize', 'kmeansGroupImageColors', 'simpleImageSimilarity']
         haxe-version: [4.2.5]
         target: [interp]
     steps:

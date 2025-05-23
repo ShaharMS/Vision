@@ -2,13 +2,52 @@
 
 ### `Vision.hx`
 
+ - **Added `tint()`**
  - **Added `filterForColorChannel()`**
+ - **Added `kmeansPosterize()`**
+ - **Added `kmeansGroupImageColors()`**
+ - **Added `simpleImageSimilarity()`**
 
+### `Image.hx`
+
+ - **Added `toArray()`**
+ - **Fixed regression in `Image.paintPixel()` where `alpha` wasn't considered correctly**
 
 ### `vision.ds`
 
  - **Added `ColorChannel.hx` enum**
+ - **Added proper credit for `Color.hx`**
  - **Added `Color.fromFloat()`**
+ - **Added `Color.distanceBetween()`**
+ - **Added `Color.differenceBetween()`**
+ - **Added `Color.getAverage()`**
+ - **Added `ByteArray.from()` Overload for `Int64`**
+ - **Added `Matrix2D.getAverage`**
+
+### `vision.tools`
+
+ - **Fixed `ArrayTools` `min`/`max`/`average`/`median` methods**
+ - **`MathTools` `min`/`max`/`average`/`median` now reference `ArrayTools`**
+ - **Added `ArrayTools.distinct()`**
+ - **Added `ArrayTools.flatMap()`**
+ - **Added `ArrayTools.distanceTo()`**
+ - **Added `MathTools.SQRT2`**
+ - **Added `MathTools.SQRT3`**
+ - **Added `MathTools.toFloat` for `Int64`**
+
+
+### `vision.algorithms`
+
+ - **Added `KMeans` class for kmeans color clustering**
+ - **Fixed `Radix` not supporting number types correctly** 
+ - **Fixed `Cramer` not considering `vision_quiet` and added informative error messages**
+ - **Added `ImageHashing` class.** The following hashing methods are implemented:
+   - **`ahash`**
+   - **`phash`**
+
+### `vision.exceptions`
+ - **Added `InvalidCramerSetuo` exception**
+ - **Added `InvalidCramerCoefficientsMatrix` exception**
 
 # 2.0.0
 
