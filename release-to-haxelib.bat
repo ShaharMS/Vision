@@ -1,17 +1,16 @@
 :: Create a folder named "release", and delete its contents if already exists:
-
-mkdir release
 rmdir /s /q release
+mkdir release
 
 :: Copy the following stuff to that folder - extraParams.hxml, CHANGELOG.md, LICENSE, README.md, haxelib.json, hxformat.json, and src folder:
 
-xcopy /s /e /q src release
-xcopy /s /e /q extraParams.hxml release
-xcopy /s /e /q CHANGELOG.md release
-xcopy /s /e /q LICENSE release
-xcopy /s /e /q README.md release
-xcopy /s /e /q haxelib.json release
-xcopy /s /e /q hxformat.json release
+copy "extraParams.hxml" "release\extraParams.hxml"
+copy "CHANGELOG.md" "release\CHANGELOG.md"
+copy "LICENSE" "release\LICENSE"
+copy "README.md" "release\README.md"
+copy "haxelib.json" "release\haxelib.json"
+copy "hxformat.json" "release\hxformat.json"
+robocopy "src" "release\src" /E
 
 :: Now move to the release folder:
 
