@@ -522,6 +522,20 @@ abstract Image(ByteArray) {
 	}
 
 	/**
+	    Copies an image's graphics data, while retaining this image's `ImageView`
+
+		@param image The image to copy data from
+		@returns This image
+	**/
+	public inline function copyImageFrom(image:Image):Image {
+		var currentView = getView();
+		this.resize(image.underlying.length);
+		this.blit(0, image.underlying, 0, image.underlying.length);
+		setView(currentView);
+		return cast this;
+	}
+
+	/**
 		Returns a portion of the image, specified by a rectangle.
 
 		@param rect The rectangle specifying the portion of the image to return.

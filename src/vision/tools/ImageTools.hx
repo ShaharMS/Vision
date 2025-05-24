@@ -1,7 +1,8 @@
 package vision.tools;
 
+import vision.formats.ImageIO;
 #if format
-import vision.helpers.FormatImageLoader;
+import vision.formats.__internal.FormatImageLoader;
 #end
 import haxe.io.Path;
 import haxe.crypto.Base64;
@@ -16,10 +17,9 @@ import vision.exceptions.Unimplemented;
 import vision.exceptions.WebResponseError;
 import vision.ds.ImageResizeAlgorithm;
 #if js
-import js.lib.Promise;
 import js.Browser;
 import js.html.CanvasElement;
-
+import vision.formats.__internal.JsImageLoader;
 #end
 import haxe.ds.Vector;
 import vision.ds.IntPoint2D;
@@ -115,33 +115,26 @@ class ImageTools {
 				#end
 			#end
 		#else
-		var imgElement = js.Browser.document.createImageElement();
-		imgElement.src = path;
-		imgElement.crossOrigin = "Anonymous";
-		imgElement.onload = () -> {
-			var canvas = js.Browser.document.createCanvasElement();
-
-			canvas.width = imgElement.width;
-			canvas.height = imgElement.height;
-
-			canvas.getContext2d().drawImage(imgElement, 0, 0);
-
-			if (image == null) image = new Image(imgElement.width, imgElement.height);
-
-			var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
-
-			var i = 0;
-			while (i < imageData.data.length) {
-			  for (o in 0...4) {
-          		image.underlying[i + (@:privateAccess Image.OFFSET + 1) + o] = imageData.data[i + o];
-        		}
-				i += 4;
-			}
-
-			if(onComplete != null)
-				onComplete(image);
-		}
+		JsImageLoader.loadAsync(path, image, onComplete);
 		#end
+	}
+
+	public static function fromBytes(?image:Image, bytes:ByteArray, fileFormat:ImageFormat):Image {
+		image = image == null ? new Image(0, 0) : image;
+		image.copyImageFrom(
+			switch fileFormat {
+				case PNG: ImageIO.from.bytes.png(bytes);
+				case BMP: ImageIO.from.bytes.bmp(bytes);
+				default: {
+					#if !vision_quiet
+					throw new Unimplemented('Using `ImageTools.fromBytes` with a file of type `${fileFormat}`');
+					#end
+					ImageIO.from.bytes.png(bytes);
+				}
+			}
+		);
+
+		return image;
 	}
 
 	/**
