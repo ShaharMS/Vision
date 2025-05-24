@@ -123,8 +123,10 @@ class ImageTools {
 		image = image == null ? new Image(0, 0) : image;
 		image.copyImageFrom(
 			switch fileFormat {
+				case RAW: cast bytes;
 				case PNG: ImageIO.from.bytes.png(bytes);
 				case BMP: ImageIO.from.bytes.bmp(bytes);
+				case JPEG: ImageIO.from.bytes.jpeg(bytes);
 				default: {
 					#if !vision_quiet
 					throw new Unimplemented('Using `ImageTools.fromBytes` with a file of type `${fileFormat}`');

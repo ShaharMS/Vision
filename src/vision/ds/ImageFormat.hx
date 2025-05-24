@@ -14,4 +14,14 @@ enum abstract ImageFormat(Int) {
         BMP encoding
     **/
     var BMP;
+
+    /**
+        JPEG encoding
+    **/
+    var JPEG;
+
+    /**
+        Raw `vision.ds.Image` bytes
+    **/
+    var RAW;
 }
