@@ -1,5 +1,9 @@
 package vision.tools;
 
+#if sys
+import sys.io.File;
+#end
+import haxe.Http;
 import vision.formats.ImageIO;
 #if format
 import vision.formats.__internal.FormatImageLoader;
@@ -137,6 +141,49 @@ class ImageTools {
 		);
 
 		return image;
+	}
+
+	public static function fromFile(?image:Image, path:String):Image {
+		#if js
+		return image.copyImageFrom(JsImageLoader.loadFileSync(path));
+		#else
+		return fromBytes(image, File.getBytes(path), Path.extension(path));
+		#end
+	}
+
+	public static function fromURL(?image:Image, url:String):Image {
+		#if js
+		return image.copyImageFrom(JsImageLoader.loadURLSync(url, null));
+		#else
+		var http = new Http(url);
+		var requestStatus = 2;
+		http.onBytes = (data) -> {
+			fromBytes(image, data, Path.extension(url));
+			requestStatus = 1;
+		}
+		http.onError = (msg) -> {
+			#if !vision_quiet
+			throw new WebResponseError(url, msg);
+			#end
+			requestStatus = 0;
+		}
+		http.request();
+		
+		while (requestStatus == 2) {
+			#if sys
+			Sys.sleep(0.1);
+			#end
+			// This is a busy loop. Pretty bad, but there isn't really a better way.
+		}
+		
+		if (requestStatus == 0) {
+			#if !vision_quiet
+			throw new WebResponseError(url, "Failed to load image");
+			#end
+		}
+		
+		return image;
+		#end
 	}
 
 	/**
