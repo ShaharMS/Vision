@@ -12,8 +12,8 @@
 #--define compile_unit_tests
 #--define radix_test
 
-# --js bin/main.js
---interp
+--js bin/main.js
+# --interp
 # --define simple_tests
 # --define feature_detection_tests
 # --define draw_tests
