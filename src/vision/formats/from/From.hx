@@ -12,4 +12,9 @@ package vision.formats.from;
     **/
     public var bytes:FromBytes = new FromBytes();
 
+    /**
+        Convert an image from a specific framework's image type to `vision.ds.Image`
+    **/
+    public var framework:FromFramework = new FromFramework();
+
 }
