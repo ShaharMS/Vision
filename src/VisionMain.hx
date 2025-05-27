@@ -1,5 +1,6 @@
 package;
 
+import vision.formats.ImageIO;
 import vision.algorithms.SimpleHough;
 import vision.ds.Matrix2D;
 import vision.ds.Color;
@@ -35,6 +36,7 @@ using vision.tools.MathTools;
 			printImage(image);
 			printImage(image.filterForColorChannel(RED));
 			
+
 			#if simple_tests
 			printSectionDivider("Simple image manipulation");
 			start = haxe.Timer.stamp();

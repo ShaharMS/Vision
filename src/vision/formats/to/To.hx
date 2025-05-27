@@ -12,4 +12,8 @@ package vision.formats.to;
     **/
     public var bytes:ToBytes = new ToBytes();
 
+    /**
+        Convert an image to a specific framework's image type
+    **/
+    public var framework:ToFramework = new ToFramework();
 }
