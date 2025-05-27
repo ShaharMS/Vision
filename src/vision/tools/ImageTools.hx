@@ -24,6 +24,7 @@ import vision.ds.ImageResizeAlgorithm;
 import js.Browser;
 import js.html.CanvasElement;
 import vision.formats.__internal.JsImageLoader;
+import vision.formats.__internal.JsImageExporter;
 #end
 import haxe.ds.Vector;
 import vision.ds.IntPoint2D;
@@ -122,7 +123,28 @@ class ImageTools {
 		JsImageLoader.loadAsync(path, image, onComplete);
 		#end
 	}
+	
+	/**
+	    Saves an image to a path.
 
+		**Note: this function requires the `format` library, and only supports PNG.**
+
+		To install:
+
+		`haxelib install format`
+
+
+		@param image The image to save
+		@param pathWithFileName The path to save to
+		@param saveFormat An image format.
+		@throws LibraryRequired Thrown when used without installing & including `format`
+		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
+	**/
+	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
+		return toFile(image, pathWithFileName, saveFormat);
+	}
+
+	
 	public static function fromBytes(?image:Image, bytes:ByteArray, fileFormat:ImageFormat):Image {
 		image = image == null ? new Image(0, 0) : image;
 		image.copyImageFrom(
@@ -153,7 +175,7 @@ class ImageTools {
 
 	public static function fromURL(?image:Image, url:String):Image {
 		#if js
-		return image.copyImageFrom(JsImageLoader.loadURLSync(url, null));
+		return image.copyImageFrom(JsImageLoader.loadURLSync(url));
 		#else
 		var http = new Http(url);
 		var requestStatus = 2;
@@ -186,78 +208,27 @@ class ImageTools {
 		#end
 	}
 
-	/**
-	    Saves an image to a path.
-
-		**Note: this function requires the `format` library, and only supports PNG.**
-
-		To install:
-
-		`haxelib install format`
-
-
-		@param image The image to save
-		@param pathWithFileName The path to save to
-		@param saveFormat An image format.
-		@throws LibraryRequired Thrown when used without installing & including `format`
-		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
-	**/
-	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
-		#if (!js)
-			#if format
-			switch saveFormat {
-				case PNG: {
-					try {
-						final out = sys.io.File.write(pathWithFileName);
-						var writer = new format.png.Writer(out);
-						final data = format.png.Tools.build32ARGB(image.width, image.height, image.underlying.sub(Image.OFFSET, image.underlying.length - Image.OFFSET));
-						writer.write(data);
-						out.close();
-					} catch (e:haxe.Exception) {
-						#if !vision_quiet
-						throw new ImageSavingFailed(saveFormat, e.message);
-						#end
-					}
-				}
-				case BMP: {
-					#if !vision_quiet
-					throw new Unimplemented('Using `ImageTools.saveToFile` with `BMP` format');
-					#end
-				}
-			}
-			#else
+	public static function toBytes(?image:Image, format:ImageFormat) {
+		image = image == null ? new Image(0, 0) : image;
+		return switch format {
+			case RAW: image.underlying;
+			case PNG: ImageIO.to.bytes.png(image);
+			case BMP: ImageIO.to.bytes.bmp(image);
+			case JPEG: ImageIO.to.bytes.jpeg(image);
+			default: {
 				#if !vision_quiet
-				throw new LibraryRequired("format", [], "ImageTools.loadFromFile", "function");
+				throw new Unimplemented('Using `ImageTools.toBytes` with a file of type `${format}`');
 				#end
-			#end
+				ImageIO.to.bytes.png(image);
+			}
+		};
+	}
+
+	public static function toFile(image:Image, pathWithFileName:String, format:ImageFormat = PNG) {
+		#if js
+		JsImageExporter.saveToFileAsync(image, pathWithFileName, format);
 		#else
-			#if format
-			switch saveFormat {
-				case PNG: {
-					try {
-						var canvas = image.toJsCanvas();
-  						var i = canvas.toDataURL("image/png", 1.0).replace("image/png", "image/octet-stream");
-  						var link = Browser.document.createAnchorElement();
-  						link.download = new Path(pathWithFileName).file + ".png";
-  						link.href = i;
-  						link.click();
-					} catch (e:haxe.Exception) {
-						#if !vision_quiet
-						throw new ImageSavingFailed(saveFormat, e.message);
-						#end
-					}
-				}
-				case BMP: {
-					#if !vision_quiet
-					throw new Unimplemented('Using `ImageTools.saveToFile` with `BMP` format');
-					#end
-				}
-			}
-			#else
-				#if !vision_quiet
-				throw new LibraryRequired("format", [], "ImageTools.loadFromFile", "function");
-				#end
-			#end
+		File.saveBytes(pathWithFileName, toBytes(image, format));
 		#end
 	}
 
