@@ -16,7 +16,7 @@ class JsImageExporter {
     public static function saveToFileAsync(image:Image, path:String, format:ImageFormat) {
         var canvas = image.toJsCanvas();
         var streamType = imageFormatToStreamType(format);
-        var href = format != RAW ? 
+        var href = format != VISION ? 
             canvas.toDataURL(streamType, 1.0).replace(streamType, "application/octet-stream") :
             'data:application/octet-stream;base64,' + Base64.encode(saveToBytesSync(image, streamType));
   		var link = Browser.document.createAnchorElement();
@@ -38,7 +38,7 @@ class JsImageExporter {
             case PNG: "image/png";
             case JPEG: "image/jpeg";
             case BMP: "image/bmp";
-            case RAW: "application/octet-stream";
+            case VISION: "application/octet-stream";
         }
     }
 

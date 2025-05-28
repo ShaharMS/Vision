@@ -23,14 +23,14 @@ enum abstract ImageFormat(Int) {
     /**
         Raw `vision.ds.Image` bytes
     **/
-    var RAW;
+    var VISION;
 
     @:from public static function fromString(type:String) {
         return switch type.toLowerCase() {
             case "png": PNG;
             case "bmp": BMP;
             case "jpeg" | "jpg": JPEG;
-            default: RAW;
+            default: VISION;
         }
     }
 }

@@ -149,7 +149,7 @@ class ImageTools {
 		image = image == null ? new Image(0, 0) : image;
 		image.copyImageFrom(
 			switch fileFormat {
-				case RAW: cast bytes;
+				case VISION: cast bytes;
 				case PNG: ImageIO.from.bytes.png(bytes);
 				case BMP: ImageIO.from.bytes.bmp(bytes);
 				case JPEG: ImageIO.from.bytes.jpeg(bytes);
@@ -211,7 +211,7 @@ class ImageTools {
 	public static function toBytes(?image:Image, format:ImageFormat) {
 		image = image == null ? new Image(0, 0) : image;
 		return switch format {
-			case RAW: image.underlying;
+			case VISION: image.underlying;
 			case PNG: ImageIO.to.bytes.png(image);
 			case BMP: ImageIO.to.bytes.bmp(image);
 			case JPEG: ImageIO.to.bytes.jpeg(image);
