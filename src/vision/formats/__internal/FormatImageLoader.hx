@@ -1,4 +1,4 @@
-package vision.helpers;
+package vision.formats.__internal;
 #if format
 import haxe.io.BytesInput;
 import vision.ds.Image;

@@ -1,7 +1,12 @@
 package vision.tools;
 
+#if sys
+import sys.io.File;
+#end
+import haxe.Http;
+import vision.formats.ImageIO;
 #if format
-import vision.helpers.FormatImageLoader;
+import vision.formats.__internal.FormatImageLoader;
 #end
 import haxe.io.Path;
 import haxe.crypto.Base64;
@@ -16,10 +21,10 @@ import vision.exceptions.Unimplemented;
 import vision.exceptions.WebResponseError;
 import vision.ds.ImageResizeAlgorithm;
 #if js
-import js.lib.Promise;
 import js.Browser;
 import js.html.CanvasElement;
-
+import vision.formats.__internal.JsImageLoader;
+import vision.formats.__internal.JsImageExporter;
 #end
 import haxe.ds.Vector;
 import vision.ds.IntPoint2D;
@@ -66,7 +71,7 @@ class ImageTools {
 		@throws WebResponseError Thrown when a file loading attempt from a URL fails.
 		@throws Unimplemented Thrown when used with unsupported file types.
 	**/
-	public static function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
+	public static overload extern inline function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
 		#if (!js)
 			#if format
 			var func:ByteArray -> Image;
@@ -115,35 +120,10 @@ class ImageTools {
 				#end
 			#end
 		#else
-		var imgElement = js.Browser.document.createImageElement();
-		imgElement.src = path;
-		imgElement.crossOrigin = "Anonymous";
-		imgElement.onload = () -> {
-			var canvas = js.Browser.document.createCanvasElement();
-
-			canvas.width = imgElement.width;
-			canvas.height = imgElement.height;
-
-			canvas.getContext2d().drawImage(imgElement, 0, 0);
-
-			if (image == null) image = new Image(imgElement.width, imgElement.height);
-
-			var imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
-
-			var i = 0;
-			while (i < imageData.data.length) {
-			  for (o in 0...4) {
-          		image.underlying[i + (@:privateAccess Image.OFFSET + 1) + o] = imageData.data[i + o];
-        		}
-				i += 4;
-			}
-
-			if(onComplete != null)
-				onComplete(image);
-		}
+		JsImageLoader.loadAsync(path, image, onComplete);
 		#end
 	}
-
+	
 	/**
 	    Saves an image to a path.
 
@@ -160,62 +140,96 @@ class ImageTools {
 		@throws LibraryRequired Thrown when used without installing & including `format`
 		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
 	**/
+	@:deprecated("ImageTools.saveToFile() is deprecated. use ImageTools.exportToFile() instead")
 	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
-		#if (!js)
-			#if format
-			switch saveFormat {
-				case PNG: {
-					try {
-						final out = sys.io.File.write(pathWithFileName);
-						var writer = new format.png.Writer(out);
-						final data = format.png.Tools.build32ARGB(image.width, image.height, image.underlying.sub(Image.OFFSET, image.underlying.length - Image.OFFSET));
-						writer.write(data);
-						out.close();
-					} catch (e:haxe.Exception) {
-						#if !vision_quiet
-						throw new ImageSavingFailed(saveFormat, e.message);
-						#end
-					}
-				}
-				case BMP: {
+		return exportToFile(image, pathWithFileName, saveFormat);
+	}
+
+	
+	public static function loadFromBytes(?image:Image, bytes:ByteArray, fileFormat:ImageFormat):Image {
+		image = image == null ? new Image(0, 0) : image;
+		image.copyImageFrom(
+			switch fileFormat {
+				case VISION: cast bytes;
+				case PNG: ImageIO.from.bytes.png(bytes);
+				case BMP: ImageIO.from.bytes.bmp(bytes);
+				case JPEG: ImageIO.from.bytes.jpeg(bytes);
+				default: {
 					#if !vision_quiet
-					throw new Unimplemented('Using `ImageTools.saveToFile` with `BMP` format');
+					throw new Unimplemented('Using `ImageTools.fromBytes` with a file of type `${fileFormat}`');
 					#end
+					ImageIO.from.bytes.png(bytes);
 				}
 			}
-			#else
-				#if !vision_quiet
-				throw new LibraryRequired("format", [], "ImageTools.loadFromFile", "function");
-				#end
-			#end
+		);
+
+		return image;
+	}
+
+	public static overload extern inline function loadFromFile(?image:Image, path:String):Image {
+		#if js
+		return image.copyImageFrom(JsImageLoader.loadFileSync(path));
 		#else
-			#if format
-			switch saveFormat {
-				case PNG: {
-					try {
-						var canvas = image.toJsCanvas();
-  						var i = canvas.toDataURL("image/png", 1.0).replace("image/png", "image/octet-stream");
-  						var link = Browser.document.createAnchorElement();
-  						link.download = new Path(pathWithFileName).file + ".png";
-  						link.href = i;
-  						link.click();
-					} catch (e:haxe.Exception) {
-						#if !vision_quiet
-						throw new ImageSavingFailed(saveFormat, e.message);
-						#end
-					}
-				}
-				case BMP: {
-					#if !vision_quiet
-					throw new Unimplemented('Using `ImageTools.saveToFile` with `BMP` format');
-					#end
-				}
-			}
-			#else
-				#if !vision_quiet
-				throw new LibraryRequired("format", [], "ImageTools.loadFromFile", "function");
-				#end
+		return loadFromBytes(image, File.getBytes(path), Path.extension(path));
+		#end
+	}
+
+	public static function loadFromURL(?image:Image, url:String):Image {
+		#if js
+		return image.copyImageFrom(JsImageLoader.loadURLSync(url));
+		#else
+		var http = new Http(url);
+		var requestStatus = 2;
+		http.onBytes = (data) -> {
+			loadFromBytes(image, data, Path.extension(url));
+			requestStatus = 1;
+		}
+		http.onError = (msg) -> {
+			#if !vision_quiet
+			throw new WebResponseError(url, msg);
 			#end
+			requestStatus = 0;
+		}
+		http.request();
+		
+		while (requestStatus == 2) {
+			#if sys
+			Sys.sleep(0.1);
+			#end
+			// This is a busy loop. Pretty bad, but there isn't really a better way.
+		}
+		
+		if (requestStatus == 0) {
+			#if !vision_quiet
+			throw new WebResponseError(url, "Failed to load image");
+			#end
+		}
+		
+		return image;
+		#end
+	}
+
+	public static function exportToBytes(?image:Image, format:ImageFormat) {
+		image = image == null ? new Image(0, 0) : image;
+		return switch format {
+			case VISION: image.underlying;
+			case PNG: ImageIO.to.bytes.png(image);
+			case BMP: ImageIO.to.bytes.bmp(image);
+			case JPEG: ImageIO.to.bytes.jpeg(image);
+			default: {
+				#if !vision_quiet
+				throw new Unimplemented('Using `ImageTools.toBytes` with a file of type `${format}`');
+				#end
+				ImageIO.to.bytes.png(image);
+			}
+		};
+	}
+
+	public static function exportToFile(image:Image, pathWithFileName:String, format:ImageFormat = PNG) {
+		#if js
+		JsImageExporter.saveToFileAsync(image, pathWithFileName, format);
+		#else
+		File.saveBytes(pathWithFileName, exportToBytes(image, format));
 		#end
 	}
 
@@ -313,256 +327,6 @@ class ImageTools {
 			+ pixel.green + pixel.blue) / 3) #end;
 		return Color.fromRGBA(gray, gray, gray, pixel.alpha);
 	}
-
-	#if flixel
-	public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
-		var image = new Image(Std.int(sprite.width), Std.int(sprite.height));
-		if (sprite.pixels == null) {
-			lime.utils.Log.warn("ImageTools.fromFlxSprite() - The given sprite's bitmapData is null. An empty image is returned. Is the given FlxSprite not added?");
-			return image;
-		}
-		for (x in 0...Std.int(sprite.width)) {
-			for (y in 0...Std.int(sprite.height)) {
-				image.setPixel(x, y, sprite.pixels.getPixel(x, y));
-			}
-		}
-		return image;
-	}
-
-	public static function toFlxSprite(image:Image):flixel.FlxSprite {
-		var sprite = new flixel.FlxSprite(0, 0);
-		sprite.makeGraphic(image.width, image.height, 0x00ffffff);
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				sprite.pixels.setPixel(x, y, image.getPixel(x, y));
-			}
-		}
-		return sprite;
-	}
-	#end
-
-	#if (openfl || flash)
-	public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
-		var image = new Image(bitmapData.width, bitmapData.height);
-		for (x in 0...bitmapData.width) {
-			for (y in 0...bitmapData.height) {
-				image.setPixel(x, y, bitmapData.getPixel32(x, y));
-			}
-		}
-		return image;
-	}
-
-	public static function toBitmapData(image:Image):flash.display.BitmapData {
-		var bitmapData = new flash.display.BitmapData(image.width, image.height, true, 0x00000000);
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				bitmapData.setPixel32(x, y, image.getPixel(x, y));
-			}
-		}
-		return bitmapData;
-	}
-
-	public static function fromSprite(sprite:flash.display.Sprite):Image {
-		var bmp = new flash.display.BitmapData(Std.int(sprite.width), Std.int(sprite.height));
-		bmp.draw(sprite);
-		return fromBitmapData(bmp);
-	}
-
-	public static function toSprite(image:Image):flash.display.Sprite {
-		final bmp = toBitmapData(image);
-		var s = new flash.display.Sprite();
-		s.addChild(new flash.display.Bitmap(bmp));
-		return s;
-	}
-
-	public static function fromShape(shape:flash.display.Shape):Image {
-		var bmp = new flash.display.BitmapData(Std.int(shape.width), Std.int(shape.height));
-		bmp.draw(shape);
-		return fromBitmapData(bmp);
-	}
-	#end
-
-	#if openfl
-	public static function toShape(image:Image):flash.display.Shape {
-		var s:openfl.display.Shape = cast toSprite(image);
-		var sh = new openfl.display.Shape();
-		sh.graphics.drawGraphicsData(s.graphics.readGraphicsData());
-		return sh;
-	}
-	#end
-
-	#if lime
-	public static function fromLimeImage(limeImage:lime.graphics.Image):Image {
-		var image = new Image(limeImage.width, limeImage.height);
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				image.setPixel(x, y, limeImage.getPixel(x, y));
-			}
-		}
-		return image;
-	}
-
-	public static function toLimeImage(image:Image):lime.graphics.Image {
-		var limeImage = new lime.graphics.Image(image.width, image.height);
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				limeImage.setPixel(x, y, image.getPixel(x, y));
-			}
-		}
-		return limeImage;
-	}
-	#end
-
-	#if kha
-	public static function fromKhaImage(khaImage:kha.Image):Image {
-		var image = new Image(khaImage.width, khaImage.height);
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				image.setPixel(x, y, khaImage.at(x, y));
-			}
-		}
-		return image;
-	}
-	#end
-
-	#if heaps
-	public static function fromHeapsPixels(pixels:hxd.Pixels):Image {
-		var image = new Image(pixels.width, pixels.height);
-		switch pixels.format {
-			case ARGB:
-			default:
-				#if !vision_quiet
-				throw "pixels format must be in ARGB format, currently: " + pixels.format;
-				#else
-				return image;
-				#end
-		}
-		for (x in 0...pixels.width) {
-			for (y in 0...pixels.height) {
-				image.setPixel(x, y, pixels.getPixel(x, y));
-			}
-		}
-		return image;
-	}
-
-	public static function toHeapsPixels(image:Image):hxd.Pixels {
-		var pixels = hxd.Pixels.alloc(image.width, image.height, ARGB);
-		for (x in 0...image.width) {
-			for (y in 0...pixels.height) {
-				pixels.setPixel(x, y, image.getPixel(x, y));
-			}
-		}
-		return pixels;
-	}
-	#end
-	#if js
-	public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
-		var image:Image = Image.fromBytes(new ByteArray(Image.OFFSET + (canvas.width + canvas.height) * 4), canvas.width, canvas.height);
-
-		final imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
-
-		{
-			var i = 0;
-			while (i < imageData.data.length) {
-        for (o in 0...4)
-				  image.underlying[i + (Image.OFFSET + 1) + o] = imageData.data[i + o];
-				i += 4;
-			}
-		}
-
-		return image;
-	}
-
-	public static function toJsCanvas(image:Image):js.html.CanvasElement {
-		var c = js.Browser.document.createCanvasElement();
-
-		c.width = image.width;
-		c.height = image.height;
-
-		var ctx = c.getContext2d();
-		final imageData = ctx.getImageData(0, 0, image.width, image.height);
-		var data = imageData.data;
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				var i = (y * image.width + x) * 4;
-        for (o in 0...4)
-				  data[i + o] = image.underlying[i + (Image.OFFSET + 1) + o];
-			}
-		}
-
-		ctx.putImageData(imageData, 0, 0);
-
-		return c;
-	}
-
-	public static function fromJsImage(image:js.html.ImageElement):Image {
-		var canvas = js.Browser.document.createCanvasElement();
-		canvas.width = image.width;
-		canvas.height = image.height;
-		canvas.getContext2d().drawImage(image, 0, 0);
- 		return fromJsCanvas(canvas);
-	}
-
-	public static function toJsImage(image:Image):js.html.ImageElement {
-		var canvas = image.toJsCanvas();
-		var htmlImage = js.Browser.document.createImageElement();
-		htmlImage.src = canvas.toDataURL();
-		return htmlImage;
-	}
-	#end
-	#if (haxeui_core && (haxeui_flixel || haxeui_openfl || haxeui_heaps || haxeui_html5))
-	public static function fromHaxeUIImage(image:haxe.ui.components.Image):Image {
-		#if haxeui_flixel
-			return fromFlxSprite(image.resource);
-		#elseif haxeui_openfl
-			return fromBitmapData(image.resource);
-		#elseif haxeui_heaps
-			return fromHeapsPixels(image.resource);
-		#else
-			return fromJsImage(image.resource);
-		#end
-	}
-
-	public static function toHaxeUIImage(image:Image):haxe.ui.components.Image {
-		var huiImage = new haxe.ui.components.Image();
-		huiImage.width = image.width;
-		huiImage.height = image.height;
-		#if haxeui_flixel
-			huiImage.resource = toFlxSprite(image);
-		#elseif haxeui_openfl
-			huiImage.resource = toBitmapData(image);
-		#elseif haxeui_heaps
-			huiImage.resource = toHeapsPixels(image);
-		#else
-			huiImage.resource = toJsImage(image);
-		#end
-		return huiImage;
-	}
-
-	public static function fromHaxeUIImageData(image:haxe.ui.backend.ImageData):Image {
-		#if haxeui_flixel
-			return fromFlxSprite(image);
-		#elseif haxeui_openfl
-			return fromBitmapData(image);
-		#elseif haxeui_heaps
-			return fromHeapsPixels(image);
-		#else
-			return fromJsImage(image);
-		#end
-	}
-
-	public static function toHaxeUIImageData(image:Image):haxe.ui.backend.ImageData {
-		#if haxeui_flixel
-			return toFlxSprite(image);
-		#elseif haxeui_openfl
-			return fromBitmapData(image);
-		#elseif haxeui_heaps
-			return toHeapsPixels(image);
-		#else
-			return toJsImage(image);
-		#end
-	}
-	#end
 }
 
 private class NeighborsIterator {

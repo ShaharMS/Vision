@@ -1,5 +1,6 @@
 package vision.ds;
 
+import vision.formats.ImageIO;
 import vision.algorithms.GaussJordan;
 import vision.ds.Matrix2D;
 import haxe.Resource;
@@ -519,6 +520,20 @@ abstract Image(ByteArray) {
 	**/
 	public inline function copyPixelTo(image:Image, x:Int, y:Int):Color {
 		return image.copyPixelFrom(cast this, x, y);
+	}
+
+	/**
+	    Copies an image's graphics data, while retaining this image's `ImageView`
+
+		@param image The image to copy data from
+		@returns This image
+	**/
+	public inline function copyImageFrom(image:Image):Image {
+		var currentView = getView();
+		this.resize(image.underlying.length);
+		this.blit(0, image.underlying, 0, image.underlying.length);
+		setView(currentView);
+		return cast this;
 	}
 
 	/**
@@ -1423,95 +1438,95 @@ abstract Image(ByteArray) {
 	//--------------------------------------------------------------------------
 	#if flixel
 	@:to public function toFlxSprite():flixel.FlxSprite {
-		return ImageTools.toFlxSprite(cast this);
+		return ImageIO.to.framework.flixel.flxsprite(cast this);
 	}
 
 	@:from public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
-		return ImageTools.fromFlxSprite(sprite);
+		return ImageIO.from.framework.flixel.flxsprite(sprite);
 	}
 	#end
 
-	#if openfl
+	#if (openfl || flash)
 	@:to public function toBitmapData():flash.display.BitmapData {
-		return ImageTools.toBitmapData(cast this);
+		return ImageIO.to.framework.flash.bitmapdata(cast this);
 	}
 
 	@:from public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
-		return ImageTools.fromBitmapData(bitmapData);
+		return ImageIO.from.framework.flash.bitmapdata(bitmapData);
 	}
 
-	@:to public function toShape():openfl.display.Shape {
-		return ImageTools.toShape(cast this);
+	@:to public function toShape():flash.display.Shape {
+		return ImageIO.to.framework.flash.shape(cast this);
 	}
 
 	@:from public static function fromShape(shape:flash.display.Shape):Image {
-		return ImageTools.fromShape(shape);
+		return ImageIO.from.framework.flash.shape(shape);
 	}
 
 	@:to public function toSprite():flash.display.Sprite {
-		return ImageTools.toSprite(cast this);
+		return ImageIO.to.framework.flash.sprite(cast this);
 	}
 
 	@:from public static function fromSprite(sprite:flash.display.Sprite):Image {
-		return ImageTools.fromSprite(sprite);
+		return ImageIO.from.framework.flash.sprite(sprite);
 	}
 	#end
 
 	#if lime
 	@:to public function toLimeImage():lime.graphics.Image {
-		return ImageTools.toLimeImage(cast this);
+		return ImageIO.to.framework.lime.image(cast this);
 	}
 
 	@:from public static function fromLimeImage(image:lime.graphics.Image):Image {
-		return ImageTools.fromLimeImage(image);
+		return ImageIO.from.framework.lime.image(image);
 	}
 	#end
 
 	#if kha
 	@:from public static function fromKhaImage(image:kha.Image):Image {
-		return ImageTools.fromKhaImage(image);
+		return ImageIO.from.framework.kha.image(image);
 	}
 	#end
 
 	#if heaps
     @:from public static function fromHeapsPixels(pixels:hxd.Pixels):Image {
-        return ImageTools.fromHeapsPixels(pixels);
+        return ImageIO.from.framework.heaps.pixels(pixels);
     }
     @:to public function toHeapsPixels():hxd.Pixels {
-        return ImageTools.toHeapsPixels(cast this);
+        return ImageIO.to.framework.heaps.pixels(cast this);
     }
     #end
 	
 	#if js
 	@:from public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
-        return ImageTools.fromJsCanvas(canvas);
+        return ImageIO.from.framework.js.canvas(canvas);
     }
     @:to public function toJsCanvas():js.html.CanvasElement {
-        return ImageTools.toJsCanvas(cast this);
+        return ImageIO.to.framework.js.canvas(cast this);
     }
 	@:from public static function fromJsImage(image:js.html.ImageElement):Image {
-		return ImageTools.fromJsImage(image);
+		return ImageIO.from.framework.js.image(image);
     }
 	@:to public function toJsImage():js.html.ImageElement {
-		return ImageTools.toJsImage(cast this);
+		return ImageIO.to.framework.js.image(cast this);
     }
 	#end
 
 	#if haxeui_core
 	@:from public static function fromHaxeUIImage(image:haxe.ui.components.Image):Image {
-		return ImageTools.fromHaxeUIImage(image);
+		return ImageIO.from.framework.haxeui.image(image);
 	}
 
 	@:to public function toHaxeUIImage():haxe.ui.components.Image {
-		return ImageTools.toHaxeUIImage(cast this);
+		return ImageIO.to.framework.haxeui.image(cast this);
 	}
 
 	@:from public static function fromHaxeUIImageData(image:haxe.ui.backend.ImageData):Image {
-		return ImageTools.fromHaxeUIImageData(image);
+		return ImageIO.from.framework.haxeui.imagedata(image);
 	}
 
 	@:to public function toHaxeUIImageData():haxe.ui.backend.ImageData {
-		return ImageTools.toHaxeUIImageData(cast this);
+		return ImageIO.to.framework.haxeui.imagedata(cast this);
 	}
 	#end
 
@@ -1584,7 +1599,7 @@ abstract Image(ByteArray) {
 		@param width The width of the returned image.
 		@param height Optional, the height of the returned image. determined automatically, can be overridden by setting this parameter
 	**/
-	public static inline function fromBytes(bytes:ByteArray, width:Int, ?height:Int) {
+	public static inline function loadFromBytes(bytes:ByteArray, width:Int, ?height:Int) {
 		var h = height != null ? height : (bytes.length / 4 / width).ceil();
 		var array = new ByteArray(width * h * 4 + OFFSET);
 		array.fill(0, array.length, 0);
@@ -1604,7 +1619,7 @@ abstract Image(ByteArray) {
 		Returns a `ByteArray` of format `ARGB` of the pixels of this image.
 		@return A new `ByteArray`
 	**/
-	@:to overload public extern inline function toBytes():ByteArray {
+	@:to overload public extern inline function exportToBytes():ByteArray {
 		return underlying.sub(OFFSET, underlying.length - OFFSET);
 	}
 
@@ -1613,7 +1628,7 @@ abstract Image(ByteArray) {
 		@param colorFormat The wanted color format of the returned `ByteArray`.
 		@return A new `ByteArray`
 	**/
-	overload public extern inline function toBytes(?colorFormat:PixelFormat = ARGB) {
+	overload public extern inline function exportToBytes(?colorFormat:PixelFormat = ARGB) {
 		return inline PixelFormat.convertPixelFormat(underlying.sub(OFFSET, underlying.length - OFFSET), ARGB, colorFormat);
 	}
 
