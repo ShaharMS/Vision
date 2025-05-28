@@ -1599,7 +1599,7 @@ abstract Image(ByteArray) {
 		@param width The width of the returned image.
 		@param height Optional, the height of the returned image. determined automatically, can be overridden by setting this parameter
 	**/
-	public static inline function fromBytes(bytes:ByteArray, width:Int, ?height:Int) {
+	public static inline function loadFromBytes(bytes:ByteArray, width:Int, ?height:Int) {
 		var h = height != null ? height : (bytes.length / 4 / width).ceil();
 		var array = new ByteArray(width * h * 4 + OFFSET);
 		array.fill(0, array.length, 0);
@@ -1619,7 +1619,7 @@ abstract Image(ByteArray) {
 		Returns a `ByteArray` of format `ARGB` of the pixels of this image.
 		@return A new `ByteArray`
 	**/
-	@:to overload public extern inline function toBytes():ByteArray {
+	@:to overload public extern inline function exportToBytes():ByteArray {
 		return underlying.sub(OFFSET, underlying.length - OFFSET);
 	}
 
@@ -1628,7 +1628,7 @@ abstract Image(ByteArray) {
 		@param colorFormat The wanted color format of the returned `ByteArray`.
 		@return A new `ByteArray`
 	**/
-	overload public extern inline function toBytes(?colorFormat:PixelFormat = ARGB) {
+	overload public extern inline function exportToBytes(?colorFormat:PixelFormat = ARGB) {
 		return inline PixelFormat.convertPixelFormat(underlying.sub(OFFSET, underlying.length - OFFSET), ARGB, colorFormat);
 	}
 

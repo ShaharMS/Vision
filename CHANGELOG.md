@@ -7,8 +7,12 @@
  - **Added `ImageFormat.JPEG`, `ImageFormat.VISION`**
 
 ### `vision.tools`
- - **Added `fromFile`, `fromURL` and `fromBytes` methods to `ImageTools`**
- - **Added `toFile`, `toBytes` methods to `ImageTools`**
+ - **Added `ImageTools.loadFromFile` (synchronous version)**
+ - **Added `ImageTools.loadFromBytes`**
+ - **Added `ImageTools.loadFromURL`**
+ - **Added `ImageTools.exportToBytes`**
+ - **Added `ImageTools.exportToFile`**
+ - **Deprecated `ImageTools.saveToFile` in favor of `ImageTools.exportToFile`**
 
 ### `vision.formats`
   - **New Subdirectory inside the `vision` package for cleaner image format conversions**

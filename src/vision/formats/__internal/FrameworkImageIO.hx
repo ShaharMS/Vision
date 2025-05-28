@@ -9,7 +9,7 @@ class FrameworkImageIO {
 	public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
 		var image = new Image(Std.int(sprite.width), Std.int(sprite.height));
 		if (sprite.pixels == null) {
-			lime.utils.Log.warn("ImageTools.fromFlxSprite() - The given sprite's bitmapData is null. An empty image is returned. Is the given FlxSprite not added?");
+			lime.utils.Log.warn("FrameworkImageIO.fromFlxSprite() - The given sprite's bitmapData is null. An empty image is returned. Is the given FlxSprite not added?");
 			return image;
 		}
 		for (x in 0...Std.int(sprite.width)) {
@@ -124,8 +124,6 @@ class FrameworkImageIO {
 			default:
 				#if !vision_quiet
 				throw "pixels format must be in ARGB format, currently: " + pixels.format;
-				#else
-				return image;
 				#end
 		}
 		for (x in 0...pixels.width) {
@@ -148,7 +146,7 @@ class FrameworkImageIO {
 	#end
 	#if js
 	public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
-		var image:Image = Image.fromBytes(new ByteArray(Image.OFFSET + (canvas.width + canvas.height) * 4), canvas.width, canvas.height);
+		var image:Image = Image.loadFromBytes(new ByteArray(Image.OFFSET + (canvas.width + canvas.height) * 4), canvas.width, canvas.height);
 
 		final imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
 

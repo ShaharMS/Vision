@@ -71,7 +71,7 @@ class ImageTools {
 		@throws WebResponseError Thrown when a file loading attempt from a URL fails.
 		@throws Unimplemented Thrown when used with unsupported file types.
 	**/
-	public static function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
+	public static overload extern inline function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
 		#if (!js)
 			#if format
 			var func:ByteArray -> Image;
@@ -140,12 +140,13 @@ class ImageTools {
 		@throws LibraryRequired Thrown when used without installing & including `format`
 		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
 	**/
+	@:deprecated("ImageTools.saveToFile() is deprecated. use ImageTools.exportToFile() instead")
 	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
-		return toFile(image, pathWithFileName, saveFormat);
+		return exportToFile(image, pathWithFileName, saveFormat);
 	}
 
 	
-	public static function fromBytes(?image:Image, bytes:ByteArray, fileFormat:ImageFormat):Image {
+	public static function loadFromBytes(?image:Image, bytes:ByteArray, fileFormat:ImageFormat):Image {
 		image = image == null ? new Image(0, 0) : image;
 		image.copyImageFrom(
 			switch fileFormat {
@@ -165,22 +166,22 @@ class ImageTools {
 		return image;
 	}
 
-	public static function fromFile(?image:Image, path:String):Image {
+	public static overload extern inline function loadFromFile(?image:Image, path:String):Image {
 		#if js
 		return image.copyImageFrom(JsImageLoader.loadFileSync(path));
 		#else
-		return fromBytes(image, File.getBytes(path), Path.extension(path));
+		return loadFromBytes(image, File.getBytes(path), Path.extension(path));
 		#end
 	}
 
-	public static function fromURL(?image:Image, url:String):Image {
+	public static function loadFromURL(?image:Image, url:String):Image {
 		#if js
 		return image.copyImageFrom(JsImageLoader.loadURLSync(url));
 		#else
 		var http = new Http(url);
 		var requestStatus = 2;
 		http.onBytes = (data) -> {
-			fromBytes(image, data, Path.extension(url));
+			loadFromBytes(image, data, Path.extension(url));
 			requestStatus = 1;
 		}
 		http.onError = (msg) -> {
@@ -208,7 +209,7 @@ class ImageTools {
 		#end
 	}
 
-	public static function toBytes(?image:Image, format:ImageFormat) {
+	public static function exportToBytes(?image:Image, format:ImageFormat) {
 		image = image == null ? new Image(0, 0) : image;
 		return switch format {
 			case VISION: image.underlying;
@@ -224,11 +225,11 @@ class ImageTools {
 		};
 	}
 
-	public static function toFile(image:Image, pathWithFileName:String, format:ImageFormat = PNG) {
+	public static function exportToFile(image:Image, pathWithFileName:String, format:ImageFormat = PNG) {
 		#if js
 		JsImageExporter.saveToFileAsync(image, pathWithFileName, format);
 		#else
-		File.saveBytes(pathWithFileName, toBytes(image, format));
+		File.saveBytes(pathWithFileName, exportToBytes(image, format));
 		#end
 	}
 
