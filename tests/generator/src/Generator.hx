@@ -72,7 +72,7 @@ class Generator {
     }    
 
     static function generateFileHeader(packageName:String, className:String) {
-        return 'package;\n\nimport vision.exceptions.Unimplemented;\n\nclass ${className} {\n';
+        return 'package;\n\nimport vision.exceptions.Unimplemented;\nimport TestResult;\n\nclass ${className} {\n';
     }
 
     static function generateFileFooter() {
@@ -106,7 +106,7 @@ class Generator {
             functionNames.push('${cleanPackage}__${field}__ShouldWork');
         }
 
-        functionNames = functionNames.map(x -> '{testFunction: $x, testName: "$x"}');
+        functionNames = functionNames.map(x -> '\n\t\t{testFunction: $x, testName: "$x"}');
         
         return testClassActuatorTemplate.replace("TEST_ARRAY", functionNames.join(", "));
     }

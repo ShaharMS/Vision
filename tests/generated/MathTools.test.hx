@@ -1,6 +1,7 @@
 package;
 
 import vision.exceptions.Unimplemented;
+import TestResult;
 
 class MathTools {
     public function vision_tools_MathTools__PI__ShouldWork():TestResult {
@@ -1095,23 +1096,85 @@ class MathTools {
         }
     }
 
-    public function new() {
-        var succeed = [];
-        var failed = [];
-        var skipped = [];
-        for (test in [{testFunction: vision_tools_MathTools__wrapInt__ShouldWork, testName: "vision_tools_MathTools__wrapInt__ShouldWork"}, {testFunction: vision_tools_MathTools__wrapFloat__ShouldWork, testName: "vision_tools_MathTools__wrapFloat__ShouldWork"}, {testFunction: vision_tools_MathTools__truncate__ShouldWork, testName: "vision_tools_MathTools__truncate__ShouldWork"}, {testFunction: vision_tools_MathTools__toFloat__ShouldWork, testName: "vision_tools_MathTools__toFloat__ShouldWork"}, {testFunction: vision_tools_MathTools__tand__ShouldWork, testName: "vision_tools_MathTools__tand__ShouldWork"}, {testFunction: vision_tools_MathTools__tan__ShouldWork, testName: "vision_tools_MathTools__tan__ShouldWork"}, {testFunction: vision_tools_MathTools__sqrt__ShouldWork, testName: "vision_tools_MathTools__sqrt__ShouldWork"}, {testFunction: vision_tools_MathTools__slopeToRadians__ShouldWork, testName: "vision_tools_MathTools__slopeToRadians__ShouldWork"}, {testFunction: vision_tools_MathTools__slopeToDegrees__ShouldWork, testName: "vision_tools_MathTools__slopeToDegrees__ShouldWork"}, {testFunction: vision_tools_MathTools__slopeFromPointToPoint2D__ShouldWork, testName: "vision_tools_MathTools__slopeFromPointToPoint2D__ShouldWork"}, {testFunction: vision_tools_MathTools__sind__ShouldWork, testName: "vision_tools_MathTools__sind__ShouldWork"}, {testFunction: vision_tools_MathTools__sin__ShouldWork, testName: "vision_tools_MathTools__sin__ShouldWork"}, {testFunction: vision_tools_MathTools__secd__ShouldWork, testName: "vision_tools_MathTools__secd__ShouldWork"}, {testFunction: vision_tools_MathTools__sec__ShouldWork, testName: "vision_tools_MathTools__sec__ShouldWork"}, {testFunction: vision_tools_MathTools__round__ShouldWork, testName: "vision_tools_MathTools__round__ShouldWork"}, {testFunction: vision_tools_MathTools__radiansToSlope__ShouldWork, testName: "vision_tools_MathTools__radiansToSlope__ShouldWork"}, {testFunction: vision_tools_MathTools__radiansToDegrees__ShouldWork, testName: "vision_tools_MathTools__radiansToDegrees__ShouldWork"}, {testFunction: vision_tools_MathTools__radiansFromPointToPoint2D__ShouldWork, testName: "vision_tools_MathTools__radiansFromPointToPoint2D__ShouldWork"}, {testFunction: vision_tools_MathTools__radiansFromPointToLine2D__ShouldWork, testName: "vision_tools_MathTools__radiansFromPointToLine2D__ShouldWork"}, {testFunction: vision_tools_MathTools__radiansFromLineToPoint2D__ShouldWork, testName: "vision_tools_MathTools__radiansFromLineToPoint2D__ShouldWork"}, {testFunction: vision_tools_MathTools__pow__ShouldWork, testName: "vision_tools_MathTools__pow__ShouldWork"}, {testFunction: vision_tools_MathTools__parseInt__ShouldWork, testName: "vision_tools_MathTools__parseInt__ShouldWork"}, {testFunction: vision_tools_MathTools__parseFloat__ShouldWork, testName: "vision_tools_MathTools__parseFloat__ShouldWork"}, {testFunction: vision_tools_MathTools__parseBool__ShouldWork, testName: "vision_tools_MathTools__parseBool__ShouldWork"}, {testFunction: vision_tools_MathTools__mirrorInsideRectangle__ShouldWork, testName: "vision_tools_MathTools__mirrorInsideRectangle__ShouldWork"}, {testFunction: vision_tools_MathTools__log__ShouldWork, testName: "vision_tools_MathTools__log__ShouldWork"}, {testFunction: vision_tools_MathTools__isNaN__ShouldWork, testName: "vision_tools_MathTools__isNaN__ShouldWork"}, {testFunction: vision_tools_MathTools__isInt__ShouldWork, testName: "vision_tools_MathTools__isInt__ShouldWork"}, {testFunction: vision_tools_MathTools__isFinite__ShouldWork, testName: "vision_tools_MathTools__isFinite__ShouldWork"}, {testFunction: vision_tools_MathTools__isBetweenRanges__ShouldWork, testName: "vision_tools_MathTools__isBetweenRanges__ShouldWork"}, {testFunction: vision_tools_MathTools__isBetweenRange__ShouldWork, testName: "vision_tools_MathTools__isBetweenRange__ShouldWork"}, {testFunction: vision_tools_MathTools__invertInsideRectangle__ShouldWork, testName: "vision_tools_MathTools__invertInsideRectangle__ShouldWork"}, {testFunction: vision_tools_MathTools__intersectionBetweenRay2Ds__ShouldWork, testName: "vision_tools_MathTools__intersectionBetweenRay2Ds__ShouldWork"}, {testFunction: vision_tools_MathTools__intersectionBetweenLine2Ds__ShouldWork, testName: "vision_tools_MathTools__intersectionBetweenLine2Ds__ShouldWork"}, {testFunction: vision_tools_MathTools__getClosestPointOnRay2D__ShouldWork, testName: "vision_tools_MathTools__getClosestPointOnRay2D__ShouldWork"}, {testFunction: vision_tools_MathTools__gamma__ShouldWork, testName: "vision_tools_MathTools__gamma__ShouldWork"}, {testFunction: vision_tools_MathTools__fround__ShouldWork, testName: "vision_tools_MathTools__fround__ShouldWork"}, {testFunction: vision_tools_MathTools__floor__ShouldWork, testName: "vision_tools_MathTools__floor__ShouldWork"}, {testFunction: vision_tools_MathTools__flipInsideRectangle__ShouldWork, testName: "vision_tools_MathTools__flipInsideRectangle__ShouldWork"}, {testFunction: vision_tools_MathTools__findPointAtDistanceUsingY__ShouldWork, testName: "vision_tools_MathTools__findPointAtDistanceUsingY__ShouldWork"}, {testFunction: vision_tools_MathTools__findPointAtDistanceUsingX__ShouldWork, testName: "vision_tools_MathTools__findPointAtDistanceUsingX__ShouldWork"}, {testFunction: vision_tools_MathTools__ffloor__ShouldWork, testName: "vision_tools_MathTools__ffloor__ShouldWork"}, {testFunction: vision_tools_MathTools__fceil__ShouldWork, testName: "vision_tools_MathTools__fceil__ShouldWork"}, {testFunction: vision_tools_MathTools__factorial__ShouldWork, testName: "vision_tools_MathTools__factorial__ShouldWork"}, {testFunction: vision_tools_MathTools__exp__ShouldWork, testName: "vision_tools_MathTools__exp__ShouldWork"}, {testFunction: vision_tools_MathTools__distanceFromRayToPoint2D__ShouldWork, testName: "vision_tools_MathTools__distanceFromRayToPoint2D__ShouldWork"}, {testFunction: vision_tools_MathTools__distanceFromPointToRay2D__ShouldWork, testName: "vision_tools_MathTools__distanceFromPointToRay2D__ShouldWork"}, {testFunction: vision_tools_MathTools__distanceFromPointToLine2D__ShouldWork, testName: "vision_tools_MathTools__distanceFromPointToLine2D__ShouldWork"}, {testFunction: vision_tools_MathTools__distanceFromLineToPoint2D__ShouldWork, testName: "vision_tools_MathTools__distanceFromLineToPoint2D__ShouldWork"}, {testFunction: vision_tools_MathTools__distanceBetweenRays2D__ShouldWork, testName: "vision_tools_MathTools__distanceBetweenRays2D__ShouldWork"}, {testFunction: vision_tools_MathTools__distanceBetweenPoints__ShouldWork, testName: "vision_tools_MathTools__distanceBetweenPoints__ShouldWork"}, {testFunction: vision_tools_MathTools__distanceBetweenLines2D__ShouldWork, testName: "vision_tools_MathTools__distanceBetweenLines2D__ShouldWork"}, {testFunction: vision_tools_MathTools__degreesToSlope__ShouldWork, testName: "vision_tools_MathTools__degreesToSlope__ShouldWork"}, {testFunction: vision_tools_MathTools__degreesToRadians__ShouldWork, testName: "vision_tools_MathTools__degreesToRadians__ShouldWork"}, {testFunction: vision_tools_MathTools__degreesFromPointToPoint2D__ShouldWork, testName: "vision_tools_MathTools__degreesFromPointToPoint2D__ShouldWork"}, {testFunction: vision_tools_MathTools__cropDecimal__ShouldWork, testName: "vision_tools_MathTools__cropDecimal__ShouldWork"}, {testFunction: vision_tools_MathTools__cotand__ShouldWork, testName: "vision_tools_MathTools__cotand__ShouldWork"}, {testFunction: vision_tools_MathTools__cotan__ShouldWork, testName: "vision_tools_MathTools__cotan__ShouldWork"}, {testFunction: vision_tools_MathTools__cosecd__ShouldWork, testName: "vision_tools_MathTools__cosecd__ShouldWork"}, {testFunction: vision_tools_MathTools__cosec__ShouldWork, testName: "vision_tools_MathTools__cosec__ShouldWork"}, {testFunction: vision_tools_MathTools__cosd__ShouldWork, testName: "vision_tools_MathTools__cosd__ShouldWork"}, {testFunction: vision_tools_MathTools__cos__ShouldWork, testName: "vision_tools_MathTools__cos__ShouldWork"}, {testFunction: vision_tools_MathTools__clamp__ShouldWork, testName: "vision_tools_MathTools__clamp__ShouldWork"}, {testFunction: vision_tools_MathTools__ceil__ShouldWork, testName: "vision_tools_MathTools__ceil__ShouldWork"}, {testFunction: vision_tools_MathTools__boundInt__ShouldWork, testName: "vision_tools_MathTools__boundInt__ShouldWork"}, {testFunction: vision_tools_MathTools__boundFloat__ShouldWork, testName: "vision_tools_MathTools__boundFloat__ShouldWork"}, {testFunction: vision_tools_MathTools__atan2__ShouldWork, testName: "vision_tools_MathTools__atan2__ShouldWork"}, {testFunction: vision_tools_MathTools__atan__ShouldWork, testName: "vision_tools_MathTools__atan__ShouldWork"}, {testFunction: vision_tools_MathTools__asin__ShouldWork, testName: "vision_tools_MathTools__asin__ShouldWork"}, {testFunction: vision_tools_MathTools__acos__ShouldWork, testName: "vision_tools_MathTools__acos__ShouldWork"}, {testFunction: vision_tools_MathTools__abs__ShouldWork, testName: "vision_tools_MathTools__abs__ShouldWork"}, {testFunction: vision_tools_MathTools__PI__ShouldWork, testName: "vision_tools_MathTools__PI__ShouldWork"}, {testFunction: vision_tools_MathTools__PI_OVER_2__ShouldWork, testName: "vision_tools_MathTools__PI_OVER_2__ShouldWork"}, {testFunction: vision_tools_MathTools__NEGATIVE_INFINITY__ShouldWork, testName: "vision_tools_MathTools__NEGATIVE_INFINITY__ShouldWork"}, {testFunction: vision_tools_MathTools__POSITIVE_INFINITY__ShouldWork, testName: "vision_tools_MathTools__POSITIVE_INFINITY__ShouldWork"}, {testFunction: vision_tools_MathTools__NaN__ShouldWork, testName: "vision_tools_MathTools__NaN__ShouldWork"}, {testFunction: vision_tools_MathTools__SQRT2__ShouldWork, testName: "vision_tools_MathTools__SQRT2__ShouldWork"}, {testFunction: vision_tools_MathTools__SQRT3__ShouldWork, testName: "vision_tools_MathTools__SQRT3__ShouldWork"}]) {
-            try {
-                test.testFunction();
-            } 
-            catch (exception:Unimplemented) {
-                skipped.push(test.testName);
-                continue;
-            }
-            catch (exception:Exception) {
-                failed.push(test.testName);
-                continue;
-            }
-            succeed.push(test.testName);
-        }
-    }
+    public var tests = [
+		{testFunction: vision_tools_MathTools__wrapInt__ShouldWork, testName: "vision_tools_MathTools__wrapInt__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__wrapFloat__ShouldWork, testName: "vision_tools_MathTools__wrapFloat__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__truncate__ShouldWork, testName: "vision_tools_MathTools__truncate__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__toFloat__ShouldWork, testName: "vision_tools_MathTools__toFloat__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__tand__ShouldWork, testName: "vision_tools_MathTools__tand__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__tan__ShouldWork, testName: "vision_tools_MathTools__tan__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__sqrt__ShouldWork, testName: "vision_tools_MathTools__sqrt__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__slopeToRadians__ShouldWork, testName: "vision_tools_MathTools__slopeToRadians__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__slopeToDegrees__ShouldWork, testName: "vision_tools_MathTools__slopeToDegrees__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__slopeFromPointToPoint2D__ShouldWork, testName: "vision_tools_MathTools__slopeFromPointToPoint2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__sind__ShouldWork, testName: "vision_tools_MathTools__sind__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__sin__ShouldWork, testName: "vision_tools_MathTools__sin__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__secd__ShouldWork, testName: "vision_tools_MathTools__secd__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__sec__ShouldWork, testName: "vision_tools_MathTools__sec__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__round__ShouldWork, testName: "vision_tools_MathTools__round__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__radiansToSlope__ShouldWork, testName: "vision_tools_MathTools__radiansToSlope__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__radiansToDegrees__ShouldWork, testName: "vision_tools_MathTools__radiansToDegrees__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__radiansFromPointToPoint2D__ShouldWork, testName: "vision_tools_MathTools__radiansFromPointToPoint2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__radiansFromPointToLine2D__ShouldWork, testName: "vision_tools_MathTools__radiansFromPointToLine2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__radiansFromLineToPoint2D__ShouldWork, testName: "vision_tools_MathTools__radiansFromLineToPoint2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__pow__ShouldWork, testName: "vision_tools_MathTools__pow__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__parseInt__ShouldWork, testName: "vision_tools_MathTools__parseInt__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__parseFloat__ShouldWork, testName: "vision_tools_MathTools__parseFloat__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__parseBool__ShouldWork, testName: "vision_tools_MathTools__parseBool__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__mirrorInsideRectangle__ShouldWork, testName: "vision_tools_MathTools__mirrorInsideRectangle__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__log__ShouldWork, testName: "vision_tools_MathTools__log__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__isNaN__ShouldWork, testName: "vision_tools_MathTools__isNaN__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__isInt__ShouldWork, testName: "vision_tools_MathTools__isInt__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__isFinite__ShouldWork, testName: "vision_tools_MathTools__isFinite__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__isBetweenRanges__ShouldWork, testName: "vision_tools_MathTools__isBetweenRanges__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__isBetweenRange__ShouldWork, testName: "vision_tools_MathTools__isBetweenRange__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__invertInsideRectangle__ShouldWork, testName: "vision_tools_MathTools__invertInsideRectangle__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__intersectionBetweenRay2Ds__ShouldWork, testName: "vision_tools_MathTools__intersectionBetweenRay2Ds__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__intersectionBetweenLine2Ds__ShouldWork, testName: "vision_tools_MathTools__intersectionBetweenLine2Ds__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__getClosestPointOnRay2D__ShouldWork, testName: "vision_tools_MathTools__getClosestPointOnRay2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__gamma__ShouldWork, testName: "vision_tools_MathTools__gamma__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__fround__ShouldWork, testName: "vision_tools_MathTools__fround__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__floor__ShouldWork, testName: "vision_tools_MathTools__floor__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__flipInsideRectangle__ShouldWork, testName: "vision_tools_MathTools__flipInsideRectangle__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__findPointAtDistanceUsingY__ShouldWork, testName: "vision_tools_MathTools__findPointAtDistanceUsingY__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__findPointAtDistanceUsingX__ShouldWork, testName: "vision_tools_MathTools__findPointAtDistanceUsingX__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__ffloor__ShouldWork, testName: "vision_tools_MathTools__ffloor__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__fceil__ShouldWork, testName: "vision_tools_MathTools__fceil__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__factorial__ShouldWork, testName: "vision_tools_MathTools__factorial__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__exp__ShouldWork, testName: "vision_tools_MathTools__exp__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__distanceFromRayToPoint2D__ShouldWork, testName: "vision_tools_MathTools__distanceFromRayToPoint2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__distanceFromPointToRay2D__ShouldWork, testName: "vision_tools_MathTools__distanceFromPointToRay2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__distanceFromPointToLine2D__ShouldWork, testName: "vision_tools_MathTools__distanceFromPointToLine2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__distanceFromLineToPoint2D__ShouldWork, testName: "vision_tools_MathTools__distanceFromLineToPoint2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__distanceBetweenRays2D__ShouldWork, testName: "vision_tools_MathTools__distanceBetweenRays2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__distanceBetweenPoints__ShouldWork, testName: "vision_tools_MathTools__distanceBetweenPoints__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__distanceBetweenLines2D__ShouldWork, testName: "vision_tools_MathTools__distanceBetweenLines2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__degreesToSlope__ShouldWork, testName: "vision_tools_MathTools__degreesToSlope__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__degreesToRadians__ShouldWork, testName: "vision_tools_MathTools__degreesToRadians__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__degreesFromPointToPoint2D__ShouldWork, testName: "vision_tools_MathTools__degreesFromPointToPoint2D__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__cropDecimal__ShouldWork, testName: "vision_tools_MathTools__cropDecimal__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__cotand__ShouldWork, testName: "vision_tools_MathTools__cotand__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__cotan__ShouldWork, testName: "vision_tools_MathTools__cotan__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__cosecd__ShouldWork, testName: "vision_tools_MathTools__cosecd__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__cosec__ShouldWork, testName: "vision_tools_MathTools__cosec__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__cosd__ShouldWork, testName: "vision_tools_MathTools__cosd__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__cos__ShouldWork, testName: "vision_tools_MathTools__cos__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__clamp__ShouldWork, testName: "vision_tools_MathTools__clamp__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__ceil__ShouldWork, testName: "vision_tools_MathTools__ceil__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__boundInt__ShouldWork, testName: "vision_tools_MathTools__boundInt__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__boundFloat__ShouldWork, testName: "vision_tools_MathTools__boundFloat__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__atan2__ShouldWork, testName: "vision_tools_MathTools__atan2__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__atan__ShouldWork, testName: "vision_tools_MathTools__atan__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__asin__ShouldWork, testName: "vision_tools_MathTools__asin__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__acos__ShouldWork, testName: "vision_tools_MathTools__acos__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__abs__ShouldWork, testName: "vision_tools_MathTools__abs__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__PI__ShouldWork, testName: "vision_tools_MathTools__PI__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__PI_OVER_2__ShouldWork, testName: "vision_tools_MathTools__PI_OVER_2__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__NEGATIVE_INFINITY__ShouldWork, testName: "vision_tools_MathTools__NEGATIVE_INFINITY__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__POSITIVE_INFINITY__ShouldWork, testName: "vision_tools_MathTools__POSITIVE_INFINITY__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__NaN__ShouldWork, testName: "vision_tools_MathTools__NaN__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__SQRT2__ShouldWork, testName: "vision_tools_MathTools__SQRT2__ShouldWork"}, 
+		{testFunction: vision_tools_MathTools__SQRT3__ShouldWork, testName: "vision_tools_MathTools__SQRT3__ShouldWork"}];
+    
+    public function new() {}
 }

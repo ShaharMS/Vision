@@ -1,6 +1,7 @@
 package;
 
 import vision.exceptions.Unimplemented;
+import TestResult;
 
 class IntPoint2D {
     public function vision_ds_IntPoint2D__x__ShouldWork():TestResult {
@@ -92,23 +93,13 @@ class IntPoint2D {
         }
     }
 
-    public function new() {
-        var succeed = [];
-        var failed = [];
-        var skipped = [];
-        for (test in [{testFunction: vision_ds_IntPoint2D__fromPoint2D__ShouldWork, testName: "vision_ds_IntPoint2D__fromPoint2D__ShouldWork"}, {testFunction: vision_ds_IntPoint2D__radiansTo__ShouldWork, testName: "vision_ds_IntPoint2D__radiansTo__ShouldWork"}, {testFunction: vision_ds_IntPoint2D__distanceTo__ShouldWork, testName: "vision_ds_IntPoint2D__distanceTo__ShouldWork"}, {testFunction: vision_ds_IntPoint2D__degreesTo__ShouldWork, testName: "vision_ds_IntPoint2D__degreesTo__ShouldWork"}, {testFunction: vision_ds_IntPoint2D__x__ShouldWork, testName: "vision_ds_IntPoint2D__x__ShouldWork"}, {testFunction: vision_ds_IntPoint2D__y__ShouldWork, testName: "vision_ds_IntPoint2D__y__ShouldWork"}]) {
-            try {
-                test.testFunction();
-            } 
-            catch (exception:Unimplemented) {
-                skipped.push(test.testName);
-                continue;
-            }
-            catch (exception:Exception) {
-                failed.push(test.testName);
-                continue;
-            }
-            succeed.push(test.testName);
-        }
-    }
+    public var tests = [
+		{testFunction: vision_ds_IntPoint2D__fromPoint2D__ShouldWork, testName: "vision_ds_IntPoint2D__fromPoint2D__ShouldWork"}, 
+		{testFunction: vision_ds_IntPoint2D__radiansTo__ShouldWork, testName: "vision_ds_IntPoint2D__radiansTo__ShouldWork"}, 
+		{testFunction: vision_ds_IntPoint2D__distanceTo__ShouldWork, testName: "vision_ds_IntPoint2D__distanceTo__ShouldWork"}, 
+		{testFunction: vision_ds_IntPoint2D__degreesTo__ShouldWork, testName: "vision_ds_IntPoint2D__degreesTo__ShouldWork"}, 
+		{testFunction: vision_ds_IntPoint2D__x__ShouldWork, testName: "vision_ds_IntPoint2D__x__ShouldWork"}, 
+		{testFunction: vision_ds_IntPoint2D__y__ShouldWork, testName: "vision_ds_IntPoint2D__y__ShouldWork"}];
+    
+    public function new() {}
 }
