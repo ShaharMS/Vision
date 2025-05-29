@@ -1,37 +1,114 @@
 package;
 
+import Detector.TestDetections;
 import sys.FileSystem;
 import sys.io.File;
 
+using StringTools;
 
 
 class Generator {
 
 
-    public static var instanceFunctionTemplate = File.getContent("templates/InstanceFunctionTestTemplate.hx");
-    public static var instanceFieldTemplate = File.getContent("templates/InstanceFieldTestTemplate.hx");
+    public static var instanceFunctionTemplate = File.getContent(FileSystem.absolutePath("templates/InstanceFunctionTestTemplate.hx"));
+    public static var instanceFieldTemplate = File.getContent(FileSystem.absolutePath("templates/InstanceFieldTestTemplate.hx"));
 
-    public static var staticFunctionTemplate = File.getContent("templates/StaticFunctionTestTemplate.hx");
-    public static var staticFieldTemplate = File.getContent("templates/StaticFieldTestTemplate.hx");
+    public static var staticFunctionTemplate = File.getContent(FileSystem.absolutePath("templates/StaticFunctionTestTemplate.hx"));
+    public static var staticFieldTemplate = File.getContent(FileSystem.absolutePath("templates/StaticFieldTestTemplate.hx"));
 
+    public static var testClassActuatorTemplate = File.getContent(FileSystem.absolutePath("templates/TestClassActuator.hx"));
 
     public static function generateFromFile(pathToHaxeFile:String, pathToOutputFile:String) {
         var detections = Detector.detectOnFile(pathToHaxeFile);
+        var file = File.write(FileSystem.absolutePath(pathToOutputFile));
 
+        file.writeString(generateFileHeader(detections.packageName, detections.className));
 
-        trace(detections);
+        for (field in detections.staticFields) {
+            file.writeString(generateTest(staticFieldTemplate, {
+                packageName: detections.packageName,
+                className: detections.className,
+                fieldName: field,
+                testGoal: "ShouldWork"
+            }));
+        }
+
+        for (field in detections.instanceFields) {
+            file.writeString(generateTest(instanceFieldTemplate, {
+                packageName: detections.packageName,
+                className: detections.className,
+                fieldName: field,
+                testGoal: "ShouldWork"
+            }));
+        }
+
+        for (method => parameters in detections.staticFunctions) {
+            var nulledOutParameters = parameters.split(",").map(x -> "null").join(",");
+            file.writeString(generateTest(staticFunctionTemplate, {
+                packageName: detections.packageName,
+                className: detections.className,
+                fieldName: method,
+                testGoal: "ShouldWork",
+                parameters: nulledOutParameters
+            }));
+        }
+
+        for (method => parameters in detections.instanceFunctions) {
+            var nulledOutParameters = parameters.split(",").map(x -> "null").join(",");
+            file.writeString(generateTest(instanceFunctionTemplate, {
+                packageName: detections.packageName,
+                className: detections.className,
+                fieldName: method,
+                testGoal: "ShouldWork",
+                parameters: nulledOutParameters
+            }));
+        }
+
+        file.writeString(generateConstructor(detections));
+
+        file.writeString(generateFileFooter());
+
+        file.close();
     }    
 
     static function generateFileHeader(packageName:String, className:String) {
-        return 'package ${packageName};\n\nclass ${className} {\n';
+        return 'package;\n\nimport vision.exceptions.Unimplemented;\n\nclass ${className} {\n';
     }
 
     static function generateFileFooter() {
         return '\n}';
     }
 
-    static function generateTest(template:String, testBase:TestBase) {
+    static function generateTest(template:String, testBase:TestBase):String {
+        var cleanPackage = testBase.packageName.replace(".", "_") + '_${testBase.className}';
+        testBase.parameters ??= "";
+        return template
+            .replace("X1", cleanPackage)
+            .replace("X2", testBase.fieldName)
+            .replace("X3", testBase.testGoal)
+            .replace("X4", '${testBase.packageName}.${testBase.className}')
+            .replace("X5", testBase.parameters) + "\n\n";
+    }
+
+    static function generateConstructor(detections:TestDetections) {
+        var cleanPackage = detections.packageName.replace(".", "_") + '_${detections.className}';
+        var functionNames = [];
+        for (method in detections.staticFunctions.keys()) {
+            functionNames.push('${cleanPackage}__${method}__ShouldWork');
+        }
+        for (method in detections.instanceFunctions.keys()) {
+            functionNames.push('${cleanPackage}__${method}__ShouldWork');
+        }
+        for (field in detections.staticFields) {
+            functionNames.push('${cleanPackage}__${field}__ShouldWork');
+        }
+        for (field in detections.instanceFields) {
+            functionNames.push('${cleanPackage}__${field}__ShouldWork');
+        }
+
+        functionNames = functionNames.map(x -> '{testFunction: $x, testName: "$x"}');
         
+        return testClassActuatorTemplate.replace("TEST_ARRAY", functionNames.join(", "));
     }
 }
 

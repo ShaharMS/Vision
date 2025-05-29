@@ -13,7 +13,7 @@ class Detector {
     static var instanceFunctionFinder = ~/(?:public inline|inline public|public) function (\w+)\((.+)\)(?::\w+)?\s*(?:$|{)/m;
 
 
-    public static function detectOnFile(pathToHaxeFile:String) {
+    public static function detectOnFile(pathToHaxeFile:String):TestDetections {
         var pathToHaxeFile = FileSystem.absolutePath(pathToHaxeFile);
         var fileContent = File.getContent(pathToHaxeFile), originalFileContent = fileContent;
 
@@ -77,4 +77,13 @@ class Detector {
             instanceFields: instanceFields
         }
     }
+}
+
+typedef TestDetections = {
+    packageName:String,
+    className:String,
+    staticFunctions:Map<String, String>,
+    staticFields:Array<String>,
+    instanceFunctions:Map<String, String>,
+    instanceFields:Array<String>
 }
