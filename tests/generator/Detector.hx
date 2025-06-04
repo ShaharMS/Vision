@@ -6,12 +6,12 @@ import sys.FileSystem;
 class Detector {
 
     static var packageFinder = ~/^package ([\w.]+)/m;
-    static var importFinder = ~/^import ([\w.]+)/m;
+    static var importFinder = ~/^import ([\w.*]+)/m;
     static var classNameFinder = ~/^(?:class|abstract) (\w+)/m;
-    static var staticFunctionFinder = ~/(?:public static inline|public inline static|inline public static|public static) function (\w+)\((.+)\)(?::\w+)?\s*(?:$|{)/m;
+    static var staticFunctionFinder = ~/(?:public static inline|public inline static|inline public static|public static) function (\w+)\((.*)\)(?::\w+)?\s*(?:$|{)/m;
     static var staticFieldFinder = ~/(?:public static inline|public inline static|inline public static|public static) (?:var|final) (\w+)\(get, \w+\)/m;
     static var instanceFieldFinder = ~/(?:public inline|inline public|public) (?:var|final) (\w+)\(get, \w+\)/m;
-    static var instanceFunctionFinder = ~/(?:public inline|inline public|public) function (\w+)\((.+)\)(?::\w+)?\s*(?:$|{)/m;
+    static var instanceFunctionFinder = ~/(?:public inline|inline public|public) function (\w+)\((.*)\)(?::\w+)?\s*(?:$|{)/m;
     static var constructorFinder = ~/function new\s*\((.*)\)/;
 
     public static function detectOnFile(pathToHaxeFile:String):TestDetections {
@@ -29,7 +29,10 @@ class Detector {
             imports.push(classPath);
         }
 
-        classNameFinder.match(fileContent);
+        if (!classNameFinder.match(fileContent)) {
+            return null;
+        }
+
         var className = classNameFinder.matched(1);
         fileContent = classNameFinder.matchedRight();
 
@@ -63,6 +66,10 @@ class Detector {
             var functionName = instanceFunctionFinder.matched(1);
             var functionParameters = instanceFunctionFinder.matched(2);
             fileContent = instanceFunctionFinder.matchedRight();
+            
+            if (functionName == "new") {
+                continue;
+            }
 
             instanceFunctions.set(functionName, functionParameters);
         }
@@ -78,7 +85,7 @@ class Detector {
         }
 
         fileContent = originalFileContent;
-        trace(originalFileContent);
+
         var constructorParameters = [];
         while (constructorFinder.match(fileContent)) {
             var parameters = constructorFinder.matched(1);

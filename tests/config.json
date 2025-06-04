@@ -1,0 +1,28 @@
+{
+    "regenerateAll": true,
+    "overwrite": true,
+    "source": "../src/vision",
+    "exclude": [
+        "exceptions/",
+        "TransformationMatrix2D.hx",
+        "VisionThread.hx",
+        "Vision.hx",
+        "Ray2D.hx",
+        "Queue.hx",
+        "Matrix2D.hx",
+        "Line2D.hx",
+        "ImageView.hx",
+        "Image.hx",
+        "ImageTools.hx",
+        "ArrayTools.hx",
+        "Array2DMacro.hx",
+        "FrameworkImageIO.hx",
+        "Color.hx",
+        "ByteArray.hx",
+        "QueueCell.hx",
+        "Array2D.hx",
+        "PerspectiveWarp.hx",
+        "SimpleHough.hx"
+    ],
+    "destination": "./generated/src/tests"
+}

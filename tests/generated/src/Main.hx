@@ -8,7 +8,7 @@ import TestResult;
 import TestConclusion;
 
 class Main {
-	public static var testedClasses:Array<Class<Dynamic>> = [IntPoint2DTests, MathToolsTests];
+	public static var testedClasses:Array<Class<Dynamic>> = [BilateralFilterTests, BilinearInterpolationTests, CannyTests, CramerTests, GaussTests, GaussJordanTests, ImageHashingTests, KMeansTests, LaplaceTests, PerwittTests, RadixTests, RobertsCrossTests, SimpleLineDetectorTests, SobelTests, CannyObjectTests, HistogramTests, Int16Point2DTests, IntPoint2DTests, ColorClusterTests, PixelTests, Point2DTests, Point3DTests, RectangleTests, PointTransformationPairTests, UInt16Point2DTests, ImageIOTests, FormatImageExporterTests, FormatImageLoaderTests, MathToolsTests];
 
 	// ANSI colors
 	static var RED = "\033[31m";

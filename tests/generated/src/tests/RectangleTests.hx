@@ -1,0 +1,11 @@
+package tests;
+
+import TestResult;
+import TestStatus;
+
+import vision.ds.Rectangle;
+
+
+class RectangleTests {
+    public static var tests = [];
+}

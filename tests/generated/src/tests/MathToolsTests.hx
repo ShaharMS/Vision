@@ -370,6 +370,22 @@ class MathToolsTests {
         }
     }
 
+    public static function vision_tools_MathTools__random__ShouldWork():TestResult {
+        var result = null;
+        try {
+            result = vision.tools.MathTools.random();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.tools.MathTools.random",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
     public static function vision_tools_MathTools__radiansToSlope__ShouldWork():TestResult {
         var result = null;
         try {
@@ -1282,6 +1298,7 @@ class MathToolsTests {
 		vision_tools_MathTools__secd__ShouldWork, 
 		vision_tools_MathTools__sec__ShouldWork, 
 		vision_tools_MathTools__round__ShouldWork, 
+		vision_tools_MathTools__random__ShouldWork, 
 		vision_tools_MathTools__radiansToSlope__ShouldWork, 
 		vision_tools_MathTools__radiansToDegrees__ShouldWork, 
 		vision_tools_MathTools__radiansFromPointToPoint2D__ShouldWork, 

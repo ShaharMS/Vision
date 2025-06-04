@@ -59,6 +59,40 @@ class IntPoint2DTests {
         }
     }
 
+    public static function vision_ds_IntPoint2D__toString__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
+            result = object.toString();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.IntPoint2D#toString",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_IntPoint2D__toPoint2D__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
+            result = object.toPoint2D();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.IntPoint2D#toPoint2D",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
     public static function vision_ds_IntPoint2D__radiansTo__ShouldWork():TestResult {
         var result = null;
         try { 
@@ -110,11 +144,31 @@ class IntPoint2DTests {
         }
     }
 
+    public static function vision_ds_IntPoint2D__copy__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
+            result = object.copy();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.IntPoint2D#copy",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
     public static var tests = [
 		vision_ds_IntPoint2D__fromPoint2D__ShouldWork, 
+		vision_ds_IntPoint2D__toString__ShouldWork, 
+		vision_ds_IntPoint2D__toPoint2D__ShouldWork, 
 		vision_ds_IntPoint2D__radiansTo__ShouldWork, 
 		vision_ds_IntPoint2D__distanceTo__ShouldWork, 
 		vision_ds_IntPoint2D__degreesTo__ShouldWork, 
+		vision_ds_IntPoint2D__copy__ShouldWork, 
 		vision_ds_IntPoint2D__x__ShouldWork, 
 		vision_ds_IntPoint2D__y__ShouldWork];
 }

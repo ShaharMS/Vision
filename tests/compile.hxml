@@ -3,4 +3,7 @@
 
 --library vision
 
+--define --regenerate-all
+--define --no-overwrite
+
 --interp

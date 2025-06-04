@@ -19,13 +19,15 @@ class Generator {
     public static var testClassActuatorTemplate = File.getContent(FileSystem.absolutePath("generator/templates/TestClassActuator.hx"));
     public static var testClassHeaderTemplate = File.getContent(FileSystem.absolutePath("generator/templates/TestClassHeader.hx"));
 
-    public static function generateFromFile(pathToHaxeFile:String, pathToOutputFile:String) {
+    public static function generateFromFile(pathToHaxeFile:String, pathToOutputFile:String):Bool {
         var detections = Detector.detectOnFile(pathToHaxeFile);
+        if (detections == null) {
+            Sys.println('INFO: No tests could be generated for $pathToHaxeFile');
+            return false;
+        }
         var file = File.write(FileSystem.absolutePath(pathToOutputFile));
 
         file.writeString(generateFileHeader(detections.packageName, detections.className, detections.imports));
-
-        trace(detections);
 
         for (field in detections.staticFields) {
             file.writeString(generateTest(staticFieldTemplate, {
@@ -42,7 +44,7 @@ class Generator {
                 className: detections.className,
                 fieldName: field,
                 testGoal: "ShouldWork",
-                constructorParameters: extractParameters(detections.constructorParameters[0])
+                constructorParameters: extractParameters(detections.constructorParameters[0] ?? "")
             }));
         }
 
@@ -63,7 +65,7 @@ class Generator {
                 fieldName: method,
                 testGoal: "ShouldWork",
                 parameters: extractParameters(parameters),
-                constructorParameters: extractParameters(detections.constructorParameters[0])
+                constructorParameters: extractParameters(detections.constructorParameters[0] ?? "")
             }));
         }
 
@@ -72,6 +74,8 @@ class Generator {
         file.writeString(generateFileFooter());
 
         file.close();
+
+        return true;
     }    
 
     static function generateFileHeader(packageName:String, className:String, imports:Array<String>):String {
@@ -122,7 +126,7 @@ class Generator {
 
 
     static function extractParameters(parameters:String):String {
-        var regex = ~/\w+:(\w+|\{.+\},?)/;
+        var regex = ~/\w+:((?:\w|\.)+|\{.+\},?)/;
         var parameterList = [];
         while (regex.match(parameters)) {
             var type = regex.matched(1);
