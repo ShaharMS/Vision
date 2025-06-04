@@ -2,7 +2,7 @@ package;
 
 typedef TestResult = {
     testName:String,
-    result: Dynamic,
+    returned: Dynamic,
     expected: Dynamic,
-    success:Bool
+    status:TestStatus,
 }

@@ -6,5 +6,6 @@ package templates;
     `X3` - test goal. Usually starts with "ShouldBe" or "ShouldEqual".
     `X4` - class name, including full package, for example: `my.example.ClassInstance`
     `X5` - optional - parameter list for when we test a function
+    `X6` - optional - parameter list for when we test a constructor
 **/
 public var doc:String;

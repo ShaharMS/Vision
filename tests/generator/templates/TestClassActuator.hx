@@ -1,3 +1,1 @@
-    public var tests = [TEST_ARRAY];
-    
-    public function new() {}
+    public static var tests = [TEST_ARRAY];

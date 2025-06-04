@@ -6,12 +6,13 @@ import sys.FileSystem;
 class Detector {
 
     static var packageFinder = ~/^package ([\w.]+)/m;
+    static var importFinder = ~/^import ([\w.]+)/m;
     static var classNameFinder = ~/^(?:class|abstract) (\w+)/m;
     static var staticFunctionFinder = ~/(?:public static inline|public inline static|inline public static|public static) function (\w+)\((.+)\)(?::\w+)?\s*(?:$|{)/m;
     static var staticFieldFinder = ~/(?:public static inline|public inline static|inline public static|public static) (?:var|final) (\w+)\(get, \w+\)/m;
     static var instanceFieldFinder = ~/(?:public inline|inline public|public) (?:var|final) (\w+)\(get, \w+\)/m;
     static var instanceFunctionFinder = ~/(?:public inline|inline public|public) function (\w+)\((.+)\)(?::\w+)?\s*(?:$|{)/m;
-
+    static var constructorFinder = ~/function new\s*\((.*)\)/;
 
     public static function detectOnFile(pathToHaxeFile:String):TestDetections {
         var pathToHaxeFile = FileSystem.absolutePath(pathToHaxeFile);
@@ -21,11 +22,19 @@ class Detector {
         var packageName = packageFinder.matched(1);
         fileContent = packageFinder.matchedRight();
 
+        var imports = [];
+        while (importFinder.match(fileContent)) {
+            var classPath = importFinder.matched(1);
+            fileContent = importFinder.matchedRight();
+            imports.push(classPath);
+        }
+
         classNameFinder.match(fileContent);
         var className = classNameFinder.matched(1);
         fileContent = classNameFinder.matchedRight();
 
         originalFileContent = fileContent;
+
 
         var staticFunctions = new Map<String, String>();
         while (staticFunctionFinder.match(fileContent)) {
@@ -68,20 +77,33 @@ class Detector {
             instanceFields.push(fieldName);
         }
 
+        fileContent = originalFileContent;
+        trace(originalFileContent);
+        var constructorParameters = [];
+        while (constructorFinder.match(fileContent)) {
+            var parameters = constructorFinder.matched(1);
+            fileContent = constructorFinder.matchedRight();
+            constructorParameters.push(parameters);
+        }
+
         return {
             packageName: packageName,
+            imports: imports,
             className: className,
             staticFunctions: staticFunctions,
             staticFields: staticFields,
             instanceFunctions: instanceFunctions,
-            instanceFields: instanceFields
+            instanceFields: instanceFields,
+            constructorParameters: constructorParameters
         }
     }
 }
 
 typedef TestDetections = {
     packageName:String,
+    imports:Array<String>,
     className:String,
+    constructorParameters:Array<String>,
     staticFunctions:Map<String, String>,
     staticFields:Array<String>,
     instanceFunctions:Map<String, String>,

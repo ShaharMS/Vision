@@ -1,13 +1,15 @@
-    public function X1__X2__X3():TestResult {
-
-        var result = X4.X2(X5);
-
-        throw new Unimplemented("X1__X2__X3 Not Implemented");
+    public static function X1__X2__X3():TestResult {
+        var result = null;
+        try {
+            result = X4.X2(X5);
+        } catch (e) {
+            
+        }
 
         return {
             testName: "X4.X2",
-            result: result,
+            returned: result,
             expected: null,
-            success: null
+            status: Unimplemented
         }
     }
