@@ -152,12 +152,5 @@ class Line2DTests {
         }
     }
 
-    public static var tests = [
-		vision_ds_Line2D__fromRay2D__ShouldWork, 
-		vision_ds_Line2D__toString__ShouldWork, 
-		vision_ds_Line2D__toRay2D__ShouldWork, 
-		vision_ds_Line2D__intersect__ShouldWork, 
-		vision_ds_Line2D__distanceTo__ShouldWork, 
-		vision_ds_Line2D__length__ShouldWork, 
-		vision_ds_Line2D__middle__ShouldWork];
+
 }

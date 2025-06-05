@@ -29,6 +29,5 @@ class SimpleHoughTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_SimpleHough__mapLines__ShouldWork];
+
 }

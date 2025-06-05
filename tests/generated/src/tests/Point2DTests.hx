@@ -116,10 +116,5 @@ class Point2DTests {
         }
     }
 
-    public static var tests = [
-		vision_ds_Point2D__toString__ShouldWork, 
-		vision_ds_Point2D__radiansTo__ShouldWork, 
-		vision_ds_Point2D__distanceTo__ShouldWork, 
-		vision_ds_Point2D__degreesTo__ShouldWork, 
-		vision_ds_Point2D__copy__ShouldWork];
+
 }

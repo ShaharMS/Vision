@@ -12,6 +12,25 @@ import vision.ds.IntPoint2D;
 
 @:access(vision.algorithms.SimpleLineDetector)
 class SimpleLineDetectorTests {
+    public static function vision_algorithms_SimpleLineDetector__p__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var x = 0;
+			var y = 0;
+			
+            result = vision.algorithms.SimpleLineDetector.p(x, y);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.algorithms.SimpleLineDetector.p",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
     public static function vision_algorithms_SimpleLineDetector__lineCoveragePercentage__ShouldWork():TestResult {
         var result = null;
         try {
@@ -53,7 +72,5 @@ class SimpleLineDetectorTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_SimpleLineDetector__lineCoveragePercentage__ShouldWork, 
-		vision_algorithms_SimpleLineDetector__findLineFromPoint__ShouldWork];
+
 }

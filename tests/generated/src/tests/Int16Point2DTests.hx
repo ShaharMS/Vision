@@ -132,11 +132,5 @@ class Int16Point2DTests {
         }
     }
 
-    public static var tests = [
-		vision_ds_Int16Point2D__toString__ShouldWork, 
-		vision_ds_Int16Point2D__toPoint2D__ShouldWork, 
-		vision_ds_Int16Point2D__toIntPoint2D__ShouldWork, 
-		vision_ds_Int16Point2D__toInt__ShouldWork, 
-		vision_ds_Int16Point2D__x__ShouldWork, 
-		vision_ds_Int16Point2D__y__ShouldWork];
+
 }

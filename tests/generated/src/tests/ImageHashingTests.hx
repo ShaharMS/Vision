@@ -50,7 +50,5 @@ class ImageHashingTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_ImageHashing__phash__ShouldWork, 
-		vision_algorithms_ImageHashing__ahash__ShouldWork];
+
 }

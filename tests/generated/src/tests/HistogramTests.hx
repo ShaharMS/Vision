@@ -84,9 +84,5 @@ class HistogramTests {
         }
     }
 
-    public static var tests = [
-		vision_ds_Histogram__increment__ShouldWork, 
-		vision_ds_Histogram__decrement__ShouldWork, 
-		vision_ds_Histogram__length__ShouldWork, 
-		vision_ds_Histogram__median__ShouldWork];
+
 }

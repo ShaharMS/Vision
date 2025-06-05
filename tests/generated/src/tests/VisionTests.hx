@@ -271,7 +271,7 @@ class VisionTests {
         var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
-			var ranges:Array<{rangeStart:Color, rangeEnd:Color, replacement:Color}> = null;
+			var ranges = [];
 			
             result = vision.Vision.replaceColorRanges(image, ranges);
         } catch (e) {
@@ -917,49 +917,5 @@ class VisionTests {
         }
     }
 
-    public static var tests = [
-		vision_Vision__whiteNoise__ShouldWork, 
-		vision_Vision__vignette__ShouldWork, 
-		vision_Vision__tint__ShouldWork, 
-		vision_Vision__sobelEdgeDiffOperator__ShouldWork, 
-		vision_Vision__sobelEdgeDetection__ShouldWork, 
-		vision_Vision__smooth__ShouldWork, 
-		vision_Vision__simpleImageSimilarity__ShouldWork, 
-		vision_Vision__sharpen__ShouldWork, 
-		vision_Vision__sepia__ShouldWork, 
-		vision_Vision__saltAndPepperNoise__ShouldWork, 
-		vision_Vision__robertEdgeDiffOperator__ShouldWork, 
-		vision_Vision__replaceColorRanges__ShouldWork, 
-		vision_Vision__projectiveTransform__ShouldWork, 
-		vision_Vision__posterize__ShouldWork, 
-		vision_Vision__pixelate__ShouldWork, 
-		vision_Vision__pincushionDistortion__ShouldWork, 
-		vision_Vision__perwittEdgeDiffOperator__ShouldWork, 
-		vision_Vision__perwittEdgeDetection__ShouldWork, 
-		vision_Vision__normalize__ShouldWork, 
-		vision_Vision__nearestNeighborBlur__ShouldWork, 
-		vision_Vision__mustacheDistortion__ShouldWork, 
-		vision_Vision__medianBlur__ShouldWork, 
-		vision_Vision__limitColorRanges__ShouldWork, 
-		vision_Vision__laplacianOfGaussianEdgeDetection__ShouldWork, 
-		vision_Vision__laplacianEdgeDiffOperator__ShouldWork, 
-		vision_Vision__kmeansPosterize__ShouldWork, 
-		vision_Vision__invert__ShouldWork, 
-		vision_Vision__grayscale__ShouldWork, 
-		vision_Vision__gaussianBlur__ShouldWork, 
-		vision_Vision__fisheyeDistortion__ShouldWork, 
-		vision_Vision__filterForColorChannel__ShouldWork, 
-		vision_Vision__erode__ShouldWork, 
-		vision_Vision__dropOutNoise__ShouldWork, 
-		vision_Vision__dilate__ShouldWork, 
-		vision_Vision__deepfry__ShouldWork, 
-		vision_Vision__convolve__ShouldWork, 
-		vision_Vision__convolutionRidgeDetection__ShouldWork, 
-		vision_Vision__contrast__ShouldWork, 
-		vision_Vision__combine__ShouldWork, 
-		vision_Vision__cannyEdgeDetection__ShouldWork, 
-		vision_Vision__blackAndWhite__ShouldWork, 
-		vision_Vision__bilateralDenoise__ShouldWork, 
-		vision_Vision__barrelDistortion__ShouldWork, 
-		vision_Vision__affineTransform__ShouldWork];
+
 }

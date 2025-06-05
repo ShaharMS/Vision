@@ -52,7 +52,5 @@ class LaplaceTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_Laplace__laplacianOfGaussian__ShouldWork, 
-		vision_algorithms_Laplace__convolveWithLaplacianOperator__ShouldWork];
+
 }

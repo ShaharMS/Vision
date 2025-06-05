@@ -27,6 +27,5 @@ class RobertsCrossTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_RobertsCross__convolveWithRobertsCross__ShouldWork];
+
 }

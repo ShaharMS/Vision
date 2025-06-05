@@ -104,10 +104,5 @@ class QueueTests {
         }
     }
 
-    public static var tests = [
-		vision_ds_Queue__toString__ShouldWork, 
-		vision_ds_Queue__has__ShouldWork, 
-		vision_ds_Queue__enqueue__ShouldWork, 
-		vision_ds_Queue__dequeue__ShouldWork, 
-		vision_ds_Queue__last__ShouldWork];
+
 }

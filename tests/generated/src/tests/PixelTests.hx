@@ -8,5 +8,5 @@ import vision.ds.Pixel;
 
 @:access(vision.ds.Pixel)
 class PixelTests {
-    public static var tests = [];
+
 }

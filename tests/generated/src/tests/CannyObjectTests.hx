@@ -8,5 +8,5 @@ import vision.ds.canny.CannyObject;
 
 @:access(vision.ds.canny.CannyObject)
 class CannyObjectTests {
-    public static var tests = [];
+
 }

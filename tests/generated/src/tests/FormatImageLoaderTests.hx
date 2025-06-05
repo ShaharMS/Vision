@@ -51,7 +51,5 @@ class FormatImageLoaderTests {
         }
     }
 
-    public static var tests = [
-		vision_formats___internal_FormatImageLoader__png__ShouldWork, 
-		vision_formats___internal_FormatImageLoader__bmp__ShouldWork];
+
 }

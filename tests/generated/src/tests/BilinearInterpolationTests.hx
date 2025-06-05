@@ -54,7 +54,5 @@ class BilinearInterpolationTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_BilinearInterpolation__interpolateMissingPixels__ShouldWork, 
-		vision_algorithms_BilinearInterpolation__interpolate__ShouldWork];
+
 }

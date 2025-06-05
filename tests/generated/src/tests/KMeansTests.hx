@@ -11,5 +11,5 @@ import vision.exceptions.Unimplemented;
 
 @:access(vision.algorithms.KMeans)
 class KMeansTests {
-    public static var tests = [];
+
 }

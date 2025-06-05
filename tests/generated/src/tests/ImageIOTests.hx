@@ -9,5 +9,5 @@ import vision.formats.to.To;
 
 @:access(vision.formats.ImageIO)
 class ImageIOTests {
-    public static var tests = [];
+
 }

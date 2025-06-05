@@ -73,8 +73,5 @@ class FormatImageExporterTests {
         }
     }
 
-    public static var tests = [
-		vision_formats___internal_FormatImageExporter__png__ShouldWork, 
-		vision_formats___internal_FormatImageExporter__jpeg__ShouldWork, 
-		vision_formats___internal_FormatImageExporter__bmp__ShouldWork];
+
 }

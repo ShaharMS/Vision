@@ -104,10 +104,5 @@ class CannyTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_Canny__nonMaxSuppression__ShouldWork, 
-		vision_algorithms_Canny__grayscale__ShouldWork, 
-		vision_algorithms_Canny__applySobelFilters__ShouldWork, 
-		vision_algorithms_Canny__applyHysteresis__ShouldWork, 
-		vision_algorithms_Canny__applyGaussian__ShouldWork];
+
 }

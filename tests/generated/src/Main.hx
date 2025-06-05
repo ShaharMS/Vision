@@ -38,7 +38,7 @@ class Main {
 		}
 
 		for (cls in TestsToRun.tests) {
-			var testFunctions:Array<() -> TestResult> = Reflect.field(cls, "tests");
+			var testFunctions:Array<() -> TestResult> = Type.getClassFields(cls).map(func -> Reflect.field(cls, func));
 			for (func in testFunctions) {
 				i++;
 				var result:TestResult = func();
@@ -61,7 +61,7 @@ class Main {
 			Sys.println('$RED$BOLD Final Test Status:$RESET');
 			Sys.println('    - $RESET$BOLD${getTestPassColor(Success)} ${conclusionMap.get(Success).length}$RESET $BOLD$WHITE Tests $RESET$BOLD${getTestPassColor(Success)} Passed 🥳$RESET');
 			Sys.println('    - $RESET$BOLD${getTestPassColor(Failure)} ${conclusionMap.get(Failure).length}$RESET $BOLD$WHITE Tests $RESET$BOLD${getTestPassColor(Failure)} Failed 🥺$RESET');
-			Sys.println('    - $RESET$BOLD${getTestPassColor(Skipped)} ${conclusionMap.get(Skipped).length}$RESET $BOLD$WHITE Tests $RESET$BOLD${getTestPassColor(Skipped)} Skipped 🤷‍♀️$RESET');
+			Sys.println('    - $RESET$BOLD${getTestPassColor(Skipped)} ${conclusionMap.get(Skipped).length}$RESET $BOLD$WHITE Tests $RESET$BOLD${getTestPassColor(Skipped)} Skipped 🤷$RESET');
 			Sys.println('    - $RESET$BOLD${getTestPassColor(Unimplemented)} ${conclusionMap.get(Unimplemented).length}$RESET $BOLD$WHITE Tests $RESET$BOLD${getTestPassColor(Unimplemented)} Unimplemented 😬$RESET');
 		}
 	}

@@ -777,6 +777,125 @@ class MathToolsTests {
         }
     }
 
+    public static function vision_tools_MathTools__get_SQRT3__ShouldWork():TestResult {
+        var result = null;
+        try {
+            
+            result = vision.tools.MathTools.get_SQRT3();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.tools.MathTools.get_SQRT3",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_tools_MathTools__get_SQRT2__ShouldWork():TestResult {
+        var result = null;
+        try {
+            
+            result = vision.tools.MathTools.get_SQRT2();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.tools.MathTools.get_SQRT2",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_tools_MathTools__get_POSITIVE_INFINITY__ShouldWork():TestResult {
+        var result = null;
+        try {
+            
+            result = vision.tools.MathTools.get_POSITIVE_INFINITY();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.tools.MathTools.get_POSITIVE_INFINITY",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_tools_MathTools__get_PI_OVER_2__ShouldWork():TestResult {
+        var result = null;
+        try {
+            
+            result = vision.tools.MathTools.get_PI_OVER_2();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.tools.MathTools.get_PI_OVER_2",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_tools_MathTools__get_PI__ShouldWork():TestResult {
+        var result = null;
+        try {
+            
+            result = vision.tools.MathTools.get_PI();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.tools.MathTools.get_PI",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_tools_MathTools__get_NaN__ShouldWork():TestResult {
+        var result = null;
+        try {
+            
+            result = vision.tools.MathTools.get_NaN();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.tools.MathTools.get_NaN",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_tools_MathTools__get_NEGATIVE_INFINITY__ShouldWork():TestResult {
+        var result = null;
+        try {
+            
+            result = vision.tools.MathTools.get_NEGATIVE_INFINITY();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.tools.MathTools.get_NEGATIVE_INFINITY",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
     public static function vision_tools_MathTools__getClosestPointOnRay2D__ShouldWork():TestResult {
         var result = null;
         try {
@@ -1466,84 +1585,5 @@ class MathToolsTests {
         }
     }
 
-    public static var tests = [
-		vision_tools_MathTools__wrapInt__ShouldWork, 
-		vision_tools_MathTools__wrapFloat__ShouldWork, 
-		vision_tools_MathTools__truncate__ShouldWork, 
-		vision_tools_MathTools__toFloat__ShouldWork, 
-		vision_tools_MathTools__tand__ShouldWork, 
-		vision_tools_MathTools__tan__ShouldWork, 
-		vision_tools_MathTools__sqrt__ShouldWork, 
-		vision_tools_MathTools__slopeToRadians__ShouldWork, 
-		vision_tools_MathTools__slopeToDegrees__ShouldWork, 
-		vision_tools_MathTools__slopeFromPointToPoint2D__ShouldWork, 
-		vision_tools_MathTools__sind__ShouldWork, 
-		vision_tools_MathTools__sin__ShouldWork, 
-		vision_tools_MathTools__secd__ShouldWork, 
-		vision_tools_MathTools__sec__ShouldWork, 
-		vision_tools_MathTools__round__ShouldWork, 
-		vision_tools_MathTools__random__ShouldWork, 
-		vision_tools_MathTools__radiansToSlope__ShouldWork, 
-		vision_tools_MathTools__radiansToDegrees__ShouldWork, 
-		vision_tools_MathTools__radiansFromPointToPoint2D__ShouldWork, 
-		vision_tools_MathTools__radiansFromPointToLine2D__ShouldWork, 
-		vision_tools_MathTools__radiansFromLineToPoint2D__ShouldWork, 
-		vision_tools_MathTools__pow__ShouldWork, 
-		vision_tools_MathTools__parseInt__ShouldWork, 
-		vision_tools_MathTools__parseFloat__ShouldWork, 
-		vision_tools_MathTools__parseBool__ShouldWork, 
-		vision_tools_MathTools__mirrorInsideRectangle__ShouldWork, 
-		vision_tools_MathTools__log__ShouldWork, 
-		vision_tools_MathTools__isNaN__ShouldWork, 
-		vision_tools_MathTools__isInt__ShouldWork, 
-		vision_tools_MathTools__isFinite__ShouldWork, 
-		vision_tools_MathTools__isBetweenRanges__ShouldWork, 
-		vision_tools_MathTools__isBetweenRange__ShouldWork, 
-		vision_tools_MathTools__invertInsideRectangle__ShouldWork, 
-		vision_tools_MathTools__intersectionBetweenRay2Ds__ShouldWork, 
-		vision_tools_MathTools__intersectionBetweenLine2Ds__ShouldWork, 
-		vision_tools_MathTools__getClosestPointOnRay2D__ShouldWork, 
-		vision_tools_MathTools__gamma__ShouldWork, 
-		vision_tools_MathTools__fround__ShouldWork, 
-		vision_tools_MathTools__floor__ShouldWork, 
-		vision_tools_MathTools__flipInsideRectangle__ShouldWork, 
-		vision_tools_MathTools__findPointAtDistanceUsingY__ShouldWork, 
-		vision_tools_MathTools__findPointAtDistanceUsingX__ShouldWork, 
-		vision_tools_MathTools__ffloor__ShouldWork, 
-		vision_tools_MathTools__fceil__ShouldWork, 
-		vision_tools_MathTools__factorial__ShouldWork, 
-		vision_tools_MathTools__exp__ShouldWork, 
-		vision_tools_MathTools__distanceFromRayToPoint2D__ShouldWork, 
-		vision_tools_MathTools__distanceFromPointToRay2D__ShouldWork, 
-		vision_tools_MathTools__distanceFromPointToLine2D__ShouldWork, 
-		vision_tools_MathTools__distanceFromLineToPoint2D__ShouldWork, 
-		vision_tools_MathTools__distanceBetweenRays2D__ShouldWork, 
-		vision_tools_MathTools__distanceBetweenPoints__ShouldWork, 
-		vision_tools_MathTools__distanceBetweenLines2D__ShouldWork, 
-		vision_tools_MathTools__degreesToSlope__ShouldWork, 
-		vision_tools_MathTools__degreesToRadians__ShouldWork, 
-		vision_tools_MathTools__degreesFromPointToPoint2D__ShouldWork, 
-		vision_tools_MathTools__cropDecimal__ShouldWork, 
-		vision_tools_MathTools__cotand__ShouldWork, 
-		vision_tools_MathTools__cotan__ShouldWork, 
-		vision_tools_MathTools__cosecd__ShouldWork, 
-		vision_tools_MathTools__cosec__ShouldWork, 
-		vision_tools_MathTools__cosd__ShouldWork, 
-		vision_tools_MathTools__cos__ShouldWork, 
-		vision_tools_MathTools__clamp__ShouldWork, 
-		vision_tools_MathTools__ceil__ShouldWork, 
-		vision_tools_MathTools__boundInt__ShouldWork, 
-		vision_tools_MathTools__boundFloat__ShouldWork, 
-		vision_tools_MathTools__atan2__ShouldWork, 
-		vision_tools_MathTools__atan__ShouldWork, 
-		vision_tools_MathTools__asin__ShouldWork, 
-		vision_tools_MathTools__acos__ShouldWork, 
-		vision_tools_MathTools__abs__ShouldWork, 
-		vision_tools_MathTools__PI__ShouldWork, 
-		vision_tools_MathTools__PI_OVER_2__ShouldWork, 
-		vision_tools_MathTools__NEGATIVE_INFINITY__ShouldWork, 
-		vision_tools_MathTools__POSITIVE_INFINITY__ShouldWork, 
-		vision_tools_MathTools__NaN__ShouldWork, 
-		vision_tools_MathTools__SQRT2__ShouldWork, 
-		vision_tools_MathTools__SQRT3__ShouldWork];
+
 }

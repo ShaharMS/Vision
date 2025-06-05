@@ -167,12 +167,5 @@ class Ray2DTests {
         }
     }
 
-    public static var tests = [
-		vision_ds_Ray2D__from2Points__ShouldWork, 
-		vision_ds_Ray2D__intersect__ShouldWork, 
-		vision_ds_Ray2D__getPointAtY__ShouldWork, 
-		vision_ds_Ray2D__getPointAtX__ShouldWork, 
-		vision_ds_Ray2D__distanceTo__ShouldWork, 
-		vision_ds_Ray2D__yIntercept__ShouldWork, 
-		vision_ds_Ray2D__xIntercept__ShouldWork];
+
 }

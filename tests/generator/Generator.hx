@@ -6,7 +6,6 @@ import sys.io.File;
 
 using StringTools;
 
-
 class Generator {
 
 
@@ -74,7 +73,7 @@ class Generator {
             }));
         }
 
-        file.writeString(generateConstructor(detections));
+        // file.writeString(generateConstructor(detections));
 
         file.writeString(generateFileFooter());
 
@@ -131,7 +130,7 @@ class Generator {
 
 
     static function extractParameters(parameters:String):{declarations:String, injection:String} {
-        var regex = ~/(\w+):((?:EitherType<.+, .+>,?)|(?:\w+<\{.+\}>,?)|(?:\w|\.)+|\{.+\},?)/;
+        var regex = ~/(\w+):((?:\(.+?\)\s*->\s*\w+)|(?:\w+\s*->\s*\w+)|(?:(?:EitherType|Map)<.+, .+>)|(?:\w+<\{.+\}>)|(?:\w+<\w+>)|(?:\w|\.)+|\{.+\}),?/;
         var output = {declarations: "", injection: []}
         while (regex.match(parameters)) {
             var name = regex.matched(1);
@@ -147,19 +146,23 @@ class Generator {
         };
     }
 
-    static function getDefaultValueOf(valueType:String) {
+    static function getDefaultValueOf(valueType:String):String {
         return switch valueType {
             case "String": '""';
             case "Int": "0";
             case "Float": "0.0";
             case "Bool": "false";
-            case "Array" | "Map": "[]";
+            case (_.startsWith("Array") || _.startsWith("Map") => true): "[]";
             case "Point2D" | "IntPoint2D" | "Int16Point2D" | "UInt16Point2D": 'new vision.ds.$valueType(0, 0)';
             case "Line2D": 'new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10})';
             case "Ray2D": 'new vision.ds.Ray2D({x: 0, y: 0}, 1)';
             case "ByteArray": 'vision.ds.ByteArray.from(0)';
             case "Image": 'new vision.ds.Image(100, 100)';
             case "T": "0"; // A little insane but should work in most cases so idk
+            case (_.startsWith("T") && _.contains("->") => true): "(_) -> null";
+            case (_.contains("->") => true):
+                var commas = valueType.split("->")[0].split(",").length;
+                '(${[for (i in 0...commas) "_"].join(", ")}) -> null';
             default: "null";
         }
     }

@@ -13,5 +13,5 @@ import vision.ds.Array2D;
 
 @:access(vision.algorithms.Cramer)
 class CramerTests {
-    public static var tests = [];
+
 }

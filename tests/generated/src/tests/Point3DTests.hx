@@ -75,8 +75,5 @@ class Point3DTests {
         }
     }
 
-    public static var tests = [
-		vision_ds_Point3D__toString__ShouldWork, 
-		vision_ds_Point3D__distanceTo__ShouldWork, 
-		vision_ds_Point3D__copy__ShouldWork];
+
 }

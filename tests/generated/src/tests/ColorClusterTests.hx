@@ -8,5 +8,5 @@ import vision.ds.kmeans.ColorCluster;
 
 @:access(vision.ds.kmeans.ColorCluster)
 class ColorClusterTests {
-    public static var tests = [];
+
 }

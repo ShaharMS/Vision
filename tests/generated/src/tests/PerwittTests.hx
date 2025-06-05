@@ -47,7 +47,5 @@ class PerwittTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_Perwitt__detectEdges__ShouldWork, 
-		vision_algorithms_Perwitt__convolveWithPerwittOperator__ShouldWork];
+
 }

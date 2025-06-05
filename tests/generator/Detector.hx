@@ -8,10 +8,10 @@ class Detector {
     static var packageFinder = ~/^package ([\w.]+)/m;
     static var importFinder = ~/^import ([\w.*]+)/m;
     static var classNameFinder = ~/^(?:class|abstract) (\w+)/m;
-    static var staticFunctionFinder = ~/(?:public static inline|public inline static|inline public static|public static) function (\w+)\((.*)\)(?::\w+)?\s*(?:$|{)/m;
-    static var staticFieldFinder = ~/(?:public static inline|public inline static|inline public static|public static) (?:var|final) (\w+)\(get, \w+\)/m;
+    static var staticFunctionFinder = ~/static.+?function (\w+)(?:<T>)?\((.*)\)(?::\w+)?\s*(?:$|{)/m;
+    static var staticFieldFinder = ~/static.+?(?:var|final) (\w+)\(get, \w+\)/m;
     static var instanceFieldFinder = ~/(?:public inline|inline public|public) (?:var|final) (\w+)\(get, \w+\)/m;
-    static var instanceFunctionFinder = ~/(?:public inline|inline public|public) function (\w+)\((.*)\)(?::\w+)?\s*(?:$|{)/m;
+    static var instanceFunctionFinder = ~/(?:public inline|inline public|public) function (\w+)(?:<T>)?\((.*)\)(?::\w+)?\s*(?:$|{)/m;
     static var constructorFinder = ~/function new\s*\((.*)\)/;
 
     public static function detectOnFile(pathToHaxeFile:String):TestDetections {

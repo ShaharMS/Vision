@@ -47,7 +47,5 @@ class SobelTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_Sobel__detectEdges__ShouldWork, 
-		vision_algorithms_Sobel__convolveWithSobelOperator__ShouldWork];
+
 }

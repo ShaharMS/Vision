@@ -13,7 +13,8 @@
         "FrameworkImageIO.hx",
         "ByteArray.hx",
         "QueueCell.hx",
-        "Array2D.hx"
+        "Array2D.hx",
+        "GaussJordan.hx"
     ],
     "destination": "./generated/src/tests",
     "testsToRunFile": "./generated/src/TestsToRun.hx"

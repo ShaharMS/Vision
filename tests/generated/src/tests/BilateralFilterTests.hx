@@ -31,6 +31,5 @@ class BilateralFilterTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_BilateralFilter__filter__ShouldWork];
+
 }

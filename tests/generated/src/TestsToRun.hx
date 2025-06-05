@@ -8,7 +8,6 @@ final tests:Array<Class<Dynamic>> = [
 	CannyTests, 
 	CramerTests, 
 	GaussTests, 
-	GaussJordanTests, 
 	ImageHashingTests, 
 	KMeansTests, 
 	LaplaceTests, 

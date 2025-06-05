@@ -50,7 +50,5 @@ class GaussTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_Gauss__fastBlur__ShouldWork, 
-		vision_algorithms_Gauss__createKernelOfSize__ShouldWork];
+
 }

@@ -197,14 +197,5 @@ class IntPoint2DTests {
         }
     }
 
-    public static var tests = [
-		vision_ds_IntPoint2D__fromPoint2D__ShouldWork, 
-		vision_ds_IntPoint2D__toString__ShouldWork, 
-		vision_ds_IntPoint2D__toPoint2D__ShouldWork, 
-		vision_ds_IntPoint2D__radiansTo__ShouldWork, 
-		vision_ds_IntPoint2D__distanceTo__ShouldWork, 
-		vision_ds_IntPoint2D__degreesTo__ShouldWork, 
-		vision_ds_IntPoint2D__copy__ShouldWork, 
-		vision_ds_IntPoint2D__x__ShouldWork, 
-		vision_ds_IntPoint2D__y__ShouldWork];
+
 }

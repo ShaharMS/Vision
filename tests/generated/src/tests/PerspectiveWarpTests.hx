@@ -28,6 +28,5 @@ class PerspectiveWarpTests {
         }
     }
 
-    public static var tests = [
-		vision_algorithms_PerspectiveWarp__generateMatrix__ShouldWork];
+
 }
