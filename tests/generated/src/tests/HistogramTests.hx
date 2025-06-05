@@ -6,10 +6,12 @@ import TestStatus;
 import vision.ds.Histogram;
 import haxe.ds.IntMap;
 
+@:access(vision.ds.Histogram)
 class HistogramTests {
     public static function vision_ds_Histogram__length__ShouldWork():TestResult {
         var result = null;
         try {
+            
             var object = new vision.ds.Histogram();
             result = object.length;
         } catch (e) {
@@ -27,6 +29,7 @@ class HistogramTests {
     public static function vision_ds_Histogram__median__ShouldWork():TestResult {
         var result = null;
         try {
+            
             var object = new vision.ds.Histogram();
             result = object.median;
         } catch (e) {
@@ -44,8 +47,11 @@ class HistogramTests {
     public static function vision_ds_Histogram__increment__ShouldWork():TestResult {
         var result = null;
         try { 
+            
+            var cell = 0;
+			
             var object = new vision.ds.Histogram();
-            result = object.increment((null : Int));
+            result = object.increment(cell);
         } catch (e) {
             
         }
@@ -61,8 +67,11 @@ class HistogramTests {
     public static function vision_ds_Histogram__decrement__ShouldWork():TestResult {
         var result = null;
         try { 
+            
+            var cell = 0;
+			
             var object = new vision.ds.Histogram();
-            result = object.decrement((null : Int));
+            result = object.decrement(cell);
         } catch (e) {
             
         }

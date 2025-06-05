@@ -17,11 +17,14 @@ import format.bmp.Tools;
 import format.jpg.Writer;
 import format.jpg.Data;
 
+@:access(vision.formats.__internal.FormatImageExporter)
 class FormatImageExporterTests {
     public static function vision_formats___internal_FormatImageExporter__png__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.formats.__internal.FormatImageExporter.png((null : Image));
+            var image = new vision.ds.Image(100, 100);
+			
+            result = vision.formats.__internal.FormatImageExporter.png(image);
         } catch (e) {
             
         }
@@ -37,7 +40,9 @@ class FormatImageExporterTests {
     public static function vision_formats___internal_FormatImageExporter__jpeg__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.formats.__internal.FormatImageExporter.jpeg((null : Image));
+            var image = new vision.ds.Image(100, 100);
+			
+            result = vision.formats.__internal.FormatImageExporter.jpeg(image);
         } catch (e) {
             
         }
@@ -53,7 +58,9 @@ class FormatImageExporterTests {
     public static function vision_formats___internal_FormatImageExporter__bmp__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.formats.__internal.FormatImageExporter.bmp((null : Image));
+            var image = new vision.ds.Image(100, 100);
+			
+            result = vision.formats.__internal.FormatImageExporter.bmp(image);
         } catch (e) {
             
         }

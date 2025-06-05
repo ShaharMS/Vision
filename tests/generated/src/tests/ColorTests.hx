@@ -7,11 +7,14 @@ import vision.ds.Color;
 import vision.tools.ArrayTools;
 import vision.tools.MathTools;
 
+@:access(vision.ds.Color)
 class ColorTests {
     public static function vision_ds_Color__red__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.red;
         } catch (e) {
             
@@ -28,7 +31,9 @@ class ColorTests {
     public static function vision_ds_Color__blue__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.blue;
         } catch (e) {
             
@@ -45,7 +50,9 @@ class ColorTests {
     public static function vision_ds_Color__green__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.green;
         } catch (e) {
             
@@ -62,7 +69,9 @@ class ColorTests {
     public static function vision_ds_Color__alpha__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.alpha;
         } catch (e) {
             
@@ -79,7 +88,9 @@ class ColorTests {
     public static function vision_ds_Color__redFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.redFloat;
         } catch (e) {
             
@@ -96,7 +107,9 @@ class ColorTests {
     public static function vision_ds_Color__blueFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.blueFloat;
         } catch (e) {
             
@@ -113,7 +126,9 @@ class ColorTests {
     public static function vision_ds_Color__greenFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.greenFloat;
         } catch (e) {
             
@@ -130,7 +145,9 @@ class ColorTests {
     public static function vision_ds_Color__alphaFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.alphaFloat;
         } catch (e) {
             
@@ -147,7 +164,9 @@ class ColorTests {
     public static function vision_ds_Color__cyan__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.cyan;
         } catch (e) {
             
@@ -164,7 +183,9 @@ class ColorTests {
     public static function vision_ds_Color__magenta__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.magenta;
         } catch (e) {
             
@@ -181,7 +202,9 @@ class ColorTests {
     public static function vision_ds_Color__yellow__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.yellow;
         } catch (e) {
             
@@ -198,7 +221,9 @@ class ColorTests {
     public static function vision_ds_Color__black__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.black;
         } catch (e) {
             
@@ -215,7 +240,9 @@ class ColorTests {
     public static function vision_ds_Color__rgb__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.rgb;
         } catch (e) {
             
@@ -232,7 +259,9 @@ class ColorTests {
     public static function vision_ds_Color__hue__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.hue;
         } catch (e) {
             
@@ -249,7 +278,9 @@ class ColorTests {
     public static function vision_ds_Color__saturation__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.saturation;
         } catch (e) {
             
@@ -266,7 +297,9 @@ class ColorTests {
     public static function vision_ds_Color__brightness__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.brightness;
         } catch (e) {
             
@@ -283,7 +316,9 @@ class ColorTests {
     public static function vision_ds_Color__lightness__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            var object = new vision.ds.Color(value);
             result = object.lightness;
         } catch (e) {
             
@@ -300,7 +335,10 @@ class ColorTests {
     public static function vision_ds_Color__subtract__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.subtract((null : Color), (null : Color));
+            var lhs:Color = null;
+			var rhs:Color = null;
+			
+            result = vision.ds.Color.subtract(lhs, rhs);
         } catch (e) {
             
         }
@@ -316,7 +354,10 @@ class ColorTests {
     public static function vision_ds_Color__multiply__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.multiply((null : Color), (null : Color));
+            var lhs:Color = null;
+			var rhs:Color = null;
+			
+            result = vision.ds.Color.multiply(lhs, rhs);
         } catch (e) {
             
         }
@@ -332,7 +373,10 @@ class ColorTests {
     public static function vision_ds_Color__makeRandom__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.makeRandom((null : Bool), (null : Int));
+            var alphaLock = false;
+			var alphaValue = 0;
+			
+            result = vision.ds.Color.makeRandom(alphaLock, alphaValue);
         } catch (e) {
             
         }
@@ -348,7 +392,11 @@ class ColorTests {
     public static function vision_ds_Color__interpolate__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.interpolate((null : Color), (null : Color), (null : Float));
+            var Color1:Color = null;
+			var Color2:Color = null;
+			var Factor = 0.0;
+			
+            result = vision.ds.Color.interpolate(Color1, Color2, Factor);
         } catch (e) {
             
         }
@@ -364,7 +412,10 @@ class ColorTests {
     public static function vision_ds_Color__getAverage__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.getAverage((null : Array), (null : Bool));
+            var fromColors = [];
+			var considerTransparency = false;
+			
+            result = vision.ds.Color.getAverage(fromColors, considerTransparency);
         } catch (e) {
             
         }
@@ -380,7 +431,12 @@ class ColorTests {
     public static function vision_ds_Color__fromRGBAFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.fromRGBAFloat((null : Float), (null : Float), (null : Float), (null : Float));
+            var Red = 0.0;
+			var Green = 0.0;
+			var Blue = 0.0;
+			var Alpha = 0.0;
+			
+            result = vision.ds.Color.fromRGBAFloat(Red, Green, Blue, Alpha);
         } catch (e) {
             
         }
@@ -396,7 +452,12 @@ class ColorTests {
     public static function vision_ds_Color__fromRGBA__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.fromRGBA((null : Int), (null : Int), (null : Int), (null : Int));
+            var Red = 0;
+			var Green = 0;
+			var Blue = 0;
+			var Alpha = 0;
+			
+            result = vision.ds.Color.fromRGBA(Red, Green, Blue, Alpha);
         } catch (e) {
             
         }
@@ -412,7 +473,9 @@ class ColorTests {
     public static function vision_ds_Color__fromInt__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.fromInt((null : Int));
+            var value = 0;
+			
+            result = vision.ds.Color.fromInt(value);
         } catch (e) {
             
         }
@@ -428,7 +491,12 @@ class ColorTests {
     public static function vision_ds_Color__fromHSL__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.fromHSL((null : Float), (null : Float), (null : Float), (null : Float));
+            var Hue = 0.0;
+			var Saturation = 0.0;
+			var Lightness = 0.0;
+			var Alpha = 0.0;
+			
+            result = vision.ds.Color.fromHSL(Hue, Saturation, Lightness, Alpha);
         } catch (e) {
             
         }
@@ -444,7 +512,12 @@ class ColorTests {
     public static function vision_ds_Color__fromHSB__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.fromHSB((null : Float), (null : Float), (null : Float), (null : Float));
+            var Hue = 0.0;
+			var Saturation = 0.0;
+			var Brightness = 0.0;
+			var Alpha = 0.0;
+			
+            result = vision.ds.Color.fromHSB(Hue, Saturation, Brightness, Alpha);
         } catch (e) {
             
         }
@@ -460,7 +533,9 @@ class ColorTests {
     public static function vision_ds_Color__fromFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.fromFloat((null : Float));
+            var Value = 0.0;
+			
+            result = vision.ds.Color.fromFloat(Value);
         } catch (e) {
             
         }
@@ -476,7 +551,13 @@ class ColorTests {
     public static function vision_ds_Color__fromCMYK__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.fromCMYK((null : Float), (null : Float), (null : Float), (null : Float), (null : Float));
+            var Cyan = 0.0;
+			var Magenta = 0.0;
+			var Yellow = 0.0;
+			var Black = 0.0;
+			var Alpha = 0.0;
+			
+            result = vision.ds.Color.fromCMYK(Cyan, Magenta, Yellow, Black, Alpha);
         } catch (e) {
             
         }
@@ -492,7 +573,9 @@ class ColorTests {
     public static function vision_ds_Color__from8Bit__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.from8Bit((null : Int));
+            var Value = 0;
+			
+            result = vision.ds.Color.from8Bit(Value);
         } catch (e) {
             
         }
@@ -508,7 +591,10 @@ class ColorTests {
     public static function vision_ds_Color__divide__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.divide((null : Color), (null : Color));
+            var lhs:Color = null;
+			var rhs:Color = null;
+			
+            result = vision.ds.Color.divide(lhs, rhs);
         } catch (e) {
             
         }
@@ -524,7 +610,11 @@ class ColorTests {
     public static function vision_ds_Color__distanceBetween__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.distanceBetween((null : Color), (null : Color), (null : Bool));
+            var lhs:Color = null;
+			var rhs:Color = null;
+			var considerTransparency = false;
+			
+            result = vision.ds.Color.distanceBetween(lhs, rhs, considerTransparency);
         } catch (e) {
             
         }
@@ -540,7 +630,11 @@ class ColorTests {
     public static function vision_ds_Color__differenceBetween__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.differenceBetween((null : Color), (null : Color), (null : Bool));
+            var lhs:Color = null;
+			var rhs:Color = null;
+			var considerTransparency = false;
+			
+            result = vision.ds.Color.differenceBetween(lhs, rhs, considerTransparency);
         } catch (e) {
             
         }
@@ -556,7 +650,10 @@ class ColorTests {
     public static function vision_ds_Color__add__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.Color.add((null : Color), (null : Color));
+            var lhs:Color = null;
+			var rhs:Color = null;
+			
+            result = vision.ds.Color.add(lhs, rhs);
         } catch (e) {
             
         }
@@ -572,7 +669,10 @@ class ColorTests {
     public static function vision_ds_Color__toWebString__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
             result = object.toWebString();
         } catch (e) {
             
@@ -589,7 +689,10 @@ class ColorTests {
     public static function vision_ds_Color__toString__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
             result = object.toString();
         } catch (e) {
             
@@ -606,7 +709,10 @@ class ColorTests {
     public static function vision_ds_Color__toInt__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
             result = object.toInt();
         } catch (e) {
             
@@ -623,8 +729,13 @@ class ColorTests {
     public static function vision_ds_Color__toHexString__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.toHexString((null : Bool), (null : Bool));
+            var value = 0;
+			
+            var Alpha = false;
+			var Prefix = false;
+			
+            var object = new vision.ds.Color(value);
+            result = object.toHexString(Alpha, Prefix);
         } catch (e) {
             
         }
@@ -640,7 +751,10 @@ class ColorTests {
     public static function vision_ds_Color__to24Bit__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
             result = object.to24Bit();
         } catch (e) {
             
@@ -657,8 +771,15 @@ class ColorTests {
     public static function vision_ds_Color__setRGBAFloat__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.setRGBAFloat((null : Float), (null : Float), (null : Float), (null : Float));
+            var value = 0;
+			
+            var Red = 0.0;
+			var Green = 0.0;
+			var Blue = 0.0;
+			var Alpha = 0.0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.setRGBAFloat(Red, Green, Blue, Alpha);
         } catch (e) {
             
         }
@@ -674,8 +795,15 @@ class ColorTests {
     public static function vision_ds_Color__setRGBA__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.setRGBA((null : Int), (null : Int), (null : Int), (null : Int));
+            var value = 0;
+			
+            var Red = 0;
+			var Green = 0;
+			var Blue = 0;
+			var Alpha = 0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.setRGBA(Red, Green, Blue, Alpha);
         } catch (e) {
             
         }
@@ -691,8 +819,15 @@ class ColorTests {
     public static function vision_ds_Color__setHSL__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.setHSL((null : Float), (null : Float), (null : Float), (null : Float));
+            var value = 0;
+			
+            var Hue = 0.0;
+			var Saturation = 0.0;
+			var Lightness = 0.0;
+			var Alpha = 0.0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.setHSL(Hue, Saturation, Lightness, Alpha);
         } catch (e) {
             
         }
@@ -708,8 +843,15 @@ class ColorTests {
     public static function vision_ds_Color__setHSB__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.setHSB((null : Float), (null : Float), (null : Float), (null : Float));
+            var value = 0;
+			
+            var Hue = 0.0;
+			var Saturation = 0.0;
+			var Brightness = 0.0;
+			var Alpha = 0.0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.setHSB(Hue, Saturation, Brightness, Alpha);
         } catch (e) {
             
         }
@@ -725,8 +867,16 @@ class ColorTests {
     public static function vision_ds_Color__setCMYK__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.setCMYK((null : Float), (null : Float), (null : Float), (null : Float), (null : Float));
+            var value = 0;
+			
+            var Cyan = 0.0;
+			var Magenta = 0.0;
+			var Yellow = 0.0;
+			var Black = 0.0;
+			var Alpha = 0.0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.setCMYK(Cyan, Magenta, Yellow, Black, Alpha);
         } catch (e) {
             
         }
@@ -742,8 +892,12 @@ class ColorTests {
     public static function vision_ds_Color__lighten__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.lighten((null : Float));
+            var value = 0;
+			
+            var Factor = 0.0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.lighten(Factor);
         } catch (e) {
             
         }
@@ -759,7 +913,10 @@ class ColorTests {
     public static function vision_ds_Color__invert__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
             result = object.invert();
         } catch (e) {
             
@@ -776,8 +933,12 @@ class ColorTests {
     public static function vision_ds_Color__grayscale__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.grayscale((null : Bool));
+            var value = 0;
+			
+            var simple = false;
+			
+            var object = new vision.ds.Color(value);
+            result = object.grayscale(simple);
         } catch (e) {
             
         }
@@ -793,7 +954,10 @@ class ColorTests {
     public static function vision_ds_Color__getTriadicHarmony__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
             result = object.getTriadicHarmony();
         } catch (e) {
             
@@ -810,8 +974,12 @@ class ColorTests {
     public static function vision_ds_Color__getSplitComplementHarmony__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.getSplitComplementHarmony((null : Int));
+            var value = 0;
+			
+            var Threshold = 0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.getSplitComplementHarmony(Threshold);
         } catch (e) {
             
         }
@@ -827,7 +995,10 @@ class ColorTests {
     public static function vision_ds_Color__getComplementHarmony__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
             result = object.getComplementHarmony();
         } catch (e) {
             
@@ -844,8 +1015,12 @@ class ColorTests {
     public static function vision_ds_Color__getAnalogousHarmony__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.getAnalogousHarmony((null : Int));
+            var value = 0;
+			
+            var Threshold = 0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.getAnalogousHarmony(Threshold);
         } catch (e) {
             
         }
@@ -861,8 +1036,12 @@ class ColorTests {
     public static function vision_ds_Color__darken__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.darken((null : Float));
+            var value = 0;
+			
+            var Factor = 0.0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.darken(Factor);
         } catch (e) {
             
         }
@@ -878,8 +1057,12 @@ class ColorTests {
     public static function vision_ds_Color__blackOrWhite__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Color((null : Int));
-            result = object.blackOrWhite((null : Int));
+            var value = 0;
+			
+            var threshold = 0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.blackOrWhite(threshold);
         } catch (e) {
             
         }

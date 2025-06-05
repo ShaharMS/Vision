@@ -17,6 +17,7 @@ import vision.ds.Ray2D;
 import vision.ds.Line2D;
 import vision.ds.Point2D;
 
+@:access(vision.tools.MathTools)
 class MathToolsTests {
     public static function vision_tools_MathTools__PI__ShouldWork():TestResult {
         var result = null;
@@ -133,7 +134,11 @@ class MathToolsTests {
     public static function vision_tools_MathTools__wrapInt__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.wrapInt((null : Int), (null : Int), (null : Int));
+            var value = 0;
+			var min = 0;
+			var max = 0;
+			
+            result = vision.tools.MathTools.wrapInt(value, min, max);
         } catch (e) {
             
         }
@@ -149,7 +154,11 @@ class MathToolsTests {
     public static function vision_tools_MathTools__wrapFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.wrapFloat((null : Float), (null : Float), (null : Float));
+            var value = 0.0;
+			var min = 0.0;
+			var max = 0.0;
+			
+            result = vision.tools.MathTools.wrapFloat(value, min, max);
         } catch (e) {
             
         }
@@ -165,7 +174,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__truncate__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.truncate((null : Float), (null : Int));
+            var num = 0.0;
+			var numbersAfterDecimal = 0;
+			
+            result = vision.tools.MathTools.truncate(num, numbersAfterDecimal);
         } catch (e) {
             
         }
@@ -181,7 +193,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__toFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.toFloat((null : Int64));
+            var value:Int64 = null;
+			
+            result = vision.tools.MathTools.toFloat(value);
         } catch (e) {
             
         }
@@ -197,7 +211,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__tand__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.tand((null : Float));
+            var degrees = 0.0;
+			
+            result = vision.tools.MathTools.tand(degrees);
         } catch (e) {
             
         }
@@ -213,7 +229,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__tan__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.tan((null : Float));
+            var radians = 0.0;
+			
+            result = vision.tools.MathTools.tan(radians);
         } catch (e) {
             
         }
@@ -229,7 +247,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__sqrt__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.sqrt((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.sqrt(v);
         } catch (e) {
             
         }
@@ -245,7 +265,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__slopeToRadians__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.slopeToRadians((null : Float));
+            var slope = 0.0;
+			
+            result = vision.tools.MathTools.slopeToRadians(slope);
         } catch (e) {
             
         }
@@ -261,7 +283,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__slopeToDegrees__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.slopeToDegrees((null : Float));
+            var slope = 0.0;
+			
+            result = vision.tools.MathTools.slopeToDegrees(slope);
         } catch (e) {
             
         }
@@ -277,7 +301,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__slopeFromPointToPoint2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.slopeFromPointToPoint2D((null : IntPoint2D), (null : Point2D));
+            var point1 = new vision.ds.IntPoint2D(0, 0);
+			var point2 = new vision.ds.Point2D(0, 0);
+			
+            result = vision.tools.MathTools.slopeFromPointToPoint2D(point1, point2);
         } catch (e) {
             
         }
@@ -293,7 +320,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__sind__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.sind((null : Float));
+            var degrees = 0.0;
+			
+            result = vision.tools.MathTools.sind(degrees);
         } catch (e) {
             
         }
@@ -309,7 +338,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__sin__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.sin((null : Float));
+            var radians = 0.0;
+			
+            result = vision.tools.MathTools.sin(radians);
         } catch (e) {
             
         }
@@ -325,7 +356,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__secd__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.secd((null : Float));
+            var degrees = 0.0;
+			
+            result = vision.tools.MathTools.secd(degrees);
         } catch (e) {
             
         }
@@ -341,7 +374,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__sec__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.sec((null : Float));
+            var radians = 0.0;
+			
+            result = vision.tools.MathTools.sec(radians);
         } catch (e) {
             
         }
@@ -357,7 +392,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__round__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.round((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.round(v);
         } catch (e) {
             
         }
@@ -373,6 +410,7 @@ class MathToolsTests {
     public static function vision_tools_MathTools__random__ShouldWork():TestResult {
         var result = null;
         try {
+            
             result = vision.tools.MathTools.random();
         } catch (e) {
             
@@ -389,7 +427,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__radiansToSlope__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.radiansToSlope((null : Float));
+            var radians = 0.0;
+			
+            result = vision.tools.MathTools.radiansToSlope(radians);
         } catch (e) {
             
         }
@@ -405,7 +445,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__radiansToDegrees__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.radiansToDegrees((null : Float));
+            var radians = 0.0;
+			
+            result = vision.tools.MathTools.radiansToDegrees(radians);
         } catch (e) {
             
         }
@@ -421,7 +463,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__radiansFromPointToPoint2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.radiansFromPointToPoint2D((null : IntPoint2D), (null : Point2D));
+            var point1 = new vision.ds.IntPoint2D(0, 0);
+			var point2 = new vision.ds.Point2D(0, 0);
+			
+            result = vision.tools.MathTools.radiansFromPointToPoint2D(point1, point2);
         } catch (e) {
             
         }
@@ -437,7 +482,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__radiansFromPointToLine2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.radiansFromPointToLine2D((null : IntPoint2D), (null : Line2D));
+            var point = new vision.ds.IntPoint2D(0, 0);
+			var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			
+            result = vision.tools.MathTools.radiansFromPointToLine2D(point, line);
         } catch (e) {
             
         }
@@ -453,7 +501,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__radiansFromLineToPoint2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.radiansFromLineToPoint2D((null : Line2D), (null : Point2D));
+            var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			var point = new vision.ds.Point2D(0, 0);
+			
+            result = vision.tools.MathTools.radiansFromLineToPoint2D(line, point);
         } catch (e) {
             
         }
@@ -469,7 +520,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__pow__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.pow((null : Float), (null : Float));
+            var v = 0.0;
+			var exp = 0.0;
+			
+            result = vision.tools.MathTools.pow(v, exp);
         } catch (e) {
             
         }
@@ -485,7 +539,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__parseInt__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.parseInt((null : String));
+            var s = "";
+			
+            result = vision.tools.MathTools.parseInt(s);
         } catch (e) {
             
         }
@@ -501,7 +557,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__parseFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.parseFloat((null : String));
+            var s = "";
+			
+            result = vision.tools.MathTools.parseFloat(s);
         } catch (e) {
             
         }
@@ -517,7 +575,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__parseBool__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.parseBool((null : String));
+            var s = "";
+			
+            result = vision.tools.MathTools.parseBool(s);
         } catch (e) {
             
         }
@@ -533,7 +593,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__mirrorInsideRectangle__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.mirrorInsideRectangle((null : Line2D), (null : Rectangle));
+            var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			var rect:Rectangle = null;
+			
+            result = vision.tools.MathTools.mirrorInsideRectangle(line, rect);
         } catch (e) {
             
         }
@@ -549,7 +612,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__log__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.log((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.log(v);
         } catch (e) {
             
         }
@@ -565,7 +630,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__isNaN__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.isNaN((null : Float));
+            var f = 0.0;
+			
+            result = vision.tools.MathTools.isNaN(f);
         } catch (e) {
             
         }
@@ -581,7 +648,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__isInt__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.isInt((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.isInt(v);
         } catch (e) {
             
         }
@@ -597,7 +666,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__isFinite__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.isFinite((null : Float));
+            var f = 0.0;
+			
+            result = vision.tools.MathTools.isFinite(f);
         } catch (e) {
             
         }
@@ -613,7 +684,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__isBetweenRanges__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.isBetweenRanges((null : Float), (null : {start:Float, end:Float}));
+            var value = 0.0;
+			var ranges:{start:Float, end:Float} = null;
+			
+            result = vision.tools.MathTools.isBetweenRanges(value, ranges);
         } catch (e) {
             
         }
@@ -629,7 +703,11 @@ class MathToolsTests {
     public static function vision_tools_MathTools__isBetweenRange__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.isBetweenRange((null : Float), (null : Float), (null : Float));
+            var value = 0.0;
+			var min = 0.0;
+			var max = 0.0;
+			
+            result = vision.tools.MathTools.isBetweenRange(value, min, max);
         } catch (e) {
             
         }
@@ -645,7 +723,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__invertInsideRectangle__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.invertInsideRectangle((null : Line2D), (null : Rectangle));
+            var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			var rect:Rectangle = null;
+			
+            result = vision.tools.MathTools.invertInsideRectangle(line, rect);
         } catch (e) {
             
         }
@@ -661,7 +742,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__intersectionBetweenRay2Ds__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.intersectionBetweenRay2Ds((null : Ray2D), (null : Ray2D));
+            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			var ray2 = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			
+            result = vision.tools.MathTools.intersectionBetweenRay2Ds(ray, ray2);
         } catch (e) {
             
         }
@@ -677,7 +761,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__intersectionBetweenLine2Ds__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.intersectionBetweenLine2Ds((null : Line2D), (null : Line2D));
+            var line1 = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			var line2 = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			
+            result = vision.tools.MathTools.intersectionBetweenLine2Ds(line1, line2);
         } catch (e) {
             
         }
@@ -693,7 +780,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__getClosestPointOnRay2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.getClosestPointOnRay2D((null : IntPoint2D), (null : Ray2D));
+            var point = new vision.ds.IntPoint2D(0, 0);
+			var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			
+            result = vision.tools.MathTools.getClosestPointOnRay2D(point, ray);
         } catch (e) {
             
         }
@@ -709,7 +799,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__gamma__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.gamma((null : Float));
+            var x = 0.0;
+			
+            result = vision.tools.MathTools.gamma(x);
         } catch (e) {
             
         }
@@ -725,7 +817,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__fround__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.fround((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.fround(v);
         } catch (e) {
             
         }
@@ -741,7 +835,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__floor__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.floor((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.floor(v);
         } catch (e) {
             
         }
@@ -757,7 +853,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__flipInsideRectangle__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.flipInsideRectangle((null : Line2D), (null : Rectangle));
+            var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			var rect:Rectangle = null;
+			
+            result = vision.tools.MathTools.flipInsideRectangle(line, rect);
         } catch (e) {
             
         }
@@ -773,7 +872,12 @@ class MathToolsTests {
     public static function vision_tools_MathTools__findPointAtDistanceUsingY__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.findPointAtDistanceUsingY((null : Ray2D), (null : Float), (null : Float), (null : Bool));
+            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			var startYPos = 0.0;
+			var distance = 0.0;
+			var goPositive = false;
+			
+            result = vision.tools.MathTools.findPointAtDistanceUsingY(ray, startYPos, distance, goPositive);
         } catch (e) {
             
         }
@@ -789,7 +893,12 @@ class MathToolsTests {
     public static function vision_tools_MathTools__findPointAtDistanceUsingX__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.findPointAtDistanceUsingX((null : Ray2D), (null : Float), (null : Float), (null : Bool));
+            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			var startXPos = 0.0;
+			var distance = 0.0;
+			var goPositive = false;
+			
+            result = vision.tools.MathTools.findPointAtDistanceUsingX(ray, startXPos, distance, goPositive);
         } catch (e) {
             
         }
@@ -805,7 +914,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__ffloor__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.ffloor((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.ffloor(v);
         } catch (e) {
             
         }
@@ -821,7 +932,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__fceil__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.fceil((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.fceil(v);
         } catch (e) {
             
         }
@@ -837,7 +950,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__factorial__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.factorial((null : Float));
+            var value = 0.0;
+			
+            result = vision.tools.MathTools.factorial(value);
         } catch (e) {
             
         }
@@ -853,7 +968,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__exp__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.exp((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.exp(v);
         } catch (e) {
             
         }
@@ -869,7 +986,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__distanceFromRayToPoint2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.distanceFromRayToPoint2D((null : Ray2D), (null : Point2D));
+            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			var point = new vision.ds.Point2D(0, 0);
+			
+            result = vision.tools.MathTools.distanceFromRayToPoint2D(ray, point);
         } catch (e) {
             
         }
@@ -885,7 +1005,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__distanceFromPointToRay2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.distanceFromPointToRay2D((null : IntPoint2D), (null : Ray2D));
+            var point = new vision.ds.IntPoint2D(0, 0);
+			var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			
+            result = vision.tools.MathTools.distanceFromPointToRay2D(point, ray);
         } catch (e) {
             
         }
@@ -901,7 +1024,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__distanceFromPointToLine2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.distanceFromPointToLine2D((null : IntPoint2D), (null : Line2D));
+            var point = new vision.ds.IntPoint2D(0, 0);
+			var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			
+            result = vision.tools.MathTools.distanceFromPointToLine2D(point, line);
         } catch (e) {
             
         }
@@ -917,7 +1043,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__distanceFromLineToPoint2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.distanceFromLineToPoint2D((null : Line2D), (null : Point2D));
+            var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			var point = new vision.ds.Point2D(0, 0);
+			
+            result = vision.tools.MathTools.distanceFromLineToPoint2D(line, point);
         } catch (e) {
             
         }
@@ -933,7 +1062,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__distanceBetweenRays2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.distanceBetweenRays2D((null : Ray2D), (null : Ray2D));
+            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			var ray2 = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			
+            result = vision.tools.MathTools.distanceBetweenRays2D(ray, ray2);
         } catch (e) {
             
         }
@@ -949,7 +1081,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__distanceBetweenPoints__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.distanceBetweenPoints((null : Point3D), (null : Point3D));
+            var point1:Point3D = null;
+			var point2:Point3D = null;
+			
+            result = vision.tools.MathTools.distanceBetweenPoints(point1, point2);
         } catch (e) {
             
         }
@@ -965,7 +1100,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__distanceBetweenLines2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.distanceBetweenLines2D((null : Line2D), (null : Line2D));
+            var line1 = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			var line2 = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			
+            result = vision.tools.MathTools.distanceBetweenLines2D(line1, line2);
         } catch (e) {
             
         }
@@ -981,7 +1119,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__degreesToSlope__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.degreesToSlope((null : Float));
+            var degrees = 0.0;
+			
+            result = vision.tools.MathTools.degreesToSlope(degrees);
         } catch (e) {
             
         }
@@ -997,7 +1137,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__degreesToRadians__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.degreesToRadians((null : Float));
+            var degrees = 0.0;
+			
+            result = vision.tools.MathTools.degreesToRadians(degrees);
         } catch (e) {
             
         }
@@ -1013,7 +1155,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__degreesFromPointToPoint2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.degreesFromPointToPoint2D((null : IntPoint2D), (null : Point2D));
+            var point1 = new vision.ds.IntPoint2D(0, 0);
+			var point2 = new vision.ds.Point2D(0, 0);
+			
+            result = vision.tools.MathTools.degreesFromPointToPoint2D(point1, point2);
         } catch (e) {
             
         }
@@ -1029,7 +1174,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__cropDecimal__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.cropDecimal((null : Float));
+            var number = 0.0;
+			
+            result = vision.tools.MathTools.cropDecimal(number);
         } catch (e) {
             
         }
@@ -1045,7 +1192,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__cotand__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.cotand((null : Float));
+            var degrees = 0.0;
+			
+            result = vision.tools.MathTools.cotand(degrees);
         } catch (e) {
             
         }
@@ -1061,7 +1210,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__cotan__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.cotan((null : Float));
+            var radians = 0.0;
+			
+            result = vision.tools.MathTools.cotan(radians);
         } catch (e) {
             
         }
@@ -1077,7 +1228,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__cosecd__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.cosecd((null : Float));
+            var degrees = 0.0;
+			
+            result = vision.tools.MathTools.cosecd(degrees);
         } catch (e) {
             
         }
@@ -1093,7 +1246,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__cosec__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.cosec((null : Float));
+            var radians = 0.0;
+			
+            result = vision.tools.MathTools.cosec(radians);
         } catch (e) {
             
         }
@@ -1109,7 +1264,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__cosd__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.cosd((null : Float));
+            var degrees = 0.0;
+			
+            result = vision.tools.MathTools.cosd(degrees);
         } catch (e) {
             
         }
@@ -1125,7 +1282,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__cos__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.cos((null : Float));
+            var radians = 0.0;
+			
+            result = vision.tools.MathTools.cos(radians);
         } catch (e) {
             
         }
@@ -1141,7 +1300,11 @@ class MathToolsTests {
     public static function vision_tools_MathTools__clamp__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.clamp((null : Int), (null : Int), (null : Int));
+            var value = 0;
+			var mi = 0;
+			var ma = 0;
+			
+            result = vision.tools.MathTools.clamp(value, mi, ma);
         } catch (e) {
             
         }
@@ -1157,7 +1320,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__ceil__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.ceil((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.ceil(v);
         } catch (e) {
             
         }
@@ -1173,7 +1338,11 @@ class MathToolsTests {
     public static function vision_tools_MathTools__boundInt__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.boundInt((null : Int), (null : Int), (null : Int));
+            var value = 0;
+			var min = 0;
+			var max = 0;
+			
+            result = vision.tools.MathTools.boundInt(value, min, max);
         } catch (e) {
             
         }
@@ -1189,7 +1358,11 @@ class MathToolsTests {
     public static function vision_tools_MathTools__boundFloat__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.boundFloat((null : Float), (null : Float), (null : Float));
+            var value = 0.0;
+			var min = 0.0;
+			var max = 0.0;
+			
+            result = vision.tools.MathTools.boundFloat(value, min, max);
         } catch (e) {
             
         }
@@ -1205,7 +1378,10 @@ class MathToolsTests {
     public static function vision_tools_MathTools__atan2__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.atan2((null : Float), (null : Float));
+            var y = 0.0;
+			var x = 0.0;
+			
+            result = vision.tools.MathTools.atan2(y, x);
         } catch (e) {
             
         }
@@ -1221,7 +1397,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__atan__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.atan((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.atan(v);
         } catch (e) {
             
         }
@@ -1237,7 +1415,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__asin__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.asin((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.asin(v);
         } catch (e) {
             
         }
@@ -1253,7 +1433,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__acos__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.acos((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.acos(v);
         } catch (e) {
             
         }
@@ -1269,7 +1451,9 @@ class MathToolsTests {
     public static function vision_tools_MathTools__abs__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.tools.MathTools.abs((null : Float));
+            var v = 0.0;
+			
+            result = vision.tools.MathTools.abs(v);
         } catch (e) {
             
         }

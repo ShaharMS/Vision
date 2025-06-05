@@ -8,11 +8,15 @@ import vision.ds.Color;
 import vision.tools.ImageTools;
 import vision.ds.Image;
 
+@:access(vision.algorithms.Sobel)
 class SobelTests {
     public static function vision_algorithms_Sobel__detectEdges__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Sobel.detectEdges((null : Image), (null : Float));
+            var image = new vision.ds.Image(100, 100);
+			var threshold = 0.0;
+			
+            result = vision.algorithms.Sobel.detectEdges(image, threshold);
         } catch (e) {
             
         }
@@ -28,7 +32,9 @@ class SobelTests {
     public static function vision_algorithms_Sobel__convolveWithSobelOperator__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Sobel.convolveWithSobelOperator((null : Image));
+            var image = new vision.ds.Image(100, 100);
+			
+            result = vision.algorithms.Sobel.convolveWithSobelOperator(image);
         } catch (e) {
             
         }

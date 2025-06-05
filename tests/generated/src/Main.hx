@@ -6,9 +6,9 @@ import tests.*;
 import TestStatus;
 import TestResult;
 import TestConclusion;
+import TestsToRun;
 
 class Main {
-	public static var testedClasses:Array<Class<Dynamic>> = [BilateralFilterTests, BilinearInterpolationTests, CannyTests, CramerTests, GaussTests, GaussJordanTests, ImageHashingTests, KMeansTests, LaplaceTests, PerwittTests, RadixTests, RobertsCrossTests, SimpleLineDetectorTests, SobelTests, CannyObjectTests, HistogramTests, Int16Point2DTests, IntPoint2DTests, ColorClusterTests, PixelTests, Point2DTests, Point3DTests, RectangleTests, PointTransformationPairTests, UInt16Point2DTests, ImageIOTests, FormatImageExporterTests, FormatImageLoaderTests, MathToolsTests];
 
 	// ANSI colors
 	static var RED = "\033[31m";
@@ -37,7 +37,7 @@ class Main {
 			conclusionMap.set(statusType, []);
 		}
 
-		for (cls in testedClasses) {
+		for (cls in TestsToRun.tests) {
 			var testFunctions:Array<() -> TestResult> = Reflect.field(cls, "tests");
 			for (func in testFunctions) {
 				i++;

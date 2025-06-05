@@ -6,11 +6,15 @@ import TestStatus;
 import vision.ds.Int16Point2D;
 import vision.tools.MathTools;
 
+@:access(vision.ds.Int16Point2D)
 class Int16Point2DTests {
     public static function vision_ds_Int16Point2D__x__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Int16Point2D((null : Int), (null : Int));
+            var X = 0;
+			var Y = 0;
+			
+            var object = new vision.ds.Int16Point2D(X, Y);
             result = object.x;
         } catch (e) {
             
@@ -27,7 +31,10 @@ class Int16Point2DTests {
     public static function vision_ds_Int16Point2D__y__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.Int16Point2D((null : Int), (null : Int));
+            var X = 0;
+			var Y = 0;
+			
+            var object = new vision.ds.Int16Point2D(X, Y);
             result = object.y;
         } catch (e) {
             
@@ -44,7 +51,11 @@ class Int16Point2DTests {
     public static function vision_ds_Int16Point2D__toString__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Int16Point2D((null : Int), (null : Int));
+            var X = 0;
+			var Y = 0;
+			
+            
+            var object = new vision.ds.Int16Point2D(X, Y);
             result = object.toString();
         } catch (e) {
             
@@ -61,7 +72,11 @@ class Int16Point2DTests {
     public static function vision_ds_Int16Point2D__toPoint2D__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Int16Point2D((null : Int), (null : Int));
+            var X = 0;
+			var Y = 0;
+			
+            
+            var object = new vision.ds.Int16Point2D(X, Y);
             result = object.toPoint2D();
         } catch (e) {
             
@@ -78,7 +93,11 @@ class Int16Point2DTests {
     public static function vision_ds_Int16Point2D__toIntPoint2D__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Int16Point2D((null : Int), (null : Int));
+            var X = 0;
+			var Y = 0;
+			
+            
+            var object = new vision.ds.Int16Point2D(X, Y);
             result = object.toIntPoint2D();
         } catch (e) {
             
@@ -95,7 +114,11 @@ class Int16Point2DTests {
     public static function vision_ds_Int16Point2D__toInt__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Int16Point2D((null : Int), (null : Int));
+            var X = 0;
+			var Y = 0;
+			
+            
+            var object = new vision.ds.Int16Point2D(X, Y);
             result = object.toInt();
         } catch (e) {
             

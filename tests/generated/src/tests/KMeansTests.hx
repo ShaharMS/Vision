@@ -9,6 +9,7 @@ import vision.ds.Image;
 import vision.ds.kmeans.ColorCluster;
 import vision.exceptions.Unimplemented;
 
+@:access(vision.algorithms.KMeans)
 class KMeansTests {
     public static var tests = [];
 }

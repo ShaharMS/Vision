@@ -53,6 +53,10 @@ class Main {
 
         Sys.println("Job Done! Use this array to test the classes:");
         Sys.println('   [${resultingClassArray.join(", ")}]');
+        if (config.testsToRunFile.length > 0) {
+            Sys.println("Found tests-to-run file! writing test cases there as well...");
+            File.saveContent(FileSystem.absolutePath(config.testsToRunFile), 'package;\n\nimport tests.*;\n\nfinal tests:Array<Class<Dynamic>> = [\n\t${resultingClassArray.join(", \n\t")}\n];');
+        }
     }
 
     static function readFileStructure(from:String):Array<String> {

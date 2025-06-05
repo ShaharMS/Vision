@@ -13,11 +13,14 @@ import format.png.Tools;
 import format.bmp.Reader;
 import format.bmp.Tools;
 
+@:access(vision.formats.__internal.FormatImageLoader)
 class FormatImageLoaderTests {
     public static function vision_formats___internal_FormatImageLoader__png__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.formats.__internal.FormatImageLoader.png((null : ByteArray));
+            var bytes = vision.ds.ByteArray.from(0);
+			
+            result = vision.formats.__internal.FormatImageLoader.png(bytes);
         } catch (e) {
             
         }
@@ -33,7 +36,9 @@ class FormatImageLoaderTests {
     public static function vision_formats___internal_FormatImageLoader__bmp__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.formats.__internal.FormatImageLoader.bmp((null : ByteArray));
+            var bytes = vision.ds.ByteArray.from(0);
+			
+            result = vision.formats.__internal.FormatImageLoader.bmp(bytes);
         } catch (e) {
             
         }

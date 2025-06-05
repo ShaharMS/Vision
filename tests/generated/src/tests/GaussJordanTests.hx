@@ -6,11 +6,14 @@ import TestStatus;
 import vision.algorithms.GaussJordan;
 import vision.ds.Matrix2D;
 
+@:access(vision.algorithms.GaussJordan)
 class GaussJordanTests {
     public static function vision_algorithms_GaussJordan__invert__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.GaussJordan.invert((null : Matrix2D));
+            var matrix:Matrix2D = null;
+			
+            result = vision.algorithms.GaussJordan.invert(matrix);
         } catch (e) {
             
         }

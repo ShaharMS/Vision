@@ -34,7 +34,10 @@ class Generator {
                 packageName: detections.packageName,
                 className: detections.className,
                 fieldName: field,
-                testGoal: "ShouldWork"
+                testGoal: "ShouldWork",
+                parameters: extractParameters(""),
+                constructorParameters: extractParameters(""),
+
             }));
         }
 
@@ -44,6 +47,7 @@ class Generator {
                 className: detections.className,
                 fieldName: field,
                 testGoal: "ShouldWork",
+                parameters: extractParameters(""),
                 constructorParameters: extractParameters(detections.constructorParameters[0] ?? "")
             }));
         }
@@ -54,7 +58,8 @@ class Generator {
                 className: detections.className,
                 fieldName: method,
                 testGoal: "ShouldWork",
-                parameters: extractParameters(parameters)
+                parameters: extractParameters(parameters),
+                constructorParameters: extractParameters("")
             }));
         }
 
@@ -91,15 +96,15 @@ class Generator {
 
     static function generateTest(template:String, testBase:TestBase):String {
         var cleanPackage = testBase.packageName.replace(".", "_") + '_${testBase.className}';
-        testBase.parameters ??= "";
-        testBase.constructorParameters ??= "";
         return template
             .replace("X1", cleanPackage)
             .replace("X2", testBase.fieldName)
             .replace("X3", testBase.testGoal)
             .replace("X4", '${testBase.packageName}.${testBase.className}')
-            .replace("X5", testBase.parameters)
-            .replace("X6", testBase.constructorParameters) + "\n\n";
+            .replace("X5", testBase.parameters.injection)
+            .replace("X6", testBase.constructorParameters.injection)
+            .replace("X7", testBase.parameters.declarations)
+            .replace("X8", testBase.constructorParameters.declarations) + "\n\n";
             
     }
 
@@ -125,16 +130,38 @@ class Generator {
     }
 
 
-    static function extractParameters(parameters:String):String {
-        var regex = ~/\w+:((?:\w|\.)+|\{.+\},?)/;
-        var parameterList = [];
+    static function extractParameters(parameters:String):{declarations:String, injection:String} {
+        var regex = ~/(\w+):((?:EitherType<.+, .+>,?)|(?:\w+<\{.+\}>,?)|(?:\w|\.)+|\{.+\},?)/;
+        var output = {declarations: "", injection: []}
         while (regex.match(parameters)) {
-            var type = regex.matched(1);
+            var name = regex.matched(1);
+            var type = regex.matched(2);
             parameters = regex.matchedRight();
-            parameterList.push('(null : $type)');
+            output.declarations += 'var $name${getDefaultValueOf(type) == "null" ? ':$type' : ""} = ${getDefaultValueOf(type)};\n\t\t\t';
+            output.injection.push(name);
         }
 
-        return parameterList.join(", ");
+        return {
+            declarations: output.declarations,
+            injection: output.injection.join(", ")
+        };
+    }
+
+    static function getDefaultValueOf(valueType:String) {
+        return switch valueType {
+            case "String": '""';
+            case "Int": "0";
+            case "Float": "0.0";
+            case "Bool": "false";
+            case "Array" | "Map": "[]";
+            case "Point2D" | "IntPoint2D" | "Int16Point2D" | "UInt16Point2D": 'new vision.ds.$valueType(0, 0)';
+            case "Line2D": 'new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10})';
+            case "Ray2D": 'new vision.ds.Ray2D({x: 0, y: 0}, 1)';
+            case "ByteArray": 'vision.ds.ByteArray.from(0)';
+            case "Image": 'new vision.ds.Image(100, 100)';
+            case "T": "0"; // A little insane but should work in most cases so idk
+            default: "null";
+        }
     }
 }
 
@@ -143,6 +170,6 @@ typedef TestBase = {
     className:String,
     fieldName:String,
     testGoal:String,
-    ?parameters:String,
-    ?constructorParameters:String
+    ?parameters:{declarations:String, injection:String},
+    ?constructorParameters:{declarations:String, injection:String}
 }

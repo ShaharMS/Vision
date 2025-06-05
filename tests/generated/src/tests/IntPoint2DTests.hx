@@ -8,11 +8,15 @@ import vision.tools.MathTools;
 import vision.ds.Point2D;
 import haxe.Int64;
 
+@:access(vision.ds.IntPoint2D)
 class IntPoint2DTests {
     public static function vision_ds_IntPoint2D__x__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
+            var x = 0;
+			var y = 0;
+			
+            var object = new vision.ds.IntPoint2D(x, y);
             result = object.x;
         } catch (e) {
             
@@ -29,7 +33,10 @@ class IntPoint2DTests {
     public static function vision_ds_IntPoint2D__y__ShouldWork():TestResult {
         var result = null;
         try {
-            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
+            var x = 0;
+			var y = 0;
+			
+            var object = new vision.ds.IntPoint2D(x, y);
             result = object.y;
         } catch (e) {
             
@@ -46,7 +53,9 @@ class IntPoint2DTests {
     public static function vision_ds_IntPoint2D__fromPoint2D__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.ds.IntPoint2D.fromPoint2D((null : Point2D));
+            var p = new vision.ds.Point2D(0, 0);
+			
+            result = vision.ds.IntPoint2D.fromPoint2D(p);
         } catch (e) {
             
         }
@@ -62,7 +71,11 @@ class IntPoint2DTests {
     public static function vision_ds_IntPoint2D__toString__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
+            var x = 0;
+			var y = 0;
+			
+            
+            var object = new vision.ds.IntPoint2D(x, y);
             result = object.toString();
         } catch (e) {
             
@@ -79,7 +92,11 @@ class IntPoint2DTests {
     public static function vision_ds_IntPoint2D__toPoint2D__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
+            var x = 0;
+			var y = 0;
+			
+            
+            var object = new vision.ds.IntPoint2D(x, y);
             result = object.toPoint2D();
         } catch (e) {
             
@@ -96,8 +113,13 @@ class IntPoint2DTests {
     public static function vision_ds_IntPoint2D__radiansTo__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
-            result = object.radiansTo((null : Point2D));
+            var x = 0;
+			var y = 0;
+			
+            var point = new vision.ds.Point2D(0, 0);
+			
+            var object = new vision.ds.IntPoint2D(x, y);
+            result = object.radiansTo(point);
         } catch (e) {
             
         }
@@ -113,8 +135,13 @@ class IntPoint2DTests {
     public static function vision_ds_IntPoint2D__distanceTo__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
-            result = object.distanceTo((null : IntPoint2D));
+            var x = 0;
+			var y = 0;
+			
+            var point = new vision.ds.IntPoint2D(0, 0);
+			
+            var object = new vision.ds.IntPoint2D(x, y);
+            result = object.distanceTo(point);
         } catch (e) {
             
         }
@@ -130,8 +157,13 @@ class IntPoint2DTests {
     public static function vision_ds_IntPoint2D__degreesTo__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
-            result = object.degreesTo((null : Point2D));
+            var x = 0;
+			var y = 0;
+			
+            var point = new vision.ds.Point2D(0, 0);
+			
+            var object = new vision.ds.IntPoint2D(x, y);
+            result = object.degreesTo(point);
         } catch (e) {
             
         }
@@ -147,7 +179,11 @@ class IntPoint2DTests {
     public static function vision_ds_IntPoint2D__copy__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.IntPoint2D((null : Int), (null : Int));
+            var x = 0;
+			var y = 0;
+			
+            
+            var object = new vision.ds.IntPoint2D(x, y);
             result = object.copy();
         } catch (e) {
             

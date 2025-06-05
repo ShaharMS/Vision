@@ -6,11 +6,16 @@ import TestStatus;
 import vision.ds.Point2D;
 import vision.tools.MathTools;
 
+@:access(vision.ds.Point2D)
 class Point2DTests {
     public static function vision_ds_Point2D__toString__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Point2D((null : Float), (null : Float));
+            var x = 0.0;
+			var y = 0.0;
+			
+            
+            var object = new vision.ds.Point2D(x, y);
             result = object.toString();
         } catch (e) {
             
@@ -27,8 +32,13 @@ class Point2DTests {
     public static function vision_ds_Point2D__radiansTo__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Point2D((null : Float), (null : Float));
-            result = object.radiansTo((null : Point2D));
+            var x = 0.0;
+			var y = 0.0;
+			
+            var point = new vision.ds.Point2D(0, 0);
+			
+            var object = new vision.ds.Point2D(x, y);
+            result = object.radiansTo(point);
         } catch (e) {
             
         }
@@ -44,8 +54,13 @@ class Point2DTests {
     public static function vision_ds_Point2D__distanceTo__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Point2D((null : Float), (null : Float));
-            result = object.distanceTo((null : Point2D));
+            var x = 0.0;
+			var y = 0.0;
+			
+            var point = new vision.ds.Point2D(0, 0);
+			
+            var object = new vision.ds.Point2D(x, y);
+            result = object.distanceTo(point);
         } catch (e) {
             
         }
@@ -61,8 +76,13 @@ class Point2DTests {
     public static function vision_ds_Point2D__degreesTo__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Point2D((null : Float), (null : Float));
-            result = object.degreesTo((null : Point2D));
+            var x = 0.0;
+			var y = 0.0;
+			
+            var point = new vision.ds.Point2D(0, 0);
+			
+            var object = new vision.ds.Point2D(x, y);
+            result = object.degreesTo(point);
         } catch (e) {
             
         }
@@ -78,7 +98,11 @@ class Point2DTests {
     public static function vision_ds_Point2D__copy__ShouldWork():TestResult {
         var result = null;
         try { 
-            var object = new vision.ds.Point2D((null : Float), (null : Float));
+            var x = 0.0;
+			var y = 0.0;
+			
+            
+            var object = new vision.ds.Point2D(x, y);
             result = object.copy();
         } catch (e) {
             

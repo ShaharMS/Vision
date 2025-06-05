@@ -6,6 +6,7 @@ import TestStatus;
 import vision.ds.specifics.PointTransformationPair;
 
 
+@:access(vision.ds.specifics.PointTransformationPair)
 class PointTransformationPairTests {
     public static var tests = [];
 }

@@ -11,11 +11,14 @@ import vision.ds.ByteArray;
 import vision.ds.Image;
 import vision.ds.ImageResizeAlgorithm;
 
+@:access(vision.algorithms.ImageHashing)
 class ImageHashingTests {
     public static function vision_algorithms_ImageHashing__phash__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.ImageHashing.phash((null : Image));
+            var image = new vision.ds.Image(100, 100);
+			
+            result = vision.algorithms.ImageHashing.phash(image);
         } catch (e) {
             
         }
@@ -31,7 +34,10 @@ class ImageHashingTests {
     public static function vision_algorithms_ImageHashing__ahash__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.ImageHashing.ahash((null : Image), (null : Int));
+            var image = new vision.ds.Image(100, 100);
+			var hashByteSize = 0;
+			
+            result = vision.algorithms.ImageHashing.ahash(image, hashByteSize);
         } catch (e) {
             
         }

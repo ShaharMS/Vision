@@ -9,11 +9,16 @@ import vision.ds.Image;
 import vision.ds.Array2D;
 import vision.exceptions.InvalidGaussianKernelSize;
 
+@:access(vision.algorithms.Gauss)
 class GaussTests {
     public static function vision_algorithms_Gauss__fastBlur__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Gauss.fastBlur((null : Image), (null : Int), (null : Float));
+            var image = new vision.ds.Image(100, 100);
+			var size = 0;
+			var sigma = 0.0;
+			
+            result = vision.algorithms.Gauss.fastBlur(image, size, sigma);
         } catch (e) {
             
         }
@@ -29,7 +34,10 @@ class GaussTests {
     public static function vision_algorithms_Gauss__createKernelOfSize__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Gauss.createKernelOfSize((null : Int), (null : Int));
+            var size = 0;
+			var sigma = 0;
+			
+            result = vision.algorithms.Gauss.createKernelOfSize(size, sigma);
         } catch (e) {
             
         }

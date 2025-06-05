@@ -7,11 +7,14 @@ import vision.algorithms.RobertsCross;
 import vision.tools.ImageTools;
 import vision.ds.Image;
 
+@:access(vision.algorithms.RobertsCross)
 class RobertsCrossTests {
     public static function vision_algorithms_RobertsCross__convolveWithRobertsCross__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.RobertsCross.convolveWithRobertsCross((null : Image));
+            var image = new vision.ds.Image(100, 100);
+			
+            result = vision.algorithms.RobertsCross.convolveWithRobertsCross(image);
         } catch (e) {
             
         }

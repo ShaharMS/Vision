@@ -9,11 +9,18 @@ import vision.ds.Color;
 import vision.tools.ImageTools;
 import vision.ds.Image;
 
+@:access(vision.algorithms.Laplace)
 class LaplaceTests {
     public static function vision_algorithms_Laplace__laplacianOfGaussian__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Laplace.laplacianOfGaussian((null : Image), (null : GaussianKernelSize), (null : Float), (null : Float), (null : Bool));
+            var image = new vision.ds.Image(100, 100);
+			var kernelSize:GaussianKernelSize = null;
+			var sigma = 0.0;
+			var threshold = 0.0;
+			var positive = false;
+			
+            result = vision.algorithms.Laplace.laplacianOfGaussian(image, kernelSize, sigma, threshold, positive);
         } catch (e) {
             
         }
@@ -29,7 +36,10 @@ class LaplaceTests {
     public static function vision_algorithms_Laplace__convolveWithLaplacianOperator__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Laplace.convolveWithLaplacianOperator((null : Image), (null : Bool));
+            var image = new vision.ds.Image(100, 100);
+			var positive = false;
+			
+            result = vision.algorithms.Laplace.convolveWithLaplacianOperator(image, positive);
         } catch (e) {
             
         }

@@ -8,11 +8,14 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.canny.CannyObject;
 
+@:access(vision.algorithms.Canny)
 class CannyTests {
     public static function vision_algorithms_Canny__nonMaxSuppression__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Canny.nonMaxSuppression((null : CannyObject));
+            var image:CannyObject = null;
+			
+            result = vision.algorithms.Canny.nonMaxSuppression(image);
         } catch (e) {
             
         }
@@ -28,7 +31,9 @@ class CannyTests {
     public static function vision_algorithms_Canny__grayscale__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Canny.grayscale((null : CannyObject));
+            var image:CannyObject = null;
+			
+            result = vision.algorithms.Canny.grayscale(image);
         } catch (e) {
             
         }
@@ -44,7 +49,9 @@ class CannyTests {
     public static function vision_algorithms_Canny__applySobelFilters__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Canny.applySobelFilters((null : CannyObject));
+            var image:CannyObject = null;
+			
+            result = vision.algorithms.Canny.applySobelFilters(image);
         } catch (e) {
             
         }
@@ -60,7 +67,11 @@ class CannyTests {
     public static function vision_algorithms_Canny__applyHysteresis__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Canny.applyHysteresis((null : CannyObject), (null : Float), (null : Float));
+            var image:CannyObject = null;
+			var highThreshold = 0.0;
+			var lowThreshold = 0.0;
+			
+            result = vision.algorithms.Canny.applyHysteresis(image, highThreshold, lowThreshold);
         } catch (e) {
             
         }
@@ -76,7 +87,11 @@ class CannyTests {
     public static function vision_algorithms_Canny__applyGaussian__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.Canny.applyGaussian((null : CannyObject), (null : Int), (null : Float));
+            var image:CannyObject = null;
+			var size = 0;
+			var sigma = 0.0;
+			
+            result = vision.algorithms.Canny.applyGaussian(image, size, sigma);
         } catch (e) {
             
         }

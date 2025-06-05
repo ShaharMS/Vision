@@ -8,11 +8,15 @@ import vision.ds.Color;
 import vision.ds.Ray2D;
 import vision.ds.Image;
 
+@:access(vision.algorithms.SimpleHough)
 class SimpleHoughTests {
     public static function vision_algorithms_SimpleHough__mapLines__ShouldWork():TestResult {
         var result = null;
         try {
-            result = vision.algorithms.SimpleHough.mapLines((null : Image), (null : Array));
+            var image = new vision.ds.Image(100, 100);
+			var rays = [];
+			
+            result = vision.algorithms.SimpleHough.mapLines(image, rays);
         } catch (e) {
             
         }

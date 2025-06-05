@@ -1,0 +1,43 @@
+package;
+
+import tests.*;
+
+final tests:Array<Class<Dynamic>> = [
+	BilateralFilterTests, 
+	BilinearInterpolationTests, 
+	CannyTests, 
+	CramerTests, 
+	GaussTests, 
+	GaussJordanTests, 
+	ImageHashingTests, 
+	KMeansTests, 
+	LaplaceTests, 
+	PerspectiveWarpTests, 
+	PerwittTests, 
+	RadixTests, 
+	RobertsCrossTests, 
+	SimpleHoughTests, 
+	SimpleLineDetectorTests, 
+	SobelTests, 
+	CannyObjectTests, 
+	ColorTests, 
+	HistogramTests, 
+	Int16Point2DTests, 
+	IntPoint2DTests, 
+	ColorClusterTests, 
+	Line2DTests, 
+	PixelTests, 
+	Point2DTests, 
+	Point3DTests, 
+	QueueTests, 
+	Ray2DTests, 
+	RectangleTests, 
+	PointTransformationPairTests, 
+	UInt16Point2DTests, 
+	ImageIOTests, 
+	FormatImageExporterTests, 
+	FormatImageLoaderTests, 
+	ArrayToolsTests, 
+	MathToolsTests, 
+	VisionTests
+];
