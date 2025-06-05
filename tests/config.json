@@ -1,0 +1,21 @@
+{
+    "regenerateAll": true,
+    "overwrite": true,
+    "source": "../src/vision",
+    "exclude": [
+        "exceptions/",
+        "VisionThread.hx",
+        "Matrix2D.hx",
+        "ImageView.hx",
+        "Image.hx",
+        "ImageTools.hx",
+        "Array2DMacro.hx",
+        "FrameworkImageIO.hx",
+        "ByteArray.hx",
+        "QueueCell.hx",
+        "Array2D.hx",
+        "GaussJordan.hx"
+    ],
+    "destination": "./generated/src/tests",
+    "testsToRunFile": "./generated/src/TestsToRun.hx"
+}

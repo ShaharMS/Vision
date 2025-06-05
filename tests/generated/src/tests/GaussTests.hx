@@ -1,0 +1,54 @@
+package tests;
+
+import TestResult;
+import TestStatus;
+
+import vision.algorithms.Gauss;
+import vision.ds.Color;
+import vision.ds.Image;
+import vision.ds.Array2D;
+import vision.exceptions.InvalidGaussianKernelSize;
+
+@:access(vision.algorithms.Gauss)
+class GaussTests {
+    public static function vision_algorithms_Gauss__fastBlur__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var image = new vision.ds.Image(100, 100);
+			var size = 0;
+			var sigma = 0.0;
+			
+            result = vision.algorithms.Gauss.fastBlur(image, size, sigma);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.algorithms.Gauss.fastBlur",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_algorithms_Gauss__createKernelOfSize__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var size = 0;
+			var sigma = 0;
+			
+            result = vision.algorithms.Gauss.createKernelOfSize(size, sigma);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.algorithms.Gauss.createKernelOfSize",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+
+}

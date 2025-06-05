@@ -32,7 +32,7 @@ class ImageHashing {
             }
         }
 
-        return clone.toBytes();
+        return clone.exportToBytes();
     }
 
     public static function phash(image:Image):ByteArray {

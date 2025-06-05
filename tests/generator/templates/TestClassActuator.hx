@@ -1,0 +1,1 @@
+    public static var tests = [TEST_ARRAY];

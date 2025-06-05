@@ -14,4 +14,23 @@ enum abstract ImageFormat(Int) {
         BMP encoding
     **/
     var BMP;
+
+    /**
+        JPEG encoding
+    **/
+    var JPEG;
+
+    /**
+        Raw `vision.ds.Image` bytes
+    **/
+    var VISION;
+
+    @:from public static function fromString(type:String) {
+        return switch type.toLowerCase() {
+            case "png": PNG;
+            case "bmp": BMP;
+            case "jpeg" | "jpg": JPEG;
+            default: VISION;
+        }
+    }
 }
