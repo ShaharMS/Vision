@@ -11,7 +11,7 @@ using vision.tools.MathTools;
  * by [Shahar Marcus](https://www.github.com/ShaharMS)
  */
 class Perwitt {
-	public static function convolveWithPerwittOperator(image:Image) {
+	public static function convolveWithPerwittOperator(image:Image):Image {
 		var edgeColors:Image = new Image(image.width, image.height);
 		var maxGradient = -1;
 
@@ -39,7 +39,7 @@ class Perwitt {
 				if (gradient > maxGradient) maxGradient = gradient;
 
 				final rgb:Int = Std.int(gradient * (255 / maxGradient));
-				//turn into ARGB
+				// turn into ARGB
 				edgeColors.setPixel(i, j, 0xff000000 | (rgb << 16) | (rgb << 8) | rgb);
 			}
 		}
@@ -62,6 +62,7 @@ class Perwitt {
 	}
 
 	// If you came here for the explanation of the algorithm, Congrats! learning is fun :D
+
 	/**
 		What does this algorithm do?
 		Basically, it takes 9 pixels chunks each time it performs a calculation, and tries to see how different the
@@ -82,38 +83,36 @@ class Perwitt {
 		Now, if this value is greater than the threshold, then we declare it an edge. now, were gonna do the same thing
 		for all chunks of the image, and from top to bottom too if needed.
 	**/
-	public static function detectEdges(image:Image, threshold:Float) {
-		
-
-			var edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
-			var blackAndWhite = Vision.grayscale(image.clone());
-			for (x in 0...blackAndWhite.width) {
-				for (y in 0...blackAndWhite.height) {
-					var neighbors = [
-						blackAndWhite.getSafePixel(x - 1, y - 1),
-						blackAndWhite.getSafePixel(x, y - 1),
-						blackAndWhite.getSafePixel(x + 1, y - 1),
-						blackAndWhite.getSafePixel(x - 1, y),
-						blackAndWhite.getSafePixel(x, y),
-						blackAndWhite.getSafePixel(x + 1, y),
-						blackAndWhite.getSafePixel(x - 1, y + 1),
-						blackAndWhite.getSafePixel(x, y + 1),
-						blackAndWhite.getSafePixel(x + 1, y + 1)
-					];
-					final perwittCalculationIterationLTR = neighbors[0].red * -1
-						+ neighbors[3].red * -1 + neighbors[6].red * -1 + neighbors[2].red * 1 + neighbors[5].red * 1 + neighbors[8].red * 1;
-					if (Math.abs(perwittCalculationIterationLTR) > threshold) {
-						edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
-						continue;
-					}
-					final perwittCalculationIterationTTB = neighbors[0].red * -1
-						+ neighbors[1].red * -1 + neighbors[2].red * -1 + neighbors[6].red * 1 + neighbors[7].red * 1 + neighbors[8].red * 1;
-					if (Math.abs(perwittCalculationIterationTTB) > threshold) {
-						edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
-						continue;
-					}
+	public static function detectEdges(image:Image, threshold:Float):Image {
+		var edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
+		var blackAndWhite = Vision.grayscale(image.clone());
+		for (x in 0...blackAndWhite.width) {
+			for (y in 0...blackAndWhite.height) {
+				var neighbors = [
+					blackAndWhite.getSafePixel(x - 1, y - 1),
+					blackAndWhite.getSafePixel(x, y - 1),
+					blackAndWhite.getSafePixel(x + 1, y - 1),
+					blackAndWhite.getSafePixel(x - 1, y),
+					blackAndWhite.getSafePixel(x, y),
+					blackAndWhite.getSafePixel(x + 1, y),
+					blackAndWhite.getSafePixel(x - 1, y + 1),
+					blackAndWhite.getSafePixel(x, y + 1),
+					blackAndWhite.getSafePixel(x + 1, y + 1)
+				];
+				final perwittCalculationIterationLTR = neighbors[0].red * -1
+					+ neighbors[3].red * -1 + neighbors[6].red * -1 + neighbors[2].red * 1 + neighbors[5].red * 1 + neighbors[8].red * 1;
+				if (Math.abs(perwittCalculationIterationLTR) > threshold) {
+					edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
+					continue;
+				}
+				final perwittCalculationIterationTTB = neighbors[0].red * -1
+					+ neighbors[1].red * -1 + neighbors[2].red * -1 + neighbors[6].red * 1 + neighbors[7].red * 1 + neighbors[8].red * 1;
+				if (Math.abs(perwittCalculationIterationTTB) > threshold) {
+					edges.setPixel(x, y, Color.fromRGBA(255, 255, 255));
+					continue;
 				}
 			}
-			return edges;
+		}
+		return edges;
 	}
 }

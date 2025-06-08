@@ -25,7 +25,7 @@ class ImageView {
     **/
     @:optional public var shape:ImageViewShape = RECTANGLE;
 
-    public function toString() {
+    public function toString():String {
         return '{shape: $shape, x: $x, y: $y, width: $width, height: $height}';
     }
 }

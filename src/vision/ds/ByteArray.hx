@@ -3,7 +3,6 @@ package vision.ds;
 import haxe.Int64;
 import vision.tools.MathTools;
 import haxe.Serializer;
-import haxe.io.BytesData;
 import haxe.io.Bytes;
 
 /**
@@ -18,13 +17,13 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
         @param value The given integer
         @return The resulting `ByteArray`
     **/
-    overload extern inline public static function from(value:Int):ByteArray {
+    overload extern public static inline function from(value:Int):ByteArray {
         var bytes = new ByteArray(4);
         bytes.setInt32(0, value);
         return bytes;
     }
 
-    overload extern inline public static function from(value:Int64):ByteArray {
+    overload extern public static inline function from(value:Int64):ByteArray {
         var bytes = new ByteArray(8);
         bytes.setInt64(0, value);
         return bytes;
@@ -36,7 +35,7 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
         @param value The given float
         @return The resulting `ByteArray`
     **/
-    overload extern inline public static function from(value:Float):ByteArray {
+    overload extern public static inline function from(value:Float):ByteArray {
         var bytes = new ByteArray(8);
         bytes.setDouble(0, value);
         return bytes;
@@ -46,7 +45,7 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
         If `value` is `true`, generates a byte array of length 1, containing 1.  
         If `value` is `false`, generates a byte array of length 1, containing 0.
     **/
-    overload extern inline public static function from(value:Bool):ByteArray {
+    overload extern public static inline function from(value:Bool):ByteArray {
         return value ? new ByteArray(1, 1) : new ByteArray(1, 0);   
     }
 
@@ -54,10 +53,11 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
         Encodes the given string into a byte array. `UTF-8` encoding is used by default.
         If you want to use another type of encoding, provide the second parameter.
         @param value The given string
+        @param encoding The encoding to use
         @return The resulting `ByteArray`
     **/
-    overload extern inline public static function from(value:String, ?encoding:haxe.io.Encoding):ByteArray {
-        return Bytes.ofString(value);
+    overload extern public static inline function from(value:String, ?encoding:haxe.io.Encoding):ByteArray {
+        return Bytes.ofString(value, encoding);
     }
 
     /**
@@ -66,14 +66,14 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
         @param value The given object
         @return The resulting `ByteArray`
     **/
-    overload extern inline public static function from(value:Dynamic):ByteArray {
+    overload extern public static inline function from(value:Dynamic):ByteArray {
         return Bytes.ofString(Serializer.run(value));
     }
 
     /**
         Reads a byte at the specified index 
     **/
-    @:op([]) inline function read(index:Int) {
+    @:op([]) inline function read(index:Int):Int {
         return this.get(index);
     }
 
@@ -160,10 +160,10 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     }
 
 	/**
-	    Concatenates a byte array to this one. **Pay Attention** - 
+	    Concatenates a byte array to this one.
 	    
         @param array the array to concatenate.
-	    @return a new `ByteArray`.
+	    @return a new `ByteArray`, containing the concatenation
 	**/
 	public inline function concat(array:ByteArray):ByteArray {
 		var newBytes = Bytes.alloc(this.length + array.length);

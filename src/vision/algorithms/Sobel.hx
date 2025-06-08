@@ -11,7 +11,7 @@ using vision.tools.MathTools;
 	by [Shahar Marcus](https://www.github.com/ShaharMS)
 **/
 class Sobel {
-	public static function convolveWithSobelOperator(image:Image) {
+	public static function convolveWithSobelOperator(image:Image):Image {
 		var edgeColors:Image = new Image(image.width, image.height);
 		var maxGradient = -1;
 
@@ -68,7 +68,7 @@ class Sobel {
 		If this value is greater than the threshold, then we declare it an edge. now, were gonna do the same thing
 		for all chunks of the image, and from top to bottom too if needed.
 	**/
-	public static function detectEdges(image:Image, threshold:Float) {
+	public static function detectEdges(image:Image, threshold:Float):Image {
 		final edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
 		final blackAndWhite = Vision.grayscale(image.clone());
 		for (x in 0...blackAndWhite.width) {

@@ -68,7 +68,7 @@ class Ray2D {
 		@param point1 First reference point, will be stored in the returned `Ray2D`'s `point` field.
 		@param point2 Second reference point, used to calculate the slope of the ray.
 	**/
-	public static inline function from2Points(point1:Point2D, point2:Point2D) {
+	public static inline function from2Points(point1:Point2D, point2:Point2D):Ray2D {
 		var s = (point2.y - point1.y) / (point2.x - point1.x);
 		return new Ray2D(point1, s);
 	}

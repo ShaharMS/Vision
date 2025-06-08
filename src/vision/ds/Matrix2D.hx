@@ -2,7 +2,6 @@ package vision.ds;
 
 import vision.algorithms.PerspectiveWarp;
 import vision.ds.specifics.PointTransformationPair;
-import haxe.exceptions.NotImplementedException;
 import vision.exceptions.MatrixOperationError;
 import vision.algorithms.GaussJordan;
 import vision.ds.Array2D;
@@ -329,7 +328,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @param pretty Whether to return a pretty-print of the matrix or not. 
         A pretty print adds a distinct matrix border, centered numbers, and ellipsis where numbers are truncated.
     **/
-    public inline function toString(precision:Int = 5, pretty:Bool = true) {
+    public inline function toString(precision:Int = 5, pretty:Bool = true):String {
         if (!pretty) return this.toString();
 
         // Get the longest item, this will be the cell width
@@ -519,7 +518,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @param z  Displacement in pixels to the back.
 		@param towards The point the graphic goes towards, as in, when `z` approaches positive infinity, the graphic goes towards that point. Defaults to `(0, 0)`.
     **/
-    public static inline function DEPTH(z:Float, ?towards:Point2D) {
+    public static inline function DEPTH(z:Float, ?towards:Point2D):TransformationMatrix2D {
         return Matrix2D.createTransformation(
             [1, 0, towards != null ? towards.x * (z - 1) : 0],
             [0, 1, towards != null ? towards.y * (z - 1) : 0],
@@ -658,7 +657,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return cast this;
     }
     
-	@:op(A += B) public inline function add(b:Matrix2D) {
+	@:op(A += B) public inline function add(b:Matrix2D):Matrix2D {
         if (rows != b.rows || columns != b.columns) {
             throw new MatrixOperationError("add", [this, b], Add_MismatchingDimensions);
         }
@@ -672,7 +671,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         return cast this;
     }
 
-	@:op(A -= B) public inline function subtract(b:Matrix2D) {
+	@:op(A -= B) public inline function subtract(b:Matrix2D):Matrix2D {
         if (rows != b.rows || columns != b.columns) {
             throw new MatrixOperationError("sub", [this, b], Sub_MismatchingDimensions);
 

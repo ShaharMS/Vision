@@ -9,8 +9,7 @@ using vision.tools.MathTools;
 using vision.tools.ArrayTools;
 
 class KMeans {
-	public static function generateClustersUsingConvergence<T>(values:Array<T>, clusterAmount:Int, distanceFunction:(T, T) -> Float,
-			averageFunction:Array<T>->T):Array<Array<T>> {
+	public static function generateClustersUsingConvergence<T>(values:Array<T>, clusterAmount:Int, distanceFunction:(T, T) -> Float, averageFunction:Array<T>->T):Array<Array<T>> {
 		var clusterCenters = pickElementsAtRandom(values, clusterAmount, true);
 
 		// We don't use clusterAmount in case where the image doesnt have enough distinct colors to satisfy

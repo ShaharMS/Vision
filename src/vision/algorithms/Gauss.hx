@@ -115,7 +115,7 @@ class Gauss {
 		return kernel;
 	}
 	@:deprecated("Gaussian.createKernelOfSize() is deprecated. use Gaussian.create2DKernelOfSize() instead")
-	public static function createKernelOfSize(size:Int, sigma:Int) {
+	public static function createKernelOfSize(size:Int, sigma:Int):Array2D<Float> {
 		return create2DKernelOfSize(size, sigma);
 	}
 	
@@ -172,7 +172,7 @@ class Gauss {
 		return kernel;
 	}
 
-	public static function fastBlur(image:Image, size:Int, sigma:Float) {
+	public static function fastBlur(image:Image, size:Int, sigma:Float):Image {
 		var preprocessed = image.clone();
 		#if vision_quiet
 		if (size <= 0) size = -size;

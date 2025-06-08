@@ -25,7 +25,7 @@ enum abstract ImageFormat(Int) {
     **/
     var VISION;
 
-    @:from public static function fromString(type:String) {
+    @:from public static function fromString(type:String):ImageFormat {
         return switch type.toLowerCase() {
             case "png": PNG;
             case "bmp": BMP;

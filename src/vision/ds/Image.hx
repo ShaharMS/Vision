@@ -1,12 +1,8 @@
 package vision.ds;
 
 import vision.formats.ImageIO;
-import vision.algorithms.GaussJordan;
-import vision.ds.Matrix2D;
-import haxe.Resource;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
-import vision.tools.MathTools;
 import vision.algorithms.BilinearInterpolation;
 import haxe.ds.List;
 import haxe.Int64;
@@ -15,7 +11,6 @@ import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
 using vision.tools.MathTools;
 using vision.tools.ArrayTools;
-import vision.tools.MathTools.*;
 
 /**
 	Represents a 2D image, as a matrix of Colors.
@@ -1599,7 +1594,7 @@ abstract Image(ByteArray) {
 		@param width The width of the returned image.
 		@param height Optional, the height of the returned image. determined automatically, can be overridden by setting this parameter
 	**/
-	public static inline function loadFromBytes(bytes:ByteArray, width:Int, ?height:Int) {
+	public static inline function loadFromBytes(bytes:ByteArray, width:Int, ?height:Int):Image {
 		var h = height != null ? height : (bytes.length / 4 / width).ceil();
 		var array = new ByteArray(width * h * 4 + OFFSET);
 		array.fill(0, array.length, 0);
@@ -1628,7 +1623,7 @@ abstract Image(ByteArray) {
 		@param colorFormat The wanted color format of the returned `ByteArray`.
 		@return A new `ByteArray`
 	**/
-	overload public extern inline function exportToBytes(?colorFormat:PixelFormat = ARGB) {
+	overload public extern inline function exportToBytes(?colorFormat:PixelFormat = ARGB):ByteArray {
 		return inline PixelFormat.convertPixelFormat(underlying.sub(OFFSET, underlying.length - OFFSET), ARGB, colorFormat);
 	}
 

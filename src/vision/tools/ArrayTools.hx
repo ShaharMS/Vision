@@ -27,7 +27,7 @@ class ArrayTools {
 		@param delimiter The number of elements in each subarray
 		@return An array of one higer dimension.
 	**/
-	overload extern inline public static function raise<T>(array:Array<T>, delimiter:Int):Array<Array<T>> {
+	overload extern public static inline function raise<T>(array:Array<T>, delimiter:Int):Array<Array<T>> {
 		var raised = [];
 		for (i in 0...array.length) {
 			if (raised[floor(i / delimiter)] == null) raised[floor(i / delimiter)] = [];
@@ -43,7 +43,7 @@ class ArrayTools {
 		@param predicate A function that takes an element and returns true if the element should be used as a delimiter.
 		@return An array of one higer dimension.
 	**/
-	overload extern inline public static function raise<T>(array:Array<T>, predicateOpensArray:Bool, predicate:T->Bool):Array<Array<T>> {
+	overload extern public static inline function raise<T>(array:Array<T>, predicateOpensArray:Bool, predicate:T->Bool):Array<Array<T>> {
 		var raised:Array<Array<T>> = [];
 		var temp:Array<T> = [];
 
@@ -60,7 +60,7 @@ class ArrayTools {
 		return raised;
 	}
 
-	public overload extern static inline function min<T:EitherType<Int ,Float>>(values:Array<T>):T {
+	overload extern public static inline function min<T:EitherType<Int ,Float>>(values:Array<T>):T {
 		var min = values[0];
 		for (i in 0...values.length) {
 			if ((values[i] - min) < 0) min = values[i];
@@ -68,7 +68,7 @@ class ArrayTools {
 		return min;
 	}
 
-	public overload extern static inline function min(values:Array<Int64>):Int64 {
+	overload extern public static inline function min(values:Array<Int64>):Int64 {
 		var min = values[0];
 		for (i in 0...values.length) {
 			if ((values[i] - min) < 0) min = values[i];
@@ -76,7 +76,7 @@ class ArrayTools {
 		return min;
 	}
 
-	public overload extern static inline function min<T>(values:Array<T>, valueFunction:T->Float):T {
+	overload extern public static inline function min<T>(values:Array<T>, valueFunction:T->Float):T {
 		var min = values[0];
 		var minValue = valueFunction(min);
 		for (i in 0...values.length) {
@@ -90,7 +90,7 @@ class ArrayTools {
 		return min;
 	}
 
-	public overload extern static inline function max<T:EitherType<Int ,Float>>(values:Array<T>):T {
+	overload extern public static inline function max<T:EitherType<Int ,Float>>(values:Array<T>):T {
 		var max = values[0];
 		for (i in 0...values.length) {
 			if ((values[i] - max) > 0) max = values[i];
@@ -98,7 +98,7 @@ class ArrayTools {
 		return max;
 	}
 
-	public overload extern static inline function max(values:Array<Int64>):Int64 {
+	overload extern public static inline function max(values:Array<Int64>):Int64 {
 		var max = values[0];
 		for (i in 0...values.length) {
 			if ((values[i] - max) > 0) max = values[i];
@@ -106,7 +106,7 @@ class ArrayTools {
 		return max;
 	}
 
-	public overload extern static inline function max<T>(values:Array<T>, valueFunction:T->Float):T {
+	overload extern public static inline function max<T>(values:Array<T>, valueFunction:T->Float):T {
 		var max = values[0];
 		var maxValue = valueFunction(max);
 		for (i in 0...values.length) {
@@ -120,7 +120,7 @@ class ArrayTools {
 		return max;
 	}
 
-	public overload extern static inline function average<T:EitherType<Int, Float>>(values:Array<T>):Float {
+	overload extern public static inline function average<T:EitherType<Int, Float>>(values:Array<T>):Float {
 		var sum = 0.;
 		for (v in values) {
 			sum += cast v;
@@ -128,7 +128,7 @@ class ArrayTools {
 		return sum / values.length;
 	}
 
-	public overload extern static inline function average(values:Array<Int64>):Float {
+	overload extern public static inline function average(values:Array<Int64>):Float {
 		var sum = Int64.make(0, 0);
 		for (v in values) {
 			sum += v;

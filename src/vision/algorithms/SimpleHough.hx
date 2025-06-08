@@ -34,7 +34,7 @@ class SimpleHough {
         return rays;
     }
 
-    public static function mapLines(image:Image, rays:Array<Ray2D>) {
+    public static function mapLines(image:Image, rays:Array<Ray2D>):Image {
         for (ray in rays) {
             image.drawRay2D(ray, Color.CYAN);
         }

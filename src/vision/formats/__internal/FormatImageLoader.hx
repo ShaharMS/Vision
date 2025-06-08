@@ -51,7 +51,7 @@ class FormatImageLoader {
         @throws ImageLoadingFailed if the loaded image is not a BMP
         @throws ImageLoadingFailed if the BMP has incorrect header data, and reports it has more bytes than it should.
     **/
-    public static function bmp(bytes:ByteArray) {
+    public static function bmp(bytes:ByteArray):Image {
         try {
             var reader = new BmpReader(new haxe.io.BytesInput(bytes));
             var data = reader.read();

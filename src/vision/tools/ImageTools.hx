@@ -71,7 +71,7 @@ class ImageTools {
 		@throws WebResponseError Thrown when a file loading attempt from a URL fails.
 		@throws Unimplemented Thrown when used with unsupported file types.
 	**/
-	public static overload extern inline function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
+	overload extern public static inline function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
 		#if (!js)
 			#if format
 			var func:ByteArray -> Image;
@@ -166,7 +166,7 @@ class ImageTools {
 		return image;
 	}
 
-	public static overload extern inline function loadFromFile(?image:Image, path:String):Image {
+	overload extern public static inline function loadFromFile(?image:Image, path:String):Image {
 		#if js
 		return image.copyImageFrom(JsImageLoader.loadFileSync(path));
 		#else
@@ -209,7 +209,7 @@ class ImageTools {
 		#end
 	}
 
-	public static function exportToBytes(?image:Image, format:ImageFormat) {
+	public static function exportToBytes(?image:Image, format:ImageFormat):ByteArray {
 		image = image == null ? new Image(0, 0) : image;
 		return switch format {
 			case VISION: image.underlying;

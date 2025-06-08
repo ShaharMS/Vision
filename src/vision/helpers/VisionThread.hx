@@ -2,16 +2,11 @@ package vision.helpers;
 
 import vision.exceptions.MultithreadFailure;
 import haxe.Exception;
-#if js
-import js.lib.Promise;
-#elseif (sys)
-import sys.thread.Thread;
-#end
 
 class VisionThread {
 	static var COUNT:Int = 0;
 
-	var underlying:#if js Promise<Void> #elseif (target.threaded) Thread #else Dynamic #end;
+	var underlying:#if js js.lib.Promise<Void> #elseif (target.threaded) sys.thread.Thread #else Dynamic #end;
 
 	/**
 	 * The currently assigned job. should be a function with 0 parameters and no return type (`Void` `->` `Void`)
@@ -58,12 +53,12 @@ class VisionThread {
 
 	public function start() {
 		#if js
-		underlying = new Promise((onDone, onFailedWrapper) -> {
+		underlying = new js.lib.Promise((onDone, onFailedWrapper) -> {
 			job();
 			jobDone = true;
 		});
 		#elseif (sys)
-		underlying = Thread.create(() -> {
+		underlying = sys.thread.Thread.create(() -> {
 			try {
 				job();
 				jobDone = true;
