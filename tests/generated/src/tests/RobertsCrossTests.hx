@@ -9,7 +9,7 @@ import vision.ds.Image;
 
 @:access(vision.algorithms.RobertsCross)
 class RobertsCrossTests {
-    public static function vision_algorithms_RobertsCross__convolveWithRobertsCross__ShouldWork():TestResult {
+    public static function vision_algorithms_RobertsCross__convolveWithRobertsCross_Image_Image__ShouldWork():TestResult {
         var result = null;
         try {
             var image = new vision.ds.Image(100, 100);

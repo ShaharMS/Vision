@@ -1,5 +1,6 @@
 package;
 
+import vision.tools.ArrayTools;
 import Detector.TestDetections;
 import sys.FileSystem;
 import sys.io.File;
@@ -33,6 +34,7 @@ class Generator {
                 packageName: detections.packageName,
                 className: detections.className,
                 fieldName: field,
+                fieldType: "",
                 testGoal: "ShouldWork",
                 parameters: extractParameters(""),
                 constructorParameters: extractParameters(""),
@@ -45,6 +47,7 @@ class Generator {
                 packageName: detections.packageName,
                 className: detections.className,
                 fieldName: field,
+                fieldType: "",
                 testGoal: "ShouldWork",
                 parameters: extractParameters(""),
                 constructorParameters: extractParameters(detections.constructorParameters[0] ?? "")
@@ -55,7 +58,8 @@ class Generator {
             file.writeString(generateTest(staticFunctionTemplate, {
                 packageName: detections.packageName,
                 className: detections.className,
-                fieldName: method,
+                fieldName: method.name,
+                fieldType: method.type,
                 testGoal: "ShouldWork",
                 parameters: extractParameters(parameters),
                 constructorParameters: extractParameters("")
@@ -66,7 +70,8 @@ class Generator {
             file.writeString(generateTest(instanceFunctionTemplate, {
                 packageName: detections.packageName,
                 className: detections.className,
-                fieldName: method,
+                fieldName: method.name,
+                fieldType: method.type,
                 testGoal: "ShouldWork",
                 parameters: extractParameters(parameters),
                 constructorParameters: extractParameters(detections.constructorParameters[0] ?? "")
@@ -95,6 +100,11 @@ class Generator {
 
     static function generateTest(template:String, testBase:TestBase):String {
         var cleanPackage = testBase.packageName.replace(".", "_") + '_${testBase.className}';
+        if (testBase.fieldType == "Void") {
+            template = template.replace("result = ", "").replace("var null", "var result = null");
+        } else if (testBase.fieldType != "") {
+            template = template.replace("X2__", 'X2_${~/[^a-zA-Z0-9_]/g.replace('${testBase.parameters.types}_${testBase.fieldType}', "")}__');
+        }
         return template
             .replace("X1", cleanPackage)
             .replace("X2", testBase.fieldName)
@@ -129,20 +139,25 @@ class Generator {
     }
 
 
-    static function extractParameters(parameters:String):{declarations:String, injection:String} {
-        var regex = ~/(\w+):((?:\(.+?\)\s*->\s*\w+)|(?:\w+\s*->\s*\w+)|(?:(?:EitherType|Map)<.+, .+>)|(?:\w+<\{.+\}>)|(?:\w+<\w+>)|(?:\w|\.)+|\{.+\}),?/;
-        var output = {declarations: "", injection: []}
+    static function extractParameters(parameters:String):{declarations:String, injection:String, types:String} {
+        if (parameters.contains("average")) {
+            trace(parameters);
+        }
+        var regex = ~/(\w+):((?:\(.+?\)\s*->\s*\w+)|(?:\w+(?:<\w+>)?\s*->\s*\w+)|(?:(?:EitherType|Map)<.+, .+>)|(?:\w+(?:<\{.+\}>|<\w+>))|(?:\w|\.)+|\{.+\}),?/;
+        var output = {declarations: "", injection: [], types: []}
         while (regex.match(parameters)) {
             var name = regex.matched(1);
             var type = regex.matched(2);
             parameters = regex.matchedRight();
             output.declarations += 'var $name${getDefaultValueOf(type) == "null" ? ':$type' : ""} = ${getDefaultValueOf(type)};\n\t\t\t';
             output.injection.push(name);
+            output.types.push(type);
         }
 
         return {
             declarations: output.declarations,
-            injection: output.injection.join(", ")
+            injection: output.injection.join(", "),
+            types: output.types.join("_")
         };
     }
 
@@ -152,6 +167,11 @@ class Generator {
             case "Int": "0";
             case "Float": "0.0";
             case "Bool": "false";
+            case "() -> Void" | "Void->Void": "() -> return";
+            case "Array<T>->T": "(_) -> null";
+            case (_.contains("->") => true):
+                var commas = valueType.split("->")[0].split(",").length;
+                '(${[for (i in 0...commas) "_"].join(", ")}) -> null';
             case (_.startsWith("Array") || _.startsWith("Map") => true): "[]";
             case "Point2D" | "IntPoint2D" | "Int16Point2D" | "UInt16Point2D": 'new vision.ds.$valueType(0, 0)';
             case "Line2D": 'new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10})';
@@ -160,9 +180,7 @@ class Generator {
             case "Image": 'new vision.ds.Image(100, 100)';
             case "T": "0"; // A little insane but should work in most cases so idk
             case (_.startsWith("T") && _.contains("->") => true): "(_) -> null";
-            case (_.contains("->") => true):
-                var commas = valueType.split("->")[0].split(",").length;
-                '(${[for (i in 0...commas) "_"].join(", ")}) -> null';
+            case "QueueCell<T>": "new vision.ds.QueueCell<Int>(0, null, null)";
             default: "null";
         }
     }
@@ -173,6 +191,7 @@ typedef TestBase = {
     className:String,
     fieldName:String,
     testGoal:String,
-    ?parameters:{declarations:String, injection:String},
-    ?constructorParameters:{declarations:String, injection:String}
+    ?parameters:{declarations:String, injection:String, types:String},
+    ?constructorParameters:{declarations:String, injection:String, types:String},
+    fieldType:String
 }

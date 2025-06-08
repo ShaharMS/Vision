@@ -332,352 +332,25 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__subtract__ShouldWork():TestResult {
+    public static function vision_ds_Color__fromInt_Int_Color__ShouldWork():TestResult {
         var result = null;
         try {
-            var lhs:Color = null;
-			var rhs:Color = null;
+            var value = 0;
 			
-            result = vision.ds.Color.subtract(lhs, rhs);
+            result = vision.ds.Color.fromInt(value);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color.subtract",
+            testName: "vision.ds.Color.fromInt",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__multiply__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.multiply(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.multiply",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__makeRandom__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var alphaLock = false;
-			var alphaValue = 0;
-			
-            result = vision.ds.Color.makeRandom(alphaLock, alphaValue);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.makeRandom",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__interpolate__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var Color1:Color = null;
-			var Color2:Color = null;
-			var Factor = 0.0;
-			
-            result = vision.ds.Color.interpolate(Color1, Color2, Factor);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.interpolate",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_not_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_not_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_not_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_less_than_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_less_than_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_less_than_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_less_than_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_less_than_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_less_than_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_greater_than_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_greater_than_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_greater_than_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_greater_than_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_greater_than_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_greater_than_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_bitwise_xor_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_bitwise_xor_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_bitwise_xor_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_bitwise_unsigned_right_shift_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_bitwise_unsigned_right_shift_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_bitwise_unsigned_right_shift_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_bitwise_right_shift_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_bitwise_right_shift_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_bitwise_right_shift_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_bitwise_or_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_bitwise_or_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_bitwise_or_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_bitwise_left_shift_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_bitwise_left_shift_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_bitwise_left_shift_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__int_bitwise_and_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.int_bitwise_and_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.int_bitwise_and_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__getAverage__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var fromColors = [];
-			var considerTransparency = false;
-			
-            result = vision.ds.Color.getAverage(fromColors, considerTransparency);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.getAverage",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__fromRGBAFloat__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var Red = 0.0;
-			var Green = 0.0;
-			var Blue = 0.0;
-			var Alpha = 0.0;
-			
-            result = vision.ds.Color.fromRGBAFloat(Red, Green, Blue, Alpha);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.fromRGBAFloat",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__fromRGBA__ShouldWork():TestResult {
+    public static function vision_ds_Color__fromRGBA_Int_Int_Int_Int_Color__ShouldWork():TestResult {
         var result = null;
         try {
             var Red = 0;
@@ -698,67 +371,25 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__fromInt__ShouldWork():TestResult {
+    public static function vision_ds_Color__from8Bit_Int_Color__ShouldWork():TestResult {
         var result = null;
         try {
-            var value = 0;
+            var Value = 0;
 			
-            result = vision.ds.Color.fromInt(value);
+            result = vision.ds.Color.from8Bit(Value);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color.fromInt",
+            testName: "vision.ds.Color.from8Bit",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__fromHSL__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var Hue = 0.0;
-			var Saturation = 0.0;
-			var Lightness = 0.0;
-			var Alpha = 0.0;
-			
-            result = vision.ds.Color.fromHSL(Hue, Saturation, Lightness, Alpha);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.fromHSL",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__fromHSB__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var Hue = 0.0;
-			var Saturation = 0.0;
-			var Brightness = 0.0;
-			var Alpha = 0.0;
-			
-            result = vision.ds.Color.fromHSB(Hue, Saturation, Brightness, Alpha);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.fromHSB",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__fromFloat__ShouldWork():TestResult {
+    public static function vision_ds_Color__fromFloat_Float_Color__ShouldWork():TestResult {
         var result = null;
         try {
             var Value = 0.0;
@@ -776,7 +407,28 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__fromCMYK__ShouldWork():TestResult {
+    public static function vision_ds_Color__fromRGBAFloat_Float_Float_Float_Float_Color__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var Red = 0.0;
+			var Green = 0.0;
+			var Blue = 0.0;
+			var Alpha = 0.0;
+			
+            result = vision.ds.Color.fromRGBAFloat(Red, Green, Blue, Alpha);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color.fromRGBAFloat",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__fromCMYK_Float_Float_Float_Float_Float_Color__ShouldWork():TestResult {
         var result = null;
         try {
             var Cyan = 0.0;
@@ -798,139 +450,202 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__from8Bit__ShouldWork():TestResult {
+    public static function vision_ds_Color__fromHSB_Float_Float_Float_Float_Color__ShouldWork():TestResult {
         var result = null;
         try {
-            var Value = 0;
+            var Hue = 0.0;
+			var Saturation = 0.0;
+			var Brightness = 0.0;
+			var Alpha = 0.0;
 			
-            result = vision.ds.Color.from8Bit(Value);
+            result = vision.ds.Color.fromHSB(Hue, Saturation, Brightness, Alpha);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color.from8Bit",
+            testName: "vision.ds.Color.fromHSB",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__float_not_equal_color__ShouldWork():TestResult {
+    public static function vision_ds_Color__fromHSL_Float_Float_Float_Float_Color__ShouldWork():TestResult {
         var result = null;
         try {
-            var lhs = 0.0;
+            var Hue = 0.0;
+			var Saturation = 0.0;
+			var Lightness = 0.0;
+			var Alpha = 0.0;
+			
+            result = vision.ds.Color.fromHSL(Hue, Saturation, Lightness, Alpha);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color.fromHSL",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__fromString_String_NullColor__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var str = "";
+			
+            result = vision.ds.Color.fromString(str);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color.fromString",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__getHSBColorWheel_Int_ArrayColor__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var Alpha = 0;
+			
+            result = vision.ds.Color.getHSBColorWheel(Alpha);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color.getHSBColorWheel",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__interpolate_Color_Color_Float_Color__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var Color1:Color = null;
+			var Color2:Color = null;
+			var Factor = 0.0;
+			
+            result = vision.ds.Color.interpolate(Color1, Color2, Factor);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color.interpolate",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__gradient_Color_Color_Int_FloatFloat_ArrayColor__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var Color1:Color = null;
+			var Color2:Color = null;
+			var Steps = 0;
+			var Ease = (_) -> null;
+			
+            result = vision.ds.Color.gradient(Color1, Color2, Steps, Ease);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color.gradient",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__makeRandom_Bool_Int_Color__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var alphaLock = false;
+			var alphaValue = 0;
+			
+            result = vision.ds.Color.makeRandom(alphaLock, alphaValue);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color.makeRandom",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__multiply_Color_Color_Color__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var lhs:Color = null;
 			var rhs:Color = null;
 			
-            result = vision.ds.Color.float_not_equal_color(lhs, rhs);
+            result = vision.ds.Color.multiply(lhs, rhs);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color.float_not_equal_color",
+            testName: "vision.ds.Color.multiply",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__float_less_than_equal_color__ShouldWork():TestResult {
+    public static function vision_ds_Color__add_Color_Color_Color__ShouldWork():TestResult {
         var result = null;
         try {
-            var lhs = 0.0;
+            var lhs:Color = null;
 			var rhs:Color = null;
 			
-            result = vision.ds.Color.float_less_than_equal_color(lhs, rhs);
+            result = vision.ds.Color.add(lhs, rhs);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color.float_less_than_equal_color",
+            testName: "vision.ds.Color.add",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__float_less_than_color__ShouldWork():TestResult {
+    public static function vision_ds_Color__subtract_Color_Color_Color__ShouldWork():TestResult {
         var result = null;
         try {
-            var lhs = 0.0;
+            var lhs:Color = null;
 			var rhs:Color = null;
 			
-            result = vision.ds.Color.float_less_than_color(lhs, rhs);
+            result = vision.ds.Color.subtract(lhs, rhs);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color.float_less_than_color",
+            testName: "vision.ds.Color.subtract",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__float_greater_than_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0.0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.float_greater_than_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.float_greater_than_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__float_greater_than_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0.0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.float_greater_than_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.float_greater_than_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__float_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs = 0.0;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.float_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.float_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__divide__ShouldWork():TestResult {
+    public static function vision_ds_Color__divide_Color_Color_Color__ShouldWork():TestResult {
         var result = null;
         try {
             var lhs:Color = null;
@@ -949,7 +664,7 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__distanceBetween__ShouldWork():TestResult {
+    public static function vision_ds_Color__distanceBetween_Color_Color_Bool_Float__ShouldWork():TestResult {
         var result = null;
         try {
             var lhs:Color = null;
@@ -969,7 +684,7 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__differenceBetween__ShouldWork():TestResult {
+    public static function vision_ds_Color__differenceBetween_Color_Color_Bool_Float__ShouldWork():TestResult {
         var result = null;
         try {
             var lhs:Color = null;
@@ -989,656 +704,128 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__color_not_equal_int__ShouldWork():TestResult {
+    public static function vision_ds_Color__getAverage_ArrayColor_Bool_Color__ShouldWork():TestResult {
         var result = null;
         try {
-            var lhs:Color = null;
-			var rhs = 0;
+            var fromColors = [];
+			var considerTransparency = false;
 			
-            result = vision.ds.Color.color_not_equal_int(lhs, rhs);
+            result = vision.ds.Color.getAverage(fromColors, considerTransparency);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color.color_not_equal_int",
+            testName: "vision.ds.Color.getAverage",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__color_not_equal_float__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0.0;
-			
-            result = vision.ds.Color.color_not_equal_float(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_not_equal_float",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_not_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_not_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_not_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_less_than_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_less_than_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_less_than_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_less_than_float__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0.0;
-			
-            result = vision.ds.Color.color_less_than_float(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_less_than_float",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_less_than_equal_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_less_than_equal_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_less_than_equal_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_less_than_equal_float__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0.0;
-			
-            result = vision.ds.Color.color_less_than_equal_float(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_less_than_equal_float",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_less_than_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_less_than_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_less_than_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_less_than_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_less_than_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_less_than_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_greater_than_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_greater_than_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_greater_than_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_greater_than_float__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0.0;
-			
-            result = vision.ds.Color.color_greater_than_float(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_greater_than_float",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_greater_than_equal_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_greater_than_equal_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_greater_than_equal_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_greater_than_equal_float__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0.0;
-			
-            result = vision.ds.Color.color_greater_than_equal_float(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_greater_than_equal_float",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_greater_than_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_greater_than_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_greater_than_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_greater_than_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_greater_than_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_greater_than_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_equal_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_equal_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_equal_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_equal_float__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0.0;
-			
-            result = vision.ds.Color.color_equal_float(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_equal_float",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_equal_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_equal_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_equal_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_xor_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_bitwise_xor_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_xor_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_xor_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_bitwise_xor_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_xor_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_unsigned_right_shift_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_bitwise_unsigned_right_shift_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_unsigned_right_shift_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_unsigned_right_shift_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_bitwise_unsigned_right_shift_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_unsigned_right_shift_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_right_shift_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_bitwise_right_shift_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_right_shift_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_right_shift_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_bitwise_right_shift_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_right_shift_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_or_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_bitwise_or_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_or_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_or_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_bitwise_or_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_or_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_left_shift_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_bitwise_left_shift_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_left_shift_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_left_shift_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_bitwise_left_shift_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_left_shift_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_and_int__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs = 0;
-			
-            result = vision.ds.Color.color_bitwise_and_int(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_and_int",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__color_bitwise_and_color__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.color_bitwise_and_color(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.color_bitwise_and_color",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__add__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var lhs:Color = null;
-			var rhs:Color = null;
-			
-            result = vision.ds.Color.add(lhs, rhs);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color.add",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__toWebString__ShouldWork():TestResult {
+    public static function vision_ds_Color__getComplementHarmony__Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
 			
             
             var object = new vision.ds.Color(value);
-            result = object.toWebString();
+            result = object.getComplementHarmony();
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color#toWebString",
+            testName: "vision.ds.Color#getComplementHarmony",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__toString__ShouldWork():TestResult {
+    public static function vision_ds_Color__getAnalogousHarmony_Int_Harmony__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var value = 0;
+			
+            var Threshold = 0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.getAnalogousHarmony(Threshold);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color#getAnalogousHarmony",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__getSplitComplementHarmony_Int_Harmony__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var value = 0;
+			
+            var Threshold = 0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.getSplitComplementHarmony(Threshold);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color#getSplitComplementHarmony",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__getTriadicHarmony__TriadicHarmony__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
 			
             
             var object = new vision.ds.Color(value);
-            result = object.toString();
+            result = object.getTriadicHarmony();
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color#toString",
+            testName: "vision.ds.Color#getTriadicHarmony",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__toInt__ShouldWork():TestResult {
+    public static function vision_ds_Color__to24Bit__Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
 			
             
             var object = new vision.ds.Color(value);
-            result = object.toInt();
+            result = object.to24Bit();
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color#toInt",
+            testName: "vision.ds.Color#to24Bit",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__toHexString__ShouldWork():TestResult {
+    public static function vision_ds_Color__toHexString_Bool_Bool_String__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
@@ -1660,51 +847,89 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__to24Bit__ShouldWork():TestResult {
+    public static function vision_ds_Color__toWebString__String__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
 			
             
             var object = new vision.ds.Color(value);
-            result = object.to24Bit();
+            result = object.toWebString();
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color#to24Bit",
+            testName: "vision.ds.Color#toWebString",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__setRGBAFloat__ShouldWork():TestResult {
+    public static function vision_ds_Color__darken_Float_Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
 			
-            var Red = 0.0;
-			var Green = 0.0;
-			var Blue = 0.0;
-			var Alpha = 0.0;
+            var Factor = 0.0;
 			
             var object = new vision.ds.Color(value);
-            result = object.setRGBAFloat(Red, Green, Blue, Alpha);
+            result = object.darken(Factor);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color#setRGBAFloat",
+            testName: "vision.ds.Color#darken",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__setRGBA__ShouldWork():TestResult {
+    public static function vision_ds_Color__lighten_Float_Color__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var value = 0;
+			
+            var Factor = 0.0;
+			
+            var object = new vision.ds.Color(value);
+            result = object.lighten(Factor);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color#lighten",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__invert__Color__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
+            result = object.invert();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color#invert",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__setRGBA_Int_Int_Int_Int_Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
@@ -1728,55 +953,31 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__setHSL__ShouldWork():TestResult {
+    public static function vision_ds_Color__setRGBAFloat_Float_Float_Float_Float_Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
 			
-            var Hue = 0.0;
-			var Saturation = 0.0;
-			var Lightness = 0.0;
+            var Red = 0.0;
+			var Green = 0.0;
+			var Blue = 0.0;
 			var Alpha = 0.0;
 			
             var object = new vision.ds.Color(value);
-            result = object.setHSL(Hue, Saturation, Lightness, Alpha);
+            result = object.setRGBAFloat(Red, Green, Blue, Alpha);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color#setHSL",
+            testName: "vision.ds.Color#setRGBAFloat",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__setHSB__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var value = 0;
-			
-            var Hue = 0.0;
-			var Saturation = 0.0;
-			var Brightness = 0.0;
-			var Alpha = 0.0;
-			
-            var object = new vision.ds.Color(value);
-            result = object.setHSB(Hue, Saturation, Brightness, Alpha);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color#setHSB",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__setCMYK__ShouldWork():TestResult {
+    public static function vision_ds_Color__setCMYK_Float_Float_Float_Float_Float_Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
@@ -1801,48 +1002,55 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__lighten__ShouldWork():TestResult {
+    public static function vision_ds_Color__setHSB_Float_Float_Float_Float_Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
 			
-            var Factor = 0.0;
+            var Hue = 0.0;
+			var Saturation = 0.0;
+			var Brightness = 0.0;
+			var Alpha = 0.0;
 			
             var object = new vision.ds.Color(value);
-            result = object.lighten(Factor);
+            result = object.setHSB(Hue, Saturation, Brightness, Alpha);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color#lighten",
+            testName: "vision.ds.Color#setHSB",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__invert__ShouldWork():TestResult {
+    public static function vision_ds_Color__setHSL_Float_Float_Float_Float_Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
 			
-            
+            var Hue = 0.0;
+			var Saturation = 0.0;
+			var Lightness = 0.0;
+			var Alpha = 0.0;
+			
             var object = new vision.ds.Color(value);
-            result = object.invert();
+            result = object.setHSL(Hue, Saturation, Lightness, Alpha);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.Color#invert",
+            testName: "vision.ds.Color#setHSL",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_Color__grayscale__ShouldWork():TestResult {
+    public static function vision_ds_Color__grayscale_Bool_Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
@@ -1863,110 +1071,7 @@ class ColorTests {
         }
     }
 
-    public static function vision_ds_Color__getTriadicHarmony__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var value = 0;
-			
-            
-            var object = new vision.ds.Color(value);
-            result = object.getTriadicHarmony();
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color#getTriadicHarmony",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__getSplitComplementHarmony__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var value = 0;
-			
-            var Threshold = 0;
-			
-            var object = new vision.ds.Color(value);
-            result = object.getSplitComplementHarmony(Threshold);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color#getSplitComplementHarmony",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__getComplementHarmony__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var value = 0;
-			
-            
-            var object = new vision.ds.Color(value);
-            result = object.getComplementHarmony();
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color#getComplementHarmony",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__getAnalogousHarmony__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var value = 0;
-			
-            var Threshold = 0;
-			
-            var object = new vision.ds.Color(value);
-            result = object.getAnalogousHarmony(Threshold);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color#getAnalogousHarmony",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__darken__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var value = 0;
-			
-            var Factor = 0.0;
-			
-            var object = new vision.ds.Color(value);
-            result = object.darken(Factor);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Color#darken",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Color__blackOrWhite__ShouldWork():TestResult {
+    public static function vision_ds_Color__blackOrWhite_Int_Color__ShouldWork():TestResult {
         var result = null;
         try { 
             var value = 0;
@@ -1981,6 +1086,46 @@ class ColorTests {
 
         return {
             testName: "vision.ds.Color#blackOrWhite",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__toString__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
+            object.toString();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color#toString",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Color__toInt__Int__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var value = 0;
+			
+            
+            var object = new vision.ds.Color(value);
+            result = object.toInt();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Color#toInt",
             returned: result,
             expected: null,
             status: Unimplemented

@@ -10,7 +10,26 @@ import vision.ds.Image;
 
 @:access(vision.algorithms.SimpleHough)
 class SimpleHoughTests {
-    public static function vision_algorithms_SimpleHough__mapLines__ShouldWork():TestResult {
+    public static function vision_algorithms_SimpleHough__detectLines_Image_Int_ArrayRay2D__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var image = new vision.ds.Image(100, 100);
+			var threshold = 0;
+			
+            result = vision.algorithms.SimpleHough.detectLines(image, threshold);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.algorithms.SimpleHough.detectLines",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_algorithms_SimpleHough__mapLines_Image_ArrayRay2D_Image__ShouldWork():TestResult {
         var result = null;
         try {
             var image = new vision.ds.Image(100, 100);

@@ -44,7 +44,7 @@ class HistogramTests {
         }
     }
 
-    public static function vision_ds_Histogram__increment__ShouldWork():TestResult {
+    public static function vision_ds_Histogram__increment_Int_Histogram__ShouldWork():TestResult {
         var result = null;
         try { 
             
@@ -64,7 +64,7 @@ class HistogramTests {
         }
     }
 
-    public static function vision_ds_Histogram__decrement__ShouldWork():TestResult {
+    public static function vision_ds_Histogram__decrement_Int_Histogram__ShouldWork():TestResult {
         var result = null;
         try { 
             

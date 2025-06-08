@@ -15,7 +15,7 @@ import format.bmp.Tools;
 
 @:access(vision.formats.__internal.FormatImageLoader)
 class FormatImageLoaderTests {
-    public static function vision_formats___internal_FormatImageLoader__png__ShouldWork():TestResult {
+    public static function vision_formats___internal_FormatImageLoader__png_ByteArray_Image__ShouldWork():TestResult {
         var result = null;
         try {
             var bytes = vision.ds.ByteArray.from(0);
@@ -33,7 +33,7 @@ class FormatImageLoaderTests {
         }
     }
 
-    public static function vision_formats___internal_FormatImageLoader__bmp__ShouldWork():TestResult {
+    public static function vision_formats___internal_FormatImageLoader__bmp_ByteArray_Image__ShouldWork():TestResult {
         var result = null;
         try {
             var bytes = vision.ds.ByteArray.from(0);

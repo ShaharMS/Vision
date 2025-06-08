@@ -10,7 +10,25 @@ import vision.ds.Image;
 
 @:access(vision.algorithms.Perwitt)
 class PerwittTests {
-    public static function vision_algorithms_Perwitt__detectEdges__ShouldWork():TestResult {
+    public static function vision_algorithms_Perwitt__convolveWithPerwittOperator_Image_Image__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var image = new vision.ds.Image(100, 100);
+			
+            result = vision.algorithms.Perwitt.convolveWithPerwittOperator(image);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.algorithms.Perwitt.convolveWithPerwittOperator",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_algorithms_Perwitt__detectEdges_Image_Float_Image__ShouldWork():TestResult {
         var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
@@ -23,24 +41,6 @@ class PerwittTests {
 
         return {
             testName: "vision.algorithms.Perwitt.detectEdges",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_algorithms_Perwitt__convolveWithPerwittOperator__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var image = new vision.ds.Image(100, 100);
-			
-            result = vision.algorithms.Perwitt.convolveWithPerwittOperator(image);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.algorithms.Perwitt.convolveWithPerwittOperator",
             returned: result,
             expected: null,
             status: Unimplemented

@@ -48,7 +48,7 @@ class Int16Point2DTests {
         }
     }
 
-    public static function vision_ds_Int16Point2D__toString__ShouldWork():TestResult {
+    public static function vision_ds_Int16Point2D__toString__String__ShouldWork():TestResult {
         var result = null;
         try { 
             var X = 0;
@@ -69,7 +69,7 @@ class Int16Point2DTests {
         }
     }
 
-    public static function vision_ds_Int16Point2D__toPoint2D__ShouldWork():TestResult {
+    public static function vision_ds_Int16Point2D__toPoint2D__Point2D__ShouldWork():TestResult {
         var result = null;
         try { 
             var X = 0;
@@ -90,7 +90,7 @@ class Int16Point2DTests {
         }
     }
 
-    public static function vision_ds_Int16Point2D__toIntPoint2D__ShouldWork():TestResult {
+    public static function vision_ds_Int16Point2D__toIntPoint2D__Point2D__ShouldWork():TestResult {
         var result = null;
         try { 
             var X = 0;
@@ -111,7 +111,7 @@ class Int16Point2DTests {
         }
     }
 
-    public static function vision_ds_Int16Point2D__toInt__ShouldWork():TestResult {
+    public static function vision_ds_Int16Point2D__toInt__Int__ShouldWork():TestResult {
         var result = null;
         try { 
             var X = 0;

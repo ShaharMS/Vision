@@ -1,6 +1,7 @@
 package vision.ds;
 
 import vision.ds.Matrix2D;
+import vision.ds.Point3D;
 
 @:forward.variance
 @:forward(getRow, getColumn, setRow, setColumn, map, clone, fill, toString)

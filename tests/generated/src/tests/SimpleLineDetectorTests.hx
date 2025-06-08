@@ -12,26 +12,29 @@ import vision.ds.IntPoint2D;
 
 @:access(vision.algorithms.SimpleLineDetector)
 class SimpleLineDetectorTests {
-    public static function vision_algorithms_SimpleLineDetector__p__ShouldWork():TestResult {
+    public static function vision_algorithms_SimpleLineDetector__findLineFromPoint_Image_Int16Point2D_Float_Bool_Bool_Line2D__ShouldWork():TestResult {
         var result = null;
         try {
-            var x = 0;
-			var y = 0;
+            var image = new vision.ds.Image(100, 100);
+			var point = new vision.ds.Int16Point2D(0, 0);
+			var minLineLength = 0.0;
+			var preferTTB = false;
+			var preferRTL = false;
 			
-            result = vision.algorithms.SimpleLineDetector.p(x, y);
+            result = vision.algorithms.SimpleLineDetector.findLineFromPoint(image, point, minLineLength, preferTTB, preferRTL);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.algorithms.SimpleLineDetector.p",
+            testName: "vision.algorithms.SimpleLineDetector.findLineFromPoint",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_algorithms_SimpleLineDetector__lineCoveragePercentage__ShouldWork():TestResult {
+    public static function vision_algorithms_SimpleLineDetector__lineCoveragePercentage_Image_Line2D_Float__ShouldWork():TestResult {
         var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
@@ -50,22 +53,20 @@ class SimpleLineDetectorTests {
         }
     }
 
-    public static function vision_algorithms_SimpleLineDetector__findLineFromPoint__ShouldWork():TestResult {
+    public static function vision_algorithms_SimpleLineDetector__correctLines_ArrayLine2D_Float_Float_ArrayLine2D__ShouldWork():TestResult {
         var result = null;
         try {
-            var image = new vision.ds.Image(100, 100);
-			var point = new vision.ds.Int16Point2D(0, 0);
-			var minLineLength = 0.0;
-			var preferTTB = false;
-			var preferRTL = false;
+            var lines = [];
+			var distanceThreshold = 0.0;
+			var degError = 0.0;
 			
-            result = vision.algorithms.SimpleLineDetector.findLineFromPoint(image, point, minLineLength, preferTTB, preferRTL);
+            result = vision.algorithms.SimpleLineDetector.correctLines(lines, distanceThreshold, degError);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.algorithms.SimpleLineDetector.findLineFromPoint",
+            testName: "vision.algorithms.SimpleLineDetector.correctLines",
             returned: result,
             expected: null,
             status: Unimplemented

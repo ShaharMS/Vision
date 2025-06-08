@@ -48,7 +48,7 @@ class Line2DTests {
         }
     }
 
-    public static function vision_ds_Line2D__fromRay2D__ShouldWork():TestResult {
+    public static function vision_ds_Line2D__fromRay2D_Ray2D_Line2D__ShouldWork():TestResult {
         var result = null;
         try {
             var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
@@ -66,49 +66,7 @@ class Line2DTests {
         }
     }
 
-    public static function vision_ds_Line2D__toString__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var start = new vision.ds.Point2D(0, 0);
-			var end = new vision.ds.Point2D(0, 0);
-			
-            
-            var object = new vision.ds.Line2D(start, end);
-            result = object.toString();
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Line2D#toString",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Line2D__toRay2D__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var start = new vision.ds.Point2D(0, 0);
-			var end = new vision.ds.Point2D(0, 0);
-			
-            
-            var object = new vision.ds.Line2D(start, end);
-            result = object.toRay2D();
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Line2D#toRay2D",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Line2D__intersect__ShouldWork():TestResult {
+    public static function vision_ds_Line2D__intersect_Line2D_Point2D__ShouldWork():TestResult {
         var result = null;
         try { 
             var start = new vision.ds.Point2D(0, 0);
@@ -130,7 +88,7 @@ class Line2DTests {
         }
     }
 
-    public static function vision_ds_Line2D__distanceTo__ShouldWork():TestResult {
+    public static function vision_ds_Line2D__distanceTo_Line2D_Float__ShouldWork():TestResult {
         var result = null;
         try { 
             var start = new vision.ds.Point2D(0, 0);
@@ -146,6 +104,48 @@ class Line2DTests {
 
         return {
             testName: "vision.ds.Line2D#distanceTo",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Line2D__toString__String__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var start = new vision.ds.Point2D(0, 0);
+			var end = new vision.ds.Point2D(0, 0);
+			
+            
+            var object = new vision.ds.Line2D(start, end);
+            result = object.toString();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Line2D#toString",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Line2D__toRay2D__Ray2D__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var start = new vision.ds.Point2D(0, 0);
+			var end = new vision.ds.Point2D(0, 0);
+			
+            
+            var object = new vision.ds.Line2D(start, end);
+            result = object.toRay2D();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Line2D#toRay2D",
             returned: result,
             expected: null,
             status: Unimplemented

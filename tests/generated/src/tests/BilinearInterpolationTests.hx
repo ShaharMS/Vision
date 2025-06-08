@@ -5,14 +5,32 @@ import TestStatus;
 
 import vision.algorithms.BilinearInterpolation;
 import vision.ds.Color;
-import vision.tools.ImageTools;
-import vision.exceptions.OutOfBounds;
 import vision.ds.Image;
 import vision.tools.MathTools.*;
 
 @:access(vision.algorithms.BilinearInterpolation)
 class BilinearInterpolationTests {
-    public static function vision_algorithms_BilinearInterpolation__interpolateMissingPixels__ShouldWork():TestResult {
+    public static function vision_algorithms_BilinearInterpolation__interpolate_Image_Int_Int_Image__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var image = new vision.ds.Image(100, 100);
+			var width = 0;
+			var height = 0;
+			
+            result = vision.algorithms.BilinearInterpolation.interpolate(image, width, height);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.algorithms.BilinearInterpolation.interpolate",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_algorithms_BilinearInterpolation__interpolateMissingPixels_Image_Int_Int_Int_Int_Image__ShouldWork():TestResult {
         var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
@@ -28,26 +46,6 @@ class BilinearInterpolationTests {
 
         return {
             testName: "vision.algorithms.BilinearInterpolation.interpolateMissingPixels",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_algorithms_BilinearInterpolation__interpolate__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var image = new vision.ds.Image(100, 100);
-			var width = 0;
-			var height = 0;
-			
-            result = vision.algorithms.BilinearInterpolation.interpolate(image, width, height);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.algorithms.BilinearInterpolation.interpolate",
             returned: result,
             expected: null,
             status: Unimplemented

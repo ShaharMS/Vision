@@ -19,7 +19,7 @@ import format.jpg.Data;
 
 @:access(vision.formats.__internal.FormatImageExporter)
 class FormatImageExporterTests {
-    public static function vision_formats___internal_FormatImageExporter__png__ShouldWork():TestResult {
+    public static function vision_formats___internal_FormatImageExporter__png_Image_ByteArray__ShouldWork():TestResult {
         var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
@@ -37,25 +37,7 @@ class FormatImageExporterTests {
         }
     }
 
-    public static function vision_formats___internal_FormatImageExporter__jpeg__ShouldWork():TestResult {
-        var result = null;
-        try {
-            var image = new vision.ds.Image(100, 100);
-			
-            result = vision.formats.__internal.FormatImageExporter.jpeg(image);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.formats.__internal.FormatImageExporter.jpeg",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_formats___internal_FormatImageExporter__bmp__ShouldWork():TestResult {
+    public static function vision_formats___internal_FormatImageExporter__bmp_Image_ByteArray__ShouldWork():TestResult {
         var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
@@ -67,6 +49,24 @@ class FormatImageExporterTests {
 
         return {
             testName: "vision.formats.__internal.FormatImageExporter.bmp",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_formats___internal_FormatImageExporter__jpeg_Image_ByteArray__ShouldWork():TestResult {
+        var result = null;
+        try {
+            var image = new vision.ds.Image(100, 100);
+			
+            result = vision.formats.__internal.FormatImageExporter.jpeg(image);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.formats.__internal.FormatImageExporter.jpeg",
             returned: result,
             expected: null,
             status: Unimplemented

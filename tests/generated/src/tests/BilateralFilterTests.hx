@@ -11,7 +11,7 @@ import vision.ds.Image;
 
 @:access(vision.algorithms.BilateralFilter)
 class BilateralFilterTests {
-    public static function vision_algorithms_BilateralFilter__filter__ShouldWork():TestResult {
+    public static function vision_algorithms_BilateralFilter__filter_Image_Float_Float_Image__ShouldWork():TestResult {
         var result = null;
         try {
             var image = new vision.ds.Image(100, 100);

@@ -50,7 +50,7 @@ class IntPoint2DTests {
         }
     }
 
-    public static function vision_ds_IntPoint2D__fromPoint2D__ShouldWork():TestResult {
+    public static function vision_ds_IntPoint2D__fromPoint2D_Point2D_IntPoint2D__ShouldWork():TestResult {
         var result = null;
         try {
             var p = new vision.ds.Point2D(0, 0);
@@ -68,28 +68,7 @@ class IntPoint2DTests {
         }
     }
 
-    public static function vision_ds_IntPoint2D__toString__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var x = 0;
-			var y = 0;
-			
-            
-            var object = new vision.ds.IntPoint2D(x, y);
-            result = object.toString();
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.IntPoint2D#toString",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_IntPoint2D__toPoint2D__ShouldWork():TestResult {
+    public static function vision_ds_IntPoint2D__toPoint2D__Point2D__ShouldWork():TestResult {
         var result = null;
         try { 
             var x = 0;
@@ -110,29 +89,49 @@ class IntPoint2DTests {
         }
     }
 
-    public static function vision_ds_IntPoint2D__radiansTo__ShouldWork():TestResult {
+    public static function vision_ds_IntPoint2D__toString__String__ShouldWork():TestResult {
         var result = null;
         try { 
             var x = 0;
 			var y = 0;
 			
-            var point = new vision.ds.Point2D(0, 0);
-			
+            
             var object = new vision.ds.IntPoint2D(x, y);
-            result = object.radiansTo(point);
+            result = object.toString();
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.IntPoint2D#radiansTo",
+            testName: "vision.ds.IntPoint2D#toString",
             returned: result,
             expected: null,
             status: Unimplemented
         }
     }
 
-    public static function vision_ds_IntPoint2D__distanceTo__ShouldWork():TestResult {
+    public static function vision_ds_IntPoint2D__copy__IntPoint2D__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var x = 0;
+			var y = 0;
+			
+            
+            var object = new vision.ds.IntPoint2D(x, y);
+            result = object.copy();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.IntPoint2D#copy",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_IntPoint2D__distanceTo_IntPoint2D_Float__ShouldWork():TestResult {
         var result = null;
         try { 
             var x = 0;
@@ -154,7 +153,7 @@ class IntPoint2DTests {
         }
     }
 
-    public static function vision_ds_IntPoint2D__degreesTo__ShouldWork():TestResult {
+    public static function vision_ds_IntPoint2D__degreesTo_Point2D_Float__ShouldWork():TestResult {
         var result = null;
         try { 
             var x = 0;
@@ -176,21 +175,22 @@ class IntPoint2DTests {
         }
     }
 
-    public static function vision_ds_IntPoint2D__copy__ShouldWork():TestResult {
+    public static function vision_ds_IntPoint2D__radiansTo_Point2D_Float__ShouldWork():TestResult {
         var result = null;
         try { 
             var x = 0;
 			var y = 0;
 			
-            
+            var point = new vision.ds.Point2D(0, 0);
+			
             var object = new vision.ds.IntPoint2D(x, y);
-            result = object.copy();
+            result = object.radiansTo(point);
         } catch (e) {
             
         }
 
         return {
-            testName: "vision.ds.IntPoint2D#copy",
+            testName: "vision.ds.IntPoint2D#radiansTo",
             returned: result,
             expected: null,
             status: Unimplemented

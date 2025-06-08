@@ -9,7 +9,7 @@ import vision.ds.Point2D;
 
 @:access(vision.algorithms.PerspectiveWarp)
 class PerspectiveWarpTests {
-    public static function vision_algorithms_PerspectiveWarp__generateMatrix__ShouldWork():TestResult {
+    public static function vision_algorithms_PerspectiveWarp__generateMatrix_ArrayPoint2D_ArrayPoint2D_Matrix2D__ShouldWork():TestResult {
         var result = null;
         try {
             var destinationPoints = [];

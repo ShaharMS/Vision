@@ -52,7 +52,7 @@ class Ray2DTests {
         }
     }
 
-    public static function vision_ds_Ray2D__from2Points__ShouldWork():TestResult {
+    public static function vision_ds_Ray2D__from2Points_Point2D_Point2D_Ray2D__ShouldWork():TestResult {
         var result = null;
         try {
             var point1 = new vision.ds.Point2D(0, 0);
@@ -71,55 +71,7 @@ class Ray2DTests {
         }
     }
 
-    public static function vision_ds_Ray2D__intersect__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var point = new vision.ds.Point2D(0, 0);
-			var m = 0.0;
-			var degrees = 0.0;
-			var radians = 0.0;
-			
-            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
-			
-            var object = new vision.ds.Ray2D(point, m, degrees, radians);
-            result = object.intersect(ray);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Ray2D#intersect",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Ray2D__getPointAtY__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var point = new vision.ds.Point2D(0, 0);
-			var m = 0.0;
-			var degrees = 0.0;
-			var radians = 0.0;
-			
-            var y = 0.0;
-			
-            var object = new vision.ds.Ray2D(point, m, degrees, radians);
-            result = object.getPointAtY(y);
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Ray2D#getPointAtY",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Ray2D__getPointAtX__ShouldWork():TestResult {
+    public static function vision_ds_Ray2D__getPointAtX_Float_Point2D__ShouldWork():TestResult {
         var result = null;
         try { 
             var point = new vision.ds.Point2D(0, 0);
@@ -143,7 +95,55 @@ class Ray2DTests {
         }
     }
 
-    public static function vision_ds_Ray2D__distanceTo__ShouldWork():TestResult {
+    public static function vision_ds_Ray2D__getPointAtY_Float_Point2D__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var point = new vision.ds.Point2D(0, 0);
+			var m = 0.0;
+			var degrees = 0.0;
+			var radians = 0.0;
+			
+            var y = 0.0;
+			
+            var object = new vision.ds.Ray2D(point, m, degrees, radians);
+            result = object.getPointAtY(y);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Ray2D#getPointAtY",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Ray2D__intersect_Ray2D_Point2D__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var point = new vision.ds.Point2D(0, 0);
+			var m = 0.0;
+			var degrees = 0.0;
+			var radians = 0.0;
+			
+            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+			
+            var object = new vision.ds.Ray2D(point, m, degrees, radians);
+            result = object.intersect(ray);
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Ray2D#intersect",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Ray2D__distanceTo_Ray2D_Float__ShouldWork():TestResult {
         var result = null;
         try { 
             var point = new vision.ds.Point2D(0, 0);

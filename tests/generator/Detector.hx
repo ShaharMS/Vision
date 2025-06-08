@@ -3,15 +3,17 @@ package;
 import sys.io.File;
 import sys.FileSystem;
 
+using StringTools;
+
 class Detector {
 
     static var packageFinder = ~/^package ([\w.]+)/m;
     static var importFinder = ~/^import ([\w.*]+)/m;
     static var classNameFinder = ~/^(?:class|abstract) (\w+)/m;
-    static var staticFunctionFinder = ~/static.+?function (\w+)(?:<T>)?\((.*)\)(?::\w+)?\s*(?:$|{)/m;
-    static var staticFieldFinder = ~/static.+?(?:var|final) (\w+)\(get, \w+\)/m;
-    static var instanceFieldFinder = ~/(?:public inline|inline public|public) (?:var|final) (\w+)\(get, \w+\)/m;
-    static var instanceFunctionFinder = ~/(?:public inline|inline public|public) function (\w+)(?:<T>)?\((.*)\)(?::\w+)?\s*(?:$|{)/m;
+    static var staticFunctionFinder = ~/public static (?:inline )?function (\w+)(?:<T>)?\((.*)\)(:.+\s*|\s*)\{/m;
+    static var staticFieldFinder = ~/public static (?:inline )?(?:var|final) (\w+)\(get, \w+\)/m;
+    static var instanceFieldFinder = ~/public (?:inline )?(?:var|final) (\w+)\(get, \w+\)/m;
+    static var instanceFunctionFinder = ~/public (?:inline )?function (\w+)(?:<T>)?\((.*)\)(:.+\s*|\s*)\{/m;
     static var constructorFinder = ~/function new\s*\((.*)\)/;
 
     public static function detectOnFile(pathToHaxeFile:String):TestDetections {
@@ -39,13 +41,16 @@ class Detector {
         originalFileContent = fileContent;
 
 
-        var staticFunctions = new Map<String, String>();
+        var staticFunctions = new Map<{name:String, type:String}, String>();
         while (staticFunctionFinder.match(fileContent)) {
             var functionName = staticFunctionFinder.matched(1);
             var functionParameters = staticFunctionFinder.matched(2);
+            var functionReturnType = staticFunctionFinder.matched(3).trim();
+            if (functionReturnType == "") functionReturnType = "Void";
+            
             fileContent = staticFunctionFinder.matchedRight();
 
-            staticFunctions.set(functionName, functionParameters);
+            staticFunctions.set({name: functionName, type: functionReturnType}, functionParameters);
         }
 
         fileContent = originalFileContent;
@@ -60,18 +65,21 @@ class Detector {
 
         fileContent = originalFileContent;
 
-        var instanceFunctions = new Map<String, String>();
+        var instanceFunctions = new Map<{name:String, type:String}, String>();
 
         while (instanceFunctionFinder.match(fileContent)) {
             var functionName = instanceFunctionFinder.matched(1);
             var functionParameters = instanceFunctionFinder.matched(2);
+            var functionReturnType = instanceFunctionFinder.matched(3).trim();
+            if (functionReturnType == "") functionReturnType = "Void";
+
             fileContent = instanceFunctionFinder.matchedRight();
             
             if (functionName == "new") {
                 continue;
             }
 
-            instanceFunctions.set(functionName, functionParameters);
+            instanceFunctions.set({name: functionName, type: functionReturnType}, functionParameters);
         }
 
         fileContent = originalFileContent;
@@ -111,8 +119,8 @@ typedef TestDetections = {
     imports:Array<String>,
     className:String,
     constructorParameters:Array<String>,
-    staticFunctions:Map<String, String>,
+    staticFunctions:Map<{name:String, type:String}, String>,
     staticFields:Array<String>,
-    instanceFunctions:Map<String, String>,
+    instanceFunctions:Map<{name:String, type:String}, String>,
     instanceFields:Array<String>
 }

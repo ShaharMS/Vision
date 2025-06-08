@@ -1,5 +1,7 @@
 package vision.ds;
 
+import vision.ds.ImageViewShape;
+
 @:structInit
 class ImageView {
     /**

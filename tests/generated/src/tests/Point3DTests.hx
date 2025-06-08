@@ -8,29 +8,7 @@ import vision.tools.MathTools;
 
 @:access(vision.ds.Point3D)
 class Point3DTests {
-    public static function vision_ds_Point3D__toString__ShouldWork():TestResult {
-        var result = null;
-        try { 
-            var x = 0.0;
-			var y = 0.0;
-			var z = 0.0;
-			
-            
-            var object = new vision.ds.Point3D(x, y, z);
-            result = object.toString();
-        } catch (e) {
-            
-        }
-
-        return {
-            testName: "vision.ds.Point3D#toString",
-            returned: result,
-            expected: null,
-            status: Unimplemented
-        }
-    }
-
-    public static function vision_ds_Point3D__distanceTo__ShouldWork():TestResult {
+    public static function vision_ds_Point3D__distanceTo_Point3D_Float__ShouldWork():TestResult {
         var result = null;
         try { 
             var x = 0.0;
@@ -53,7 +31,7 @@ class Point3DTests {
         }
     }
 
-    public static function vision_ds_Point3D__copy__ShouldWork():TestResult {
+    public static function vision_ds_Point3D__copy__Point3D__ShouldWork():TestResult {
         var result = null;
         try { 
             var x = 0.0;
@@ -69,6 +47,28 @@ class Point3DTests {
 
         return {
             testName: "vision.ds.Point3D#copy",
+            returned: result,
+            expected: null,
+            status: Unimplemented
+        }
+    }
+
+    public static function vision_ds_Point3D__toString__String__ShouldWork():TestResult {
+        var result = null;
+        try { 
+            var x = 0.0;
+			var y = 0.0;
+			var z = 0.0;
+			
+            
+            var object = new vision.ds.Point3D(x, y, z);
+            result = object.toString();
+        } catch (e) {
+            
+        }
+
+        return {
+            testName: "vision.ds.Point3D#toString",
             returned: result,
             expected: null,
             status: Unimplemented
