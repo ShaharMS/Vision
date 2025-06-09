@@ -46,6 +46,7 @@ final tests:Array<Class<Dynamic>> = [
 	FormatImageLoaderTests, 
 	VisionThreadTests, 
 	ArrayToolsTests, 
+	ImageToolsTests, 
 	MathToolsTests, 
 	VisionTests
 ];

@@ -2,6 +2,7 @@ package vision.formats.to;
 
 import vision.ds.ByteArray;
 import vision.ds.Image;
+import vision.exceptions.LibraryRequired;
 
 /**
     A class for saving images to bytes

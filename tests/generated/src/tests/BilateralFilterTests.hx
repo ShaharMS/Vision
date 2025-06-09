@@ -12,22 +12,26 @@ import vision.ds.Image;
 @:access(vision.algorithms.BilateralFilter)
 class BilateralFilterTests {
     public static function vision_algorithms_BilateralFilter__filter_Image_Float_Float_Image__ShouldWork():TestResult {
-        var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
 			var distanceSigma = 0.0;
 			var intensitySigma = 0.0;
 			
-            result = vision.algorithms.BilateralFilter.filter(image, distanceSigma, intensitySigma);
-        } catch (e) {
-            
-        }
+            var result = vision.algorithms.BilateralFilter.filter(image, distanceSigma, intensitySigma);
 
-        return {
-            testName: "vision.algorithms.BilateralFilter.filter",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.algorithms.BilateralFilter.filter",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.algorithms.BilateralFilter.filter",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 

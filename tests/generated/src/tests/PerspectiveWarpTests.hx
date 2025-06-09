@@ -10,21 +10,25 @@ import vision.ds.Point2D;
 @:access(vision.algorithms.PerspectiveWarp)
 class PerspectiveWarpTests {
     public static function vision_algorithms_PerspectiveWarp__generateMatrix_ArrayPoint2D_ArrayPoint2D_Matrix2D__ShouldWork():TestResult {
-        var result = null;
         try {
             var destinationPoints = [];
 			var sourcePoints = [];
 			
-            result = vision.algorithms.PerspectiveWarp.generateMatrix(destinationPoints, sourcePoints);
-        } catch (e) {
-            
-        }
+            var result = vision.algorithms.PerspectiveWarp.generateMatrix(destinationPoints, sourcePoints);
 
-        return {
-            testName: "vision.algorithms.PerspectiveWarp.generateMatrix",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.algorithms.PerspectiveWarp.generateMatrix",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.algorithms.PerspectiveWarp.generateMatrix",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 

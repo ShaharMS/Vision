@@ -11,39 +11,47 @@ import vision.ds.Image;
 @:access(vision.algorithms.Perwitt)
 class PerwittTests {
     public static function vision_algorithms_Perwitt__convolveWithPerwittOperator_Image_Image__ShouldWork():TestResult {
-        var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
 			
-            result = vision.algorithms.Perwitt.convolveWithPerwittOperator(image);
-        } catch (e) {
-            
-        }
+            var result = vision.algorithms.Perwitt.convolveWithPerwittOperator(image);
 
-        return {
-            testName: "vision.algorithms.Perwitt.convolveWithPerwittOperator",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.algorithms.Perwitt.convolveWithPerwittOperator",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.algorithms.Perwitt.convolveWithPerwittOperator",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 
     public static function vision_algorithms_Perwitt__detectEdges_Image_Float_Image__ShouldWork():TestResult {
-        var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
 			var threshold = 0.0;
 			
-            result = vision.algorithms.Perwitt.detectEdges(image, threshold);
-        } catch (e) {
-            
-        }
+            var result = vision.algorithms.Perwitt.detectEdges(image, threshold);
 
-        return {
-            testName: "vision.algorithms.Perwitt.detectEdges",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.algorithms.Perwitt.detectEdges",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.algorithms.Perwitt.detectEdges",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 

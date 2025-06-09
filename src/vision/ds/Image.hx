@@ -3,10 +3,13 @@ package vision.ds;
 import vision.formats.ImageIO;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
-import vision.algorithms.BilinearInterpolation;
+import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm
 import haxe.ds.List;
 import haxe.Int64;
 import vision.ds.Color;
+import vision.ds.Rectangle;
+import vision.ds.ImageView;
+import vision.ds.ImageResizeAlgorithm;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
 using vision.tools.MathTools;
@@ -1111,7 +1114,7 @@ abstract Image(ByteArray) {
 			algorithm = ImageTools.defaultResizeAlgorithm;
 		switch algorithm {
 			case BilinearInterpolation:
-				this = cast BilinearInterpolation.interpolate(cast this, newWidth, newHeight);
+				this = cast Bilinear.interpolate(cast this, newWidth, newHeight);
 			case BicubicInterpolation:
 				throw new Unimplemented("Bicubic Interpolation");
 			case NearestNeighbor:

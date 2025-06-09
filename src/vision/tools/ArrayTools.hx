@@ -169,7 +169,7 @@ class ArrayTools {
 		return s[floor(values.length / 2)];
 	}
 
-	public static function distanceTo<T>(array:Array<T>, to:Array<T>, distanceFunction:(T, T) -> Float) {
+	public static function distanceTo<T>(array:Array<T>, to:Array<T>, distanceFunction:(T, T) -> Float):Float {
 		var sum = 0.;
 		for (i in 0...array.length - 1) {
 			sum += distanceFunction(array[i], array[i + 1]);

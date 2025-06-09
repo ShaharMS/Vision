@@ -101,9 +101,12 @@ class Generator {
     static function generateTest(template:String, testBase:TestBase):String {
         var cleanPackage = testBase.packageName.replace(".", "_") + '_${testBase.className}';
         if (testBase.fieldType == "Void") {
-            template = template.replace("result = ", "").replace("var null", "var result = null");
+            template = template.replace("var result = ", "").replace("returned: result", "returned: null");
         } else if (testBase.fieldType != "") {
             template = template.replace("X2__", 'X2_${~/[^a-zA-Z0-9_]/g.replace('${testBase.parameters.types}_${testBase.fieldType}', "")}__');
+        } 
+        if (hasSpecialConstructor(testBase.className)) {
+            template = template.replace("new X4(X6)", generateSpecialConstructorFor(testBase.className, testBase.parameters.injection));
         }
         return template
             .replace("X1", cleanPackage)
@@ -182,6 +185,20 @@ class Generator {
             case (_.startsWith("T") && _.contains("->") => true): "(_) -> null";
             case "QueueCell<T>": "new vision.ds.QueueCell<Int>(0, null, null)";
             default: "null";
+        }
+    }
+
+    static function hasSpecialConstructor(className:String):Bool {
+        return switch className {
+            case "ImageView": true;
+            default: false;
+        }
+    }
+
+    static function generateSpecialConstructorFor(className:String, parameterInjection:String):String {
+        return switch className {
+            case "ImageView": '({} : ImageView)';
+            default: "new X4(X6)";
         }
     }
 }

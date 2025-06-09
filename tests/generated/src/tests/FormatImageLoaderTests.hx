@@ -16,38 +16,46 @@ import format.bmp.Tools;
 @:access(vision.formats.__internal.FormatImageLoader)
 class FormatImageLoaderTests {
     public static function vision_formats___internal_FormatImageLoader__png_ByteArray_Image__ShouldWork():TestResult {
-        var result = null;
         try {
             var bytes = vision.ds.ByteArray.from(0);
 			
-            result = vision.formats.__internal.FormatImageLoader.png(bytes);
-        } catch (e) {
-            
-        }
+            var result = vision.formats.__internal.FormatImageLoader.png(bytes);
 
-        return {
-            testName: "vision.formats.__internal.FormatImageLoader.png",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.formats.__internal.FormatImageLoader.png",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.formats.__internal.FormatImageLoader.png",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 
     public static function vision_formats___internal_FormatImageLoader__bmp_ByteArray_Image__ShouldWork():TestResult {
-        var result = null;
         try {
             var bytes = vision.ds.ByteArray.from(0);
 			
-            result = vision.formats.__internal.FormatImageLoader.bmp(bytes);
-        } catch (e) {
-            
-        }
+            var result = vision.formats.__internal.FormatImageLoader.bmp(bytes);
 
-        return {
-            testName: "vision.formats.__internal.FormatImageLoader.bmp",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.formats.__internal.FormatImageLoader.bmp",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.formats.__internal.FormatImageLoader.bmp",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 

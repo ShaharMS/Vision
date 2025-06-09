@@ -20,56 +20,68 @@ import format.jpg.Data;
 @:access(vision.formats.__internal.FormatImageExporter)
 class FormatImageExporterTests {
     public static function vision_formats___internal_FormatImageExporter__png_Image_ByteArray__ShouldWork():TestResult {
-        var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
 			
-            result = vision.formats.__internal.FormatImageExporter.png(image);
-        } catch (e) {
-            
-        }
+            var result = vision.formats.__internal.FormatImageExporter.png(image);
 
-        return {
-            testName: "vision.formats.__internal.FormatImageExporter.png",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.formats.__internal.FormatImageExporter.png",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.formats.__internal.FormatImageExporter.png",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 
     public static function vision_formats___internal_FormatImageExporter__bmp_Image_ByteArray__ShouldWork():TestResult {
-        var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
 			
-            result = vision.formats.__internal.FormatImageExporter.bmp(image);
-        } catch (e) {
-            
-        }
+            var result = vision.formats.__internal.FormatImageExporter.bmp(image);
 
-        return {
-            testName: "vision.formats.__internal.FormatImageExporter.bmp",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.formats.__internal.FormatImageExporter.bmp",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.formats.__internal.FormatImageExporter.bmp",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 
     public static function vision_formats___internal_FormatImageExporter__jpeg_Image_ByteArray__ShouldWork():TestResult {
-        var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
 			
-            result = vision.formats.__internal.FormatImageExporter.jpeg(image);
-        } catch (e) {
-            
-        }
+            var result = vision.formats.__internal.FormatImageExporter.jpeg(image);
 
-        return {
-            testName: "vision.formats.__internal.FormatImageExporter.jpeg",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.formats.__internal.FormatImageExporter.jpeg",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.formats.__internal.FormatImageExporter.jpeg",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 

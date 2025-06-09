@@ -1,6 +1,8 @@
 package;
 
 import vision.ds.IntPoint2D;
+import vision.ds.Array2D;
+import vision.tools.ImageTools;
 import sys.io.File;
 import sys.FileSystem;
 

@@ -10,20 +10,24 @@ import vision.ds.Image;
 @:access(vision.algorithms.RobertsCross)
 class RobertsCrossTests {
     public static function vision_algorithms_RobertsCross__convolveWithRobertsCross_Image_Image__ShouldWork():TestResult {
-        var result = null;
         try {
             var image = new vision.ds.Image(100, 100);
 			
-            result = vision.algorithms.RobertsCross.convolveWithRobertsCross(image);
-        } catch (e) {
-            
-        }
+            var result = vision.algorithms.RobertsCross.convolveWithRobertsCross(image);
 
-        return {
-            testName: "vision.algorithms.RobertsCross.convolveWithRobertsCross",
-            returned: result,
-            expected: null,
-            status: Unimplemented
+            return {
+                testName: "vision.algorithms.RobertsCross.convolveWithRobertsCross",
+                returned: result,
+                expected: null,
+                status: Unimplemented
+            }
+        } catch (e) {
+            return {
+                testName: "vision.algorithms.RobertsCross.convolveWithRobertsCross",
+                returned: e,
+                expected: null,
+                status: Failure
+            }
         }
     }
 

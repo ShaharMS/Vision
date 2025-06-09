@@ -6,121 +6,131 @@ import sys.FileSystem;
 using StringTools;
 
 class Detector {
+	static var packageFinder = ~/^package ([\w.]+)/m;
+	static var importFinder = ~/^import ([\w.*]+)/m;
+	static var classNameFinder = ~/^(?:class|abstract) (\w+)/m;
+	static var staticFunctionFinder = ~/public static (?:inline )?function (\w+)(?:<T>)?\((.*)\)(:.+\s*|\s*)\{/m;
+	static var staticFieldFinder = ~/public static (?:inline )?(?:var|final) (\w+)\(get, \w+\)/m;
+	static var instanceFieldFinder = ~/public (?:inline )?(?:var|final) (\w+)\(get, \w+\)/m;
+	static var instanceFunctionFinder = ~/public (?:inline )?function (\w+)(?:<T>)?\((.*)\)(:.+\s*|\s*)\{/m;
+	static var constructorFinder = ~/function new\s*\((.*)\)/;
+	static var targetSpecificZoneFinder = ~/\t?#if .+?\n.+?\t?#end/gs;
+    static var endOfMainClassFinder = ~/\n}/;
+    static var commentFinder = ~/\/\/.+/g;
 
-    static var packageFinder = ~/^package ([\w.]+)/m;
-    static var importFinder = ~/^import ([\w.*]+)/m;
-    static var classNameFinder = ~/^(?:class|abstract) (\w+)/m;
-    static var staticFunctionFinder = ~/public static (?:inline )?function (\w+)(?:<T>)?\((.*)\)(:.+\s*|\s*)\{/m;
-    static var staticFieldFinder = ~/public static (?:inline )?(?:var|final) (\w+)\(get, \w+\)/m;
-    static var instanceFieldFinder = ~/public (?:inline )?(?:var|final) (\w+)\(get, \w+\)/m;
-    static var instanceFunctionFinder = ~/public (?:inline )?function (\w+)(?:<T>)?\((.*)\)(:.+\s*|\s*)\{/m;
-    static var constructorFinder = ~/function new\s*\((.*)\)/;
+	public static function detectOnFile(pathToHaxeFile:String):TestDetections {
+		var pathToHaxeFile = FileSystem.absolutePath(pathToHaxeFile);
+		var fileContent = File.getContent(pathToHaxeFile),
+			originalFileContent = fileContent;
 
-    public static function detectOnFile(pathToHaxeFile:String):TestDetections {
-        var pathToHaxeFile = FileSystem.absolutePath(pathToHaxeFile);
-        var fileContent = File.getContent(pathToHaxeFile), originalFileContent = fileContent;
+		packageFinder.match(fileContent);
+		var packageName = packageFinder.matched(1);
+		fileContent = packageFinder.matchedRight();
 
-        packageFinder.match(fileContent);
-        var packageName = packageFinder.matched(1);
-        fileContent = packageFinder.matchedRight();
+		fileContent = targetSpecificZoneFinder.replace(fileContent, "");
+        fileContent = commentFinder.replace(fileContent, "");
 
-        var imports = [];
-        while (importFinder.match(fileContent)) {
-            var classPath = importFinder.matched(1);
-            fileContent = importFinder.matchedRight();
-            imports.push(classPath);
+		var imports = [];
+		while (importFinder.match(fileContent)) {
+			var classPath = importFinder.matched(1);
+			fileContent = importFinder.matchedRight();
+			imports.push(classPath);
+		}
+
+		if (!classNameFinder.match(fileContent)) {
+			return null;
+		}
+        
+
+		var className = classNameFinder.matched(1);
+		fileContent = classNameFinder.matchedRight();
+
+        if (endOfMainClassFinder.match(fileContent)) {
+            fileContent = endOfMainClassFinder.matchedLeft();
         }
 
-        if (!classNameFinder.match(fileContent)) {
-            return null;
-        }
+		originalFileContent = fileContent;
 
-        var className = classNameFinder.matched(1);
-        fileContent = classNameFinder.matchedRight();
+		var staticFunctions = new Map<{name:String, type:String}, String>();
+		while (staticFunctionFinder.match(fileContent)) {
+			var functionName = staticFunctionFinder.matched(1);
+			var functionParameters = staticFunctionFinder.matched(2);
+			var functionReturnType = staticFunctionFinder.matched(3).trim();
+			if (functionReturnType == "") functionReturnType = "Void";
 
-        originalFileContent = fileContent;
+			fileContent = staticFunctionFinder.matchedRight();
 
+			staticFunctions.set({name: functionName, type: functionReturnType}, functionParameters);
+		}
 
-        var staticFunctions = new Map<{name:String, type:String}, String>();
-        while (staticFunctionFinder.match(fileContent)) {
-            var functionName = staticFunctionFinder.matched(1);
-            var functionParameters = staticFunctionFinder.matched(2);
-            var functionReturnType = staticFunctionFinder.matched(3).trim();
-            if (functionReturnType == "") functionReturnType = "Void";
-            
-            fileContent = staticFunctionFinder.matchedRight();
+		fileContent = originalFileContent;
 
-            staticFunctions.set({name: functionName, type: functionReturnType}, functionParameters);
-        }
+		var staticFields = [];
+		while (staticFieldFinder.match(fileContent)) {
+			var fieldName = staticFieldFinder.matched(1);
+			fileContent = staticFieldFinder.matchedRight();
 
-        fileContent = originalFileContent;
+			staticFields.push(fieldName);
+		}
 
-        var staticFields = [];
-        while (staticFieldFinder.match(fileContent)) {
-            var fieldName = staticFieldFinder.matched(1);
-            fileContent = staticFieldFinder.matchedRight();
+		fileContent = originalFileContent;
 
-            staticFields.push(fieldName);
-        }
+		var instanceFunctions = new Map<{name:String, type:String}, String>();
 
-        fileContent = originalFileContent;
+		while (instanceFunctionFinder.match(fileContent)) {
+			var functionName = instanceFunctionFinder.matched(1);
+			var functionParameters = instanceFunctionFinder.matched(2);
+			var functionReturnType = instanceFunctionFinder.matched(3).trim();
+			if (functionReturnType == "") functionReturnType = "Void";
 
-        var instanceFunctions = new Map<{name:String, type:String}, String>();
+			fileContent = instanceFunctionFinder.matchedRight();
 
-        while (instanceFunctionFinder.match(fileContent)) {
-            var functionName = instanceFunctionFinder.matched(1);
-            var functionParameters = instanceFunctionFinder.matched(2);
-            var functionReturnType = instanceFunctionFinder.matched(3).trim();
-            if (functionReturnType == "") functionReturnType = "Void";
+			if (functionName == "new") {
+				continue;
+			}
 
-            fileContent = instanceFunctionFinder.matchedRight();
-            
-            if (functionName == "new") {
-                continue;
-            }
+			instanceFunctions.set({name: functionName, type: functionReturnType}, functionParameters);
+		}
 
-            instanceFunctions.set({name: functionName, type: functionReturnType}, functionParameters);
-        }
+		fileContent = originalFileContent;
 
-        fileContent = originalFileContent;
+		var instanceFields = [];
+		while (instanceFieldFinder.match(fileContent)) {
+			var fieldName = instanceFieldFinder.matched(1);
+			fileContent = instanceFieldFinder.matchedRight();
 
-        var instanceFields = [];
-        while (instanceFieldFinder.match(fileContent)) {
-            var fieldName = instanceFieldFinder.matched(1);
-            fileContent = instanceFieldFinder.matchedRight();
+			instanceFields.push(fieldName);
+		}
 
-            instanceFields.push(fieldName);
-        }
+		fileContent = originalFileContent;
 
-        fileContent = originalFileContent;
+		var constructorParameters = [];
+		while (constructorFinder.match(fileContent)) {
+			var parameters = constructorFinder.matched(1);
+			fileContent = constructorFinder.matchedRight();
+			constructorParameters.push(parameters);
+		}
 
-        var constructorParameters = [];
-        while (constructorFinder.match(fileContent)) {
-            var parameters = constructorFinder.matched(1);
-            fileContent = constructorFinder.matchedRight();
-            constructorParameters.push(parameters);
-        }
-
-        return {
-            packageName: packageName,
-            imports: imports,
-            className: className,
-            staticFunctions: staticFunctions,
-            staticFields: staticFields,
-            instanceFunctions: instanceFunctions,
-            instanceFields: instanceFields,
-            constructorParameters: constructorParameters
-        }
-    }
+		return {
+			packageName: packageName,
+			imports: imports,
+			className: className,
+			staticFunctions: staticFunctions,
+			staticFields: staticFields,
+			instanceFunctions: instanceFunctions,
+			instanceFields: instanceFields,
+			constructorParameters: constructorParameters
+		}
+	}
 }
 
 typedef TestDetections = {
-    packageName:String,
-    imports:Array<String>,
-    className:String,
-    constructorParameters:Array<String>,
-    staticFunctions:Map<{name:String, type:String}, String>,
-    staticFields:Array<String>,
-    instanceFunctions:Map<{name:String, type:String}, String>,
-    instanceFields:Array<String>
+	packageName:String,
+	imports:Array<String>,
+	className:String,
+	constructorParameters:Array<String>,
+	staticFunctions:Map<{name:String, type:String}, String>,
+	staticFields:Array<String>,
+	instanceFunctions:Map<{name:String, type:String}, String>,
+	instanceFields:Array<String>
 }
