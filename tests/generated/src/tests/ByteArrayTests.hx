@@ -226,14 +226,14 @@ class ByteArrayTests {
             return {
                 testName: "vision.ds.ByteArray#setUInt32",
                 returned: object,
-                expected: ByteArray.from([0xFF, 0x76, 0x34, 0x00], 1),
-                status: TestStatus.of(object, ByteArray.from([0xFF, 0x76, 0x34, 0x00], 1))
+                expected: ByteArray.from([0x00, 0x34, 0x76, 0xFF], 1),
+                status: TestStatus.of(object, ByteArray.from([0x00, 0x34, 0x76, 0xFF], 1))
             }
         } catch (e) {
             return {
                 testName: "vision.ds.ByteArray#setUInt32",
                 returned: e,
-                expected: ByteArray.from([0xFF, 0x76, 0x34, 0x00], 1),
+                expected: ByteArray.from([0x00, 0x34, 0x76, 0xFF], 1),
                 status: Failure
             }
         }
@@ -242,18 +242,19 @@ class ByteArrayTests {
     public static function vision_ds_ByteArray__getUInt32_Int_UInt__ShouldWork():TestResult {
         try { 
             var length = 4;
-			var fillWith = 0x0019F43E;
+			var fillWith = 0;
 			
             var pos = 0;
 			
             var object = new vision.ds.ByteArray(length, fillWith);
+            object.setUInt32(pos, 0x0019F43E);
             var result = object.getUInt32(pos);
             
             return {
                 testName: "vision.ds.ByteArray#getUInt32",
                 returned: result,
                 expected: 0x0019F43E,
-                status: Unimplemented
+                status: TestStatus.of(result == 0x0019F43E)
             }
         } catch (e) {
             return {
@@ -267,7 +268,7 @@ class ByteArrayTests {
 
     public static function vision_ds_ByteArray__setInt8__ShouldWork():TestResult {
         try { 
-            var length = 0;
+            var length = 1;
 			var fillWith = 0;
 			
             var pos = 0;
@@ -305,14 +306,14 @@ class ByteArrayTests {
             return {
                 testName: "vision.ds.ByteArray#getInt8",
                 returned: result,
-                expected: 193,
-                status: TestStatus.of(result == 193)
+                expected: -65,
+                status: TestStatus.of(result == -65)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.ByteArray#getInt8",
                 returned: e,
-                expected: 193,
+                expected: -65,
                 status: Failure
             }
         }
@@ -373,11 +374,9 @@ class ByteArrayTests {
         try { 
             var length = 4;
 			var fillWith = 2;
-			
-            var length = 5;
-			
+						
             var object = new vision.ds.ByteArray(length, fillWith);
-            object.resize(length);
+            object.resize(5);
             
             return {
                 testName: "vision.ds.ByteArray#resize",
@@ -408,14 +407,14 @@ class ByteArrayTests {
             return {
                 testName: "vision.ds.ByteArray#concat",
                 returned: result,
-                expected: ByteArray.from([0xEE, 0xEE, 0xF1, 0xF2, 0xF3, 0xF4], 1),
-                status: TestStatus.of(result, ByteArray.from([0xEE, 0xEE, 0xF1, 0xF2, 0xF3, 0xF4], 1))
+                expected: ByteArray.from([0xEE, 0xEE, 0xF4, 0xF3, 0xF2, 0xF1], 1),
+                status: TestStatus.of(result, ByteArray.from([0xEE, 0xEE, 0xF4, 0xF3, 0xF2, 0xF1], 1))
             }
         } catch (e) {
             return {
                 testName: "vision.ds.ByteArray#concat",
                 returned: e,
-                expected: ByteArray.from([0xEE, 0xEE, 0xF1, 0xF2, 0xF3, 0xF4], 1),
+                expected: ByteArray.from([0xEE, 0xEE, 0xF4, 0xF3, 0xF2, 0xF1], 1),
                 status: Failure
             }
         }
@@ -454,36 +453,41 @@ class ByteArrayTests {
             return {
                 testName: "vision.ds.ByteArray#toArray",
                 returned: result,
-                expected: ByteArray.from([0x34, 0xE1, 0xB2, 0xAA], 1),
-                status: TestStatus.of(result, ByteArray.from([0x34, 0xE1, 0xB2, 0xAA], 1))
+                expected: ByteArray.from([0xAA, 0xB2, 0xE1, 0x34], 1),
+                status: TestStatus.of(result, ByteArray.from([0xAA, 0xB2, 0xE1, 0x34], 1))
             }
         } catch (e) {
             return {
                 testName: "vision.ds.ByteArray#toArray",
                 returned: e,
-                expected: ByteArray.from([0x34, 0xE1, 0xB2, 0xAA], 1),
+                expected: ByteArray.from([0xAA, 0xB2, 0xE1, 0x34], 1),
                 status: Failure
             }
         }
     }
 
     public static function vision_ds_ByteArray__fromArray__ByteArray__ShouldWork():TestResult {
+        var expected = Bytes.alloc(16);
+        expected.setInt32(0, 0x01);
+        expected.setInt32(4, 0xEE10);
+        expected.setInt32(8, 0xFF8709);
+        expected.setInt32(12, 0x12345678);
         try { 
             var value = [0x01, 0xEE10, 0xFF8709, 0x12345678];
 			
-            var result = ByteArray.from(value);
-            
+            var result = ByteArray.from(value, 4);
+
             return {
-                testName: "vision.ds.ByteArray#toArray",
+                testName: "vision.ds.ByteArray.from",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: expected,
+                status: TestStatus.of(result, expected)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.ByteArray#toArray",
                 returned: e,
-                expected: null,
+                expected: expected,
                 status: Failure
             }
         }

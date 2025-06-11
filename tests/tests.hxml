@@ -4,4 +4,6 @@
 --library vision
 --library format
 
+-w -WDeprecated
+
 --interp
