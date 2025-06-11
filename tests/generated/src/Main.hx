@@ -1,5 +1,7 @@
 package;
 
+import vision.tools.MathTools;
+import haxe.SysTools;
 import vision.ds.ByteArray;
 import haxe.io.Bytes;
 import tests.*;
@@ -25,6 +27,17 @@ class Main {
 	static var LIGHT_BLUE = "\033[94m";
 	static var GRAY = "\033[90m";
 	static var RESET = "\033[0m";
+
+	static var RED_BACKGROUND = "\033[41m";
+	static var GREEN_BACKGROUND = "\033[42m";
+	static var YELLOW_BACKGROUND = "\033[43m";
+	static var BLUE_BACKGROUND = "\033[44m";
+	static var MAGENTA_BACKGROUND = "\033[45m";
+	static var CYAN_BACKGROUND = "\033[46m";
+	static var WHITE_BACKGROUND = "\033[47m";
+	static var BLACK_BACKGROUND = "\033[40m";
+	static var LIGHT_BLUE_BACKGROUND = "\033[104m";
+	static var GRAY_BACKGROUND = "\033[100m";
 
 	static var BOLD = "\033[1m";
 	static var ITALIC = "\033[3m";
@@ -57,7 +70,7 @@ class Main {
 				Sys.sleep(bulk ? 0.01 : 0.2);
 			}
 		}
-		
+		Sys.println(getTestStatusBar(conclusionMap.get(Success).length, conclusionMap.get(Failure).length, conclusionMap.get(Skipped).length, conclusionMap.get(Unimplemented).length));
 		if (conclusionMap.get(Success).length == i) {
 			Sys.println('$GREEN$BOLD🥳 🥳 🥳 All tests passed! 🥳 🥳 🥳$RESET');
 		} else {
@@ -67,6 +80,8 @@ class Main {
 			Sys.println('    - $RESET$BOLD${getTestPassColor(Skipped)} ${conclusionMap.get(Skipped).length}$RESET $BOLD$WHITE Tests $RESET$BOLD${getTestPassColor(Skipped)} Skipped 🤷$RESET');
 			Sys.println('    - $RESET$BOLD${getTestPassColor(Unimplemented)} ${conclusionMap.get(Unimplemented).length}$RESET $BOLD$WHITE Tests $RESET$BOLD${getTestPassColor(Unimplemented)} Unimplemented 😬$RESET');
 		}
+		Sys.println(getTestStatusBar(conclusionMap.get(Success).length, conclusionMap.get(Failure).length, conclusionMap.get(Skipped).length, conclusionMap.get(Unimplemented).length));
+
 	}
 
 	static function getTestPassColor(status:TestStatus):String {
@@ -86,5 +101,39 @@ class Main {
 		}
 
 		return Std.string(value);
+	}
+
+	static function getTestStatusBar(successes:Int, failures:Int, skipped:Int, unimplemented:Int):String {
+		var consoleWidth = 100;
+
+		consoleWidth -= 3;
+
+		var successPercent = successes / (successes + failures + skipped + unimplemented);
+		var successWidth = MathTools.round(successPercent * consoleWidth);
+
+		var failurePercent = failures / (successes + failures + skipped + unimplemented);
+		var failureWidth = MathTools.round(failurePercent * consoleWidth);
+
+		var skippedPercent = skipped / (successes + failures + skipped + unimplemented);
+		var skippedWidth = MathTools.round(skippedPercent * consoleWidth);
+
+		var unimplementedPercent = unimplemented / (successes + failures + skipped + unimplemented);
+		var unimplementedWidth = MathTools.round(unimplementedPercent * consoleWidth);
+
+		var output = '╔${[for (_ in 0...consoleWidth + 2) '═'].join('')}╗\n';
+
+		output += '║ $RESET$BOLD$GREEN_BACKGROUND';
+		for (_ in 0...successWidth) output += ' ';
+		output += '$RED_BACKGROUND';
+		for (_ in 0...failureWidth) output += ' ';
+		output += '$LIGHT_BLUE_BACKGROUND';
+		for (_ in 0...skippedWidth) output += ' ';
+		output += '$GRAY_BACKGROUND';
+		for (_ in 0...unimplementedWidth) output += ' ';
+		output += '$RESET ║';
+
+		output += '\n╚${[for (_ in 0...consoleWidth + 2) '═'].join('')}╝';
+		return output;
+
 	}
 }
