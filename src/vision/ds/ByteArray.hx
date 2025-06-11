@@ -71,6 +71,27 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     }
 
     /**
+     * Takes an array of numbers of any type, and turns it into a byte array.
+     * @param value An array of UInts/Ints
+     * @param itemSize The amount of bytes to capture from each item. Default is `1`, which captures only the first byte
+     */
+    overload extern public static inline function from(value:Array<Int>, itemSize:Int = 1) {
+        var bytes = new ByteArray(value.length * itemSize);
+        var bytesIndex = 0;
+        var itemIndex = 0;
+        while (bytesIndex < bytes.length) {
+            var sizeCounter = 0;
+            var item = value[itemIndex++];
+            while (sizeCounter < itemSize) {
+                bytes.set(bytesIndex + sizeCounter, item & Math.round(Math.pow(2, sizeCounter * 8) - 1));
+                sizeCounter++;
+            }
+            bytesIndex += itemSize;
+        }
+        return bytes;
+    }
+
+    /**
         Reads a byte at the specified index 
     **/
     @:op([]) inline function read(index:Int):Int {

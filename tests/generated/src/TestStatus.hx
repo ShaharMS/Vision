@@ -1,6 +1,8 @@
 package;
 
 import vision.exceptions.Unimplemented;
+import vision.ds.ByteArray;
+import haxe.io.Bytes;
 
 
 enum abstract TestStatus(String) {
@@ -15,6 +17,8 @@ enum abstract TestStatus(String) {
 
     overload extern public static inline function of(item:Dynamic, equals:Dynamic):TestStatus {
         function deepEquals (lhs:Dynamic, rhs:Dynamic) {
+            if (lhs is Bytes) lhs = (lhs : ByteArray).toArray();
+            if (rhs is Bytes) rhs = (rhs : ByteArray).toArray();
             if (lhs is Array && rhs is Array) {
                 var lhsIterator = lhs.iterator();
                 var rhsIterator = rhs.iterator();

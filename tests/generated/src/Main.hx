@@ -1,7 +1,10 @@
 package;
 
-import haxe.macro.Expr.Constant;
+import vision.ds.ByteArray;
+import haxe.io.Bytes;
 import tests.*;
+
+using vision.tools.ArrayTools;
 
 import TestStatus;
 import TestResult;
@@ -45,8 +48,8 @@ class Main {
 				Sys.println('$CYAN$BOLD Unit Test $i:$RESET $BOLD$ITALIC${getTestPassColor(result.status)}${result.testName}$RESET');
 				Sys.println('    - $RESET$BOLD$WHITE Result: $ITALIC${getTestPassColor(result.status)}${result.status}$RESET');
 				if (result.status == Failure) {
-					Sys.println('        - $RESET$BOLD$WHITE Expected:$RESET $ITALIC$GREEN${result.expected}$RESET');
-					Sys.println('        - $RESET$BOLD$WHITE Returned:$RESET $ITALIC$RED${result.returned}$RESET');
+					Sys.println('        - $RESET$BOLD$WHITE Expected:$RESET $ITALIC$GREEN${safeStringify(result.expected)}$RESET');
+					Sys.println('        - $RESET$BOLD$WHITE Returned:$RESET $ITALIC$RED${safeStringify(result.returned)}$RESET');
 				}
 
 				conclusionMap.get(result.status).push(result);
@@ -74,5 +77,14 @@ class Main {
 			case Unimplemented: GRAY;
 
 		}
+	}
+
+	static function safeStringify(value:Dynamic):String {
+		if (Std.isOfType(value, Bytes)) {
+			var hex = (value : ByteArray).toHex();
+			return "[" + [for (i in 0...hex.length) hex.charAt(i)].raise(2).map(array -> "0x" + array.join("")).join(", ") + "]";
+		}
+
+		return Std.string(value);
 	}
 }
