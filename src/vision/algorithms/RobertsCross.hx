@@ -13,7 +13,7 @@ import vision.ds.Image;
 **/
 class RobertsCross {
 
-    public static function convolveWithRobertsCross(image:Image) {
+    public static function convolveWithRobertsCross(image:Image):Image {
 		var edgeColors:Image = new Image(image.width, image.height);
 		var maxGradient = -1;
 

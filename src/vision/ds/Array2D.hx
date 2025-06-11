@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.iterators.ArrayIterator;
 #if !vision_fancy_array_access
 /**
 	A 2D array, faster than an `Array<Array<T>>`.
@@ -106,7 +107,7 @@ class Array2D<T> {
 
 		`(x, y)...(x + 5, y) -> (x, y + 1)...(x + 5, y + 1) -> (x, y + 2)...`
 	**/
-	public inline function iterator() {
+	public inline function iterator():ArrayIterator<T> {
 		return inner.iterator();
 	}
 

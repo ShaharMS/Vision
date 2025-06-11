@@ -84,7 +84,7 @@ class Radix {
 	/**
 		Sorts an array of `Int`s / `UInt`s / `Int64` using **Radix Sort**.
 	**/
-	public static overload extern inline function sort(main:Array<Int>) {
+	overload extern public static inline function sort(main:Array<Int>):Array<Int> {
 
 		var negatives = [], positives = [];
 		for (i in 0...main.length) {
@@ -113,7 +113,7 @@ class Radix {
 		return main = negatives.concat(positives);
 	}
 
-	public static overload extern inline function sort(main:Array<UInt>) {
+	overload extern public static inline function sort(main:Array<UInt>):Array<UInt> {
 		// Find the maximum number to know the number of digits
 		final max = getMax(main, main.length);
 		var exp = 1;
@@ -129,7 +129,7 @@ class Radix {
 		return main;
 	}
 
-	public static overload extern inline function sort(main:Array<Int64>) {
+	overload extern public static inline function sort(main:Array<Int64>):Array<Int64> {
 		
 		var negatives = [], positives = [];
 		for (i in 0...main.length) {

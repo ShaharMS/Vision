@@ -87,7 +87,7 @@ class Line2D {
 		Returns a `String` representation of this `Line2D`.
 	**/
 	@:keep
-	public inline function toString() {
+	public inline function toString():String {
 		return '\n (${start.x}, ${start.y}) --> (${end.x}, ${end.y})';
 	}
 
@@ -111,14 +111,14 @@ class Line2D {
 		return new Ray2D(this.start, this.slope);
 	}
 
-	inline function set_start(value:Point2D) {
+	inline function set_start(value:Point2D):Point2D {
 		radians = MathTools.radiansFromPointToPoint2D(value, end);
 		slope = MathTools.radiansToSlope(radians);
 		degrees = MathTools.radiansToDegrees(radians);
 		return start = value;
 	}
 
-	inline function set_end(value:Point2D) {
+	inline function set_end(value:Point2D):Point2D {
 		radians = MathTools.radiansFromPointToPoint2D(value, end);
 		slope = MathTools.radiansToSlope(radians);
 		degrees = MathTools.radiansToDegrees(radians);

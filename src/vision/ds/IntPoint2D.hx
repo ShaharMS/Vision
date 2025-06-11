@@ -9,12 +9,12 @@ private typedef Impl = haxe.Int64;
 #else
 @:structInit
 private class Impl {
-	public var x:Int;
-	public var y:Int;
+	public var high:Int;
+	public var low:Int;
 
 	public inline function new(x:Int, y:Int) {
-		this.x = x;
-		this.y = y;
+		high = x;
+		low = y;
 	}
 }
 #end
@@ -43,58 +43,42 @@ abstract IntPoint2D(Impl) {
 	}
 
 	inline function get_y() {
-		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		return this.low;
-		#else
-		return this.y;
-		#end
 	}
 
 	inline function get_x() {
-		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
 		return this.high;
-		#else
-		return this.x;
-		#end
 	}
 
 	inline function set_y(y:Int):Int {
-		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
-		this = Int64.make(x, y);
-		#else
-		this.y = y;
-		#end
+		this.low = y;
 		return y;
 	}
 
-	inline function set_x(x:Int) {
-		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
-		this = Int64.make(x, y);
-		#else
-		this.x = x;
-		#end
+	inline function set_x(x:Int):Int {
+		this.high = x;
 		return x;
 	}
 
-	@:to public inline function toPoint2D() {
+	@:to public inline function toPoint2D():Point2D {
 		return new Point2D(x, y);
 	}
 
-	@:from public static inline function fromPoint2D(p:Point2D) {
+	@:from public static inline function fromPoint2D(p:Point2D):IntPoint2D {
 		return new IntPoint2D(Std.int(p.x), Std.int(p.y));
 	}
 
 	/**
 		Returns a `String` representations of this `IntPoint2D`.
 	**/
-	public inline function toString() {
+	public inline function toString():String {
 		return '($x, $y)';
 	}
 
 	/**
 		Returns a new `IntPoint2D` instance, similar to this one.
 	**/
-	public inline function copy() {
+	public inline function copy():IntPoint2D {
 		return new IntPoint2D(x, y);
 	}
 

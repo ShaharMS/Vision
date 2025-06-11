@@ -1,8 +1,6 @@
 package vision.algorithms;
 
 import vision.ds.Color;
-import vision.tools.ImageTools;
-import vision.exceptions.OutOfBounds;
 import vision.ds.Image;
 import vision.tools.MathTools.*;
 

@@ -42,21 +42,21 @@ class Point3D {
 		@param point The second point to calculate the distance to
 		@return A `Float` representing the distance. `0` if `this` and `point` are congruent.
 	**/
-    public function distanceTo(point:Point3D) {
+    public function distanceTo(point:Point3D):Float {
         return MathTools.distanceBetweenPoints(this, point);
     }
 
     /**
 		Returns a new `Point3D` instance, similar to this one.
 	**/
-    public function copy() {
+    public function copy():Point3D {
         return new Point3D(x, y, z);
     }
 
     /**
 		Returns a `String` representations of this `Point3D`.
 	**/
-    public function toString() {
+    public function toString():String {
         return '($x, $y, $z)';
     }
 }

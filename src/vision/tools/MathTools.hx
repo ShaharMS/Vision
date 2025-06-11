@@ -1,13 +1,8 @@
 package vision.tools;
 
-import haxe.ds.Either;
 import vision.ds.Point3D;
-import vision.ds.Matrix2D;
 import vision.ds.IntPoint2D;
-import haxe.ds.Vector;
-import vision.algorithms.Radix;
 import haxe.Int64;
-import haxe.ds.ArraySort;
 import vision.ds.Rectangle;
 import vision.ds.Ray2D;
 import vision.ds.Line2D;
@@ -44,11 +39,11 @@ class MathTools {
 	// Ray2D Extensions
 	//-----------------------------------------------------------------------------------------
 
-	public static inline function distanceFromRayToPoint2D(ray:Ray2D, point:Point2D) {
+	public static inline function distanceFromRayToPoint2D(ray:Ray2D, point:Point2D):Float {
 		return distanceFromPointToRay2D(point, ray);
 	}
 
-	public inline static function intersectionBetweenRay2Ds(ray:Ray2D, ray2:Ray2D):Point2D {
+	public static inline function intersectionBetweenRay2Ds(ray:Ray2D, ray2:Ray2D):Point2D {
 		final line1StartX = ray.point.x;
 		final line1StartY = ray.point.y;
 		final line1EndX = ray.point.x + cos(ray.radians) * 1000;
@@ -223,7 +218,7 @@ class MathTools {
 	// Point2D Extensions
 	//-----------------------------------------------------------------------------------------
 
-	overload extern inline public static function distanceFromPointToRay2D(point:Point2D, ray:Ray2D):Float {
+	overload extern public static inline function distanceFromPointToRay2D(point:Point2D, ray:Ray2D):Float {
 		// Get the closest point on the ray to the given point
 		final closestPoint:Point2D = getClosestPointOnRay2D(point, ray);
 
@@ -235,7 +230,7 @@ class MathTools {
 		return distance;
 	}
 
-	overload extern inline public static function distanceFromPointToLine2D(point:Point2D, line:Line2D):Float {
+	overload extern public static inline function distanceFromPointToLine2D(point:Point2D, line:Line2D):Float {
 		final middle = new Point2D(line.end.x - line.start.x, line.end.y - line.start.y);
 		final denominator = middle.x * middle.x + middle.y * middle.y;
 		var ratio = ((point.x - line.start.x) * middle.x + (point.y - line.start.y) * middle.y) / denominator;
@@ -252,53 +247,53 @@ class MathTools {
 		return sqrt(dx * dx + dy * dy);
 	}
 
-	overload extern inline public static function radiansFromPointToLine2D(point:Point2D, line:Line2D):Float {
+	overload extern public static inline function radiansFromPointToLine2D(point:Point2D, line:Line2D):Float {
 		final angle:Float = atan2(line.end.y - line.start.y, line.end.x - line.start.x);
 		final angle2:Float = atan2(point.y - line.start.y, point.x - line.start.x);
 		return angle2 - angle;
 	}
 
-	overload extern inline public static function radiansFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
+	overload extern public static inline function radiansFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	overload extern inline public static function degreesFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
+	overload extern public static inline function degreesFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function slopeFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
+	overload extern public static inline function slopeFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
+	overload extern public static inline function distanceBetweenPoints(point1:Point2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return sqrt(x * x + y * y);
 	}
 
-	overload extern inline public static function radiansFromPointToPoint2D(point1:Point2D, point2:IntPoint2D):Float {
+	overload extern public static inline function radiansFromPointToPoint2D(point1:Point2D, point2:IntPoint2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	overload extern inline public static function degreesFromPointToPoint2D(point1:Point2D, point2:IntPoint2D):Float {
+	overload extern public static inline function degreesFromPointToPoint2D(point1:Point2D, point2:IntPoint2D):Float {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function slopeFromPointToPoint2D(point1:Point2D, point2:IntPoint2D):Float {
+	overload extern public static inline function slopeFromPointToPoint2D(point1:Point2D, point2:IntPoint2D):Float {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function distanceBetweenPoints(point1:Point2D, point2:IntPoint2D):Float {
+	overload extern public static inline function distanceBetweenPoints(point1:Point2D, point2:IntPoint2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return sqrt(x * x + y * y);
 	}
 
-	overload extern inline public static function getClosestPointOnRay2D(point:Point2D, ray:Ray2D):Point2D {
+	overload extern public static inline function getClosestPointOnRay2D(point:Point2D, ray:Ray2D):Point2D {
 		// Vector from the origin of the ray to the given point
 		var vx:Float = point.x - ray.point.x;
 		var vy:Float = point.y - ray.point.y;
@@ -317,7 +312,7 @@ class MathTools {
 	// IntPoint2D Extensions
 	//-----------------------------------------------------------------------------------------
 
-	overload extern inline public static function distanceFromPointToRay2D(point:IntPoint2D, ray:Ray2D):Float {
+	overload extern public static inline function distanceFromPointToRay2D(point:IntPoint2D, ray:Ray2D):Float {
 		// Get the closest point on the ray to the given point
 		final closestPoint:Point2D = getClosestPointOnRay2D(point, ray);
 
@@ -329,7 +324,7 @@ class MathTools {
 		return distance;
 	}
 
-	overload extern inline public static function distanceFromPointToLine2D(point:IntPoint2D, line:Line2D):Float {
+	overload extern public static inline function distanceFromPointToLine2D(point:IntPoint2D, line:Line2D):Float {
 		final middle = new Point2D(line.end.x - line.start.x, line.end.y - line.start.y);
 		final denominator = middle.x * middle.x + middle.y * middle.y;
 		var ratio = ((point.x - line.start.x) * middle.x + (point.y - line.start.y) * middle.y) / denominator;
@@ -346,53 +341,53 @@ class MathTools {
 		return sqrt(dx * dx + dy * dy);
 	}
 
-	overload extern inline public static function radiansFromPointToLine2D(point:IntPoint2D, line:Line2D):Float {
+	overload extern public static inline function radiansFromPointToLine2D(point:IntPoint2D, line:Line2D):Float {
 		final angle:Float = atan2(line.end.y - line.start.y, line.end.x - line.start.x);
 		final angle2:Float = atan2(point.y - line.start.y, point.x - line.start.x);
 		return angle2 - angle;
 	}
 
-	overload extern inline public static function radiansFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D):Float {
+	overload extern public static inline function radiansFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	overload extern inline public static function degreesFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D):Float {
+	overload extern public static inline function degreesFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D):Float {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function slopeFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D):Float {
+	overload extern public static inline function slopeFromPointToPoint2D(point1:IntPoint2D, point2:IntPoint2D):Float {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function distanceBetweenPoints(point1:IntPoint2D, point2:IntPoint2D):Float {
+	overload extern public static inline function distanceBetweenPoints(point1:IntPoint2D, point2:IntPoint2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return sqrt(x * x + y * y);
 	}
 
-	overload extern inline public static function radiansFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
+	overload extern public static inline function radiansFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	overload extern inline public static function degreesFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
+	overload extern public static inline function degreesFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function slopeFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
+	overload extern public static inline function slopeFromPointToPoint2D(point1:IntPoint2D, point2:Point2D):Float {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	overload extern inline public static function distanceBetweenPoints(point1:IntPoint2D, point2:Point2D):Float {
+	overload extern public static inline function distanceBetweenPoints(point1:IntPoint2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return sqrt(x * x + y * y);
 	}
 
-	overload extern inline public static function getClosestPointOnRay2D(point:IntPoint2D, ray:Ray2D):Point2D {
+	overload extern public static inline function getClosestPointOnRay2D(point:IntPoint2D, ray:Ray2D):Point2D {
 		// Vector from the origin of the ray to the given point
 		var vx:Float = point.x - ray.point.x;
 		var vy:Float = point.y - ray.point.y;
@@ -411,7 +406,7 @@ class MathTools {
 	// Point3D
 	//-----------------------------------------------------------------------------
 
-	overload extern inline public static function distanceBetweenPoints(point1:Point3D, point2:Point3D):Float {
+	overload extern public static inline function distanceBetweenPoints(point1:Point3D, point2:Point3D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		final z:Float = point2.z - point1.z;
@@ -448,7 +443,7 @@ class MathTools {
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public inline static function wrapInt(value:Int, min:Int, max:Int):Int {
+	public static inline function wrapInt(value:Int, min:Int, max:Int):Int {
 		var range = max - min + 1;
 
 		if (value < min) value += range * Std.int((min - value) / range + 1);
@@ -460,7 +455,7 @@ class MathTools {
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public inline static function wrapFloat(value:Float, min:Float, max:Float):Float {
+	public static inline function wrapFloat(value:Float, min:Float, max:Float):Float {
 		var range = max - min;
 
 		if (value < min) value += range * (min - value) / range + 1;
@@ -610,28 +605,28 @@ class MathTools {
 	// Utilities For Number Arrays
 	//-----------------------------------------------------------------------------------------
 
-	overload extern inline public static function max(value:Int, ...values:Int) return ArrayTools.max(values.toArray().concat([value]));
-	overload extern inline public static function max(value:Float, ...values:Float) return ArrayTools.max(values.toArray().concat([value]));
-	overload extern inline public static function max(value:Int64, ...values:Int64) return ArrayTools.max(values.toArray().concat([value]));
+	overload extern public static inline function max(value:Int, ...values:Int):Int return ArrayTools.max(values.toArray().concat([value]));
+	overload extern public static inline function max(value:Float, ...values:Float):Float return ArrayTools.max(values.toArray().concat([value]));
+	overload extern public static inline function max(value:Int64, ...values:Int64):Int64 return ArrayTools.max(values.toArray().concat([value]));
 
-	overload extern inline public static function min(value:Int, ...values:Int) return ArrayTools.min(values.toArray().concat([value]));
-	overload extern inline public static function min(value:Float, ...values:Float) return ArrayTools.min(values.toArray().concat([value]));
-	overload extern inline public static function min(value:Int64, ...values:Int64) return ArrayTools.min(values.toArray().concat([value]));
+	overload extern public static inline function min(value:Int, ...values:Int):Int return ArrayTools.min(values.toArray().concat([value]));
+	overload extern public static inline function min(value:Float, ...values:Float):Float return ArrayTools.min(values.toArray().concat([value]));
+	overload extern public static inline function min(value:Int64, ...values:Int64):Int64 return ArrayTools.min(values.toArray().concat([value]));
 
-	overload extern inline public static function average(value:Int, ...values:Int) return ArrayTools.average(values.toArray().concat([value]));
-	overload extern inline public static function average(value:Float, ...values:Float) return ArrayTools.average(values.toArray().concat([value]));
-	overload extern inline public static function average(value:Int64, ...values:Int64) return ArrayTools.average(values.toArray().concat([value]));
+	overload extern public static inline function average(value:Int, ...values:Int):Float return ArrayTools.average(values.toArray().concat([value]));
+	overload extern public static inline function average(value:Float, ...values:Float):Float return ArrayTools.average(values.toArray().concat([value]));
+	overload extern public static inline function average(value:Int64, ...values:Int64):Float return ArrayTools.average(values.toArray().concat([value]));
 
-	overload extern inline public static function median(value:Int, ...values:Int) return ArrayTools.median(values.toArray().concat([value]));
-	overload extern inline public static function median(value:Float, ...values:Float) return ArrayTools.median(values.toArray().concat([value]));
-	overload extern inline public static function median(value:Int64, ...values:Int64) return ArrayTools.median(values.toArray().concat([value]));
+	overload extern public static inline function median(value:Int, ...values:Int):Int return ArrayTools.median(values.toArray().concat([value]));
+	overload extern public static inline function median(value:Float, ...values:Float):Float return ArrayTools.median(values.toArray().concat([value]));
+	overload extern public static inline function median(value:Int64, ...values:Int64):Int64 return ArrayTools.median(values.toArray().concat([value]));
 
 
 	// ----------------------------------------------------------------------------------------
 	// Utilities For Number Types
 	// ----------------------------------------------------------------------------------------
 
-	public static inline function isInt(v:Float) {
+	public static inline function isInt(v:Float):Bool {
 		return v == Std.int(v);
 	}
 
