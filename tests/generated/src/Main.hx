@@ -106,7 +106,7 @@ class Main {
 	static function getTestStatusBar(successes:Int, failures:Int, skipped:Int, unimplemented:Int):String {
 		var consoleWidth = 100;
 
-		consoleWidth -= 3;
+		consoleWidth -= 2;
 
 		var successPercent = successes / (successes + failures + skipped + unimplemented);
 		var successWidth = MathTools.round(successPercent * consoleWidth);

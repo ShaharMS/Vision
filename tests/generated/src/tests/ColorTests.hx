@@ -504,7 +504,7 @@ class ColorTests {
                 testName: "vision.ds.Color.fromRGBAFloat",
                 returned: result,
                 expected: 0x80808080,
-                status: Unimplemented
+                status: TestStatus.of(result == 0x80808080)
             }
         } catch (e) {
             return {
@@ -783,22 +783,22 @@ class ColorTests {
 
     public static function vision_ds_Color__divide_Color_Color_Color__ShouldWork():TestResult {
         try {
-            var lhs:Color = null;
-			var rhs:Color = null;
+            var lhs:Color = 0x060606;
+			var rhs:Color = 0x010101;
 			
             var result = vision.ds.Color.divide(lhs, rhs);
 
             return {
                 testName: "vision.ds.Color.divide",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0x060606,
+                status: TestStatus.of(result == 0x060606)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color.divide",
                 returned: e,
-                expected: null,
+                expected: 0x060606,
                 status: Failure
             }
         }
@@ -806,8 +806,8 @@ class ColorTests {
 
     public static function vision_ds_Color__distanceBetween_Color_Color_Bool_Float__ShouldWork():TestResult {
         try {
-            var lhs:Color = null;
-			var rhs:Color = null;
+            var lhs:Color = 0x020202;
+			var rhs:Color = 0x010101;
 			var considerTransparency = false;
 			
             var result = vision.ds.Color.distanceBetween(lhs, rhs, considerTransparency);
@@ -815,14 +815,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color.distanceBetween",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: MathTools.SQRT3,
+                status: TestStatus.of(result == MathTools.SQRT3)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color.distanceBetween",
                 returned: e,
-                expected: null,
+                expected: MathTools.SQRT3,
                 status: Failure
             }
         }
@@ -830,8 +830,8 @@ class ColorTests {
 
     public static function vision_ds_Color__differenceBetween_Color_Color_Bool_Float__ShouldWork():TestResult {
         try {
-            var lhs:Color = null;
-			var rhs:Color = null;
+            var lhs:Color = Color.WHITE;
+			var rhs:Color = Color.BLACK;
 			var considerTransparency = false;
 			
             var result = vision.ds.Color.differenceBetween(lhs, rhs, considerTransparency);
@@ -839,14 +839,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color.differenceBetween",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 1,
+                status: TestStatus.of(result == 1)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color.differenceBetween",
                 returned: e,
-                expected: null,
+                expected: 1,
                 status: Failure
             }
         }
@@ -854,7 +854,7 @@ class ColorTests {
 
     public static function vision_ds_Color__getAverage_ArrayColor_Bool_Color__ShouldWork():TestResult {
         try {
-            var fromColors = [];
+            var fromColors = [Color.RED, Color.GREEN, Color.BLUE];
 			var considerTransparency = false;
 			
             var result = vision.ds.Color.getAverage(fromColors, considerTransparency);
@@ -862,14 +862,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color.getAverage",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0xFF555555,
+                status: TestStatus.of(result == 0xFF555555)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color.getAverage",
                 returned: e,
-                expected: null,
+                expected: 0xFF555555,
                 status: Failure
             }
         }
@@ -887,7 +887,7 @@ class ColorTests {
                 testName: "vision.ds.Color#getComplementHarmony",
                 returned: result,
                 expected: null,
-                status: Unimplemented
+                status: Skipped
             }
         } catch (e) {
             return {
@@ -912,7 +912,7 @@ class ColorTests {
                 testName: "vision.ds.Color#getAnalogousHarmony",
                 returned: result,
                 expected: null,
-                status: Unimplemented
+                status: Skipped
             }
         } catch (e) {
             return {
@@ -937,7 +937,7 @@ class ColorTests {
                 testName: "vision.ds.Color#getSplitComplementHarmony",
                 returned: result,
                 expected: null,
-                status: Unimplemented
+                status: Skipped
             }
         } catch (e) {
             return {
@@ -961,7 +961,7 @@ class ColorTests {
                 testName: "vision.ds.Color#getTriadicHarmony",
                 returned: result,
                 expected: null,
-                status: Unimplemented
+                status: Skipped
             }
         } catch (e) {
             return {
@@ -975,7 +975,7 @@ class ColorTests {
 
     public static function vision_ds_Color__to24Bit__Color__ShouldWork():TestResult {
         try { 
-            var value = 0;
+            var value = 0x55555555;
 			
             
             var object = new vision.ds.Color(value);
@@ -984,14 +984,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color#to24Bit",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0x555555,
+                status: TestStatus.of(result == 0x555555)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#to24Bit",
                 returned: e,
-                expected: null,
+                expected: 0x555555,
                 status: Failure
             }
         }
@@ -999,10 +999,10 @@ class ColorTests {
 
     public static function vision_ds_Color__toHexString_Bool_Bool_String__ShouldWork():TestResult {
         try { 
-            var value = 0;
+            var value = Color.ROYAL_BLUE;
 			
-            var Alpha = false;
-			var Prefix = false;
+            var Alpha = true;
+			var Prefix = true;
 			
             var object = new vision.ds.Color(value);
             var result = object.toHexString(Alpha, Prefix);
@@ -1010,14 +1010,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color#toHexString",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: "0xFF4169E1",
+                status: TestStatus.of(result == "0xFF4169E1")
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#toHexString",
                 returned: e,
-                expected: null,
+                expected: "0xFF4169E1",
                 status: Failure
             }
         }
@@ -1025,7 +1025,7 @@ class ColorTests {
 
     public static function vision_ds_Color__toWebString__String__ShouldWork():TestResult {
         try { 
-            var value = 0;
+            var value = Color.ROYAL_BLUE;
 			
             
             var object = new vision.ds.Color(value);
@@ -1034,14 +1034,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color#toWebString",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: "#4169E1",
+                status: TestStatus.of(result == "#4169E1")
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#toWebString",
                 returned: e,
-                expected: null,
+                expected: "#4169E1",
                 status: Failure
             }
         }
@@ -1049,9 +1049,9 @@ class ColorTests {
 
     public static function vision_ds_Color__darken_Float_Color__ShouldWork():TestResult {
         try { 
-            var value = 0;
+            var value = Color.WHITE;
 			
-            var Factor = 0.0;
+            var Factor = 0.5;
 			
             var object = new vision.ds.Color(value);
             var result = object.darken(Factor);
@@ -1059,14 +1059,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color#darken",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0xFF7F7F7F,
+                status: TestStatus.of(result == 0xFF7F7F7F)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#darken",
                 returned: e,
-                expected: null,
+                expected: 0xFF7F7F7F,
                 status: Failure
             }
         }
@@ -1074,9 +1074,9 @@ class ColorTests {
 
     public static function vision_ds_Color__lighten_Float_Color__ShouldWork():TestResult {
         try { 
-            var value = 0;
+            var value = Color.BLACK;
 			
-            var Factor = 0.0;
+            var Factor = 0.5;
 			
             var object = new vision.ds.Color(value);
             var result = object.lighten(Factor);
@@ -1084,14 +1084,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color#lighten",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0xFF7F7F7F,
+                status: TestStatus.of(result == 0xFF7F7F7F)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#lighten",
                 returned: e,
-                expected: null,
+                expected: 0xFF7F7F7F,
                 status: Failure
             }
         }
@@ -1099,23 +1099,22 @@ class ColorTests {
 
     public static function vision_ds_Color__invert__Color__ShouldWork():TestResult {
         try { 
-            var value = 0;
+            var value = Color.AMETHYST;
 			
             
             var object = new vision.ds.Color(value);
             var result = object.invert();
-            
             return {
                 testName: "vision.ds.Color#invert",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0xFF669933,
+                status: TestStatus.of(result == 0xFF669933)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#invert",
                 returned: e,
-                expected: null,
+                expected: 0xFF669933,
                 status: Failure
             }
         }
@@ -1125,10 +1124,10 @@ class ColorTests {
         try { 
             var value = 0;
 			
-            var Red = 0;
-			var Green = 0;
-			var Blue = 0;
-			var Alpha = 0;
+            var Red = 10;
+			var Green = 20;
+			var Blue = 30;
+			var Alpha = 40;
 			
             var object = new vision.ds.Color(value);
             var result = object.setRGBA(Red, Green, Blue, Alpha);
@@ -1136,14 +1135,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color#setRGBA",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0x281E140A,
+                status: TestStatus.of(result == 0x281E140A)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#setRGBA",
                 returned: e,
-                expected: null,
+                expected: 0x281E140A,
                 status: Failure
             }
         }
@@ -1153,10 +1152,10 @@ class ColorTests {
         try { 
             var value = 0;
 			
-            var Red = 0.0;
-			var Green = 0.0;
-			var Blue = 0.0;
-			var Alpha = 0.0;
+            var Red = 0.5;
+			var Green = 0.5;
+			var Blue = 0.5;
+			var Alpha = 0.5;
 			
             var object = new vision.ds.Color(value);
             var result = object.setRGBAFloat(Red, Green, Blue, Alpha);
@@ -1164,14 +1163,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color#setRGBAFloat",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0x7F7F7F7F,
+                status: TestStatus.of(result == 0x7F7F7F7F)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#setRGBAFloat",
                 returned: e,
-                expected: null,
+                expected: 0x7F7F7F7F,
                 status: Failure
             }
         }
@@ -1194,7 +1193,7 @@ class ColorTests {
                 testName: "vision.ds.Color#setCMYK",
                 returned: result,
                 expected: null,
-                status: Unimplemented
+                status: Skipped
             }
         } catch (e) {
             return {
@@ -1222,7 +1221,7 @@ class ColorTests {
                 testName: "vision.ds.Color#setHSB",
                 returned: result,
                 expected: null,
-                status: Unimplemented
+                status: Skipped
             }
         } catch (e) {
             return {
@@ -1250,7 +1249,7 @@ class ColorTests {
                 testName: "vision.ds.Color#setHSL",
                 returned: result,
                 expected: null,
-                status: Unimplemented
+                status: Skipped
             }
         } catch (e) {
             return {
@@ -1264,24 +1263,26 @@ class ColorTests {
 
     public static function vision_ds_Color__grayscale_Bool_Color__ShouldWork():TestResult {
         try { 
-            var value = 0;
-			
-            var simple = false;
-			
-            var object = new vision.ds.Color(value);
-            var result = object.grayscale(simple);
+            var object = Color.ALABASTER;
+
+            var resultRegular = object.grayscale(false);
+            var resultSimple = object.grayscale(true);
             
             return {
                 testName: "vision.ds.Color#grayscale",
-                returned: result,
-                expected: null,
-                status: Unimplemented
+                returned: '${resultRegular.toHexString()}, Then: ${resultSimple.toHexString()}',
+                expected: '${Color.from8Bit(Std.int(0.2126 * object.red + 0.7152 * object.green + 0.0722 * object.blue)).toHexString()}, Then: ${Color.from8Bit(Std.int((object.red + object.green + object.blue) / 3)).toHexString()}',
+                status: TestStatus.multiple(
+                    TestStatus.of(resultRegular.red == Std.int(0.2126 * object.red + 0.7152 * object.green + 0.0722 * object.blue)),
+                    TestStatus.of(resultSimple.red == Std.int((object.red + object.green + object.blue) / 3))
+                )
             }
         } catch (e) {
+            var object = Color.ALABASTER;
             return {
                 testName: "vision.ds.Color#grayscale",
                 returned: e,
-                expected: null,
+                expected: '${Color.from8Bit(Std.int(0.2126 * object.red + 0.7152 * object.green + 0.0722 * object.blue)).toHexString()}, Then: ${Color.from8Bit(Std.int((object.red + object.green + object.blue) / 3)).toHexString()}',
                 status: Failure
             }
         }
@@ -1289,7 +1290,7 @@ class ColorTests {
 
     public static function vision_ds_Color__blackOrWhite_Int_Color__ShouldWork():TestResult {
         try { 
-            var value = 0;
+            var value = 0xFF45E312;
 			
             var threshold = 0;
 			
@@ -1299,14 +1300,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color#blackOrWhite",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0xFFFFFFFF,
+                status: TestStatus.of(result == 0xFFFFFFFF)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#blackOrWhite",
                 returned: e,
-                expected: null,
+                expected: 0xFFFFFFFF,
                 status: Failure
             }
         }
@@ -1314,7 +1315,7 @@ class ColorTests {
 
     public static function vision_ds_Color__toString__ShouldWork():TestResult {
         try { 
-            var value = 0;
+            var value = Color.AZURE;
 			
             
             var object = new vision.ds.Color(value);
@@ -1322,15 +1323,15 @@ class ColorTests {
             
             return {
                 testName: "vision.ds.Color#toString",
-                returned: null,
-                expected: null,
-                status: Unimplemented
+                returned: #if console.hx '<bg${object.toWebString()}>  </>' #else object.toHexString(true, true) #end,
+                expected: #if console.hx '<bg#007FFF>  </>' #else "0xFF007FFF" #end,
+                status: TestStatus.of(object.toString() == #if console.hx '<bg#007FFF>  </>' #else "0xFF007FFF" #end)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#toString",
                 returned: e,
-                expected: null,
+                expected: #if console.hx '<bg#007FFF>  </>' #else "0xFF007FFF" #end,
                 status: Failure
             }
         }
@@ -1347,14 +1348,14 @@ class ColorTests {
             return {
                 testName: "vision.ds.Color#toInt",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 0,
+                status: TestStatus.of(result == 0)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Color#toInt",
                 returned: e,
-                expected: null,
+                expected: 0,
                 status: Failure
             }
         }
