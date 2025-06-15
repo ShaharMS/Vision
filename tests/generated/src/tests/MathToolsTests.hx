@@ -21,14 +21,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.PI",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.PI,
+                status: TestStatus.of(result == Math.PI)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.PI",
                 returned: e,
-                expected: null,
+                expected: Math.PI,
                 status: Failure
             }
         }
@@ -41,14 +41,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.PI_OVER_2",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.PI / 2,
+                status: TestStatus.of(result == Math.PI / 2)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.PI_OVER_2",
                 returned: e,
-                expected: null,
+                expected: Math.PI / 2,
                 status: Failure
             }
         }
@@ -61,14 +61,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.NEGATIVE_INFINITY",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.NEGATIVE_INFINITY,
+                status: TestStatus.of(result == Math.NEGATIVE_INFINITY)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.NEGATIVE_INFINITY",
                 returned: e,
-                expected: null,
+                expected: Math.NEGATIVE_INFINITY,
                 status: Failure
             }
         }
@@ -81,14 +81,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.POSITIVE_INFINITY",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.POSITIVE_INFINITY,
+                status: TestStatus.of(result == Math.POSITIVE_INFINITY)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.POSITIVE_INFINITY",
                 returned: e,
-                expected: null,
+                expected: Math.POSITIVE_INFINITY,
                 status: Failure
             }
         }
@@ -101,14 +101,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.NaN",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.NaN,
+                status: TestStatus.of(Math.isNaN(result))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.NaN",
                 returned: e,
-                expected: null,
+                expected: Math.NaN,
                 status: Failure
             }
         }
@@ -121,14 +121,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.SQRT2",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.sqrt(2),
+                status: TestStatus.of(result == Math.sqrt(2))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.SQRT2",
                 returned: e,
-                expected: null,
+                expected: Math.sqrt(2),
                 status: Failure
             }
         }
@@ -141,14 +141,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.SQRT3",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.sqrt(3),
+                status: TestStatus.of(result == Math.sqrt(3))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.SQRT3",
                 returned: e,
-                expected: null,
+                expected: Math.sqrt(3),
                 status: Failure
             }
         }
@@ -1354,21 +1354,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__cotan_Float_Float__ShouldWork():TestResult {
         try {
-            var radians = 0.0;
+            var radians = 6;
 			
             var result = vision.tools.MathTools.cotan(radians);
 
             return {
                 testName: "vision.tools.MathTools.cotan",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.cos(6) / Math.sin(6),
+                status: TestStatus.of(result == Math.cos(6) / Math.sin(6))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.cotan",
                 returned: e,
-                expected: null,
+                expected: Math.cos(6) / Math.sin(6),
                 status: Failure
             }
         }
@@ -1376,21 +1376,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__cosec_Float_Float__ShouldWork():TestResult {
         try {
-            var radians = 0.0;
+            var radians = 5;
 			
             var result = vision.tools.MathTools.cosec(radians);
 
             return {
                 testName: "vision.tools.MathTools.cosec",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 1 / Math.sin(5),
+                status: TestStatus.of(result == 1 / Math.sin(5))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.cosec",
                 returned: e,
-                expected: null,
+                expected: 1 / Math.sin(5),
                 status: Failure
             }
         }
@@ -1398,21 +1398,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__sec_Float_Float__ShouldWork():TestResult {
         try {
-            var radians = 0.0;
+            var radians = 5;
 			
             var result = vision.tools.MathTools.sec(radians);
 
             return {
                 testName: "vision.tools.MathTools.sec",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 1 / Math.cos(5),
+                status: TestStatus.of(result == 1 / Math.cos(5))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.sec",
                 returned: e,
-                expected: null,
+                expected: 1 / Math.cos(5),
                 status: Failure
             }
         }
@@ -1420,21 +1420,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__sind_Float_Float__ShouldWork():TestResult {
         try {
-            var degrees = 0.0;
+            var degrees = 30;
 			
             var result = vision.tools.MathTools.sind(degrees);
 
             return {
                 testName: "vision.tools.MathTools.sind",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.sin(30 * Math.PI / 180),
+                status: TestStatus.of(result == Math.sin(30 * Math.PI / 180))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.sind",
                 returned: e,
-                expected: null,
+                expected: Math.sin(30 * Math.PI / 180),
                 status: Failure
             }
         }
@@ -1442,21 +1442,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__cosd_Float_Float__ShouldWork():TestResult {
         try {
-            var degrees = 0.0;
+            var degrees = 30;
 			
             var result = vision.tools.MathTools.cosd(degrees);
 
             return {
                 testName: "vision.tools.MathTools.cosd",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.cos(30 * Math.PI / 180),
+                status: TestStatus.of(result == Math.cos(30 * Math.PI / 180))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.cosd",
                 returned: e,
-                expected: null,
+                expected: Math.cos(30 * Math.PI / 180),
                 status: Failure
             }
         }
@@ -1464,21 +1464,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__tand_Float_Float__ShouldWork():TestResult {
         try {
-            var degrees = 0.0;
+            var degrees = 6;
 			
             var result = vision.tools.MathTools.tand(degrees);
 
             return {
                 testName: "vision.tools.MathTools.tand",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.tan(6 * Math.PI / 180),
+                status: TestStatus.of(result == Math.tan(6 * Math.PI / 180))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.tand",
                 returned: e,
-                expected: null,
+                expected: Math.tan(6 * Math.PI / 180),
                 status: Failure
             }
         }
@@ -1486,21 +1486,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__cotand_Float_Float__ShouldWork():TestResult {
         try {
-            var degrees = 0.0;
+            var degrees = 4;
 			
             var result = vision.tools.MathTools.cotand(degrees);
 
             return {
                 testName: "vision.tools.MathTools.cotand",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.cos(4 * Math.PI / 180) / Math.sin(4 * Math.PI / 180),
+                status: TestStatus.of(result == Math.cos(4 * Math.PI / 180) / Math.sin(4 * Math.PI / 180))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.cotand",
                 returned: e,
-                expected: null,
+                expected: Math.cos(4 * Math.PI / 180) / Math.sin(4 * Math.PI / 180),
                 status: Failure
             }
         }
@@ -1508,21 +1508,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__cosecd_Float_Float__ShouldWork():TestResult {
         try {
-            var degrees = 0.0;
+            var degrees = 40;
 			
             var result = vision.tools.MathTools.cosecd(degrees);
 
             return {
                 testName: "vision.tools.MathTools.cosecd",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 1 / Math.sin(40 * Math.PI / 180),
+                status: TestStatus.of(result == 1 / Math.sin(40 * Math.PI / 180))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.cosecd",
                 returned: e,
-                expected: null,
+                expected: 1 / Math.sin(40 * Math.PI / 180),
                 status: Failure
             }
         }
@@ -1530,21 +1530,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__secd_Float_Float__ShouldWork():TestResult {
         try {
-            var degrees = 0.0;
+            var degrees = 40;
 			
             var result = vision.tools.MathTools.secd(degrees);
 
             return {
                 testName: "vision.tools.MathTools.secd",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 1 / Math.cos(40 * Math.PI / 180),
+                status: TestStatus.of(result == 1 / Math.cos(40 * Math.PI / 180))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.secd",
                 returned: e,
-                expected: null,
+                expected: 1 / Math.cos(40 * Math.PI / 180),
                 status: Failure
             }
         }
@@ -1552,22 +1552,22 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__truncate_Float_Int_Float__ShouldWork():TestResult {
         try {
-            var num = 0.0;
-			var numbersAfterDecimal = 0;
+            var num = 3.141592653589793;
+			var numbersAfterDecimal = 2;
 			
             var result = vision.tools.MathTools.truncate(num, numbersAfterDecimal);
 
             return {
                 testName: "vision.tools.MathTools.truncate",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 3.14,
+                status: TestStatus.of(result == 3.14)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.truncate",
                 returned: e,
-                expected: null,
+                expected: 3.14,
                 status: Failure
             }
         }
@@ -1575,21 +1575,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__cropDecimal_Float_Int__ShouldWork():TestResult {
         try {
-            var number = 0.0;
+            var number = 3.141592653589793;
 			
             var result = vision.tools.MathTools.cropDecimal(number);
 
             return {
                 testName: "vision.tools.MathTools.cropDecimal",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 3,
+                status: TestStatus.of(result == 3)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.cropDecimal",
                 returned: e,
-                expected: null,
+                expected: 3,
                 status: Failure
             }
         }
@@ -1597,21 +1597,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__isInt_Float_Bool__ShouldWork():TestResult {
         try {
-            var v = 0.0;
+            var v = 0.1;
 			
             var result = vision.tools.MathTools.isInt(v);
 
             return {
                 testName: "vision.tools.MathTools.isInt",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: false,
+                status: TestStatus.of(result == false)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.isInt",
                 returned: e,
-                expected: null,
+                expected: false,
                 status: Failure
             }
         }
@@ -1641,21 +1641,21 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__parseBool_String_Bool__ShouldWork():TestResult {
         try {
-            var s = "";
+            var s = "true";
 			
             var result = vision.tools.MathTools.parseBool(s);
 
             return {
                 testName: "vision.tools.MathTools.parseBool",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: true,
+                status: TestStatus.of(result == true)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.parseBool",
                 returned: e,
-                expected: null,
+                expected: true,
                 status: Failure
             }
         }
