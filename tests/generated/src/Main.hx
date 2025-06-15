@@ -67,7 +67,7 @@ class Main {
 
 				conclusionMap.get(result.status).push(result);
 				if (result.status != Success && !bulk) Sys.exit(1);
-				Sys.sleep(bulk ? 0.01 : 0.2);
+				//Sys.sleep(bulk ? 0.01 : 0.2);
 			}
 		}
 		Sys.println(getTestStatusBar(conclusionMap.get(Success).length, conclusionMap.get(Failure).length, conclusionMap.get(Skipped).length, conclusionMap.get(Unimplemented).length));
@@ -120,7 +120,7 @@ class Main {
 		var unimplementedPercent = unimplemented / (successes + failures + skipped + unimplemented);
 		var unimplementedWidth = MathTools.round(unimplementedPercent * consoleWidth);
 
-		var output = '╔${[for (_ in 0...consoleWidth + 2) '═'].join('')}╗\n';
+		var output = '╔${[for (_ in 0...(successWidth + failureWidth + skippedWidth + unimplementedWidth) + 2) '═'].join('')}╗\n';
 
 		output += '║ $RESET$BOLD$GREEN_BACKGROUND';
 		for (_ in 0...successWidth) output += ' ';
@@ -132,7 +132,7 @@ class Main {
 		for (_ in 0...unimplementedWidth) output += ' ';
 		output += '$RESET ║';
 
-		output += '\n╚${[for (_ in 0...consoleWidth + 2) '═'].join('')}╝';
+		output += '\n╚${[for (_ in 0...(successWidth + failureWidth + skippedWidth + unimplementedWidth) + 2) '═'].join('')}╝';
 		return output;
 
 	}

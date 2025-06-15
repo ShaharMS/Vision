@@ -10,8 +10,8 @@ import vision.tools.MathTools;
 class Point2DTests {
     public static function vision_ds_Point2D__toString__String__ShouldWork():TestResult {
         try { 
-            var x = 0.0;
-			var y = 0.0;
+            var x = 0.1;
+			var y = 0.2;
 			
             
             var object = new vision.ds.Point2D(x, y);
@@ -20,14 +20,14 @@ class Point2DTests {
             return {
                 testName: "vision.ds.Point2D#toString",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: "(0.1, 0.2)",
+                status: TestStatus.of(result == "(0.1, 0.2)")
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Point2D#toString",
                 returned: e,
-                expected: null,
+                expected: "(0.1, 0.2)",
                 status: Failure
             }
         }
@@ -35,8 +35,8 @@ class Point2DTests {
 
     public static function vision_ds_Point2D__copy__Point2D__ShouldWork():TestResult {
         try { 
-            var x = 0.0;
-			var y = 0.0;
+            var x = 1.0;
+			var y = 0.1;
 			
             
             var object = new vision.ds.Point2D(x, y);
@@ -45,14 +45,14 @@ class Point2DTests {
             return {
                 testName: "vision.ds.Point2D#copy",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: new Point2D(1, 0.1),
+                status: TestStatus.of([result.x, result.y], [1, 0.1])
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Point2D#copy",
                 returned: e,
-                expected: null,
+                expected: new Point2D(1, 0.1),
                 status: Failure
             }
         }
@@ -63,7 +63,7 @@ class Point2DTests {
             var x = 0.0;
 			var y = 0.0;
 			
-            var point = new vision.ds.Point2D(0, 0);
+            var point = new vision.ds.Point2D(1, 1);
 			
             var object = new vision.ds.Point2D(x, y);
             var result = object.distanceTo(point);
@@ -71,14 +71,14 @@ class Point2DTests {
             return {
                 testName: "vision.ds.Point2D#distanceTo",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: MathTools.SQRT2,
+                status: TestStatus.of(result == MathTools.SQRT2)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Point2D#distanceTo",
                 returned: e,
-                expected: null,
+                expected: MathTools.SQRT2,
                 status: Failure
             }
         }
@@ -89,7 +89,7 @@ class Point2DTests {
             var x = 0.0;
 			var y = 0.0;
 			
-            var point = new vision.ds.Point2D(0, 0);
+            var point = new vision.ds.Point2D(2, 1);
 			
             var object = new vision.ds.Point2D(x, y);
             var result = object.degreesTo(point);
@@ -97,14 +97,14 @@ class Point2DTests {
             return {
                 testName: "vision.ds.Point2D#degreesTo",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 30,
+                status: TestStatus.of(result == 30)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Point2D#degreesTo",
                 returned: e,
-                expected: null,
+                expected: 30,
                 status: Failure
             }
         }
@@ -115,7 +115,7 @@ class Point2DTests {
             var x = 0.0;
 			var y = 0.0;
 			
-            var point = new vision.ds.Point2D(0, 0);
+            var point = new vision.ds.Point2D(2, 1);
 			
             var object = new vision.ds.Point2D(x, y);
             var result = object.radiansTo(point);
@@ -123,14 +123,14 @@ class Point2DTests {
             return {
                 testName: "vision.ds.Point2D#radiansTo",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 30 * MathTools.PI / 180,
+                status: TestStatus.of(result == 30 * MathTools.PI / 180)
             }
         } catch (e) {
             return {
                 testName: "vision.ds.Point2D#radiansTo",
                 returned: e,
-                expected: null,
+                expected: 30 * MathTools.PI / 180,
                 status: Failure
             }
         }
