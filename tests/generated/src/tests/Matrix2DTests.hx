@@ -15,8 +15,8 @@ import vision.tools.MathTools.*;
 class Matrix2DTests {
     public static function vision_ds_Matrix2D__underlying__ShouldWork():TestResult {
         try {
-            var width = 0;
-			var height = 0;
+            var width = 2;
+			var height = 2;
 			
             var object = new vision.ds.Matrix2D(width, height);
             var result = object.underlying;
@@ -24,8 +24,8 @@ class Matrix2DTests {
             return {
                 testName: "vision.ds.Matrix2D#underlying",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: new Array2D(width, height, 2),
+                status: TestStatus.of(result, new Array2D(width, height, 0))
             }
         } catch (e) {
             return {

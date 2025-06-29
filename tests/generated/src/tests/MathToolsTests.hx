@@ -156,22 +156,22 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__distanceFromRayToPoint2D_Ray2D_Point2D_Float__ShouldWork():TestResult {
         try {
-            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
-			var point = new vision.ds.Point2D(0, 0);
+            var ray = new vision.ds.Ray2D({x: 0, y: 5}, 2);
+			var point = new vision.ds.Point2D(5, 6);
 			
             var result = vision.tools.MathTools.distanceFromRayToPoint2D(ray, point);
 
             return {
                 testName: "vision.tools.MathTools.distanceFromRayToPoint2D",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 4.0249223594996213,
+                status: TestStatus.of(result == 4.0249223594996213)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.distanceFromRayToPoint2D",
                 returned: e,
-                expected: null,
+                expected: 4.0249223594996213,
                 status: Failure
             }
         }
@@ -179,22 +179,22 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__intersectionBetweenRay2Ds_Ray2D_Ray2D_Point2D__ShouldWork():TestResult {
         try {
-            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
-			var ray2 = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+            var ray = new vision.ds.Ray2D({x: 0, y: 5}, 2);
+			var ray2 = new vision.ds.Ray2D({x: 0, y: -6}, 1);
 			
             var result = vision.tools.MathTools.intersectionBetweenRay2Ds(ray, ray2);
 
             return {
                 testName: "vision.tools.MathTools.intersectionBetweenRay2Ds",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: new Point2D(-11, -17),
+                status: TestStatus.of([result.x, result.y] == [-11, -17])
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.intersectionBetweenRay2Ds",
                 returned: e,
-                expected: null,
+                expected: new Point2D(-11, -17),
                 status: Failure
             }
         }
@@ -202,22 +202,22 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__distanceBetweenRays2D_Ray2D_Ray2D_Float__ShouldWork():TestResult {
         try {
-            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
-			var ray2 = new vision.ds.Ray2D({x: 0, y: 0}, 1);
+            var ray = new vision.ds.Ray2D({x: 0, y: 5}, 2);
+			var ray2 = new vision.ds.Ray2D({x: 0, y: 10}, 2);
 			
             var result = vision.tools.MathTools.distanceBetweenRays2D(ray, ray2);
 
             return {
                 testName: "vision.tools.MathTools.distanceBetweenRays2D",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.sqrt(5),
+                status: TestStatus.of(result == Math.sqrt(5))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.distanceBetweenRays2D",
                 returned: e,
-                expected: null,
+                expected: Math.sqrt(5),
                 status: Failure
             }
         }
@@ -225,24 +225,23 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__findPointAtDistanceUsingX_Ray2D_Float_Float_Bool_Point2D__ShouldWork():TestResult {
         try {
-            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
-			var startXPos = 0.0;
-			var distance = 0.0;
-			var goPositive = false;
+            var ray = new vision.ds.Ray2D({x: 0, y: 12}, 0.5);
+			var startXPos = 6;
+			var distance = 10;
 			
-            var result = vision.tools.MathTools.findPointAtDistanceUsingX(ray, startXPos, distance, goPositive);
-
+            var result1 = vision.tools.MathTools.findPointAtDistanceUsingX(ray, startXPos, distance, true);
+            var result2 = vision.tools.MathTools.findPointAtDistanceUsingX(ray, startXPos, distance, false);
             return {
                 testName: "vision.tools.MathTools.findPointAtDistanceUsingX",
-                returned: result,
-                expected: null,
-                status: Unimplemented
+                returned: '${result1}, then: ${result2}',
+                expected: '${new Point2D(6 + 4 * Math.sqrt(5), 15 + 2 * Math.sqrt(5))}, then: ${new Point2D(6 - 4 * Math.sqrt(5), 15 - 2 * Math.sqrt(5))}',
+                status: Skipped
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.findPointAtDistanceUsingX",
                 returned: e,
-                expected: null,
+                expected: '${new Point2D(6 + 4 * Math.sqrt(5), 15 + 2 * Math.sqrt(5))}, then: ${new Point2D(6 - 4 * Math.sqrt(5), 15 - 2 * Math.sqrt(5))}',
                 status: Failure
             }
         }
@@ -250,24 +249,24 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__findPointAtDistanceUsingY_Ray2D_Float_Float_Bool_Point2D__ShouldWork():TestResult {
         try {
-            var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
-			var startYPos = 0.0;
-			var distance = 0.0;
-			var goPositive = false;
+            var ray = new vision.ds.Ray2D({x: 0, y: 12}, 0.5);
+			var startYPos = 15;
+			var distance = 10;
 			
-            var result = vision.tools.MathTools.findPointAtDistanceUsingY(ray, startYPos, distance, goPositive);
-
+            var result1 = vision.tools.MathTools.findPointAtDistanceUsingY(ray, startYPos, distance, true);
+            var result2 = vision.tools.MathTools.findPointAtDistanceUsingY(ray, startYPos, distance, false);
+            
             return {
                 testName: "vision.tools.MathTools.findPointAtDistanceUsingY",
-                returned: result,
-                expected: null,
-                status: Unimplemented
+                returned: '${result1}, then: ${result2}',
+                expected: '${new Point2D(6 + 4 * Math.sqrt(5), 15 + 2 * Math.sqrt(5))}, then: ${new Point2D(6 - 4 * Math.sqrt(5), 15 - 2 * Math.sqrt(5))}',
+                status: Skipped
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.findPointAtDistanceUsingY",
                 returned: e,
-                expected: null,
+                expected: '${new Point2D(6 + 4 * Math.sqrt(5), 15 + 2 * Math.sqrt(5))}, then: ${new Point2D(6 - 4 * Math.sqrt(5), 15 - 2 * Math.sqrt(5))}',
                 status: Failure
             }
         }
@@ -276,7 +275,7 @@ class MathToolsTests {
     public static function vision_tools_MathTools__distanceFromLineToPoint2D_Line2D_Point2D_Float__ShouldWork():TestResult {
         try {
             var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
-			var point = new vision.ds.Point2D(0, 0);
+			var point = new vision.ds.Point2D(40, 20);
 			
             var result = vision.tools.MathTools.distanceFromLineToPoint2D(line, point);
 
@@ -298,7 +297,7 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__distanceBetweenLines2D_Line2D_Line2D_Float__ShouldWork():TestResult {
         try {
-            var line1 = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+            var line1 = new vision.ds.Line2D({x: 11, y: 11}, {x: 20, y: 20});
 			var line2 = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
 			
             var result = vision.tools.MathTools.distanceBetweenLines2D(line1, line2);
@@ -306,14 +305,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.distanceBetweenLines2D",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.sqrt(2),
+                status: TestStatus.of(result == Math.sqrt(2))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.distanceBetweenLines2D",
                 returned: e,
-                expected: null,
+                expected: Math.sqrt(2),
                 status: Failure
             }
         }
@@ -322,21 +321,21 @@ class MathToolsTests {
     public static function vision_tools_MathTools__radiansFromLineToPoint2D_Line2D_Point2D_Float__ShouldWork():TestResult {
         try {
             var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
-			var point = new vision.ds.Point2D(0, 0);
+			var point = new vision.ds.Point2D(40, 20);
 			
             var result = vision.tools.MathTools.radiansFromLineToPoint2D(line, point);
 
             return {
                 testName: "vision.tools.MathTools.radiansFromLineToPoint2D",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: Math.atan2(10, 30),
+                status: TestStatus.of(result == Math.atan2(10, 30))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.radiansFromLineToPoint2D",
                 returned: e,
-                expected: null,
+                expected: Math.atan2(10, 30),
                 status: Failure
             }
         }

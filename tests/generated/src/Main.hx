@@ -10,7 +10,6 @@ using vision.tools.ArrayTools;
 
 import TestStatus;
 import TestResult;
-import TestConclusion;
 import TestsToRun;
 
 class Main {
