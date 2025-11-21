@@ -282,14 +282,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.distanceFromLineToPoint2D",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 31.622776601684,
+                status: TestStatus.of(result == 31.622776601684)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.distanceFromLineToPoint2D",
                 returned: e,
-                expected: null,
+                expected: 31.622776601684,
                 status: Failure
             }
         }
@@ -344,21 +344,21 @@ class MathToolsTests {
     public static function vision_tools_MathTools__intersectionBetweenLine2Ds_Line2D_Line2D_Point2D__ShouldWork():TestResult {
         try {
             var line1 = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
-			var line2 = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			var line2 = new vision.ds.Line2D({x: 0, y: 10}, {x: 10, y: 0});
 			
             var result = vision.tools.MathTools.intersectionBetweenLine2Ds(line1, line2);
 
             return {
                 testName: "vision.tools.MathTools.intersectionBetweenLine2Ds",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: new Point2D(5, 5),
+                status: TestStatus.of([result.x, result.y], [5, 5])
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.intersectionBetweenLine2Ds",
                 returned: e,
-                expected: null,
+                expected: new Point2D(5, 5),
                 status: Failure
             }
         }
@@ -367,21 +367,21 @@ class MathToolsTests {
     public static function vision_tools_MathTools__mirrorInsideRectangle_Line2D_Rectangle_Line2D__ShouldWork():TestResult {
         try {
             var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
-			var rect:Rectangle = null;
+			var rect:Rectangle = {x: 0, y: 0, width: 10, height: 10};
 			
             var result = vision.tools.MathTools.mirrorInsideRectangle(line, rect);
 
             return {
                 testName: "vision.tools.MathTools.mirrorInsideRectangle",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: new Line2D({x: 0, y: 10}, {x: 10, y: 0}),
+                status: TestStatus.of(result, new Line2D({x: 0, y: 10}, {x: 10, y: 0}))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.mirrorInsideRectangle",
                 returned: e,
-                expected: null,
+                expected: new Line2D({x: 0, y: 10}, {x: 10, y: 0}),
                 status: Failure
             }
         }
@@ -389,22 +389,22 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__flipInsideRectangle_Line2D_Rectangle_Line2D__ShouldWork():TestResult {
         try {
-            var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
-			var rect:Rectangle = null;
+            var line = new vision.ds.Line2D({x: 2, y: 1}, {x: 8, y: 1});
+			var rect:Rectangle = {x: 0, y: 0, width: 10, height: 10};
 			
             var result = vision.tools.MathTools.flipInsideRectangle(line, rect);
 
             return {
                 testName: "vision.tools.MathTools.flipInsideRectangle",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: new Line2D({x: 2, y: 9}, {x: 8, y: 9}),
+                status: TestStatus.of(result, new Line2D({x: 2, y: 9}, {x: 8, y: 9}))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.flipInsideRectangle",
                 returned: e,
-                expected: null,
+                expected: new Line2D({x: 2, y: 9}, {x: 8, y: 9}),
                 status: Failure
             }
         }
@@ -413,21 +413,21 @@ class MathToolsTests {
     public static function vision_tools_MathTools__invertInsideRectangle_Line2D_Rectangle_Line2D__ShouldWork():TestResult {
         try {
             var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
-			var rect:Rectangle = null;
+			var rect:Rectangle = {x: 0, y: 0, width: 20, height: 20};
 			
             var result = vision.tools.MathTools.invertInsideRectangle(line, rect);
 
             return {
                 testName: "vision.tools.MathTools.invertInsideRectangle",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: new Line2D({x: 10, y: 10}, {x: 20, y: 20}),
+                status: TestStatus.of(result, new Line2D({x: 10, y: 10}, {x: 20, y: 20}))
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.invertInsideRectangle",
                 returned: e,
-                expected: null,
+                expected: new Line2D({x: 10, y: 10}, {x: 20, y: 20}),
                 status: Failure
             }
         }
@@ -435,7 +435,7 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__distanceFromPointToRay2D_Point2D_Ray2D_Float__ShouldWork():TestResult {
         try {
-            var point = new vision.ds.Point2D(0, 0);
+            var point = new vision.ds.Point2D(Math.sqrt(2), 0);
 			var ray = new vision.ds.Ray2D({x: 0, y: 0}, 1);
 			
             var result = vision.tools.MathTools.distanceFromPointToRay2D(point, ray);
@@ -443,14 +443,14 @@ class MathToolsTests {
             return {
                 testName: "vision.tools.MathTools.distanceFromPointToRay2D",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 1,
+                status: TestStatus.of(result, 1)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.distanceFromPointToRay2D",
                 returned: e,
-                expected: null,
+                expected: 1,
                 status: Failure
             }
         }
@@ -458,22 +458,22 @@ class MathToolsTests {
 
     public static function vision_tools_MathTools__distanceFromPointToLine2D_Point2D_Line2D_Float__ShouldWork():TestResult {
         try {
-            var point = new vision.ds.Point2D(0, 0);
-			var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
+			var point = new vision.ds.Point2D(40, 20);
+            var line = new vision.ds.Line2D({x: 0, y: 0}, {x: 10, y: 10});
 			
             var result = vision.tools.MathTools.distanceFromPointToLine2D(point, line);
 
             return {
-                testName: "vision.tools.MathTools.distanceFromPointToLine2D",
+                testName: "vision.tools.MathTools.distanceFromLineToPoint2D",
                 returned: result,
-                expected: null,
-                status: Unimplemented
+                expected: 31.622776601684,
+                status: TestStatus.of(result == 31.622776601684)
             }
         } catch (e) {
             return {
                 testName: "vision.tools.MathTools.distanceFromPointToLine2D",
                 returned: e,
-                expected: null,
+                expected: 31.622776601684,
                 status: Failure
             }
         }
