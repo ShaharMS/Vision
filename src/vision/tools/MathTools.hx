@@ -642,7 +642,7 @@ class MathTools {
 		}
 		var multiplier = 1.0, ret = 0.0;
 		for (_ in 0...64) {
-			if (Int64.and(value, Int64.make(1, 0)) != Int64.make(0, 0)) ret += multiplier;
+			if (Int64.and(value, Int64.make(0, 1)) != Int64.make(0, 0)) ret += multiplier;
 			multiplier *= 2.0;
 			value = Int64.shr(value, 1);
 		}
@@ -681,7 +681,7 @@ class MathTools {
 		return Math.atan(v);
 
 	public static inline function atan2(y:Float, x:Float):Float
-		return Math.atan2(x, y);
+		return Math.atan2(y, x);
 
 	public static inline function ceil(v:Float):Int
 		return Math.ceil(v);

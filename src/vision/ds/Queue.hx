@@ -39,9 +39,14 @@ class Queue<T> {
 		(`last` `->` `...` `->` `first`)
 	**/
 	public function dequeue():T {
-		var v = last.value;
-		// funny maneuver
-		last.previous.next = null;
+		var l = last;
+		var v = l.value;
+		// Handle the case where this is the only element
+		if (l.previous == null) {
+			first = null;
+		} else {
+			l.previous.next = null;
+		}
 		length--;
 		return v;
 	}

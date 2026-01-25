@@ -50,7 +50,7 @@ class ArrayTools {
 		for (i in 0...array.length) {
 			if (!predicateOpensArray) temp.push(array[i]);
 			if (predicate(array[i])) {
-				raised.push(temp);
+				if (temp.length > 0) raised.push(temp);
 				temp = [];
 			}
 			if (predicateOpensArray) temp.push(array[i]);

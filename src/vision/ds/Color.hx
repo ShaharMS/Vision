@@ -610,7 +610,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	**/
 	public static inline function from8Bit(Value:Int):Color {
 		var color = new Color();
-		return color.setRGBA(Value, Value, Value, 1);
+		return color.setRGBA(Value, Value, Value, 255);
 	}
 
 	/**

@@ -788,21 +788,36 @@ class Vision {
 		@return The normalized image. The original copy is modified.
 	**/
 	public static function normalize(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
-		var max:Color = 0x0, min:Color = 0x0, step:Color = 0x0;
-		max.red = MathTools.max(rangeStart.red, rangeEnd.red);
-		min.red = MathTools.min(rangeStart.red, rangeEnd.red);
-		max.green = MathTools.max(rangeStart.green, rangeEnd.green);
-		min.green = MathTools.min(rangeStart.green, rangeEnd.green);
-		max.blue = MathTools.max(rangeStart.blue, rangeEnd.blue);
-		min.blue = MathTools.min(rangeStart.blue, rangeEnd.blue);
-		step.redFloat = (max.red - min.red) / 0xFF;
-		step.blueFloat = (max.blue - min.blue) / 0xFF;
-		step.greenFloat = (max.green - min.green) / 0xFF;
-
+		// Find current min/max values in the image
+		var curMinRed = 255, curMaxRed = 0;
+		var curMinGreen = 255, curMaxGreen = 0;
+		var curMinBlue = 255, curMaxBlue = 0;
+		
 		image.forEachPixelInView((x, y, color) -> {
-			color.redFloat *= step.redFloat;
-			color.blueFloat *= step.blueFloat;
-			color.greenFloat *= step.greenFloat;
+			if (color.red < curMinRed) curMinRed = color.red;
+			if (color.red > curMaxRed) curMaxRed = color.red;
+			if (color.green < curMinGreen) curMinGreen = color.green;
+			if (color.green > curMaxGreen) curMaxGreen = color.green;
+			if (color.blue < curMinBlue) curMinBlue = color.blue;
+			if (color.blue > curMaxBlue) curMaxBlue = color.blue;
+		});
+		
+		// Calculate target range
+		var targetMinRed = MathTools.min(rangeStart.red, rangeEnd.red);
+		var targetMaxRed = MathTools.max(rangeStart.red, rangeEnd.red);
+		var targetMinGreen = MathTools.min(rangeStart.green, rangeEnd.green);
+		var targetMaxGreen = MathTools.max(rangeStart.green, rangeEnd.green);
+		var targetMinBlue = MathTools.min(rangeStart.blue, rangeEnd.blue);
+		var targetMaxBlue = MathTools.max(rangeStart.blue, rangeEnd.blue);
+		
+		// Scale each pixel to the new range
+		image.forEachPixelInView((x, y, color) -> {
+			if (curMaxRed != curMinRed)
+				color.red = Math.round((color.red - curMinRed) / (curMaxRed - curMinRed) * (targetMaxRed - targetMinRed) + targetMinRed);
+			if (curMaxGreen != curMinGreen)
+				color.green = Math.round((color.green - curMinGreen) / (curMaxGreen - curMinGreen) * (targetMaxGreen - targetMinGreen) + targetMinGreen);
+			if (curMaxBlue != curMinBlue)
+				color.blue = Math.round((color.blue - curMinBlue) / (curMaxBlue - curMinBlue) * (targetMaxBlue - targetMinBlue) + targetMinBlue);
 			image.setUnsafePixel(x, y, color);
 		});
 		return image;
@@ -871,9 +886,9 @@ class Vision {
 
 		image.forEachPixelInView((x, y, color) -> {
 			var colorValue = switch channel {
-				case RED: Color.from8Bit(color.red);
-				case GREEN: Color.from8Bit(color.green);
-				case BLUE: Color.from8Bit(color.blue);
+				case RED: Color.fromRGBA(color.red, 0, 0, color.alpha);
+				case GREEN: Color.fromRGBA(0, color.green, 0, color.alpha);
+				case BLUE: Color.fromRGBA(0, 0, color.blue, color.alpha);
 				case ALPHA: Color.from8Bit(color.alpha);
 				case CYAN: Color.fromFloat(color.cyan);
 				case MAGENTA: Color.fromFloat(color.magenta);
@@ -1015,7 +1030,7 @@ class Vision {
 		if (matrix == null) matrix = Matrix2D.IDENTITY();
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
-		for (corner in [new Point2D(0, 0), new Point2D(0, image.height), new Point2D(image.width, 0), new Point2D(image.width, image.height)]) {
+		for (corner in [new Point2D(0, 0), new Point2D(0, image.height - 1), new Point2D(image.width - 1, 0), new Point2D(image.width - 1, image.height - 1)]) {
 			var coords:Array<Array<Float>> = [[corner.x], [corner.y], [1]];
 			coords = matrix.underlying * coords;
 			var c = coords.flatten();
@@ -1092,7 +1107,7 @@ class Vision {
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY,
 			miz = MathTools.POSITIVE_INFINITY, maz = MathTools.NEGATIVE_INFINITY;
-		for (corner in [new Point3D(0, 0, 1), new Point3D(0, image.height, 1), new Point3D(image.width, 0, 1), new Point3D(image.width, image.height, 1)]) {
+		for (corner in [new Point3D(0, 0, 1), new Point3D(0, image.height - 1, 1), new Point3D(image.width - 1, 0, 1), new Point3D(image.width - 1, image.height - 1, 1)]) {
 			var c = matrix.transformPoint(corner);
 			c.x /= c.z;
 			c.y /= c.z;
