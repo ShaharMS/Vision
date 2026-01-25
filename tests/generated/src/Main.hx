@@ -43,8 +43,12 @@ class Main {
         runner.addCase(new SobelTest());
         runner.addCase(new VisionTest());
         
+        #if sys
         // Use custom pretty reporter (replaces default utest reporting)
         new PrettyReporter(runner);
+        #else
+        utest.ui.Report.create(runner);
+        #end
         runner.run();
     }
 }

@@ -53,6 +53,45 @@ jobs:
         with:
           haxe-version: ${{ matrix.haxe-version }}
 
+      - name: Setup Node (js only)
+        if: ${{ matrix.target == 'js' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java (java/jvm only)
+        if: ${{ matrix.target == 'java' || matrix.target == 'jvm' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Python (python only)
+        if: ${{ matrix.target == 'python' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Setup PHP (php only)
+        if: ${{ matrix.target == 'php' }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install runtime deps (lua/cs/hl)
+        if: ${{ matrix.target == 'lua' || matrix.target == 'cs' || matrix.target == 'hl' }}
+        run: |
+          sudo apt-get update
+          if [ "${{ matrix.target }}" = "lua" ]; then
+            sudo apt-get install -y lua5.3
+          fi
+          if [ "${{ matrix.target }}" = "cs" ]; then
+            sudo apt-get install -y mono-complete
+          fi
+          if [ "${{ matrix.target }}" = "hl" ]; then
+            sudo apt-get install -y hashlink
+          fi
+
       - name: Set HAXEPATH
         run: |
           echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
@@ -64,14 +103,58 @@ jobs:
           haxelib install hxcpp --quiet
           haxelib install hxjava --quiet
           haxelib install hxcs --quiet
-      - name: Run utest (${{ matrix.target }})
+      - name: Compile (${{ matrix.target }})
         run: |
           mkdir -p bin
           CMD="haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug"
-          if [ "${{ matrix.output }}" != "" ]; then
+          if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
+            CMD="$CMD --no-inline"
+          fi
+          if [ "${{ matrix.target }}" = "interp" ]; then
+            CMD="$CMD --no-output"
+          elif [ "${{ matrix.output }}" != "" ]; then
             CMD="$CMD ${{ matrix.flag }} ${{ matrix.output }}"
           else
             CMD="$CMD ${{ matrix.flag }}"
           fi
           echo "$CMD"
           $CMD
+
+      - name: Run (${{ matrix.target }})
+        run: |
+          if [ "${{ matrix.target }}" = "js" ]; then
+            node bin/js/tests.js
+          fi
+          if [ "${{ matrix.target }}" = "neko" ]; then
+            neko bin/neko/tests.n
+          fi
+          if [ "${{ matrix.target }}" = "hl" ]; then
+            hl bin/hl/tests.hl
+          fi
+          if [ "${{ matrix.target }}" = "cpp" ]; then
+            ./bin/cpp/Main
+          fi
+          if [ "${{ matrix.target }}" = "jvm" ]; then
+            java -jar bin/jvm/tests.jar
+          fi
+          if [ "${{ matrix.target }}" = "java" ]; then
+            java -cp bin/java/obj Main
+          fi
+          if [ "${{ matrix.target }}" = "python" ]; then
+            python bin/python/tests.py
+          fi
+          if [ "${{ matrix.target }}" = "lua" ]; then
+            lua bin/lua/tests.lua
+          fi
+          if [ "${{ matrix.target }}" = "php" ]; then
+            php bin/php/index.php
+          fi
+          if [ "${{ matrix.target }}" = "cs" ]; then
+            mono bin/cs/bin/Main.exe
+          fi
+          if [ "${{ matrix.target }}" = "cppia" ]; then
+            cppia bin/cppia/tests.cppia
+          fi
+          if [ "${{ matrix.target }}" = "interp" ]; then
+            haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug --interp
+          fi

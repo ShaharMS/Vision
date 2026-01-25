@@ -49,11 +49,29 @@ class PrettyReporter {
         runner.onComplete.add(complete);
     }
 
+    function log(message:String) {
+        #if sys
+        Sys.println(message);
+        #elseif js
+        js.Browser.console.log(message);
+        #else
+        trace(message);
+        #end
+    }
+
     function startTests(runner:Runner) {
         startTime = haxe.Timer.stamp();
-        Sys.println(CYAN + BOLD + "════════════════════════════════════════════════════════════════" + RESET);
-        Sys.println(CYAN + BOLD + "                    Vision Test Suite                           " + RESET);
-        Sys.println(CYAN + BOLD + "════════════════════════════════════════════════════════════════" + RESET + "\n");
+        log(CYAN + BOLD + "════════════════════════════════════════════════════════════════" + RESET);
+        log(CYAN + BOLD + "                    Vision Test Suite                           " + RESET);
+        log(CYAN + BOLD + "════════════════════════════════════════════════════════════════" + RESET + "\n");
+    }
+
+    function exit(exitCode:Int) {
+        #if sys
+        Sys.exit(exitCode);
+        #else
+        log("Exiting with code " + Std.string(exitCode));
+        #end
     }
 
     function progress(e:{result:TestResult, done:Int, totals:Int}) {
@@ -100,44 +118,44 @@ class PrettyReporter {
                       StringTools.lpad(Std.string(now.getMinutes()), "0", 2) + ":" + 
                       StringTools.lpad(Std.string(now.getSeconds()), "0", 2);
 
-        Sys.println(CYAN + BOLD + " Unit Test " + Std.string(testNum) + ":" + RESET + " " + BOLD + ITALIC + statusColor + result.cls + "." + result.method + RESET);
-        Sys.println("    " + GRAY + "[" + timeStr + "]" + RESET);
-        Sys.println("    " + statusEmoji + " " + RESET + BOLD + WHITE + "Result: " + ITALIC + statusColor + statusText + RESET);
+        log(CYAN + BOLD + " Unit Test " + Std.string(testNum) + ":" + RESET + " " + BOLD + ITALIC + statusColor + result.cls + "." + result.method + RESET);
+        log("    " + GRAY + "[" + timeStr + "]" + RESET);
+        log("    " + statusEmoji + " " + RESET + BOLD + WHITE + "Result: " + ITALIC + statusColor + statusText + RESET);
         
         if (!success && !isSkipped) {
-            Sys.println("        " + RESET + BOLD + WHITE + "Message:" + RESET + " " + ITALIC + RED + failureMsg + RESET);
+            log("        " + RESET + BOLD + WHITE + "Message:" + RESET + " " + ITALIC + RED + failureMsg + RESET);
         }
     }
 
     function complete(runner:Runner) {
         var elapsed = haxe.Timer.stamp() - startTime;
         
-        Sys.println("\n");
-        Sys.println(getTestStatusBar(mySuccesses, myFailures, mySkipped, myErrors));
+        log("\n");
+        log(getTestStatusBar(mySuccesses, myFailures, mySkipped, myErrors));
         
         var total = mySuccesses + myFailures + mySkipped + myErrors;
         
         if (myFailures == 0 && myErrors == 0) {
-            Sys.println(GREEN + BOLD + "🥳 🥳 🥳 All tests passed! 🥳 🥳 🥳" + RESET);
+            log(GREEN + BOLD + "🥳 🥳 🥳 All tests passed! 🥳 🥳 🥳" + RESET);
             if (mySkipped > 0)
-                Sys.println("    - " + RESET + BOLD + LIGHT_BLUE + " " + Std.string(mySkipped) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + LIGHT_BLUE + "Skipped 🤷" + RESET);
+                log("    - " + RESET + BOLD + LIGHT_BLUE + " " + Std.string(mySkipped) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + LIGHT_BLUE + "Skipped 🤷" + RESET);
         } else {
-            Sys.println(RED + BOLD + "Final Test Status:" + RESET);
-            Sys.println("    - " + RESET + BOLD + GREEN + " " + Std.string(mySuccesses) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + GREEN + "Passed 🥳" + RESET);
+            log(RED + BOLD + "Final Test Status:" + RESET);
+            log("    - " + RESET + BOLD + GREEN + " " + Std.string(mySuccesses) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + GREEN + "Passed 🥳" + RESET);
             if (myFailures > 0)
-                Sys.println("    - " + RESET + BOLD + RED + " " + Std.string(myFailures) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + RED + "Failed 🥺" + RESET);
+                log("    - " + RESET + BOLD + RED + " " + Std.string(myFailures) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + RED + "Failed 🥺" + RESET);
             if (myErrors > 0)
-                Sys.println("    - " + RESET + BOLD + YELLOW + " " + Std.string(myErrors) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + YELLOW + "Errors 💥" + RESET);
+                log("    - " + RESET + BOLD + YELLOW + " " + Std.string(myErrors) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + YELLOW + "Errors 💥" + RESET);
             if (mySkipped > 0)
-                Sys.println("    - " + RESET + BOLD + LIGHT_BLUE + " " + Std.string(mySkipped) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + LIGHT_BLUE + "Skipped 🤷" + RESET);
+                log("    - " + RESET + BOLD + LIGHT_BLUE + " " + Std.string(mySkipped) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + LIGHT_BLUE + "Skipped 🤷" + RESET);
         }
         
-        Sys.println(getTestStatusBar(mySuccesses, myFailures, mySkipped, myErrors));
-        Sys.println("\n" + CYAN + BOLD + "Total: " + Std.string(total) + " tests in " + Std.string(testNum) + " test methods (" + Std.string(Std.int(elapsed * 100) / 100) + "s)" + RESET);
+        log(getTestStatusBar(mySuccesses, myFailures, mySkipped, myErrors));
+        log("\n" + CYAN + BOLD + "Total: " + Std.string(total) + " tests in " + Std.string(testNum) + " test methods (" + Std.string(Std.int(elapsed * 100) / 100) + "s)" + RESET);
         
         // Exit with appropriate code
         var exitCode = (myFailures == 0 && myErrors == 0) ? 0 : 1;
-        Sys.exit(exitCode);
+        exit(exitCode);
     }
 
     function getTestStatusBar(successes:Int, failures:Int, skipped:Int, errors:Int):String {

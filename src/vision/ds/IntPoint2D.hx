@@ -51,12 +51,20 @@ abstract IntPoint2D(Impl) {
 	}
 
 	inline function set_y(y:Int):Int {
+		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
+		this = Int64.make(this.high, y);
+		#else
 		this.low = y;
+		#end
 		return y;
 	}
 
 	inline function set_x(x:Int):Int {
+		#if (((hl_ver >= version("1.12.0") && !hl_legacy32) || cpp || cs) && !vision_disable_point_alloc_optimization)
+		this = Int64.make(x, this.low);
+		#else
 		this.high = x;
+		#end
 		return x;
 	}
 
