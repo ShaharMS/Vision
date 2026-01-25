@@ -1,7 +1,0 @@
-
---class-path src
---main Test_vision_Vision_simpleImageSimilarity
--debug
---java java
---library vision
---library format

@@ -1,7 +1,0 @@
-
---class-path src
---main Test_vision_Vision_bilateralDenoise
--debug
---cs cs
---library vision
---library format

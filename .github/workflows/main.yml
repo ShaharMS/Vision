@@ -2,14 +2,49 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  cross-platformness:
+  tests:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        algo: ['convolve']
         haxe-version: [4.2.5]
-        target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
+        include:
+          - target: interp
+            flag: --interp
+            output: ""
+          - target: neko
+            flag: --neko
+            output: bin/neko/tests.n
+          - target: hl
+            flag: --hl
+            output: bin/hl/tests.hl
+          - target: js
+            flag: --js
+            output: bin/js/tests.js
+          - target: cpp
+            flag: --cpp
+            output: bin/cpp
+          - target: jvm
+            flag: --jvm
+            output: bin/jvm/tests.jar
+          - target: python
+            flag: --python
+            output: bin/python/tests.py
+          - target: lua
+            flag: --lua
+            output: bin/lua/tests.lua
+          - target: php
+            flag: --php
+            output: bin/php
+          - target: cs
+            flag: --cs
+            output: bin/cs
+          - target: java
+            flag: --java
+            output: bin/java
+          - target: cppia
+            flag: --cppia
+            output: bin/cppia/tests.cppia
     steps:
       - uses: actions/checkout@v4
       - name: Setup Haxe (${{ matrix.haxe-version }})
@@ -23,40 +58,19 @@ jobs:
       - name: Install & Set-up Vision
         run: |
           haxelib dev vision $GITHUB_WORKSPACE
+          haxelib install utest --quiet
           haxelib install format --quiet
           haxelib install hxcpp --quiet
           haxelib install hxjava --quiet
           haxelib install hxcs --quiet
-      - name: ${{ matrix.algo }} (${{ matrix.target }})
+      - name: Run utest (${{ matrix.target }})
         run: |
-          cd unit_tests/${{ matrix.algo }}
-          haxe ${{ matrix.target }}.hxml
-  algorithm:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        algo: ['general', 'laplacianEdgeDiffOperator', 'limitColorRanges', 'bilateralDenoise', 'whiteNoise', 'deepfry', 'vignette', 'simpleLine2DDetection', 'combine', 'perwittEdgeDiffOperator', 'cannyEdgeDetection', 'projectiveTransform', 'posterize', 'invert', 'saltAndPepperNoise', 'normalize', 'smooth', 'medianBlur', 'laplacianOfGaussianEdgeDetection', 'convolutionRidgeDetection', 'blackAndWhite', 'fisheyeDistortion', 'erode', 'nearestNeighborBlur', 'mustacheDistortion', 'gaussianBlur', 'pixelate', 'sepia', 'dilate', 'sharpen', 'grayscale', 'convolve', 'robertEdgeDiffOperator', 'replaceColorRanges', 'sobelEdgeDiffOperator', 'sobelEdgeDetection', 'pincushionDistortion', 'barrelDistortion', 'contrast', 'perwittEdgeDetection', 'dropOutNoise', 'affineTransform', 'tint', 'filterForColorChannel', 'kmeansPosterize', 'kmeansGroupImageColors', 'simpleImageSimilarity']
-        haxe-version: [4.2.5]
-        target: [interp]
-    steps:
-      - uses: actions/checkout@v1
-      - name: Setup Haxe (${{ matrix.haxe-version }})
-        uses: krdlab/setup-haxe@v1
-        with:
-          haxe-version: ${{ matrix.haxe-version }}
-
-      - name: Set HAXEPATH
-        run: |
-          echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
-      - name: Install & Set-up Vision
-        run: |
-          haxelib dev vision $GITHUB_WORKSPACE
-          haxelib install format --quiet
-          haxelib install hxcpp --quiet
-          haxelib install hxjava --quiet
-          haxelib install hxcs --quiet
-      - name: ${{ matrix.algo }} (${{ matrix.target }})
-        run: |
-          cd unit_tests/${{ matrix.algo }}
-          haxe ${{ matrix.target }}.hxml
+          mkdir -p bin
+          CMD="haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug"
+          if [ "${{ matrix.output }}" != "" ]; then
+            CMD="$CMD ${{ matrix.flag }} ${{ matrix.output }}"
+          else
+            CMD="$CMD ${{ matrix.flag }}"
+          fi
+          echo "$CMD"
+          $CMD

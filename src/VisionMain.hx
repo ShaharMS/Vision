@@ -496,31 +496,7 @@ using vision.tools.MathTools;
 		}
 		#end
 
-		#elseif (sys && compile_unit_tests)
-		//var s = Type.getClassFields(Vision);
-		//var st = "[";
-		//for (t in s) {
-		//	st += "'" + t + "', ";
-		//}
-		//trace(st.substring(0, st.length - 2) + "]");
-		var cases = TestCaseGenerator.generateFromClass(Vision);
-		for (i in 0...cases.length) {
-			/*PC: */ 
-			try {
-				cases[i].writeCrossPlatformHaxeProject("C:\\Users\\Marcus\\Documents\\Github\\Vision\\unit_tests", cases[i].method);
-			} catch (e) {
-				trace("Working on laptop, path changed...");
-				cases[i].writeCrossPlatformHaxeProject("C:\\Users\\shahar\\Documents\\GitHub\\Vision\\unit_tests", cases[i].method);
-
-			}
-		}
-		try {
-			TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\Marcus\\Documents\\Github\\Vision", "main_test");
-		} catch (e) {
-			trace("Working on laptop, path changed...");
-			TestCaseGenerator.generateHaxeProjectOfMultipleTestCases(cases, "C:\\Users\\shahar\\Documents\\GitHub\\Vision", "main_test");
-		}
-		#end
+				#end
 		#end
 	}
 	
