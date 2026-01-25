@@ -1,9 +1,10 @@
 --class-path generator
---main Main
+--class-path ../src
 
---library vision
+--library utest
 
 --define --regenerate-all
 --define --no-overwrite
 
---interp
+# Run the build macro to generate test files at compile time
+--macro BuildMacro.generateAll()

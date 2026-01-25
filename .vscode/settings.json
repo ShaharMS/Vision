@@ -1,5 +1,11 @@
 {
     "liveServer.settings.port": 5501,
+    "haxeTestExplorer.testCommand": [
+        "${haxe}",
+        "test.hxml",
+        "-lib",
+        "test-adapter"
+    ],
     "cSpell.words": [
 		"AARRGGBB",
 		"ABGR",
@@ -82,5 +88,8 @@
 	],
     "cSpell.enableFiletypes": [
         "haxe"
-    ]
+	],
+	"chat.tools.terminal.autoApprove": {
+		"haxe": true
+	}
 }

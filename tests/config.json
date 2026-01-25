@@ -5,7 +5,7 @@
     "exclude": [
         "exceptions/",
         "Array2DMacro.hx",
-        "FrameworkImageIO.hx"
+        "FrameworkImageIO.hx"        
     ],
     "destination": "./generated/src/tests",
     "testsToRunFile": "./generated/src/TestsToRun.hx"

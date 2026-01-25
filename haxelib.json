@@ -7,6 +7,8 @@
     "releasenote": "K-Means, color filtering, Image hashing, and many QOL additions :D",
     "tags": ["cv", "computer-vision", "im", "image-manipulation", "cross", "cross-framework", "image", "image-processing", "ip", "feature-detection"],
     "classPath": "src",
-    "dependencies": {},
+    "dependencies": {
+        "utest": ""
+    },
     "url": "https://github.com/ShaharMS/Vision"
 }
