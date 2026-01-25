@@ -1,0 +1,1971 @@
+{
+	"tests.RectangleTest": {
+		"pos": {
+			"line": 7,
+			"file": "tests/generated/src/tests/RectangleTest.hx"
+		},
+		"methods": {
+			"test_mutability_y": {
+				"line": 70
+			},
+			"test_boundingBox": {
+				"line": 110
+			},
+			"test_constructor_zero": {
+				"line": 21
+			},
+			"test_screenRegion": {
+				"line": 101
+			},
+			"test_square": {
+				"line": 127
+			},
+			"test_structInit": {
+				"line": 41
+			},
+			"test_mutability_width": {
+				"line": 79
+			},
+			"test_constructor_basic": {
+				"line": 13
+			},
+			"test_area_calculation": {
+				"line": 121
+			},
+			"test_constructor_negativePosition": {
+				"line": 29
+			},
+			"test_structInit_largeValues": {
+				"line": 49
+			},
+			"test_mutability_height": {
+				"line": 88
+			},
+			"test_mutability_x": {
+				"line": 61
+			}
+		}
+	},
+	"tests.BilinearInterpolationTest": {
+		"pos": {
+			"line": 10,
+			"file": "tests/generated/src/tests/BilinearInterpolationTest.hx"
+		},
+		"methods": {
+			"test_interpolate": {
+				"line": 38
+			},
+			"test_interpolate_upscale": {
+				"line": 47
+			},
+			"testImage": {
+				"line": 13
+			},
+			"createGradientImage": {
+				"line": 25
+			},
+			"blackImage": {
+				"line": 14
+			},
+			"test_interpolate_same_size": {
+				"line": 71
+			},
+			"test_interpolate_preserves_corners": {
+				"line": 54
+			},
+			"gradientImage": {
+				"line": 15
+			},
+			"setup": {
+				"line": 17
+			},
+			"test_interpolateMissingPixels_fills_gaps": {
+				"line": 85
+			},
+			"test_interpolateMissingPixels_larger_kernel": {
+				"line": 100
+			},
+			"test_interpolateMissingPixels_no_kernel": {
+				"line": 77
+			}
+		}
+	},
+	"tests.RobertsCrossTest": {
+		"pos": {
+			"line": 10,
+			"file": "tests/generated/src/tests/RobertsCrossTest.hx"
+		},
+		"methods": {
+			"test_convolveWithRobertsCross_notNull": {
+				"line": 52
+			},
+			"test_convolveWithRobertsCross_smallImage": {
+				"line": 65
+			},
+			"createGradientImage": {
+				"line": 16
+			},
+			"createUniformImage": {
+				"line": 44
+			},
+			"test_convolveWithRobertsCross_outputIsGrayscale": {
+				"line": 103
+			},
+			"test_convolveWithRobertsCross_detectsVerticalEdge": {
+				"line": 76
+			},
+			"test_convolveWithRobertsCross_sameSize": {
+				"line": 58
+			},
+			"createEdgeImage": {
+				"line": 29
+			},
+			"test_convolveWithRobertsCross_hasFullAlpha": {
+				"line": 113
+			},
+			"test_convolveWithRobertsCross_uniformProducesLowGradient": {
+				"line": 88
+			},
+			"test_convolveWithRobertsCross_tallImage": {
+				"line": 133
+			},
+			"test_convolveWithRobertsCross_wideImage": {
+				"line": 126
+			}
+		}
+	},
+	"tests.Point3DTest": {
+		"pos": {
+			"line": 8,
+			"file": "tests/generated/src/tests/Point3DTest.hx"
+		},
+		"methods": {
+			"test_mutability_y": {
+				"line": 61
+			},
+			"test_distanceTo_axisAligned_y": {
+				"line": 101
+			},
+			"test_constructor_zero": {
+				"line": 21
+			},
+			"test_constructor_fractional": {
+				"line": 35
+			},
+			"test_distanceTo_samePoint": {
+				"line": 88
+			},
+			"test_copy_independence": {
+				"line": 138
+			},
+			"test_distanceTo_simple": {
+				"line": 81
+			},
+			"test_structInit": {
+				"line": 42
+			},
+			"test_constructor_negative": {
+				"line": 28
+			},
+			"test_distanceTo_negative_coordinates": {
+				"line": 120
+			},
+			"test_toString_negative": {
+				"line": 169
+			},
+			"test_toString_zero": {
+				"line": 175
+			},
+			"test_toString_format": {
+				"line": 163
+			},
+			"test_copy_values": {
+				"line": 130
+			},
+			"test_constructor_basic": {
+				"line": 14
+			},
+			"test_toString_fractional": {
+				"line": 181
+			},
+			"test_mutability_z": {
+				"line": 69
+			},
+			"test_distanceTo_symmetric": {
+				"line": 113
+			},
+			"test_mutability_x": {
+				"line": 53
+			},
+			"test_distanceTo_axisAligned_z": {
+				"line": 107
+			},
+			"test_copy_negative": {
+				"line": 151
+			},
+			"test_distanceTo_axisAligned_x": {
+				"line": 95
+			}
+		}
+	},
+	"tests.PointTransformationPairTest": {
+		"pos": {
+			"line": 8,
+			"file": "tests/generated/src/tests/PointTransformationPairTest.hx"
+		},
+		"methods": {
+			"test_reference_independence": {
+				"line": 106
+			},
+			"test_mutability_pointCoordinates": {
+				"line": 90
+			},
+			"test_mutability_from": {
+				"line": 62
+			},
+			"test_structInit": {
+				"line": 48
+			},
+			"test_constructor_negativeCoordinates": {
+				"line": 34
+			},
+			"test_cornerMapping_topLeft": {
+				"line": 134
+			},
+			"test_constructor_basic": {
+				"line": 14
+			},
+			"test_translation_pair": {
+				"line": 122
+			},
+			"test_cornerMapping_bottomRight": {
+				"line": 143
+			},
+			"test_mutability_to": {
+				"line": 76
+			},
+			"test_constructor_samePoints": {
+				"line": 26
+			}
+		}
+	},
+	"tests.ByteArrayTest": {
+		"pos": {
+			"line": 7,
+			"file": "tests/generated/src/tests/ByteArrayTest.hx"
+		},
+		"methods": {
+			"test_from_string": {
+				"line": 56
+			},
+			"test_concat": {
+				"line": 210
+			},
+			"test_resize_shrink": {
+				"line": 199
+			},
+			"test_resize_grow": {
+				"line": 190
+			},
+			"test_setUInt32_at_different_offsets": {
+				"line": 142
+			},
+			"test_constructor_zero_fill": {
+				"line": 27
+			},
+			"test_toArray": {
+				"line": 250
+			},
+			"test_from_array_int": {
+				"line": 68
+			},
+			"test_setUInt8_getUInt8": {
+				"line": 86
+			},
+			"test_from_float": {
+				"line": 44
+			},
+			"test_setInt8_getInt8": {
+				"line": 114
+			},
+			"test_setUInt8_boundary_values": {
+				"line": 99
+			},
+			"test_from_int": {
+				"line": 38
+			},
+			"test_isEmpty_false": {
+				"line": 241
+			},
+			"test_setUInt32_getUInt32": {
+				"line": 129
+			},
+			"test_getBytes": {
+				"line": 173
+			},
+			"test_setBytes_getBytes": {
+				"line": 155
+			},
+			"test_from_dynamic": {
+				"line": 75
+			},
+			"test_toArray_empty": {
+				"line": 268
+			},
+			"test_constructor_with_length": {
+				"line": 13
+			},
+			"test_constructor_with_fill": {
+				"line": 18
+			},
+			"test_from_string_utf8": {
+				"line": 62
+			},
+			"test_from_bool": {
+				"line": 50
+			},
+			"test_isEmpty_true": {
+				"line": 236
+			}
+		}
+	},
+	"tests.VisionTest": {
+		"pos": {
+			"line": 61,
+			"file": "tests/generated/src/tests/VisionTest.hx"
+		},
+		"methods": {
+			"test_projectiveTransform_identity": {
+				"line": 747
+			},
+			"test_golden_mustacheDistortion": {
+				"line": 416
+			},
+			"HASH_THRESHOLD": {
+				"line": 68
+			},
+			"test_golden_deepfry": {
+				"line": 352
+			},
+			"test_golden_convolutionRidgeDetection": {
+				"line": 598
+			},
+			"test_golden_laplacianOfGaussianEdgeDetection": {
+				"line": 585
+			},
+			"test_golden_combine": {
+				"line": 218
+			},
+			"test_golden_pixelate": {
+				"line": 315
+			},
+			"test_affineTransform_identity": {
+				"line": 738
+			},
+			"test_simpleLine2DDetection": {
+				"line": 720
+			},
+			"loadGoldenTestImages": {
+				"line": 191
+			},
+			"test_posterize_basic": {
+				"line": 694
+			},
+			"test_golden_cannyEdgeDetection": {
+				"line": 549
+			},
+			"test_golden_dilate": {
+				"line": 428
+			},
+			"test_golden_posterize": {
+				"line": 327
+			},
+			"tryLoadImageWithRetry": {
+				"line": 156
+			},
+			"testImage": {
+				"line": 79
+			},
+			"test_invert_basic": {
+				"line": 638
+			},
+			"sourceImage": {
+				"line": 76
+			},
+			"createGradientImage": {
+				"line": 91
+			},
+			"RETRY_DELAY_MS": {
+				"line": 73
+			},
+			"test_golden_sobelEdgeDetection": {
+				"line": 561
+			},
+			"blackImage": {
+				"line": 80
+			},
+			"GOLDEN_BASE": {
+				"line": 64
+			},
+			"test_kmeansGroupImageColors": {
+				"line": 730
+			},
+			"test_combine_50percent": {
+				"line": 756
+			},
+			"test_golden_nearestNeighborBlur": {
+				"line": 464
+			},
+			"test_golden_sepia": {
+				"line": 267
+			},
+			"test_golden_medianBlur": {
+				"line": 489
+			},
+			"hammingDistance": {
+				"line": 107
+			},
+			"test_golden_perwittEdgeDetection": {
+				"line": 573
+			},
+			"test_blackAndWhite_basic": {
+				"line": 674
+			},
+			"test_simpleImageSimilarity_identical": {
+				"line": 708
+			},
+			"test_golden_fisheyeDistortion": {
+				"line": 377
+			},
+			"test_golden_contrast": {
+				"line": 291
+			},
+			"test_golden_pincushionDistortion": {
+				"line": 403
+			},
+			"test_golden_perwittEdgeDiffOperator": {
+				"line": 513
+			},
+			"test_golden_sharpen": {
+				"line": 339
+			},
+			"loadImageWithRetry": {
+				"line": 136
+			},
+			"test_golden_barrelDistortion": {
+				"line": 390
+			},
+			"gradientImage": {
+				"line": 81
+			},
+			"test_golden_kmeansPosterize": {
+				"line": 622
+			},
+			"test_golden_erode": {
+				"line": 440
+			},
+			"test_golden_filterForColorChannel": {
+				"line": 452
+			},
+			"setup": {
+				"line": 83
+			},
+			"test_golden_invert": {
+				"line": 255
+			},
+			"test_golden_grayscale": {
+				"line": 243
+			},
+			"test_simpleImageSimilarity_different": {
+				"line": 713
+			},
+			"test_golden_robertEdgeDiffOperator": {
+				"line": 525
+			},
+			"MAX_RETRIES": {
+				"line": 72
+			},
+			"test_golden_tint": {
+				"line": 231
+			},
+			"test_golden_vignette": {
+				"line": 365
+			},
+			"test_normalize_expands_range": {
+				"line": 768
+			},
+			"test_filterForColorChannel_red": {
+				"line": 817
+			},
+			"test_golden_bilateralDenoise": {
+				"line": 610
+			},
+			"test_grayscale_basic": {
+				"line": 656
+			},
+			"test_golden_sobelEdgeDiffOperator": {
+				"line": 501
+			},
+			"test_golden_laplacianEdgeDiffOperator": {
+				"line": 537
+			},
+			"test_golden_smooth": {
+				"line": 303
+			},
+			"test_limitColorRanges": {
+				"line": 795
+			},
+			"test_golden_gaussianBlur": {
+				"line": 476
+			},
+			"test_golden_blackAndWhite": {
+				"line": 279
+			}
+		}
+	},
+	"tests.MathToolsTest": {
+		"pos": {
+			"line": 13,
+			"file": "tests/generated/src/tests/MathToolsTest.hx"
+		},
+		"methods": {
+			"test_radiansToDegrees": {
+				"line": 61
+			},
+			"test_boundInt": {
+				"line": 341
+			},
+			"test_clamp": {
+				"line": 333
+			},
+			"test_intersectionBetweenRay2Ds_parallel_returns_null": {
+				"line": 300
+			},
+			"test_radiansFromPointToPoint2D": {
+				"line": 186
+			},
+			"test_PI_OVER_2": {
+				"line": 23
+			},
+			"test_intersectionBetweenLine2Ds_parallel_returns_null": {
+				"line": 242
+			},
+			"test_parseBool": {
+				"line": 420
+			},
+			"test_distanceBetweenPoints_3D": {
+				"line": 157
+			},
+			"test_sind": {
+				"line": 97
+			},
+			"test_distanceFromLineToPoint2D": {
+				"line": 260
+			},
+			"test_slopeToDegrees": {
+				"line": 76
+			},
+			"test_degreesToSlope": {
+				"line": 82
+			},
+			"test_cosd": {
+				"line": 104
+			},
+			"test_factorial": {
+				"line": 370
+			},
+			"test_boundFloat": {
+				"line": 347
+			},
+			"test_radiansToSlope": {
+				"line": 88
+			},
+			"test_toFloat_Int64": {
+				"line": 431
+			},
+			"test_SQRT3": {
+				"line": 31
+			},
+			"test_cosec": {
+				"line": 129
+			},
+			"test_flipInsideRectangle": {
+				"line": 461
+			},
+			"test_distanceBetweenPoints_2D": {
+				"line": 139
+			},
+			"test_intersectionBetweenRay2Ds": {
+				"line": 288
+			},
+			"test_isBetweenRange": {
+				"line": 491
+			},
+			"test_wrapFloat": {
+				"line": 361
+			},
+			"test_wrapInt": {
+				"line": 353
+			},
+			"test_truncate": {
+				"line": 395
+			},
+			"test_tand": {
+				"line": 111
+			},
+			"test_POSITIVE_INFINITY": {
+				"line": 35
+			},
+			"test_SQRT2": {
+				"line": 27
+			},
+			"test_NEGATIVE_INFINITY": {
+				"line": 40
+			},
+			"test_degreesToRadians": {
+				"line": 53
+			},
+			"test_PI": {
+				"line": 19
+			},
+			"test_getClosestPointOnRay2D": {
+				"line": 318
+			},
+			"test_slopeFromPointToPoint2D": {
+				"line": 211
+			},
+			"test_distanceFromPointToLine2D": {
+				"line": 268
+			},
+			"test_sec": {
+				"line": 123
+			},
+			"test_mirrorInsideRectangle": {
+				"line": 446
+			},
+			"test_distanceBetweenPoints_mixed": {
+				"line": 176
+			},
+			"test_distanceBetweenLines2D_intersecting": {
+				"line": 276
+			},
+			"test_cotan": {
+				"line": 117
+			},
+			"test_distanceBetweenPoints_IntPoint2D": {
+				"line": 170
+			},
+			"test_intersectionBetweenLine2Ds": {
+				"line": 231
+			},
+			"test_distanceFromPointToRay2D": {
+				"line": 309
+			},
+			"test_gamma": {
+				"line": 379
+			},
+			"test_cropDecimal": {
+				"line": 402
+			},
+			"test_isBetweenRanges": {
+				"line": 476
+			},
+			"test_intersectionBetweenLine2Ds_non_intersecting_segments": {
+				"line": 251
+			},
+			"test_NaN": {
+				"line": 45
+			},
+			"test_degreesFromPointToPoint2D": {
+				"line": 202
+			},
+			"test_slopeToRadians": {
+				"line": 69
+			},
+			"test_isInt": {
+				"line": 410
+			}
+		}
+	},
+	"tests.KMeansTest": {
+		"pos": {
+			"line": 11,
+			"file": "tests/generated/src/tests/KMeansTest.hx"
+		},
+		"methods": {
+			"test_pickElementsAtRandom_limited_by_available": {
+				"line": 113
+			},
+			"test_pickElementsAtRandom_elements_from_source": {
+				"line": 120
+			},
+			"test_getImageColorClusters_returns_color_clusters": {
+				"line": 76
+			},
+			"test_pickElementsAtRandom_correct_count": {
+				"line": 85
+			},
+			"test_getImageColorClusters_two_colors": {
+				"line": 59
+			},
+			"test_pickElementsAtRandom_non_distinct_can_have_duplicates": {
+				"line": 103
+			},
+			"test_pickElementsAtRandom_distinct_elements": {
+				"line": 91
+			},
+			"test_getImageColorClusters_basic": {
+				"line": 52
+			},
+			"test_generateClustersUsingConvergence_basic": {
+				"line": 13
+			},
+			"test_generateClustersUsingConvergence_groups_similar_values": {
+				"line": 26
+			}
+		}
+	},
+	"tests.ArrayToolsTest": {
+		"pos": {
+			"line": 12,
+			"file": "tests/generated/src/tests/ArrayToolsTest.hx"
+		},
+		"methods": {
+			"test_max_1": {
+				"line": 96
+			},
+			"test_raise_with_predicate": {
+				"line": 58
+			},
+			"test_raise": {
+				"line": 49
+			},
+			"test_distanceTo_single_element": {
+				"line": 131
+			},
+			"test_min_empty_array": {
+				"line": 156
+			},
+			"test_median": {
+				"line": 109
+			},
+			"test_raise_predicate_opens_array": {
+				"line": 67
+			},
+			"testImage": {
+				"line": 15
+			},
+			"test_distinct": {
+				"line": 138
+			},
+			"createGradientImage": {
+				"line": 27
+			},
+			"blackImage": {
+				"line": 16
+			},
+			"test_min_1": {
+				"line": 83
+			},
+			"test_min": {
+				"line": 77
+			},
+			"test_average_single_value": {
+				"line": 168
+			},
+			"test_flatten_nested_empty": {
+				"line": 180
+			},
+			"test_flatMap": {
+				"line": 145
+			},
+			"test_average": {
+				"line": 103
+			},
+			"test_flatten": {
+				"line": 40
+			},
+			"gradientImage": {
+				"line": 17
+			},
+			"test_max": {
+				"line": 90
+			},
+			"setup": {
+				"line": 19
+			},
+			"test_max_negative_values": {
+				"line": 162
+			},
+			"test_distanceTo": {
+				"line": 123
+			},
+			"test_median_even": {
+				"line": 115
+			},
+			"test_flatten_empty": {
+				"line": 174
+			}
+		}
+	},
+	"tests.SobelTest": {
+		"pos": {
+			"line": 10,
+			"file": "tests/generated/src/tests/SobelTest.hx"
+		},
+		"methods": {
+			"test_detectEdges_detectsVerticalEdge": {
+				"line": 139
+			},
+			"test_convolveWithSobelOperator_fullAlpha": {
+				"line": 97
+			},
+			"test_detectEdges_highThresholdFewerEdges": {
+				"line": 147
+			},
+			"test_detectEdges_tallImage": {
+				"line": 204
+			},
+			"test_convolveWithSobelOperator_sameSize": {
+				"line": 73
+			},
+			"test_convolveWithSobelOperator_smallImage": {
+				"line": 80
+			},
+			"createGradientImage": {
+				"line": 16
+			},
+			"test_detectEdges_wideImage": {
+				"line": 197
+			},
+			"createUniformImage": {
+				"line": 59
+			},
+			"test_convolveWithSobelOperator_tallImage": {
+				"line": 190
+			},
+			"test_convolveWithSobelOperator_notNull": {
+				"line": 67
+			},
+			"test_convolveWithSobelOperator_wideImage": {
+				"line": 183
+			},
+			"test_detectEdges_uniformImageNoEdges": {
+				"line": 122
+			},
+			"test_detectEdges_sameSize": {
+				"line": 115
+			},
+			"createHorizontalEdgeImage": {
+				"line": 44
+			},
+			"test_convolveWithSobelOperator_grayscaleOutput": {
+				"line": 87
+			},
+			"test_detectEdges_outputBinaryBlackWhite": {
+				"line": 165
+			},
+			"createEdgeImage": {
+				"line": 29
+			},
+			"test_detectEdges_notNull": {
+				"line": 109
+			}
+		}
+	},
+	"tests.HistogramTest": {
+		"pos": {
+			"line": 8,
+			"file": "tests/generated/src/tests/HistogramTest.hx"
+		},
+		"methods": {
+			"test_length_multiple_cells": {
+				"line": 80
+			},
+			"test_median_odd_count": {
+				"line": 94
+			},
+			"test_median_uniform_distribution": {
+				"line": 118
+			},
+			"test_new_creates_empty_histogram": {
+				"line": 10
+			},
+			"test_length_sparse": {
+				"line": 73
+			},
+			"test_increment_multiple_times": {
+				"line": 25
+			},
+			"test_median_even_count": {
+				"line": 105
+			},
+			"test_increment_single_cell": {
+				"line": 16
+			},
+			"test_decrement_to_negative": {
+				"line": 55
+			},
+			"test_decrement_single_cell": {
+				"line": 47
+			},
+			"test_length_empty": {
+				"line": 68
+			},
+			"test_median_single_value": {
+				"line": 88
+			},
+			"test_decrement_returns_self_for_chaining": {
+				"line": 61
+			},
+			"test_increment_chained": {
+				"line": 39
+			},
+			"test_increment_returns_self_for_chaining": {
+				"line": 33
+			}
+		}
+	},
+	"tests.SimpleHoughTest": {
+		"pos": {
+			"line": 11,
+			"file": "tests/generated/src/tests/SimpleHoughTest.hx"
+		},
+		"methods": {
+			"test_mapLines_sameSize": {
+				"line": 107
+			},
+			"test_mapLines_withRays": {
+				"line": 123
+			},
+			"createDiagonalLineImage": {
+				"line": 40
+			},
+			"test_detectLines_notNull": {
+				"line": 57
+			},
+			"createEmptyImage": {
+				"line": 49
+			},
+			"test_mapLines_emptyRays": {
+				"line": 115
+			},
+			"test_detectLines_returnsArray": {
+				"line": 63
+			},
+			"createGradientImage": {
+				"line": 17
+			},
+			"test_mapLines_multipleRays": {
+				"line": 132
+			},
+			"test_detectLines_emptyImageNoLines": {
+				"line": 70
+			},
+			"test_mapLines_notNull": {
+				"line": 100
+			},
+			"test_detectAndMap_integration": {
+				"line": 149
+			},
+			"test_detectLines_highThresholdFewerLines": {
+				"line": 77
+			},
+			"test_detectLines_resultContainsRay2D": {
+				"line": 85
+			},
+			"createLineImage": {
+				"line": 30
+			}
+		}
+	},
+	"tests.SimpleLineDetectorTest": {
+		"pos": {
+			"line": 14,
+			"file": "tests/generated/src/tests/SimpleLineDetectorTest.hx"
+		},
+		"methods": {
+			"test_lineCoveragePercentage_null_line_returns_zero": {
+				"line": 139
+			},
+			"test_lineCoveragePercentage_partial_coverage": {
+				"line": 148
+			},
+			"createDiagonalLineImage": {
+				"line": 35
+			},
+			"test_correctLines_preserves_distant_parallel_lines": {
+				"line": 226
+			},
+			"test_correctLines_empty_array": {
+				"line": 167
+			},
+			"test_correctLines_single_line_unchanged": {
+				"line": 176
+			},
+			"test_findLineFromPoint_horizontal_line": {
+				"line": 47
+			},
+			"test_lineCoveragePercentage_full_coverage": {
+				"line": 112
+			},
+			"test_findLineFromPoint_returns_null_for_short_line": {
+				"line": 79
+			},
+			"test_correctLines_removes_shorter_intersecting_line": {
+				"line": 200
+			},
+			"test_correctLines_keeps_perpendicular_lines": {
+				"line": 214
+			},
+			"test_correctLines_merges_collinear_adjacent_lines": {
+				"line": 188
+			},
+			"test_findLineFromPoint_returns_null_on_black_pixel": {
+				"line": 66
+			},
+			"test_findLineFromPoint_out_of_bounds": {
+				"line": 95
+			},
+			"createVerticalLineImage": {
+				"line": 26
+			},
+			"test_lineCoveragePercentage_no_coverage": {
+				"line": 126
+			},
+			"createHorizontalLineImage": {
+				"line": 17
+			}
+		}
+	},
+	"tests.GaussTest": {
+		"pos": {
+			"line": 11,
+			"file": "tests/generated/src/tests/GaussTest.hx"
+		},
+		"methods": {
+			"test_create1DKernelOfSize_sums_to_one": {
+				"line": 70
+			},
+			"test_create1DKernelOfSize_symmetric": {
+				"line": 79
+			},
+			"test_create1DKernelOfSize_5": {
+				"line": 62
+			},
+			"test_fastBlur_smooths_noise": {
+				"line": 93
+			},
+			"test_create2DKernelOfSize_sums_to_one": {
+				"line": 34
+			},
+			"test_create2DKernelOfSize_symmetric": {
+				"line": 45
+			},
+			"test_fastBlur_returns_image": {
+				"line": 85
+			},
+			"test_create5x5Kernel_deprecated": {
+				"line": 149
+			},
+			"test_create3x3Kernel_deprecated": {
+				"line": 143
+			},
+			"test_create1DKernelOfSize_3": {
+				"line": 53
+			},
+			"test_fastBlur_larger_sigma_more_blur": {
+				"line": 120
+			},
+			"test_fastBlur_uniform_image_unchanged": {
+				"line": 111
+			},
+			"test_create2DKernelOfSize_3x3": {
+				"line": 13
+			},
+			"test_create2DKernelOfSize_5x5": {
+				"line": 24
+			}
+		}
+	},
+	"tests.ImageIOTest": {
+		"pos": {
+			"line": 11,
+			"file": "tests/generated/src/tests/ImageIOTest.hx"
+		},
+		"methods": {
+			"test_to_is_not_null": {
+				"line": 38
+			},
+			"test_from_is_not_null": {
+				"line": 34
+			},
+			"createGradientImage": {
+				"line": 21
+			},
+			"test_to_bytes_is_not_null": {
+				"line": 50
+			},
+			"test_from_bytes_is_not_null": {
+				"line": 42
+			},
+			"test_to_framework_is_not_null": {
+				"line": 54
+			},
+			"gradientImage": {
+				"line": 13
+			},
+			"test_from_framework_is_not_null": {
+				"line": 46
+			},
+			"setup": {
+				"line": 15
+			}
+		}
+	},
+	"tests.QueueTest": {
+		"pos": {
+			"line": 7,
+			"file": "tests/generated/src/tests/QueueTest.hx"
+		},
+		"methods": {
+			"test_dequeue_fifoOrder": {
+				"line": 57
+			},
+			"test_iterator_notNull": {
+				"line": 165
+			},
+			"test_dequeue_lengthDecreases": {
+				"line": 77
+			},
+			"test_iterator_values": {
+				"line": 183
+			},
+			"test_iterator_count": {
+				"line": 173
+			},
+			"test_iterator_hasNext": {
+				"line": 197
+			},
+			"test_last_isFirstEnqueued": {
+				"line": 124
+			},
+			"test_toString_singleItem": {
+				"line": 219
+			},
+			"test_constructor_empty": {
+				"line": 13
+			},
+			"test_toString_format": {
+				"line": 210
+			},
+			"test_first_mostRecentEnqueue": {
+				"line": 237
+			},
+			"test_has_firstItem": {
+				"line": 145
+			},
+			"test_enqueue_multiple": {
+				"line": 32
+			},
+			"test_length_startsAtZero": {
+				"line": 90
+			},
+			"test_length_incrementsOnEnqueue": {
+				"line": 95
+			},
+			"test_enqueue_single": {
+				"line": 23
+			},
+			"test_last_multipleItems": {
+				"line": 115
+			},
+			"test_has_nonExistingItem": {
+				"line": 153
+			},
+			"test_dequeue_multipleItems": {
+				"line": 67
+			},
+			"test_enqueue_returnsValue": {
+				"line": 40
+			},
+			"test_first_singleItem": {
+				"line": 246
+			},
+			"test_toString_notNull": {
+				"line": 226
+			},
+			"test_last_singleItem": {
+				"line": 108
+			},
+			"test_has_existingItem": {
+				"line": 137
+			},
+			"test_enqueue_string": {
+				"line": 46
+			}
+		}
+	},
+	"tests.RadixTest": {
+		"pos": {
+			"line": 10,
+			"file": "tests/generated/src/tests/RadixTest.hx"
+		},
+		"methods": {
+			"test_getMax_basic": {
+				"line": 89
+			},
+			"test_sort_duplicates": {
+				"line": 70
+			},
+			"test_sort_withNegatives": {
+				"line": 59
+			},
+			"test_getMax_negatives": {
+				"line": 107
+			},
+			"test_sort_threeDigit": {
+				"line": 36
+			},
+			"test_sort_singleElement": {
+				"line": 78
+			},
+			"test_sort_basic": {
+				"line": 17
+			},
+			"test_getMax_withEndIndex": {
+				"line": 95
+			},
+			"test_sort_alreadySorted": {
+				"line": 43
+			},
+			"test_getMax_allSame": {
+				"line": 101
+			},
+			"test_sort_twoDigit": {
+				"line": 28
+			},
+			"test_sort_reverseSorted": {
+				"line": 51
+			}
+		}
+	},
+	"tests.ColorClusterTest": {
+		"pos": {
+			"line": 8,
+			"file": "tests/generated/src/tests/ColorClusterTest.hx"
+		},
+		"methods": {
+			"test_constructor_empty_items": {
+				"line": 27
+			},
+			"test_constructor_sets_items": {
+				"line": 17
+			},
+			"test_constructor_sets_centroid": {
+				"line": 10
+			},
+			"test_items_can_be_added": {
+				"line": 42
+			},
+			"test_items_preserves_color_values": {
+				"line": 49
+			},
+			"test_centroid_is_mutable": {
+				"line": 34
+			}
+		}
+	},
+	"tests.BilateralFilterTest": {
+		"pos": {
+			"line": 11,
+			"file": "tests/generated/src/tests/BilateralFilterTest.hx"
+		},
+		"methods": {
+			"test_filter": {
+				"line": 39
+			},
+			"testImage": {
+				"line": 14
+			},
+			"createGradientImage": {
+				"line": 26
+			},
+			"blackImage": {
+				"line": 15
+			},
+			"test_filter_preserves_edges": {
+				"line": 49
+			},
+			"test_filter_smooths_noise": {
+				"line": 75
+			},
+			"test_filter_small_sigma": {
+				"line": 88
+			},
+			"gradientImage": {
+				"line": 16
+			},
+			"setup": {
+				"line": 18
+			},
+			"test_filter_uniform_image": {
+				"line": 97
+			}
+		}
+	},
+	"tests.CannyObjectTest": {
+		"pos": {
+			"line": 8,
+			"file": "tests/generated/src/tests/CannyObjectTest.hx"
+		},
+		"methods": {
+			"test_cannyObject_to_image": {
+				"line": 42
+			},
+			"test_cannyObject_forwards_getPixel": {
+				"line": 63
+			},
+			"testImage": {
+				"line": 11
+			},
+			"test_cannyObject_forwards_height": {
+				"line": 57
+			},
+			"createGradientImage": {
+				"line": 23
+			},
+			"blackImage": {
+				"line": 12
+			},
+			"test_cannyObject_forwards_width": {
+				"line": 51
+			},
+			"gradientImage": {
+				"line": 13
+			},
+			"setup": {
+				"line": 15
+			},
+			"test_cannyObject_from_image": {
+				"line": 36
+			},
+			"test_cannyObject_forwards_setPixel": {
+				"line": 73
+			}
+		}
+	},
+	"tests.CannyTest": {
+		"pos": {
+			"line": 10,
+			"file": "tests/generated/src/tests/CannyTest.hx"
+		},
+		"methods": {
+			"test_applyGaussian_returns_image": {
+				"line": 73
+			},
+			"test_applySobelFilters_returns_image": {
+				"line": 99
+			},
+			"test_grayscale_returns_image": {
+				"line": 55
+			},
+			"test_nonMaxSuppression_thins_edges": {
+				"line": 130
+			},
+			"test_applyHysteresis_returns_image": {
+				"line": 147
+			},
+			"test_grayscale_produces_gray_pixels": {
+				"line": 63
+			},
+			"test_applyGaussian_smooths_noise": {
+				"line": 81
+			},
+			"testImage": {
+				"line": 13
+			},
+			"createGradientImage": {
+				"line": 27
+			},
+			"blackImage": {
+				"line": 14
+			},
+			"test_applySobelFilters_detects_vertical_edge": {
+				"line": 107
+			},
+			"edgeImage": {
+				"line": 16
+			},
+			"test_full_canny_pipeline": {
+				"line": 173
+			},
+			"gradientImage": {
+				"line": 15
+			},
+			"createEdgeImage": {
+				"line": 40
+			},
+			"test_nonMaxSuppression_returns_image": {
+				"line": 121
+			},
+			"setup": {
+				"line": 18
+			},
+			"test_applyHysteresis_suppresses_weak_edges": {
+				"line": 157
+			},
+			"test_getNeighbors_returns_correct_size": {
+				"line": 185
+			}
+		}
+	},
+	"tests.CramerTest": {
+		"pos": {
+			"line": 10,
+			"file": "tests/generated/src/tests/CramerTest.hx"
+		},
+		"methods": {
+			"test_solveVariablesFor_zero_solutions": {
+				"line": 75
+			},
+			"test_solveVariablesFor_fractional_coefficients": {
+				"line": 64
+			},
+			"test_solveVariablesFor_identity_matrix": {
+				"line": 41
+			},
+			"test_solveVariablesFor_3x3_system": {
+				"line": 26
+			},
+			"test_solveVariablesFor_negative_solution": {
+				"line": 53
+			},
+			"test_solveVariablesFor_2x2_system": {
+				"line": 12
+			}
+		}
+	},
+	"tests.QueueCellTest": {
+		"pos": {
+			"line": 7,
+			"file": "tests/generated/src/tests/QueueCellTest.hx"
+		},
+		"methods": {
+			"test_getValue_int": {
+				"line": 51
+			},
+			"test_value_mutability": {
+				"line": 80
+			},
+			"test_constructor_withPrevious": {
+				"line": 29
+			},
+			"test_getValue_null": {
+				"line": 66
+			},
+			"test_next_mutability": {
+				"line": 91
+			},
+			"test_previous_mutability": {
+				"line": 99
+			},
+			"test_generic_array": {
+				"line": 144
+			},
+			"test_value_direct_access": {
+				"line": 75
+			},
+			"test_chain_bidirectional": {
+				"line": 130
+			},
+			"test_getValue_float": {
+				"line": 61
+			},
+			"test_constructor_withBothLinks": {
+				"line": 38
+			},
+			"test_chain_threeNodes": {
+				"line": 111
+			},
+			"test_getValue_string": {
+				"line": 56
+			},
+			"test_constructor_withNext": {
+				"line": 20
+			},
+			"test_constructor_valueOnly": {
+				"line": 13
+			}
+		}
+	},
+	"tests.ColorTest": {
+		"pos": {
+			"line": 6,
+			"file": "tests/generated/src/tests/ColorTest.hx"
+		},
+		"methods": {
+			"test_toWebString": {
+				"line": 577
+			},
+			"test_getHSBColorWheel": {
+				"line": 453
+			},
+			"test_getAnalogousHarmony": {
+				"line": 426
+			},
+			"test_fromRGBA_no_alpha": {
+				"line": 36
+			},
+			"test_green": {
+				"line": 151
+			},
+			"test_interpolate_midpoint": {
+				"line": 283
+			},
+			"test_interpolate_at_one": {
+				"line": 304
+			},
+			"test_redFloat": {
+				"line": 166
+			},
+			"test_toHexString": {
+				"line": 565
+			},
+			"test_alpha": {
+				"line": 161
+			},
+			"test_setRGBAFloat": {
+				"line": 523
+			},
+			"test_toString": {
+				"line": 583
+			},
+			"test_fromCMYK": {
+				"line": 74
+			},
+			"test_to24Bit": {
+				"line": 559
+			},
+			"test_subtract": {
+				"line": 358
+			},
+			"test_differenceBetween": {
+				"line": 392
+			},
+			"test_add": {
+				"line": 347
+			},
+			"test_fromString_hex_without_hash": {
+				"line": 134
+			},
+			"test_saturation": {
+				"line": 245
+			},
+			"test_cyan": {
+				"line": 201
+			},
+			"test_fromString_hex_with_hash": {
+				"line": 122
+			},
+			"test_setRGBA": {
+				"line": 514
+			},
+			"test_toInt": {
+				"line": 590
+			},
+			"test_fromInt": {
+				"line": 12
+			},
+			"test_getAverage": {
+				"line": 404
+			},
+			"test_lighten": {
+				"line": 482
+			},
+			"test_setHSL": {
+				"line": 547
+			},
+			"test_distanceBetween_same_color": {
+				"line": 378
+			},
+			"test_magenta": {
+				"line": 209
+			},
+			"test_fromRGBAFloat_clamps_values": {
+				"line": 66
+			},
+			"test_fromRGBA": {
+				"line": 28
+			},
+			"test_lightness": {
+				"line": 265
+			},
+			"test_from8Bit": {
+				"line": 44
+			},
+			"test_black": {
+				"line": 219
+			},
+			"test_fromInt_transparent": {
+				"line": 20
+			},
+			"test_setHSB": {
+				"line": 539
+			},
+			"test_rgb": {
+				"line": 192
+			},
+			"test_getSplitComplementHarmony": {
+				"line": 435
+			},
+			"test_gradient": {
+				"line": 314
+			},
+			"test_invert": {
+				"line": 465
+			},
+			"test_multiply": {
+				"line": 336
+			},
+			"test_alphaFloat": {
+				"line": 184
+			},
+			"test_fromHSB": {
+				"line": 88
+			},
+			"test_blue": {
+				"line": 156
+			},
+			"test_fromHSL": {
+				"line": 108
+			},
+			"test_setCMYK": {
+				"line": 531
+			},
+			"test_brightness": {
+				"line": 255
+			},
+			"test_yellow": {
+				"line": 214
+			},
+			"test_greenFloat": {
+				"line": 174
+			},
+			"test_blueFloat": {
+				"line": 179
+			},
+			"test_hue": {
+				"line": 231
+			},
+			"test_interpolate_at_zero": {
+				"line": 294
+			},
+			"test_fromRGBAFloat": {
+				"line": 58
+			},
+			"test_getComplementHarmony": {
+				"line": 417
+			},
+			"test_fromFloat": {
+				"line": 51
+			},
+			"test_red": {
+				"line": 146
+			},
+			"test_toHexString_with_alpha": {
+				"line": 571
+			},
+			"test_distanceBetween_opposite_colors": {
+				"line": 384
+			},
+			"test_divide": {
+				"line": 369
+			},
+			"test_darken": {
+				"line": 474
+			},
+			"test_getTriadicHarmony": {
+				"line": 444
+			},
+			"test_makeRandom": {
+				"line": 326
+			},
+			"test_blackOrWhite": {
+				"line": 497
+			},
+			"test_grayscale": {
+				"line": 489
+			}
+		}
+	},
+	"tests.LaplaceTest": {
+		"pos": {
+			"line": 11,
+			"file": "tests/generated/src/tests/LaplaceTest.hx"
+		},
+		"methods": {
+			"test_convolveWithLaplacianOperator_returns_image": {
+				"line": 33
+			},
+			"test_convolveWithLaplacianOperator_uniform_produces_zero": {
+				"line": 54
+			},
+			"uniformImage": {
+				"line": 14
+			},
+			"test_convolveWithLaplacianOperator_detects_edges": {
+				"line": 40
+			},
+			"test_laplacianOfGaussian_high_threshold_less_edges": {
+				"line": 93
+			},
+			"test_laplacianOfGaussian_returns_image": {
+				"line": 69
+			},
+			"edgeImage": {
+				"line": 13
+			},
+			"test_laplacianOfGaussian_different_kernel_sizes": {
+				"line": 110
+			},
+			"test_laplacianOfGaussian_detects_edges": {
+				"line": 76
+			},
+			"setup": {
+				"line": 16
+			},
+			"test_convolveWithLaplacianOperator_positive_vs_negative": {
+				"line": 61
+			}
+		}
+	},
+	"tests.ImageHashingTest": {
+		"pos": {
+			"line": 12,
+			"file": "tests/generated/src/tests/ImageHashingTest.hx"
+		},
+		"methods": {
+			"test_phash_returns_64_bit_hash": {
+				"line": 135
+			},
+			"test_phash_same_image_same_hash": {
+				"line": 112
+			},
+			"test_ahash_different_images_different_hashes": {
+				"line": 54
+			},
+			"test_ahash_white_image_high_values": {
+				"line": 86
+			},
+			"createGradientImage": {
+				"line": 26
+			},
+			"blackImage": {
+				"line": 14
+			},
+			"test_ahash_same_image_same_hash": {
+				"line": 45
+			},
+			"test_phash_similar_images_similar_hashes": {
+				"line": 141
+			},
+			"test_phash_returns_bytearray": {
+				"line": 106
+			},
+			"test_ahash_black_image_all_zeros": {
+				"line": 68
+			},
+			"gradientImage": {
+				"line": 16
+			},
+			"test_ahash_different_sizes": {
+				"line": 99
+			},
+			"setup": {
+				"line": 18
+			},
+			"test_ahash_returns_bytearray": {
+				"line": 39
+			},
+			"test_phash_different_images_different_hashes": {
+				"line": 121
+			},
+			"whiteImage": {
+				"line": 15
+			}
+		}
+	},
+	"tests.PerspectiveWarpTest": {
+		"pos": {
+			"line": 9,
+			"file": "tests/generated/src/tests/PerspectiveWarpTest.hx"
+		},
+		"methods": {
+			"test_generateMatrix_with_translation": {
+				"line": 45
+			},
+			"test_generateMatrix_with_perspective": {
+				"line": 83
+			},
+			"test_generateMatrix_identity_when_points_same": {
+				"line": 30
+			},
+			"test_generateMatrix_with_scale": {
+				"line": 65
+			},
+			"test_generateMatrix_returns_3x3": {
+				"line": 11
+			}
+		}
+	},
+	"tests.PerwittTest": {
+		"pos": {
+			"line": 10,
+			"file": "tests/generated/src/tests/PerwittTest.hx"
+		},
+		"methods": {
+			"uniformImage": {
+				"line": 13
+			},
+			"test_convolveWithPerwittOperator_returns_image": {
+				"line": 32
+			},
+			"edgeImage": {
+				"line": 12
+			},
+			"test_detectEdges_threshold_filters": {
+				"line": 67
+			},
+			"test_convolveWithPerwittOperator_detects_edge": {
+				"line": 39
+			},
+			"test_detectEdges_returns_image": {
+				"line": 60
+			},
+			"setup": {
+				"line": 15
+			},
+			"test_convolveWithPerwittOperator_uniform_low_response": {
+				"line": 53
+			}
+		}
+	},
+	"tests.PixelTest": {
+		"pos": {
+			"line": 8,
+			"file": "tests/generated/src/tests/PixelTest.hx"
+		},
+		"methods": {
+			"test_color": {
+				"line": 27
+			},
+			"test_y_coordinate": {
+				"line": 22
+			},
+			"test_x_is_mutable": {
+				"line": 35
+			},
+			"test_y_is_mutable": {
+				"line": 41
+			},
+			"test_constructor": {
+				"line": 10
+			},
+			"test_struct_init": {
+				"line": 54
+			},
+			"test_x_coordinate": {
+				"line": 17
+			},
+			"test_color_is_mutable": {
+				"line": 47
+			}
+		}
+	},
+	"tests.GaussJordanTest": {
+		"pos": {
+			"line": 8,
+			"file": "tests/generated/src/tests/GaussJordanTest.hx"
+		},
+		"methods": {
+			"test_createIdentityMatrix_size_1": {
+				"line": 47
+			},
+			"test_invert_2x2_matrix": {
+				"line": 10
+			},
+			"test_augmentMatrix": {
+				"line": 54
+			},
+			"test_createIdentityMatrix": {
+				"line": 35
+			},
+			"test_invert_identity_matrix": {
+				"line": 22
+			},
+			"test_swapRows": {
+				"line": 66
+			},
+			"test_extractMatrix": {
+				"line": 77
+			}
+		}
+	},
+	"tests.Point2DTest": {
+		"pos": {
+			"line": 8,
+			"file": "tests/generated/src/tests/Point2DTest.hx"
+		},
+		"methods": {
+			"test_toString": {
+				"line": 28
+			},
+			"test_x_is_mutable": {
+				"line": 91
+			},
+			"test_distanceTo_vertical": {
+				"line": 67
+			},
+			"test_copy": {
+				"line": 36
+			},
+			"test_negative_coordinates": {
+				"line": 103
+			},
+			"test_y_is_mutable": {
+				"line": 97
+			},
+			"test_distanceTo_same_point": {
+				"line": 56
+			},
+			"test_constructor_default": {
+				"line": 10
+			},
+			"test_copy_is_independent": {
+				"line": 43
+			},
+			"test_degreesTo_up": {
+				"line": 79
+			},
+			"test_degreesTo_right": {
+				"line": 73
+			},
+			"test_struct_init": {
+				"line": 22
+			},
+			"test_radiansTo_right": {
+				"line": 85
+			},
+			"test_distanceTo_horizontal": {
+				"line": 61
+			},
+			"test_distanceTo_345_triangle": {
+				"line": 50
+			},
+			"test_constructor_with_values": {
+				"line": 16
+			}
+		}
+	}
+}
