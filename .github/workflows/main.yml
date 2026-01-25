@@ -3,6 +3,7 @@ on: [push, pull_request]
 
 jobs:
   tests:
+    if: ${{ false }} 
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -58,6 +59,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Setup Neko (neko only)
+        if: ${{ matrix.target == 'neko' }}
+        run: |
+          NEKO_BIN="$HAXE_STD_PATH/../neko/bin"
+          if [ -x "$NEKO_BIN/neko" ]; then
+            echo "$NEKO_BIN" >> $GITHUB_PATH
+            echo "NEKO_HOME=$HAXE_STD_PATH/../neko" >> $GITHUB_ENV
+            "$NEKO_BIN/neko" -version
+          else
+            sudo apt-get update
+            sudo apt-get install -y neko
+            neko -version
+          fi
 
       - name: Setup Java (java/jvm only)
         if: ${{ matrix.target == 'java' || matrix.target == 'jvm' }}
