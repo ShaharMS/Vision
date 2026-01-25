@@ -1,9 +1,0 @@
---cwd generated
---class-path src
---main Main
---library vision
---library format
-
--w -WDeprecated
-
---interp

@@ -13,12 +13,11 @@ using vision.tools.MathTools;
 class Perwitt {
 	public static function convolveWithPerwittOperator(image:Image):Image {
 		var edgeColors:Image = new Image(image.width, image.height);
-		var maxGradient = -1;
+		var maxGradient = 0;
+		var gradients:Array<Int> = [];
 
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
-				// get the red value of the grayed pixel
-				// we can "trust" .red since the value should be similar across the channels
 				final pos00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
 				final pos01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
 				final pos02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
@@ -30,16 +29,21 @@ class Perwitt {
 				final pos22 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j + 1)).red;
 
 				final gx = ((-1 * pos00) + (0 * pos01) + (1 * pos02)) + ((-2 * pos10) + (0 * pos11) + (2 * pos12)) + ((-1 * pos20) + (0 * pos21) + (1 * pos22));
-
 				final gy = ((-1 * pos00) + (-2 * pos01) + (-1 * pos02)) + ((0 * pos10) + (0 * pos11) + (0 * pos12)) + ((1 * pos20) + (2 * pos21) + (1 * pos22));
 
 				final gradientFloatValue = Math.sqrt((gx * gx) + (gy * gy));
 				final gradient = Std.int(gradientFloatValue);
-
+				gradients[j * image.width + i] = gradient;
 				if (gradient > maxGradient) maxGradient = gradient;
+			}
+		}
 
+		if (maxGradient <= 0) return edgeColors;
+
+		for (i in 0...image.width) {
+			for (j in 0...image.height) {
+				final gradient = gradients[j * image.width + i];
 				final rgb:Int = Std.int(gradient * (255 / maxGradient));
-				// turn into ARGB
 				edgeColors.setPixel(i, j, 0xff000000 | (rgb << 16) | (rgb << 8) | rgb);
 			}
 		}

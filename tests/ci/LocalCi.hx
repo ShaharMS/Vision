@@ -23,6 +23,7 @@ class LocalCi {
 
     static var DEFAULT_LIBS = ["vision", "format", "utest"];
     static var DEFAULT_CLASS_PATH = "tests/generated/src";
+    static var EXTRA_CLASS_PATH = "tests/generated";
 
     static function main() {
         var config = parseArgs(Sys.args());
@@ -34,7 +35,8 @@ class LocalCi {
         ensureDirectory("bin");
 
         if (!config.skipInstall) {
-            installHaxelibs(DEFAULT_LIBS);
+            var libsToInstall = collectRequiredLibs(config.targets);
+            installHaxelibs(libsToInstall);
         }
 
         var failures = 0;
@@ -133,19 +135,43 @@ class LocalCi {
         Sys.command("haxelib", ["dev", "vision", Sys.getCwd()]);
     }
 
+    static function collectRequiredLibs(targets:Array<String>):Array<String> {
+        var libs = DEFAULT_LIBS.copy();
+        for (target in targets) {
+            switch (target) {
+                case "cpp" | "cppia":
+                    addUnique(libs, "hxcpp");
+                case "java" | "jvm":
+                    addUnique(libs, "hxjava");
+                case "cs":
+                    addUnique(libs, "hxcs");
+                default:
+            }
+        }
+        return libs;
+    }
+
+    static inline function addUnique(items:Array<String>, value:String) {
+        if (items.indexOf(value) == -1) items.push(value);
+    }
+
     static function compileTarget(target:String, config:{targets:Array<String>, compile:Bool, run:Bool, skipInstall:Bool, noInlineJava:Bool, showHelp:Bool}):Bool {
         Sys.println("\n==> Compile " + target);
         var args = [
             "--class-path", DEFAULT_CLASS_PATH,
+            "--class-path", EXTRA_CLASS_PATH,
             "--main", "Main",
             "--library", "vision",
             "--library", "format",
             "--library", "utest",
-            "-debug"
+            "-debug",
+            "-D",
+            "no-deprecation-warnings"
         ];
 
         if (config.noInlineJava && (target == "java" || target == "jvm")) {
-            args.push("--no-inline");
+            args.push("-D");
+            args.push("no-inline");
         }
 
         switch (target) {
@@ -200,11 +226,14 @@ class LocalCi {
             case "interp":
                 return Sys.command("haxe", [
                     "--class-path", DEFAULT_CLASS_PATH,
+                    "--class-path", EXTRA_CLASS_PATH,
                     "--main", "Main",
                     "--library", "vision",
                     "--library", "format",
                     "--library", "utest",
                     "-debug",
+                    "-D",
+                    "no-deprecation-warnings",
                     "--interp"
                 ]) == 0;
             case "js":
@@ -215,11 +244,16 @@ class LocalCi {
                 return Sys.command(isWindows ? "hl.exe" : "hl", ["bin/hl/tests.hl"]) == 0;
             case "cpp":
                 var exe = isWindows ? "bin/cpp/Main.exe" : "bin/cpp/Main";
-                return Sys.command(exe, []) == 0;
+                var debugExe = isWindows ? "bin/cpp/Main-debug.exe" : "bin/cpp/Main-debug";
+                var cppPath = FileSystem.exists(exe) ? exe : debugExe;
+                return Sys.command(cppPath, []) == 0;
             case "jvm":
                 return Sys.command("java", ["-jar", "bin/jvm/tests.jar"]) == 0;
             case "java":
-                return Sys.command("java", ["-cp", "bin/java/obj", "Main"]) == 0;
+                var jar = "bin/java/Main.jar";
+                var debugJar = "bin/java/Main-Debug.jar";
+                var jarPath = FileSystem.exists(jar) ? jar : debugJar;
+                return Sys.command("java", ["-jar", jarPath]) == 0;
             case "python":
                 return Sys.command(isWindows ? "python" : "python3", ["bin/python/tests.py"]) == 0;
             case "lua":
@@ -229,10 +263,13 @@ class LocalCi {
                 phpArgs.push("bin/php/index.php");
                 return Sys.command("php", phpArgs) == 0;
             case "cs":
+                var csExe = "bin/cs/bin/Main.exe";
+                var csDebugExe = "bin/cs/bin/Main-Debug.exe";
+                var csPath = FileSystem.exists(csExe) ? csExe : csDebugExe;
                 if (isWindows) {
-                    return Sys.command("bin/cs/bin/Main.exe", []) == 0;
+                    return Sys.command(csPath, []) == 0;
                 }
-                return Sys.command("mono", ["bin/cs/bin/Main.exe"]) == 0;
+                return Sys.command("mono", [csPath]) == 0;
             case "cppia":
                 return Sys.command(isWindows ? "cppia.exe" : "cppia", ["bin/cppia/tests.cppia"]) == 0;
             default:

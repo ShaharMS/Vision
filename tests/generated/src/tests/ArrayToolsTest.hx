@@ -157,7 +157,11 @@ class ArrayToolsTest extends utest.Test {
     function test_min_empty_array() {
         var values:Array<Int> = [];
         var result = vision.tools.ArrayTools.min(values);
+        #if (hl || cppia || cpp || java || jvm || cs)
+        Assert.equals(0, result);
+        #else
         Assert.isNull(result); // Empty array returns null/first element
+        #end
     }
 
     function test_max_negative_values() {

@@ -61,6 +61,13 @@ class ArrayTools {
 	}
 
 	overload extern public static inline function min<T:EitherType<Int ,Float>>(values:Array<T>):T {
+		if (values.length == 0) {
+			#if (hl || cppia || cpp || java || jvm || cs)
+			return cast 0;
+			#else
+			return null;
+			#end
+		}
 		var min = values[0];
 		for (i in 0...values.length) {
 			if ((values[i] - min) < 0) min = values[i];
@@ -69,6 +76,13 @@ class ArrayTools {
 	}
 
 	overload extern public static inline function min(values:Array<Int64>):Int64 {
+		if (values.length == 0) {
+			#if (hl || cppia || cpp || java || jvm || cs)
+			return Int64.make(0, 0);
+			#else
+			return null;
+			#end
+		}
 		var min = values[0];
 		for (i in 0...values.length) {
 			if ((values[i] - min) < 0) min = values[i];
@@ -77,6 +91,7 @@ class ArrayTools {
 	}
 
 	overload extern public static inline function min<T>(values:Array<T>, valueFunction:T->Float):T {
+		if (values.length == 0) return null;
 		var min = values[0];
 		var minValue = valueFunction(min);
 		for (i in 0...values.length) {

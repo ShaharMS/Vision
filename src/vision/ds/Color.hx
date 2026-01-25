@@ -698,7 +698,6 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static function fromString(str:String):Null<Color> {
 		var result:Null<Color> = null;
 		str = StringTools.trim(str);
-
 		if (COLOR_REGEX.match(str)) {
 			var hexColor:String = "0x" + COLOR_REGEX.matched(2);
 			result = new Color(Std.parseInt(hexColor));
@@ -1096,6 +1095,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return this;
 		#end
 	}
+
 
 	inline function validate():Void {
 		#if neko

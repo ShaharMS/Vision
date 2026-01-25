@@ -25,6 +25,8 @@ import js.Browser;
 import js.html.CanvasElement;
 import vision.formats.__internal.JsImageLoader;
 import vision.formats.__internal.JsImageExporter;
+import js.Syntax;
+import js.lib.Uint8Array;
 #end
 import haxe.ds.Vector;
 import vision.ds.IntPoint2D;
@@ -76,6 +78,17 @@ class ImageTools {
 			#if format
 			var func:ByteArray -> Image;
 			if (path.contains("://")) {
+					#if interp
+					try {
+						var result = loadFromURL(image, path);
+						if (onComplete != null)
+							onComplete(result);
+					} catch (e:Dynamic) {
+						#if !vision_quiet
+						throw new WebResponseError(path, Std.string(e));
+						#end
+					}
+					#else
 				func = switch path.split(".").pop().split("?").shift().toUpperCase() {
 					case "PNG": FormatImageLoader.png;
 					case "BMP": FormatImageLoader.bmp;
@@ -98,6 +111,7 @@ class ImageTools {
 					#end
 				}
 				httpRequest.request();
+					#end
 			} else {
 				final handle = sys.io.File.getBytes(path);
 				func = switch path.split(".").pop().split("?").shift().toUpperCase() {
@@ -120,7 +134,11 @@ class ImageTools {
 				#end
 			#end
 		#else
-		JsImageLoader.loadAsync(path, image, onComplete);
+		if (hasJsDom()) {
+			JsImageLoader.loadAsync(path, image, onComplete);
+		} else {
+			loadFromFileNode(path, image, onComplete);
+		}
 		#end
 	}
 	
@@ -168,7 +186,10 @@ class ImageTools {
 
 	overload extern public static inline function loadFromFile(?image:Image, path:String):Image {
 		#if js
-		return image.copyImageFrom(JsImageLoader.loadFileSync(path));
+		if (hasJsDom()) {
+			return image.copyImageFrom(JsImageLoader.loadFileSync(path));
+		}
+		return image.copyImageFrom(loadFromFileNodeSync(path));
 		#else
 		return loadFromBytes(image, File.getBytes(path), Path.extension(path));
 		#end
@@ -176,7 +197,10 @@ class ImageTools {
 
 	public static function loadFromURL(?image:Image, url:String):Image {
 		#if js
-		return image.copyImageFrom(JsImageLoader.loadURLSync(url));
+		if (hasJsDom()) {
+			return image.copyImageFrom(JsImageLoader.loadURLSync(url));
+		}
+		return image.copyImageFrom(loadFromUrlNodeSync(url));
 		#else
 		var http = new Http(url);
 		var requestStatus = 2;
@@ -208,6 +232,121 @@ class ImageTools {
 		return image;
 		#end
 	}
+
+	#if js
+	static inline function hasJsDom():Bool {
+		return Syntax.code("typeof document !== 'undefined'");
+	}
+
+	static function loadFromFileNode(path:String, ?image:Image, ?onComplete:Image->Void):Void {
+		var complete = onComplete != null ? onComplete : function(_){ };
+		if (image == null) {
+			image = new Image(0, 0);
+		}
+
+		if (!path.contains("://")) {
+			try {
+				var fs = Syntax.code("require('fs')");
+				var buffer = fs.readFileSync(path);
+				var bytes = nodeBufferToBytes(buffer);
+				var ext = getFileExtension(path);
+				complete(loadFromBytes(image, bytes, ext));
+			} catch (e:Dynamic) {
+				#if !vision_quiet
+				throw new ImageLoadingFailed(getFileExtension(path), Std.string(e));
+				#end
+				complete(null);
+			}
+			return;
+		}
+
+		var isHttps = path.startsWith("https://");
+		var http = Syntax.code("require")(isHttps ? "https" : "http");
+		var options:Dynamic = { headers: { "User-Agent": "Vision", "Accept-Encoding": "identity" } };
+		http.get(path, options, function(res) {
+			if (res.statusCode >= 300 && res.statusCode < 400 && untyped res.headers != null && untyped res.headers["location"] != null) {
+				var redirect:String = untyped res.headers["location"];
+				loadFromFileNode(redirect, image, onComplete);
+				return;
+			}
+			if (res.statusCode != 200) {
+				complete(null);
+				return;
+			}
+			var chunks = [];
+			untyped res.on("data", function(chunk) {
+				chunks.push(chunk);
+			});
+			untyped res.on("end", function(_) {
+				try {
+					var Buffer = Syntax.code("Buffer");
+					var buffer = Buffer.concat(chunks);
+					var encoding:Dynamic = untyped res.headers != null ? untyped res.headers["content-encoding"] : null;
+					if (encoding != null) {
+						var zlib = Syntax.code("require('zlib')");
+						switch (Std.string(encoding).toLowerCase()) {
+							case "gzip": buffer = zlib.gunzipSync(buffer);
+							case "deflate": buffer = zlib.inflateSync(buffer);
+							case "br":
+								if (untyped zlib.brotliDecompressSync != null) {
+									buffer = zlib.brotliDecompressSync(buffer);
+								}
+							default:
+						}
+					}
+					var bytes = nodeBufferToBytes(buffer);
+					var ext = getFileExtension(path);
+					complete(loadFromBytes(image, bytes, ext));
+				} catch (e:Dynamic) {
+					complete(null);
+				}
+			});
+		}).on("error", function(_) {
+			complete(null);
+		});
+	}
+
+	static function loadFromFileNodeSync(path:String):Image {
+		if (path.contains("://")) {
+			#if !vision_quiet
+			throw new Unimplemented("ImageTools.loadFromURL (js node sync)");
+			#end
+			return new Image(0, 0);
+		}
+		try {
+			var fs = Syntax.code("require('fs')");
+			var buffer = fs.readFileSync(path);
+			var bytes = nodeBufferToBytes(buffer);
+			var ext = getFileExtension(path);
+			return loadFromBytes(null, bytes, ext);
+		} catch (e:Dynamic) {
+			#if !vision_quiet
+			throw new ImageLoadingFailed(getFileExtension(path), Std.string(e));
+			#end
+			return new Image(0, 0);
+		}
+	}
+
+	static function loadFromUrlNodeSync(path:String):Image {
+		#if !vision_quiet
+		throw new Unimplemented("ImageTools.loadFromURL (js node sync)");
+		#end
+		return new Image(0, 0);
+	}
+
+	static function nodeBufferToBytes(buffer:Dynamic):ByteArray {
+		var u8:Uint8Array = cast buffer;
+		var bytes = haxe.io.Bytes.alloc(u8.byteLength);
+		for (i in 0...u8.byteLength) {
+			bytes.set(i, u8[i]);
+		}
+		return bytes;
+	}
+
+	static function getFileExtension(path:String):String {
+		return path.split(".").pop().split("?").shift();
+	}
+	#end
 
 	public static function exportToBytes(?image:Image, format:ImageFormat):ByteArray {
 		image = image == null ? new Image(0, 0) : image;

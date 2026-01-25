@@ -133,11 +133,23 @@ class ByteArrayTest extends utest.Test {
         ba.setUInt32(4, 12345678);
         ba.setUInt32(8, 0xDEADBEEF);
         ba.setUInt32(12, 0xFFFFFFFF);
-        
-        Assert.equals(0, ba.getUInt32(0));
-        Assert.equals(12345678, ba.getUInt32(4));
-        Assert.equals(0xDEADBEEF, ba.getUInt32(8));
-        Assert.equals(0xFFFFFFFF, ba.getUInt32(12));
+
+        var expected0:UInt = 0;
+        var expected1:UInt = 12345678;
+        var expected2:UInt = 0xDEADBEEF;
+        var expected3:UInt = 0xFFFFFFFF;
+
+        #if cs
+        Assert.isTrue(ba.getUInt32(0) == expected0);
+        Assert.isTrue(ba.getUInt32(4) == expected1);
+        Assert.isTrue(ba.getUInt32(8) == expected2);
+        Assert.isTrue(ba.getUInt32(12) == expected3);
+        #else
+        Assert.equals(expected0, ba.getUInt32(0));
+        Assert.equals(expected1, ba.getUInt32(4));
+        Assert.equals(expected2, ba.getUInt32(8));
+        Assert.equals(expected3, ba.getUInt32(12));
+        #end
     }
 
     function test_setUInt32_at_different_offsets() {

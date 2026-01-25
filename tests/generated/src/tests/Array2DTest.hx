@@ -94,14 +94,11 @@ class Array2DTest extends utest.Test {
     }
 
     function test_setMultiple() {
-        var points = [];
-        var val = cast 0;
-        var ctor_width = 0;
-        var ctor_height = 0;
-        var ctor_fillWith = null;
-        var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-        instance.setMultiple(points, val);
-        Assert.pass();
+        var instance = new vision.ds.Array2D(2, 2, 0);
+        var points = [new Point2D(0, 0), new Point2D(1, 1)];
+        instance.setMultiple(points, 7);
+        Assert.equals(7, instance.get(0, 0));
+        Assert.equals(7, instance.get(1, 1));
     }
 
     function test_row() {

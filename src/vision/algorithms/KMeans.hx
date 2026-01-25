@@ -4,6 +4,7 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.kmeans.ColorCluster;
 import vision.exceptions.Unimplemented;
+import vision.exceptions.VisionException;
 
 using vision.tools.MathTools;
 using vision.tools.ArrayTools;
@@ -12,8 +13,20 @@ class KMeans {
 	static inline var MAX_ITERATIONS:Int = 1000;
 
 	public static function generateClustersUsingConvergence<T>(values:Array<T>, clusterAmount:Int, distanceFunction:(T, T) -> Float, averageFunction:Array<T>->T):Array<Array<T>> {
-		if (values.length == 0) throw "Cannot cluster empty array";
-		if (clusterAmount <= 0) throw "Cluster amount must be positive";
+		if (values.length == 0) {
+			#if vision_quiet
+			return [];
+			#else
+			throw new VisionException("Cannot cluster empty array.", "KMeans Error");
+			#end
+		}
+		if (clusterAmount <= 0) {
+			#if vision_quiet
+			return [];
+			#else
+			throw new VisionException("Cluster amount must be positive.", "KMeans Error");
+			#end
+		}
 
 		var clusterCenters = pickElementsAtRandom(values.copy(), clusterAmount, true);
 
@@ -25,14 +38,27 @@ class KMeans {
 		var iterations = 0;
 		while (!converged) {
 			iterations++;
-			if (iterations > MAX_ITERATIONS) throw "KMeans failed to converge after " + MAX_ITERATIONS + " iterations";
+			if (iterations > MAX_ITERATIONS) {
+				#if vision_quiet
+				return clusters;
+				#else
+				throw new VisionException("KMeans failed to converge after " + MAX_ITERATIONS + " iterations.", "KMeans Error");
+				#end
+			}
 
 			for (i in 0...clusters.length)
 				clusters[i] = [];
 
 			for (value in values) {
-				var distancesToClusterCenters = [for (j in 0...clusterCenters.length) distanceFunction(value, clusterCenters[j])];
-				var smallestDistanceIndex = distancesToClusterCenters.indexOf(distancesToClusterCenters.min());
+				var smallestDistanceIndex = 0;
+				var smallestDistance = distanceFunction(value, clusterCenters[0]);
+				for (j in 1...clusterCenters.length) {
+					var currentDistance = distanceFunction(value, clusterCenters[j]);
+					if (currentDistance < smallestDistance) {
+						smallestDistance = currentDistance;
+						smallestDistanceIndex = j;
+					}
+				}
 				clusters[smallestDistanceIndex].push(value);
 			}
 
@@ -58,7 +84,13 @@ class KMeans {
 
 	public static function getImageColorClusters(image:Image, clusterAmount:Int = 16):Array<ColorCluster> {
         var imageColors = image.toArray().distinct();
-        if (imageColors.length == 0) throw "Cannot cluster image with no colors";
+		if (imageColors.length == 0) {
+			#if vision_quiet
+			return [];
+			#else
+			throw new VisionException("Cannot cluster image with no colors.", "KMeans Error");
+			#end
+		}
 
         var clusterCenters = pickElementsAtRandom(imageColors.copy(), clusterAmount, true);
 
@@ -70,7 +102,13 @@ class KMeans {
 		var iterations = 0;
 		while (!converged) {
 			iterations++;
-			if (iterations > MAX_ITERATIONS) throw "KMeans failed to converge after " + MAX_ITERATIONS + " iterations";
+			if (iterations > MAX_ITERATIONS) {
+				#if vision_quiet
+				return clusters;
+				#else
+				throw new VisionException("KMeans failed to converge after " + MAX_ITERATIONS + " iterations.", "KMeans Error");
+				#end
+			}
 
             // Reset cluster items
 			for (i in 0...clusters.length)
@@ -78,8 +116,15 @@ class KMeans {
 
             // Add colors to different clusters, depending on their similarity to the centroid.
 			for (color in imageColors) {
-				var distancesToClusterCenters = [for (j in 0...clusters.length) Color.distanceBetween(color, clusters[j].centroid)];
-				var smallestDistanceIndex = distancesToClusterCenters.indexOf(distancesToClusterCenters.min());
+				var smallestDistanceIndex = 0;
+				var smallestDistance = Color.distanceBetween(color, clusters[0].centroid);
+				for (j in 1...clusters.length) {
+					var currentDistance = Color.distanceBetween(color, clusters[j].centroid);
+					if (currentDistance < smallestDistance) {
+						smallestDistance = currentDistance;
+						smallestDistanceIndex = j;
+					}
+				}
 				clusters[smallestDistanceIndex].items.push(color);
 			}
 

@@ -77,17 +77,17 @@ class GaussJordan {
 		return matrix;
 	}
 
-	static function augmentMatrix(matrix:Array<Array<Float>>, augmentation:Array<Array<Float>>):Matrix2D {
-		var rows = matrix.length;
-		var cols = matrix[0].length + augmentation[0].length;
+	static function augmentMatrix(matrix:Matrix2D, augmentation:Matrix2D):Matrix2D {
+		var rows = matrix.height;
+		var cols = matrix.width + augmentation.width;
 		var augmentedMatrix = new Matrix2D(cols, rows);
 
 		for (i in 0...rows) {
-			for (j in 0...matrix[0].length) {
-				augmentedMatrix.set(j, i, matrix[i][j]);
+			for (j in 0...matrix.width) {
+				augmentedMatrix.set(j, i, matrix.get(j, i));
 			}
-			for (j in 0...augmentation[0].length) {
-				augmentedMatrix.set(j + matrix[0].length, i, augmentation[i][j]);
+			for (j in 0...augmentation.width) {
+				augmentedMatrix.set(j + matrix.width, i, augmentation.get(j, i));
 			}
 		}
 

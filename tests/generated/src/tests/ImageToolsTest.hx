@@ -171,36 +171,29 @@ class ImageToolsTest extends utest.Test {
 
     @Ignored("Requires file system access and format library")
     function test_loadFromFile() {
-        Assert.pass();
     }
 
     @Ignored("Requires file system access and format library")
     function test_saveToFile() {
-        Assert.pass();
     }
 
     @Ignored("Requires format library and valid image bytes")
     function test_loadFromBytes() {
-        Assert.pass();
     }
 
     @Ignored("Requires network access")
     function test_loadFromURL() {
-        Assert.pass();
     }
 
     @Ignored("Requires format library")
     function test_exportToBytes() {
-        Assert.pass();
     }
 
     @Ignored("Requires file system access")
     function test_exportToFile() {
-        Assert.pass();
     }
 
     @Ignored("Requires runtime display context (JS only)")
     function test_addToScreen() {
-        Assert.pass();
     }
 }

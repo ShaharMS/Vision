@@ -3,6 +3,7 @@ package vision.ds;
 import vision.algorithms.PerspectiveWarp;
 import vision.ds.specifics.PointTransformationPair;
 import vision.exceptions.MatrixOperationError;
+import vision.exceptions.VisionException;
 import vision.algorithms.GaussJordan;
 import vision.ds.Array2D;
 import vision.tools.MathTools.*;
@@ -132,7 +133,18 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		@throws MatrixOperationError if the matrix is not a square matrix, i.e. `w != h`
 	**/
 	public inline function getTrace():Float {
-		if (this.width != this.height) throw ""; //Todo error
+        if (this.width != this.height) {
+            #if vision_quiet
+            var limit = MathTools.min(this.width, this.height);
+            var sum = 0.;
+            for (i in 0...limit) {
+                sum += this.get(i, i);
+            }
+            return sum;
+            #else
+            throw new VisionException("Trace requires a square matrix.", "Matrix Trace Error");
+            #end
+        }
 		var sum = 0.;
 		for (i in 0...this.width) 
 			sum += this.get(i, i);
@@ -166,7 +178,9 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         Return a copy of this `Matrix2D`    
     **/
     public inline function clone():Matrix2D {
-        return this.clone();
+        var arr = new Array2D(this.width, this.height);
+        arr.inner = this.inner.copy();
+        return arr;
     }
 
     /**
@@ -212,7 +226,13 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 		if (copy.length == 0) return new Matrix2D(0, 0);
 		
         var arr2d = new Array2D(copy[0].length, copy.length);
-		arr2d.inner = copy.flatten();
+        var flat:Array<Float> = [];
+        for (row in copy) {
+            for (value in row) {
+                flat.push(value);
+            }
+        }
+        arr2d.inner = flat;
 		return arr2d;
     }
 
@@ -237,7 +257,15 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @param arr the new column. Must be at least of the same length as the matrix' height
     **/
     public inline function setColumn(x:Int, arr:Array<Float>) {
-        if (arr.length < this.height) throw ""; //Todo
+        if (arr.length < this.height) {
+            #if vision_quiet
+            var limit = MathTools.min(arr.length, this.height);
+            for (y in 0...limit) this.set(x, y, arr[y]);
+            return;
+            #else
+            throw new VisionException("Column length must match matrix height.", "Matrix Set Column Error");
+            #end
+        }
         for (y in 0...this.height) this.set(x, y, arr[y]);
     }
 
@@ -248,7 +276,15 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @param arr the new row. Must be at least of the same length as the matrix' width
     **/
     public inline function setRow(y:Int, arr:Array<Float>) {
-        if (arr.length < this.width) throw ""; //Todo
+        if (arr.length < this.width) {
+            #if vision_quiet
+            var limit = MathTools.min(arr.length, this.width);
+            for (x in 0...limit) this.set(x, y, arr[x]);
+            return;
+            #else
+            throw new VisionException("Row length must match matrix width.", "Matrix Set Row Error");
+            #end
+        }
         for (x in 0...this.width) this.set(x, y, arr[x]);
     }
 
@@ -295,11 +331,18 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @return this modified `Matrix2D`
     **/
     public inline function removeColumn(x:Int):Matrix2D {
-        var underlyingArray:Array<Null<Float>> = cast this.inner.copy();
-        for (i in 0...this.height) underlyingArray[x + i * this.width] = null;
-        underlyingArray = underlyingArray.filter(x -> x != null);
-        this.width -= 1;
-        this.inner = underlyingArray;
+        var newWidth = this.width - 1;
+        var newInner:Array<Float> = [];
+        newInner.resize(newWidth * this.height);
+        var idx = 0;
+        for (y in 0...this.height) {
+            for (col in 0...this.width) {
+                if (col == x) continue;
+                newInner[idx++] = this.get(col, y);
+            }
+        }
+        this.inner = newInner;
+        this.width = newWidth;
 
         return this;
     }
@@ -311,12 +354,18 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
         @return this modified `Matrix2D`
     **/
     public inline function removeRow(y:Int):Matrix2D {
-        var underlyingArray:Array<Null<Float>> = cast this.inner.copy();
-        for (i in 0...this.width) underlyingArray[y + this.width * i] = null;
-        underlyingArray = underlyingArray.filter(x -> x != null);
-
-        this.height -= 1;
-        this.inner = underlyingArray;
+        var newHeight = this.height - 1;
+        var newInner:Array<Float> = [];
+        newInner.resize(this.width * newHeight);
+        var idx = 0;
+        for (row in 0...this.height) {
+            if (row == y) continue;
+            for (col in 0...this.width) {
+                newInner[idx++] = this.get(col, row);
+            }
+        }
+        this.inner = newInner;
+        this.height = newHeight;
 
         return this;
     }
@@ -726,13 +775,25 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
     @:from static function from_array_array_float(array:Array<Array<Float>>):Matrix2D {
         var arr2d = new Array2D(array[0].length, array.length);
-        arr2d.inner = array.flatten();
+        var flat:Array<Float> = [];
+        for (row in array) {
+            for (value in row) {
+                flat.push(value);
+            }
+        }
+        arr2d.inner = flat;
         return cast arr2d;
     }
 
     @:from static function from_array_array_int(array:Array<Array<Int>>):Matrix2D {
         var arr2d = new Array2D(array[0].length, array.length);
-        arr2d.inner = array.flatten();
+        var flat:Array<Int> = [];
+        for (row in array) {
+            for (value in row) {
+                flat.push(value);
+            }
+        }
+        arr2d.inner = flat;
         return cast arr2d;
     }
 }

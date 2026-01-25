@@ -119,19 +119,19 @@ class Matrix2DTest extends utest.Test {
     }
 
     function test_setColumn() {
-        var this = [];
-        var x = 0;
-        var arr = [];
-        vision.ds.Matrix2D.setColumn(this, x, arr);
-        Assert.pass();
+        var matrix = new vision.ds.Matrix2D(2, 2);
+        matrix.fill(0);
+        matrix.setColumn(0, [1, 2]);
+        Assert.equals(1, matrix.get(0, 0));
+        Assert.equals(2, matrix.get(0, 1));
     }
 
     function test_setRow() {
-        var this = [];
-        var y = 0;
-        var arr = [];
-        vision.ds.Matrix2D.setRow(this, y, arr);
-        Assert.pass();
+        var matrix = new vision.ds.Matrix2D(2, 2);
+        matrix.fill(0);
+        matrix.setRow(0, [3, 4]);
+        Assert.equals(3, matrix.get(0, 0));
+        Assert.equals(4, matrix.get(1, 0));
     }
 
     function test_insertColumn() {
