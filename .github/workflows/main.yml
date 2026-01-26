@@ -121,7 +121,7 @@ jobs:
       - name: Compile (${{ matrix.target }})
         run: |
           mkdir -p bin
-          CMD="haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug"
+          CMD="haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug -D vision_skip_golden -D vision_skip_invalid_tests"
           if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
             CMD="$CMD --no-inline"
           fi

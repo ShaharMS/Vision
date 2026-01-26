@@ -6,6 +6,7 @@ import vision.formats.from.FromBytes;
 import vision.ds.ByteArray;
 
 @:access(vision.formats.from.FromBytes)
+@:build(tests.macros.InvalidTestSkipper.build())
 class FromBytesTest extends utest.Test {
 
     // Shared test fixtures

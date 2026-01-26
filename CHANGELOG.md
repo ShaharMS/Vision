@@ -1,4 +1,4 @@
-# 2.1.1
+# 2.2.0
 
 ### `Image.hx`
  - **Added `Image.copyImageFrom`**

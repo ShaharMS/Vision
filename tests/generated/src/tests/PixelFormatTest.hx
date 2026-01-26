@@ -35,11 +35,15 @@ class PixelFormatTest extends utest.Test {
     }
 
     function test_convertPixelFormat() {
-        var bytes = new vision.ds.ByteArray(100);
-        var from = null;
-        var to = null;
+        var bytes = new vision.ds.ByteArray(8);
+        bytes[0] = 255; bytes[1] = 0; bytes[2] = 0; bytes[3] = 255; // RGBA red
+        bytes[4] = 255; bytes[5] = 255; bytes[6] = 255; bytes[7] = 255; // RGBA white
+
+        var from = vision.ds.PixelFormat.RGBA;
+        var to = vision.ds.PixelFormat.ARGB;
         var result = vision.ds.PixelFormat.convertPixelFormat(bytes, from, to);
         Assert.notNull(result);
+        Assert.equals(bytes.length, result.length);
     }
 
 }

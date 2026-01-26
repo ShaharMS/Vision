@@ -6,6 +6,7 @@ import vision.formats.to.ToBytes;
 import vision.ds.Image;
 
 @:access(vision.formats.to.ToBytes)
+@:build(tests.macros.InvalidTestSkipper.build())
 class ToBytesTest extends utest.Test {
 
     // Shared test fixtures

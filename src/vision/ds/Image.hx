@@ -112,6 +112,7 @@ abstract Image(ByteArray) {
 		@param color The color to fill the image with. if unspecified, the image is transparent.
 	**/
 	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
+	#end
 		this = new ByteArray(width * height * 4 + OFFSET);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (0, width);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
@@ -131,7 +132,13 @@ abstract Image(ByteArray) {
 
 	inline function getColorFromStartingBytePos(position:Int):Color {
 		position += OFFSET;
-		return new Color(this[position] << 24 | this[position + 1] << 16 | this[position + 2] << 8 | this[position + 3]); 
+		var value = this[position] << 24 | this[position + 1] << 16 | this[position + 2] << 8 | this[position + 3];
+		#if (python || php || lua)
+		var signedValue:haxe.Int32 = value;
+		signedValue = signedValue + 0;
+		value = signedValue;
+		#end
+		return new Color(value);
 	}
 
 	inline function setColorFromStartingBytePos(position:Int, c:Color) {
@@ -616,8 +623,15 @@ abstract Image(ByteArray) {
 		@see Ray2D
 	**/
 	public inline function drawRay2D(line:Ray2D, color:Color) {
-		var p1 = IntPoint2D.fromPoint2D(line.getPointAtY(0));
-		var p2 = IntPoint2D.fromPoint2D(line.getPointAtY(height - 1));
+		var p1:IntPoint2D;
+		var p2:IntPoint2D;
+		if (line.slope == 0) {
+			p1 = new IntPoint2D(0, Std.int(line.point.y));
+			p2 = new IntPoint2D(width - 1, Std.int(line.point.y));
+		} else {
+			p1 = IntPoint2D.fromPoint2D(line.getPointAtY(0));
+			p2 = IntPoint2D.fromPoint2D(line.getPointAtY(height - 1));
+		}
 		var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
 		var dx = Math.abs(x2 - x1);
 		var dy = Math.abs(y2 - y1);
@@ -737,8 +751,8 @@ abstract Image(ByteArray) {
 		}
 
 		var p0 = IntPoint2D.fromPoint2D(line.start);
-		var p1 = IntPoint2D.fromPoint2D(line.end);
-		var p2 = IntPoint2D.fromPoint2D(control);
+		var p1 = IntPoint2D.fromPoint2D(control);
+		var p2 = IntPoint2D.fromPoint2D(line.end);
 		var i = 0.;
 		var step = 1 / accuracy;
 		while (i <= 1) {
@@ -748,6 +762,8 @@ abstract Image(ByteArray) {
 			}
 			i += step;
 		}
+		if (hasPixel(p0.x, p0.y)) setPixel(p0.x, p0.y, color);
+		if (hasPixel(p2.x, p2.y)) setPixel(p2.x, p2.y, color);
 	}
 
 	/**
@@ -779,16 +795,21 @@ abstract Image(ByteArray) {
 			return {x: x, y: y};
 		}
 
+		var p0 = IntPoint2D.fromPoint2D(line.start);
+		var p3 = IntPoint2D.fromPoint2D(line.end);
+		var p1 = IntPoint2D.fromPoint2D(control1);
+		var p2 = IntPoint2D.fromPoint2D(control2);
 		var i = 0.;
 		var step = 1 / accuracy;
-		while (i < 1) {
-			var p =
-			inline bezier(i, line.start, line.end, control1, control2);
+		while (i <= 1) {
+			var p = inline bezier(i, p0, p1, p2, p3);
 			if (hasPixel(p.x, p.y)) {
 				setPixel(p.x, p.y, color);
 			}
 			i += step;
 		}
+		if (hasPixel(p0.x, p0.y)) setPixel(p0.x, p0.y, color);
+		if (hasPixel(p3.x, p3.y)) setPixel(p3.x, p3.y, color);
 	}
 
 	// https://github.com/Laerdal/opentype.hx/issues/2
@@ -1656,7 +1677,7 @@ abstract Image(ByteArray) {
 }
 
 private class PixelIterator {
-	var i = 4;
+	var i = 0;
 	var img:Image;
 
 	public inline function new(img:Image) {
@@ -1667,11 +1688,11 @@ private class PixelIterator {
 		final x = i % img.width;
 		final y = Math.floor(i / img.width);
 		var pixel:Pixel = {x: x, y: y, color: img.getPixel(x, y)};
-		i += 4;
+		i++;
 		return pixel;
 	}
 
 	public inline function hasNext():Bool {
-		return i < (cast img:ByteArray).length;
+		return i < (img.width * img.height);
 	}
 }

@@ -1,4 +1,5 @@
---class-path tests/generated/src
+--cwd tests/generated
+--class-path src
 --main Main
 
 --library vision

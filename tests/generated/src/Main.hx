@@ -1,10 +1,10 @@
 package;
 
 import utest.Runner;
-import utest.ui.Report;
+import PrettyReporter;
 import tests.*;
 
-class TestMain {
+class Main {
     static function main() {
         var runner = new Runner();
 
@@ -49,7 +49,7 @@ class TestMain {
         runner.addCase(new MathToolsTest());
         runner.addCase(new VisionTest());
 
-        Report.create(runner);
+        new PrettyReporter(runner);
         runner.run();
     }
 }

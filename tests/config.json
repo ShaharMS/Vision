@@ -8,5 +8,5 @@
         "FrameworkImageIO.hx"        
     ],
     "destination": "./generated/src/tests",
-    "testsToRunFile": "./generated/src/TestsToRun.hx"
+    "testsToRunFile": "./generated/src/Main.hx"
 }

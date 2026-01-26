@@ -1,7 +1,7 @@
 {
     "name": "vision",
     "license": "MIT",
-    "version": "2.1.0",   
+    "version": "2.2.0",   
     "description": "Vision is a simple, powerful and flexible computer vision & image processing library for Haxe.",
     "contributors": ["ShaharMS"],
     "releasenote": "K-Means, color filtering, Image hashing, and many QOL additions :D",

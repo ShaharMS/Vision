@@ -155,7 +155,7 @@ class Main {
         
         var classPaths = ["src", "../src"];
         var libraries = ["vision", "utest"];
-        var mainClass = "TestMain";
+        var mainClass = "Main";
         
         if (ci) {
             PlatformHxmlGenerator.generateCiHxml(mainClass, classPaths, libraries, "generated/ci.hxml");
@@ -213,7 +213,7 @@ class Main {
         buf.add("import utest.Runner;\n");
         buf.add("import utest.ui.Report;\n");
         buf.add("import tests.*;\n\n");
-        buf.add("class TestMain {\n");
+        buf.add("class Main {\n");
         buf.add("    static function main() {\n");
         buf.add("        var runner = new Runner();\n\n");
         

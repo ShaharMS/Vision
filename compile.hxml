@@ -27,4 +27,5 @@
 
 #--define vision_fancy_array_access
 --macro addGlobalMetadata('', '@:build(vision.helpers.Array2DMacro.build())')
+--macro addGlobalMetadata('', '@:build(vision.helpers.InlineProtectionMacro.build())')
 
