@@ -1631,7 +1631,12 @@ abstract Image(ByteArray) {
 		@param height Optional, the height of the returned image. determined automatically, can be overridden by setting this parameter
 	**/
 	public static inline function loadFromBytes(bytes:ByteArray, width:Int, ?height:Int):Image {
-		var h = height != null ? height : (bytes.length / 4 / width).ceil();
+		var h:Int;
+		if (height == null) {
+			h = (bytes.length / 4 / width).ceil();
+		} else {
+			h = height;
+		}
 		var array = new ByteArray(width * h * 4 + OFFSET);
 		array.fill(0, array.length, 0);
 		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (0, width);

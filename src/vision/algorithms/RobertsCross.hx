@@ -2,6 +2,7 @@ package vision.algorithms;
 
 import vision.tools.ImageTools;
 import vision.ds.Image;
+import haxe.ds.Vector;
 
 /**
     An Implementation of the `Robert's Cross` operator, by [Shahar Marcus](https://www.github.com/ShaharMS).
@@ -16,7 +17,7 @@ class RobertsCross {
     public static function convolveWithRobertsCross(image:Image):Image {
 		var edgeColors:Image = new Image(image.width, image.height);
 		var maxGradient = 0;
-		var gradients:Array<Int> = [];
+		var gradients = new Vector<Int>(image.width * image.height);
 
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {

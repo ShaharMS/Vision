@@ -3,6 +3,7 @@ package vision.algorithms;
 import vision.ds.Color;
 import vision.tools.ImageTools;
 import vision.ds.Image;
+import haxe.ds.Vector;
 
 using vision.tools.MathTools;
 
@@ -14,7 +15,7 @@ class Perwitt {
 	public static function convolveWithPerwittOperator(image:Image):Image {
 		var edgeColors:Image = new Image(image.width, image.height);
 		var maxGradient = 0;
-		var gradients:Array<Int> = [];
+		var gradients = new Vector<Int>(image.width * image.height);
 
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {

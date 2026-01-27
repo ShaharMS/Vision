@@ -607,7 +607,7 @@ class Vision {
 		square. This results in a slight performance increase, and a great quality increase. Default is `true`.
 		@return The dilated image. The original copy is modified.
 	**/
-	public static function dilate(image:Image, ?dilationRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernel:Bool = true):Image {
+	public static function dilate(image:Image, dilationRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernel:Bool = true):Image {
 		var intermediate = image.clone();
 		image.forEachPixelInView((x, y, c) -> {
 			var maxColor:Color = 0;
@@ -652,7 +652,7 @@ class Vision {
 		square. This results in a slight performance increase, and a massive quality increase. Default is `true`.
 		@return The eroded image. The original copy is modified.
 	**/
-	public static function erode(image:Image, ?erosionRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernel:Bool = true):Image {
+	public static function erode(image:Image, erosionRadius:Int = 2, colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernel:Bool = true):Image {
 		var intermediate = image.clone();
 		image.forEachPixelInView((x, y, c) -> {
 			var minColor:Color = 0xFFFFFFFF;
@@ -1460,7 +1460,7 @@ class Vision {
 		@param kernelSize The size of the kernel (`width` & `height`) - a kernel size of `7`/ will produce a `7x7` kernel. Default is `GaussianKernelSize.X3`.
 		@return A new, black and white image, with white pixels being the detected edges.
 	**/
-	public static function laplacianOfGaussianEdgeDetection(image:Image, ?threshold:Int = 2, ?filterPositive:Bool = true, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = X3):Image {
+	public static function laplacianOfGaussianEdgeDetection(image:Image, threshold:Int = 2, filterPositive:Bool = true, sigma:Float = 1, kernelSize:GaussianKernelSize = X3):Image {
 		return Laplace.laplacianOfGaussian(image, kernelSize, sigma, threshold, filterPositive);
 	}
 

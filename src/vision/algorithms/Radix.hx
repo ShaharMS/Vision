@@ -36,7 +36,8 @@ class Radix {
 	 * (useful if the range in which the maximum value is present is known)
 	 */
 	static function getMax<T:EitherType<Int, Int64>>(array:Array<T>, ?endIndex:Int) {
-		return ArrayTools.max(array.slice(0, endIndex));
+		final limit:Int = endIndex == null ? array.length : endIndex;
+		return ArrayTools.max(array.slice(0, limit));
 	}
 
 	/**
@@ -46,15 +47,14 @@ class Radix {
 	 * @param endIndex optional, an index after which we stop sorting
 	 */
 	static function countingSort<T:EitherType<Int, Int64>>(array:Array<T>, exp:Int, ?endIndex:Int) {
-		if (endIndex == null)
-			endIndex = array.length;
+		final limit:Int = endIndex == null ? array.length : endIndex;
 
 		var output:Array<T> = [];
 		var i:Int = -1;
 		var count = [for (i in 0...10) 0];
 
 		// Store count of occurrences in `count`
-		while (++i < endIndex)
+		while (++i < limit)
 			count[Std.int(array[i] / exp) % 10]++;
 
 		i = 0;
@@ -64,7 +64,7 @@ class Radix {
 		while (++i < 10)
 			count[i] += count[i - 1];
 
-		i = endIndex;
+		i = limit;
 		
 		// Build the output array
 		while (--i >= 0) {
@@ -75,7 +75,7 @@ class Radix {
 		i = -1;
 		// Copy `output` to `array`, so that `array` now
 		// contains sorted numbers according to current digit
-		while (++i < endIndex)
+		while (++i < limit)
 			array[i] = output[i];
 
 		return output;

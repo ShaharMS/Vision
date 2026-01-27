@@ -108,7 +108,7 @@ jobs:
             php -v
           fi
 
-          if [ "$TARGET" = "lua" ] || [ "$TARGET" = "cs" ] || [ "$TARGET" = "hl" ]; then
+          if [ "$TARGET" = "lua" ] || [ "$TARGET" = "cs" ] || [ "$TARGET" = "hl" ] || [ "$TARGET" = "cpp" ] || [ "$TARGET" = "cppia" ]; then
             sudo apt-get update
             if [ "$TARGET" = "lua" ]; then
               sudo apt-get install -y lua5.3
@@ -116,8 +116,18 @@ jobs:
             if [ "$TARGET" = "cs" ]; then
               sudo apt-get install -y mono-complete
             fi
+            if [ "$TARGET" = "cpp" ] || [ "$TARGET" = "cppia" ]; then
+              sudo apt-get install -y build-essential
+            fi
             if [ "$TARGET" = "hl" ]; then
-              sudo apt-get install -y hashlink
+              HL_VERSION="1.14.0"
+              HL_TGZ="hl-${HL_VERSION}-linux64.tar.gz"
+              HL_URL="https://github.com/HaxeFoundation/hashlink/releases/download/${HL_VERSION}/${HL_TGZ}"
+              curl -fsSL "$HL_URL" -o "/tmp/${HL_TGZ}"
+              sudo mkdir -p /opt/hashlink
+              sudo tar -xzf "/tmp/${HL_TGZ}" -C /opt/hashlink
+              echo "/opt/hashlink" >> $GITHUB_PATH
+              hl --version
             fi
           fi
 
@@ -132,9 +142,17 @@ jobs:
           haxelib install hxcpp --quiet
           haxelib install hxjava --quiet
           haxelib install hxcs --quiet
+      - name: Build hxcpp tools (cppia runtime)
+        if: ${{ matrix.target == 'cppia' }}
+        run: |
+          haxelib run hxcpp Build.xml -Dlinux -Dcppia
       - name: Compile (${{ matrix.target }})
         run: |
           mkdir -p bin
+          if [ "${{ matrix.output }}" != "" ]; then
+            OUTDIR=$(dirname "${{ matrix.output }}")
+            mkdir -p "$OUTDIR"
+          fi
           CMD="haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug -D vision_skip_golden -D vision_skip_invalid_tests"
           if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
             CMD="$CMD --no-inline"
@@ -175,7 +193,13 @@ jobs:
             java -jar bin/jvm/tests.jar
           fi
           if [ "${{ matrix.target }}" = "java" ]; then
-            java -cp bin/java/obj Main
+            if [ -f "bin/java/Main.jar" ]; then
+              java -jar bin/java/Main.jar
+            elif [ -f "bin/java/Main-Debug.jar" ]; then
+              java -jar bin/java/Main-Debug.jar
+            else
+              java -cp bin/java/obj Main
+            fi
           fi
           if [ "${{ matrix.target }}" = "python" ]; then
             python bin/python/tests.py
