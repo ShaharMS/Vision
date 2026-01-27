@@ -3,7 +3,6 @@ on: [push, pull_request]
 
 jobs:
   tests:
-    if: ${{ false }} 
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

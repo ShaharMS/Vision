@@ -189,7 +189,7 @@ abstract Image(ByteArray) {
 	/**
 		Gets the color of the pixel at the given coordinates.
 
-		Coordinates outside the bounds of the image are allowed.
+		Coordinates outside the bounds of the image are allowed, and will return the color of the closest pixel.
 
 		@param x The x coordinate of the pixel.
 		@param y The y coordinate of the pixel.

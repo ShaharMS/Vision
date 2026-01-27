@@ -62,8 +62,8 @@ class ImageTest extends utest.Test {
 
     function test_getSafePixel_out_of_bounds() {
         var img = new Image(10, 10, 0xFF123456);
-        Assert.equals(0, img.getSafePixel(100, 100));
-        Assert.equals(0, img.getSafePixel(-1, 0));
+        Assert.equals(0xFF123456, img.getSafePixel(100, 100));
+        Assert.equals(0xFF123456, img.getSafePixel(-1, 0));
     }
 
     function test_setSafePixel() {
