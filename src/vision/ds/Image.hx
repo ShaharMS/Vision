@@ -538,7 +538,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function copyImageFrom(image:Image):Image {
 		var currentView = getView();
-		this.resize(image.underlying.length);
+		this = new ByteArray(image.underlying.length);
 		this.blit(0, image.underlying, 0, image.underlying.length);
 		setView(currentView);
 		return cast this;
@@ -1015,6 +1015,9 @@ abstract Image(ByteArray) {
 		}
 		while (queue.length > 0) {
 			var v = queue.pop();
+			if (hasPixel(v.x, v.y) && getPixel(v.x, v.y) == originalColor) {
+				setPixel(v.x, v.y, color);
+			}
 			explored.push(Int64.make(v.x, v.y));
 			fill({x: v.x + 1, y: v.y});
 			fill({x: v.x, y: v.y + 1});

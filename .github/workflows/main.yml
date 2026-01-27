@@ -53,57 +53,72 @@ jobs:
         with:
           haxe-version: ${{ matrix.haxe-version }}
 
-      - name: Setup Node (js only)
-        if: ${{ matrix.target == 'js' }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Setup Neko (neko only)
-        if: ${{ matrix.target == 'neko' }}
+      - name: Setup runtime (all targets)
         run: |
-          NEKO_BIN="$HAXE_STD_PATH/../neko/bin"
-          if [ -x "$NEKO_BIN/neko" ]; then
-            echo "$NEKO_BIN" >> $GITHUB_PATH
-            echo "NEKO_HOME=$HAXE_STD_PATH/../neko" >> $GITHUB_ENV
-            "$NEKO_BIN/neko" -version
-          else
+          set -e
+          TARGET="${{ matrix.target }}"
+
+          if [ "$TARGET" = "js" ]; then
+            if command -v node >/dev/null 2>&1; then
+              NODE_VERSION=$(node -v | sed 's/^v//')
+            else
+              NODE_VERSION=""
+            fi
+            if [ "${NODE_VERSION%%.*}" != "20" ]; then
+              curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            fi
+            node --version
+          fi
+
+          if [ "$TARGET" = "neko" ]; then
+            NEKO_BIN="$HAXE_STD_PATH/../neko/bin"
+            if [ -x "$NEKO_BIN/neko" ]; then
+              echo "$NEKO_BIN" >> $GITHUB_PATH
+              echo "NEKO_HOME=$HAXE_STD_PATH/../neko" >> $GITHUB_ENV
+              "$NEKO_BIN/neko" -version
+            else
+              sudo apt-get update
+              sudo apt-get install -y neko
+              neko -version
+            fi
+          fi
+
+          if [ "$TARGET" = "java" ] || [ "$TARGET" = "jvm" ]; then
+            if ! command -v java >/dev/null 2>&1; then
+              echo "Java is missing; GitHub runner should have it preinstalled."
+              exit 1
+            fi
+            java -version
+          fi
+
+          if [ "$TARGET" = "python" ]; then
+            if ! command -v python >/dev/null 2>&1; then
+              echo "Python is missing; GitHub runner should have it preinstalled."
+              exit 1
+            fi
+            python --version
+          fi
+
+          if [ "$TARGET" = "php" ]; then
+            if ! command -v php >/dev/null 2>&1; then
+              sudo apt-get update
+              sudo apt-get install -y php
+            fi
+            php -v
+          fi
+
+          if [ "$TARGET" = "lua" ] || [ "$TARGET" = "cs" ] || [ "$TARGET" = "hl" ]; then
             sudo apt-get update
-            sudo apt-get install -y neko
-            neko -version
-          fi
-
-      - name: Setup Java (java/jvm only)
-        if: ${{ matrix.target == 'java' || matrix.target == 'jvm' }}
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Setup Python (python only)
-        if: ${{ matrix.target == 'python' }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Setup PHP (php only)
-        if: ${{ matrix.target == 'php' }}
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-
-      - name: Install runtime deps (lua/cs/hl)
-        if: ${{ matrix.target == 'lua' || matrix.target == 'cs' || matrix.target == 'hl' }}
-        run: |
-          sudo apt-get update
-          if [ "${{ matrix.target }}" = "lua" ]; then
-            sudo apt-get install -y lua5.3
-          fi
-          if [ "${{ matrix.target }}" = "cs" ]; then
-            sudo apt-get install -y mono-complete
-          fi
-          if [ "${{ matrix.target }}" = "hl" ]; then
-            sudo apt-get install -y hashlink
+            if [ "$TARGET" = "lua" ]; then
+              sudo apt-get install -y lua5.3
+            fi
+            if [ "$TARGET" = "cs" ]; then
+              sudo apt-get install -y mono-complete
+            fi
+            if [ "$TARGET" = "hl" ]; then
+              sudo apt-get install -y hashlink
+            fi
           fi
 
       - name: Set HAXEPATH
@@ -146,7 +161,15 @@ jobs:
             hl bin/hl/tests.hl
           fi
           if [ "${{ matrix.target }}" = "cpp" ]; then
-            ./bin/cpp/Main
+            if [ -x "./bin/cpp/Main" ]; then
+              ./bin/cpp/Main
+            elif [ -x "./bin/cpp/Main-debug" ]; then
+              ./bin/cpp/Main-debug
+            else
+              echo "CPP executable not found in bin/cpp";
+              ls -la bin/cpp
+              exit 1
+            fi
           fi
           if [ "${{ matrix.target }}" = "jvm" ]; then
             java -jar bin/jvm/tests.jar
@@ -164,10 +187,27 @@ jobs:
             php bin/php/index.php
           fi
           if [ "${{ matrix.target }}" = "cs" ]; then
-            mono bin/cs/bin/Main.exe
+            if [ -f "bin/cs/bin/Main.exe" ]; then
+              mono bin/cs/bin/Main.exe
+            elif [ -f "bin/cs/bin/Main-Debug.exe" ]; then
+              mono bin/cs/bin/Main-Debug.exe
+            else
+              echo "C# executable not found in bin/cs/bin";
+              ls -la bin/cs/bin
+              exit 1
+            fi
           fi
           if [ "${{ matrix.target }}" = "cppia" ]; then
-            cppia bin/cppia/tests.cppia
+            CPPPATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
+            CPPia="${CPPPATH}/bin/Linux/cppia"
+            if [ -x "${CPPia}" ]; then
+              "${CPPia}" bin/cppia/tests.cppia
+            elif command -v cppia >/dev/null 2>&1; then
+              cppia bin/cppia/tests.cppia
+            else
+              echo "cppia runtime not found. Install hxcpp or add cppia to PATH.";
+              exit 1
+            fi
           fi
           if [ "${{ matrix.target }}" = "interp" ]; then
             haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug --interp

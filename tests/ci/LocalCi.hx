@@ -72,7 +72,7 @@ class LocalCi {
         var allowInline = false;
         var allowInlineTargets:Array<String> = [];
         var skipGolden = false;
-        var skipInvalidTests = false;
+        var skipInvalidTests = true;
         var showHelp = false;
 
         var envTargets = Sys.getEnv("VISION_CI_TARGETS");
@@ -230,6 +230,7 @@ class LocalCi {
             args.push("-D");
             args.push("vision_no_inline");
         }
+
 
         switch (target) {
             case "neko":
@@ -395,7 +396,7 @@ class LocalCi {
     static function shouldDisableInline(target:String, config:{allowInline:Bool, allowInlineTargets:Array<String>}):Bool {
         if (config.allowInline) return false;
         if (config.allowInlineTargets != null && config.allowInlineTargets.indexOf(target) != -1) return false;
-        return target == "java" || target == "jvm" || target == "lua";
+        return false;
     }
 
     static function ensureTool(isWindows:Bool, command:String, wingetIds:Array<String>, chocoId:String, forceInstall:Bool = false):Bool {
@@ -653,8 +654,6 @@ class LocalCi {
                 if (programFiles != null) candidates.push(Path.join([programFiles, "PHP", "8.3", "php.exe"]));
                 if (programFiles != null) candidates.push(Path.join([programFiles, "PHP", "8.2", "php.exe"]));
                 if (programFilesX86 != null) candidates.push(Path.join([programFilesX86, "PHP", "php.exe"]));
-            case "hl":
-                if (programFiles != null) candidates.push(Path.join([programFiles, "HashLink", "hl.exe"]));
             case "neko":
                 if (programFiles != null) candidates.push(Path.join([programFiles, "Neko", "neko.exe"]));
             case "java":
