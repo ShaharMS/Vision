@@ -4,6 +4,7 @@ import vision.formats.ImageIO;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm
+import vision.algorithms.BicubicInterpolation as Bicubic; // Avoid naming collisions with ImageResizeAlgorithm
 import haxe.ds.List;
 import haxe.Int64;
 import vision.ds.Color;
@@ -112,7 +113,6 @@ abstract Image(ByteArray) {
 		@param color The color to fill the image with. if unspecified, the image is transparent.
 	**/
 	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
-	#end
 		this = new ByteArray(width * height * 4 + OFFSET);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (0, width);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
@@ -1137,7 +1137,7 @@ abstract Image(ByteArray) {
 			case BilinearInterpolation:
 				this = cast Bilinear.interpolate(cast this, newWidth, newHeight);
 			case BicubicInterpolation:
-				throw new Unimplemented("Bicubic Interpolation");
+				this = cast Bicubic.interpolate(cast this, newWidth, newHeight);
 			case NearestNeighbor:
 				{
 					var image = new Image(newWidth, newHeight);

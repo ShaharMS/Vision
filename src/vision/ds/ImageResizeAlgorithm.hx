@@ -13,7 +13,7 @@ enum abstract ImageResizeAlgorithm(Int) from Int to Int {
 	**/
 	var BilinearInterpolation;
 	/**
-	    Unimplemented.
+	    Bicubic Interpolation. Higher quality resizing, typically slower than bilinear.
 	**/
 	var BicubicInterpolation;
 }
