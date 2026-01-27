@@ -608,9 +608,9 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Value The channel value of the red, green & blue channels of the color
 		@return The color as a `Color`
 	**/
-	public static inline function from8Bit(Value:Int) {
+	public static inline function from8Bit(Value:Int):Color {
 		var color = new Color();
-		return color.setRGBA(Value, Value, Value, 1);
+		return color.setRGBA(Value, Value, Value, 255);
 	}
 
 	/**
@@ -619,7 +619,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param Value The channel value of the red, green & blue channels of the color
 		@return The color as a `Color`
 	**/
-	public static inline function fromFloat(Value:Float) {
+	public static inline function fromFloat(Value:Float):Color {
 		return fromRGBAFloat(Value, Value, Value, 1);
 	}
 
@@ -698,7 +698,6 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static function fromString(str:String):Null<Color> {
 		var result:Null<Color> = null;
 		str = StringTools.trim(str);
-
 		if (COLOR_REGEX.match(str)) {
 			var hexColor:String = "0x" + COLOR_REGEX.matched(2);
 			result = new Color(Std.parseInt(hexColor));
@@ -768,7 +767,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param alphaLock When set to `false`, the alpha channel will get a randomized value to. `true` by default, which makes a color with `alpha = 255`.
 		@param alphaValue When `alphaLock` is true, you can provide this value to override the default alpha value. Since the first argument is optional, you can do `Color.makeRandom(128)` (a random color with `alpha` set to `128`)	
 	**/
-	public static inline function makeRandom(?alphaLock:Bool = true, alphaValue:Int = 255) {
+	public static inline function makeRandom(?alphaLock:Bool = true, alphaValue:Int = 255):Color {
 		return Color.fromRGBAFloat(Math.random(), Math.random(), Math.random(), if (alphaLock) alphaValue else Math.random());
 	}
 
@@ -826,7 +825,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return diff / (considerTransparency ? 2 : MathTools.SQRT3);
 	}
 
-	public static inline function getAverage(fromColors:Array<Color>, considerTransparency:Bool = true) {
+	public static inline function getAverage(fromColors:Array<Color>, considerTransparency:Bool = true):Color {
 		var reds = [], blues = [], greens = [], alphas = [];
 		for (color in fromColors) {
 			reds.push(color.redFloat);
@@ -1096,6 +1095,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return this;
 		#end
 	}
+
 
 	inline function validate():Void {
 		#if neko

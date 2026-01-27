@@ -1,0 +1,4843 @@
+{
+	"name": "root",
+	"classes": [
+		{
+			"name": "tests.ArrayToolsTest",
+			"pos": {
+				"line": 12,
+				"file": "tests/generated/src/tests/ArrayToolsTest.hx"
+			},
+			"id": "tests.ArrayToolsTest",
+			"methods": [
+				{
+					"name": "test_average",
+					"line": 103,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_average_single_value",
+					"line": 168,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo",
+					"line": 123,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_single_element",
+					"line": 131,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distinct",
+					"line": 138,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_flatMap",
+					"line": 145,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_flatten_empty",
+					"line": 174,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_flatten_nested_empty",
+					"line": 180,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_max",
+					"line": 90,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_max_1",
+					"line": 96,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_max_negative_values",
+					"line": 162,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_median",
+					"line": 109,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_median_even",
+					"line": 115,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_min",
+					"line": 77,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_min_1",
+					"line": 83,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_min_empty_array",
+					"line": 156,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_raise",
+					"line": 49,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_raise_predicate_opens_array",
+					"line": 67,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_raise_with_predicate",
+					"line": 58,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_flatten",
+					"line": 40,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216750.5032063
+				}
+			]
+		},
+		{
+			"name": "tests.BilateralFilterTest",
+			"pos": {
+				"line": 11,
+				"file": "tests/generated/src/tests/BilateralFilterTest.hx"
+			},
+			"id": "tests.BilateralFilterTest",
+			"methods": [
+				{
+					"name": "test_filter",
+					"line": 39,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_filter_preserves_edges",
+					"line": 49,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_filter_small_sigma",
+					"line": 88,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_filter_smooths_noise",
+					"line": 75,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_filter_uniform_image",
+					"line": 97,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.BilinearInterpolationTest",
+			"pos": {
+				"line": 10,
+				"file": "tests/generated/src/tests/BilinearInterpolationTest.hx"
+			},
+			"id": "tests.BilinearInterpolationTest",
+			"methods": [
+				{
+					"name": "test_interpolate",
+					"line": 38,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_interpolateMissingPixels_fills_gaps",
+					"line": 85,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_interpolateMissingPixels_larger_kernel",
+					"line": 100,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_interpolateMissingPixels_no_kernel",
+					"line": 77,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_interpolate_preserves_corners",
+					"line": 54,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_interpolate_same_size",
+					"line": 71,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_interpolate_upscale",
+					"line": 47,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.ByteArrayTest",
+			"pos": {
+				"line": 7,
+				"file": "tests/generated/src/tests/ByteArrayTest.hx"
+			},
+			"id": "tests.ByteArrayTest",
+			"methods": [
+				{
+					"name": "test_concat",
+					"line": 210,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_with_fill",
+					"line": 18,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_with_length",
+					"line": 13,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_zero_fill",
+					"line": 27,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from_array_int",
+					"line": 68,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from_bool",
+					"line": 50,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from_dynamic",
+					"line": 75,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from_float",
+					"line": 44,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from_int",
+					"line": 38,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from_string",
+					"line": 56,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from_string_utf8",
+					"line": 62,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getBytes",
+					"line": 173,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_isEmpty_false",
+					"line": 241,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_isEmpty_true",
+					"line": 236,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_resize_grow",
+					"line": 190,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_resize_shrink",
+					"line": 199,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setBytes_getBytes",
+					"line": 155,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setInt8_getInt8",
+					"line": 114,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setUInt32_at_different_offsets",
+					"line": 142,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setUInt32_getUInt32",
+					"line": 129,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setUInt8_boundary_values",
+					"line": 99,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setUInt8_getUInt8",
+					"line": 86,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toArray",
+					"line": 250,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toArray_empty",
+					"line": 268,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.CannyObjectTest",
+			"pos": {
+				"line": 8,
+				"file": "tests/generated/src/tests/CannyObjectTest.hx"
+			},
+			"id": "tests.CannyObjectTest",
+			"methods": [
+				{
+					"name": "test_cannyObject_forwards_getPixel",
+					"line": 63,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cannyObject_forwards_height",
+					"line": 57,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cannyObject_forwards_setPixel",
+					"line": 73,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cannyObject_forwards_width",
+					"line": 51,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cannyObject_from_image",
+					"line": 36,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cannyObject_to_image",
+					"line": 42,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.CannyTest",
+			"pos": {
+				"line": 10,
+				"file": "tests/generated/src/tests/CannyTest.hx"
+			},
+			"id": "tests.CannyTest",
+			"methods": [
+				{
+					"name": "test_applyGaussian_returns_image",
+					"line": 73,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_applyGaussian_smooths_noise",
+					"line": 81,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_applyHysteresis_returns_image",
+					"line": 147,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_applyHysteresis_suppresses_weak_edges",
+					"line": 157,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_applySobelFilters_detects_vertical_edge",
+					"line": 107,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_applySobelFilters_returns_image",
+					"line": 99,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_full_canny_pipeline",
+					"line": 173,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getNeighbors_returns_correct_size",
+					"line": 185,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_grayscale_produces_gray_pixels",
+					"line": 63,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_grayscale_returns_image",
+					"line": 55,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_nonMaxSuppression_returns_image",
+					"line": 121,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_nonMaxSuppression_thins_edges",
+					"line": 130,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.ColorClusterTest",
+			"pos": {
+				"line": 8,
+				"file": "tests/generated/src/tests/ColorClusterTest.hx"
+			},
+			"id": "tests.ColorClusterTest",
+			"methods": [
+				{
+					"name": "test_centroid_is_mutable",
+					"line": 34,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_empty_items",
+					"line": 27,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_sets_centroid",
+					"line": 10,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_sets_items",
+					"line": 17,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_items_can_be_added",
+					"line": 42,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_items_preserves_color_values",
+					"line": 49,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.ColorTest",
+			"pos": {
+				"line": 6,
+				"file": "tests/generated/src/tests/ColorTest.hx"
+			},
+			"id": "tests.ColorTest",
+			"methods": [
+				{
+					"name": "test_add",
+					"line": 347,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_alpha",
+					"line": 161,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_alphaFloat",
+					"line": 184,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_black",
+					"line": 219,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_blackOrWhite",
+					"line": 497,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_blue",
+					"line": 156,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_blueFloat",
+					"line": 179,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_brightness",
+					"line": 255,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cyan",
+					"line": 201,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_darken",
+					"line": 474,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_differenceBetween",
+					"line": 392,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceBetween_opposite_colors",
+					"line": 384,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceBetween_same_color",
+					"line": 378,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_divide",
+					"line": 369,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from8Bit",
+					"line": 44,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromCMYK",
+					"line": 74,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromFloat",
+					"line": 51,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromHSB",
+					"line": 88,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromHSL",
+					"line": 108,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromInt",
+					"line": 12,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromInt_transparent",
+					"line": 20,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromRGBA",
+					"line": 28,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromRGBAFloat",
+					"line": 58,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromRGBAFloat_clamps_values",
+					"line": 66,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromRGBA_no_alpha",
+					"line": 36,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromString_hex_with_hash",
+					"line": 122,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fromString_hex_without_hash",
+					"line": 134,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getAnalogousHarmony",
+					"line": 426,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getAverage",
+					"line": 404,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getComplementHarmony",
+					"line": 417,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getHSBColorWheel",
+					"line": 453,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getSplitComplementHarmony",
+					"line": 435,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getTriadicHarmony",
+					"line": 444,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_gradient",
+					"line": 314,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_grayscale",
+					"line": 489,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_green",
+					"line": 151,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_greenFloat",
+					"line": 174,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_hue",
+					"line": 231,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_interpolate_at_one",
+					"line": 304,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_interpolate_at_zero",
+					"line": 294,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_interpolate_midpoint",
+					"line": 283,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_invert",
+					"line": 465,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_lighten",
+					"line": 482,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_lightness",
+					"line": 265,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_magenta",
+					"line": 209,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_makeRandom",
+					"line": 326,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_multiply",
+					"line": 336,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_red",
+					"line": 146,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_redFloat",
+					"line": 166,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_rgb",
+					"line": 192,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_saturation",
+					"line": 245,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setCMYK",
+					"line": 531,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setHSB",
+					"line": 539,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setHSL",
+					"line": 547,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setRGBA",
+					"line": 514,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_setRGBAFloat",
+					"line": 523,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_subtract",
+					"line": 358,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_to24Bit",
+					"line": 559,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toHexString",
+					"line": 565,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toHexString_with_alpha",
+					"line": 571,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toInt",
+					"line": 590,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toString",
+					"line": 583,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toWebString",
+					"line": 577,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_yellow",
+					"line": 214,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.CramerTest",
+			"pos": {
+				"line": 10,
+				"file": "tests/generated/src/tests/CramerTest.hx"
+			},
+			"id": "tests.CramerTest",
+			"methods": [
+				{
+					"name": "test_solveVariablesFor_2x2_system",
+					"line": 12,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_solveVariablesFor_3x3_system",
+					"line": 26,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_solveVariablesFor_fractional_coefficients",
+					"line": 64,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_solveVariablesFor_identity_matrix",
+					"line": 41,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_solveVariablesFor_negative_solution",
+					"line": 53,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_solveVariablesFor_zero_solutions",
+					"line": 75,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.GaussJordanTest",
+			"pos": {
+				"line": 8,
+				"file": "tests/generated/src/tests/GaussJordanTest.hx"
+			},
+			"id": "tests.GaussJordanTest",
+			"methods": [
+				{
+					"name": "test_augmentMatrix",
+					"line": 54,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_createIdentityMatrix",
+					"line": 35,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_createIdentityMatrix_size_1",
+					"line": 47,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_extractMatrix",
+					"line": 77,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_invert_2x2_matrix",
+					"line": 10,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_invert_identity_matrix",
+					"line": 22,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_swapRows",
+					"line": 66,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.GaussTest",
+			"pos": {
+				"line": 11,
+				"file": "tests/generated/src/tests/GaussTest.hx"
+			},
+			"id": "tests.GaussTest",
+			"methods": [
+				{
+					"name": "test_create1DKernelOfSize_3",
+					"line": 53,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_create1DKernelOfSize_5",
+					"line": 62,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_create1DKernelOfSize_sums_to_one",
+					"line": 70,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_create1DKernelOfSize_symmetric",
+					"line": 79,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_create2DKernelOfSize_3x3",
+					"line": 13,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_create2DKernelOfSize_5x5",
+					"line": 24,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_create2DKernelOfSize_sums_to_one",
+					"line": 34,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_create2DKernelOfSize_symmetric",
+					"line": 45,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_create3x3Kernel_deprecated",
+					"line": 143,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_create5x5Kernel_deprecated",
+					"line": 149,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fastBlur_larger_sigma_more_blur",
+					"line": 120,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fastBlur_returns_image",
+					"line": 85,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fastBlur_smooths_noise",
+					"line": 93,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_fastBlur_uniform_image_unchanged",
+					"line": 111,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.HistogramTest",
+			"pos": {
+				"line": 8,
+				"file": "tests/generated/src/tests/HistogramTest.hx"
+			},
+			"id": "tests.HistogramTest",
+			"methods": [
+				{
+					"name": "test_decrement_returns_self_for_chaining",
+					"line": 61,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_decrement_single_cell",
+					"line": 47,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_decrement_to_negative",
+					"line": 55,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_increment_chained",
+					"line": 39,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_increment_multiple_times",
+					"line": 25,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_increment_returns_self_for_chaining",
+					"line": 33,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_increment_single_cell",
+					"line": 16,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_length_empty",
+					"line": 68,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_length_multiple_cells",
+					"line": 80,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_length_sparse",
+					"line": 73,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_median_even_count",
+					"line": 105,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_median_odd_count",
+					"line": 94,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_median_single_value",
+					"line": 88,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_median_uniform_distribution",
+					"line": 118,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_new_creates_empty_histogram",
+					"line": 10,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.ImageHashingTest",
+			"pos": {
+				"line": 12,
+				"file": "tests/generated/src/tests/ImageHashingTest.hx"
+			},
+			"id": "tests.ImageHashingTest",
+			"methods": [
+				{
+					"name": "test_ahash_black_image_all_zeros",
+					"line": 68,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_ahash_different_images_different_hashes",
+					"line": 54,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_ahash_different_sizes",
+					"line": 99,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_ahash_returns_bytearray",
+					"line": 39,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_ahash_same_image_same_hash",
+					"line": 45,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_ahash_white_image_high_values",
+					"line": 86,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_phash_different_images_different_hashes",
+					"line": 121,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_phash_returns_64_bit_hash",
+					"line": 135,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_phash_returns_bytearray",
+					"line": 106,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_phash_same_image_same_hash",
+					"line": 112,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_phash_similar_images_similar_hashes",
+					"line": 141,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.ImageIOTest",
+			"pos": {
+				"line": 11,
+				"file": "tests/generated/src/tests/ImageIOTest.hx"
+			},
+			"id": "tests.ImageIOTest",
+			"methods": [
+				{
+					"name": "test_from_bytes_is_not_null",
+					"line": 42,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from_framework_is_not_null",
+					"line": 46,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_from_is_not_null",
+					"line": 34,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_to_bytes_is_not_null",
+					"line": 50,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_to_framework_is_not_null",
+					"line": 54,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_to_is_not_null",
+					"line": 38,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.KMeansTest",
+			"pos": {
+				"line": 11,
+				"file": "tests/generated/src/tests/KMeansTest.hx"
+			},
+			"id": "tests.KMeansTest",
+			"methods": [
+				{
+					"name": "test_generateClustersUsingConvergence_basic",
+					"line": 13,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_generateClustersUsingConvergence_groups_similar_values",
+					"line": 26,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getImageColorClusters_basic",
+					"line": 52,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getImageColorClusters_returns_color_clusters",
+					"line": 76,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getImageColorClusters_two_colors",
+					"line": 59,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_pickElementsAtRandom_correct_count",
+					"line": 85,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_pickElementsAtRandom_distinct_elements",
+					"line": 91,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_pickElementsAtRandom_elements_from_source",
+					"line": 120,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_pickElementsAtRandom_limited_by_available",
+					"line": 113,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_pickElementsAtRandom_non_distinct_can_have_duplicates",
+					"line": 103,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.LaplaceTest",
+			"pos": {
+				"line": 11,
+				"file": "tests/generated/src/tests/LaplaceTest.hx"
+			},
+			"id": "tests.LaplaceTest",
+			"methods": [
+				{
+					"name": "test_convolveWithLaplacianOperator_detects_edges",
+					"line": 40,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithLaplacianOperator_positive_vs_negative",
+					"line": 61,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithLaplacianOperator_returns_image",
+					"line": 33,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithLaplacianOperator_uniform_produces_zero",
+					"line": 54,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_laplacianOfGaussian_detects_edges",
+					"line": 76,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_laplacianOfGaussian_different_kernel_sizes",
+					"line": 110,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_laplacianOfGaussian_high_threshold_less_edges",
+					"line": 93,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_laplacianOfGaussian_returns_image",
+					"line": 69,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.MathToolsTest",
+			"pos": {
+				"line": 13,
+				"file": "tests/generated/src/tests/MathToolsTest.hx"
+			},
+			"id": "tests.MathToolsTest",
+			"methods": [
+				{
+					"name": "test_NEGATIVE_INFINITY",
+					"line": 40,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_NaN",
+					"line": 45,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_PI",
+					"line": 19,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_PI_OVER_2",
+					"line": 23,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_POSITIVE_INFINITY",
+					"line": 35,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_SQRT2",
+					"line": 27,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_SQRT3",
+					"line": 31,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_boundFloat",
+					"line": 347,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_boundInt",
+					"line": 341,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_clamp",
+					"line": 333,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cosd",
+					"line": 104,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cosec",
+					"line": 129,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cotan",
+					"line": 117,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cropDecimal",
+					"line": 402,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_degreesFromPointToPoint2D",
+					"line": 202,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_degreesToRadians",
+					"line": 53,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_degreesToSlope",
+					"line": 82,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceBetweenLines2D_intersecting",
+					"line": 276,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceBetweenPoints_2D",
+					"line": 139,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceBetweenPoints_3D",
+					"line": 157,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceBetweenPoints_IntPoint2D",
+					"line": 170,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceBetweenPoints_mixed",
+					"line": 176,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceFromLineToPoint2D",
+					"line": 260,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceFromPointToLine2D",
+					"line": 268,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceFromPointToRay2D",
+					"line": 309,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_factorial",
+					"line": 370,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_flipInsideRectangle",
+					"line": 461,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_gamma",
+					"line": 379,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getClosestPointOnRay2D",
+					"line": 318,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_intersectionBetweenLine2Ds",
+					"line": 231,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_intersectionBetweenLine2Ds_non_intersecting_segments",
+					"line": 251,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_intersectionBetweenLine2Ds_parallel_returns_null",
+					"line": 242,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_intersectionBetweenRay2Ds",
+					"line": 288,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_intersectionBetweenRay2Ds_parallel_returns_null",
+					"line": 300,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_isBetweenRange",
+					"line": 491,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_isBetweenRanges",
+					"line": 476,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_isInt",
+					"line": 410,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mirrorInsideRectangle",
+					"line": 446,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_parseBool",
+					"line": 420,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_radiansFromPointToPoint2D",
+					"line": 186,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_radiansToDegrees",
+					"line": 61,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_radiansToSlope",
+					"line": 88,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sec",
+					"line": 123,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sind",
+					"line": 97,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_slopeFromPointToPoint2D",
+					"line": 211,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_slopeToDegrees",
+					"line": 76,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_slopeToRadians",
+					"line": 69,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_tand",
+					"line": 111,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toFloat_Int64",
+					"line": 431,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_truncate",
+					"line": 395,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_wrapFloat",
+					"line": 361,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_wrapInt",
+					"line": 353,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.PerspectiveWarpTest",
+			"pos": {
+				"line": 9,
+				"file": "tests/generated/src/tests/PerspectiveWarpTest.hx"
+			},
+			"id": "tests.PerspectiveWarpTest",
+			"methods": [
+				{
+					"name": "test_generateMatrix_identity_when_points_same",
+					"line": 30,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_generateMatrix_returns_3x3",
+					"line": 11,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_generateMatrix_with_perspective",
+					"line": 83,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_generateMatrix_with_scale",
+					"line": 65,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_generateMatrix_with_translation",
+					"line": 45,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.PerwittTest",
+			"pos": {
+				"line": 10,
+				"file": "tests/generated/src/tests/PerwittTest.hx"
+			},
+			"id": "tests.PerwittTest",
+			"methods": [
+				{
+					"name": "test_convolveWithPerwittOperator_detects_edge",
+					"line": 39,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithPerwittOperator_returns_image",
+					"line": 32,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithPerwittOperator_uniform_low_response",
+					"line": 53,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_returns_image",
+					"line": 60,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_threshold_filters",
+					"line": 67,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.PixelTest",
+			"pos": {
+				"line": 8,
+				"file": "tests/generated/src/tests/PixelTest.hx"
+			},
+			"id": "tests.PixelTest",
+			"methods": [
+				{
+					"name": "test_color",
+					"line": 27,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_color_is_mutable",
+					"line": 47,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor",
+					"line": 10,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_struct_init",
+					"line": 54,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_x_coordinate",
+					"line": 17,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_x_is_mutable",
+					"line": 35,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_y_coordinate",
+					"line": 22,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_y_is_mutable",
+					"line": 41,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.Point2DTest",
+			"pos": {
+				"line": 8,
+				"file": "tests/generated/src/tests/Point2DTest.hx"
+			},
+			"id": "tests.Point2DTest",
+			"methods": [
+				{
+					"name": "test_constructor_default",
+					"line": 10,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_with_values",
+					"line": 16,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_copy",
+					"line": 36,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_copy_is_independent",
+					"line": 43,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_degreesTo_right",
+					"line": 73,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_degreesTo_up",
+					"line": 79,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_345_triangle",
+					"line": 50,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_horizontal",
+					"line": 61,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_same_point",
+					"line": 56,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_vertical",
+					"line": 67,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_negative_coordinates",
+					"line": 103,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_radiansTo_right",
+					"line": 85,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_struct_init",
+					"line": 22,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toString",
+					"line": 28,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_x_is_mutable",
+					"line": 91,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_y_is_mutable",
+					"line": 97,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.Point3DTest",
+			"pos": {
+				"line": 8,
+				"file": "tests/generated/src/tests/Point3DTest.hx"
+			},
+			"id": "tests.Point3DTest",
+			"methods": [
+				{
+					"name": "test_constructor_basic",
+					"line": 14,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_fractional",
+					"line": 35,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_negative",
+					"line": 28,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_zero",
+					"line": 21,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_copy_independence",
+					"line": 138,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_copy_negative",
+					"line": 151,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_copy_values",
+					"line": 130,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_axisAligned_x",
+					"line": 95,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_axisAligned_y",
+					"line": 101,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_axisAligned_z",
+					"line": 107,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_negative_coordinates",
+					"line": 120,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_samePoint",
+					"line": 88,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_simple",
+					"line": 81,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_distanceTo_symmetric",
+					"line": 113,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_x",
+					"line": 53,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_y",
+					"line": 61,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_z",
+					"line": 69,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_structInit",
+					"line": 42,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toString_format",
+					"line": 163,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toString_fractional",
+					"line": 181,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toString_negative",
+					"line": 169,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toString_zero",
+					"line": 175,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.PointTransformationPairTest",
+			"pos": {
+				"line": 8,
+				"file": "tests/generated/src/tests/PointTransformationPairTest.hx"
+			},
+			"id": "tests.PointTransformationPairTest",
+			"methods": [
+				{
+					"name": "test_constructor_basic",
+					"line": 14,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_negativeCoordinates",
+					"line": 34,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_samePoints",
+					"line": 26,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cornerMapping_bottomRight",
+					"line": 143,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_cornerMapping_topLeft",
+					"line": 134,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_from",
+					"line": 62,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_pointCoordinates",
+					"line": 90,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_to",
+					"line": 76,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_reference_independence",
+					"line": 106,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_structInit",
+					"line": 48,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_translation_pair",
+					"line": 122,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.QueueCellTest",
+			"pos": {
+				"line": 7,
+				"file": "tests/generated/src/tests/QueueCellTest.hx"
+			},
+			"id": "tests.QueueCellTest",
+			"methods": [
+				{
+					"name": "test_chain_bidirectional",
+					"line": 130,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_chain_threeNodes",
+					"line": 111,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_valueOnly",
+					"line": 13,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_withBothLinks",
+					"line": 38,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_withNext",
+					"line": 20,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_withPrevious",
+					"line": 29,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_generic_array",
+					"line": 144,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getValue_float",
+					"line": 61,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getValue_int",
+					"line": 51,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getValue_null",
+					"line": 66,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getValue_string",
+					"line": 56,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_next_mutability",
+					"line": 91,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_previous_mutability",
+					"line": 99,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_value_direct_access",
+					"line": 75,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_value_mutability",
+					"line": 80,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.QueueTest",
+			"pos": {
+				"line": 7,
+				"file": "tests/generated/src/tests/QueueTest.hx"
+			},
+			"id": "tests.QueueTest",
+			"methods": [
+				{
+					"name": "test_constructor_empty",
+					"line": 13,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_dequeue_fifoOrder",
+					"line": 57,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_dequeue_lengthDecreases",
+					"line": 77,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_dequeue_multipleItems",
+					"line": 67,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_enqueue_multiple",
+					"line": 32,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_enqueue_returnsValue",
+					"line": 40,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_enqueue_single",
+					"line": 23,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_enqueue_string",
+					"line": 46,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_first_mostRecentEnqueue",
+					"line": 237,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_first_singleItem",
+					"line": 246,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_has_existingItem",
+					"line": 137,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_has_firstItem",
+					"line": 145,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_has_nonExistingItem",
+					"line": 153,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_iterator_count",
+					"line": 173,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_iterator_hasNext",
+					"line": 197,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_iterator_notNull",
+					"line": 165,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_iterator_values",
+					"line": 183,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_last_isFirstEnqueued",
+					"line": 124,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_last_multipleItems",
+					"line": 115,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_last_singleItem",
+					"line": 108,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_length_incrementsOnEnqueue",
+					"line": 95,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_length_startsAtZero",
+					"line": 90,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toString_format",
+					"line": 210,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toString_notNull",
+					"line": 226,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_toString_singleItem",
+					"line": 219,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.RadixTest",
+			"pos": {
+				"line": 10,
+				"file": "tests/generated/src/tests/RadixTest.hx"
+			},
+			"id": "tests.RadixTest",
+			"methods": [
+				{
+					"name": "test_getMax_allSame",
+					"line": 101,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getMax_basic",
+					"line": 89,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getMax_negatives",
+					"line": 107,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_getMax_withEndIndex",
+					"line": 95,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sort_alreadySorted",
+					"line": 43,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Radix sort has edge case issues with interpretation",
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sort_basic",
+					"line": 17,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Radix sort has edge case issues with interpretation",
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sort_duplicates",
+					"line": 70,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Radix sort has edge case issues with interpretation",
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sort_reverseSorted",
+					"line": 51,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Radix sort has edge case issues with interpretation",
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sort_singleElement",
+					"line": 78,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Radix sort has edge case issues with interpretation",
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sort_threeDigit",
+					"line": 36,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Radix sort has edge case issues with interpretation",
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sort_twoDigit",
+					"line": 28,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Radix sort has edge case issues with interpretation",
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_sort_withNegatives",
+					"line": 59,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Radix sort has edge case issues with interpretation",
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.RectangleTest",
+			"pos": {
+				"line": 7,
+				"file": "tests/generated/src/tests/RectangleTest.hx"
+			},
+			"id": "tests.RectangleTest",
+			"methods": [
+				{
+					"name": "test_area_calculation",
+					"line": 121,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_boundingBox",
+					"line": 110,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_basic",
+					"line": 13,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_negativePosition",
+					"line": 29,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_constructor_zero",
+					"line": 21,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_height",
+					"line": 88,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_width",
+					"line": 79,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_x",
+					"line": 61,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mutability_y",
+					"line": 70,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_screenRegion",
+					"line": 101,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_square",
+					"line": 127,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_structInit",
+					"line": 41,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_structInit_largeValues",
+					"line": 49,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.RobertsCrossTest",
+			"pos": {
+				"line": 10,
+				"file": "tests/generated/src/tests/RobertsCrossTest.hx"
+			},
+			"id": "tests.RobertsCrossTest",
+			"methods": [
+				{
+					"name": "test_convolveWithRobertsCross_detectsVerticalEdge",
+					"line": 76,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithRobertsCross_hasFullAlpha",
+					"line": 113,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithRobertsCross_notNull",
+					"line": 52,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithRobertsCross_outputIsGrayscale",
+					"line": 103,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithRobertsCross_sameSize",
+					"line": 58,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithRobertsCross_smallImage",
+					"line": 65,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithRobertsCross_tallImage",
+					"line": 133,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithRobertsCross_uniformProducesLowGradient",
+					"line": 88,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithRobertsCross_wideImage",
+					"line": 126,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.SimpleHoughTest",
+			"pos": {
+				"line": 11,
+				"file": "tests/generated/src/tests/SimpleHoughTest.hx"
+			},
+			"id": "tests.SimpleHoughTest",
+			"methods": [
+				{
+					"name": "test_detectAndMap_integration",
+					"line": 149,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectLines_emptyImageNoLines",
+					"line": 70,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectLines_highThresholdFewerLines",
+					"line": 77,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectLines_notNull",
+					"line": 57,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectLines_resultContainsRay2D",
+					"line": 85,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectLines_returnsArray",
+					"line": 63,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mapLines_emptyRays",
+					"line": 115,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mapLines_multipleRays",
+					"line": 132,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mapLines_notNull",
+					"line": 100,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mapLines_sameSize",
+					"line": 107,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_mapLines_withRays",
+					"line": 123,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.SimpleLineDetectorTest",
+			"pos": {
+				"line": 14,
+				"file": "tests/generated/src/tests/SimpleLineDetectorTest.hx"
+			},
+			"id": "tests.SimpleLineDetectorTest",
+			"methods": [
+				{
+					"name": "test_correctLines_empty_array",
+					"line": 167,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_correctLines_keeps_perpendicular_lines",
+					"line": 214,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_correctLines_merges_collinear_adjacent_lines",
+					"line": 188,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_correctLines_preserves_distant_parallel_lines",
+					"line": 226,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_correctLines_removes_shorter_intersecting_line",
+					"line": 200,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_correctLines_single_line_unchanged",
+					"line": 176,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_findLineFromPoint_horizontal_line",
+					"line": 47,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_findLineFromPoint_out_of_bounds",
+					"line": 95,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_findLineFromPoint_returns_null_for_short_line",
+					"line": 79,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_findLineFromPoint_returns_null_on_black_pixel",
+					"line": 66,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_lineCoveragePercentage_full_coverage",
+					"line": 112,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_lineCoveragePercentage_no_coverage",
+					"line": 126,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_lineCoveragePercentage_null_line_returns_zero",
+					"line": 139,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_lineCoveragePercentage_partial_coverage",
+					"line": 148,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.SobelTest",
+			"pos": {
+				"line": 10,
+				"file": "tests/generated/src/tests/SobelTest.hx"
+			},
+			"id": "tests.SobelTest",
+			"methods": [
+				{
+					"name": "test_convolveWithSobelOperator_fullAlpha",
+					"line": 97,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithSobelOperator_grayscaleOutput",
+					"line": 87,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithSobelOperator_notNull",
+					"line": 67,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithSobelOperator_sameSize",
+					"line": 73,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithSobelOperator_smallImage",
+					"line": 80,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithSobelOperator_tallImage",
+					"line": 190,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_convolveWithSobelOperator_wideImage",
+					"line": 183,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_detectsVerticalEdge",
+					"line": 139,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_highThresholdFewerEdges",
+					"line": 147,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_notNull",
+					"line": 109,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_outputBinaryBlackWhite",
+					"line": 165,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_sameSize",
+					"line": 115,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_tallImage",
+					"line": 204,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_uniformImageNoEdges",
+					"line": 122,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				},
+				{
+					"name": "test_detectEdges_wideImage",
+					"line": 197,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8233967
+				}
+			]
+		},
+		{
+			"name": "tests.VisionTest",
+			"pos": {
+				"line": 61,
+				"file": "tests/generated/src/tests/VisionTest.hx"
+			},
+			"id": "tests.VisionTest",
+			"methods": [
+				{
+					"name": "test_affineTransform_identity",
+					"line": 738,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8366494
+				},
+				{
+					"name": "test_blackAndWhite_basic",
+					"line": 674,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8366494
+				},
+				{
+					"name": "test_combine_50percent",
+					"line": 756,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8366494
+				},
+				{
+					"name": "test_filterForColorChannel_red",
+					"line": 817,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_barrelDistortion",
+					"line": 390,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Reference image missing from server",
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_bilateralDenoise",
+					"line": 610,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_blackAndWhite",
+					"line": 279,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_cannyEdgeDetection",
+					"line": 549,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_combine",
+					"line": 218,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_contrast",
+					"line": 291,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_convolutionRidgeDetection",
+					"line": 598,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Algorithm changed - reference image needs regeneration",
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_deepfry",
+					"line": 352,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Algorithm changed - reference image needs regeneration",
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_dilate",
+					"line": 428,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_erode",
+					"line": 440,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_filterForColorChannel",
+					"line": 452,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_fisheyeDistortion",
+					"line": 377,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_gaussianBlur",
+					"line": 476,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_grayscale",
+					"line": 243,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_invert",
+					"line": 255,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_kmeansPosterize",
+					"line": 622,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_laplacianEdgeDiffOperator",
+					"line": 537,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_laplacianOfGaussianEdgeDetection",
+					"line": 585,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_medianBlur",
+					"line": 489,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_mustacheDistortion",
+					"line": 416,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Reference image missing from server",
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_nearestNeighborBlur",
+					"line": 464,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_perwittEdgeDetection",
+					"line": 573,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_perwittEdgeDiffOperator",
+					"line": 513,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_pincushionDistortion",
+					"line": 403,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Reference image missing from server",
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_pixelate",
+					"line": 315,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_posterize",
+					"line": 327,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_robertEdgeDiffOperator",
+					"line": 525,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_sepia",
+					"line": 267,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_sharpen",
+					"line": 339,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_smooth",
+					"line": 303,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_sobelEdgeDetection",
+					"line": 561,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_sobelEdgeDiffOperator",
+					"line": 501,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_tint",
+					"line": 231,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_golden_vignette",
+					"line": 365,
+					"executionTime": null,
+					"state": "ignore",
+					"message": "Algorithm changed - reference image needs regeneration",
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_grayscale_basic",
+					"line": 656,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_invert_basic",
+					"line": 638,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_kmeansGroupImageColors",
+					"line": 730,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_limitColorRanges",
+					"line": 795,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_normalize_expands_range",
+					"line": 768,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8414352
+				},
+				{
+					"name": "test_posterize_basic",
+					"line": 694,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8465006
+				},
+				{
+					"name": "test_projectiveTransform_identity",
+					"line": 747,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8465006
+				},
+				{
+					"name": "test_simpleImageSimilarity_different",
+					"line": 713,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8465006
+				},
+				{
+					"name": "test_simpleImageSimilarity_identical",
+					"line": 708,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8465006
+				},
+				{
+					"name": "test_simpleLine2DDetection",
+					"line": 720,
+					"executionTime": null,
+					"state": "success",
+					"message": null,
+					"errorPos": null,
+					"timestamp": 1769216651.8465006
+				}
+			]
+		}
+	]
+}

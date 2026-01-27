@@ -74,8 +74,9 @@ class Vision {
 		@param image The image to combine on. When this function returns, that image should be modified
 		@param with The second image to combine with. That image is preserved throughout the function.
 		@param percentage The ratio between the contributions of each pixel within the two images, from 0 to 100: a lower value will make the first image's pixels contribute more to the the final image, thus making that image more similar to the first image, and vice-versa.
+		@return The combined image. The original copy (The first parameter) is modified.
 	**/
-	public static function combine(image:Image, ?with:Image, percentage:Float = 50) {
+	public static function combine(image:Image, ?with:Image, percentage:Float = 50):Image {
 		if (with == null) with = new Image(image.width, image.height);
 		final translated = percentage / 100;
 		image.forEachPixelInView((x, y, first) -> {
@@ -96,7 +97,7 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-tint.png)|
 		
 		@param image The image to tint
-		@param withColor The color to tint the image with. Each channel is considered separately, so a color with `alpha` of 0 won't affect other color channels.
+		@param withColor The color to tint the image with. Each channel is considered separately, so a color with `alpha` of 0 won't affect other color channels. Default is `Color.BLACK`
 		@param percentage The amount by which to tint. `100` yields an image completely colored with `withColor`, while `0` yields the original image. Default is `50`
 		@return The tinted image. The original image is modified.
 	**/
@@ -125,9 +126,8 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-grayscale.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-grayscale&vision_better_grayscale.png)|
 
 		@param image The image to be grayscaled.
-		@param simpleGrayscale When enabled, gets the gray by averaging pixel's color-channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`.
-
-		@return The grayscaled image.
+		@param simpleGrayscale When enabled, gets the gray by averaging pixel's color-channel values, instead of using a special ratio for more accurate grayscaling. Default is `false`.
+		@return The grayscaled image. The original image is modified.
 	**/
 	public static function grayscale(image:Image, simpleGrayscale:Bool = false):Image {
 		image.forEachPixelInView((x, y, pixel) -> {
@@ -157,9 +157,9 @@ class Vision {
 
 		@param image The image to be inverted.
 
-		@return The inverted image.
+		@return The inverted image. The original image is modified.
 	**/
-	public static function invert(image:Image) {
+	public static function invert(image:Image):Image {
 		image.forEachPixelInView((x, y, pixel) -> {
 			image.setUnsafePixel(x, y, Color.fromRGBA(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
 		});
@@ -174,8 +174,12 @@ class Vision {
 		| Original | `strength = 0.25` |
 		|---|---|
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-sepia.png)|
+	
+		@param image The image to be tinted.
+		@param strength The amount of sepia to apply. The higher the value, the older the image looks. Default is `0.25`.
+		@return The tinted image. The original image is modified.
 	**/
-	public static function sepia(image:Image, strength:Float = 0.25) {
+	public static function sepia(image:Image, strength:Float = 0.25):Image {
 		image.forEachPixelInView((x, y, pixel) -> {
 			image.setUnsafePixel(x, y, Color.interpolate(pixel, Color.SEPIA, strength));
 		});
@@ -192,9 +196,8 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-blackAndWhite.png)|
 
 		@param image The image to be converted.
-		@param threshold The threshold for converting to black and white: `threshold` is the maximum average of the three color components, that will still be considered black. `threshold` is a value between 0 and 255. The higher the value, the more "sensitive" the conversion. The default value is 128.
-
-		@return The converted image.
+		@param threshold The threshold for converting to black and white: `threshold` is the maximum average of the three color components, that will still be considered black. `threshold` is a value between 0 and 255. The higher the value, the more "sensitive" the conversion. Default is `128`.
+		@return The converted image. The original image is modified.
 	**/
 	public static function blackAndWhite(image:Image, threshold:Int = 128):Image {
 		image.forEachPixelInView((x, y, pixel) -> {
@@ -217,6 +220,7 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-contrast.png)|
 
 		@param image The image to be contrasted.
+		@return The contrasted image. The original image is modified.
 	**/
 	public static function contrast(image:Image):Image {
 		return convolve(image, UnsharpMasking);
@@ -234,11 +238,11 @@ class Vision {
 
 		@param image The image to be smoothed.
 		@param strength The strength of the smoothing. Higher values will result in more smoothing. Ranges from 0 to 1. Default is `0.1`.
-		@param affectAlpha If `true`, the alpha channel will be smoothed as well. Defaults to `false`.
+		@param affectAlpha If `true`, the alpha channel will be smoothed as well. Default is `false`.
 		@param kernelRadius The radius of the smoothing kernel. Higher values will result in more smoothing. Default is `1`, which uses a 3x3 kernel.
-		@param circularKernel If `true`, the kernel will be circular. If `false`, the kernel will be square.
+		@param circularKernel If `true`, the kernel will be circular. If `false`, the kernel will be square. Default is `true`.
 		@param iterations The number of times the smoothing should be applied. Higher values will result in more smoothing. Default is `1`.
-		@return The smoothed image. The given image is modified.	
+		@return The smoothed image. The original image is modified.	
 	**/
 	public static function smooth(image:Image, strength:Float = 0.1, affectAlpha:Bool = false, kernelRadius:Int = 1, circularKernel:Bool = true, iterations:Int = 1):Image {
 		var size = kernelRadius * 2 + 1;
@@ -274,9 +278,9 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-pixelate.png)|
 
 		@param image The image to pixelate
-		@param averagePixels Whether to use pixel averaging to get resulting pixels, or just use the original, remaining pixel.
-		@param pixelSize the new "pixel size"
-		@param affectAlpha Whether this effect applies to the alpha channel of each pixel or not
+		@param averagePixels Whether to use pixel averaging to get resulting pixels, or just use the original, remaining pixel. Default is `true`.
+		@param pixelSize the new "pixel size". Default is `2`.
+		@param affectAlpha Whether this effect applies to the alpha channel of each pixel or not. Default is `true`.
 		@return The given image, pixelated. The original image is modified.
 	**/
 	public static function pixelate(image:Image, averagePixels:Bool = true, pixelSize:Int = 2, affectAlpha:Bool = true):Image {
@@ -326,10 +330,11 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-posterize.png)|
 
 		@param image The image to be posterized.
-		@param bitsPerChannel The number of bits per channel. Defaults to `4`. Ranges from `1` to `8`.
-		@param affectAlpha If `true`, the alpha channel will be posterized as well. Defaults to `true`.
+		@param bitsPerChannel The number of bits per channel. Default is `4`. Ranges from `1` to `8`.
+		@param affectAlpha If `true`, the alpha channel will be posterized as well. Default is `true`.
+		@return The given image, posterized. The original image is modified.
 	**/
-	public static function posterize(image:Image, bitsPerChannel:Int = 4, affectAlpha:Bool = true) {
+	public static function posterize(image:Image, bitsPerChannel:Int = 4, affectAlpha:Bool = true):Image {
 		var denominator = (256 / bitsPerChannel).floor(); // Is an integer anyways.
 		image.forEachPixelInView((x, y, pixel) -> {
 			var r = (pixel.red / denominator).round() * denominator;
@@ -355,7 +360,7 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-sharpen.png)|
 
 		@param image The image to be contrasted.
-		@return The sharpened image. The original copy is not preserved.
+		@return The sharpened image. The original copy is modified.
 	**/
 	public static function sharpen(image:Image):Image {
 		return convolve(image, Sharpen);
@@ -372,8 +377,8 @@ class Vision {
 
 		The higher the value, the more deepfried the image will look.
 		@param image The image to be deepfried.
-		@param iterations The amount of times the image gets sharpened. default is `2`.
-		@return The deepfried image. The original copy is not preserved.
+		@param iterations The amount of times the image gets sharpened. Default is `2`.
+		@return The deepfried image. The original copy is modified.
 	**/
 	public static function deepfry(image:Image, iterations:Int = 2):Image {
 		for (i in 0...iterations)
@@ -392,14 +397,14 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-vignette%28ratioDependent%20=%20true%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-vignette%28ratioDependent%20=%20false%29.png)|
 		
 		@param image The image to apply vignette on
-		@param strength in percentage, the amount of the image that has vignette, from the edge. Ranges from `0` to `1`. Defaults to `0.2`
+		@param strength in percentage, the amount of the image that has vignette, from the edge. Ranges from `0` to `1`. Default is `0.2`.
 		@param intensity Determines how quickly vignette sets in when a pixel is supposed to be affected. The higher the value, 
 		the quicker it turns to the target color. The closer the value is to `0`, the slower it 
-		turns into the target color, and the less effected the edges.
+		turns into the target color, and the less effected the edges. Default is `1`.
 		@param ratioDependent DEtermines if the effect should always treat the image as a square, 
 		and thus be circular (`false`) or if it should consider different dimensions, 
-		and appear "elliptical" (`true`) 
-		@param color The target color for the vignette effect
+		and appear "elliptical" (`true`). Default is `false`.
+		@param color The target color for the vignette effect. Default is `Color.BLACK`
 		@return the given image, with vignette applied. The original image is modified.
 	**/
 	public static function vignette(image:Image, ?strength:Float = 0.2, ?intensity:Float = 1, ratioDependent:Bool = false, color:Color = Color.BLACK):Image {
@@ -427,8 +432,8 @@ class Vision {
 
 
 	    @param image The image to apply the distortion to
-	    @param strength The "amount" of warping done to the image. A higher value means pixels closer to the center are more distorted.    @return Image
-		@returns the image, with fish-eye effect. The original image is preserved.	
+	    @param strength The "amount" of warping done to the image. A higher value means pixels closer to the center are more distorted. Default is `1.5`.
+		@return the given image, with fish-eye effect. The original image is preserved.	
 	**/
 	public static function fisheyeDistortion(image:Image, ?strength:Float = 1.5):Image {
 		var centerX = image.width / 2,
@@ -471,11 +476,11 @@ class Vision {
 
 		@param image The image to distort
 		@param strength The amount of distortion to apply. The higher the value the more distortion 
-		there is. A negative value implies `Vision.pincushionDistortion`. 
+		there is. A negative value implies `Vision.pincushionDistortion`.
 		Values converging to 0 distort the image less and less. Default is `0.2`.
-		@returns A distorted copy of the given image.
+		@return The given image, with barrel distortion applied. The original image is preserved.
 	**/
-	public static function barrelDistortion(image:Image, ?strength:Float = 0.2) {
+	public static function barrelDistortion(image:Image, ?strength:Float = 0.2):Image {
 		var centerX = image.width / 2,
 			centerY = image.height / 2;
 		var maxRadius = Math.min(centerX, centerY);
@@ -518,9 +523,9 @@ class Vision {
 		@param strength The amount of distortion to apply. The higher the value, the more distortion 
 		there is. A negative value implies `Vision.barrelDistortion`. 
 		Values converging to 0 distort the image less and less. Default is `0.2`.
-		@returns A distorted copy of the given image. The original image is preserved.
+		@return The given image, with pincushion distortion applied. The original image is preserved.
 	**/
-	public static function pincushionDistortion(image:Image, ?strength:Float = 0.2) {
+	public static function pincushionDistortion(image:Image, ?strength:Float = 0.2):Image {
 		return barrelDistortion(image, -strength);
 	}
 
@@ -536,12 +541,12 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![Processed](https://spacebubble-io.pages.dev/vision/docs/valve-barrelDistortion.png)|![Processed](https://spacebubble-io.pages.dev/vision/docs/valve-pincushionDistortion.png)|![Processed](https://spacebubble-io.pages.dev/vision/docs/valve-mustacheDistortion.png)|
 	
 		@param image The image to distort
-		@param strength The amount of distortion to apply. The higher the value, the more distortion 
+		@param amplitude The amount of distortion to apply. The higher the value, the more distortion 
 		there is. A negative value flips the effect. 
 		Values converging to 0 distort the image less and less. Default is `0.2`.
-		@returns A distorted copy of the image. The original image is preserved.
+		@return The given image, with mustache distortion applied. The original image is preserved.
 	**/
-	public static function mustacheDistortion(image:Image, amplitude:Float = 0.2) {
+	public static function mustacheDistortion(image:Image, amplitude:Float = 0.2):Image {
 		var centerX = image.width / 2,
 			centerY = image.height / 2;
 		var maxRadius = Math.min(centerX, centerY);
@@ -589,10 +594,18 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-dilate.png)|
 
 		@param image The image to operate on.
-		@param dilationRadius The radius of the kernel used for the dilation process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernel. The higher this value, the further each pixel checks for a nearby lighter pixel.
-		@param colorImportanceOrder Since there may be conflicts when calculating the difference in lightness between colors with similar values in different color channels (e.g. `0xFF0000` and `0x0000FF` - channel values are "similar", colors are not), this parameter is used to favor the given color channels. The default is `RedGreenBlue` - `red` is the most important, and is considered the "lightest", followed by green, and blue is considered the "darkest".
-		@param circularKernel When enabled, the kernel used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
-		@return The dilated image. The original copy is not preserved.
+		@param dilationRadius The radius of the kernel used for the dilation process. 
+		The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernel. 
+		The higher this value, the further each pixel checks for a nearby lighter pixel. Default is `2`.
+		@param colorImportanceOrder Since there may be conflicts when calculating the difference in lightness 
+		between colors with similar values in different color channels 
+		(e.g. `0xFF0000` and `0x0000FF` - channel values are "similar", colors are not), 
+		this parameter is used to favor the given color channels. Default is `RedGreenBlue` - 
+		`red` is the most important, and is considered the "lightest", followed by green, 
+		and blue is considered the "darkest".
+		@param circularKernel When enabled, the kernel used to loop over the pixels becomes circular instead of being a 
+		square. This results in a slight performance increase, and a great quality increase. Default is `true`.
+		@return The dilated image. The original copy is modified.
 	**/
 	public static function dilate(image:Image, ?dilationRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernel:Bool = true):Image {
 		var intermediate = image.clone();
@@ -627,10 +640,17 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-erode.png)|
 
 		@param image The image to operate on.
-		@param dilationRadius The radius of the kernel used for the erosion process. The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernel. The higher this value, the further each pixel checks for a nearby darker pixel.
-		@param colorImportanceOrder Since there may be conflicts when calculating the difference in darkness between colors with similar values in different color channels (e.g. `0xFF0000` and `0x0000FF` - channel values are "similar", colors are not), this parameter is used to favor the given color channels. The default is `RedGreenBlue` - `red` is the most important, and is considered the "darkest", followed by green, and blue is considered the "lightest".
-		@param circularKernel When enabled, the kernel used to loop over the pixels becomes circular instead of being a square. This results in a slight performance increase, and a massive quality increase. Turned on by default.
-		@return The eroded image. The original copy is not preserved.
+		@param dilationRadius The radius of the kernel used for the erosion process. 
+		The radius does not include the center pixel, so a radius of `2` should give a `5x5` kernel. 
+		The higher this value, the further each pixel checks for a nearby darker pixel. Default is `2`.
+		@param colorImportanceOrder Since there may be conflicts when calculating the difference in darkness between 
+		colors with similar values in different color channels 
+		(e.g. `0xFF0000` and `0x0000FF` - channel values are "similar", colors are not), this parameter is used to 
+		favor the given color channels. The default is `RedGreenBlue` - `red` is the most important, and is considered 
+		the "darkest", followed by green, and blue is considered the "lightest".
+		@param circularKernel When enabled, the kernel used to loop over the pixels becomes circular instead of being a 
+		square. This results in a slight performance increase, and a massive quality increase. Default is `true`.
+		@return The eroded image. The original copy is modified.
 	**/
 	public static function erode(image:Image, ?erosionRadius:Int = 2, ?colorImportanceOrder:ColorImportanceOrder = RedGreenBlue, circularKernel:Bool = true):Image {
 		var intermediate = image.clone();
@@ -658,10 +678,11 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-saltAndPepperNoise.png)
 		
 		@param image The image to apply salt&pepper noise on.
-		@param percentage How much of the image should be "corrupted", in percentages between 0 to 100 - 0 means no change, 100 means fully "corrupted". Default is 25.
-		@return The noisy image. The original copy is not preserved.
+		@param percentage How much of the image should be "corrupted", in percentages between `0` to `100` - `0`
+		means no change, `100` means fully "corrupted". Default is `25`.
+		@return The noisy image. The original copy is modified.
 
-		@see Color.interpolate()
+		@see **`Color.interpolate()`**
 	**/
 	public static function saltAndPepperNoise(image:Image, percentage:Float = 25):Image {
 		var translated = percentage / 100;
@@ -691,9 +712,12 @@ class Vision {
 		|---|---|
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-dropOutNoise.png)
 		
-		@param image The image to apply salt&pepper noise on
-		@param percentage How much of the image should be "corrupted", in percentages between 0 to 100 - 0 means no change, 100 means fully "corrupted". Default is 5
-		@return The noisy image. The original copy is not preserved.
+		@param image The image to apply drop-out noise on
+		@param percentage How much of the image should be "corrupted", in percentages between `0` to `100` - 
+		`0` means no change, `100` means fully "corrupted". Default is `5`.
+		@param threshold The threshold at which a pixel is considered "black" or "white". A color measures against 
+		this threshold by grabbing the largest color channel value, and comparing it. Default is `128`.
+		@return The noisy image. The original copy is modified.
 	**/
 	public static function dropOutNoise(image:Image, percentage:Float = 5, threshold:Int = 128):Image {
 		var translated = percentage / 100;
@@ -720,9 +744,9 @@ class Vision {
 		@param image The image to apply salt&pepper noise on
 		@param percentage How white-noisy the resulting image should be, or, the ratio between the contributions of each pixel from the original image and the white noise to the final image, from 0 to 100: a lower value will make the first image's pixels contribute more to the the final image, thus making the resulting image less noisy, and vice-versa.
 		@param whiteNoiseRange The number of shades of gray used to generate the white noise. Shouldn't really effect performance, but you may want to change it to get a "higher/lower quality" white noise.
-		@return The noisy image. The original copy is not preserved.
+		@return The noisy image. The original copy is modified.
 	**/
-	public static function whiteNoise(image:Image, percentage:Float = 25, whiteNoiseRange:WhiteNoiseRange = RANGE_16) {
+	public static function whiteNoise(image:Image, percentage:Float = 25, whiteNoiseRange:WhiteNoiseRange = RANGE_16):Image {
 		var colorVector:Vector<Int> = new Vector(whiteNoiseRange);
 		colorVector[0] = 0;
 		colorVector[colorVector.length - 1] = 255;
@@ -761,24 +785,39 @@ class Vision {
 		@param image The image to be normalized.
 		@param rangeStart The start of the range of channels. By default, this value is `0x00000000`
 		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF`
-		@return The normalized image. The original copy is not preserved.
+		@return The normalized image. The original copy is modified.
 	**/
 	public static function normalize(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
-		var max:Color = 0x0, min:Color = 0x0, step:Color = 0x0;
-		max.red = MathTools.max(rangeStart.red, rangeEnd.red);
-		min.red = MathTools.min(rangeStart.red, rangeEnd.red);
-		max.green = MathTools.max(rangeStart.green, rangeEnd.green);
-		min.green = MathTools.min(rangeStart.green, rangeEnd.green);
-		max.blue = MathTools.max(rangeStart.blue, rangeEnd.blue);
-		min.blue = MathTools.min(rangeStart.blue, rangeEnd.blue);
-		step.redFloat = (max.red - min.red) / 0xFF;
-		step.blueFloat = (max.blue - min.blue) / 0xFF;
-		step.greenFloat = (max.green - min.green) / 0xFF;
-
+		// Find current min/max values in the image
+		var curMinRed = 255, curMaxRed = 0;
+		var curMinGreen = 255, curMaxGreen = 0;
+		var curMinBlue = 255, curMaxBlue = 0;
+		
 		image.forEachPixelInView((x, y, color) -> {
-			color.redFloat *= step.redFloat;
-			color.blueFloat *= step.blueFloat;
-			color.greenFloat *= step.greenFloat;
+			if (color.red < curMinRed) curMinRed = color.red;
+			if (color.red > curMaxRed) curMaxRed = color.red;
+			if (color.green < curMinGreen) curMinGreen = color.green;
+			if (color.green > curMaxGreen) curMaxGreen = color.green;
+			if (color.blue < curMinBlue) curMinBlue = color.blue;
+			if (color.blue > curMaxBlue) curMaxBlue = color.blue;
+		});
+		
+		// Calculate target range
+		var targetMinRed = MathTools.min(rangeStart.red, rangeEnd.red);
+		var targetMaxRed = MathTools.max(rangeStart.red, rangeEnd.red);
+		var targetMinGreen = MathTools.min(rangeStart.green, rangeEnd.green);
+		var targetMaxGreen = MathTools.max(rangeStart.green, rangeEnd.green);
+		var targetMinBlue = MathTools.min(rangeStart.blue, rangeEnd.blue);
+		var targetMaxBlue = MathTools.max(rangeStart.blue, rangeEnd.blue);
+		
+		// Scale each pixel to the new range
+		image.forEachPixelInView((x, y, color) -> {
+			if (curMaxRed != curMinRed)
+				color.red = Math.round((color.red - curMinRed) / (curMaxRed - curMinRed) * (targetMaxRed - targetMinRed) + targetMinRed);
+			if (curMaxGreen != curMinGreen)
+				color.green = Math.round((color.green - curMinGreen) / (curMaxGreen - curMinGreen) * (targetMaxGreen - targetMinGreen) + targetMinGreen);
+			if (curMaxBlue != curMinBlue)
+				color.blue = Math.round((color.blue - curMinBlue) / (curMaxBlue - curMinBlue) * (targetMaxBlue - targetMinBlue) + targetMinBlue);
 			image.setUnsafePixel(x, y, color);
 		});
 		return image;
@@ -791,7 +830,7 @@ class Vision {
 		@param image The image to be li processed.
 		@param rangeStart The start of the range of channels. By default, this value is `0x00000000`
 		@param rangeEnd The end of the range of channels. By default, this value is `0xFFFFFFFF`
-		@return The normalized image. The original copy is not preserved.
+		@return The normalized image. The original copy is modified.
 	**/
 	public static function limitColorRanges(image:Image, rangeStart:Color = 0x00000000, rangeEnd:Color = 0xFFFFFFFF):Image {
 		image.forEachPixelInView((x, y, color) -> {
@@ -812,7 +851,7 @@ class Vision {
 		
 		@param image The image process.
 		@param ranges array of color ranges & replacement colors.
-		@return A processed version of the image. The original image is not preserved.
+		@return A processed version of the image. The original image is modified.
 	**/
 	public static function replaceColorRanges(image:Image, ?ranges:Array<{rangeStart:Color, rangeEnd:Color, replacement:Color}>):Image {
 		if (ranges == null) return image;
@@ -840,16 +879,16 @@ class Vision {
 
 		@param image The image to be processed
 		@param channel The color channel to be isolated
-		@return The processed image. The original image is not preserved
+		@return The processed image. The original image is modified
 	**/
 	public static function filterForColorChannel(image:Image, channel:ColorChannel = ColorChannel.RED):Image {
 		var output = image.clone();
 
 		image.forEachPixelInView((x, y, color) -> {
 			var colorValue = switch channel {
-				case RED: Color.from8Bit(color.red);
-				case GREEN: Color.from8Bit(color.green);
-				case BLUE: Color.from8Bit(color.blue);
+				case RED: Color.fromRGBA(color.red, 0, 0, color.alpha);
+				case GREEN: Color.fromRGBA(0, color.green, 0, color.alpha);
+				case BLUE: Color.fromRGBA(0, 0, color.blue, color.alpha);
 				case ALPHA: Color.from8Bit(color.alpha);
 				case CYAN: Color.fromFloat(color.cyan);
 				case MAGENTA: Color.fromFloat(color.magenta);
@@ -889,7 +928,7 @@ class Vision {
 		@param image the image to be manipulated
 		@param kernel the type/value of the kernel. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**,
 		or just a matrix: both `convolve(image, BoxBlur)` and `convolve(image, [[1,1,1],[1,1,1],[1,1,1]])` are valid ways to represent a box blur.
-		@return A convolved version of the image. The original image is not preserved.
+		@return A convolved version of the image. The original image is modified.
 	**/
 	public static function convolve(image:Image, kernel:EitherType<Kernel2D, Array<Array<Float>>> = Identity):Image {
 		var matrix:Array<Array<Float>>;
@@ -978,20 +1017,20 @@ class Vision {
 
 		@param image The image to manipulate.
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
-		@param expansionMode how to expand the image if the matrix moves the image outside of its original bounds, or never reaches the original bounds. Defaults to `ImageExpansionMode.SAME_SIZE`.
-		@param originPoint **OPTION 1**: the point in the image to use as the origin of the transformation matrix. Before a point is passed to the matrix, it's coordinates are incremented by this point, and after the matrix is applied, it's coordinates are decremented by this point. Useful for rotation transformations. Defaults to `(0, 0)`.
-		@param originMode **OPTION 2**: To avoid code-bloat, you can provide a pre-made representation of the origin point, via `TransformationMatrixOrigination` enum. Defaults to `TransformationMatrixOrigination.TOP_LEFT`.
-		@returns A new, manipulated image. The provided image remains unchanged.
+		@param expansionMode how to expand the image if the matrix moves the image outside of its original bounds, or never reaches the original bounds. Default is `ImageExpansionMode.SAME_SIZE`.
+		@param originPoint **OPTION 1**: the point in the image to use as the origin of the transformation matrix. Before a point is passed to the matrix, it's coordinates are incremented by this point, and after the matrix is applied, it's coordinates are decremented by this point. Useful for rotation transformations. Default is `(0, 0)`.
+		@param originMode **OPTION 2**: To avoid code-bloat, you can provide a pre-made representation of the origin point, via `TransformationMatrixOrigination` enum. Default is `TransformationMatrixOrigination.TOP_LEFT`.
+		@return A new, manipulated image. The provided image remains unchanged.
 		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
 
 		@see `Vision.convolve()` for color-manipulation matrices (or, kernels).
 		@see `Vision.perspectiveWarp()` for "3d" manipulations.
 	**/
-	public static function affineTransform(image:Image, ?matrix:TransformationMatrix2D, expansionMode:ImageExpansionMode = RESIZE, ?originPoint:Point2D, ?originMode:TransformationMatrixOrigination = CENTER) {
+	public static function affineTransform(image:Image, ?matrix:TransformationMatrix2D, expansionMode:ImageExpansionMode = RESIZE, ?originPoint:Point2D, ?originMode:TransformationMatrixOrigination = CENTER):Image {
 		if (matrix == null) matrix = Matrix2D.IDENTITY();
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
-		for (corner in [new Point2D(0, 0), new Point2D(0, image.height), new Point2D(image.width, 0), new Point2D(image.width, image.height)]) {
+		for (corner in [new Point2D(0, 0), new Point2D(0, image.height - 1), new Point2D(image.width - 1, 0), new Point2D(image.width - 1, image.height - 1)]) {
 			var coords:Array<Array<Float>> = [[corner.x], [corner.y], [1]];
 			coords = matrix.underlying * coords;
 			var c = coords.flatten();
@@ -1036,7 +1075,6 @@ class Vision {
 			y = 0;
 		}
 
-		// Interpolate missing pixels, using bilinear interpolation. pixel radius is chosen by the ratio of the distance from `mix to max` to width, same for height.
 		return img;
 	}
 
@@ -1061,7 +1099,7 @@ class Vision {
 
 		@param image The image to manipulate.
 		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
-		@param expansionMode How to expand the image's bounds when the resulting image after transformation changes dimensions. Defaults to `RESIZE`.
+		@param expansionMode How to expand the image's bounds when the resulting image after transformation changes dimensions. Default is `RESIZE`.
 	**/
 	public static function projectiveTransform(image:Image, ?matrix:TransformationMatrix2D, expansionMode:ImageExpansionMode = RESIZE):Image {
 
@@ -1069,7 +1107,7 @@ class Vision {
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY,
 			miz = MathTools.POSITIVE_INFINITY, maz = MathTools.NEGATIVE_INFINITY;
-		for (corner in [new Point3D(0, 0, 1), new Point3D(0, image.height, 1), new Point3D(image.width, 0, 1), new Point3D(image.width, image.height, 1)]) {
+		for (corner in [new Point3D(0, 0, 1), new Point3D(0, image.height - 1, 1), new Point3D(image.width - 1, 0, 1), new Point3D(image.width - 1, image.height - 1, 1)]) {
 			var c = matrix.transformPoint(corner);
 			c.x /= c.z;
 			c.y /= c.z;
@@ -1122,7 +1160,7 @@ class Vision {
 		@param image The image to be blurred.
 		@param iterations The number of times the algorithm will be run. The more iterations, the more blurry the image will be, and the higher the "blur range". **For example:** a value of 3 will produce a blur range of 3 pixels on each object.
 
-		@return A blurred version of the image. The original image is not preserved.
+		@return A blurred version of the image. The original image is modified.
 	**/
 	public static function nearestNeighborBlur(image:Image, iterations:Int = 1):Image {
 		for (i in 0...iterations) image = convolve(image, BoxBlur);
@@ -1149,7 +1187,7 @@ class Vision {
 		@param sigma The sigma value to use for the gaussian distribution on the kernel. a lower value will focus more on the center pixel, while a higher value will shift focus to the surrounding pixels more, effectively blurring it better.
 		@param kernelSize The size of the kernel (`width` & `height`)
 		@throws InvalidGaussianKernelSize if the kernel size is even, negative or `0`, this error is thrown.
-		@return A blurred version of the image. The original image is not preserved.
+		@return A blurred version of the image. The original image is modified.
 	**/
 	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = GaussianKernelSize.X5, ?fast:Bool = false):Image {
 		if (fast) return Gauss.fastBlur(image, kernelSize, sigma);
@@ -1170,7 +1208,7 @@ class Vision {
 
 		@param image The image to apply median blurring to.
 		@param kernelSize the width & height of the kernel in which we should search for the median. A radius of `9` will check in a `19x19` (`radius(9)` + `center(1)` + `radius(9)`) square around the center pixel.
-		@return A filtered version of the image, using median blurring. The original image is not preserved.
+		@return A filtered version of the image, using median blurring. The original image is modified.
 	**/
 	public static function medianBlur(image:Image, kernelSize:Int = 5):Image {
 		var median = image.clone();
@@ -1255,7 +1293,7 @@ class Vision {
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.
 	**/
-	public static function sobelEdgeDiffOperator(image:Image) {
+	public static function sobelEdgeDiffOperator(image:Image):Image {
 		return Sobel.convolveWithSobelOperator(grayscale(image.clone()));
 	}
 
@@ -1276,7 +1314,7 @@ class Vision {
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.
 	**/
-	public static function perwittEdgeDiffOperator(image:Image) {
+	public static function perwittEdgeDiffOperator(image:Image):Image {
 		return Perwitt.convolveWithPerwittOperator(grayscale(image.clone()));
 	}
 
@@ -1298,7 +1336,7 @@ class Vision {
 		@param image The image to be operated on
 		@return A new image, containing the gradients of the edges as whitened pixels.
 	**/
-	public static function robertEdgeDiffOperator(image:Image) {
+	public static function robertEdgeDiffOperator(image:Image):Image {
 		return RobertsCross.convolveWithRobertsCross(grayscale(image.clone()));
 	}
 
@@ -1320,7 +1358,7 @@ class Vision {
 		@param filterPositive Which version of the laplacian filter should the function use: the negative (detects "outward" edges), or the positive (detects "inward" edges). Default is positive (`true`).
 		@return A new image, containing the gradients of the edges as whitened pixels.
 	**/
-	public static function laplacianEdgeDiffOperator(image:Image, filterPositive:Bool = true) {
+	public static function laplacianEdgeDiffOperator(image:Image, filterPositive:Bool = true):Image {
 		return Laplace.convolveWithLaplacianOperator(image.clone(), filterPositive);
 	}
 
@@ -1422,7 +1460,7 @@ class Vision {
 		@param kernelSize The size of the kernel (`width` & `height`) - a kernel size of `7`/ will produce a `7x7` kernel. Default is `GaussianKernelSize.X3`.
 		@return A new, black and white image, with white pixels being the detected edges.
 	**/
-	public static function laplacianOfGaussianEdgeDetection(image:Image, ?threshold:Int = 2, ?filterPositive:Bool = true, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = X3) {
+	public static function laplacianOfGaussianEdgeDetection(image:Image, ?threshold:Int = 2, ?filterPositive:Bool = true, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = X3):Image {
 		return Laplace.laplacianOfGaussian(image, kernelSize, sigma, threshold, filterPositive);
 	}
 
@@ -1552,7 +1590,7 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansPosterize%28maxColorCount%20=%2016%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansPosterize%28maxColorCount%20=%208%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansPosterize%28maxColorCount%20=%204%29.png)|
 	
 		@param image The image to posterize
-		@param maxColorCount The amount of colors to use for the resulting image. At the algorithm's level, this also means the amount of color clusters to calculate. Defaults to `16`
+		@param maxColorCount The amount of colors to use for the resulting image. At the algorithm's level, this also means the amount of color clusters to calculate. Default is `16`
 		@return A posterized version of the image. The original image is preserved
 	**/
 	public static function kmeansPosterize(image:Image, maxColorCount:Int = 16):Image {
@@ -1586,8 +1624,8 @@ class Vision {
 		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansGroupImageColors%28groupCount%20=%2016%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansGroupImageColors%28groupCount%20=%208%29.png)|![After](https://spacebubble-io.pages.dev/vision/docs/valve-kmeansGroupImageColors%28groupCount%20=%204%29.png)|
 
 		@param image The image to try color grouping on
-		@param groupCount The amount of color groups we want to find. The more groups, the more accurate the grouping will be, but only to a certain point (an image with only 4 distinct colors won't have more than 4 groups). Defaults to `16`
-		@param considerTransparency Whether or not to consider transparency in the grouping. Defaults to `false`
+		@param groupCount The amount of color groups we want to find. The more groups, the more accurate the grouping will be, but only to a certain point (an image with only 4 distinct colors won't have more than 4 groups). Default is `16`
+		@param considerTransparency Whether or not to consider transparency in the grouping. Default is `false`
 		@return An array of color clusters. Each cluster contains both it's colors and the centroid used to group them.
 	**/
 	public static function kmeansGroupImageColors(image:Image, groupCount:Int = 16, considerTransparency:Bool = false):Array<ColorCluster> {

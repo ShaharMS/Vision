@@ -2,10 +2,8 @@ package vision.algorithms;
 
 import haxe.Int64;
 import vision.ds.Matrix2D;
-import vision.tools.ImageTools;
 import vision.ds.ByteArray;
 import vision.ds.Image;
-import vision.ds.ImageResizeAlgorithm;
 
 using vision.tools.MathTools;
 
@@ -32,7 +30,7 @@ class ImageHashing {
             }
         }
 
-        return clone.toBytes();
+        return clone.exportToBytes();
     }
 
     public static function phash(image:Image):ByteArray {
@@ -79,7 +77,8 @@ class ImageHashing {
         var hash = Int64.make(0, 0);
         for (index in 0...submatrix.underlying.length) {
             var item = submatrix.underlying.inner[index];
-            hash |= (item > average ? 1 : 0) << index;
+            var bit = Int64.make(0, item > average ? 1 : 0);
+            hash = Int64.or(hash, Int64.shl(bit, index));
         }
 
         return ByteArray.from(hash);

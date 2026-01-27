@@ -18,7 +18,7 @@ class Gauss {
 	@:deprecated("Gaussian.create3x3Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create3x3Kernel(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
-		var kernel:Array<Array<Float>> = [[], [], [], []];
+		var kernel:Array<Array<Float>> = [[], [], []];
 		// sum is for normalization
 		var sum = 0.0;
 
@@ -43,7 +43,7 @@ class Gauss {
 	@:deprecated("Gaussian.create5x5Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create5x5Kernel(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
-		var kernel:Array<Array<Float>> = [[], [], [], [], [], []];
+		var kernel:Array<Array<Float>> = [[], [], [], [], []];
 		// sum is for normalization
 		var sum = 0.0;
 
@@ -68,7 +68,7 @@ class Gauss {
 	@:deprecated("Gaussian.create7x7Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create7x7Kernel(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
-		var kernel:Array<Array<Float>> = [[], [], [], [], [], [], [], []];
+		var kernel:Array<Array<Float>> = [[], [], [], [], [], [], []];
 		// sum is for normalization
 		var sum = 0.0;
 
@@ -93,7 +93,7 @@ class Gauss {
 	@:deprecated("Gaussian.create9x9Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
 	public static function create9x9Kernel(sigma:Float):Array<Array<Float>> {
 		var r, s = 2.0 * sigma * sigma;
-		var kernel:Array<Array<Float>> = [[], [], [], [], [], [], [], [], [], []];
+		var kernel:Array<Array<Float>> = [[], [], [], [], [], [], [], [], []];
 		// sum is for normalization
 		var sum = 0.0;
 
@@ -115,7 +115,7 @@ class Gauss {
 		return kernel;
 	}
 	@:deprecated("Gaussian.createKernelOfSize() is deprecated. use Gaussian.create2DKernelOfSize() instead")
-	public static function createKernelOfSize(size:Int, sigma:Int) {
+	public static function createKernelOfSize(size:Int, sigma:Int):Array2D<Float> {
 		return create2DKernelOfSize(size, sigma);
 	}
 	
@@ -157,7 +157,7 @@ class Gauss {
 		#else
 		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernelSize(size);
 		#end
-		var r = size / 2, sum = 0.;
+		var r = Std.int(size / 2), sum = 0.;
 		// kernel
 		var kernel:Array<Float> = [];
 		// compute kernel
@@ -172,7 +172,7 @@ class Gauss {
 		return kernel;
 	}
 
-	public static function fastBlur(image:Image, size:Int, sigma:Float) {
+	public static function fastBlur(image:Image, size:Int, sigma:Float):Image {
 		var preprocessed = image.clone();
 		#if vision_quiet
 		if (size <= 0) size = -size;

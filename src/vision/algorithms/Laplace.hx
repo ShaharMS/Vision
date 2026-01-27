@@ -7,7 +7,7 @@ import vision.ds.Image;
 
 class Laplace {
     
-    public static function convolveWithLaplacianOperator(image:Image, positive:Bool) {
+    public static function convolveWithLaplacianOperator(image:Image, positive:Bool):Image {
 		var edgeColors:Image = new Image(image.width, image.height);
 
 		for (i in 0...image.width) {
@@ -28,7 +28,7 @@ class Laplace {
 		return edgeColors;
 	}
 
-    public static function laplacianOfGaussian(image:Image, kernelSize:GaussianKernelSize, sigma:Float, threshold:Float, positive:Bool) {
+    public static function laplacianOfGaussian(image:Image, kernelSize:GaussianKernelSize, sigma:Float, threshold:Float, positive:Bool):Image {
         var returned = new Image(image.width, image.height);
         var blurred = Vision.gaussianBlur(image.clone().removeView(), sigma, kernelSize);
         var imageToProcess:Image;

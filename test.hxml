@@ -1,0 +1,9 @@
+--cwd tests/generated
+--class-path src
+--main Main
+
+--library vision
+--library format
+--library utest
+
+--interp

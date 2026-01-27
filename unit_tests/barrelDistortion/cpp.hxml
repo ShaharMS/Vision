@@ -1,7 +1,0 @@
-
---class-path src
---main Test_vision_Vision_barrelDistortion
--debug
---cpp cpp
---library vision
---library format

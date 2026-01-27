@@ -1,7 +1,0 @@
-
---class-path src
---main Test_vision_Vision_deepfry
--debug
---python python/main.py
---library vision
---library format

@@ -13,7 +13,19 @@ enum abstract ImageResizeAlgorithm(Int) from Int to Int {
 	**/
 	var BilinearInterpolation;
 	/**
-	    Unimplemented.
+	    Bicubic Interpolation. Higher quality resizing, typically slower than bilinear.
 	**/
 	var BicubicInterpolation;
+	/**
+	    Catmull-Rom Interpolation. A sharper bicubic variant.
+	**/
+	var CatmullRomInterpolation;
+	/**
+	    Mitchell-Netravali Interpolation. Balanced sharpness with fewer ringing artifacts.
+	**/
+	var MitchellNetravaliInterpolation;
+	/**
+	    Lanczos Interpolation. High-quality windowed-sinc resampling.
+	**/
+	var LanczosInterpolation;
 }

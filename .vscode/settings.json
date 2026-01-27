@@ -1,5 +1,11 @@
 {
     "liveServer.settings.port": 5501,
+    "haxeTestExplorer.testCommand": [
+        "${haxe}",
+        "test.hxml",
+        "-lib",
+        "test-adapter"
+    ],
     "cSpell.words": [
 		"AARRGGBB",
 		"ABGR",
@@ -8,6 +14,7 @@
 		"ARGB",
 		"Bezier",
 		"BGRA",
+		"bitmapdata",
 		"bitmask",
 		"blit",
 		"Blitting",
@@ -33,6 +40,7 @@
 		"fceil",
 		"ffloor",
 		"Flixel",
+		"flxsprite",
 		"frameworking",
 		"fround",
 		"grayscale",
@@ -45,6 +53,7 @@
 		"haxeui",
 		"hxml",
 		"ifies",
+		"imagedata",
 		"interp",
 		"Ints",
 		"kernal",
@@ -79,5 +88,8 @@
 	],
     "cSpell.enableFiletypes": [
         "haxe"
-    ]
+	],
+	"chat.tools.terminal.autoApprove": {
+		"haxe": true
+	}
 }

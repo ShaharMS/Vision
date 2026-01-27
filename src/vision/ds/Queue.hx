@@ -1,24 +1,5 @@
 package vision.ds;
 
-#if (flash || cpp) @:generic #end
-class QueueCell<T> {
-	public var previous:QueueCell<T>;
-
-	public var value:T;
-
-	public var next:QueueCell<T>;
-
-	public function new(value:T, next:QueueCell<T>, previous:QueueCell<T>) {
-		this.previous = previous;
-		this.value = value;
-		this.next = next;
-	}
-
-	@:to @:noCompletion public function getValue():T {
-		return value;
-	}
-}
-
 /**
 	Represents a queue, as a doubly linked list.
 **/
@@ -58,9 +39,14 @@ class Queue<T> {
 		(`last` `->` `...` `->` `first`)
 	**/
 	public function dequeue():T {
-		var v = last.value;
-		// funny maneuver
-		last.previous.next = null;
+		var l = last;
+		var v = l.value;
+		// Handle the case where this is the only element
+		if (l.previous == null) {
+			first = null;
+		} else {
+			l.previous.next = null;
+		}
 		length--;
 		return v;
 	}

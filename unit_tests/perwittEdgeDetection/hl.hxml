@@ -1,7 +1,0 @@
-
---class-path src
---main Test_vision_Vision_perwittEdgeDetection
--debug
---hl hl/main.hl
---library vision
---library format

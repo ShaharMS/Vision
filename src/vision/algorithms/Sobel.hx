@@ -11,14 +11,13 @@ using vision.tools.MathTools;
 	by [Shahar Marcus](https://www.github.com/ShaharMS)
 **/
 class Sobel {
-	public static function convolveWithSobelOperator(image:Image) {
+	public static function convolveWithSobelOperator(image:Image):Image {
 		var edgeColors:Image = new Image(image.width, image.height);
-		var maxGradient = -1;
+		var maxGradient = 0;
+		var gradients:Array<Int> = [];
 
 		for (i in 0...image.width) {
 			for (j in 0...image.height) {
-				// get the red value of the grayed pixel
-				// we can "trust" .red since the value should be similar across the channels
 				final pos00 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j - 1)).red;
 				final pos01 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j)).red;
 				final pos02 = ImageTools.grayscalePixel(image.getSafePixel(i - 1, j + 1)).red;
@@ -30,16 +29,21 @@ class Sobel {
 				final pos22 = ImageTools.grayscalePixel(image.getSafePixel(i + 1, j + 1)).red;
 
 				final gx = ((-3 * pos00) + (0 * pos01) + (3 * pos02)) + ((-10 * pos10) + (0 * pos11) + (10 * pos12)) + ((-3 * pos20) + (0 * pos21) + (3 * pos22));
-
 				final gy = ((-3 * pos00) + (-10 * pos01) + (-3 * pos02)) + ((0 * pos10) + (0 * pos11) + (0 * pos12)) + ((3 * pos20) + (10 * pos21) + (3 * pos22));
 
 				final gradientFloatValue = Math.sqrt((gx * gx) + (gy * gy));
 				final gradient = Std.int(gradientFloatValue);
-
+				gradients[j * image.width + i] = gradient;
 				if (gradient > maxGradient) maxGradient = gradient;
+			}
+		}
 
+		if (maxGradient <= 0) return edgeColors;
+
+		for (i in 0...image.width) {
+			for (j in 0...image.height) {
+				final gradient = gradients[j * image.width + i];
 				final rgb:Int = Std.int(gradient * (255 / maxGradient));
-				//turn into ARGB
 				edgeColors.setPixel(i, j, 0xff000000 | (rgb << 16) | (rgb << 8) | rgb);
 			}
 		}
@@ -68,7 +72,7 @@ class Sobel {
 		If this value is greater than the threshold, then we declare it an edge. now, were gonna do the same thing
 		for all chunks of the image, and from top to bottom too if needed.
 	**/
-	public static function detectEdges(image:Image, threshold:Float) {
+	public static function detectEdges(image:Image, threshold:Float):Image {
 		final edges = new Image(image.width, image.height, Color.fromRGBA(0, 0, 0));
 		final blackAndWhite = Vision.grayscale(image.clone());
 		for (x in 0...blackAndWhite.width) {

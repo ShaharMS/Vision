@@ -1,0 +1,10 @@
+--class-path generator
+--class-path ../src
+
+--library utest
+
+--define --regenerate-all
+--define --no-overwrite
+
+# Run the build macro to generate test files at compile time
+--macro BuildMacro.generateAll()

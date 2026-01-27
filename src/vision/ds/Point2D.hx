@@ -74,6 +74,6 @@ class Point2D {
 		@return A `Float` representing the angle, in radians. `0` if `this` and `point` are congruent.
 	**/
 	public inline function radiansTo(point:Point2D):Float {
-		return MathTools.degreesFromPointToPoint2D(this, point);
+		return MathTools.radiansFromPointToPoint2D(this, point);
 	}
 }

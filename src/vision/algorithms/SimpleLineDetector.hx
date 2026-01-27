@@ -174,7 +174,7 @@ class SimpleLineDetector {
 		return lines;
 	}
 
-	static extern inline function p(x:Int = 0, y:Int = 0) {
+	static extern inline function p(x:Int = 0, y:Int = 0):Int16Point2D {
 		return new Int16Point2D(x, y);
 	}
 

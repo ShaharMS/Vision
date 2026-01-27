@@ -1,20 +1,23 @@
 package vision.ds;
 
-import vision.algorithms.GaussJordan;
-import vision.ds.Matrix2D;
-import haxe.Resource;
+import vision.formats.ImageIO;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
-import vision.tools.MathTools;
-import vision.algorithms.BilinearInterpolation;
+import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm
+import vision.algorithms.BicubicInterpolation as Bicubic; // Avoid naming collisions with ImageResizeAlgorithm
+import vision.algorithms.CatmullRomInterpolation as CatmullRom;
+import vision.algorithms.MitchellNetravaliInterpolation as MitchellNetravali;
+import vision.algorithms.LanczosInterpolation as Lanczos;
 import haxe.ds.List;
 import haxe.Int64;
 import vision.ds.Color;
+import vision.ds.Rectangle;
+import vision.ds.ImageView;
+import vision.ds.ImageResizeAlgorithm;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
 using vision.tools.MathTools;
 using vision.tools.ArrayTools;
-import vision.tools.MathTools.*;
 
 /**
 	Represents a 2D image, as a matrix of Colors.
@@ -132,7 +135,13 @@ abstract Image(ByteArray) {
 
 	inline function getColorFromStartingBytePos(position:Int):Color {
 		position += OFFSET;
-		return new Color(this[position] << 24 | this[position + 1] << 16 | this[position + 2] << 8 | this[position + 3]); 
+		var value = this[position] << 24 | this[position + 1] << 16 | this[position + 2] << 8 | this[position + 3];
+		#if (python || php || lua)
+		var signedValue:haxe.Int32 = value;
+		signedValue = signedValue + 0;
+		value = signedValue;
+		#end
+		return new Color(value);
 	}
 
 	inline function setColorFromStartingBytePos(position:Int, c:Color) {
@@ -522,6 +531,20 @@ abstract Image(ByteArray) {
 	}
 
 	/**
+	    Copies an image's graphics data, while retaining this image's `ImageView`
+
+		@param image The image to copy data from
+		@returns This image
+	**/
+	public inline function copyImageFrom(image:Image):Image {
+		var currentView = getView();
+		this.resize(image.underlying.length);
+		this.blit(0, image.underlying, 0, image.underlying.length);
+		setView(currentView);
+		return cast this;
+	}
+
+	/**
 		Returns a portion of the image, specified by a rectangle.
 
 		@param rect The rectangle specifying the portion of the image to return.
@@ -603,8 +626,15 @@ abstract Image(ByteArray) {
 		@see Ray2D
 	**/
 	public inline function drawRay2D(line:Ray2D, color:Color) {
-		var p1 = IntPoint2D.fromPoint2D(line.getPointAtY(0));
-		var p2 = IntPoint2D.fromPoint2D(line.getPointAtY(height - 1));
+		var p1:IntPoint2D;
+		var p2:IntPoint2D;
+		if (line.slope == 0) {
+			p1 = new IntPoint2D(0, Std.int(line.point.y));
+			p2 = new IntPoint2D(width - 1, Std.int(line.point.y));
+		} else {
+			p1 = IntPoint2D.fromPoint2D(line.getPointAtY(0));
+			p2 = IntPoint2D.fromPoint2D(line.getPointAtY(height - 1));
+		}
 		var x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
 		var dx = Math.abs(x2 - x1);
 		var dy = Math.abs(y2 - y1);
@@ -724,8 +754,8 @@ abstract Image(ByteArray) {
 		}
 
 		var p0 = IntPoint2D.fromPoint2D(line.start);
-		var p1 = IntPoint2D.fromPoint2D(line.end);
-		var p2 = IntPoint2D.fromPoint2D(control);
+		var p1 = IntPoint2D.fromPoint2D(control);
+		var p2 = IntPoint2D.fromPoint2D(line.end);
 		var i = 0.;
 		var step = 1 / accuracy;
 		while (i <= 1) {
@@ -735,6 +765,8 @@ abstract Image(ByteArray) {
 			}
 			i += step;
 		}
+		if (hasPixel(p0.x, p0.y)) setPixel(p0.x, p0.y, color);
+		if (hasPixel(p2.x, p2.y)) setPixel(p2.x, p2.y, color);
 	}
 
 	/**
@@ -766,16 +798,21 @@ abstract Image(ByteArray) {
 			return {x: x, y: y};
 		}
 
+		var p0 = IntPoint2D.fromPoint2D(line.start);
+		var p3 = IntPoint2D.fromPoint2D(line.end);
+		var p1 = IntPoint2D.fromPoint2D(control1);
+		var p2 = IntPoint2D.fromPoint2D(control2);
 		var i = 0.;
 		var step = 1 / accuracy;
-		while (i < 1) {
-			var p =
-			inline bezier(i, line.start, line.end, control1, control2);
+		while (i <= 1) {
+			var p = inline bezier(i, p0, p1, p2, p3);
 			if (hasPixel(p.x, p.y)) {
 				setPixel(p.x, p.y, color);
 			}
 			i += step;
 		}
+		if (hasPixel(p0.x, p0.y)) setPixel(p0.x, p0.y, color);
+		if (hasPixel(p3.x, p3.y)) setPixel(p3.x, p3.y, color);
 	}
 
 	// https://github.com/Laerdal/opentype.hx/issues/2
@@ -1101,9 +1138,15 @@ abstract Image(ByteArray) {
 			algorithm = ImageTools.defaultResizeAlgorithm;
 		switch algorithm {
 			case BilinearInterpolation:
-				this = cast BilinearInterpolation.interpolate(cast this, newWidth, newHeight);
+				this = cast Bilinear.interpolate(cast this, newWidth, newHeight);
 			case BicubicInterpolation:
-				throw new Unimplemented("Bicubic Interpolation");
+				this = cast Bicubic.interpolate(cast this, newWidth, newHeight);
+			case CatmullRomInterpolation:
+				this = cast CatmullRom.interpolate(cast this, newWidth, newHeight);
+			case MitchellNetravaliInterpolation:
+				this = cast MitchellNetravali.interpolate(cast this, newWidth, newHeight);
+			case LanczosInterpolation:
+				this = cast Lanczos.interpolate(cast this, newWidth, newHeight);
 			case NearestNeighbor:
 				{
 					var image = new Image(newWidth, newHeight);
@@ -1423,95 +1466,95 @@ abstract Image(ByteArray) {
 	//--------------------------------------------------------------------------
 	#if flixel
 	@:to public function toFlxSprite():flixel.FlxSprite {
-		return ImageTools.toFlxSprite(cast this);
+		return ImageIO.to.framework.flixel.flxsprite(cast this);
 	}
 
 	@:from public static function fromFlxSprite(sprite:flixel.FlxSprite):Image {
-		return ImageTools.fromFlxSprite(sprite);
+		return ImageIO.from.framework.flixel.flxsprite(sprite);
 	}
 	#end
 
-	#if openfl
+	#if (openfl || flash)
 	@:to public function toBitmapData():flash.display.BitmapData {
-		return ImageTools.toBitmapData(cast this);
+		return ImageIO.to.framework.flash.bitmapdata(cast this);
 	}
 
 	@:from public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
-		return ImageTools.fromBitmapData(bitmapData);
+		return ImageIO.from.framework.flash.bitmapdata(bitmapData);
 	}
 
-	@:to public function toShape():openfl.display.Shape {
-		return ImageTools.toShape(cast this);
+	@:to public function toShape():flash.display.Shape {
+		return ImageIO.to.framework.flash.shape(cast this);
 	}
 
 	@:from public static function fromShape(shape:flash.display.Shape):Image {
-		return ImageTools.fromShape(shape);
+		return ImageIO.from.framework.flash.shape(shape);
 	}
 
 	@:to public function toSprite():flash.display.Sprite {
-		return ImageTools.toSprite(cast this);
+		return ImageIO.to.framework.flash.sprite(cast this);
 	}
 
 	@:from public static function fromSprite(sprite:flash.display.Sprite):Image {
-		return ImageTools.fromSprite(sprite);
+		return ImageIO.from.framework.flash.sprite(sprite);
 	}
 	#end
 
 	#if lime
 	@:to public function toLimeImage():lime.graphics.Image {
-		return ImageTools.toLimeImage(cast this);
+		return ImageIO.to.framework.lime.image(cast this);
 	}
 
 	@:from public static function fromLimeImage(image:lime.graphics.Image):Image {
-		return ImageTools.fromLimeImage(image);
+		return ImageIO.from.framework.lime.image(image);
 	}
 	#end
 
 	#if kha
 	@:from public static function fromKhaImage(image:kha.Image):Image {
-		return ImageTools.fromKhaImage(image);
+		return ImageIO.from.framework.kha.image(image);
 	}
 	#end
 
 	#if heaps
     @:from public static function fromHeapsPixels(pixels:hxd.Pixels):Image {
-        return ImageTools.fromHeapsPixels(pixels);
+        return ImageIO.from.framework.heaps.pixels(pixels);
     }
     @:to public function toHeapsPixels():hxd.Pixels {
-        return ImageTools.toHeapsPixels(cast this);
+        return ImageIO.to.framework.heaps.pixels(cast this);
     }
     #end
 	
 	#if js
 	@:from public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
-        return ImageTools.fromJsCanvas(canvas);
+        return ImageIO.from.framework.js.canvas(canvas);
     }
     @:to public function toJsCanvas():js.html.CanvasElement {
-        return ImageTools.toJsCanvas(cast this);
+        return ImageIO.to.framework.js.canvas(cast this);
     }
 	@:from public static function fromJsImage(image:js.html.ImageElement):Image {
-		return ImageTools.fromJsImage(image);
+		return ImageIO.from.framework.js.image(image);
     }
 	@:to public function toJsImage():js.html.ImageElement {
-		return ImageTools.toJsImage(cast this);
+		return ImageIO.to.framework.js.image(cast this);
     }
 	#end
 
 	#if haxeui_core
 	@:from public static function fromHaxeUIImage(image:haxe.ui.components.Image):Image {
-		return ImageTools.fromHaxeUIImage(image);
+		return ImageIO.from.framework.haxeui.image(image);
 	}
 
 	@:to public function toHaxeUIImage():haxe.ui.components.Image {
-		return ImageTools.toHaxeUIImage(cast this);
+		return ImageIO.to.framework.haxeui.image(cast this);
 	}
 
 	@:from public static function fromHaxeUIImageData(image:haxe.ui.backend.ImageData):Image {
-		return ImageTools.fromHaxeUIImageData(image);
+		return ImageIO.from.framework.haxeui.imagedata(image);
 	}
 
 	@:to public function toHaxeUIImageData():haxe.ui.backend.ImageData {
-		return ImageTools.toHaxeUIImageData(cast this);
+		return ImageIO.to.framework.haxeui.imagedata(cast this);
 	}
 	#end
 
@@ -1584,7 +1627,7 @@ abstract Image(ByteArray) {
 		@param width The width of the returned image.
 		@param height Optional, the height of the returned image. determined automatically, can be overridden by setting this parameter
 	**/
-	public static inline function fromBytes(bytes:ByteArray, width:Int, ?height:Int) {
+	public static inline function loadFromBytes(bytes:ByteArray, width:Int, ?height:Int):Image {
 		var h = height != null ? height : (bytes.length / 4 / width).ceil();
 		var array = new ByteArray(width * h * 4 + OFFSET);
 		array.fill(0, array.length, 0);
@@ -1604,7 +1647,7 @@ abstract Image(ByteArray) {
 		Returns a `ByteArray` of format `ARGB` of the pixels of this image.
 		@return A new `ByteArray`
 	**/
-	@:to overload public extern inline function toBytes():ByteArray {
+	@:to overload public extern inline function exportToBytes():ByteArray {
 		return underlying.sub(OFFSET, underlying.length - OFFSET);
 	}
 
@@ -1613,7 +1656,7 @@ abstract Image(ByteArray) {
 		@param colorFormat The wanted color format of the returned `ByteArray`.
 		@return A new `ByteArray`
 	**/
-	overload public extern inline function toBytes(?colorFormat:PixelFormat = ARGB) {
+	overload public extern inline function exportToBytes(?colorFormat:PixelFormat = ARGB):ByteArray {
 		return inline PixelFormat.convertPixelFormat(underlying.sub(OFFSET, underlying.length - OFFSET), ARGB, colorFormat);
 	}
 
@@ -1643,7 +1686,7 @@ abstract Image(ByteArray) {
 }
 
 private class PixelIterator {
-	var i = 4;
+	var i = 0;
 	var img:Image;
 
 	public inline function new(img:Image) {
@@ -1654,11 +1697,11 @@ private class PixelIterator {
 		final x = i % img.width;
 		final y = Math.floor(i / img.width);
 		var pixel:Pixel = {x: x, y: y, color: img.getPixel(x, y)};
-		i += 4;
+		i++;
 		return pixel;
 	}
 
 	public inline function hasNext():Bool {
-		return i < (cast img:ByteArray).length;
+		return i < (img.width * img.height);
 	}
 }

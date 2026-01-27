@@ -15,7 +15,8 @@ class SimpleHough {
             if (color.red == 255) {
                 for (deg in 0...179) {
                     var ray = new Ray2D({x: x, y: y}, null, deg);
-                    var rayAsString = '${Std.int(ray.xIntercept)}|$deg';
+                    var intercept = ray.slope == 0 ? ray.point.x : ray.xIntercept;
+                    var rayAsString = '${Std.int(intercept)}|$deg';
                     if (accumulator[rayAsString] == null) accumulator[rayAsString] = 1
                     else accumulator[rayAsString]++;
                 }
@@ -34,7 +35,7 @@ class SimpleHough {
         return rays;
     }
 
-    public static function mapLines(image:Image, rays:Array<Ray2D>) {
+    public static function mapLines(image:Image, rays:Array<Ray2D>):Image {
         for (ray in rays) {
             image.drawRay2D(ray, Color.CYAN);
         }

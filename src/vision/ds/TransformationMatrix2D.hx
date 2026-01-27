@@ -1,6 +1,8 @@
 package vision.ds;
 
 import vision.ds.Matrix2D;
+import vision.ds.Point3D;
+import vision.exceptions.VisionException;
 
 @:forward.variance
 @:forward(getRow, getColumn, setRow, setColumn, map, clone, fill, toString)
@@ -174,7 +176,13 @@ abstract TransformationMatrix2D(Matrix2D) to Matrix2D {
 		@return a new, transformed `Point3D` instance
 	**/
 	overload extern public inline function transformPoint(point:Point3D):Point3D {
-		if (this.width != 3 || this.height != 3) throw ""; //Todo error
+		if (this.width != 3 || this.height != 3) {
+			#if vision_quiet
+			return new Point3D(point.x, point.y, point.z);
+			#else
+			throw new VisionException("TransformationMatrix2D must be 3x3.", "Transformation Matrix Error");
+			#end
+		}
 		var x = point.x * this.get(0, 0) + point.y * this.get(1, 0) + point.z * this.get(2, 0);
         var y = point.x * this.get(0, 1) + point.y * this.get(1, 1) + point.z * this.get(2, 1);
         var z = point.x * this.get(0, 2) + point.y * this.get(1, 2) + point.z * this.get(2, 2);
@@ -190,7 +198,13 @@ abstract TransformationMatrix2D(Matrix2D) to Matrix2D {
 		@return a new, transformed `Point2D` instance
 	**/
 	overload extern public inline function transformPoint(point:Point2D):Point2D {
-		if (this.width != 3 || this.height != 3) throw ""; //Todo error
+		if (this.width != 3 || this.height != 3) {
+			#if vision_quiet
+			return new Point2D(point.x, point.y);
+			#else
+			throw new VisionException("TransformationMatrix2D must be 3x3.", "Transformation Matrix Error");
+			#end
+		}
 
         var x = point.x * this.get(0, 0) + point.y * this.get(1, 0) + 1 * this.get(2, 0);
         var y = point.x * this.get(0, 1) + point.y * this.get(1, 1) + 1 * this.get(2, 1);

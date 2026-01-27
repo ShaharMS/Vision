@@ -1,0 +1,12 @@
+{
+    "regenerateAll": true,
+    "overwrite": false,
+    "source": "../src/vision",
+    "exclude": [
+        "exceptions/",
+        "Array2DMacro.hx",
+        "FrameworkImageIO.hx"        
+    ],
+    "destination": "./generated/src/tests",
+    "testsToRunFile": "./generated/src/Main.hx"
+}

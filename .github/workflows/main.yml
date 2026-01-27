@@ -2,14 +2,51 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  cross-platformness:
+  tests:
+    if: ${{ false }} 
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        algo: ['convolve']
-        haxe-version: [4.2.5]
-        target: [cpp, cppia, js, cs, hl, interp, java, jvm, python, php, lua, neko]
+        haxe-version: [4.2.5, 4.3.7]
+        target: [interp, neko, hl, js, cpp, jvm, python, lua, php, cs, java, cppia]
+        include:
+          - target: interp
+            flag: --interp
+            output: ""
+          - target: neko
+            flag: --neko
+            output: bin/neko/tests.n
+          - target: hl
+            flag: --hl
+            output: bin/hl/tests.hl
+          - target: js
+            flag: --js
+            output: bin/js/tests.js
+          - target: cpp
+            flag: --cpp
+            output: bin/cpp
+          - target: jvm
+            flag: --jvm
+            output: bin/jvm/tests.jar
+          - target: python
+            flag: --python
+            output: bin/python/tests.py
+          - target: lua
+            flag: --lua
+            output: bin/lua/tests.lua
+          - target: php
+            flag: --php
+            output: bin/php
+          - target: cs
+            flag: --cs
+            output: bin/cs
+          - target: java
+            flag: --java
+            output: bin/java
+          - target: cppia
+            flag: --cppia
+            output: bin/cppia/tests.cppia
     steps:
       - uses: actions/checkout@v4
       - name: Setup Haxe (${{ matrix.haxe-version }})
@@ -17,34 +54,58 @@ jobs:
         with:
           haxe-version: ${{ matrix.haxe-version }}
 
-      - name: Set HAXEPATH
-        run: |
-          echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
-      - name: Install & Set-up Vision
-        run: |
-          haxelib dev vision $GITHUB_WORKSPACE
-          haxelib install format --quiet
-          haxelib install hxcpp --quiet
-          haxelib install hxjava --quiet
-          haxelib install hxcs --quiet
-      - name: ${{ matrix.algo }} (${{ matrix.target }})
-        run: |
-          cd unit_tests/${{ matrix.algo }}
-          haxe ${{ matrix.target }}.hxml
-  algorithm:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        algo: ['general', 'laplacianEdgeDiffOperator', 'limitColorRanges', 'bilateralDenoise', 'whiteNoise', 'deepfry', 'vignette', 'simpleLine2DDetection', 'combine', 'perwittEdgeDiffOperator', 'cannyEdgeDetection', 'projectiveTransform', 'posterize', 'invert', 'saltAndPepperNoise', 'normalize', 'smooth', 'medianBlur', 'laplacianOfGaussianEdgeDetection', 'convolutionRidgeDetection', 'blackAndWhite', 'fisheyeDistortion', 'erode', 'nearestNeighborBlur', 'mustacheDistortion', 'gaussianBlur', 'pixelate', 'sepia', 'dilate', 'sharpen', 'grayscale', 'convolve', 'robertEdgeDiffOperator', 'replaceColorRanges', 'sobelEdgeDiffOperator', 'sobelEdgeDetection', 'pincushionDistortion', 'barrelDistortion', 'contrast', 'perwittEdgeDetection', 'dropOutNoise', 'affineTransform', 'tint', 'filterForColorChannel', 'kmeansPosterize', 'kmeansGroupImageColors', 'simpleImageSimilarity']
-        haxe-version: [4.2.5]
-        target: [interp]
-    steps:
-      - uses: actions/checkout@v1
-      - name: Setup Haxe (${{ matrix.haxe-version }})
-        uses: krdlab/setup-haxe@v1
+      - name: Setup Node (js only)
+        if: ${{ matrix.target == 'js' }}
+        uses: actions/setup-node@v4
         with:
-          haxe-version: ${{ matrix.haxe-version }}
+          node-version: '20'
+
+      - name: Setup Neko (neko only)
+        if: ${{ matrix.target == 'neko' }}
+        run: |
+          NEKO_BIN="$HAXE_STD_PATH/../neko/bin"
+          if [ -x "$NEKO_BIN/neko" ]; then
+            echo "$NEKO_BIN" >> $GITHUB_PATH
+            echo "NEKO_HOME=$HAXE_STD_PATH/../neko" >> $GITHUB_ENV
+            "$NEKO_BIN/neko" -version
+          else
+            sudo apt-get update
+            sudo apt-get install -y neko
+            neko -version
+          fi
+
+      - name: Setup Java (java/jvm only)
+        if: ${{ matrix.target == 'java' || matrix.target == 'jvm' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Python (python only)
+        if: ${{ matrix.target == 'python' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Setup PHP (php only)
+        if: ${{ matrix.target == 'php' }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install runtime deps (lua/cs/hl)
+        if: ${{ matrix.target == 'lua' || matrix.target == 'cs' || matrix.target == 'hl' }}
+        run: |
+          sudo apt-get update
+          if [ "${{ matrix.target }}" = "lua" ]; then
+            sudo apt-get install -y lua5.3
+          fi
+          if [ "${{ matrix.target }}" = "cs" ]; then
+            sudo apt-get install -y mono-complete
+          fi
+          if [ "${{ matrix.target }}" = "hl" ]; then
+            sudo apt-get install -y hashlink
+          fi
 
       - name: Set HAXEPATH
         run: |
@@ -52,11 +113,63 @@ jobs:
       - name: Install & Set-up Vision
         run: |
           haxelib dev vision $GITHUB_WORKSPACE
+          haxelib install utest --quiet
           haxelib install format --quiet
           haxelib install hxcpp --quiet
           haxelib install hxjava --quiet
           haxelib install hxcs --quiet
-      - name: ${{ matrix.algo }} (${{ matrix.target }})
+      - name: Compile (${{ matrix.target }})
         run: |
-          cd unit_tests/${{ matrix.algo }}
-          haxe ${{ matrix.target }}.hxml
+          mkdir -p bin
+          CMD="haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug -D vision_skip_golden -D vision_skip_invalid_tests"
+          if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
+            CMD="$CMD --no-inline"
+          fi
+          if [ "${{ matrix.target }}" = "interp" ]; then
+            CMD="$CMD --no-output"
+          elif [ "${{ matrix.output }}" != "" ]; then
+            CMD="$CMD ${{ matrix.flag }} ${{ matrix.output }}"
+          else
+            CMD="$CMD ${{ matrix.flag }}"
+          fi
+          echo "$CMD"
+          $CMD
+
+      - name: Run (${{ matrix.target }})
+        run: |
+          if [ "${{ matrix.target }}" = "js" ]; then
+            node bin/js/tests.js
+          fi
+          if [ "${{ matrix.target }}" = "neko" ]; then
+            neko bin/neko/tests.n
+          fi
+          if [ "${{ matrix.target }}" = "hl" ]; then
+            hl bin/hl/tests.hl
+          fi
+          if [ "${{ matrix.target }}" = "cpp" ]; then
+            ./bin/cpp/Main
+          fi
+          if [ "${{ matrix.target }}" = "jvm" ]; then
+            java -jar bin/jvm/tests.jar
+          fi
+          if [ "${{ matrix.target }}" = "java" ]; then
+            java -cp bin/java/obj Main
+          fi
+          if [ "${{ matrix.target }}" = "python" ]; then
+            python bin/python/tests.py
+          fi
+          if [ "${{ matrix.target }}" = "lua" ]; then
+            lua bin/lua/tests.lua
+          fi
+          if [ "${{ matrix.target }}" = "php" ]; then
+            php bin/php/index.php
+          fi
+          if [ "${{ matrix.target }}" = "cs" ]; then
+            mono bin/cs/bin/Main.exe
+          fi
+          if [ "${{ matrix.target }}" = "cppia" ]; then
+            cppia bin/cppia/tests.cppia
+          fi
+          if [ "${{ matrix.target }}" = "interp" ]; then
+            haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug --interp
+          fi

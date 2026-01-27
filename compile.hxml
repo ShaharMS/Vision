@@ -1,5 +1,4 @@
 --class-path src
---class-path unit_test_generator
 --main VisionMain
 
 --library format
@@ -28,4 +27,5 @@
 
 #--define vision_fancy_array_access
 --macro addGlobalMetadata('', '@:build(vision.helpers.Array2DMacro.build())')
+--macro addGlobalMetadata('', '@:build(vision.helpers.InlineProtectionMacro.build())')
 

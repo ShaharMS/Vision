@@ -1,3 +1,24 @@
+# 2.2.0
+
+### `Image.hx`
+ - **Added `Image.copyImageFrom`**
+
+### `vision.ds`
+ - **Added `ImageFormat.JPEG`, `ImageFormat.VISION`**
+
+### `vision.tools`
+ - **Added `ImageTools.loadFromFile` (synchronous version)**
+ - **Added `ImageTools.loadFromBytes`**
+ - **Added `ImageTools.loadFromURL`**
+ - **Added `ImageTools.exportToBytes`**
+ - **Added `ImageTools.exportToFile`**
+ - **Deprecated `ImageTools.saveToFile` in favor of `ImageTools.exportToFile`**
+
+### `vision.formats`
+  - **New Subdirectory inside the `vision` package for cleaner image format conversions**
+  - **Added `ImageIO` - reads/writes images from/to different formats/frameworks**
+  - **Added support for `jpeg` encoding for non-js platforms using `format`**
+
 # 2.1.0
 
 ### `Vision.hx`
