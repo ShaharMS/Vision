@@ -5,6 +5,9 @@ import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm
 import vision.algorithms.BicubicInterpolation as Bicubic; // Avoid naming collisions with ImageResizeAlgorithm
+import vision.algorithms.CatmullRomInterpolation as CatmullRom;
+import vision.algorithms.MitchellNetravaliInterpolation as MitchellNetravali;
+import vision.algorithms.LanczosInterpolation as Lanczos;
 import haxe.ds.List;
 import haxe.Int64;
 import vision.ds.Color;
@@ -1138,6 +1141,12 @@ abstract Image(ByteArray) {
 				this = cast Bilinear.interpolate(cast this, newWidth, newHeight);
 			case BicubicInterpolation:
 				this = cast Bicubic.interpolate(cast this, newWidth, newHeight);
+			case CatmullRomInterpolation:
+				this = cast CatmullRom.interpolate(cast this, newWidth, newHeight);
+			case MitchellNetravaliInterpolation:
+				this = cast MitchellNetravali.interpolate(cast this, newWidth, newHeight);
+			case LanczosInterpolation:
+				this = cast Lanczos.interpolate(cast this, newWidth, newHeight);
 			case NearestNeighbor:
 				{
 					var image = new Image(newWidth, newHeight);

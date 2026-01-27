@@ -36,6 +36,9 @@ class Main {
         if (includeTest("BilateralFilterTest")) runner.addCase(new BilateralFilterTest());
         if (includeTest("BilinearInterpolationTest")) runner.addCase(new BilinearInterpolationTest());
         if (includeTest("BicubicInterpolationTest")) runner.addCase(new BicubicInterpolationTest());
+        if (includeTest("CatmullRomInterpolationTest")) runner.addCase(new CatmullRomInterpolationTest());
+        if (includeTest("MitchellNetravaliInterpolationTest")) runner.addCase(new MitchellNetravaliInterpolationTest());
+        if (includeTest("LanczosInterpolationTest")) runner.addCase(new LanczosInterpolationTest());
         if (includeTest("CannyTest")) runner.addCase(new CannyTest());
         if (includeTest("CramerTest")) runner.addCase(new CramerTest());
         if (includeTest("GaussTest")) runner.addCase(new GaussTest());
