@@ -50,8 +50,28 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup Haxe (${{ matrix.haxe-version }})
         uses: krdlab/setup-haxe@v1
+        continue-on-error: ${{ matrix.haxe-version == '4.2.5' }}
         with:
           haxe-version: ${{ matrix.haxe-version }}
+
+      - name: Ensure haxelib available
+        run: |
+          if ! command -v haxelib >/dev/null 2>&1; then
+            HAXE_BIN="$HAXE_STD_PATH/.."
+            if [ -f "$HAXE_BIN/haxelib" ]; then
+              chmod +x "$HAXE_BIN/haxelib"
+              echo "$HAXE_BIN" >> $GITHUB_PATH
+            fi
+          fi
+          if ! command -v haxelib >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y haxe
+          fi
+          if ! command -v haxelib >/dev/null 2>&1; then
+            echo "haxelib is missing";
+            exit 1;
+          fi
+          haxelib setup "$HAXE_STD_PATH/../lib"
 
       - name: Setup runtime (all targets)
         run: |
@@ -72,22 +92,15 @@ jobs:
           fi
 
           if [ "$TARGET" = "neko" ]; then
-            NEKO_BIN="$HAXE_STD_PATH/../neko/bin"
-            if [ -x "$NEKO_BIN/neko" ]; then
-              echo "$NEKO_BIN" >> $GITHUB_PATH
-              echo "NEKO_HOME=$HAXE_STD_PATH/../neko" >> $GITHUB_ENV
-              "$NEKO_BIN/neko" -version
-            else
-              sudo apt-get update
-              sudo apt-get install -y neko
-              neko -version
-            fi
+            sudo apt-get update
+            sudo apt-get install -y neko
+            neko -version
           fi
 
           if [ "$TARGET" = "java" ] || [ "$TARGET" = "jvm" ]; then
             if ! command -v java >/dev/null 2>&1; then
-              echo "Java is missing; GitHub runner should have it preinstalled."
-              exit 1
+              sudo apt-get update
+              sudo apt-get install -y default-jdk-headless
             fi
             java -version
           fi
@@ -105,13 +118,18 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y php
             fi
+            sudo apt-get update
+            sudo apt-get install -y php-mbstring
             php -v
           fi
 
           if [ "$TARGET" = "lua" ] || [ "$TARGET" = "cs" ] || [ "$TARGET" = "hl" ] || [ "$TARGET" = "cpp" ] || [ "$TARGET" = "cppia" ]; then
             sudo apt-get update
             if [ "$TARGET" = "lua" ]; then
-              sudo apt-get install -y lua5.3
+              sudo apt-get install -y lua5.3 liblua5.3-dev luarocks
+              if ! lua -e "require('rex_pcre2')" >/dev/null 2>&1; then
+                sudo luarocks install lrexlib-pcre2
+              fi
             fi
             if [ "$TARGET" = "cs" ]; then
               sudo apt-get install -y mono-complete
@@ -120,13 +138,18 @@ jobs:
               sudo apt-get install -y build-essential
             fi
             if [ "$TARGET" = "hl" ]; then
-              HL_VERSION="1.14.0"
-              HL_TGZ="hl-${HL_VERSION}-linux64.tar.gz"
-              HL_URL="https://github.com/HaxeFoundation/hashlink/releases/download/${HL_VERSION}/${HL_TGZ}"
-              curl -fsSL "$HL_URL" -o "/tmp/${HL_TGZ}"
-              sudo mkdir -p /opt/hashlink
-              sudo tar -xzf "/tmp/${HL_TGZ}" -C /opt/hashlink
-              echo "/opt/hashlink" >> $GITHUB_PATH
+              if ! command -v hl >/dev/null 2>&1; then
+                if apt-cache show hashlink >/dev/null 2>&1; then
+                  sudo apt-get install -y hashlink
+                fi
+              fi
+              if ! command -v hl >/dev/null 2>&1; then
+                sudo apt-get install -y git make build-essential libpcre2-dev zlib1g-dev libssl-dev libmbedtls-dev libturbojpeg0-dev libjpeg-turbo8-dev libvorbis-dev libogg-dev libsdl2-dev
+                git clone --depth 1 --branch 1.15 https://github.com/HaxeFoundation/hashlink.git /tmp/hashlink
+                make -C /tmp/hashlink
+                sudo make -C /tmp/hashlink install
+                sudo ldconfig
+              fi
               hl --version
             fi
           fi
@@ -145,7 +168,20 @@ jobs:
       - name: Build hxcpp tools (cppia runtime)
         if: ${{ matrix.target == 'cppia' }}
         run: |
-          haxelib run hxcpp Build.xml -Dlinux -Dcppia
+          HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
+          if [ ! -f "$HXCPP_PATH/build-tool/toolchain/haxe-target.xml" ]; then
+            haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
+            HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
+            pushd "$HXCPP_PATH/tools/hxcpp" > /dev/null
+            haxe compile.hxml
+            popd > /dev/null
+            pushd "$HXCPP_PATH/project" > /dev/null
+            neko build.n
+            popd > /dev/null
+          fi
+          pushd "$HXCPP_PATH" > /dev/null
+          haxelib run hxcpp project/Build.xml -Dlinux -Dcppia
+          popd > /dev/null
       - name: Compile (${{ matrix.target }})
         run: |
           mkdir -p bin
@@ -158,7 +194,7 @@ jobs:
             CMD="$CMD --no-inline"
           fi
           if [ "${{ matrix.target }}" = "interp" ]; then
-            CMD="$CMD --no-output"
+            CMD="$CMD --interp"
           elif [ "${{ matrix.output }}" != "" ]; then
             CMD="$CMD ${{ matrix.flag }} ${{ matrix.output }}"
           else
@@ -173,7 +209,8 @@ jobs:
             node bin/js/tests.js
           fi
           if [ "${{ matrix.target }}" = "neko" ]; then
-            neko bin/neko/tests.n
+            cp bin/neko/tests.n /tmp/tests.n
+            neko /tmp/tests.n
           fi
           if [ "${{ matrix.target }}" = "hl" ]; then
             hl bin/hl/tests.hl
@@ -205,6 +242,7 @@ jobs:
             python bin/python/tests.py
           fi
           if [ "${{ matrix.target }}" = "lua" ]; then
+            printf "return utf8\n" > lua-utf8.lua
             lua bin/lua/tests.lua
           fi
           if [ "${{ matrix.target }}" = "php" ]; then
@@ -234,5 +272,5 @@ jobs:
             fi
           fi
           if [ "${{ matrix.target }}" = "interp" ]; then
-            haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug --interp
+            echo "Interp already executed in compile step."
           fi
