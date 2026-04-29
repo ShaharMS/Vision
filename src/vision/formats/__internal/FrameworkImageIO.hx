@@ -2,6 +2,7 @@ package vision.formats.__internal;
 
 import vision.ds.Image;
 import vision.ds.ByteArray;
+import vision.exceptions.InvalidHeapsPixelFormat;
 
 @:access(vision.ds.Image)
 class FrameworkImageIO {
@@ -123,7 +124,7 @@ class FrameworkImageIO {
 			case ARGB:
 			default:
 				#if !vision_quiet
-				throw "pixels format must be in ARGB format, currently: " + pixels.format;
+					throw new InvalidHeapsPixelFormat(pixels.format);
 				#end
 		}
 		for (x in 0...pixels.width) {

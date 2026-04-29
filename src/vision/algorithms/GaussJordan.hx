@@ -1,6 +1,7 @@
 package vision.algorithms;
 
 import vision.ds.Matrix2D;
+import vision.exceptions.SingularMatrixError;
 
 class GaussJordan {
 
@@ -11,6 +12,10 @@ class GaussJordan {
 	**/
 	public static function invert(matrix:Matrix2D):Matrix2D {
 		var n = matrix.height;
+		var determinant = matrix.getDeterminant();
+		if (Math.abs(determinant) < 1e-12) {
+			throw new SingularMatrixError(matrix, 'invert', 'Gauss-Jordan elimination cannot choose a stable pivot from this matrix.');
+		}
 
 		// Create the identity matrix
 		var identity = createIdentityMatrix(n);
@@ -30,7 +35,7 @@ class GaussJordan {
 
 			// Check if the matrix is invertible
 			if (Math.abs(augmentedMatrix.get(i, pivotRow)) < 1e-12) {
-				throw "Matrix is not invertible";
+				throw new SingularMatrixError(matrix, 'invert', 'Pivot search produced a near-zero pivot while reducing the matrix.');
 			}
 
 			// Swap the pivot row with the current row (if needed)

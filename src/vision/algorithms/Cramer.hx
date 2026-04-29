@@ -2,6 +2,7 @@ package vision.algorithms;
 
 import vision.exceptions.InvalidCramerSetup;
 import vision.exceptions.InvalidCramerCoefficientsMatrix;
+import vision.exceptions.SingularMatrixError;
 import vision.ds.Matrix2D;
 import vision.algorithms.GaussJordan;
 import vision.tools.MathTools;
@@ -74,22 +75,22 @@ class Cramer {
 
         #if cppia
         var n = coefficients.height;
+        var determinant = coefficients.getDeterminant();
+        if (Math.abs(determinant) < 1e-12) {
+            #if vision_quiet
+            return [for (_ in 0...n) 0.0];
+            #else
+            throw new SingularMatrixError(coefficients, 'solve a system with Cramer\'s rule', 'The coefficients matrix does not have a unique solution.');
+            #end
+        }
         if (n == 2) {
             var inner = coefficients.underlying.inner;
             var a = inner[0];
             var b = inner[1];
             var c = inner[2];
             var d = inner[3];
-            var det = a * d - b * c;
-            if (Math.abs(det) < 1e-12) {
-                #if vision_quiet
-                return [for (_ in 0...n) 0.0];
-                #else
-                throw "Matrix is not invertible";
-                #end
-            }
-            var x = (solutions[0] * d - b * solutions[1]) / det;
-            var y = (a * solutions[1] - solutions[0] * c) / det;
+            var x = (solutions[0] * d - b * solutions[1]) / determinant;
+            var y = (a * solutions[1] - solutions[0] * c) / determinant;
             return [x, y];
         }
         var augmented = new Matrix2D(n + 1, n);
@@ -111,7 +112,7 @@ class Cramer {
                 #if vision_quiet
                 return [for (_ in 0...n) 0.0];
                 #else
-                throw "Matrix is not invertible";
+                throw new SingularMatrixError(coefficients, 'solve a system with Cramer\'s rule', 'Pivot search produced a near-zero pivot while reducing the augmented matrix.');
                 #end
             }
             if (pivotRow != i) {
@@ -145,13 +146,17 @@ class Cramer {
         #else
         var A = coefficients.clone();
         var replacedA = A.clone();
+        var determinant = A.getDeterminant();
+        if (Math.abs(determinant) < 1e-12) {
+            throw new SingularMatrixError(A, 'solve a system with Cramer\'s rule', 'The coefficients matrix does not have a unique solution.');
+        }
 
         var variables = [];
 
         for (i in 0...solutions.length) {
             replacedA = A.clone();
             replacedA.setColumn(i, solutions);
-            variables.push(replacedA.getDeterminant() / A.getDeterminant());
+            variables.push(replacedA.getDeterminant() / determinant);
         }
 
         return variables;
