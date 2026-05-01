@@ -254,10 +254,14 @@ Examples:
 
 - `haxe test.hxml -- --tests ArrayToolsTest`
 - `haxe test.hxml -- --tests ImageTest --cases test_getPixel__outOfBounds`
-- `set VISION_TESTS=ImageTest,FromBytesTest`
-- `set VISION_TEST_CASES=test_(png|bmp)__.*`
+- PowerShell fallback on this Windows build:
+  - `$env:VISION_TESTS='ImageTest,FromBytesTest'; haxe test.hxml`
+  - `$env:VISION_TESTS='ImageTest'; $env:VISION_TEST_CASES='test_getPixel__outOfBounds'; haxe test.hxml`
+- `cmd.exe` fallback:
+  - `set VISION_TESTS=ImageTest,FromBytesTest && haxe test.hxml`
+  - `set VISION_TESTS=ImageTest && set VISION_TEST_CASES=test_getPixel__outOfBounds && haxe test.hxml`
 
-On this Windows Haxe build, direct `--` passthrough can fail before `Main` runs. When that happens, use the equivalent `VISION_TESTS` and `VISION_TEST_CASES` environment variables instead.
+On this Windows Haxe build, direct `--` passthrough can fail before `Main` runs. When that happens, use the equivalent `VISION_TESTS` and `VISION_TEST_CASES` environment variables instead. In PowerShell, set them with `$env:...`; in `cmd.exe`, use `set ...`.
 
 `.vscode/settings.json` remains the Test Explorer discovery entrypoint through `test.hxml`, and `.vscode/tasks.json` uses the environment-variable form for explicit filterable task entrypoints.
 

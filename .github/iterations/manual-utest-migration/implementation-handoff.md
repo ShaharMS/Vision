@@ -2,47 +2,36 @@
 
 ## Current Pass
 
-- Pass type: `implementation`
+- Pass type: `review follow-up`
 - Authoring agent: `@Implement`
 - Plan step: `.github/plans/manual-utest-migration-2-harness.md`
 - Branch: `feature/manual-utest-migration-1-cutover`
-- Summary: `Built the manual harness for step 2 by moving suite registration into an authored registry, adding deterministic suite and case filtering in tests/src/Main.hx, introducing reusable support helpers plus an authored out-of-bounds ImageTest case, wiring VS Code tasks, and documenting the filter contract.`
+- Summary: `Addressed RVW-004 by updating tests/README.md so the documented Windows filter fallback is directly runnable in the local PowerShell environment while still documenting the equivalent cmd.exe form.`
 
 ## Files Changed
 
 | Path | Intent | Verification impact |
 |------|--------|---------------------|
-| `tests/src/Main.hx` | `Parse suite and case filters from env or CLI and delegate suite registration to the authored registry.` | `Filtered suite run, filtered case run, and touched-file diagnostics` |
-| `tests/src/tests/support/ManualSuites.hx` | `Centralize the curated runner.addCase(...) registry and apply an optional case EReg to every suite.` | `Filtered suite run, filtered case run, and touched-file diagnostics` |
-| `tests/src/tests/support/ApproxAssertions.hx` | `Provide reusable numeric approximate-equality assertions for later authored suite rewrites.` | `Touched-file diagnostics` |
-| `tests/src/tests/support/ExceptionAssertions.hx` | `Provide reusable exception assertions for authored tests.` | `Filtered case run and touched-file diagnostics` |
-| `tests/src/tests/support/ImageAssertions.hx` | `Provide reusable image invariant helpers for authored tests.` | `Touched-file diagnostics` |
-| `tests/src/tests/support/ManualFixtures.hx` | `Provide small authored fixture presets beyond the base Factories module.` | `Filtered case run and touched-file diagnostics` |
-| `tests/src/tests/ImageTest.hx` | `Adopt the new helpers for a manual fixture/invariant path and add the authored test_getPixel__outOfBounds case used by the case-filter proof.` | `Filtered case run and touched-file diagnostics` |
-| `tests/src/tests/FromBytesTest.hx` | `Replace repeated try/catch blocks with the new exception helper so authored suites start consuming shared support utilities.` | `Filtered suite run compile path and touched-file diagnostics` |
-| `.vscode/tasks.json` | `Add VS Code-friendly full-suite, suite-only, case-pattern, and current-file entrypoints using the environment-variable filter path that works on this Windows Haxe build.` | `Task-file diagnostics and command-path parity with the verified env-var runs` |
-| `tests/README.md` | `Document suite and case filter syntax, examples, and the local env-var fallback note for Haxe passthrough limitations.` | `README diagnostics and verification evidence reference` |
+| `tests/README.md` | `Replace the broken PowerShell-incompatible Windows fallback examples with shell-specific PowerShell and cmd.exe variants for suite and case filtering.` | `PowerShell env-var proof, README spot-check, and touched-file diagnostics` |
 
 ## Verification
 
 | Check | Method | Result | Evidence |
 |-------|--------|--------|----------|
-| `Suite filter` | `$env:VISION_TESTS='ArrayToolsTest'; Remove-Item Env:VISION_TEST_CASES -ErrorAction SilentlyContinue; haxe test.hxml` | `passed` | `Only ArrayToolsTest methods executed, which proves tests/src/Main.hx and tests/src/tests/support/ManualSuites.hx deterministically limit the run to the selected suite on this Windows build via the documented env-var path.` |
-| `Case filter` | `$env:VISION_TESTS='ImageTest'; $env:VISION_TEST_CASES='test_getPixel__outOfBounds'; haxe test.hxml` | `passed` | `Exactly one method ran: ImageTest.test_getPixel__outOfBounds. That proves the runner-level EReg case filter reaches utest.Runner.addCase(..., ?pattern) and does not execute neighboring ImageTest methods.` |
-| `Touched-file diagnostics` | `get_errors on the edited Haxe, JSON, and Markdown files` | `passed` | `No errors were reported for tests/src/Main.hx, tests/src/tests/ImageTest.hx, tests/src/tests/FromBytesTest.hx, the new tests/src/tests/support helpers, .vscode/tasks.json, or tests/README.md.` |
-| `VS Code entrypoint contract` | `Read .vscode/settings.json and validate .vscode/tasks.json` | `passed` | `.vscode/settings.json still points Haxe Test Explorer at test.hxml with test-adapter, and .vscode/tasks.json now adds explicit run-all, run-suite, run-case-pattern, and current-file entrypoints using the same env-var form that the verified local commands used.` |
+| `PowerShell fallback env vars and filtered run` | `$env:VISION_TESTS='ImageTest'; $env:VISION_TEST_CASES='test_getPixel__outOfBounds'; haxe test.hxml` | `passed` | `The documented PowerShell form populated both environment variables in the local shell context and drove a one-method filtered ImageTest run, which is the exact failure mode RVW-004 called out for the prior cmd-style examples.` |
+| `README spot-check` | `grep_search for VISION_TESTS/VISION_TEST_CASES examples in tests/README.md` | `passed` | `The README now shows labeled PowerShell fallback commands that invoke haxe test.hxml, plus clearly labeled cmd.exe equivalents, so the Windows fallback is directly usable in this environment without conflating shell syntax.` |
+| `Touched-file diagnostics` | `get_errors on tests/README.md and the updated packet files` | `passed` | `No diagnostics were reported for tests/README.md, .github/iterations/manual-utest-migration/implementation-handoff.md, or .github/iterations/manual-utest-migration/timeline.md.` |
 
 ## Review Responses
 
 | Finding ID | Disposition | Evidence | Notes |
 |------------|-------------|----------|-------|
-| `none` | `ALREADY SATISFIED` | `The current review packet is approved and scoped to step 1 findings only, with no open review items that still apply to the step-2 harness files.` | `No carry-forward review remediation was needed for this pass.` |
+| `RVW-004` | `FIXED` | `tests/README.md now documents PowerShell fallback commands using $env:VISION_TESTS and $env:VISION_TEST_CASES, and the same commands were verified in the local PowerShell shell context after the edit.` | `D-002 remains unchanged: the Haxe passthrough caveat is still accepted, but the README fallback is now runnable in the shell used for local verification.` |
 
 ## Risks And Follow-Ups
 
-- This Windows Haxe build rejects the direct `haxe test.hxml -- --tests ...` passthrough form before Main runs, so local ad hoc execution and the new VS Code tasks currently rely on the equivalent `VISION_TESTS` and `VISION_TEST_CASES` environment-variable path. Main still accepts `--tests` and `--cases` on builds that pass them through.
-- `tests/src/tests/support/ApproxAssertions.hx`, `tests/src/tests/support/ImageAssertions.hx`, `tests/src/tests/support/ExceptionAssertions.hx`, and `tests/src/tests/support/ManualFixtures.hx` establish the shared-helper surface for later migration steps, but most authored suites still need to be rewritten to consume them more broadly.
-- `tests/generated/**` remains in the repository intentionally as temporary reference material until later migration steps delete the old auto path.
+- The README now distinguishes PowerShell and `cmd.exe` syntax, but shell-specific examples can drift again if future documentation edits collapse them back into a single unlabeled Windows fallback.
+- The accepted D-002 caveat still applies: this Windows Haxe build rejects the direct `haxe test.hxml -- --tests ...` passthrough form before Main runs, so local ad hoc execution and the VS Code tasks continue to rely on environment variables here.
 
 ## Pass History
 
@@ -53,3 +42,4 @@
 | `3` | `this commit` | `Addressed RVW-003 by adding manual-inventory.hxml plus tests/generator/ManualInventoryBuilder.hx, regenerating tests/catalog/manual-test-inventory.json from source declarations, and validating the inventory against both the source scan and promoted test ids.` |
 | `4` | `this commit` | `Addressed the refined RVW-003 by preserving curated deferredMembers state during regeneration, proving the behavior with a temporary ArrayTools deferred-state edit/regeneration/revert dance, and rerunning haxe manual-inventory.hxml to leave the manifest restored.` |
 | `5` | `this commit` | `Implemented step 2 harness support: manual suite registry, suite/case filtering, reusable support helpers, VS Code task entrypoints, README filter docs, and the authored ImageTest out-of-bounds case used for case-filter verification.` |
+| `6` | `this commit` | `Addressed RVW-004 by replacing the README's PowerShell-incompatible Windows fallback examples with labeled PowerShell and cmd.exe commands, then revalidated the documented PowerShell env-var form in the local shell context.` |
