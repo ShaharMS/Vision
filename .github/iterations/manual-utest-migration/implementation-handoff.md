@@ -6,37 +6,35 @@
 - Authoring agent: `@Implement`
 - Plan step: `.github/plans/manual-utest-migration-4-image-and-geometry-ds.md`
 - Branch: `feature/manual-utest-migration-1-cutover`
-- Summary: `Addressed RVW-014, RVW-015, and RVW-016 by adding source-driven ellipse and ellipse-inverted ImageViewShape coverage through Image consumers, strengthening floating-pixel assertions to cover every affected neighbor with asymmetric weights, and converting the Matrix2D perspective duplicates case into a singular-matrix failure-contract test.`
+- Summary: `Addressed RVW-017 by reconciling the checked-in step-4 manual inventory rows with the authored suite coverage ids, shrinking deferredMembers to only the still-uncovered members and leaving ManualInventoryBuilder unchanged because the contradiction was in the manifest state, not the generation logic.`
 
 ## Files Changed
 
 | Path | Intent | Verification impact |
 |------|--------|---------------------|
-| `tests/src/tests/ImageTest.hx` | `Add explicit ellipse and ellipse-inverted ImageViewShape consumer assertions through hasPixelInView plus setPixel, and strengthen setFloatingPixel/paintFloatingPixel coverage to assert all four weighted neighbor writes.` | `Required focused ImageTest, ImageViewTest, Matrix2DTest suite run.` |
-| `tests/src/tests/Matrix2DTest.hx` | `Replace the perspective duplicates smoke check with a repeated non-identity point-pair setup that must throw SingularMatrixError.` | `Required focused ImageTest, ImageViewTest, Matrix2DTest suite run.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md`, `.github/iterations/manual-utest-migration/timeline.md` | `Record the step-4 delegated review-follow-up pass and verification evidence.` | `Packet diagnostics.` |
+| `tests/catalog/manual-test-inventory.json` | `Prune the step-4 manual entries so deferredMembers reflects only the remaining uncovered member surface instead of the full module surface.` | `Required a manifest-vs-suite coverage reconciliation check for the targeted step-4 modules.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `Replace the current-pass summary with the RVW-017 inventory-only follow-up, verification evidence, and remaining deferred-member rationale.` | `Touched-file diagnostics.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `Append the step-4 RVW-017 inventory reconciliation event for delegated-mode recovery.` | `Touched-file diagnostics.` |
 
 ## Verification
 
 | Check | Method | Result | Evidence |
 |-------|--------|--------|----------|
-| `Focused image/view/matrix suites` | `$env:VISION_TESTS='ImageTest,ImageViewTest,Matrix2DTest'; Remove-Item Env:VISION_TEST_CASES -ErrorAction SilentlyContinue; haxe test.hxml` | `passed` | `99 tests passed across the required review-follow-up slice, including the new ellipse/ellipse-inverted Image consumer assertions, the strengthened floating-pixel expectations, and the singular perspective duplicate contract. The run exited with code 0. Only the pre-existing out-of-scope utest enum-abstract and Gauss deprecation warnings remained.` |
-| `Touched-file diagnostics` | `get_errors on the touched image/geometry sources, tests, inventory, and packet files` | `passed` | `No diagnostics remain in any touched source file, rewritten test, inventory entry, or updated iteration packet file.` |
+| `Step-4 inventory reconciliation` | `PowerShell manifest check comparing each targeted step-4 manual entry's deferredMembers against members - @:visionTestId-covered members` | `passed` | `The check reported OK for vision.ds.Rectangle, vision.ds.Matrix2D, vision.ds.TransformationMatrix2D, vision.ds.Point2D, vision.ds.Int16Point2D, vision.ds.Point3D, vision.ds.ImageView, vision.ds.UInt16Point2D, vision.ds.Ray2D, vision.ds.IntPoint2D, vision.ds.Image, vision.ds.Line2D, and vision.ds.specifics.PointTransformationPair, with no entry still carrying deferredMembers equal to the full members surface.` |
+| `Touched-file diagnostics` | `get_errors on tests/catalog/manual-test-inventory.json plus the updated iteration packet files` | `passed` | `No diagnostics remain in tests/catalog/manual-test-inventory.json, .github/iterations/manual-utest-migration/implementation-handoff.md, or .github/iterations/manual-utest-migration/timeline.md.` |
 
 ## Review Responses
 
 | Finding ID | Disposition | Evidence | Notes |
 |------------|-------------|----------|-------|
-| `RVW-014` | `FIXED` | `ImageTest now adds hasPixelInView plus setPixel assertions for ImageViewShape.ELLIPSE and ImageViewShape.ELLIPSE_INVERTED, proving both the non-rectangle and inverted branches in Image.hasPixelInView through the authored Image consumer surface.` | `The manual inventory note for ImageViewShape remains accurate without a manifest edit because the excluded declaration surface is now backed by executable consuming coverage.` |
-| `RVW-015` | `FIXED` | `Matrix2DTest now uses repeated non-identity point pairs in the PERSPECTIVE duplicates case and asserts SingularMatrixError via ExceptionAssertions, matching the current Cramer failure contract for singular setups.` | `The duplicates case no longer passes on a trivial identity smoke assertion.` |
-| `RVW-016` | `FIXED` | `ImageTest now exercises setFloatingPixel and paintFloatingPixel at asymmetric coordinates (0.2, 0.7) and asserts all four affected pixels with distinct expected weights.` | `The floating-pixel coverage now discriminates every written branch instead of relying on symmetric 0.5/0.5 expectations.` |
+| `RVW-017` | `FIXED` | `The checked-in step-4 manual entries no longer carry deferredMembers equal to their full members lists. The targeted modules now either have empty deferredMembers when every tracked member has authored suite ids, or retain only the specific uncovered subset such as new, IntPoint2D.high/low, and the still-uncovered Image drawing/target-conversion/iterator surface.` | `No ManualInventoryBuilder change was needed in this pass because the existing generator already preserves curated deferredMembers state; the contradiction was the stale manifest content for the migrated step-4 rows.` |
 
 ## Risks And Follow-Ups
 
 - Accepted waiver `D-003` still applies only to the retained reference-only generated runner at `tests/generated/src/Main.hx`; this pass did not change that scope.
-- The focused validation still depends on the Windows env-var filtered-run fallback because this Haxe CLI rejects the direct `-- --tests ...` passthrough form before Main runs.
-- The focused validation still emits the pre-existing out-of-scope deprecation warnings from `utest` and `GaussTest`; this pass did not change those surfaces.
-- No inventory deferral was needed for RVW-014 because the added consumer tests now substantiate the existing ImageViewShape exclusion note.
+- Constructor-specific behavior remains deferred as `new` on the affected step-4 data types where the authored suites instantiate the objects but do not carry dedicated constructor ids.
+- `vision.ds.IntPoint2D` still defers `high` and `low`, and `vision.ds.Image` still defers its drawing, target-conversion, and iterator members because the step-4 authored suites do not yet claim those members semantically.
+- ManualInventoryBuilder was intentionally left untouched in this pass because RVW-017 was resolved by reconciling the checked-in inventory state, not by changing regeneration behavior.
 
 ## Pass History
 
@@ -56,3 +54,4 @@
 | `12` | `this commit` | `Addressed RVW-013 by adding semantic MathTools wrapper coverage for isFinite, isNaN, parseFloat, parseInt, and parseBool, then rerunning the focused MathToolsTest validation.` |
 | `13` | `this commit` | `Implemented step 4 by rewriting the image/matrix and geometry vision.ds suites to semantic assertions, fixing the exposed Image.setView, IntPoint2D.radiansTo, and MathTools.distanceBetweenLines2D defects, updating the manual inventory statuses/exclusions, and validating both grouped and case-filtered runner flows.` |
 | `14` | `this commit` | `Addressed RVW-014, RVW-015, and RVW-016 by adding executable ImageViewShape consumer coverage, strengthening floating-pixel assertions to all four weighted neighbors, converting the Matrix2D perspective duplicates case into a singular-contract test, and rerunning the required ImageTest plus ImageViewTest plus Matrix2DTest slice with clean diagnostics.` |
+| `15` | `this commit` | `Addressed RVW-017 by pruning the step-4 manual inventory rows to the still-uncovered member subsets, validating the manifest against authored @:visionTestId coverage, and leaving ManualInventoryBuilder unchanged because the issue was stale inventory state rather than generator logic.` |

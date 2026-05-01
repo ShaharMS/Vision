@@ -4,18 +4,17 @@
 
 - Pass type: `review follow-up`
 - Plan step: `.github/plans/manual-utest-migration-4-image-and-geometry-ds.md`
-- Scope: `Package the RVW-014, RVW-015, and RVW-016 step-4 follow-up delta: ImageViewShape consumer assertions through Image, strengthened floating-pixel neighbor coverage, the Matrix2D singular-duplicates failure-contract assertion, and the matching iteration packet updates.`
-- Reason this is one commit: `These files answer one explicit review round on the selected step-4 baseline. Splitting the Image and Matrix2D test changes away from the updated handoff, review packet, commit packet, or timeline would fragment one reviewer-requested remediation slice across multiple commits.`
+- Scope: `Package the RVW-017 step-4 follow-up delta: reconcile the promoted image-and-geometry manual inventory rows so deferredMembers reflects only the still-uncovered member surface, and carry the matching iteration packet updates.`
+- Reason this is one commit: `These files answer one explicit review round on the selected step-4 baseline. Splitting the manual inventory reconciliation away from the updated handoff, review packet, commit packet, or timeline would fragment one reviewer-requested remediation slice across multiple commits.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the RVW-014, RVW-015, and RVW-016 remediation summary, focused verification evidence, and updated finding dispositions for the selected step-4 review round.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the normalized step-4 review round that opened RVW-014, RVW-015, and RVW-016 and defines the exact remediation scope being committed.` |
+| `tests/catalog/manual-test-inventory.json` | `yes` | `Prunes the promoted step-4 manual entries so deferredMembers reflects only the members still uncovered by authored @:visionTestId coverage.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the RVW-017 inventory-reconciliation summary, targeted manifest-check evidence, and the remaining deferred-member rationale for the selected step-4 review round.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the normalized step-4 review round that opened RVW-017 and defines the exact remediation scope being committed.` |
 | `.github/iterations/manual-utest-migration/commit-packet.md`, `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Capture this review-follow-up grouping, gitflow decision, push intent, and the append-only commit event for recovery.` |
-| `tests/src/tests/ImageTest.hx` | `yes` | `Adds the ImageViewShape ellipse and ellipse-inverted consumer assertions plus the asymmetric floating-pixel neighbor expectations requested by RVW-014 and RVW-016.` |
-| `tests/src/tests/Matrix2DTest.hx` | `yes` | `Replaces the duplicate-perspective smoke check with the singular-matrix failure-contract assertion requested by RVW-015.` |
 | `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This is not a final stop report update; it remains intentionally unchanged.` |
 
 ## Gitflow Decision
@@ -27,17 +26,17 @@
 ## Commit Message
 
 ```text
-fix(tests): address review follow-up for step 4
+fix(tests): address RVW-017 inventory reconciliation
 
-Address RVW-014 through RVW-016 for the step-4 image and
-geometry migration by proving ImageViewShape consumer
-behavior, asserting all floating-pixel neighbor writes, and
-pinning the Matrix2D duplicate-perspective failure contract.
+Reconcile the promoted step-4 manual inventory rows so
+deferredMembers now matches the authored uncovered-member
+surface instead of leaving the same modules marked manual
+and fully deferred at the same time.
 
 Plan: .github/plans/manual-utest-migration-4-image-and-geometry-ds.md
 Pass: review follow-up
 Baseline: c9bd5f0478eece29b7f18b255f11bac702340649
-Review: RVW-014, RVW-015, RVW-016
+Review: RVW-017
 ```
 
 ## Result
@@ -46,7 +45,7 @@ Review: RVW-014, RVW-015, RVW-016
 - Push result: `push this commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available`
 - Workspace status after commit: `expected clean after staging the selected step-4 review-follow-up files`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Hand the committed RVW-014/RVW-015/RVW-016 remediation pass back to review intake for reinspection of the selected step-4 baseline while carrying forward D-003 and the Windows env-var filtered-run fallback.`
+- Follow-up needed: `Hand the committed RVW-017 remediation pass back to review intake for reinspection of the selected step-4 baseline while carrying forward D-003 and the Windows env-var filtered-run fallback.`
 
 ## Commit History
 
@@ -69,3 +68,4 @@ Review: RVW-014, RVW-015, RVW-016
 | `15` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-3 closeout bookkeeping, including the review-packet approval state, the updated run ledger and progress note, and the plan status changes that mark step 3 complete before the step-4 retarget.` |
 | `16` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-4 implementation delta, including the semantic image/matrix and geometry suite rewrites, shared image fixtures/assertions, inventory manual-status/exclusion updates, the exposed Image/IntPoint2D/MathTools fixes, and the matching iteration-state files.` |
 | `17` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-014, RVW-015, and RVW-016 review follow-up, including the strengthened ImageViewShape consumer coverage, the asymmetric floating-pixel assertions, the singular Matrix2D duplicates contract, and the matching iteration packet updates.` |
+| `18` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-017 review follow-up, including the step-4 manual inventory reconciliation, the updated review/implementation packet state, and the matching timeline bookkeeping.` |

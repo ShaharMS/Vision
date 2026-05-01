@@ -153,12 +153,7 @@
             "testFile": "tests/src/tests/ByteArrayTest.hx"
         },
         "vision.ds.Rectangle": {
-            "deferredMembers": [
-                "x",
-                "y",
-                "width",
-                "height"
-            ],
+            "deferredMembers": [],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
             "sourceFile": "src/vision/ds/Rectangle.hx",
@@ -220,45 +215,7 @@
         },
         "vision.ds.Matrix2D": {
             "deferredMembers": [
-                "underlying",
-                "rows",
-                "columns",
-                "new",
-                "invert",
-                "getDeterminant",
-                "getTrace",
-                "getAverage",
-                "multiplyWithScalar",
-                "clone",
-                "map",
-                "getSubMatrix",
-                "getColumn",
-                "getRow",
-                "setColumn",
-                "setRow",
-                "insertColumn",
-                "insertRow",
-                "removeColumn",
-                "removeRow",
-                "toString",
-                "IDENTITY",
-                "ROTATION",
-                "TRANSLATION",
-                "SCALE",
-                "SHEAR",
-                "REFLECTION",
-                "PERSPECTIVE",
-                "DEPTH",
-                "createFilled",
-                "createTransformation",
-                "multiplyMatrices",
-                "addMatrices",
-                "subtractMatrices",
-                "divideMatrices",
-                "multiply",
-                "add",
-                "subtract",
-                "divide"
+                "new"
             ],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
@@ -405,18 +362,7 @@
             "testFile": "tests/src/tests/LanczosInterpolationTest.hx"
         },
         "vision.ds.TransformationMatrix2D": {
-            "deferredMembers": [
-                "underlying",
-                "a",
-                "b",
-                "c",
-                "d",
-                "e",
-                "f",
-                "tx",
-                "ty",
-                "transformPoint"
-            ],
+            "deferredMembers": [],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
             "sourceFile": "src/vision/ds/TransformationMatrix2D.hx",
@@ -452,14 +398,7 @@
         },
         "vision.ds.Point2D": {
             "deferredMembers": [
-                "x",
-                "y",
-                "new",
-                "toString",
-                "copy",
-                "distanceTo",
-                "degreesTo",
-                "radiansTo"
+                "new"
             ],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
@@ -490,13 +429,7 @@
         },
         "vision.ds.Int16Point2D": {
             "deferredMembers": [
-                "x",
-                "y",
-                "new",
-                "toString",
-                "toPoint2D",
-                "toIntPoint2D",
-                "toInt"
+                "new"
             ],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
@@ -874,8 +807,6 @@
         },
         "vision.ds.specifics.PointTransformationPair": {
             "deferredMembers": [
-                "from",
-                "to",
                 "new"
             ],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
@@ -1096,13 +1027,7 @@
         },
         "vision.ds.Point3D": {
             "deferredMembers": [
-                "x",
-                "y",
-                "z",
-                "new",
-                "distanceTo",
-                "copy",
-                "toString"
+                "new"
             ],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
@@ -1539,14 +1464,7 @@
             "testFile": null
         },
         "vision.ds.ImageView": {
-            "deferredMembers": [
-                "x",
-                "y",
-                "width",
-                "height",
-                "shape",
-                "toString"
-            ],
+            "deferredMembers": [],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
             "sourceFile": "src/vision/ds/ImageView.hx",
@@ -1622,13 +1540,7 @@
         },
         "vision.ds.UInt16Point2D": {
             "deferredMembers": [
-                "x",
-                "y",
-                "new",
-                "toString",
-                "toPoint2D",
-                "toIntPoint2D",
-                "toInt"
+                "new"
             ],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
@@ -1658,18 +1570,7 @@
         },
         "vision.ds.Ray2D": {
             "deferredMembers": [
-                "point",
-                "slope",
-                "degrees",
-                "radians",
-                "yIntercept",
-                "xIntercept",
-                "new",
-                "from2Points",
-                "getPointAtX",
-                "getPointAtY",
-                "intersect",
-                "distanceTo"
+                "new"
             ],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
@@ -1890,16 +1791,7 @@
             "deferredMembers": [
                 "high",
                 "low",
-                "new",
-                "x",
-                "y",
-                "toPoint2D",
-                "fromPoint2D",
-                "toString",
-                "copy",
-                "distanceTo",
-                "degreesTo",
-                "radiansTo"
+                "new"
             ],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
@@ -2024,30 +1916,7 @@
         },
         "vision.ds.Image": {
             "deferredMembers": [
-                "underlying",
-                "width",
-                "height",
-                "view",
                 "new",
-                "getPixel",
-                "getSafePixel",
-                "getFloatingPixel",
-                "setPixel",
-                "setSafePixel",
-                "setFloatingPixel",
-                "paintPixel",
-                "paintFloatingPixel",
-                "paintSafePixel",
-                "hasPixel",
-                "movePixel",
-                "moveSafePixel",
-                "moveFloatingPixel",
-                "moveUnsafePixel",
-                "copyPixelFrom",
-                "copyPixelTo",
-                "copyImageFrom",
-                "getImagePortion",
-                "setImagePortion",
                 "drawLine",
                 "drawRay2D",
                 "drawLine2D",
@@ -2062,25 +1931,7 @@
                 "fillColorRecursive",
                 "fillColor",
                 "fillUntilColor",
-                "clone",
-                "mirror",
-                "flip",
-                "stamp",
-                "resize",
-                "rotate",
                 "toString",
-                "forEachPixel",
-                "forEachPixelInView",
-                "iterator",
-                "center",
-                "pixelToRelative",
-                "relativeToPixel",
-                "hasView",
-                "setView",
-                "getView",
-                "removeView",
-                "copyViewFrom",
-                "hasPixelInView",
                 "toFlxSprite",
                 "fromFlxSprite",
                 "toBitmapData",
@@ -2102,11 +1953,6 @@
                 "toHaxeUIImage",
                 "fromHaxeUIImageData",
                 "toHaxeUIImageData",
-                "from2DArray",
-                "to2DArray",
-                "toArray",
-                "loadFromBytes",
-                "exportToBytes",
                 "next",
                 "hasNext"
             ],
@@ -2236,19 +2082,7 @@
         },
         "vision.ds.Line2D": {
             "deferredMembers": [
-                "length",
-                "slope",
-                "degrees",
-                "radians",
-                "start",
-                "end",
-                "middle",
-                "new",
-                "intersect",
-                "distanceTo",
-                "toString",
-                "fromRay2D",
-                "toRay2D"
+                "new"
             ],
             "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
             "status": "manual",
