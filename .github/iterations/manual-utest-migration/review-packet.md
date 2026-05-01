@@ -2,10 +2,12 @@
 
 ## Review Source
 
-- Source type: `@Inspect approval for committed delta`
-- Scope: `.github/plans/manual-utest-migration-2-harness.md`
-- Baseline: `4649713738100c31fb9277bcf66e4b7e31678648..a811b9d6e98d50dcf625add678f9747873efab87`
+- Source type: `@Inspect output for committed delta`
+- Scope: `.github/plans/manual-utest-migration-3-tools-and-core-ds.md`
+- Baseline: `e902a4633ee5d45a3488270ea48e9d7215ed914c..6b44dce7ffb458984b97ef50cbcdfb7907bb8206`
 - Reviewer: `@Inspect`
+- Gate summary: `Scope evidence PASS; plan intent FAIL; verification PASS; type safety PASS; convention PASS; complexity PASS; regression FAIL.`
+- Residual risks: `The grouped step-3 runs are functionally green, but pre-existing deprecation warnings outside this scope still surface in Haxe output, and accepted waiver D-003 still narrowly covers tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7.`
 
 ## Review Checklist
 
@@ -26,6 +28,8 @@
 | `RVW-003` | `BLOCKER` | `tests/generator/ManualInventoryBuilder.hx#L42` | `The follow-up fixes the current member omissions, but the new inventory builder still does not preserve deferred coverage state. It never reads any existing deferredMembers state back from the checked-in manifest and always rewrites it to the full discovered members list, so rerunning the builder after later migration steps would erase curated uncovered-or-deferred tracking.` | `Update the builder so regeneration preserves the checked-in deferred coverage state required by step 1, then add verification that rerunning haxe manual-inventory.hxml does not erase deferred progress.` | `Round 2 opened RVW-003 for missing ArrayTools and ImageTools members. Round 3 @Inspect confirmed those omissions are fixed but kept the finding open because deferredMembers was still rewritten on rerun. Round 4 @Inspect approved the committed delta after confirming the preservation fix in tests/generator/ManualInventoryBuilder.hx and the final inventory entries.` |
 | `RVW-004` | `MAJOR` | `tests/README.md#L257, tests/README.md#L258, tests/README.md#L260` | `Step 2 requires the filter contract to be documented outside chat history, but the README documents the Windows env-var fallback with CMD-style set commands that do not execute in the PowerShell environment used for local verification here. Because the direct haxe passthrough form already fails before Main runs on this build, the documented fallback is not a runnable replacement in the local shell.` | `Replace or supplement the fallback examples with PowerShell-compatible commands such as $env:VISION_TESTS='...' and $env:VISION_TEST_CASES='...', or clearly label separate CMD and PowerShell variants so the Windows fallback is directly runnable in this environment.` | `The selected step explicitly requires the filter contract to be documented in .github/plans/manual-utest-migration-2-harness.md#L63. In this PowerShell environment, haxe test.hxml -- --tests ArrayToolsTest exits with unknown option '--' before Main runs, while set VISION_TESTS=ImageTest leaves $env:VISION_TESTS unset. This keeps D-002 intact as the accepted step-1 LocalCi passthrough caveat, but shows the step-2 README fallback examples are not executable in the shell used here.` |
 | `RVW-005` | `BLOCKER` | `tests/generated/src/Main.hx#L6, tests/generated/src/Main.hx#L7` | `Workspace diagnostics remain red in the retained reference-only generated runner because Haxe cannot resolve utest.Runner and PrettyReporter there, but the active step-2 harness entrypoints do not compile that surface.` | `No code fix is required for step 2 beyond preserving the accepted narrow waiver in .github/iterations/manual-utest-migration/decision-log.md until step 7 removes tests/generated and tests/compile.hxml.` | `The approval round passes the type-safety gate with an accepted narrow waiver scoped only to tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7, while test.hxml, .vscode/settings.json, .vscode/tasks.json, tests/ci/LocalCi.hx, and .github/workflows/main.yml contain no tests/generated or tests/compile.hxml references.` |
+| `RVW-006` | `BLOCKER` | `tests/src/tests/QueueTest.hx#L70` | `The rewritten Queue suite still does not cover the tail-node or single-node branch of Queue.has, so it misses the method's most obvious defect.` | `Add semantic has cases for the tail element and a single-element queue, then either fix Queue.has or explicitly record/defer the exposed defect.` | `The current @Inspect round reports that QueueTest builds a queue by enqueueing 1, 2, and 3, but only asserts has(3), which exercises the head node. The implementation in src/vision/ds/Queue.hx#L80-L88 loops while processed.next != null and returns false afterward, so it never checks the last node and will fail for tail-only and single-node matches.` |
+| `RVW-007` | `MAJOR` | `tests/src/tests/ByteArrayTest.hx#L87` | `The ByteArray rewrite still misses the signed-byte edge case that distinguishes correct Int8 decoding from the current broken formula.` | `Add at least a 0xFF -> -1 case, and preferably another high-bit value, then either fix getInt8 or explicitly defer the defect the new case exposes.` | `The current @Inspect round reports that ByteArrayTest covers only the 128 -> -128 scenario, but the implementation in src/vision/ds/ByteArray.hx#L137-L140 returns v * -(v >> 7), which turns 255 into -255 instead of -1.` |
 
 ## Dispositions
 
@@ -36,12 +40,14 @@
 | `RVW-003` | `FIXED` | `@Implement` | `The approval round reports no material findings, passes the plan-intent, verification, type-safety, convention, complexity, and regression gates, and explicitly substantiates the RVW-003 preservation fix with tests/generator/ManualInventoryBuilder.hx plus the final inventory entries.` | `Closed by the committed deferredMembers-preservation follow-up in 52a6b0f045e4315d2a12581b04c8c102cf77900b.` |
 | `RVW-004` | `FIXED` | `@Implement` | `The current @Inspect round explicitly says RVW-004 is fixed, while the scope evidence, plan intent, verification, convention, complexity, and regression gates all pass for the committed step-2 harness delta.` | `Closed by the committed README shell-syntax follow-up in fc51e41b22c39050acf832f88737794bb319e82c.` |
 | `RVW-005` | `WON'T FIX BECAUSE` | `@Implement` | `The approval round reports no material findings, passes the reviewed gates, and explicitly accepts RVW-005 as a narrow waiver for the retained reference-only tests/generated/src/Main.hx runner while the active harness stays on tests/src.` | `Accepted as D-003 in decision-log.md for tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7 only; the exception remains in force until step 7 removes that surface.` |
+| `RVW-006` | `OPEN` | `@Implement` | `The current @Inspect round opened the finding because QueueTest still misses the Queue.has tail-node and single-node paths that expose the last-node defect in src/vision/ds/Queue.hx#L80-L88.` | `No implementer response yet.` |
+| `RVW-007` | `OPEN` | `@Implement` | `The current @Inspect round opened the finding because ByteArrayTest still omits the 0xFF -> -1 signed-byte case that exposes the broken getInt8 formula in src/vision/ds/ByteArray.hx#L137-L140.` | `No implementer response yet.` |
 
 ## Approval Gate
 
-- Current verdict: `APPROVED`
-- Approval blockers: `none`
-- Next reviewer: `@Iterate`
+- Current verdict: `CHANGES REQUESTED`
+- Approval blockers: `RVW-006, RVW-007`
+- Next reviewer: `@Implement`
 
 ## Review History
 
@@ -54,4 +60,5 @@
 | `5` | `CHANGES REQUESTED` | `@Inspect` | `First step-2 harness review for 4649713738100c31fb9277bcf66e4b7e31678648..07f8f8284c6258a4d0c38bce736a87b4dbe718be opened RVW-004 because the README documents the Windows env-var fallback with CMD-style set commands that are not executable in the PowerShell environment used for local verification. This is distinct from D-002, which remains the accepted step-1 LocalCi passthrough caveat.` |
 | `6` | `CHANGES REQUESTED` | `@Inspect` | `Reviewed 4649713738100c31fb9277bcf66e4b7e31678648..fc51e41b22c39050acf832f88737794bb319e82c. RVW-004 no longer reproduces and is now fixed, but RVW-005 opens as a new blocker because workspace diagnostics still fail in tests/generated/src/Main.hx on unresolved utest.Runner and PrettyReporter imports, with no accepted waiver recorded in decision-log.md. The type-safety gate fails while the other reported gates pass.` |
 | `7` | `APPROVED` | `@Inspect` | `Reviewed 4649713738100c31fb9277bcf66e4b7e31678648..a811b9d6e98d50dcf625add678f9747873efab87 and found no material issues. The scope evidence, plan intent, verification, type-safety, convention, complexity, and regression gates all pass. RVW-005 is accepted as a narrow waiver for tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7 until step 7 removes that reference-only surface. Residual risks remain limited to opening that file directly still showing red diagnostics and the pre-existing deprecation warnings from tests/src/tests/GaussTest.hx and tests/src/tests/ImageToolsTest.hx.` |
+| `8` | `CHANGES REQUESTED` | `@Inspect` | `Reviewed e902a4633ee5d45a3488270ea48e9d7215ed914c..6b44dce7ffb458984b97ef50cbcdfb7907bb8206 for .github/plans/manual-utest-migration-3-tools-and-core-ds.md. Opened RVW-006 because QueueTest still misses Queue.has tail and single-node coverage, and RVW-007 because ByteArrayTest omits the 0xFF -> -1 signed-byte case that distinguishes a correct Int8 decode. The plan-intent and regression gates fail, while accepted D-003 plus the pre-existing out-of-scope deprecation warnings remain residual context only.` |
 

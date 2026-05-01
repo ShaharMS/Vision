@@ -71,6 +71,23 @@ class QueueTest extends utest.Test {
 		Assert.isTrue(createQueue().has(3));
 	}
 
+	@:visionTestId("vision.ds.Queue.has#tailElement")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_has__tailElement() {
+		Assert.isTrue(createQueue().has(1));
+	}
+
+	@:visionTestId("vision.ds.Queue.has#singleElement")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_has__singleElement() {
+		var instance = new Queue<Int>();
+		instance.enqueue(5);
+		Assert.isTrue(instance.has(5));
+		Assert.isFalse(instance.has(6));
+	}
+
 	@:visionTestId("vision.ds.Queue.toString#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")

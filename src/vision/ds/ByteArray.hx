@@ -136,7 +136,7 @@ abstract ByteArray(Bytes) from Bytes to Bytes {
     **/
     public inline function getInt8(pos:Int):Int {
         var v = this.get(pos);
-        return v * -(v >> 7);
+        return v < 0x80 ? v : v - 0x100;
     }
 
     /**

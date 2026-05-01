@@ -80,12 +80,15 @@ class Queue<T> {
 	public function has(value:T):Bool {
 		var processed:QueueCell<T> = first;
 
+		if (processed == null)
+			return false;
+
 		while (processed.next != null) {
 			if (processed.value == value)
 				return true;
 			processed = processed.next;
 		}
-		return false;
+		return processed.value == value;
 	}
 
 	/**

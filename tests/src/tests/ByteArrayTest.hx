@@ -90,6 +90,24 @@ class ByteArrayTest extends utest.Test {
 		Assert.equals(-128, instance.getInt8(0));
 	}
 
+	@:visionTestId("vision.ds.ByteArray.getInt8#negativeOne")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_getInt8__negativeOne() {
+		var instance = new ByteArray(1);
+		instance[0] = 0xFF;
+		Assert.equals(-1, instance.getInt8(0));
+	}
+
+	@:visionTestId("vision.ds.ByteArray.getInt8#highBitValue")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_getInt8__highBitValue() {
+		var instance = new ByteArray(1);
+		instance[0] = 0xFE;
+		Assert.equals(-2, instance.getInt8(0));
+	}
+
 	@:visionTestId("vision.ds.ByteArray.setBytes#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")

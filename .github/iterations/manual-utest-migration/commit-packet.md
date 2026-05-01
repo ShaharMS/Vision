@@ -2,27 +2,24 @@
 
 ## Commit Intent
 
-- Pass type: `initial implementation`
+- Pass type: `review follow-up`
 - Plan step: `.github/plans/manual-utest-migration-3-tools-and-core-ds.md`
-- Scope: `Package the selected step-3 implementation pass: semantic rewrites for the vision.tools suites and the targeted core vision.ds suites, shared collection/color assertion helpers, manual inventory status updates, and the step-3 iteration-state files already recorded for this pass.`
-- Reason this is one commit: `The selected plan step explicitly groups the tools and first core-ds rewrites into one reviewable pass, and the support helpers, inventory updates, progress/run-ledger state, and handoff/timeline notes are only meaningful together with that implementation delta.`
+- Scope: `Package the explicit RVW-006 and RVW-007 follow-up for step 3: Queue.has tail/single-node coverage plus the Queue.has library fix, ByteArray.getInt8 signed-byte edge cases plus the signed-byte decoding fix, and the matching iteration packet updates for the new review round and implementation evidence.`
+- Reason this is one commit: `RVW-006 and RVW-007 were opened together against the same committed step-3 delta, and the new tests, library fixes, and iteration packet updates are only reviewable as one coherent response to that single review pass.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `tests/src/tests/ArrayToolsTest.hx`, `tests/src/tests/MathToolsTest.hx`, `tests/src/tests/ImageToolsTest.hx` | `yes` | `These are the selected step-3 vision.tools semantic rewrites.` |
-| `tests/src/tests/Array2DTest.hx`, `tests/src/tests/ByteArrayTest.hx`, `tests/src/tests/ColorTest.hx`, `tests/src/tests/PixelTest.hx` | `yes` | `These are the first targeted core collection/value suite rewrites from the plan step.` |
-| `tests/src/tests/HistogramTest.hx`, `tests/src/tests/QueueTest.hx`, `tests/src/tests/QueueCellTest.hx`, `tests/src/tests/ImageFormatTest.hx`, `tests/src/tests/PixelFormatTest.hx` | `yes` | `These complete the targeted core data-structure rewrites for the step-3 pass.` |
-| `tests/src/tests/support/CollectionAssertions.hx`, `tests/src/tests/support/ColorAssertions.hx` | `yes` | `These reusable helpers are part of the authored semantic assertions used across the rewritten suites.` |
-| `tests/catalog/manual-test-inventory.json` | `yes` | `Moves the migrated step-3 modules from needs-migration to manual.` |
-| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Carries the current step-3 progress note that is still uncommitted and belongs to this implementation pass.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the step-3 implementation summary, verification evidence, and changed-file scope.` |
-| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Carries the uncommitted step-3 bootstrap state that selected the clean baseline for this pass.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the grouping, branch decision, included files, and commit intent for this implementation pass.` |
-| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Carries the existing step-3 bootstrap and implementation entries and appends the @Inscribe commit event.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `no` | `No new review round was authored during this implementation commit.` |
-| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass does not stop the iteration or alter the durable stop report.` |
+| `src/vision/ds/Queue.hx` | `yes` | `Fixes the Queue.has last-node omission exposed by RVW-006.` |
+| `tests/src/tests/QueueTest.hx` | `yes` | `Adds the tail-element and single-element Queue.has coverage required by RVW-006.` |
+| `src/vision/ds/ByteArray.hx` | `yes` | `Fixes signed Int8 decoding for high-bit values exposed by RVW-007.` |
+| `tests/src/tests/ByteArrayTest.hx` | `yes` | `Adds the 0xFF -> -1 and 0xFE -> -2 edge cases required by RVW-007.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the RVW-006 and RVW-007 implementation response plus the focused verification evidence.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the step-3 review round that opened RVW-006 and RVW-007 against the prior implementation commit.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures this review-follow-up grouping, gitflow decision, commit message, and push intent.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Records the review round, the implementation response, and the @Inscribe commit event for this pass.` |
+| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass does not change the durable stop-state report.` |
 
 ## Gitflow Decision
 
@@ -33,24 +30,23 @@
 ## Commit Message
 
 ```text
-refactor(tests): rewrite step 3 tools and core-ds suites
+fix(ds): address inspect review for step 3 core-ds
 
-Package the selected step-3 implementation pass: semantic rewrites for
-the vision.tools suites and the targeted core vision.ds suites, shared
-collection/color assertion helpers, manual inventory status updates,
-and the matching iteration-state files already recorded for this pass.
+Fix Queue.has tail-node detection and ByteArray.getInt8 signed-byte
+decoding after RVW-006 and RVW-007 exposed missing edge-case coverage
+in the step-3 QueueTest and ByteArrayTest rewrites.
 
 Plan: .github/plans/manual-utest-migration-3-tools-and-core-ds.md
-Pass: initial implementation
+Pass: review follow-up for RVW-006 and RVW-007
 ```
 
 ## Result
 
 - Commit hash: `this commit`
 - Push result: `push this commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available`
-- Workspace status after commit: `expected clean after staging the full step-3 implementation delta`
+- Workspace status after commit: `expected clean after staging the Queue/ByteArray review-follow-up delta`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Hand the committed step-3 implementation to review, carrying forward D-003 only for tests/generated/src/Main.hx and the Windows env-var filtered-run caveat.`
+- Follow-up needed: `Hand the committed RVW-006 and RVW-007 response back to review for reinspection of the selected step-3 delta while carrying forward D-003 and the Windows env-var filtered-run caveat.`
 
 ## Commit History
 
@@ -65,4 +61,5 @@ Pass: initial implementation
 | `7` | `fc51e41b22c39050acf832f88737794bb319e82c` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-004 README shell-syntax follow-up, the retargeted step-2 review packet, and the matching iteration bookkeeping after rerunning the exact documented PowerShell case-filter example.` |
 | `8` | `a811b9d6e98d50dcf625add678f9747873efab87` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-005 waiver-request follow-up, including the pending decision-log entry, authored-surface verification evidence, and the matching iteration bookkeeping without application code changes.` |
 | `9` | `e902a4633ee5d45a3488270ea48e9d7215ed914c` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-2 closeout bookkeeping, marks the plans complete, and points the next recovery step at the tools/core-ds migration while preserving D-003.` |
-| `10` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-3 implementation delta, including the semantic tools/core-ds suite rewrites, shared assertion helpers, inventory manual-status updates, and the matching iteration-state files.` |
+| `10` | `6b44dce7ffb458984b97ef50cbcdfb7907bb8206` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-3 implementation delta, including the semantic tools/core-ds suite rewrites, shared assertion helpers, inventory manual-status updates, and the matching iteration-state files.` |
+| `11` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-006 and RVW-007 review follow-up, including the Queue.has and ByteArray.getInt8 library fixes, the new edge-case coverage in QueueTest and ByteArrayTest, and the matching iteration packet updates.` |
