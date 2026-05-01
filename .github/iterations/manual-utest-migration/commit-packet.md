@@ -2,54 +2,51 @@
 
 ## Commit Intent
 
-- Pass type: `initial implementation`
+- Pass type: `review follow-up`
 - Plan step: `.github/plans/manual-utest-migration-4-image-and-geometry-ds.md`
-- Scope: `Package the selected step-4 implementation delta: semantic rewrites for the image/matrix and geometry vision.ds suites, shared image fixtures/assertions, the matching source defect fixes, manual inventory status/exclusion updates, and the current step-4 iteration-state files.`
-- Reason this is one commit: `These files implement one explicit plan-step slice. Splitting the rewritten suites away from the shared helpers, exposed defect fixes, inventory updates, or step-4 state files would separate one source-backed behavior change across multiple commits without improving reviewability.`
+- Scope: `Package the RVW-014, RVW-015, and RVW-016 step-4 follow-up delta: ImageViewShape consumer assertions through Image, strengthened floating-pixel neighbor coverage, the Matrix2D singular-duplicates failure-contract assertion, and the matching iteration packet updates.`
+- Reason this is one commit: `These files answer one explicit review round on the selected step-4 baseline. Splitting the Image and Matrix2D test changes away from the updated handoff, review packet, commit packet, or timeline would fragment one reviewer-requested remediation slice across multiple commits.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `.github/agent-progress/manual-utest-migration.md`, `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Carry the retargeted step-4 progress and recovery state that frames this implementation pass on the feature branch.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the step-4 implementation summary, verification evidence, and exposed defect fixes that justify the commit scope.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md`, `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Capture this commit grouping, gitflow decision, push intent, and the append-only commit event for recovery.` |
-| `tests/src/tests/support/ImageAssertions.hx`, `tests/src/tests/support/ManualFixtures.hx` | `yes` | `Provide the shared image assertions and deterministic fixtures reused across the rewritten image-centric suites.` |
-| `tests/src/tests/ImageTest.hx`, `tests/src/tests/ImageViewTest.hx`, `tests/src/tests/Matrix2DTest.hx`, `tests/src/tests/TransformationMatrix2DTest.hx` | `yes` | `Rewrite the image and matrix suites around explicit pixel, bounds, copy, interpolation, and transform invariants.` |
-| `tests/src/tests/Point2DTest.hx`, `tests/src/tests/Point3DTest.hx`, `tests/src/tests/IntPoint2DTest.hx`, `tests/src/tests/Int16Point2DTest.hx`, `tests/src/tests/UInt16Point2DTest.hx`, `tests/src/tests/Line2DTest.hx`, `tests/src/tests/Ray2DTest.hx`, `tests/src/tests/RectangleTest.hx`, `tests/src/tests/PointTransformationPairTest.hx` | `yes` | `Rewrite the geometry suites around exact coordinate, containment, conversion, distance, and degenerate-case behavior.` |
-| `src/vision/ds/Image.hx`, `src/vision/ds/IntPoint2D.hx`, `src/vision/tools/MathTools.hx` | `yes` | `Fix the Image.setView, IntPoint2D.radiansTo, and MathTools.distanceBetweenLines2D defects that the new semantic suites expose.` |
-| `tests/catalog/manual-test-inventory.json` | `yes` | `Align the inventory with the migrated image/geometry modules and the explicit enum-like exclusions in the step-4 scope.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `no` | `No step-4 review pass has run yet, so the review packet remains intentionally unchanged.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the RVW-014, RVW-015, and RVW-016 remediation summary, focused verification evidence, and updated finding dispositions for the selected step-4 review round.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the normalized step-4 review round that opened RVW-014, RVW-015, and RVW-016 and defines the exact remediation scope being committed.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md`, `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Capture this review-follow-up grouping, gitflow decision, push intent, and the append-only commit event for recovery.` |
+| `tests/src/tests/ImageTest.hx` | `yes` | `Adds the ImageViewShape ellipse and ellipse-inverted consumer assertions plus the asymmetric floating-pixel neighbor expectations requested by RVW-014 and RVW-016.` |
+| `tests/src/tests/Matrix2DTest.hx` | `yes` | `Replaces the duplicate-perspective smoke check with the singular-matrix failure-contract assertion requested by RVW-015.` |
 | `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This is not a final stop report update; it remains intentionally unchanged.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-4 initial implementation pass`
+- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-4 review-follow-up pass`
 
 ## Commit Message
 
 ```text
-feat(tests): rewrite image and geometry manual suites
+fix(tests): address review follow-up for step 4
 
-Rewrite the selected step-4 image, matrix, and geometry suites
-around explicit invariants, expand shared image fixtures and
-assertions, and keep the manual inventory aligned with the
-migrated and excluded surfaces.
+Address RVW-014 through RVW-016 for the step-4 image and
+geometry migration by proving ImageViewShape consumer
+behavior, asserting all floating-pixel neighbor writes, and
+pinning the Matrix2D duplicate-perspective failure contract.
 
 Plan: .github/plans/manual-utest-migration-4-image-and-geometry-ds.md
-Pass: initial implementation
+Pass: review follow-up
 Baseline: c9bd5f0478eece29b7f18b255f11bac702340649
+Review: RVW-014, RVW-015, RVW-016
 ```
 
 ## Result
 
 - Commit hash: `this commit`
 - Push result: `push this commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available`
-- Workspace status after commit: `expected clean after staging the selected step-4 implementation files`
+- Workspace status after commit: `expected clean after staging the selected step-4 review-follow-up files`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Hand the committed step-4 implementation pass to review intake while carrying forward D-003 and the Windows env-var filtered-run fallback.`
+- Follow-up needed: `Hand the committed RVW-014/RVW-015/RVW-016 remediation pass back to review intake for reinspection of the selected step-4 baseline while carrying forward D-003 and the Windows env-var filtered-run fallback.`
 
 ## Commit History
 
@@ -71,3 +68,4 @@ Baseline: c9bd5f0478eece29b7f18b255f11bac702340649
 | `14` | `7cf5d491504c87db4fd2c8dbcce15cfff4e869fe` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-013 review follow-up, including the semantic MathTools wrapper coverage, the updated progress note, and the matching iteration packet updates.` |
 | `15` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-3 closeout bookkeeping, including the review-packet approval state, the updated run ledger and progress note, and the plan status changes that mark step 3 complete before the step-4 retarget.` |
 | `16` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-4 implementation delta, including the semantic image/matrix and geometry suite rewrites, shared image fixtures/assertions, inventory manual-status/exclusion updates, the exposed Image/IntPoint2D/MathTools fixes, and the matching iteration-state files.` |
+| `17` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-014, RVW-015, and RVW-016 review follow-up, including the strengthened ImageViewShape consumer coverage, the asymmetric floating-pixel assertions, the singular Matrix2D duplicates contract, and the matching iteration packet updates.` |

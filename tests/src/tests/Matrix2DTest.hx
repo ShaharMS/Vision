@@ -2,6 +2,7 @@ package tests;
 
 import tests.support.ApproxAssertions;
 import tests.support.CollectionAssertions;
+import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.ds.Matrix2D;
 import vision.ds.Point2D;
@@ -286,12 +287,14 @@ class Matrix2DTest extends utest.Test {
 	@:visionLifecycle("active")
 	function test_PERSPECTIVE__duplicates() {
 		var pointPairs = [
-			new PointTransformationPair(new Point2D(0, 0), new Point2D(0, 0)),
-			new PointTransformationPair(new Point2D(1, 0), new Point2D(1, 0)),
-			new PointTransformationPair(new Point2D(0, 1), new Point2D(0, 1)),
-			new PointTransformationPair(new Point2D(1, 1), new Point2D(1, 1)),
+			new PointTransformationPair(new Point2D(0, 0), new Point2D(1, 1)),
+			new PointTransformationPair(new Point2D(0, 0), new Point2D(1, 1)),
+			new PointTransformationPair(new Point2D(0, 1), new Point2D(1, 3)),
+			new PointTransformationPair(new Point2D(1, 1), new Point2D(3, 2)),
 		];
-		Assert.notNull(Matrix2D.PERSPECTIVE(pointPairs));
+		ExceptionAssertions.throwsType(() -> {
+			Matrix2D.PERSPECTIVE(pointPairs);
+		}, vision.exceptions.SingularMatrixError);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.DEPTH#default")

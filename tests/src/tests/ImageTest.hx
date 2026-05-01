@@ -116,9 +116,11 @@ ImageAssertions.pixelEquals(instance, 0, 2, color);
 @:visionLifecycle("active")
 function test_setFloatingPixel__default() {
 var instance = new Image(2, 2, 0x00000000);
-instance.setFloatingPixel(0.5, 0.5, 0xFFFFFFFF);
-ImageAssertions.pixelApproxEquals(instance, 0, 0, Color.fromRGBA(127, 127, 127, 255));
-ImageAssertions.pixelApproxEquals(instance, 1, 1, Color.fromRGBA(127, 127, 127, 255));
+instance.setFloatingPixel(0.2, 0.7, 0xFFFFFFFF);
+ImageAssertions.pixelApproxEquals(instance, 0, 0, Color.fromRGBAFloat(0.55, 0.55, 0.55, 1));
+ImageAssertions.pixelApproxEquals(instance, 0, 1, Color.fromRGBAFloat(0.75, 0.75, 0.75, 1));
+ImageAssertions.pixelApproxEquals(instance, 1, 0, Color.fromRGBAFloat(0.25, 0.25, 0.25, 1));
+ImageAssertions.pixelApproxEquals(instance, 1, 1, Color.fromRGBAFloat(0.45, 0.45, 0.45, 1));
 }
 
 @:visionTestId("vision.ds.Image.paintPixel#default")
@@ -135,8 +137,11 @@ ImageAssertions.pixelApproxEquals(instance, 0, 0, Color.fromRGBA(128, 128, 128, 
 @:visionLifecycle("active")
 function test_paintFloatingPixel__default() {
 var instance = new Image(2, 2, 0xFF000000);
-instance.paintFloatingPixel(0.5, 0.5, 0xFFFFFFFF);
-ImageAssertions.pixelApproxEquals(instance, 0, 0, Color.fromRGBA(127, 127, 127, 255), 2);
+instance.paintFloatingPixel(0.2, 0.7, 0xFFFFFFFF);
+ImageAssertions.pixelApproxEquals(instance, 0, 0, Color.fromRGBAFloat(0.55, 0.55, 0.55, 1), 2);
+ImageAssertions.pixelApproxEquals(instance, 0, 1, Color.fromRGBAFloat(0.75, 0.75, 0.75, 1), 2);
+ImageAssertions.pixelApproxEquals(instance, 1, 0, Color.fromRGBAFloat(0.25, 0.25, 0.25, 1), 2);
+ImageAssertions.pixelApproxEquals(instance, 1, 1, Color.fromRGBAFloat(0.45, 0.45, 0.45, 1), 2);
 }
 
 @:visionTestId("vision.ds.Image.paintSafePixel#default")
@@ -445,6 +450,36 @@ Assert.isTrue(instance.hasPixelInView(1, 1));
 Assert.isTrue(instance.hasPixelInView(2, 1));
 Assert.isFalse(instance.hasPixelInView(0, 0));
 Assert.isFalse(instance.hasPixelInView(3, 3));
+}
+
+@:visionTestId("vision.ds.Image.hasPixelInView#ellipse")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_hasPixelInView__ellipse() {
+var instance = createImage(6, 4);
+var view = ManualFixtures.rectangleView(1, 1, 4, 2, ImageViewShape.ELLIPSE);
+Assert.isTrue(instance.hasPixelInView(3, 2, view));
+Assert.isFalse(instance.hasPixelInView(1, 1, view));
+instance.setView(view);
+instance.setPixel(3, 2, 0xFFFFFFFF);
+instance.setPixel(1, 1, 0xFFFFFFFF);
+ImageAssertions.pixelEquals(instance, 3, 2, 0xFFFFFFFF);
+ImageAssertions.pixelEquals(instance, 1, 1, ManualFixtures.coordinateColor(1, 1));
+}
+
+@:visionTestId("vision.ds.Image.hasPixelInView#ellipseInverted")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_hasPixelInView__ellipseInverted() {
+var instance = createImage(6, 4);
+var view = ManualFixtures.rectangleView(1, 1, 4, 2, ImageViewShape.ELLIPSE_INVERTED);
+Assert.isFalse(instance.hasPixelInView(3, 2, view));
+Assert.isTrue(instance.hasPixelInView(1, 1, view));
+instance.setView(view);
+instance.setPixel(3, 2, 0xFFFFFFFF);
+instance.setPixel(1, 1, 0xFFFFFFFF);
+ImageAssertions.pixelEquals(instance, 3, 2, ManualFixtures.coordinateColor(3, 2));
+ImageAssertions.pixelEquals(instance, 1, 1, 0xFFFFFFFF);
 }
 
 @:visionTestId("vision.ds.Image.from2DArray#default")
