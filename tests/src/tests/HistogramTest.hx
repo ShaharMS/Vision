@@ -15,11 +15,21 @@ class HistogramTest extends utest.Test {
 		return histogram;
 	}
 
+	function createSparseHistogram():Histogram {
+		var histogram = new Histogram();
+		histogram.increment(1);
+		histogram.increment(100);
+		histogram.increment(100);
+		return histogram;
+	}
+
 	@:visionTestId("vision.ds.Histogram.length#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_length__default() {
-		Assert.equals(3, createHistogram().length);
+		var histogram = createSparseHistogram();
+		Assert.equals(101, histogram.underlying.length);
+		Assert.equals(3, histogram.length);
 	}
 
 	@:visionTestId("vision.ds.Histogram.median#default")

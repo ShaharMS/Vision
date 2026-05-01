@@ -182,16 +182,24 @@ class ArrayToolsTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_distanceTo__default() {
-		var result = ArrayTools.distanceTo([1, 4, 9, 10], [100, 200, 300, 400], (left, right) -> Math.abs(right - left));
-		ApproxAssertions.equalsFloat(9, result);
+		var array = [1, 4, 9, 10];
+		var nearResult = ArrayTools.distanceTo(array, [2, 2, 10, 15], (left, right) -> Math.abs(right - left));
+		var farResult = ArrayTools.distanceTo(array, [100, 200, 300, 400], (left, right) -> Math.abs(right - left));
+		ApproxAssertions.equalsFloat(9, nearResult);
+		ApproxAssertions.equalsFloat(976, farResult);
+		Assert.notEquals(nearResult, farResult);
 	}
 
 	@:visionTestId("vision.tools.ArrayTools.distanceTo#duplicates")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_distanceTo__duplicates() {
-		var result = ArrayTools.distanceTo([1, 1, 2, 2], [9, 9, 9, 9], (left, right) -> Math.abs(right - left));
-		ApproxAssertions.equalsFloat(1, result);
+		var array = [1, 1, 2, 2];
+		var closeResult = ArrayTools.distanceTo(array, [1, 2, 2, 3], (left, right) -> Math.abs(right - left));
+		var farResult = ArrayTools.distanceTo(array, [9, 9, 9, 9], (left, right) -> Math.abs(right - left));
+		ApproxAssertions.equalsFloat(2, closeResult);
+		ApproxAssertions.equalsFloat(30, farResult);
+		Assert.notEquals(closeResult, farResult);
 	}
 
 	@:visionTestId("vision.tools.ArrayTools.flatMap#default")

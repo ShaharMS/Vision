@@ -4,19 +4,21 @@
 
 - Pass type: `review follow-up`
 - Plan step: `.github/plans/manual-utest-migration-3-tools-and-core-ds.md`
-- Scope: `Package the explicit RVW-006 and RVW-007 follow-up for step 3: Queue.has tail/single-node coverage plus the Queue.has library fix, ByteArray.getInt8 signed-byte edge cases plus the signed-byte decoding fix, and the matching iteration packet updates for the new review round and implementation evidence.`
-- Reason this is one commit: `RVW-006 and RVW-007 were opened together against the same committed step-3 delta, and the new tests, library fixes, and iteration packet updates are only reviewable as one coherent response to that single review pass.`
+- Scope: `Package the explicit RVW-008, RVW-009, and RVW-010 follow-up for step 3: strengthened MathTools range assertions plus the MathTools.isBetweenRange(s) fix, stronger ArrayTools.distanceTo target-dependence coverage plus the implementation fix, the sparse-key Histogram.length coverage plus the Histogram.get_length fix, and the matching iteration packet updates for the new review round and implementation evidence.`
+- Reason this is one commit: `RVW-008, RVW-009, and RVW-010 were opened together against the same committed step-3 delta, and the new tests, library fixes, and iteration packet updates are only reviewable as one coherent response to that single review pass.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `src/vision/ds/Queue.hx` | `yes` | `Fixes the Queue.has last-node omission exposed by RVW-006.` |
-| `tests/src/tests/QueueTest.hx` | `yes` | `Adds the tail-element and single-element Queue.has coverage required by RVW-006.` |
-| `src/vision/ds/ByteArray.hx` | `yes` | `Fixes signed Int8 decoding for high-bit values exposed by RVW-007.` |
-| `tests/src/tests/ByteArrayTest.hx` | `yes` | `Adds the 0xFF -> -1 and 0xFE -> -2 edge cases required by RVW-007.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the RVW-006 and RVW-007 implementation response plus the focused verification evidence.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the step-3 review round that opened RVW-006 and RVW-007 against the prior implementation commit.` |
+| `src/vision/tools/MathTools.hx` | `yes` | `Fixes the inclusive normalized-bound range behavior exposed by RVW-008.` |
+| `tests/src/tests/MathToolsTest.hx` | `yes` | `Adds the inside-range, outside-range, reversed-bound, and endpoint cases required by RVW-008.` |
+| `src/vision/tools/ArrayTools.hx` | `yes` | `Fixes ArrayTools.distanceTo so it measures source-to-target distances as required by RVW-009.` |
+| `tests/src/tests/ArrayToolsTest.hx` | `yes` | `Adds the target-array dependence coverage required by RVW-009.` |
+| `src/vision/ds/Histogram.hx` | `yes` | `Fixes Histogram.length to report the item count rather than the backing-array size exposed by RVW-010.` |
+| `tests/src/tests/HistogramTest.hx` | `yes` | `Adds the sparse-key length case required by RVW-010.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the RVW-008, RVW-009, and RVW-010 implementation response plus the focused verification evidence.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the step-3 review round that opened RVW-008, RVW-009, and RVW-010 against the prior implementation commit.` |
 | `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures this review-follow-up grouping, gitflow decision, commit message, and push intent.` |
 | `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Records the review round, the implementation response, and the @Inscribe commit event for this pass.` |
 | `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass does not change the durable stop-state report.` |
@@ -30,23 +32,23 @@
 ## Commit Message
 
 ```text
-fix(ds): address inspect review for step 3 core-ds
+fix(tools-ds): address inspect review for step 3
 
-Fix Queue.has tail-node detection and ByteArray.getInt8 signed-byte
-decoding after RVW-006 and RVW-007 exposed missing edge-case coverage
-in the step-3 QueueTest and ByteArrayTest rewrites.
+Fix MathTools.isBetweenRange(s), ArrayTools.distanceTo, and
+Histogram.length after RVW-008, RVW-009, and RVW-010 exposed
+strengthened semantic tests that still pinned or missed real defects.
 
 Plan: .github/plans/manual-utest-migration-3-tools-and-core-ds.md
-Pass: review follow-up for RVW-006 and RVW-007
+Pass: review follow-up for RVW-008, RVW-009, and RVW-010
 ```
 
 ## Result
 
 - Commit hash: `this commit`
 - Push result: `push this commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available`
-- Workspace status after commit: `expected clean after staging the Queue/ByteArray review-follow-up delta`
+- Workspace status after commit: `expected clean after staging the MathTools/ArrayTools/Histogram review-follow-up delta`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Hand the committed RVW-006 and RVW-007 response back to review for reinspection of the selected step-3 delta while carrying forward D-003 and the Windows env-var filtered-run caveat.`
+- Follow-up needed: `Hand the committed RVW-008, RVW-009, and RVW-010 response back to review for reinspection of the selected step-3 delta while carrying forward D-003 and the Windows env-var filtered-run caveat.`
 
 ## Commit History
 
@@ -62,4 +64,5 @@ Pass: review follow-up for RVW-006 and RVW-007
 | `8` | `a811b9d6e98d50dcf625add678f9747873efab87` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-005 waiver-request follow-up, including the pending decision-log entry, authored-surface verification evidence, and the matching iteration bookkeeping without application code changes.` |
 | `9` | `e902a4633ee5d45a3488270ea48e9d7215ed914c` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-2 closeout bookkeeping, marks the plans complete, and points the next recovery step at the tools/core-ds migration while preserving D-003.` |
 | `10` | `6b44dce7ffb458984b97ef50cbcdfb7907bb8206` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-3 implementation delta, including the semantic tools/core-ds suite rewrites, shared assertion helpers, inventory manual-status updates, and the matching iteration-state files.` |
-| `11` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-006 and RVW-007 review follow-up, including the Queue.has and ByteArray.getInt8 library fixes, the new edge-case coverage in QueueTest and ByteArrayTest, and the matching iteration packet updates.` |
+| `11` | `a6c6894864eb40a3e8fb1510103435b391d31292` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-006 and RVW-007 review follow-up, including the Queue.has and ByteArray.getInt8 library fixes, the new edge-case coverage in QueueTest and ByteArrayTest, and the matching iteration packet updates.` |
+| `12` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-008, RVW-009, and RVW-010 review follow-up, including the MathTools.isBetweenRange(s), ArrayTools.distanceTo, and Histogram.length library fixes, the strengthened semantic coverage in MathToolsTest, ArrayToolsTest, and HistogramTest, and the matching iteration packet updates.` |

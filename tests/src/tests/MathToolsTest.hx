@@ -240,14 +240,21 @@ class MathToolsTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_isBetweenRanges__default() {
-		Assert.isTrue(MathTools.isBetweenRanges(3, {start: 0, end: 2}));
+		Assert.isTrue(MathTools.isBetweenRanges(3, {start: 0, end: 4}));
+		Assert.isTrue(MathTools.isBetweenRanges(4, {start: 4, end: 0}));
+		Assert.isTrue(MathTools.isBetweenRanges(8, {start: 0, end: 4}, {start: 7, end: 9}));
+		Assert.isFalse(MathTools.isBetweenRanges(5, {start: 0, end: 4}, {start: 7, end: 9}));
 	}
 
 	@:visionTestId("vision.tools.MathTools.isBetweenRange#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_isBetweenRange__default() {
-		Assert.isTrue(MathTools.isBetweenRange(11, 0, 10));
+		Assert.isTrue(MathTools.isBetweenRange(0, 0, 10));
+		Assert.isTrue(MathTools.isBetweenRange(5, 10, 0));
+		Assert.isTrue(MathTools.isBetweenRange(10, 0, 10));
+		Assert.isFalse(MathTools.isBetweenRange(-1, 0, 10));
+		Assert.isFalse(MathTools.isBetweenRange(11, 0, 10));
 	}
 
 	@:visionTestId("vision.tools.MathTools.wrapInt#default")

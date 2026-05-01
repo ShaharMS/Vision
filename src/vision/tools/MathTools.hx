@@ -422,21 +422,21 @@ class MathTools {
 	}
 
 	public static function isBetweenRanges(value:Float, ...ranges:{start:Float, end:Float}):Bool {
-		var between = false;
 		for (range in ranges) {
-			if (range.end < range.start) {
-				var temp = range.start;
-				range.start = range.end;
-				range.end = temp;
-			}
-			between = (value > range.start) && (value > range.end);
-			if (between) return true;
+			if (isBetweenRange(value, range.start, range.end)) return true;
 		}
 		return false;
 	}
 
 	public static inline function isBetweenRange(value:Float, min:Float, max:Float):Bool {
-		return value > min && value > max;
+		var rangeStart = min;
+		var rangeEnd = max;
+		if (rangeEnd < rangeStart) {
+			var temp = rangeStart;
+			rangeStart = rangeEnd;
+			rangeEnd = temp;
+		}
+		return value >= rangeStart && value <= rangeEnd;
 	}
 
 	/**

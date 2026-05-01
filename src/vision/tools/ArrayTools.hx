@@ -186,8 +186,9 @@ class ArrayTools {
 
 	public static function distanceTo<T>(array:Array<T>, to:Array<T>, distanceFunction:(T, T) -> Float):Float {
 		var sum = 0.;
-		for (i in 0...array.length - 1) {
-			sum += distanceFunction(array[i], array[i + 1]);
+		var length = array.length < to.length ? array.length : to.length;
+		for (i in 0...length) {
+			sum += distanceFunction(array[i], to[i]);
 		}
 		return sum;
 	}

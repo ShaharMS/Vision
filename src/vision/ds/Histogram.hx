@@ -54,6 +54,10 @@ class Histogram {
 	}
 
 	function get_length():Int {
-		return underlying.length;
+		var total = 0;
+		for (count in underlying) {
+			if (count != null) total += count;
+		}
+		return total;
 	}
 }
