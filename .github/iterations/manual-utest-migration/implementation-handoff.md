@@ -6,36 +6,34 @@
 - Authoring agent: `@Implement`
 - Plan step: `.github/plans/manual-utest-migration-3-tools-and-core-ds.md`
 - Branch: `feature/manual-utest-migration-1-cutover`
-- Summary: `Addressed the step-3 CR follow-up for RVW-011 and RVW-012 by adding semantic Color static-constant assertions and replacing the ImageTools filesystem placeholders with real temp-file round-trip assertions on the deterministic local VISION path, then rerunning the focused ColorTest plus ImageToolsTest validation with touched-file diagnostics.`
+- Summary: `Addressed the step-3 CR follow-up for RVW-013 by adding semantic member-level MathTools coverage for isFinite, isNaN, parseFloat, parseInt, and parseBool, then rerunning the focused MathToolsTest validation without introducing any new inventory deferrals.`
 
 ## Files Changed
 
 | Path | Intent | Verification impact |
 |------|--------|---------------------|
-| `tests/src/tests/ColorTest.hx` | `Add semantic static-palette assertions that cover the tracked Color public constants, including the cited TRANSPARENT, WHITE, and VIOLET endpoints plus the remaining authored palette constants.` | `Focused ColorTest filtered run plus touched-file diagnostics.` |
-| `tests/src/tests/ImageToolsTest.hx` | `Replace the ignored filesystem placeholders with real temp-file coverage for loadFromFile, saveToFile, and exportToFile using deterministic local VISION-format round trips on sys targets.` | `Focused ImageToolsTest filtered run plus touched-file diagnostics.` |
+| `tests/src/tests/MathToolsTest.hx` | `Add semantic wrapper coverage for MathTools.isFinite, MathTools.isNaN, MathTools.parseFloat, MathTools.parseInt, and MathTools.parseBool so the manual MathTools surface matches the step-3 inventory claim.` | `Focused MathToolsTest filtered run plus touched-file diagnostics.` |
 | `.github/iterations/manual-utest-migration/implementation-handoff.md`, `.github/iterations/manual-utest-migration/timeline.md` | `Record the step-3 implementation pass for delegated recovery.` | `Packet diagnostics.` |
 
 ## Verification
 
 | Check | Method | Result | Evidence |
 |-------|--------|--------|----------|
-| `Focused Color and ImageTools suites` | `$env:VISION_TESTS='ColorTest,ImageToolsTest'; Remove-Item Env:VISION_TEST_CASES -ErrorAction SilentlyContinue; haxe test.hxml` | `passed` | `78 tests passed across the two focused suites, including the new Color static-constant palette coverage and the ImageTools local temp-file round-trip assertions. The run exited with code 0. Only the pre-existing out-of-scope utest enum-abstract and Gauss deprecation warnings remained.` |
-| `Touched-file diagnostics` | `get_errors on tests/src/tests/ColorTest.hx, tests/src/tests/ImageToolsTest.hx, .github/iterations/manual-utest-migration/implementation-handoff.md, and .github/iterations/manual-utest-migration/timeline.md` | `passed` | `No diagnostics remain in the touched Color/ImageTools tests or the updated iteration packet files.` |
+| `Focused MathTools suite` | `$env:VISION_TESTS='MathToolsTest'; Remove-Item Env:VISION_TEST_CASES -ErrorAction SilentlyContinue; haxe test.hxml` | `passed` | `84 tests passed across MathToolsTest, including the new wrapper coverage for isFinite, isNaN, parseFloat, parseInt, and parseBool. The run exited with code 0. Only the pre-existing out-of-scope utest enum-abstract and Gauss deprecation warnings remained.` |
+| `Touched-file diagnostics` | `get_errors on tests/src/tests/MathToolsTest.hx, .github/iterations/manual-utest-migration/implementation-handoff.md, and .github/iterations/manual-utest-migration/timeline.md` | `passed` | `No diagnostics remain in the touched MathTools test or the updated iteration packet files.` |
 
 ## Review Responses
 
 | Finding ID | Disposition | Evidence | Notes |
 |------------|-------------|----------|-------|
-| `RVW-011` | `FIXED` | `ColorTest now adds a semantic static-palette assertion pass that verifies the tracked public constants directly against their authored integer values, including the cited TRANSPARENT, WHITE, and VIOLET constants plus the remaining palette entries defined in src/vision/ds/Color.hx.` | `This follow-up resolves the review request with real coverage rather than a deferral, so the manual inventory does not need a new exception entry.` |
-| `RVW-012` | `FIXED` | `ImageToolsTest now replaces the ignored filesystem placeholders with deterministic temp-file assertions for loadFromFile, saveToFile, and exportToFile using VISION-format bytes on sys targets.` | `This follow-up resolves the review request with real local coverage rather than a deferral, so the manual inventory remains accurate without changes.` |
+| `RVW-013` | `FIXED` | `MathToolsTest now adds semantic assertions for all five previously omitted public wrappers: isFinite mirrors finite/infinity/NaN classification, isNaN distinguishes NaN from ordinary numbers, parseFloat covers successful parsing plus invalid-input NaN, parseInt covers successful parsing plus invalid-input null, and parseBool covers trimmed case-insensitive true/false handling plus the source-defined invalid-input branch.` | `This follow-up resolves the review request with real coverage rather than a deferral, so tests/catalog/manual-test-inventory.json remains accurate without a new exception entry.` |
 
 ## Risks And Follow-Ups
 
 - Accepted waiver `D-003` still applies only to the retained reference-only generated runner at `tests/generated/src/Main.hx`; this pass did not change that scope.
 - The focused validation still depends on the Windows env-var filtered-run fallback because this Haxe CLI rejects the direct `-- --tests ...` passthrough form before Main runs.
 - The focused validation still emits the pre-existing out-of-scope deprecation warnings from `utest` and `GaussTest`; this pass did not change those surfaces.
-- The new ImageTools filesystem coverage is intentionally gated to `sys` targets because the deterministic local file path under review is only available there; non-`sys` targets still treat those cases as no-op passes.
+- The manual inventory still tracks the full MathTools member surface generically; this pass relies on authored wrapper tests rather than manifest edits to prove the previously missing members are now covered.
 
 ## Pass History
 
@@ -52,3 +50,4 @@
 | `9` | `this commit` | `Addressed RVW-006 and RVW-007 by adding Queue.has tail/single-node coverage, adding ByteArray.getInt8 signed-byte edge cases, fixing both exposed library defects, and rerunning the narrow QueueTest plus ByteArrayTest validation with touched-file diagnostics.` |
 | `10` | `this commit` | `Addressed RVW-008, RVW-009, and RVW-010 by strengthening the MathTools range, ArrayTools.distanceTo, and Histogram.length semantic cases, fixing all three exposed library defects, and rerunning the focused MathToolsTest plus ArrayToolsTest plus HistogramTest validation with clean touched-file diagnostics.` |
 | `11` | `this commit` | `Addressed RVW-011 and RVW-012 by adding semantic Color static-constant coverage, replacing the ImageTools filesystem placeholders with deterministic temp-file assertions, and rerunning the focused ColorTest plus ImageToolsTest validation.` |
+| `12` | `this commit` | `Addressed RVW-013 by adding semantic MathTools wrapper coverage for isFinite, isNaN, parseFloat, parseInt, and parseBool, then rerunning the focused MathToolsTest validation.` |

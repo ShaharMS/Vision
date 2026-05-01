@@ -601,4 +601,50 @@ class MathToolsTest extends utest.Test {
 	function test_fround__default() {
 		ApproxAssertions.equalsFloat(2, MathTools.fround(1.5));
 	}
+
+	@:visionTestId("vision.tools.MathTools.isFinite#default")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_isFinite__default() {
+		Assert.isTrue(MathTools.isFinite(1.25));
+		Assert.isFalse(MathTools.isFinite(MathTools.POSITIVE_INFINITY));
+		Assert.isFalse(MathTools.isFinite(MathTools.NaN));
+	}
+
+	@:visionTestId("vision.tools.MathTools.isNaN#default")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_isNaN__default() {
+		Assert.isTrue(MathTools.isNaN(MathTools.NaN));
+		Assert.isFalse(MathTools.isNaN(1.25));
+	}
+
+	@:visionTestId("vision.tools.MathTools.parseFloat#default")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_parseFloat__default() {
+		ApproxAssertions.equalsFloat(12.5, MathTools.parseFloat("12.5"));
+		Assert.isTrue(MathTools.isNaN(MathTools.parseFloat("not-a-number")));
+	}
+
+	@:visionTestId("vision.tools.MathTools.parseInt#default")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_parseInt__default() {
+		ApproxAssertions.equalsFloat(42, MathTools.parseInt("42"));
+		Assert.isNull(MathTools.parseInt("not-a-number"));
+	}
+
+	@:visionTestId("vision.tools.MathTools.parseBool#default")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_parseBool__default() {
+		Assert.isTrue(MathTools.parseBool(" TrUe "));
+		Assert.isFalse(MathTools.parseBool(" FALSE "));
+		#if static
+		Assert.isFalse(MathTools.parseBool("maybe"));
+		#else
+		Assert.isNull(MathTools.parseBool("maybe"));
+		#end
+	}
 }
