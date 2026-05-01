@@ -8,3 +8,5 @@
 
 # Run the build macro to generate test files at compile time
 --macro BuildMacro.generateAll()
+
+--interp

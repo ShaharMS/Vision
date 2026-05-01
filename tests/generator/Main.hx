@@ -208,25 +208,7 @@ class Main {
     }
     
     static function generateUtestRunner(testClasses:Array<String>):String {
-        var buf = new StringBuf();
-        buf.add("package;\n\n");
-        buf.add("import utest.Runner;\n");
-        buf.add("import utest.ui.Report;\n");
-        buf.add("import tests.*;\n\n");
-        buf.add("class Main {\n");
-        buf.add("    static function main() {\n");
-        buf.add("        var runner = new Runner();\n\n");
-        
-        for (cls in testClasses) {
-            buf.add('        runner.addCase(new $cls());\n');
-        }
-        
-        buf.add("\n        Report.create(runner);\n");
-        buf.add("        runner.run();\n");
-        buf.add("    }\n");
-        buf.add("}\n");
-        
-        return buf.toString();
+        return TestEmitter.emitRunner(testClasses, "Main");
     }
     
     static function extractClassPath(filePath:String, sourceRoot:String):String {

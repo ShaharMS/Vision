@@ -64,28 +64,45 @@ class MacroDetector {
         }
         
         // Extract constructor info
-        if (classType.constructor != null) {
+        var preferredInstanceExpression = getDefaultForType(className);
+        if (usesStructuralDefault(className) && preferredInstanceExpression != "null") {
+            for (r in results) {
+                if (!r.isStatic) r.instanceExpression = preferredInstanceExpression;
+            }
+        } else if (classType.constructor != null) {
             var ctor = classType.constructor.get();
             var ctorParams = extractParamsFromType(ctor.type);
             for (r in results) {
                 if (!r.isStatic) r.constructorParams = ctorParams;
             }
+        } else {
+            var instanceExpression = preferredInstanceExpression;
+            if (instanceExpression != "null") {
+                for (r in results) {
+                    if (!r.isStatic) r.instanceExpression = instanceExpression;
+                }
+            }
         }
         
         return results;
+    }
+
+    static function usesStructuralDefault(className:String):Bool {
+        return className == "Rectangle" || className == "ImageView" || className == "Histogram" || className == "Queue" || className == "QueueCell";
     }
     
     static function detectAbstract(abstractType:AbstractType):Array<TestableFunction> {
         var results:Array<TestableFunction> = [];
         var pack = abstractType.pack.join(".");
         var className = abstractType.name;
+        var instanceExpression = getDefaultForType(className);
         
         // Abstract impl statics
         if (abstractType.impl != null) {
             for (field in abstractType.impl.get().statics.get()) {
                 // Skip internal/generated fields
                 if (field.name.startsWith("_")) continue;
-                var testable = extractTestableFromField(field, pack, className, true);
+                var testable = extractTestableFromAbstractField(field, pack, className, instanceExpression);
                 if (testable != null) results.push(testable);
             }
         }
@@ -104,6 +121,8 @@ class MacroDetector {
                 // Only include readable properties (getters)
                 if (read == AccCall || read == AccNormal) TKProperty else return null;
         };
+        var params = kind == TKMethod ? extractParamsFromType(field.type) : [];
+        var returnType = kind == TKMethod ? extractReturnType(field.type) : typeToString(field.type);
         
         return {
             packageName: pack,
@@ -111,9 +130,39 @@ class MacroDetector {
             name: field.name,
             isStatic: isStatic,
             kind: kind,
-            params: extractParamsFromType(field.type),
-            returnType: extractReturnType(field.type),
-            constructorParams: []
+            params: params,
+            returnType: returnType,
+            constructorParams: [],
+            instanceExpression: null
+        };
+    }
+
+    static function extractTestableFromAbstractField(field:ClassField, pack:String, className:String, instanceExpression:String):TestableFunction {
+        if (!field.isPublic) return null;
+        if (field.name == "new" || field.name == "_new") return null;
+
+        var kind = switch (field.kind) {
+            case FMethod(_): TKMethod;
+            case FVar(read, write):
+                if (read == AccCall || read == AccNormal) TKProperty else return null;
+        };
+
+        var params = kind == TKMethod ? extractParamsFromType(field.type) : [];
+        var instanceMember = kind == TKProperty || (params.length > 0 && params[0].name == "this");
+        if (instanceMember && params.length > 0 && params[0].name == "this") {
+            params = params.slice(1);
+        }
+
+        return {
+            packageName: pack,
+            className: className,
+            name: field.name,
+            isStatic: !instanceMember,
+            kind: kind,
+            params: params,
+            returnType: kind == TKMethod ? extractReturnType(field.type) : typeToString(field.type),
+            constructorParams: [],
+            instanceExpression: instanceMember ? instanceExpression : null
         };
     }
     
@@ -197,6 +246,7 @@ class MacroDetector {
             case "String": '""';
             case "Int": "0";
             case "UInt": "0";
+            case "Int64": "haxe.Int64.make(0, 42)";
             case "Float": "0.0";
             case "Bool": "false";
             case "Void": "null";
@@ -216,8 +266,11 @@ class MacroDetector {
             case (_.startsWith("Vector") => true): "null";
             
             // Vision-specific types
-            case "Image": "new vision.ds.Image(100, 100)";
-            case "Color": "0xFF000000";
+            case "Image": "Factories.gradientImage(10, 10)";
+            case "ImageFormat": "vision.ds.ImageFormat.PNG";
+            case "PixelFormat": "vision.ds.PixelFormat.ARGB";
+            case "CannyObject": "Factories.gradientImage(16, 16)";
+            case "Color": "(0xFF336699 : vision.ds.Color)";
             case "Point2D": "new vision.ds.Point2D(0.0, 0.0)";
             case "IntPoint2D": "new vision.ds.IntPoint2D(0, 0)";
             case "Int16Point2D": "new vision.ds.Int16Point2D(0, 0)";
@@ -227,24 +280,25 @@ class MacroDetector {
             case "Ray2D": "new vision.ds.Ray2D(new vision.ds.Point2D(0.0, 0.0), 1.0)";
             case "Pixel": "new vision.ds.Pixel(0, 0, 0xFF000000)";
             case "ByteArray": "new vision.ds.ByteArray(100)";
-            case "Histogram": "new vision.ds.Histogram()";
+            case "Histogram": "(function() { var histogram = new vision.ds.Histogram(); histogram.increment(1); histogram.increment(2); histogram.increment(2); return histogram; })()";
             case "Kernel2D": "vision.ds.Kernel2D.identity";
-            case "Matrix2D": "new vision.ds.Matrix2D(3, 3)";
-            case "TransformationMatrix2D": "(cast new vision.ds.Matrix2D(3, 3) : vision.ds.TransformationMatrix2D)";
+            case "Matrix2D": "vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0])";
+            case "TransformationMatrix2D": "vision.ds.Matrix2D.IDENTITY()";
             case "Rectangle": "({x: 0, y: 0, width: 10, height: 10} : vision.ds.Rectangle)";
             case "ImageView": "({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView)";
             case "Array2D": "new vision.ds.Array2D<Float>(3, 3, 0.0)";
-            case "Queue": "new vision.ds.Queue()";
+            case "Queue": "(function() { var queue = new vision.ds.Queue<Int>(); queue.enqueue(1); queue.enqueue(2); return queue; })()";
+            case "QueueCell": "new vision.ds.QueueCell(cast 1, new vision.ds.QueueCell(cast 2, null, null), new vision.ds.QueueCell(cast 0, null, null))";
             case "PointTransformationPair": 
                 "new vision.ds.specifics.PointTransformationPair(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(1.0, 1.0))";
             case "ColorCluster":
                 "new vision.ds.kmeans.ColorCluster(0xFF000000, [])";
             
             // Enums with common defaults
-            case "ImageExpansionMode": "vision.ds.specifics.ImageExpansionMode.Transparent";
-            case "TransformationMatrixOrigination": "vision.ds.specifics.TransformationMatrixOrigination.TopLeft";
-            case "ColorChannel": "vision.ds.specifics.ColorChannel.Red";
-            case "GaussianKernelSize": "vision.ds.gaussian.GaussianKernelSize.Five";
+            case "ImageExpansionMode": "vision.ds.specifics.ImageExpansionMode.RESIZE";
+            case "TransformationMatrixOrigination": "vision.ds.specifics.TransformationMatrixOrigination.CENTER";
+            case "ColorChannel": "vision.ds.specifics.ColorChannel.RED";
+            case "GaussianKernelSize": "vision.ds.gaussian.GaussianKernelSize.X5";
             
             // Generic parameter - try Int
             case "T": "cast 0";
@@ -273,7 +327,8 @@ typedef TestableFunction = {
     kind:TestableKind,
     params:Array<ParamInfo>,
     returnType:String,
-    constructorParams:Array<ParamInfo>
+    constructorParams:Array<ParamInfo>,
+    ?instanceExpression:String
 }
 
 typedef ParamInfo = {
