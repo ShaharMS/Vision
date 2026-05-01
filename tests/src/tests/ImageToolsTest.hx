@@ -9,11 +9,18 @@ import vision.ds.Image;
 import vision.ds.ImageFormat;
 import vision.ds.ImageResizeAlgorithm;
 import vision.tools.ImageTools;
+#if sys
+import haxe.io.Path;
+import sys.FileSystem;
+import sys.io.File;
+#end
 
 @:access(vision.tools.ImageTools)
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class ImageToolsTest extends utest.Test {
+	static var tempFileCounter:Int = 0;
+
 	function labeledImage():Image {
 		var image = new Image(3, 3, 0x00000000);
 		var colors = [
@@ -33,6 +40,38 @@ class ImageToolsTest extends utest.Test {
 		return [for (value in iterator) value];
 	}
 
+	#if sys
+	function withTempVisionPath(prefix:String, run:String->Void):Void {
+		var tempRoot = Sys.getEnv("TEMP");
+		if (tempRoot == null || tempRoot == "") {
+			tempRoot = Sys.getEnv("TMP");
+		}
+		if (tempRoot == null || tempRoot == "") {
+			tempRoot = Sys.getCwd();
+		}
+
+		var directory = Path.join([tempRoot, "vision-manual-utest"]);
+		if (!FileSystem.exists(directory)) {
+			FileSystem.createDirectory(directory);
+		}
+
+		tempFileCounter += 1;
+		var path = Path.join([directory, prefix + "-" + tempFileCounter + ".vision"]);
+		var error:Dynamic = null;
+		try {
+			run(path);
+		} catch (caught:Dynamic) {
+			error = caught;
+		}
+		if (FileSystem.exists(path)) {
+			FileSystem.deleteFile(path);
+		}
+		if (error != null) {
+			throw error;
+		}
+	}
+	#end
+
 	@:visionTestId("vision.tools.ImageTools.defaultResizeAlgorithm#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
@@ -43,17 +82,37 @@ class ImageToolsTest extends utest.Test {
 	@:visionTestId("vision.tools.ImageTools.loadFromFile#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
-	@:Ignored("requires filesystem fixture")
-	function ignored_test_loadFromFile__default() {
+	function test_loadFromFile__default() {
+		#if sys
+		withTempVisionPath("load-from-file", function(path) {
+			var source = labeledImage();
+			File.saveBytes(path, ImageTools.exportToBytes(source, ImageFormat.VISION));
+			var result = ImageTools.loadFromFile(new Image(0, 0), path);
+			ImageAssertions.hasDimensions(result, 3, 3);
+			ImageAssertions.pixelEquals(result, 0, 0, 0xFF000011);
+			ImageAssertions.pixelEquals(result, 1, 1, 0xFF000055);
+			ImageAssertions.pixelEquals(result, 2, 2, 0xFF000099);
+		});
+		#else
 		Assert.pass();
+		#end
 	}
 
 	@:visionTestId("vision.tools.ImageTools.saveToFile#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
-	@:Ignored("requires filesystem fixture")
-	function ignored_test_saveToFile__default() {
+	function test_saveToFile__default() {
+		#if sys
+		withTempVisionPath("save-to-file", function(path) {
+			var source = Factories.checkerboardImage(4, 4, 1);
+			var expected = ImageTools.exportToBytes(source, ImageFormat.VISION);
+			Reflect.callMethod(ImageTools, Reflect.field(ImageTools, "saveToFile"), [source, path, ImageFormat.VISION]);
+			Assert.isTrue(FileSystem.exists(path));
+			CollectionAssertions.bytes(expected.toArray(), File.getBytes(path));
+		});
+		#else
 		Assert.pass();
+		#end
 	}
 
 	@:visionTestId("vision.tools.ImageTools.loadFromURL#default")
@@ -67,9 +126,18 @@ class ImageToolsTest extends utest.Test {
 	@:visionTestId("vision.tools.ImageTools.exportToFile#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
-	@:Ignored("requires filesystem fixture")
-	function ignored_test_exportToFile__default() {
+	function test_exportToFile__default() {
+		#if sys
+		withTempVisionPath("export-to-file", function(path) {
+			var source = Factories.gradientImage(3, 3);
+			var expected = ImageTools.exportToBytes(source, ImageFormat.VISION);
+			ImageTools.exportToFile(source, path, ImageFormat.VISION);
+			Assert.isTrue(FileSystem.exists(path));
+			CollectionAssertions.bytes(expected.toArray(), File.getBytes(path));
+		});
+		#else
 		Assert.pass();
+		#end
 	}
 
 	@:visionTestId("vision.tools.ImageTools.loadFromBytes#default")

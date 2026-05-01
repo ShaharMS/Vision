@@ -17,6 +17,122 @@ class ColorTest extends utest.Test {
 		ColorAssertions.equalsColor(expected.toInt(), actual);
 	}
 
+	function assertStaticColors(entries:Array<{actual:Color, expected:Int}>):Void {
+		for (entry in entries) {
+			ColorAssertions.equalsColor(entry.expected, entry.actual);
+		}
+	}
+
+	@:visionTestId("vision.ds.Color.TRANSPARENT_COLOR#palette")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_staticConstants__palette() {
+		var entries = [
+			{actual: Color.TRANSPARENT_COLOR, expected: 0x00000000},
+			{actual: Color.WHITE, expected: 0xFFFFFFFF},
+			{actual: Color.OFFWHITE, expected: 0xFFFFFFE4},
+			{actual: Color.GRAY, expected: 0xFF808080},
+			{actual: Color.BLACK, expected: 0xFF000000},
+			{actual: Color.GREEN, expected: 0xFF00FF00},
+			{actual: Color.YELLOW, expected: 0xFFFFFF00},
+			{actual: Color.ORANGE, expected: 0xFFFFA500},
+			{actual: Color.RED, expected: 0xFFFF0000},
+			{actual: Color.PURPLE, expected: 0xFF800080},
+			{actual: Color.BLUE, expected: 0xFF0000FF},
+			{actual: Color.BROWN, expected: 0xFF8B4513},
+			{actual: Color.SEPIA, expected: 0xFF704214},
+			{actual: Color.PINK, expected: 0xFFFFC0CB},
+			{actual: Color.MAGENTA, expected: 0xFFFF00FF},
+			{actual: Color.CYAN, expected: 0xFF00FFFF},
+			{actual: Color.SILVER, expected: 0x00C0C0C0},
+			{actual: Color.GOLD, expected: 0xFFFFD700},
+			{actual: Color.OLIVE, expected: 0xFF808000},
+			{actual: Color.MAROON, expected: 0xFF800000},
+			{actual: Color.BORDEAUX, expected: 0xFF722F37},
+			{actual: Color.NAVY, expected: 0xFF000080},
+			{actual: Color.TEAL, expected: 0xFF008080},
+			{actual: Color.FUCHSIA, expected: 0xFFFF00FF},
+			{actual: Color.AQUA, expected: 0xFF00FFFF},
+			{actual: Color.LIME, expected: 0xFF32CD32},
+			{actual: Color.CHARCOAL, expected: 0xFF36454F},
+			{actual: Color.ONYX, expected: 0xFF353839},
+			{actual: Color.JET, expected: 0xFF343434},
+			{actual: Color.JET_BLACK, expected: 0xFF0E0E10},
+			{actual: Color.ROYAL_BLUE, expected: 0xFF4169E1},
+			{actual: Color.CHARTREUSE, expected: 0xFF7FFF00},
+			{actual: Color.CERULEAN, expected: 0xFF007BA7},
+			{actual: Color.PERIWINKLE, expected: 0xFFCCCCFF},
+			{actual: Color.VERMILION, expected: 0xFFE34234},
+			{actual: Color.MAUVE, expected: 0xFFE0B0FF},
+			{actual: Color.AZURE, expected: 0xFF007FFF},
+			{actual: Color.TANGERINE, expected: 0xFFF28500},
+			{actual: Color.INDIGO, expected: 0xFF4B0082},
+			{actual: Color.MARIGOLD, expected: 0xFFEAA221},
+			{actual: Color.COBALT, expected: 0xFF0047AB},
+			{actual: Color.LAVENDER, expected: 0xFFE6E6FA},
+			{actual: Color.TURQUOISE, expected: 0xFF40E0D0},
+			{actual: Color.OCHRE, expected: 0xFFCC7722},
+			{actual: Color.AQUAMARINE, expected: 0xFF7FFFD4},
+			{actual: Color.RUSSET, expected: 0xFF80461B},
+			{actual: Color.TOPAZ, expected: 0xFFFFC87C},
+			{actual: Color.APRICOT, expected: 0xFFFBCEB1},
+			{actual: Color.AMETHYST, expected: 0xFF9966CC},
+			{actual: Color.SAFFRON, expected: 0xFFF4C430},
+			{actual: Color.LILAC, expected: 0xFFC8A2C8},
+			{actual: Color.CRIMSON, expected: 0xFFDC143C},
+			{actual: Color.SLATE, expected: 0xFF708090},
+			{actual: Color.JADE, expected: 0xFF00A86B},
+			{actual: Color.CORAL, expected: 0xFFFF7F50},
+			{actual: Color.BURGUNDY, expected: 0xFF800020},
+			{actual: Color.SIENNA, expected: 0xFF882D17},
+			{actual: Color.IVORY, expected: 0xFFFFFFF0},
+			{actual: Color.MULBERRY, expected: 0xFFC54B8C},
+			{actual: Color.SANDALWOOD, expected: 0xFFAA8D6F},
+			{actual: Color.GARNET, expected: 0xFF733635},
+			{actual: Color.PEWTER, expected: 0xFF8BA8B7},
+			{actual: Color.CARNATION, expected: 0xFFFFA6C9},
+			{actual: Color.CITRINE, expected: 0xFFE4D00A},
+			{actual: Color.CELADON, expected: 0xFFACE1AF},
+			{actual: Color.HELIOTROPE, expected: 0xFFDF73FF},
+			{actual: Color.PUCE, expected: 0xFFCC8899},
+			{actual: Color.CINNABAR, expected: 0xFFE34234},
+			{actual: Color.VIRIDIAN, expected: 0xFF40826D},
+			{actual: Color.ECRU, expected: 0xFFC2B280},
+			{actual: Color.ALABASTER, expected: 0xFFEDEAE0},
+			{actual: Color.SAPPHIRE, expected: 0xFF0F52BA},
+			{actual: Color.PEARL, expected: 0xFFEAE0C8},
+			{actual: Color.SALMON, expected: 0xFFFA8072},
+			{actual: Color.UMBER, expected: 0xFF635147},
+			{actual: Color.TURMERIC, expected: 0xFFE4D00A},
+			{actual: Color.MAHOGANY, expected: 0xFFC04000},
+			{actual: Color.PERSIMMON, expected: 0xFFFF6347},
+			{actual: Color.ROSEWOOD, expected: 0xFF65000B},
+			{actual: Color.CARAMEL, expected: 0xFFFFD700},
+			{actual: Color.DANDELION, expected: 0xFFF0E130},
+			{actual: Color.FERN, expected: 0xFF71BC78},
+			{actual: Color.LAPIS, expected: 0xFF26619C},
+			{actual: Color.DENIM, expected: 0xFF1560BD},
+			{actual: Color.SABLE, expected: 0xFF8E6D7B},
+			{actual: Color.ORCHID, expected: 0xFFDA70D6},
+			{actual: Color.TAWNY, expected: 0xFFCD5700},
+			{actual: Color.PINE, expected: 0xFF01796F},
+			{actual: Color.LEMON, expected: 0xFFFFF700},
+			{actual: Color.SCARLET, expected: 0xFFFF2400},
+			{actual: Color.TAUPE, expected: 0xFF483C32},
+			{actual: Color.CERISE, expected: 0xFFDE3163},
+			{actual: Color.AMBER, expected: 0xFFFFBF00},
+			{actual: Color.CINNAMON, expected: 0xFFD2691E},
+			{actual: Color.SADDLE_BROWN, expected: 0xFF8B4513},
+			{actual: Color.TOMATO, expected: 0xFFFF6347},
+			{actual: Color.CORNSILK, expected: 0xFFFFDAB9},
+			{actual: Color.VIOLET, expected: 0xFF7F00FF}
+		];
+		#if (!vision_hlc_color_compile)
+		entries.unshift({actual: Color.TRANSPARENT, expected: 0x00000000});
+		#end
+		assertStaticColors(entries);
+	}
+
 	@:visionTestId("vision.ds.Color.red#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
