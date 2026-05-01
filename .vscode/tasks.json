@@ -1,0 +1,73 @@
+{
+    "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "visionTestSuite",
+            "type": "promptString",
+            "description": "Suite class name, such as ImageTest or ArrayToolsTest"
+        },
+        {
+            "id": "visionTestCasePattern",
+            "type": "promptString",
+            "description": "Case regex, such as test_getPixel__outOfBounds or test_(png|bmp)__.*"
+        }
+    ],
+    "tasks": [
+        {
+            "label": "Vision Tests: Run All",
+            "type": "shell",
+            "command": "haxe",
+            "args": [
+                "test.hxml"
+            ],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Vision Tests: Run Suite",
+            "type": "shell",
+            "command": "haxe",
+            "args": [
+                "test.hxml"
+            ],
+            "options": {
+                "env": {
+                    "VISION_TESTS": "${input:visionTestSuite}"
+                }
+            },
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Vision Tests: Run Case Pattern",
+            "type": "shell",
+            "command": "haxe",
+            "args": [
+                "test.hxml"
+            ],
+            "options": {
+                "env": {
+                    "VISION_TESTS": "${input:visionTestSuite}",
+                    "VISION_TEST_CASES": "${input:visionTestCasePattern}"
+                }
+            },
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Vision Tests: Run Current File Suite",
+            "type": "shell",
+            "command": "haxe",
+            "args": [
+                "test.hxml"
+            ],
+            "options": {
+                "env": {
+                    "VISION_TESTS": "${fileBasenameNoExtension}"
+                }
+            },
+            "group": "test",
+            "problemMatcher": []
+        }
+    ]
+}

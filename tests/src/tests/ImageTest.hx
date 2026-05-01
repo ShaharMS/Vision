@@ -1,6 +1,9 @@
 package tests;
 
 import tests.support.Factories;
+import tests.support.ExceptionAssertions;
+import tests.support.ImageAssertions;
+import tests.support.ManualFixtures;
 import utest.Assert;
 import vision.ds.ByteArray;
 import vision.ds.Color;
@@ -60,9 +63,18 @@ class ImageTest extends utest.Test {
 	function test_getPixel__default() {
 		var x = 1;
 		var y = 1;
-		var instance = Factories.gradientImage(10, 10);
+		var instance = ManualFixtures.tinyGradientImage();
 		var result = instance.getPixel(x, y);
 		Assert.notNull(result);
+		ImageAssertions.hasDimensions(instance, 3, 3);
+	}
+
+	@:visionTestId("vision.ds.Image.getPixel#outOfBounds")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_getPixel__outOfBounds() {
+		var instance = ManualFixtures.tinyGradientImage();
+		ExceptionAssertions.throwsType(() -> instance.getPixel(-1, 0), vision.exceptions.OutOfBounds);
 	}
 
 	@:visionTestId("vision.ds.Image.getSafePixel#default")

@@ -1,5 +1,6 @@
 package tests;
 
+import tests.support.ExceptionAssertions;
 import tests.support.Factories;
 import utest.Assert;
 import vision.ds.ByteArray;
@@ -95,13 +96,7 @@ class FromBytesTest extends utest.Test {
 	function test_jpeg__default() {
 		var bytes = vision.ds.ByteArray.from([1, 2, 3, 4]);
 		var instance = new vision.formats.from.FromBytes();
-		var threw = false;
-		try {
-			instance.jpeg(bytes);
-		} catch (e:Dynamic) {
-			threw = true;
-		}
-		Assert.isTrue(threw);
+		ExceptionAssertions.throwsAny(() -> instance.jpeg(bytes));
 	}
 
 	@:visionTestId("vision.formats.from.FromBytes.jpeg#tiny")
@@ -111,13 +106,7 @@ class FromBytesTest extends utest.Test {
 	function test_jpeg__tiny() {
 		var bytes = vision.ds.ByteArray.from([1, 2, 3, 4]);
 		var instance = new vision.formats.from.FromBytes();
-		var threw = false;
-		try {
-			instance.jpeg(bytes);
-		} catch (e:Dynamic) {
-			threw = true;
-		}
-		Assert.isTrue(threw);
+		ExceptionAssertions.throwsAny(() -> instance.jpeg(bytes));
 	}
 
 	@:visionTestId("vision.formats.from.FromBytes.jpeg#checkerboard")
@@ -127,13 +116,7 @@ class FromBytesTest extends utest.Test {
 	function test_jpeg__checkerboard() {
 		var bytes = vision.ds.ByteArray.from([1, 2, 3, 4]);
 		var instance = new vision.formats.from.FromBytes();
-		var threw = false;
-		try {
-			instance.jpeg(bytes);
-		} catch (e:Dynamic) {
-			threw = true;
-		}
-		Assert.isTrue(threw);
+		ExceptionAssertions.throwsAny(() -> instance.jpeg(bytes));
 	}
 
 }

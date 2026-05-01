@@ -3,27 +3,27 @@
 ## Iteration
 
 - Slug: `manual-utest-migration`
-- Status: `step 1 closed out; ready for step 2 retarget`
+- Status: `step 2 implementation committed; review pending`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
 
 - Plan overview: `.github/plans/manual-utest-migration-overview.md`
-- Active step: `.github/plans/manual-utest-migration-1-cutover.md`
-- Iteration goal: Move operational test entrypoints to `tests/src` and record the migration inventory.
+- Active step: `.github/plans/manual-utest-migration-2-harness.md`
+- Iteration goal: Build the manual harness with deterministic suite/case filtering, centralized suite registration, reusable support helpers, and VS Code-friendly entrypoints.
 
 ## Repo Baseline
 
-- Baseline commit: `f46848c831cf35ed2b6a8cd6d7e379d118a22bde`
+- Baseline commit: `4649713738100c31fb9277bcf66e4b7e31678648`
 - Working branch: `feature/manual-utest-migration-1-cutover`
-- Comparison range: `f46848c831cf35ed2b6a8cd6d7e379d118a22bde..HEAD` (review against future step commits)
+- Comparison range: `4649713738100c31fb9277bcf66e4b7e31678648..HEAD` (review against future step commits)
 
 ## Current Loop State
 
-- Next agent: `@Iterate`
-- Review round: `4`
-- Latest verification: `Step 1 was approved after haxe test.hxml, haxe manual-inventory.hxml, targeted filter checks, and clean touched-file diagnostics across the committed delta.`
-- Latest decision: `The approved step-1 closeout is committed on feature/manual-utest-migration-1-cutover, with the manual-utest-migration overview and step-plan chain now tracked before step 2.`
+- Next agent: `@Inspect`
+- Review round: `1`
+- Latest verification: `The implementation pass recorded a passing suite-filter run, a passing case-filter run, and clean touched-file diagnostics for the edited harness, support, task, and README files.`
+- Latest decision: `The initial step-2 harness implementation is committed on feature/manual-utest-migration-1-cutover and is ready for review against baseline 4649713738100c31fb9277bcf66e4b7e31678648.`
 
 ## Packet Links
 
@@ -39,9 +39,9 @@
 
 - Blockers: `none recorded`
 - Outstanding findings: `none`
-- Next action: `Retarget the iteration to .github/plans/manual-utest-migration-2-harness.md and begin the manual harness pass.`
+- Next action: `Delegate review for .github/plans/manual-utest-migration-2-harness.md against 4649713738100c31fb9277bcf66e4b7e31678648..HEAD, with focus on deterministic filtering, helper adoption, task wiring, and the documented Windows env-var fallback.`
 
 ## Resume Notes
 
-- Current context: `Step 1 is approved and closed out on the feature branch; the next durable handoff is the step-2 harness plan.`
-- Recovery instructions: `Start from .github/plans/manual-utest-migration-2-harness.md, keep the accepted Windows LocalCi passthrough caveat in place for local verification, and preserve the current single-line public-declaration inventory-scanner limitation until a later generator expansion changes it.`
+- Current context: `The step-2 harness implementation is committed on the feature branch and the next durable handoff is review of that delta.`
+- Recovery instructions: `Review the diff from 4649713738100c31fb9277bcf66e4b7e31678648 to HEAD, confirm suite and case filtering still route through Runner.addCase(..., ?pattern), verify .vscode/tasks.json uses the env-var path that works on this Windows build, and preserve the accepted LocalCi passthrough caveat unless a reproducible local fix lands.`

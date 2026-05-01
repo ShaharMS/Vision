@@ -2,58 +2,63 @@
 
 ## Commit Intent
 
-- Pass type: `plan-bookkeeping closeout`
-- Plan step: `.github/plans/manual-utest-migration-1-cutover.md`
-- Scope: `Capture the approved step-1 closeout state across the iteration packet set, execution report, progress note, and manual-utest-migration plan chain before step 2 begins.`
-- Reason this is one commit: `The approval closeout, iteration bookkeeping normalization, and adoption of the overview plus step-plan chain are one durable transition between the approved step 1 cutover and the upcoming step 2 harness work.`
+- Pass type: `initial implementation`
+- Plan step: `.github/plans/manual-utest-migration-2-harness.md`
+- Scope: `Package the step-2 manual harness implementation: deterministic suite and case filtering, authored suite registration, reusable support helpers, one authored helper-using test path, VS Code task entrypoints, README contract updates, and the matching step-2 iteration-state files.`
+- Reason this is one commit: `The filtering behavior, registry extraction, helper wiring, task entrypoints, README contract, and step-2 iteration bookkeeping together form one coherent harness transition that should review as a single delta against the selected baseline.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Records the post-closeout recovery state and the next durable action for step 2.` |
-| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Updates the canonical loop state to show step 1 closed out and step 2 next.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Preserves the approved @Inspect verdict for the full committed step-1 delta.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the closeout grouping, branch decision, included plan chain, and exclusion set for this pass.` |
-| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the closeout commit event to the cross-agent history.` |
-| `.github/iterations/manual-utest-migration/execution-report.md` | `yes` | `Refreshes the run summary so it no longer claims the plan files remain untracked.` |
-| `.github/plans/manual-utest-migration-overview.md` | `yes` | `Adopts the parent overview into git so the plan chain is durable before step 2.` |
-| `.github/plans/manual-utest-migration-1-cutover.md` | `yes` | `Adopts the completed step-1 plan into git alongside its closeout bookkeeping.` |
-| `.github/plans/manual-utest-migration-2-harness.md` | `yes` | `Adopts the next approved step into git so the handoff target exists durably on this branch.` |
-| `.github/plans/manual-utest-migration-3-tools-and-core-ds.md` | `yes` | `Adopts the downstream step plan so later migration work is no longer untracked workspace state.` |
-| `.github/plans/manual-utest-migration-4-image-and-geometry-ds.md` | `yes` | `Adopts the downstream step plan so later migration work is no longer untracked workspace state.` |
-| `.github/plans/manual-utest-migration-5-algorithms.md` | `yes` | `Adopts the downstream step plan so later migration work is no longer untracked workspace state.` |
-| `.github/plans/manual-utest-migration-6-formats-and-facade.md` | `yes` | `Adopts the downstream step plan so later migration work is no longer untracked workspace state.` |
-| `.github/plans/manual-utest-migration-7-decommission-and-coverage.md` | `yes` | `Adopts the downstream step plan so later migration work is no longer untracked workspace state.` |
-| `filtered-suite.out` | `no` | `Local output capture excluded by instruction.` |
-| `localci-js.out` | `no` | `Local output capture excluded by instruction.` |
+| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Records the committed step-2 implementation state and the next review focus.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Captures the step-2 implementation summary, verification evidence, and pass history.` |
+| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Advances the canonical loop state from bootstrap to review-ready committed implementation.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the step-2 grouping, branch decision, included files, and exclusion set for this pass.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the implementation commit event to the cross-agent history.` |
+| `tests/src/Main.hx` | `yes` | `Implements deterministic suite and case filter parsing and delegates suite registration to the authored registry.` |
+| `tests/src/tests/support/ManualSuites.hx` | `yes` | `Centralizes the curated runner.addCase(...) registry and threads the case pattern into every suite.` |
+| `tests/src/tests/support/ApproxAssertions.hx` | `yes` | `Adds reusable approximate-equality assertions for later authored rewrites.` |
+| `tests/src/tests/support/ExceptionAssertions.hx` | `yes` | `Adds reusable exception assertions consumed by authored tests in this pass.` |
+| `tests/src/tests/support/ImageAssertions.hx` | `yes` | `Adds reusable image invariant assertions for authored tests.` |
+| `tests/src/tests/support/ManualFixtures.hx` | `yes` | `Adds small authored fixture presets used by the step-2 harness tests.` |
+| `tests/src/tests/ImageTest.hx` | `yes` | `Uses the new helper surface and adds the out-of-bounds case used for the case-filter proof.` |
+| `tests/src/tests/FromBytesTest.hx` | `yes` | `Adopts the new exception helper so authored suites start using shared support utilities.` |
+| `.vscode/tasks.json` | `yes` | `Adds local suite and case entrypoints using the env-var form verified on this Windows Haxe build.` |
+| `tests/README.md` | `yes` | `Documents the suite and case filter contract and the env-var fallback note.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `no` | `No new review round exists yet for the step-2 implementation delta.` |
+| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass does not stop the iteration or change the durable run-stop report.` |
+| `filtered-suite.out` | `no` | `Transient local output capture remains excluded if present.` |
+| `localci-js.out` | `no` | `Transient local output capture remains excluded if present.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for this approved step-1 closeout`
+- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-2 implementation pass`
 
 ## Commit Message
 
 ```text
-docs(plans): close out manual utest migration step 1
+feat(tests): build manual harness filtering
 
-Capture the approved step-1 closeout state across the iteration
-packets, progress note, execution report, and manual-utest-migration
-plan chain before the step-2 harness pass begins.
+Add deterministic suite and case filtering plus authored suite
+registration so the manual migration can target individual suites and
+test members without generated metadata. The tasks and docs follow the
+env-var path verified on this Windows Haxe build because direct --
+passthrough is rejected before Main runs locally.
 
-Plan: .github/plans/manual-utest-migration-1-cutover.md
-Pass: plan-bookkeeping closeout
+Plan: .github/plans/manual-utest-migration-2-harness.md
+Pass: initial implementation pass for step 2 harness
 ```
 
 ## Result
 
 - Commit hash: `this commit`
-- Push result: `pending git push origin feature/manual-utest-migration-1-cutover immediately after this commit`
-- Workspace status after commit: `expected clean except for the intentionally excluded local output captures`
-- Remaining uncommitted files: `filtered-suite.out and localci-js.out`
-- Follow-up needed: `Advance the iteration to .github/plans/manual-utest-migration-2-harness.md and retarget the ledger/progress state before the next implementation pass.`
+- Push result: `push this commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available`
+- Workspace status after commit: `expected clean except for any intentionally excluded transient output captures that may appear locally later`
+- Remaining uncommitted files: `none expected`
+- Follow-up needed: `Run the review pass against 4649713738100c31fb9277bcf66e4b7e31678648..HEAD with focus on deterministic filtering, helper adoption, task wiring, and the documented Windows env-var fallback contract.`
 
 ## Commit History
 
@@ -63,4 +68,5 @@ Pass: plan-bookkeeping closeout
 | `2` | `2c71242bfc6c849b5944a1c804e223c0bba6f39c` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-001 and RVW-002 follow-up and keeps the same feature branch.` |
 | `3` | `65b0e916018d55409e8c6bab374770cb480bc25e` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-003 follow-up, adds the repeatable inventory builder and regeneration entrypoint, and continues to exclude the local output captures.` |
 | `4` | `52a6b0f045e4315d2a12581b04c8c102cf77900b` | `feature/manual-utest-migration-1-cutover` | `Packages the refined RVW-003 deferred-state preservation follow-up and closes the last blocker before approval.` |
-| `5` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-1 closeout bookkeeping, adopts the full manual-utest-migration plan chain into git, and continues to exclude filtered-suite.out plus localci-js.out.` |
+| `5` | `4649713738100c31fb9277bcf66e4b7e31678648` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-1 closeout bookkeeping, adopts the full manual-utest-migration plan chain into git, and continues to exclude filtered-suite.out plus localci-js.out.` |
+| `6` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-2 harness implementation, including deterministic suite/case filtering, the authored ManualSuites registry, shared support helpers, VS Code task entrypoints, README contract updates, and the matching iteration-state files.` |

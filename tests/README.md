@@ -205,7 +205,7 @@ There is an important divergence here:
 The committed runner currently adds:
 
 - `PrettyReporter`
-- test filtering via `VISION_TESTS`, `VISION_TEST_CLASSES`, or `--tests`
+- test filtering via `VISION_TESTS`, `VISION_TEST_CLASSES`, `VISION_TEST_CASES`, `--tests`, or `--cases`
 - an explicit curated list of test classes
 
 So even though the generator can rewrite `Main.hx`, the version committed in the repository is already manually evolved beyond the template.
@@ -238,6 +238,28 @@ The actual execution paths in this repository compile the authored suite under `
 5. runs `--interp`
 
 So `haxe test.hxml` from repo root executes `tests/src/Main.hx`.
+
+### Suite And Case Filtering
+
+The authored runner supports deterministic filtering at two levels:
+
+- suite filtering by exact class name through `VISION_TESTS`, `VISION_TEST_CLASSES`, or `--tests`
+- case filtering by `EReg` pattern through `VISION_TEST_CASES` or `--cases`
+
+Suite filters accept a comma-separated list of exact `*Test` class names.
+
+Case filters are regular expressions matched against the full test method name, such as `test_getPixel__outOfBounds` or `test_(png|bmp)__.*`.
+
+Examples:
+
+- `haxe test.hxml -- --tests ArrayToolsTest`
+- `haxe test.hxml -- --tests ImageTest --cases test_getPixel__outOfBounds`
+- `set VISION_TESTS=ImageTest,FromBytesTest`
+- `set VISION_TEST_CASES=test_(png|bmp)__.*`
+
+On this Windows Haxe build, direct `--` passthrough can fail before `Main` runs. When that happens, use the equivalent `VISION_TESTS` and `VISION_TEST_CASES` environment variables instead.
+
+`.vscode/settings.json` remains the Test Explorer discovery entrypoint through `test.hxml`, and `.vscode/tasks.json` uses the environment-variable form for explicit filterable task entrypoints.
 
 ### Local CI
 
