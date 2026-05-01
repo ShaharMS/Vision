@@ -2,10 +2,12 @@
 
 - Active step: `.github/plans/manual-utest-migration-1-cutover.md`
 - Overview: `.github/plans/manual-utest-migration-overview.md`
-- Iteration state: delegated `@Implement` refined RVW-003 follow-up committed; awaiting reinspection on the feature branch.
-- Latest outcome: updated `tests/generator/ManualInventoryBuilder.hx` so regeneration preserves checked-in deferred progress, verified it with a temporary `vision.tools.ArrayTools` deferredMembers edit/regeneration/revert proof, reran `haxe manual-inventory.hxml`, and left `tests/catalog/manual-test-inventory.json` restored with the full ArrayTools/ImageTools member sets.
+- Iteration state: `step 1 approved and closeout committed; step 2 retarget pending.`
+- Major outcomes: `tests/src` is now the operational suite for `test.hxml`, `tests/ci/LocalCi.hx`, and GitHub Actions; `tests/catalog/manual-test-inventory.json` now covers every `src/vision` module; and `tests/generator/ManualInventoryBuilder.hx` preserves checked-in `deferredMembers` progress while still appending newly discovered public members during regeneration.
 - Branch: `feature/manual-utest-migration-1-cutover`
 - Baseline commit: `f46848c831cf35ed2b6a8cd6d7e379d118a22bde`
-- Latest commit: `the refined RVW-003 deferred-state preservation review-follow-up commit on this branch`
-- Blockers: `Direct LocalCi -- passthrough is rejected by this Windows Haxe build; use the documented VISION_CI_* env vars in this environment.`
-- Next action: have `@Inspect` review the full committed step-1 delta through the current branch head, focusing on deferredMembers preservation across manual inventory regeneration, final ArrayTools/ImageTools completeness, and the continued exclusion of the pre-existing untracked plan files from this pass.
+- Latest approved commit: `52a6b0f045e4315d2a12581b04c8c102cf77900b`
+- Closeout scope: `The approved step-1 state, iteration packet updates, execution report refresh, and the full manual-utest-migration overview plus step-plan chain are now committed on this branch.`
+- Accepted caveat: `The direct Windows command haxe tests/ci/local-ci.hxml -- --targets=interp --compile-only still fails before LocalCi runs on this Haxe build, so local verification in this environment must use the documented VISION_CI_* env-var fallback.`
+- Residual limitation: `tests/generator/ManualInventoryBuilder.hx` still only discovers single-line public declarations, so multiline public signatures remain outside the current inventory scan.`
+- Next action: `Advance the iteration to .github/plans/manual-utest-migration-2-harness.md and retarget the ledger/progress state there before the next implementation pass.`

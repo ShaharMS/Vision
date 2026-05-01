@@ -3,7 +3,7 @@
 ## Iteration
 
 - Slug: `manual-utest-migration`
-- Status: `review follow-up committed; awaiting reinspection`
+- Status: `step 1 closed out; ready for step 2 retarget`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
@@ -20,10 +20,10 @@
 
 ## Current Loop State
 
-- Next agent: `@Inspect`
-- Review round: `2`
-- Latest verification: `haxe manual-inventory.hxml passed; targeted ArrayTools and ImageTools inventory spot-checks plus touched-file diagnostics also passed.`
-- Latest decision: `The RVW-003 inventory-completeness follow-up is committed on feature/manual-utest-migration-1-cutover and ready for reinspection.`
+- Next agent: `@Iterate`
+- Review round: `4`
+- Latest verification: `Step 1 was approved after haxe test.hxml, haxe manual-inventory.hxml, targeted filter checks, and clean touched-file diagnostics across the committed delta.`
+- Latest decision: `The approved step-1 closeout is committed on feature/manual-utest-migration-1-cutover, with the manual-utest-migration overview and step-plan chain now tracked before step 2.`
 
 ## Packet Links
 
@@ -38,10 +38,10 @@
 ## Open Items
 
 - Blockers: `none recorded`
-- Outstanding findings: `RVW-003 pending reinspection`
-- Next action: `Run @Inspect against f46848c831cf35ed2b6a8cd6d7e379d118a22bde..HEAD, then normalize the verdict with @Intake.`
+- Outstanding findings: `none`
+- Next action: `Retarget the iteration to .github/plans/manual-utest-migration-2-harness.md and begin the manual harness pass.`
 
 ## Resume Notes
 
-- Current context: `Step 1 now has the initial cutover commit plus two review-follow-up commits: the README/reporter cleanup and the RVW-003 inventory-completeness fix.`
-- Recovery instructions: `Review the full committed delta through HEAD against the baseline, confirm the ArrayTools and ImageTools inventory completeness plus the repeatable generator path, preserve the accepted Windows passthrough caveat, and continue ignoring the pre-existing untracked plan files unless final plan bookkeeping adopts them.`
+- Current context: `Step 1 is approved and closed out on the feature branch; the next durable handoff is the step-2 harness plan.`
+- Recovery instructions: `Start from .github/plans/manual-utest-migration-2-harness.md, keep the accepted Windows LocalCi passthrough caveat in place for local verification, and preserve the current single-line public-declaration inventory-scanner limitation until a later generator expansion changes it.`
