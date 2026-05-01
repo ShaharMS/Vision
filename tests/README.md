@@ -3,7 +3,9 @@
 This directory currently contains two related but not identical systems:
 
 1. A generator pipeline under `tests/generator` that can inspect `src/vision` and scaffold utest classes.
-2. A checked-in executable test suite under `tests/generated` that CI and day-to-day test runs actually compile.
+2. An authored executable test suite under `tests/src` that CI and day-to-day test runs actually compile.
+
+`tests/generated` and `tests/compile.hxml` remain in the repository only as temporary migration references while the authored suite is being rewritten class by class.
 
 That split is the most important fact to understand before changing anything: the generator explains how test scaffolds are produced, but the committed suite has already diverged from the raw template output through hand-authored assertions, skip macros, and a richer runner.
 
@@ -27,14 +29,14 @@ The forward-looking redesign plan lives in [ROADMAP.md](ROADMAP.md).
   - Golden fixture helper for image outputs. Present, but only partially integrated into generation.
 - `tests/generator/PlatformHxmlGenerator.hx`
   - Emits multi-target hxml files for quick runs and CI.
-- `tests/generated/src/Main.hx`
+- `tests/src/Main.hx`
   - The runner that current repo-level execution paths actually compile.
-- `tests/generated/src/PrettyReporter.hx`
+- `tests/src/PrettyReporter.hx`
   - Custom reporter that prints status, skipped tests, and exits with a failing code when needed.
-- `tests/generated/src/tests/*`
-  - The checked-in test classes. Many started as generated scaffolds, but some now contain manual logic.
-- `tests/generated/src/tests/macros/*`
-  - Build macros that skip golden or placeholder tests under certain defines.
+- `tests/src/tests/*`
+  - The authored test classes now used by default execution paths. Most were promoted from the checked-in generated tree and still need manual migration.
+- `tests/generated/src/*`
+  - Temporary migration reference material kept for diffing while `tests/src` is rewritten.
 - `tests/ci/LocalCi.hx`
   - Local multi-target compile/run harness that mirrors CI behavior more closely than `test.hxml` does.
 - `test.hxml`
@@ -59,6 +61,7 @@ Important consequences:
 
 - Output is written into `tests/generated/src/tests`.
 - The runner file is expected to live at `tests/generated/src/Main.hx`.
+- That output is not part of the default execution path after the `tests/src` cutover.
 - Existing generated files are preserved because `overwrite` is `false`.
 - Generation is effectively all-or-nothing today because `Main.runGenerate()` only fills the file list when `regenerateAll` is `true`.
 
@@ -220,21 +223,21 @@ That file can emit:
 
 This is separate from the root `test.hxml`, which is the shortest path to run the interpreter test suite.
 
-## What Actually Runs Today
+## What Executes By Default After Cutover
 
-The actual execution paths in this repository compile the checked-in suite under `tests/generated`, not the generator sources directly.
+The actual execution paths in this repository compile the authored suite under `tests/src`, not the generator outputs directly.
 
 ### Repo Root Fast Path
 
 `test.hxml` does this:
 
-1. `--cwd tests/generated`
+1. `--cwd tests`
 2. `--class-path src`
 3. `--main Main`
 4. loads `vision`, `format`, and `utest`
 5. runs `--interp`
 
-So `haxe test.hxml` from repo root executes `tests/generated/src/Main.hx`.
+So `haxe test.hxml` from repo root executes `tests/src/Main.hx`.
 
 ### Local CI
 
@@ -242,7 +245,7 @@ So `haxe test.hxml` from repo root executes `tests/generated/src/Main.hx`.
 
 It:
 
-1. Compiles from `tests/generated/src` plus `tests/generated`.
+1. Compiles from `tests/src`.
 2. Targets `interp`, `neko`, `hl`, `js`, `cpp`, `jvm`, `python`, `lua`, `php`, `cs`, `java`, and `cppia`.
 3. Adds defines such as:
    - `vision_skip_golden`
@@ -256,12 +259,14 @@ It:
 
 `.github/workflows/main.yml` follows the same pattern as local CI:
 
-- compile `tests/generated/src` with `--main Main`
+- compile `tests/src` with `--main Main`
 - run per-target artifacts
 - enable `vision_skip_golden`
 - enable `vision_skip_invalid_tests`
 
-This is why `tests/generated/src/Main.hx` is the runner that matters operationally today.
+This is why `tests/src/Main.hx` is the runner that matters operationally today.
+
+`tests/generated` and `tests/compile.hxml` remain available only as temporary migration references and are not part of the normal repo-local or CI execution path.
 
 ## The Checked-In Suite Is Not Pure Generator Output
 
@@ -417,7 +422,7 @@ That information should be emitted from the same model that emits the test case 
 Today, the system works like this:
 
 1. Macro detection discovers public members.
-2. The generator can scaffold utest files into `tests/generated/src/tests`.
+2. The generator can scaffold utest files into `tests/generated/src/tests`, but that path is now reference-only.
 3. The committed suite in `tests/generated` is then compiled and run by `test.hxml`, local CI, and GitHub Actions.
 4. The committed suite is already partly manual, so it should be treated as a curated artifact, not as disposable pure output.
 

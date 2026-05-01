@@ -29,8 +29,7 @@ class LocalCi {
     ];
 
     static var DEFAULT_LIBS = ["vision", "format", "utest"];
-    static var DEFAULT_CLASS_PATH = "tests/generated/src";
-    static var EXTRA_CLASS_PATH = "tests/generated";
+    static var DEFAULT_CLASS_PATH = "tests/src";
 
     static function main() {
         var config = parseArgs(Sys.args());
@@ -201,7 +200,6 @@ class LocalCi {
         }
         var args = [
             "--class-path", DEFAULT_CLASS_PATH,
-            "--class-path", EXTRA_CLASS_PATH,
             "--main", "Main",
             "--library", "vision",
             "--library", "format",
@@ -296,7 +294,6 @@ class LocalCi {
             case "interp":
                 var interpArgs = [
                     "--class-path", DEFAULT_CLASS_PATH,
-                    "--class-path", EXTRA_CLASS_PATH,
                     "--main", "Main",
                     "--library", "vision",
                     "--library", "format",

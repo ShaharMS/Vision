@@ -1,0 +1,82 @@
+package tests;
+
+import tests.support.Factories;
+import utest.Assert;
+import vision.algorithms.ImageHashing;
+import vision.ds.Image;
+
+@:access(vision.algorithms.ImageHashing)
+@:visionMaturity("mixed")
+@:visionLifecycle("active")
+class ImageHashingTest extends utest.Test {
+
+	@:visionTestId("vision.algorithms.ImageHashing.ahash#default")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_ahash__default() {
+		var image = Factories.gradientImage(3, 3);
+		var hashByteSize = 16;
+		var result = vision.algorithms.ImageHashing.ahash(image, hashByteSize);
+		Assert.notNull(result);
+		Assert.isTrue(result.length > 0);
+	}
+
+	@:visionTestId("vision.algorithms.ImageHashing.ahash#tiny")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_ahash__tiny() {
+		var image = Factories.gradientImage(3, 3);
+		var hashByteSize = 16;
+		var result = vision.algorithms.ImageHashing.ahash(image, hashByteSize);
+		Assert.notNull(result);
+		Assert.isTrue(result.length > 0);
+	}
+
+	@:visionTestId("vision.algorithms.ImageHashing.ahash#checkerboard")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_ahash__checkerboard() {
+		var image = Factories.checkerboardImage(8, 8, 2);
+		var hashByteSize = 16;
+		var result = vision.algorithms.ImageHashing.ahash(image, hashByteSize);
+		Assert.notNull(result);
+		Assert.isTrue(result.length > 0);
+	}
+
+	@:visionTestId("vision.algorithms.ImageHashing.phash#default")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_phash__default() {
+		var image = Factories.gradientImage(3, 3);
+		var result = vision.algorithms.ImageHashing.phash(image);
+		Assert.notNull(result);
+		Assert.isTrue(result.length > 0);
+	}
+
+	@:visionTestId("vision.algorithms.ImageHashing.phash#tiny")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_phash__tiny() {
+		var image = Factories.gradientImage(3, 3);
+		var result = vision.algorithms.ImageHashing.phash(image);
+		Assert.notNull(result);
+		Assert.isTrue(result.length > 0);
+	}
+
+	@:visionTestId("vision.algorithms.ImageHashing.phash#checkerboard")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_phash__checkerboard() {
+		var image = Factories.checkerboardImage(8, 8, 2);
+		var result = vision.algorithms.ImageHashing.phash(image);
+		Assert.notNull(result);
+		Assert.isTrue(result.length > 0);
+	}
+
+}

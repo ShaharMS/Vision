@@ -189,7 +189,7 @@ jobs:
             OUTDIR=$(dirname "${{ matrix.output }}")
             mkdir -p "$OUTDIR"
           fi
-          CMD="haxe --class-path tests/generated/src --main Main --library vision --library format --library utest -debug -D vision_skip_golden -D vision_skip_invalid_tests"
+          CMD="haxe --class-path tests/src --main Main --library vision --library format --library utest -debug -D vision_skip_golden -D vision_skip_invalid_tests"
           if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
             CMD="$CMD --no-inline"
           fi

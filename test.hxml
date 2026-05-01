@@ -1,4 +1,4 @@
---cwd tests/generated
+--cwd tests
 --class-path src
 --main Main
 

@@ -1,0 +1,45 @@
+package tests.support;
+
+import vision.ds.Color;
+import vision.ds.Image;
+
+class Factories {
+	public static function blankImage(width:Int = 100, height:Int = 100, color:Color = 0x00000000):Image {
+		return new Image(width, height, color);
+	}
+
+	public static function blackImage(width:Int = 100, height:Int = 100):Image {
+		return new Image(width, height, 0xFF000000);
+	}
+
+	public static function gradientImage(width:Int = 100, height:Int = 100):Image {
+		var image = new Image(width, height);
+		for (y in 0...height) {
+			for (x in 0...width) {
+				var r = Std.int((x / width) * 255);
+				var g = Std.int((y / height) * 255);
+				var b = Std.int(((x + y) / (width + height)) * 255);
+				image.setPixel(x, y, Color.fromRGBA(r, g, b, 255));
+			}
+		}
+		return image;
+	}
+
+	public static function checkerboardImage(width:Int = 8, height:Int = 8, cellSize:Int = 2):Image {
+		var image = new Image(width, height);
+		for (y in 0...height) {
+			for (x in 0...width) {
+				var light = (Std.int(x / cellSize) + Std.int(y / cellSize)) % 2 == 0;
+				image.setPixel(x, y, light ? 0xFFFFFFFF : 0xFF000000);
+			}
+		}
+		return image;
+	}
+
+	public static function whiteLineImage(width:Int = 8, height:Int = 8):Image {
+		var image = new Image(width, height, 0xFF000000);
+		var y = height > 1 ? 1 : 0;
+		for (x in 0...width) image.setPixel(x, y, 0xFFFFFFFF);
+		return image;
+	}
+}

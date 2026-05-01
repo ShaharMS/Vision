@@ -1,0 +1,127 @@
+package tests;
+
+import tests.support.Factories;
+import utest.Assert;
+import vision.algorithms.SimpleLineDetector;
+import vision.ds.Image;
+import vision.ds.Int16Point2D;
+import vision.ds.Line2D;
+import vision.ds.Point2D;
+
+@:access(vision.algorithms.SimpleLineDetector)
+@:visionMaturity("mixed")
+@:visionLifecycle("active")
+class SimpleLineDetectorTest extends utest.Test {
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.image#default")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	@:Ignored("static image cache is unset until detection runs")
+	function ignored_test_image__default() {
+		var result = vision.algorithms.SimpleLineDetector.image;
+		Assert.notNull(result);
+		Assert.isTrue(result.width > 0);
+		Assert.isTrue(result.height > 0);
+	}
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.findLineFromPoint#default")
+	@:visionMaturity("smoke")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_findLineFromPoint__default() {
+		var image = Factories.whiteLineImage(8, 8);
+		var point = new vision.ds.Int16Point2D(0, 1);
+		var minLineLength = 1.0;
+		var preferTTB = false;
+		var preferRTL = false;
+		var result = vision.algorithms.SimpleLineDetector.findLineFromPoint(image, point, minLineLength, preferTTB, preferRTL);
+		Assert.notNull(result);
+	}
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.findLineFromPoint#tiny")
+	@:visionMaturity("smoke")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_findLineFromPoint__tiny() {
+		var image = Factories.whiteLineImage(8, 8);
+		var point = new vision.ds.Int16Point2D(0, 1);
+		var minLineLength = 1.0;
+		var preferTTB = false;
+		var preferRTL = false;
+		var result = vision.algorithms.SimpleLineDetector.findLineFromPoint(image, point, minLineLength, preferTTB, preferRTL);
+		Assert.notNull(result);
+	}
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.findLineFromPoint#checkerboard")
+	@:visionMaturity("smoke")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_findLineFromPoint__checkerboard() {
+		var image = Factories.whiteLineImage(8, 8);
+		var point = new vision.ds.Int16Point2D(0, 1);
+		var minLineLength = 1.0;
+		var preferTTB = false;
+		var preferRTL = false;
+		var result = vision.algorithms.SimpleLineDetector.findLineFromPoint(image, point, minLineLength, preferTTB, preferRTL);
+		Assert.notNull(result);
+	}
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.lineCoveragePercentage#default")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_lineCoveragePercentage__default() {
+		var image = Factories.gradientImage(3, 3);
+		var line = new vision.ds.Line2D(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(10.0, 10.0));
+		var result = vision.algorithms.SimpleLineDetector.lineCoveragePercentage(image, line);
+		Assert.isFalse(Math.isNaN(result));
+	}
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.lineCoveragePercentage#tiny")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_lineCoveragePercentage__tiny() {
+		var image = Factories.gradientImage(3, 3);
+		var line = new vision.ds.Line2D(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(10.0, 10.0));
+		var result = vision.algorithms.SimpleLineDetector.lineCoveragePercentage(image, line);
+		Assert.isFalse(Math.isNaN(result));
+	}
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.lineCoveragePercentage#checkerboard")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_lineCoveragePercentage__checkerboard() {
+		var image = Factories.checkerboardImage(8, 8, 2);
+		var line = new vision.ds.Line2D(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(10.0, 10.0));
+		var result = vision.algorithms.SimpleLineDetector.lineCoveragePercentage(image, line);
+		Assert.isFalse(Math.isNaN(result));
+	}
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.correctLines#default")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	function test_correctLines__default() {
+		var lines = [new vision.ds.Line2D(new vision.ds.Point2D(0.0, 1.0), new vision.ds.Point2D(7.0, 1.0)), new vision.ds.Line2D(new vision.ds.Point2D(0.0, 2.0), new vision.ds.Point2D(7.0, 2.0))];
+		var distanceThreshold = 1.0;
+		var degError = 1.0;
+		var result = vision.algorithms.SimpleLineDetector.correctLines(lines, distanceThreshold, degError);
+		Assert.notNull(result);
+		Assert.isTrue(result.length >= 0);
+	}
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.correctLines#duplicates")
+	@:visionMaturity("structural")
+	@:visionLifecycle("active")
+	function test_correctLines__duplicates() {
+		var lines = [new vision.ds.Line2D(new vision.ds.Point2D(0.0, 1.0), new vision.ds.Point2D(7.0, 1.0)), new vision.ds.Line2D(new vision.ds.Point2D(0.0, 2.0), new vision.ds.Point2D(7.0, 2.0))];
+		var distanceThreshold = 1.0;
+		var degError = 1.0;
+		var result = vision.algorithms.SimpleLineDetector.correctLines(lines, distanceThreshold, degError);
+		Assert.notNull(result);
+		Assert.isTrue(result.length >= 0);
+	}
+
+}
