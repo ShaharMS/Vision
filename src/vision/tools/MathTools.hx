@@ -147,10 +147,10 @@ class MathTools {
 		if (intersectionBetweenLine2Ds(line1, line2) != null) {
 			return 0;
 		}
-		final distance1:Float = distanceFromLineToPoint2D(line1, line2.start);
-		final distance2:Float = distanceFromLineToPoint2D(line1, line2.end);
-		final distance3:Float = distanceFromLineToPoint2D(line2, line1.start);
-		final distance4:Float = distanceFromLineToPoint2D(line2, line1.end);
+		final distance1:Float = abs(distanceFromLineToPoint2D(line1, line2.start));
+		final distance2:Float = abs(distanceFromLineToPoint2D(line1, line2.end));
+		final distance3:Float = abs(distanceFromLineToPoint2D(line2, line1.start));
+		final distance4:Float = abs(distanceFromLineToPoint2D(line2, line1.end));
 
 		final distance:Float = min(distance1, distance2, distance3, distance4);
 		return distance;

@@ -3,27 +3,27 @@
 ## Iteration
 
 - Slug: `manual-utest-migration`
-- Status: `step 3 closed out; step 4 retarget pending`
+- Status: `step 4 selected; bootstrap in progress`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
 
 - Plan overview: `.github/plans/manual-utest-migration-overview.md`
-- Active step: `.github/plans/manual-utest-migration-3-tools-and-core-ds.md`
-- Iteration goal: Rewrite the weakest smoke-style `vision.tools` and core value-oriented `vision.ds` suites into semantic manual tests and update the coverage inventory for those modules.
+- Active step: `.github/plans/manual-utest-migration-4-image-and-geometry-ds.md`
+- Iteration goal: Rewrite image-centric, matrix, and geometry `vision.ds` suites around explicit invariants, shared fixtures, and precise bounds/view behavior, then update the inventory for migrated or excluded modules.
 
 ## Repo Baseline
 
-- Baseline commit: `e902a4633ee5d45a3488270ea48e9d7215ed914c`
+- Baseline commit: `c9bd5f0478eece29b7f18b255f11bac702340649`
 - Working branch: `feature/manual-utest-migration-1-cutover`
-- Comparison range: `e902a4633ee5d45a3488270ea48e9d7215ed914c..HEAD` (review against future step commits)
+- Comparison range: `c9bd5f0478eece29b7f18b255f11bac702340649..HEAD` (review against future step commits)
 
 ## Current Loop State
 
-- Next agent: `@Index`
-- Review round: `5`
-- Latest verification: `Step 3 approved after the three grouped VISION_TESTS runs passed, touched authored diagnostics were clean, and D-003 remained the only accepted narrow waiver.`
-- Latest decision: `@Inspect approved the committed delta through 7cf5d491504c87db4fd2c8dbcce15cfff4e869fe with no remaining findings.`
+- Next agent: `@Implement`
+- Review round: `0`
+- Latest verification: `Step 3 closeout was committed as c9bd5f0478eece29b7f18b255f11bac702340649 and the working tree is clean.`
+- Latest decision: `Step 4 bootstrap has been indexed and the next handoff is implementation of the image-and-geometry rewrite scope.`
 
 ## Packet Links
 
@@ -43,5 +43,5 @@
 
 ## Resume Notes
 
-- Current context: `Step 3 is approved and closed out; the next remaining work is to retarget the iteration to step 4.`
-- Recovery instructions: `Retarget the ledger to .github/plans/manual-utest-migration-4-image-and-geometry-ds.md, index the step-4 bootstrap state, and carry forward D-003 and the Windows filtered-run fallback.`
+- Current context: `Step 3 is complete and committed; the active iteration scope is now the step 4 image-and-geometry rewrite on a clean baseline.`
+- Recovery instructions: `Index the step-4 bootstrap state, then rewrite the targeted image, matrix, and geometry suites with shared helpers, explicit bounds/view invariants, and inventory updates while carrying forward D-003 and the Windows filtered-run fallback.`

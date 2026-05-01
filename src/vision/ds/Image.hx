@@ -1364,7 +1364,7 @@ abstract Image(ByteArray) {
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, view.x);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, view.y);
 		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, view.width >= width ? 0 : view.width);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height >= height ? 0 : view.width);
+		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, view.height >= height ? 0 : view.height);
 		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, view.shape);
 		return cast this;
 	}

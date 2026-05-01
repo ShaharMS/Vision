@@ -1,6 +1,7 @@
 package tests;
 
-import tests.support.Factories;
+import tests.support.ApproxAssertions;
+import tests.support.CollectionAssertions;
 import tests.support.ExceptionAssertions;
 import tests.support.ImageAssertions;
 import tests.support.ManualFixtures;
@@ -9,1228 +10,505 @@ import vision.ds.ByteArray;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.ImageView;
-import vision.ds.IntPoint2D;
-import vision.ds.Line2D;
+import vision.ds.ImageViewShape;
 import vision.ds.Point2D;
-import vision.ds.Ray2D;
 import vision.ds.Rectangle;
 
 @:access(vision.ds.Image)
-@:visionMaturity("mixed")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class ImageTest extends utest.Test {
-
-	@:visionTestId("vision.ds.Image.underlying#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	function test_underlying__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.underlying;
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.width#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_width__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.width;
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.height#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_height__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.height;
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.view#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_view__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.view;
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.getPixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_getPixel__default() {
-		var x = 1;
-		var y = 1;
-		var instance = ManualFixtures.tinyGradientImage();
-		var result = instance.getPixel(x, y);
-		Assert.notNull(result);
-		ImageAssertions.hasDimensions(instance, 3, 3);
-	}
-
-	@:visionTestId("vision.ds.Image.getPixel#outOfBounds")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_getPixel__outOfBounds() {
-		var instance = ManualFixtures.tinyGradientImage();
-		ExceptionAssertions.throwsType(() -> instance.getPixel(-1, 0), vision.exceptions.OutOfBounds);
-	}
-
-	@:visionTestId("vision.ds.Image.getSafePixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_getSafePixel__default() {
-		var x = 1;
-		var y = 1;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.getSafePixel(x, y);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.getFloatingPixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_getFloatingPixel__default() {
-		var x = 1.0;
-		var y = 1.0;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.getFloatingPixel(x, y);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.setPixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_setPixel__default() {
-		var x = 1;
-		var y = 1;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.setPixel(x, y, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.setSafePixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_setSafePixel__default() {
-		var x = 1;
-		var y = 1;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.setSafePixel(x, y, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.setFloatingPixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_setFloatingPixel__default() {
-		var x = 1.0;
-		var y = 1.0;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.setFloatingPixel(x, y, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.paintPixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_paintPixel__default() {
-		var x = 1;
-		var y = 1;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.paintPixel(x, y, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.paintFloatingPixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_paintFloatingPixel__default() {
-		var x = 1.0;
-		var y = 1.0;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.paintFloatingPixel(x, y, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.paintSafePixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_paintSafePixel__default() {
-		var x = 1;
-		var y = 1;
-		var color = 1;
-		var instance = Factories.gradientImage(10, 10);
-		instance.paintSafePixel(x, y, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.hasPixel#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	function test_hasPixel__default() {
-		var x = 1.0;
-		var y = 1.0;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.hasPixel(x, y);
-		Assert.isTrue(result == true || result == false);
-	}
-
-	@:visionTestId("vision.ds.Image.movePixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_movePixel__default() {
-		var fromX = 1;
-		var fromY = 1;
-		var toX = 1;
-		var toY = 1;
-		var oldPixelResetColor = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.movePixel(fromX, fromY, toX, toY, oldPixelResetColor);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.moveSafePixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_moveSafePixel__default() {
-		var fromX = 1;
-		var fromY = 1;
-		var toX = 1;
-		var toY = 1;
-		var oldPixelResetColor = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.moveSafePixel(fromX, fromY, toX, toY, oldPixelResetColor);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.moveFloatingPixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_moveFloatingPixel__default() {
-		var fromX = 1.0;
-		var fromY = 1.0;
-		var toX = 1.0;
-		var toY = 1.0;
-		var oldPixelResetColor = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.moveFloatingPixel(fromX, fromY, toX, toY, oldPixelResetColor);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.moveUnsafePixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_moveUnsafePixel__default() {
-		var fromX = 1;
-		var fromY = 1;
-		var toX = 1;
-		var toY = 1;
-		var oldPixelResetColor = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.moveUnsafePixel(fromX, fromY, toX, toY, oldPixelResetColor);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.copyPixelFrom#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyPixelFrom__default() {
-		var image = Factories.gradientImage(3, 3);
-		var x = 1;
-		var y = 1;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyPixelFrom(image, x, y);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.copyPixelFrom#tiny")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyPixelFrom__tiny() {
-		var image = Factories.gradientImage(3, 3);
-		var x = 1;
-		var y = 1;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyPixelFrom(image, x, y);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.copyPixelFrom#checkerboard")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyPixelFrom__checkerboard() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var x = 1;
-		var y = 1;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyPixelFrom(image, x, y);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.copyPixelTo#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyPixelTo__default() {
-		var image = Factories.gradientImage(3, 3);
-		var x = 1;
-		var y = 1;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyPixelTo(image, x, y);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.copyPixelTo#tiny")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyPixelTo__tiny() {
-		var image = Factories.gradientImage(3, 3);
-		var x = 1;
-		var y = 1;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyPixelTo(image, x, y);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.copyPixelTo#checkerboard")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyPixelTo__checkerboard() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var x = 1;
-		var y = 1;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyPixelTo(image, x, y);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.copyImageFrom#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyImageFrom__default() {
-		var image = Factories.gradientImage(3, 3);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyImageFrom(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.copyImageFrom#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyImageFrom__tiny() {
-		var image = Factories.gradientImage(3, 3);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyImageFrom(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.copyImageFrom#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyImageFrom__checkerboard() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyImageFrom(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.getImagePortion#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_getImagePortion__default() {
-		var rect = ({x: 0, y: 0, width: 3, height: 3} : vision.ds.Rectangle);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.getImagePortion(rect);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.getImagePortion#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_getImagePortion__tiny() {
-		var rect = ({x: 0, y: 0, width: 3, height: 3} : vision.ds.Rectangle);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.getImagePortion(rect);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.getImagePortion#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_getImagePortion__checkerboard() {
-		var rect = ({x: 0, y: 0, width: 8, height: 8} : vision.ds.Rectangle);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.getImagePortion(rect);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.setImagePortion#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_setImagePortion__default() {
-		var rect = ({x: 0, y: 0, width: 3, height: 3} : vision.ds.Rectangle);
-		var image = Factories.gradientImage(3, 3);
-		var instance = Factories.gradientImage(10, 10);
-		instance.setImagePortion(rect, image);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.setImagePortion#tiny")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_setImagePortion__tiny() {
-		var rect = ({x: 0, y: 0, width: 3, height: 3} : vision.ds.Rectangle);
-		var image = Factories.gradientImage(3, 3);
-		var instance = Factories.gradientImage(10, 10);
-		instance.setImagePortion(rect, image);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.setImagePortion#checkerboard")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_setImagePortion__checkerboard() {
-		var rect = ({x: 0, y: 0, width: 8, height: 8} : vision.ds.Rectangle);
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var instance = Factories.gradientImage(10, 10);
-		instance.setImagePortion(rect, image);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.drawLine#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_drawLine__default() {
-		var x1 = 1;
-		var y1 = 1;
-		var x2 = 1;
-		var y2 = 1;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.drawLine(x1, y1, x2, y2, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.drawRay2D#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_drawRay2D__default() {
-		var line = new vision.ds.Ray2D(new vision.ds.Point2D(0.0, 0.0), 1.0);
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.drawRay2D(line, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.drawLine2D#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_drawLine2D__default() {
-		var line = new vision.ds.Line2D(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(10.0, 10.0));
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.drawLine2D(line, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.fillRect#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_fillRect__default() {
-		var x = 1;
-		var y = 1;
-		var width = 3;
-		var height = 3;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.fillRect(x, y, width, height, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.drawRect#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_drawRect__default() {
-		var x = 1;
-		var y = 1;
-		var width = 3;
-		var height = 3;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.drawRect(x, y, width, height, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.drawQuadraticBezier#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_drawQuadraticBezier__default() {
-		var line = new vision.ds.Line2D(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(10.0, 10.0));
-		var control = new vision.ds.IntPoint2D(1, 1);
-		var color = (0xFF336699 : vision.ds.Color);
-		var accuracy = 1.0;
-		var instance = Factories.gradientImage(10, 10);
-		instance.drawQuadraticBezier(line, control, color, accuracy);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.drawCubicBezier#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_drawCubicBezier__default() {
-		var line = new vision.ds.Line2D(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(10.0, 10.0));
-		var control1 = new vision.ds.IntPoint2D(1, 1);
-		var control2 = new vision.ds.IntPoint2D(1, 1);
-		var color = (0xFF336699 : vision.ds.Color);
-		var accuracy = null;
-		var instance = Factories.gradientImage(10, 10);
-		instance.drawCubicBezier(line, control1, control2, color, accuracy);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.fillCircle#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_fillCircle__default() {
-		var X = 1;
-		var Y = 1;
-		var r = 1;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.fillCircle(X, Y, r, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.drawCircle#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_drawCircle__default() {
-		var X = 1;
-		var Y = 1;
-		var r = 1;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.drawCircle(X, Y, r, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.fillEllipse#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_fillEllipse__default() {
-		var centerX = 5;
-		var centerY = 5;
-		var radiusX = 3;
-		var radiusY = 3;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.fillEllipse(centerX, centerY, radiusX, radiusY, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.drawEllipse#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_drawEllipse__default() {
-		var centerX = 5;
-		var centerY = 5;
-		var radiusX = 3;
-		var radiusY = 3;
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.drawEllipse(centerX, centerY, radiusX, radiusY, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.fillColorRecursive#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_fillColorRecursive__default() {
-		var position = new vision.ds.IntPoint2D(1, 1);
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.fillColorRecursive(position, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.fillColor#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_fillColor__default() {
-		var position = new vision.ds.IntPoint2D(1, 1);
-		var color = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.fillColor(position, color);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.fillUntilColor#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_fillUntilColor__default() {
-		var position = new vision.ds.IntPoint2D(1, 1);
-		var color = (0xFF336699 : vision.ds.Color);
-		var borderColor = (0xFF336699 : vision.ds.Color);
-		var instance = Factories.gradientImage(10, 10);
-		instance.fillUntilColor(position, color, borderColor);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.clone#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_clone__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.clone();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.clone#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_clone__tiny() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.clone();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.clone#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_clone__checkerboard() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.clone();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.mirror#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_mirror__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.mirror();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.mirror#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_mirror__tiny() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.mirror();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.mirror#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_mirror__checkerboard() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.mirror();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.flip#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_flip__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.flip();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.flip#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_flip__tiny() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.flip();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.flip#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_flip__checkerboard() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.flip();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.stamp#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_stamp__default() {
-		var X = 1;
-		var Y = 1;
-		var image = Factories.gradientImage(3, 3);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.stamp(X, Y, image);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.stamp#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_stamp__tiny() {
-		var X = 1;
-		var Y = 1;
-		var image = Factories.gradientImage(3, 3);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.stamp(X, Y, image);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.stamp#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_stamp__checkerboard() {
-		var X = 1;
-		var Y = 1;
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.stamp(X, Y, image);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.resize#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_resize__default() {
-		var newWidth = 1;
-		var newHeight = 1;
-		var algorithm = null;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.resize(newWidth, newHeight, algorithm);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.resize#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_resize__tiny() {
-		var newWidth = 1;
-		var newHeight = 1;
-		var algorithm = null;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.resize(newWidth, newHeight, algorithm);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.resize#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_resize__checkerboard() {
-		var newWidth = 1;
-		var newHeight = 1;
-		var algorithm = null;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.resize(newWidth, newHeight, algorithm);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.rotate#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_rotate__default() {
-		var angle = 0.0;
-		var degrees = null;
-		var expandImageBounds = false;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.rotate(angle, degrees, expandImageBounds);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.rotate#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_rotate__tiny() {
-		var angle = 0.0;
-		var degrees = null;
-		var expandImageBounds = false;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.rotate(angle, degrees, expandImageBounds);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.rotate#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_rotate__checkerboard() {
-		var angle = 0.0;
-		var degrees = null;
-		var expandImageBounds = false;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.rotate(angle, degrees, expandImageBounds);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.toString#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	@:Ignored("image string conversion is target-specific")
-	function ignored_test_toString__default() {
-		var special = false;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.toString(special);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.forEachPixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_forEachPixel__default() {
-		var callback = (arg0, arg1, arg2) -> {};
-		var instance = Factories.gradientImage(10, 10);
-		instance.forEachPixel(callback);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.forEachPixelInView#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_forEachPixelInView__default() {
-		var callback = (arg0, arg1, arg2) -> {};
-		var instance = Factories.gradientImage(10, 10);
-		instance.forEachPixelInView(callback);
-		Assert.pass();
-	}
-
-	@:visionTestId("vision.ds.Image.iterator#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_iterator__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.iterator();
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.center#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_center__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.center();
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.pixelToRelative#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_pixelToRelative__default() {
-		var point = new vision.ds.Point2D(1.0, 1.0);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.pixelToRelative(point);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.relativeToPixel#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_relativeToPixel__default() {
-		var point = new vision.ds.Point2D(1.0, 1.0);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.relativeToPixel(point);
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.hasView#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	function test_hasView__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.hasView();
-		Assert.isTrue(result == true || result == false);
-	}
-
-	@:visionTestId("vision.ds.Image.setView#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_setView__default() {
-		var view = ({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.setView(view);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.setView#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_setView__tiny() {
-		var view = ({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.setView(view);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.setView#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_setView__checkerboard() {
-		var view = ({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.setView(view);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.getView#default")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_getView__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.getView();
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.getView#tiny")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_getView__tiny() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.getView();
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.getView#checkerboard")
-	@:visionMaturity("smoke")
-	@:visionLifecycle("active")
-	function test_getView__checkerboard() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.getView();
-		Assert.notNull(result);
-	}
-
-	@:visionTestId("vision.ds.Image.removeView#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_removeView__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.removeView();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.removeView#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_removeView__tiny() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.removeView();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.removeView#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_removeView__checkerboard() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.removeView();
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.copyViewFrom#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyViewFrom__default() {
-		var from = Factories.gradientImage(3, 3);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyViewFrom(from);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.copyViewFrom#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyViewFrom__tiny() {
-		var from = Factories.gradientImage(3, 3);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyViewFrom(from);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.copyViewFrom#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_copyViewFrom__checkerboard() {
-		var from = Factories.checkerboardImage(8, 8, 2);
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.copyViewFrom(from);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.hasPixelInView#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	function test_hasPixelInView__default() {
-		var x = 1;
-		var y = 1;
-		var v = null;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.hasPixelInView(x, y, v);
-		Assert.isTrue(result == true || result == false);
-	}
-
-	@:visionTestId("vision.ds.Image.hasPixelInView#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	function test_hasPixelInView__tiny() {
-		var x = 1;
-		var y = 1;
-		var v = null;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.hasPixelInView(x, y, v);
-		Assert.isTrue(result == true || result == false);
-	}
-
-	@:visionTestId("vision.ds.Image.hasPixelInView#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	function test_hasPixelInView__checkerboard() {
-		var x = 1;
-		var y = 1;
-		var v = null;
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.hasPixelInView(x, y, v);
-		Assert.isTrue(result == true || result == false);
-	}
-
-	@:visionTestId("vision.ds.Image.from2DArray#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_from2DArray__default() {
-		var array = [[(0xFF336699 : vision.ds.Color), (0xFF669933 : vision.ds.Color)], [(0xFF993366 : vision.ds.Color), (0xFFCC8844 : vision.ds.Color)]];
-		var result = vision.ds.Image.from2DArray(array);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.from2DArray#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_from2DArray__tiny() {
-		var array = [[(0xFF336699 : vision.ds.Color), (0xFF669933 : vision.ds.Color)], [(0xFF993366 : vision.ds.Color), (0xFFCC8844 : vision.ds.Color)]];
-		var result = vision.ds.Image.from2DArray(array);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.from2DArray#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_from2DArray__checkerboard() {
-		var array = [[(0xFF336699 : vision.ds.Color), (0xFF669933 : vision.ds.Color)], [(0xFF993366 : vision.ds.Color), (0xFFCC8844 : vision.ds.Color)]];
-		var result = vision.ds.Image.from2DArray(array);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.from2DArray#duplicates")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_from2DArray__duplicates() {
-		var array = [[(0xFF336699 : vision.ds.Color), (0xFF336699 : vision.ds.Color)], [(0xFFCC8844 : vision.ds.Color), (0xFFCC8844 : vision.ds.Color)]];
-		var result = vision.ds.Image.from2DArray(array);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.ds.Image.to2DArray#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	function test_to2DArray__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.to2DArray();
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
-	}
-
-	@:visionTestId("vision.ds.Image.toArray#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	function test_toArray__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.toArray();
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
-	}
-
-	@:visionTestId("vision.ds.Image.loadFromBytes#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_loadFromBytes__default() {
-		var bytes = vision.ds.ByteArray.from([1, 2, 3, 4]);
-		var width = 3;
-		var height = 3;
-		var result = vision.ds.Image.loadFromBytes(bytes, width, height);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-		Assert.equals(width, result.width);
-		Assert.equals(height, result.height);
-	}
-
-	@:visionTestId("vision.ds.Image.loadFromBytes#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_loadFromBytes__tiny() {
-		var bytes = vision.ds.ByteArray.from([1, 2, 3, 4]);
-		var width = 3;
-		var height = 3;
-		var result = vision.ds.Image.loadFromBytes(bytes, width, height);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-		Assert.equals(width, result.width);
-		Assert.equals(height, result.height);
-	}
-
-	@:visionTestId("vision.ds.Image.loadFromBytes#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_loadFromBytes__checkerboard() {
-		var bytes = vision.ds.ByteArray.from([1, 2, 3, 4]);
-		var width = 3;
-		var height = 3;
-		var result = vision.ds.Image.loadFromBytes(bytes, width, height);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-		Assert.equals(width, result.width);
-		Assert.equals(height, result.height);
-	}
-
-	@:visionTestId("vision.ds.Image.exportToBytes#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	function test_exportToBytes__default() {
-		var instance = Factories.gradientImage(10, 10);
-		var result = instance.exportToBytes();
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
-	}
-
+function createImage(width:Int = 4, height:Int = 4):Image {
+return ManualFixtures.coordinateImage(width, height);
+}
+
+function createView():ImageView {
+return ManualFixtures.rectangleView(1, 1, 2, 1, ImageViewShape.RECTANGLE);
+}
+
+function overlayColor():Color {
+return Color.fromRGBA(255, 255, 255, 128);
+}
+
+@:visionTestId("vision.ds.Image.underlying#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_underlying__default() {
+var instance = new Image(2, 3, 0x11223344);
+Assert.isTrue(instance.underlying.length > instance.exportToBytes().length);
+Assert.equals(24, instance.exportToBytes().length);
+}
+
+@:visionTestId("vision.ds.Image.width#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_width__default() {
+Assert.equals(5, ManualFixtures.oddSizedImage().width);
+}
+
+@:visionTestId("vision.ds.Image.height#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_height__default() {
+Assert.equals(3, ManualFixtures.oddSizedImage().height);
+}
+
+@:visionTestId("vision.ds.Image.view#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_view__default() {
+ImageAssertions.viewEquals({x: 0, y: 0, width: 0, height: 0, shape: ImageViewShape.RECTANGLE}, createImage().view);
+}
+
+@:visionTestId("vision.ds.Image.getPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_getPixel__default() {
+ImageAssertions.pixelEquals(createImage(3, 3), 2, 1, ManualFixtures.coordinateColor(2, 1));
+}
+
+@:visionTestId("vision.ds.Image.getPixel#outOfBounds")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_getPixel__outOfBounds() {
+var instance = createImage(3, 3);
+ExceptionAssertions.throwsType(() -> instance.getPixel(-1, 0), vision.exceptions.OutOfBounds);
+}
+
+@:visionTestId("vision.ds.Image.getSafePixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_getSafePixel__default() {
+var instance = createImage(3, 3);
+ImageAssertions.colorEquals(ManualFixtures.coordinateColor(0, 2), instance.getSafePixel(-4, 9));
+}
+
+@:visionTestId("vision.ds.Image.getFloatingPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_getFloatingPixel__default() {
+var result = ManualFixtures.interpolationImage().getFloatingPixel(0.5, 0.5);
+ImageAssertions.colorApproxEquals(Color.fromRGBA(63, 63, 63, 255), result);
+}
+
+@:visionTestId("vision.ds.Image.setPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_setPixel__default() {
+var instance = createImage();
+var color = Color.fromRGBA(200, 10, 20, 255);
+instance.setPixel(1, 2, color);
+ImageAssertions.pixelEquals(instance, 1, 2, color);
+}
+
+@:visionTestId("vision.ds.Image.setSafePixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_setSafePixel__default() {
+var instance = createImage(3, 3);
+var color = Color.fromRGBA(10, 20, 30, 255);
+instance.setSafePixel(-5, 7, color);
+ImageAssertions.pixelEquals(instance, 0, 2, color);
+}
+
+@:visionTestId("vision.ds.Image.setFloatingPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_setFloatingPixel__default() {
+var instance = new Image(2, 2, 0x00000000);
+instance.setFloatingPixel(0.5, 0.5, 0xFFFFFFFF);
+ImageAssertions.pixelApproxEquals(instance, 0, 0, Color.fromRGBA(127, 127, 127, 255));
+ImageAssertions.pixelApproxEquals(instance, 1, 1, Color.fromRGBA(127, 127, 127, 255));
+}
+
+@:visionTestId("vision.ds.Image.paintPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_paintPixel__default() {
+var instance = new Image(1, 1, 0xFF000000);
+instance.paintPixel(0, 0, overlayColor());
+ImageAssertions.pixelApproxEquals(instance, 0, 0, Color.fromRGBA(128, 128, 128, 255), 2);
+}
+
+@:visionTestId("vision.ds.Image.paintFloatingPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_paintFloatingPixel__default() {
+var instance = new Image(2, 2, 0xFF000000);
+instance.paintFloatingPixel(0.5, 0.5, 0xFFFFFFFF);
+ImageAssertions.pixelApproxEquals(instance, 0, 0, Color.fromRGBA(127, 127, 127, 255), 2);
+}
+
+@:visionTestId("vision.ds.Image.paintSafePixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_paintSafePixel__default() {
+var instance = new Image(3, 3, 0xFF000000);
+instance.paintSafePixel(-1, 8, 0xFFFFFFFF);
+ImageAssertions.pixelEquals(instance, 0, 2, 0xFFFFFFFF);
+}
+
+@:visionTestId("vision.ds.Image.hasPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_hasPixel__default() {
+var instance = createImage(3, 3);
+Assert.isTrue(instance.hasPixel(2, 2));
+Assert.isFalse(instance.hasPixel(3, 2));
+}
+
+@:visionTestId("vision.ds.Image.movePixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_movePixel__default() {
+var instance = createImage(3, 3);
+var original = instance.getPixel(0, 0);
+instance.movePixel(0, 0, 2, 1, 0x00000000);
+ImageAssertions.pixelEquals(instance, 2, 1, original);
+ImageAssertions.pixelEquals(instance, 0, 0, 0x00000000);
+}
+
+@:visionTestId("vision.ds.Image.moveSafePixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_moveSafePixel__default() {
+var instance = createImage(3, 3);
+var original = instance.getPixel(0, 0);
+instance.moveSafePixel(0, 0, 10, 10, 0x00000000);
+ImageAssertions.pixelEquals(instance, 2, 2, original);
+ImageAssertions.pixelEquals(instance, 0, 0, 0x00000000);
+}
+
+@:visionTestId("vision.ds.Image.moveFloatingPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_moveFloatingPixel__default() {
+var instance = createImage(2, 2);
+var original = instance.getPixel(0, 0);
+instance.moveFloatingPixel(0.0, 0.0, 1.0, 1.0, 0x00000000);
+ImageAssertions.pixelEquals(instance, 1, 1, original);
+ImageAssertions.pixelEquals(instance, 0, 0, 0x00000000);
+}
+
+@:visionTestId("vision.ds.Image.moveUnsafePixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_moveUnsafePixel__default() {
+var instance = createImage(3, 3);
+var original = instance.getPixel(1, 1);
+instance.moveUnsafePixel(1, 1, 2, 0, 0x00000000);
+ImageAssertions.pixelEquals(instance, 2, 0, original);
+ImageAssertions.pixelEquals(instance, 1, 1, 0x00000000);
+}
+
+@:visionTestId("vision.ds.Image.copyPixelFrom#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_copyPixelFrom__default() {
+var source = ManualFixtures.tinyCheckerboardImage();
+var instance = createImage(4, 4);
+var result = instance.copyPixelFrom(source, 1, 1);
+ImageAssertions.colorEquals(source.getPixel(1, 1), result);
+ImageAssertions.pixelEquals(instance, 1, 1, source.getPixel(1, 1));
+}
+
+@:visionTestId("vision.ds.Image.copyPixelTo#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_copyPixelTo__default() {
+var destination = new Image(2, 2, 0x00000000);
+var instance = createImage(2, 2);
+var result = instance.copyPixelTo(destination, 1, 0);
+ImageAssertions.colorEquals(instance.getPixel(1, 0), result);
+ImageAssertions.pixelEquals(destination, 1, 0, instance.getPixel(1, 0));
+}
+
+@:visionTestId("vision.ds.Image.copyImageFrom#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_copyImageFrom__default() {
+var source = ManualFixtures.tinyCheckerboardImage();
+var instance = createImage(4, 4);
+instance.setView(createView());
+instance.copyImageFrom(source);
+ImageAssertions.hasDimensions(instance, source.width, source.height);
+ImageAssertions.pixelEquals(instance, 0, 0, source.getPixel(0, 0));
+ImageAssertions.viewEquals(createView(), instance.getView());
+}
+
+@:visionTestId("vision.ds.Image.getImagePortion#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_getImagePortion__default() {
+var rect:Rectangle = {x: 1, y: 1, width: 2, height: 2};
+var result = createImage(4, 4).getImagePortion(rect);
+ImageAssertions.hasDimensions(result, 2, 2);
+ImageAssertions.pixelEquals(result, 0, 0, ManualFixtures.coordinateColor(1, 1));
+ImageAssertions.pixelEquals(result, 1, 1, ManualFixtures.coordinateColor(2, 2));
+}
+
+@:visionTestId("vision.ds.Image.setImagePortion#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_setImagePortion__default() {
+var rect:Rectangle = {x: 1, y: 1, width: 2, height: 2};
+var portion = ManualFixtures.tinyCheckerboardImage();
+var instance = createImage(4, 4);
+instance.setImagePortion(rect, portion);
+ImageAssertions.pixelEquals(instance, 1, 1, portion.getPixel(0, 0));
+ImageAssertions.pixelEquals(instance, 2, 2, portion.getPixel(1, 1));
+}
+
+@:visionTestId("vision.ds.Image.clone#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_clone__default() {
+var instance = createImage(3, 3);
+var clone = instance.clone();
+instance.setPixel(0, 0, 0xFFFFFFFF);
+ImageAssertions.pixelEquals(clone, 0, 0, ManualFixtures.coordinateColor(0, 0));
+Assert.isFalse(instance.underlying == clone.underlying);
+}
+
+@:visionTestId("vision.ds.Image.mirror#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_mirror__default() {
+var instance = createImage(4, 3);
+instance.mirror();
+ImageAssertions.pixelEquals(instance, 0, 1, ManualFixtures.coordinateColor(3, 1));
+ImageAssertions.pixelEquals(instance, 3, 1, ManualFixtures.coordinateColor(0, 1));
+}
+
+@:visionTestId("vision.ds.Image.flip#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_flip__default() {
+var instance = createImage(3, 4);
+instance.flip();
+ImageAssertions.pixelEquals(instance, 1, 0, ManualFixtures.coordinateColor(1, 3));
+ImageAssertions.pixelEquals(instance, 1, 3, ManualFixtures.coordinateColor(1, 0));
+}
+
+@:visionTestId("vision.ds.Image.stamp#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_stamp__default() {
+		var instance = new Image(5, 5, 0xFF000000);
+var image = ManualFixtures.tinyCheckerboardImage();
+instance.stamp(1, 1, image);
+ImageAssertions.pixelEquals(instance, 1, 1, image.getPixel(0, 0));
+		ImageAssertions.pixelEquals(instance, 4, 4, image.getPixel(3, 3));
+}
+
+@:visionTestId("vision.ds.Image.resize#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_resize__default() {
+var instance = createImage(2, 2);
+instance.resize(4, 4, vision.ds.ImageResizeAlgorithm.NearestNeighbor);
+ImageAssertions.hasDimensions(instance, 4, 4);
+ImageAssertions.pixelEquals(instance, 0, 0, ManualFixtures.coordinateColor(0, 0));
+ImageAssertions.pixelEquals(instance, 3, 3, ManualFixtures.coordinateColor(1, 1));
+}
+
+@:visionTestId("vision.ds.Image.rotate#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_rotate__default() {
+var instance = createImage(3, 3);
+instance.rotate(0, true, false);
+ImageAssertions.hasDimensions(instance, 3, 3);
+ImageAssertions.pixelEquals(instance, 2, 1, ManualFixtures.coordinateColor(2, 1));
+}
+
+@:visionTestId("vision.ds.Image.forEachPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_forEachPixel__default() {
+var visited = [];
+createImage(2, 2).forEachPixel((x, y, color) -> visited.push('${x},${y}:${color.toInt()}'));
+CollectionAssertions.values([
+'0,0:${ManualFixtures.coordinateColor(0, 0).toInt()}',
+'0,1:${ManualFixtures.coordinateColor(0, 1).toInt()}',
+'1,0:${ManualFixtures.coordinateColor(1, 0).toInt()}',
+'1,1:${ManualFixtures.coordinateColor(1, 1).toInt()}',
+], visited);
+}
+
+@:visionTestId("vision.ds.Image.forEachPixelInView#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_forEachPixelInView__default() {
+var instance = createImage(4, 4);
+instance.setView(createView());
+var visited = [];
+instance.forEachPixelInView((x, y, color) -> visited.push('$x,$y'));
+CollectionAssertions.values(['1,1', '2,1'], visited);
+}
+
+@:visionTestId("vision.ds.Image.iterator#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_iterator__default() {
+var count = 0;
+for (_ in createImage(3, 2).iterator()) {
+count++;
+}
+Assert.equals(6, count);
+}
+
+@:visionTestId("vision.ds.Image.center#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_center__default() {
+var center = createImage(4, 3).center();
+ApproxAssertions.equalsFloat(2, center.x);
+ApproxAssertions.equalsFloat(1.5, center.y);
+}
+
+@:visionTestId("vision.ds.Image.pixelToRelative#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_pixelToRelative__default() {
+var result = createImage(4, 4).pixelToRelative(new Point2D(2, 1));
+ApproxAssertions.equalsFloat(0.5, result.x);
+ApproxAssertions.equalsFloat(0.25, result.y);
+}
+
+@:visionTestId("vision.ds.Image.relativeToPixel#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_relativeToPixel__default() {
+var result = createImage(4, 4).relativeToPixel(new Point2D(0.5, 0.25));
+ApproxAssertions.equalsFloat(2, result.x);
+ApproxAssertions.equalsFloat(1, result.y);
+}
+
+@:visionTestId("vision.ds.Image.hasView#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_hasView__default() {
+var instance = createImage(4, 4);
+Assert.isFalse(instance.hasView());
+instance.setView(createView());
+Assert.isTrue(instance.hasView());
+}
+
+@:visionTestId("vision.ds.Image.setView#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_setView__default() {
+var instance = createImage(4, 4);
+instance.setView(createView());
+ImageAssertions.viewEquals(createView(), instance.getView());
+}
+
+@:visionTestId("vision.ds.Image.getView#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_getView__default() {
+var instance = createImage(4, 4);
+instance.setView(createView());
+ImageAssertions.viewEquals(createView(), instance.getView());
+}
+
+@:visionTestId("vision.ds.Image.removeView#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_removeView__default() {
+var instance = createImage(4, 4);
+instance.setView(createView());
+instance.removeView();
+Assert.isFalse(instance.hasView());
+ImageAssertions.viewEquals({x: 0, y: 0, width: 0, height: 0, shape: ImageViewShape.RECTANGLE}, instance.getView());
+}
+
+@:visionTestId("vision.ds.Image.copyViewFrom#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_copyViewFrom__default() {
+var from = createImage(4, 4);
+from.setView(createView());
+var instance = createImage(4, 4);
+instance.copyViewFrom(from);
+ImageAssertions.viewEquals(createView(), instance.getView());
+}
+
+@:visionTestId("vision.ds.Image.hasPixelInView#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_hasPixelInView__default() {
+var instance = createImage(4, 4);
+instance.setView(createView());
+Assert.isTrue(instance.hasPixelInView(1, 1));
+Assert.isTrue(instance.hasPixelInView(2, 1));
+Assert.isFalse(instance.hasPixelInView(0, 0));
+Assert.isFalse(instance.hasPixelInView(3, 3));
+}
+
+@:visionTestId("vision.ds.Image.from2DArray#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_from2DArray__default() {
+var array = [
+[Color.fromRGBA(1, 2, 3, 255), Color.fromRGBA(4, 5, 6, 255)],
+[Color.fromRGBA(7, 8, 9, 255), Color.fromRGBA(10, 11, 12, 255)],
+];
+var result = Image.from2DArray(array);
+ImageAssertions.hasDimensions(result, 2, 2);
+ImageAssertions.pixelEquals(result, 1, 1, array[1][1]);
+}
+
+@:visionTestId("vision.ds.Image.to2DArray#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_to2DArray__default() {
+var result = createImage(2, 2).to2DArray();
+Assert.equals(2, result.length);
+ImageAssertions.colorEquals(ManualFixtures.coordinateColor(0, 0), result[0][0]);
+ImageAssertions.colorEquals(ManualFixtures.coordinateColor(1, 1), result[1][1]);
+}
+
+@:visionTestId("vision.ds.Image.toArray#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_toArray__default() {
+var result = createImage(2, 2).toArray();
+Assert.equals(4, result.length);
+ImageAssertions.colorEquals(ManualFixtures.coordinateColor(0, 0), result[0]);
+ImageAssertions.colorEquals(ManualFixtures.coordinateColor(1, 1), result[3]);
+}
+
+@:visionTestId("vision.ds.Image.loadFromBytes#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_loadFromBytes__default() {
+		var bytes = new ByteArray(16);
+		var values = [
+			255, 1, 2, 3,
+			255, 4, 5, 6,
+			255, 7, 8, 9,
+			255, 10, 11, 12,
+		];
+		for (index in 0...values.length) {
+			bytes[index] = values[index];
+		}
+var result = Image.loadFromBytes(bytes, 2, 2);
+ImageAssertions.hasDimensions(result, 2, 2);
+ImageAssertions.pixelEquals(result, 0, 0, Color.fromRGBA(1, 2, 3, 255));
+ImageAssertions.pixelEquals(result, 1, 1, Color.fromRGBA(10, 11, 12, 255));
+}
+
+@:visionTestId("vision.ds.Image.exportToBytes#default")
+@:visionMaturity("semantic")
+@:visionLifecycle("active")
+function test_exportToBytes__default() {
+CollectionAssertions.bytes([
+255, 15, 25, 10,
+255, 55, 25, 30,
+255, 15, 75, 30,
+255, 55, 75, 50,
+], createImage(2, 2).exportToBytes());
+}
 }

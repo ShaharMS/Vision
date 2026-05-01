@@ -1,65 +1,59 @@
 package tests;
 
+import tests.support.ManualFixtures;
 import utest.Assert;
 import vision.ds.ImageView;
+import vision.ds.ImageViewShape;
 
 @:access(vision.ds.ImageView)
-@:visionMaturity("smoke")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class ImageViewTest extends utest.Test {
+	function createView():ImageView {
+		return ManualFixtures.rectangleView(2, 3, 4, 5, ImageViewShape.ELLIPSE);
+	}
 
 	@:visionTestId("vision.ds.ImageView.x#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_x__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView);
-		var result = instance.x;
-		Assert.notNull(result);
+		Assert.equals(2, createView().x);
 	}
 
 	@:visionTestId("vision.ds.ImageView.y#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_y__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView);
-		var result = instance.y;
-		Assert.notNull(result);
+		Assert.equals(3, createView().y);
 	}
 
 	@:visionTestId("vision.ds.ImageView.width#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_width__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView);
-		var result = instance.width;
-		Assert.notNull(result);
+		Assert.equals(4, createView().width);
 	}
 
 	@:visionTestId("vision.ds.ImageView.height#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_height__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView);
-		var result = instance.height;
-		Assert.notNull(result);
+		Assert.equals(5, createView().height);
 	}
 
 	@:visionTestId("vision.ds.ImageView.shape#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_shape__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView);
-		var result = instance.shape;
-		Assert.notNull(result);
+		Assert.equals(ImageViewShape.ELLIPSE, createView().shape);
 	}
 
 	@:visionTestId("vision.ds.ImageView.toString#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_toString__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10, shape: vision.ds.ImageViewShape.RECTANGLE} : vision.ds.ImageView);
-		var result = instance.toString();
-		Assert.notNull(result);
+		var instance = createView();
+		Assert.equals('{shape: ${instance.shape}, x: 2, y: 3, width: 4, height: 5}', instance.toString());
 	}
 
 }

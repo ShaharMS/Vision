@@ -1,458 +1,392 @@
 package tests;
 
+import tests.support.ApproxAssertions;
+import tests.support.CollectionAssertions;
 import utest.Assert;
 import vision.ds.Matrix2D;
 import vision.ds.Point2D;
+import vision.ds.Point3D;
+import vision.ds.specifics.PointTransformationPair;
 
 @:access(vision.ds.Matrix2D)
-@:visionMaturity("mixed")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Matrix2DTest extends utest.Test {
+	function createMatrix():Matrix2D {
+		return Matrix2D.createFilled([1, 2], [3, 4]);
+	}
+
+	function assertMatrix(expected:Array<Array<Float>>, actual:Matrix2D):Void {
+		CollectionAssertions.nestedValues(expected, actual.underlying.to2DArray());
+	}
 
 	@:visionTestId("vision.ds.Matrix2D.underlying#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_underlying__default() {
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.underlying;
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		CollectionAssertions.values([1.0, 2.0, 3.0, 4.0], createMatrix().underlying.inner);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.rows#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_rows__default() {
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.rows;
-		Assert.notNull(result);
+		Assert.equals(2, createMatrix().rows);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.columns#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_columns__default() {
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.columns;
-		Assert.notNull(result);
+		Assert.equals(2, createMatrix().columns);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.invert#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_invert__default() {
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.invert();
-		Assert.notNull(result);
+		var result = Matrix2D.createFilled([1, 0], [0, 1]);
+		result.invert();
+		assertMatrix([[1.0, 0.0], [0.0, 1.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.getDeterminant#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getDeterminant__default() {
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.getDeterminant();
-		Assert.isFalse(Math.isNaN(result));
+		Assert.equals(-2.0, createMatrix().getDeterminant());
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.getTrace#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getTrace__default() {
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.getTrace();
-		Assert.isFalse(Math.isNaN(result));
+		Assert.equals(5.0, createMatrix().getTrace());
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.getAverage#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getAverage__default() {
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.getAverage();
-		Assert.isFalse(Math.isNaN(result));
+		ApproxAssertions.equalsFloat(2.5, createMatrix().getAverage());
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.multiplyWithScalar#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_multiplyWithScalar__default() {
-		var scalar = 1.0;
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.multiplyWithScalar(scalar);
-		Assert.notNull(result);
+		var result = createMatrix();
+		result.multiplyWithScalar(2);
+		assertMatrix([[2.0, 4.0], [6.0, 8.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.clone#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_clone__default() {
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.clone();
-		Assert.notNull(result);
+		var instance = createMatrix();
+		var clone = instance.clone();
+		instance.set(0, 0, 9);
+		assertMatrix([[1.0, 2.0], [3.0, 4.0]], clone);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.map#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_map__default() {
-		var mappingFunction = (arg0) -> 1.0;
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.map(mappingFunction);
-		Assert.notNull(result);
+		var result = createMatrix().map((value) -> value + 1);
+		assertMatrix([[2.0, 3.0], [4.0, 5.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.getSubMatrix#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getSubMatrix__default() {
-		var fromX = 1;
-		var fromY = 1;
-		var toX = null;
-		var toY = null;
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.getSubMatrix(fromX, fromY, toX, toY);
-		Assert.notNull(result);
+		var result = Matrix2D.createFilled([1, 2, 3], [4, 5, 6]).getSubMatrix(1, 0, 3, 2);
+		assertMatrix([[2.0, 3.0], [5.0, 6.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.getColumn#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getColumn__default() {
-		var x = 1;
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.getColumn(x);
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		CollectionAssertions.values([2.0, 4.0], createMatrix().getColumn(1));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.getRow#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getRow__default() {
-		var y = 1;
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.getRow(y);
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		CollectionAssertions.values([3.0, 4.0], createMatrix().getRow(1));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.setColumn#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setColumn__default() {
-		var x = 1;
-		var arr = [1.0, 2.0, 3.0, 4.0];
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		instance.setColumn(x, arr);
-		Assert.pass();
+		var instance = createMatrix();
+		instance.setColumn(1, [8, 9]);
+		assertMatrix([[1.0, 8.0], [3.0, 9.0]], instance);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.setColumn#duplicates")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setColumn__duplicates() {
-		var x = 1;
-		var arr = [1.0, 2.0, 2.0, 4.0];
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		instance.setColumn(x, arr);
-		Assert.pass();
+		var instance = createMatrix();
+		instance.setColumn(0, [7, 7]);
+		assertMatrix([[7.0, 2.0], [7.0, 4.0]], instance);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.setRow#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setRow__default() {
-		var y = 1;
-		var arr = [1.0, 2.0, 3.0, 4.0];
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		instance.setRow(y, arr);
-		Assert.pass();
+		var instance = createMatrix();
+		instance.setRow(1, [8, 9]);
+		assertMatrix([[1.0, 2.0], [8.0, 9.0]], instance);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.setRow#duplicates")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setRow__duplicates() {
-		var y = 1;
-		var arr = [1.0, 2.0, 2.0, 4.0];
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		instance.setRow(y, arr);
-		Assert.pass();
+		var instance = createMatrix();
+		instance.setRow(0, [7, 7]);
+		assertMatrix([[7.0, 7.0], [3.0, 4.0]], instance);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.insertColumn#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_insertColumn__default() {
-		var x = 1;
-		var arr = [1.0, 2.0, 3.0, 4.0];
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.insertColumn(x, arr);
-		Assert.notNull(result);
+		var result = createMatrix();
+		result.insertColumn(1, [8, 9]);
+		assertMatrix([[1.0, 8.0, 2.0], [3.0, 9.0, 4.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.insertColumn#duplicates")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_insertColumn__duplicates() {
-		var x = 1;
-		var arr = [1.0, 2.0, 2.0, 4.0];
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.insertColumn(x, arr);
-		Assert.notNull(result);
+		var result = createMatrix();
+		result.insertColumn(1, [7, 7]);
+		assertMatrix([[1.0, 7.0, 2.0], [3.0, 7.0, 4.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.insertRow#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_insertRow__default() {
-		var y = 1;
-		var arr = [1.0, 2.0, 3.0, 4.0];
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.insertRow(y, arr);
-		Assert.notNull(result);
+		var result = createMatrix();
+		result.insertRow(1, [8, 9]);
+		assertMatrix([[1.0, 2.0], [8.0, 9.0], [3.0, 4.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.insertRow#duplicates")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_insertRow__duplicates() {
-		var y = 1;
-		var arr = [1.0, 2.0, 2.0, 4.0];
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.insertRow(y, arr);
-		Assert.notNull(result);
+		var result = createMatrix();
+		result.insertRow(1, [7, 7]);
+		assertMatrix([[1.0, 2.0], [7.0, 7.0], [3.0, 4.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.removeColumn#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_removeColumn__default() {
-		var x = 1;
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.removeColumn(x);
-		Assert.notNull(result);
+		var result = createMatrix();
+		result.removeColumn(0);
+		assertMatrix([[2.0], [4.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.removeRow#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_removeRow__default() {
-		var y = 1;
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.removeRow(y);
-		Assert.notNull(result);
+		var result = createMatrix();
+		result.removeRow(1);
+		assertMatrix([[1.0, 2.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.toString#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_toString__default() {
-		var precision = 1;
-		var pretty = false;
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.toString(precision, pretty);
-		Assert.notNull(result);
+		Assert.equals('\n[[1, 2],\n [3, 4]]', createMatrix().toString(1, false));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.IDENTITY#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_IDENTITY__default() {
-		var result = vision.ds.Matrix2D.IDENTITY();
-		Assert.notNull(result);
+		assertMatrix([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], Matrix2D.IDENTITY());
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.ROTATION#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_ROTATION__default() {
-		var angle = 0.0;
-		var degrees = null;
-		var origin = new vision.ds.Point2D(1.0, 1.0);
-		var result = vision.ds.Matrix2D.ROTATION(angle, degrees, origin);
-		Assert.notNull(result);
+		var result = Matrix2D.ROTATION(90, true, new Point2D(0, 0)).transformPoint(new Point2D(1, 0));
+		ApproxAssertions.equalsFloat(0, result.x);
+		ApproxAssertions.equalsFloat(1, result.y);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.TRANSLATION#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_TRANSLATION__default() {
-		var x = 1.0;
-		var y = 1.0;
-		var result = vision.ds.Matrix2D.TRANSLATION(x, y);
-		Assert.notNull(result);
+		var result = Matrix2D.TRANSLATION(3, 4);
+		assertMatrix([[1.0, 0.0, 3.0], [0.0, 1.0, 4.0], [0.0, 0.0, 1.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.SCALE#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_SCALE__default() {
-		var scaleX = 1.0;
-		var scaleY = 1.0;
-		var result = vision.ds.Matrix2D.SCALE(scaleX, scaleY);
-		Assert.notNull(result);
+		assertMatrix([[2.0, 0.0, 0.0], [0.0, 3.0, 0.0], [0.0, 0.0, 1.0]], Matrix2D.SCALE(2, 3));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.SHEAR#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_SHEAR__default() {
-		var shearX = 1.0;
-		var shearY = 1.0;
-		var result = vision.ds.Matrix2D.SHEAR(shearX, shearY);
-		Assert.notNull(result);
+		assertMatrix([[1.0, 2.0, 0.0], [3.0, 1.0, 0.0], [0.0, 0.0, 1.0]], Matrix2D.SHEAR(2, 3));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.REFLECTION#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_REFLECTION__default() {
-		var angle = 0.0;
-		var degrees = null;
-		var origin = new vision.ds.Point2D(1.0, 1.0);
-		var result = vision.ds.Matrix2D.REFLECTION(angle, degrees, origin);
-		Assert.notNull(result);
+		var result = Matrix2D.REFLECTION(0, true, new Point2D(0, 0));
+		ApproxAssertions.equalsFloat(1, result.a);
+		ApproxAssertions.equalsFloat(0, result.b);
+		ApproxAssertions.equalsFloat(0, result.c);
+		ApproxAssertions.equalsFloat(-1, result.d);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.PERSPECTIVE#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_PERSPECTIVE__default() {
-		var pointPairs = [new vision.ds.specifics.PointTransformationPair(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(0.0, 0.0)), new vision.ds.specifics.PointTransformationPair(new vision.ds.Point2D(1.0, 0.0), new vision.ds.Point2D(2.0, 0.0)), new vision.ds.specifics.PointTransformationPair(new vision.ds.Point2D(0.0, 1.0), new vision.ds.Point2D(0.0, 2.0)), new vision.ds.specifics.PointTransformationPair(new vision.ds.Point2D(1.0, 1.0), new vision.ds.Point2D(2.0, 2.0))];
-		var result = vision.ds.Matrix2D.PERSPECTIVE(pointPairs);
-		Assert.notNull(result);
+		var pointPairs = [
+			new PointTransformationPair(new Point2D(0, 0), new Point2D(0, 0)),
+			new PointTransformationPair(new Point2D(1, 0), new Point2D(1, 0)),
+			new PointTransformationPair(new Point2D(0, 1), new Point2D(0, 1)),
+			new PointTransformationPair(new Point2D(1, 1), new Point2D(1, 1)),
+		];
+		var result = Matrix2D.PERSPECTIVE(pointPairs).transformPoint(new Point2D(0.5, 0.25));
+		ApproxAssertions.equalsFloat(0.5, result.x, 0.01);
+		ApproxAssertions.equalsFloat(0.25, result.y, 0.01);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.PERSPECTIVE#duplicates")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_PERSPECTIVE__duplicates() {
-		var pointPairs = [new vision.ds.specifics.PointTransformationPair(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(0.0, 0.0)), new vision.ds.specifics.PointTransformationPair(new vision.ds.Point2D(1.0, 0.0), new vision.ds.Point2D(1.0, 0.0)), new vision.ds.specifics.PointTransformationPair(new vision.ds.Point2D(0.0, 1.0), new vision.ds.Point2D(0.0, 2.0)), new vision.ds.specifics.PointTransformationPair(new vision.ds.Point2D(1.0, 1.0), new vision.ds.Point2D(2.0, 2.0))];
-		var result = vision.ds.Matrix2D.PERSPECTIVE(pointPairs);
-		Assert.notNull(result);
+		var pointPairs = [
+			new PointTransformationPair(new Point2D(0, 0), new Point2D(0, 0)),
+			new PointTransformationPair(new Point2D(1, 0), new Point2D(1, 0)),
+			new PointTransformationPair(new Point2D(0, 1), new Point2D(0, 1)),
+			new PointTransformationPair(new Point2D(1, 1), new Point2D(1, 1)),
+		];
+		Assert.notNull(Matrix2D.PERSPECTIVE(pointPairs));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.DEPTH#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_DEPTH__default() {
-		var z = 1.0;
-		var towards = new vision.ds.Point2D(1.0, 1.0);
-		var result = vision.ds.Matrix2D.DEPTH(z, towards);
-		Assert.notNull(result);
+		var result = Matrix2D.DEPTH(2, new Point2D(5, 6)).transformPoint(new Point3D(0, 0, 1));
+		ApproxAssertions.equalsFloat(5, result.x);
+		ApproxAssertions.equalsFloat(6, result.y);
+		ApproxAssertions.equalsFloat(2, result.z);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.createFilled#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_createFilled__default() {
-		var rows = [1.0, 0.0, 0.0];
-		var result = vision.ds.Matrix2D.createFilled(rows);
-		Assert.notNull(result);
+		assertMatrix([[1.0, 2.0], [3.0, 4.0]], Matrix2D.createFilled([1, 2], [3, 4]));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.createTransformation#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_createTransformation__default() {
-		var xRow = [1.0, 2.0, 3.0, 4.0];
-		var yRow = [1.0, 2.0, 3.0, 4.0];
-		var homogeneousRow = [1.0, 2.0, 3.0, 4.0];
-		var result = vision.ds.Matrix2D.createTransformation(xRow, yRow, homogeneousRow);
-		Assert.notNull(result);
+		assertMatrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [0.0, 0.0, 1.0]], Matrix2D.createTransformation([1, 2, 3], [4, 5, 6]));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.createTransformation#duplicates")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_createTransformation__duplicates() {
-		var xRow = [1.0, 2.0, 2.0, 4.0];
-		var yRow = [1.0, 2.0, 2.0, 4.0];
-		var homogeneousRow = [1.0, 2.0, 2.0, 4.0];
-		var result = vision.ds.Matrix2D.createTransformation(xRow, yRow, homogeneousRow);
-		Assert.notNull(result);
+		assertMatrix([[2.0, 2.0, 2.0], [3.0, 3.0, 3.0], [0.0, 0.0, 1.0]], Matrix2D.createTransformation([2, 2, 2], [3, 3, 3]));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.multiplyMatrices#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_multiplyMatrices__default() {
-		var a = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var b = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = vision.ds.Matrix2D.multiplyMatrices(a, b);
-		Assert.notNull(result);
+		assertMatrix([[19.0, 22.0], [43.0, 50.0]], Matrix2D.multiplyMatrices(Matrix2D.createFilled([1, 2], [3, 4]), Matrix2D.createFilled([5, 6], [7, 8])));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.addMatrices#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_addMatrices__default() {
-		var a = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var b = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = vision.ds.Matrix2D.addMatrices(a, b);
-		Assert.notNull(result);
+		assertMatrix([[6.0, 8.0], [10.0, 12.0]], Matrix2D.addMatrices(Matrix2D.createFilled([1, 2], [3, 4]), Matrix2D.createFilled([5, 6], [7, 8])));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.subtractMatrices#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_subtractMatrices__default() {
-		var a = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var b = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = vision.ds.Matrix2D.subtractMatrices(a, b);
-		Assert.notNull(result);
+		assertMatrix([[-4.0, -4.0], [-4.0, -4.0]], Matrix2D.subtractMatrices(Matrix2D.createFilled([1, 2], [3, 4]), Matrix2D.createFilled([5, 6], [7, 8])));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.divideMatrices#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_divideMatrices__default() {
-		var a = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var b = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = vision.ds.Matrix2D.divideMatrices(a, b);
-		Assert.notNull(result);
+		assertMatrix([[5.0, 5.0], [9.0, 9.0]], Matrix2D.divideMatrices(Matrix2D.createFilled([2, 3], [4, 5]), Matrix2D.createFilled([1, 1], [1, 1])));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.multiply#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_multiply__default() {
-		var b = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.multiply(b);
-		Assert.notNull(result);
+		var result = Matrix2D.createFilled([1, 2], [3, 4]);
+		result.multiply(Matrix2D.createFilled([5, 6], [7, 8]));
+		assertMatrix([[19.0, 22.0], [43.0, 50.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.add#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_add__default() {
-		var b = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.add(b);
-		Assert.notNull(result);
+		var result = Matrix2D.createFilled([1, 2], [3, 4]);
+		result.add(Matrix2D.createFilled([5, 6], [7, 8]));
+		assertMatrix([[6.0, 8.0], [10.0, 12.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.subtract#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_subtract__default() {
-		var b = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.subtract(b);
-		Assert.notNull(result);
+		var result = Matrix2D.createFilled([1, 2], [3, 4]);
+		result.subtract(Matrix2D.createFilled([5, 6], [7, 8]));
+		assertMatrix([[-4.0, -4.0], [-4.0, -4.0]], result);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.divide#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_divide__default() {
-		var b = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var instance = vision.ds.Matrix2D.createFilled([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]);
-		var result = instance.divide(b);
-		Assert.notNull(result);
+		var result = Matrix2D.createFilled([2, 3], [4, 5]);
+		result.divide(Matrix2D.createFilled([1, 1], [1, 1]));
+		assertMatrix([[5.0, 5.0], [9.0, 9.0]], result);
 	}
 
 }

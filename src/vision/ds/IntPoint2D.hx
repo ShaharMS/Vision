@@ -124,6 +124,6 @@ abstract IntPoint2D(Impl) {
 		@return A `Float` representing the angle, in radians. `0` if `this` and `point` are congruent.
 	**/
 	public inline function radiansTo(point:Point2D):Float {
-		return MathTools.degreesFromPointToPoint2D(cast(this, IntPoint2D), point);
+		return MathTools.radiansFromPointToPoint2D(cast(this, IntPoint2D), point);
 	}
 }

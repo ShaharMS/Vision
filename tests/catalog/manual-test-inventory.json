@@ -80,8 +80,8 @@
         },
         "vision.ds.specifics.ColorChannel": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like metadata surface intentionally excluded from manual utest migration; behavior is fully represented by its declared variants.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/specifics/ColorChannel.hx",
             "members": [],
             "testFile": null
@@ -159,8 +159,8 @@
                 "width",
                 "height"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Rectangle.hx",
             "members": [
                 "x",
@@ -212,8 +212,8 @@
         },
         "vision.ds.specifics.AlgorithmSettings": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like metadata surface intentionally excluded from manual utest migration; behavior is fully represented by its declared variants.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/specifics/AlgorithmSettings.hx",
             "members": [],
             "testFile": null
@@ -260,8 +260,8 @@
                 "subtract",
                 "divide"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Matrix2D.hx",
             "members": [
                 "underlying",
@@ -336,8 +336,8 @@
         },
         "vision.ds.specifics.EdgeFilterType": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like metadata surface intentionally excluded from manual utest migration; behavior is fully represented by its declared variants.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/specifics/EdgeFilterType.hx",
             "members": [],
             "testFile": null
@@ -370,8 +370,8 @@
         },
         "vision.ds.specifics.ColorImportanceOrder": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like metadata surface intentionally excluded from manual utest migration; behavior is fully represented by its declared variants.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/specifics/ColorImportanceOrder.hx",
             "members": [],
             "testFile": null
@@ -417,8 +417,8 @@
                 "ty",
                 "transformPoint"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/TransformationMatrix2D.hx",
             "members": [
                 "underlying",
@@ -461,8 +461,8 @@
                 "degreesTo",
                 "radiansTo"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Point2D.hx",
             "members": [
                 "x",
@@ -498,8 +498,8 @@
                 "toIntPoint2D",
                 "toInt"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Int16Point2D.hx",
             "members": [
                 "x",
@@ -804,8 +804,8 @@
         },
         "vision.ds.specifics.WhiteNoiseRange": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like metadata surface intentionally excluded from manual utest migration; behavior is fully represented by its declared variants.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/specifics/WhiteNoiseRange.hx",
             "members": [],
             "testFile": null
@@ -878,8 +878,8 @@
                 "to",
                 "new"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/specifics/PointTransformationPair.hx",
             "members": [
                 "from",
@@ -948,8 +948,8 @@
         },
         "vision.ds.specifics.TransformationMatrixOrigination": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like metadata surface intentionally excluded from manual utest migration; behavior is fully represented by its declared variants.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/specifics/TransformationMatrixOrigination.hx",
             "members": [],
             "testFile": null
@@ -1104,8 +1104,8 @@
                 "copy",
                 "toString"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Point3D.hx",
             "members": [
                 "x",
@@ -1454,8 +1454,8 @@
         },
         "vision.ds.Kernel2D": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-only kernel catalog intentionally excluded from manual utest migration; behavior is exercised through consuming convolution APIs rather than this declaration surface.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/Kernel2D.hx",
             "members": [],
             "testFile": null
@@ -1547,8 +1547,8 @@
                 "shape",
                 "toString"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/ImageView.hx",
             "members": [
                 "x",
@@ -1562,8 +1562,8 @@
         },
         "vision.ds.specifics.ImageExpansionMode": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like metadata surface intentionally excluded from manual utest migration; behavior is fully represented by its declared variants.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/specifics/ImageExpansionMode.hx",
             "members": [],
             "testFile": null
@@ -1630,8 +1630,8 @@
                 "toIntPoint2D",
                 "toInt"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/UInt16Point2D.hx",
             "members": [
                 "x",
@@ -1671,8 +1671,8 @@
                 "intersect",
                 "distanceTo"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Ray2D.hx",
             "members": [
                 "point",
@@ -1796,16 +1796,16 @@
         },
         "vision.ds.ImageResizeAlgorithm": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like resize-strategy metadata intentionally excluded from manual utest migration; behavior is exercised through Image.resize coverage rather than this declaration surface.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/ImageResizeAlgorithm.hx",
             "members": [],
             "testFile": null
         },
         "vision.ds.specifics.SimilarityScoringMechanism": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like metadata surface intentionally excluded from manual utest migration; behavior is fully represented by its declared variants.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/specifics/SimilarityScoringMechanism.hx",
             "members": [],
             "testFile": null
@@ -1901,8 +1901,8 @@
                 "degreesTo",
                 "radiansTo"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/IntPoint2D.hx",
             "members": [
                 "high",
@@ -2110,8 +2110,8 @@
                 "next",
                 "hasNext"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Image.hx",
             "members": [
                 "underlying",
@@ -2204,8 +2204,8 @@
         },
         "vision.ds.ImageViewShape": {
             "deferredMembers": [],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "notes": "Enum-like image-view metadata intentionally excluded from manual utest migration; behavior is exercised through Image and ImageView suites rather than this declaration surface.",
+            "status": "excluded",
             "sourceFile": "src/vision/ds/ImageViewShape.hx",
             "members": [],
             "testFile": null
@@ -2250,8 +2250,8 @@
                 "fromRay2D",
                 "toRay2D"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Line2D.hx",
             "members": [
                 "length",

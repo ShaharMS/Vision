@@ -5,30 +5,28 @@ import vision.ds.Point2D;
 import vision.ds.specifics.PointTransformationPair;
 
 @:access(vision.ds.specifics.PointTransformationPair)
-@:visionMaturity("smoke")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class PointTransformationPairTest extends utest.Test {
+	function createPair():PointTransformationPair {
+		return new PointTransformationPair(new Point2D(1, 2), new Point2D(3, 4));
+	}
 
 	@:visionTestId("vision.ds.specifics.PointTransformationPair.from#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_from__default() {
-		var ctor_from = new vision.ds.Point2D(1.0, 1.0);
-		var ctor_to = new vision.ds.Point2D(1.0, 1.0);
-		var instance = new vision.ds.specifics.PointTransformationPair(ctor_from, ctor_to);
-		var result = instance.from;
-		Assert.notNull(result);
+		var result = createPair().from;
+		Assert.equals(1, result.x);
+		Assert.equals(2, result.y);
 	}
 
 	@:visionTestId("vision.ds.specifics.PointTransformationPair.to#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_to__default() {
-		var ctor_from = new vision.ds.Point2D(1.0, 1.0);
-		var ctor_to = new vision.ds.Point2D(1.0, 1.0);
-		var instance = new vision.ds.specifics.PointTransformationPair(ctor_from, ctor_to);
-		var result = instance.to;
-		Assert.notNull(result);
+		var result = createPair().to;
+		Assert.equals(3, result.x);
+		Assert.equals(4, result.y);
 	}
-
 }

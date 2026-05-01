@@ -4,44 +4,38 @@ import utest.Assert;
 import vision.ds.Rectangle;
 
 @:access(vision.ds.Rectangle)
-@:visionMaturity("smoke")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class RectangleTest extends utest.Test {
+	function createRectangle():Rectangle {
+		return {x: -2, y: 3, width: 5, height: 7};
+	}
 
 	@:visionTestId("vision.ds.Rectangle.x#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_x__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10} : vision.ds.Rectangle);
-		var result = instance.x;
-		Assert.notNull(result);
+		Assert.equals(-2, createRectangle().x);
 	}
 
 	@:visionTestId("vision.ds.Rectangle.y#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_y__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10} : vision.ds.Rectangle);
-		var result = instance.y;
-		Assert.notNull(result);
+		Assert.equals(3, createRectangle().y);
 	}
 
 	@:visionTestId("vision.ds.Rectangle.width#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_width__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10} : vision.ds.Rectangle);
-		var result = instance.width;
-		Assert.notNull(result);
+		Assert.equals(5, createRectangle().width);
 	}
 
 	@:visionTestId("vision.ds.Rectangle.height#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_height__default() {
-		var instance = ({x: 0, y: 0, width: 10, height: 10} : vision.ds.Rectangle);
-		var result = instance.height;
-		Assert.notNull(result);
+		Assert.equals(7, createRectangle().height);
 	}
-
 }
