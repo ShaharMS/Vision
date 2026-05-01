@@ -24,8 +24,8 @@
             "deferredMembers": [
                 "convertPixelFormat"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/PixelFormat.hx",
             "members": [
                 "convertPixelFormat"
@@ -131,8 +131,8 @@
                 "isEmpty",
                 "toArray"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/ByteArray.hx",
             "members": [
                 "from",
@@ -188,8 +188,8 @@
                 "toString",
                 "to2DArray"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Array2D.hx",
             "members": [
                 "inner",
@@ -647,8 +647,8 @@
                 "parseInt",
                 "parseBool"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/tools/MathTools.hx",
             "members": [
                 "PI",
@@ -768,8 +768,8 @@
             "deferredMembers": [
                 "fromString"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/ImageFormat.hx",
             "members": [
                 "fromString"
@@ -1289,8 +1289,8 @@
                 "toString",
                 "toInt"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Color.hx",
             "members": [
                 "TRANSPARENT",
@@ -1477,8 +1477,8 @@
                 "next",
                 "hasNext"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/tools/ImageTools.hx",
             "members": [
                 "defaultResizeAlgorithm",
@@ -1702,8 +1702,8 @@
                 "flatMap",
                 "distinct"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/tools/ArrayTools.hx",
             "members": [
                 "flatten",
@@ -1730,8 +1730,8 @@
                 "has",
                 "toString"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Queue.hx",
             "members": [
                 "length",
@@ -1770,8 +1770,8 @@
                 "increment",
                 "decrement"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Histogram.hx",
             "members": [
                 "length",
@@ -1848,8 +1848,8 @@
                 "new",
                 "getValue"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/QueueCell.hx",
             "members": [
                 "previous",
@@ -1927,8 +1927,8 @@
                 "color",
                 "new"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/ds/Pixel.hx",
             "members": [
                 "x",

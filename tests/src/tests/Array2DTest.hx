@@ -1,211 +1,139 @@
 package tests;
 
+import tests.support.CollectionAssertions;
 import utest.Assert;
 import vision.ds.Array2D;
 import vision.ds.IntPoint2D;
-import vision.ds.Point2D;
 
 @:access(vision.ds.Array2D)
-@:visionMaturity("mixed")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Array2DTest extends utest.Test {
+	function createSequentialArray():Array2D<Int> {
+		var instance = new Array2D<Int>(2, 2, 0);
+		instance.set(0, 0, 1);
+		instance.set(1, 0, 2);
+		instance.set(0, 1, 3);
+		instance.set(1, 1, 4);
+		return instance;
+	}
 
 	@:visionTestId("vision.ds.Array2D.inner#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_inner__default() {
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.inner;
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		var instance = new Array2D<Int>(2, 3, 7);
+		CollectionAssertions.values([7, 7, 7, 7, 7, 7], instance.inner);
 	}
 
 	@:visionTestId("vision.ds.Array2D.width#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_width__default() {
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.width;
-		Assert.notNull(result);
+		Assert.equals(2, createSequentialArray().width);
 	}
 
 	@:visionTestId("vision.ds.Array2D.height#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_height__default() {
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.height;
-		Assert.notNull(result);
+		Assert.equals(2, createSequentialArray().height);
 	}
 
 	@:visionTestId("vision.ds.Array2D.length#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_length__default() {
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.length;
-		Assert.notNull(result);
+		Assert.equals(4, createSequentialArray().length);
 	}
 
 	@:visionTestId("vision.ds.Array2D.get#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_get__default() {
-		var x = 1;
-		var y = 1;
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.get(x, y);
-		Assert.notNull(result);
+		Assert.equals(4, createSequentialArray().get(1, 1));
 	}
 
 	@:visionTestId("vision.ds.Array2D.set#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_set__default() {
-		var x = 1;
-		var y = 1;
-		var val = cast 0;
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.set(x, y, val);
-		Assert.notNull(result);
+		var instance = new Array2D<Int>(2, 2, 0);
+		Assert.equals(9, instance.set(1, 1, 9));
+		Assert.equals(9, instance.get(1, 1));
 	}
 
 	@:visionTestId("vision.ds.Array2D.setMultiple#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setMultiple__default() {
-		var points = [new vision.ds.IntPoint2D(0, 0), new vision.ds.IntPoint2D(1, 1)];
-		var val = cast 0;
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		instance.setMultiple(points, val);
-		Assert.pass();
+		var instance = new Array2D<Int>(2, 2, 0);
+		instance.setMultiple([new IntPoint2D(0, 0), new IntPoint2D(1, 1)], 5);
+		CollectionAssertions.nestedValues([[5, 0], [0, 5]], instance.to2DArray());
 	}
 
 	@:visionTestId("vision.ds.Array2D.setMultiple#duplicates")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setMultiple__duplicates() {
-		var points = [new vision.ds.IntPoint2D(1, 1), new vision.ds.IntPoint2D(1, 1)];
-		var val = cast 0;
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		instance.setMultiple(points, val);
-		Assert.pass();
+		var instance = new Array2D<Int>(2, 2, 0);
+		instance.setMultiple([new IntPoint2D(1, 1), new IntPoint2D(1, 1)], 8);
+		CollectionAssertions.nestedValues([[0, 0], [0, 8]], instance.to2DArray());
 	}
 
 	@:visionTestId("vision.ds.Array2D.row#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_row__default() {
-		var y = 1;
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.row(y);
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		CollectionAssertions.values([3, 4], createSequentialArray().row(1));
 	}
 
 	@:visionTestId("vision.ds.Array2D.column#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_column__default() {
-		var x = 1;
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.column(x);
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		CollectionAssertions.values([2, 4], createSequentialArray().column(1));
 	}
 
 	@:visionTestId("vision.ds.Array2D.iterator#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_iterator__default() {
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.iterator();
-		Assert.notNull(result);
+		var result = [for (value in createSequentialArray().iterator()) value];
+		CollectionAssertions.values([1, 2, 3, 4], result);
 	}
 
 	@:visionTestId("vision.ds.Array2D.fill#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_fill__default() {
-		var value = cast 0;
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.fill(value);
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		var instance = new Array2D<Int>(2, 2, 0);
+		var result = instance.fill(6);
+		CollectionAssertions.values([6, 6, 6, 6], result.inner);
 	}
 
 	@:visionTestId("vision.ds.Array2D.clone#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_clone__default() {
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
+		var instance = createSequentialArray();
 		var result = instance.clone();
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		instance.set(0, 0, 9);
+		CollectionAssertions.values([1, 2, 3, 4], result.inner);
+		Assert.isFalse(instance.inner == result.inner);
 	}
 
 	@:visionTestId("vision.ds.Array2D.toString#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_toString__default() {
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.toString();
-		Assert.notNull(result);
+		Assert.equals("\n[[1, 2],\n [3, 4]]", createSequentialArray().toString());
 	}
 
 	@:visionTestId("vision.ds.Array2D.to2DArray#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_to2DArray__default() {
-		var ctor_width = 3;
-		var ctor_height = 3;
-		var ctor_fillWith = cast 0;
-		var instance = new vision.ds.Array2D(ctor_width, ctor_height, ctor_fillWith);
-		var result = instance.to2DArray();
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		CollectionAssertions.nestedValues([[1, 2], [3, 4]], createSequentialArray().to2DArray());
 	}
-
 }

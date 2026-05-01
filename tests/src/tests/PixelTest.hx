@@ -5,44 +5,31 @@ import vision.ds.Color;
 import vision.ds.Pixel;
 
 @:access(vision.ds.Pixel)
-@:visionMaturity("smoke")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class PixelTest extends utest.Test {
+	function createPixel():Pixel {
+		return new Pixel(1, 2, 0xFF336699);
+	}
 
 	@:visionTestId("vision.ds.Pixel.x#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_x__default() {
-		var ctor_x = 1;
-		var ctor_y = 1;
-		var ctor_color = (0xFF336699 : vision.ds.Color);
-		var instance = new vision.ds.Pixel(ctor_x, ctor_y, ctor_color);
-		var result = instance.x;
-		Assert.notNull(result);
+		Assert.equals(1, createPixel().x);
 	}
 
 	@:visionTestId("vision.ds.Pixel.y#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_y__default() {
-		var ctor_x = 1;
-		var ctor_y = 1;
-		var ctor_color = (0xFF336699 : vision.ds.Color);
-		var instance = new vision.ds.Pixel(ctor_x, ctor_y, ctor_color);
-		var result = instance.y;
-		Assert.notNull(result);
+		Assert.equals(2, createPixel().y);
 	}
 
 	@:visionTestId("vision.ds.Pixel.color#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_color__default() {
-		var ctor_x = 1;
-		var ctor_y = 1;
-		var ctor_color = (0xFF336699 : vision.ds.Color);
-		var instance = new vision.ds.Pixel(ctor_x, ctor_y, ctor_color);
-		var result = instance.color;
-		Assert.notNull(result);
+		Assert.equals((0xFF336699 : Color), createPixel().color);
 	}
-
 }

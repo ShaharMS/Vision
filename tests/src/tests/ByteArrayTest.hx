@@ -1,147 +1,155 @@
 package tests;
 
+import tests.support.CollectionAssertions;
 import utest.Assert;
 import vision.ds.ByteArray;
 
 @:access(vision.ds.ByteArray)
-@:visionMaturity("mixed")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class ByteArrayTest extends utest.Test {
+	@:visionTestId("vision.ds.ByteArray.new#default")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_new__default() {
+		var instance = new ByteArray(4, 9);
+		CollectionAssertions.equalsByteArray([9, 9, 9, 9], instance);
+	}
 
 	@:visionTestId("vision.ds.ByteArray.from#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_from__default() {
-		var value = 1;
-		var result = vision.ds.ByteArray.from(value);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
+		var result = ByteArray.from(0x12345678);
+		Assert.equals(4, result.length);
+		Assert.equals(0x12345678, result.getInt32(0));
+	}
+
+	@:visionTestId("vision.ds.ByteArray.from#bool")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_from__bool() {
+		CollectionAssertions.equalsByteArray([1], ByteArray.from(true));
+	}
+
+	@:visionTestId("vision.ds.ByteArray.from#string")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_from__string() {
+		var value:String = "AB";
+		CollectionAssertions.equalsByteArray([65, 66], ByteArray.from(value, null));
 	}
 
 	@:visionTestId("vision.ds.ByteArray.setUInt8#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setUInt8__default() {
-		var pos = 1;
-		var v = 1;
-		var instance = new vision.ds.ByteArray(100);
-		instance.setUInt8(pos, v);
-		Assert.pass();
+		var instance = new ByteArray(2);
+		instance.setUInt8(1, 255);
+		Assert.equals(255, instance[1]);
 	}
 
 	@:visionTestId("vision.ds.ByteArray.getUInt8#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getUInt8__default() {
-		var pos = 1;
-		var instance = new vision.ds.ByteArray(100);
-		var result = instance.getUInt8(pos);
-		Assert.notNull(result);
+		Assert.equals(7, new ByteArray(2, 7).getUInt8(1));
 	}
 
 	@:visionTestId("vision.ds.ByteArray.setUInt32#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setUInt32__default() {
-		var pos = 1;
-		var value = 1;
-		var instance = new vision.ds.ByteArray(100);
-		instance.setUInt32(pos, value);
-		Assert.pass();
+		var instance = new ByteArray(4);
+		instance.setUInt32(0, 0x12345678);
+		Assert.equals(0x12345678, instance.getUInt32(0));
 	}
 
 	@:visionTestId("vision.ds.ByteArray.getUInt32#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getUInt32__default() {
-		var pos = 1;
-		var instance = new vision.ds.ByteArray(100);
-		var result = instance.getUInt32(pos);
-		Assert.notNull(result);
+		Assert.equals(0x12345678, ByteArray.from(0x12345678).getUInt32(0));
 	}
 
 	@:visionTestId("vision.ds.ByteArray.setInt8#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setInt8__default() {
-		var pos = 1;
-		var v = 1;
-		var instance = new vision.ds.ByteArray(100);
-		instance.setInt8(pos, v);
-		Assert.pass();
+		var instance = new ByteArray(1);
+		instance.setInt8(0, 128);
+		Assert.equals(128, instance[0]);
 	}
 
 	@:visionTestId("vision.ds.ByteArray.getInt8#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getInt8__default() {
-		var pos = 1;
-		var instance = new vision.ds.ByteArray(100);
-		var result = instance.getInt8(pos);
-		Assert.notNull(result);
+		var instance = new ByteArray(1);
+		instance[0] = 128;
+		Assert.equals(-128, instance.getInt8(0));
 	}
 
 	@:visionTestId("vision.ds.ByteArray.setBytes#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_setBytes__default() {
-		var pos = 1;
-		var array = vision.ds.ByteArray.from([1, 2, 3, 4]);
-		var instance = new vision.ds.ByteArray(100);
-		instance.setBytes(pos, array);
-		Assert.pass();
+		var value:String = "ABC";
+		var instance = new ByteArray(5);
+		instance.setBytes(1, ByteArray.from(value, null));
+		CollectionAssertions.bytes([0, 65, 66, 67, 0], instance);
 	}
 
 	@:visionTestId("vision.ds.ByteArray.getBytes#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_getBytes__default() {
-		var pos = 1;
-		var length = 1;
-		var instance = new vision.ds.ByteArray(100);
-		var result = instance.getBytes(pos, length);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
+		var value:String = "ABCDE";
+		var result = ByteArray.from(value, null).getBytes(1, 3);
+		CollectionAssertions.bytes([66, 67, 68], result);
 	}
 
 	@:visionTestId("vision.ds.ByteArray.resize#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_resize__default() {
-		var length = 1;
-		var instance = new vision.ds.ByteArray(100);
-		instance.resize(length);
-		Assert.pass();
+		var value:String = "ABCD";
+		var instance = ByteArray.from(value, null);
+		instance.resize(2);
+		CollectionAssertions.bytes([65, 66], instance);
 	}
 
 	@:visionTestId("vision.ds.ByteArray.concat#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_concat__default() {
-		var array = vision.ds.ByteArray.from([1, 2, 3, 4]);
-		var instance = new vision.ds.ByteArray(100);
-		var result = instance.concat(array);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
+		var left:String = "AB";
+		var right:String = "CD";
+		var instance = ByteArray.from(left, null);
+		var result = instance.concat(ByteArray.from(right, null));
+		CollectionAssertions.bytes([65, 66, 67, 68], result);
+		CollectionAssertions.bytes([65, 66], instance);
 	}
 
 	@:visionTestId("vision.ds.ByteArray.isEmpty#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_isEmpty__default() {
-		var instance = new vision.ds.ByteArray(100);
-		var result = instance.isEmpty();
-		Assert.isTrue(result == true || result == false);
+		Assert.isTrue(new ByteArray(3).isEmpty());
+	}
+
+	@:visionTestId("vision.ds.ByteArray.isEmpty#nonZero")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_isEmpty__nonZero() {
+		Assert.isFalse(ByteArray.from("A").isEmpty());
 	}
 
 	@:visionTestId("vision.ds.ByteArray.toArray#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_toArray__default() {
-		var instance = new vision.ds.ByteArray(100);
-		var result = instance.toArray();
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		var value:String = "AB";
+		CollectionAssertions.values([65, 66], ByteArray.from(value, null).toArray());
 	}
-
 }

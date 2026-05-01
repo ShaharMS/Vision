@@ -4,46 +4,48 @@ import utest.Assert;
 import vision.ds.Histogram;
 
 @:access(vision.ds.Histogram)
-@:visionMaturity("smoke")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class HistogramTest extends utest.Test {
+	function createHistogram():Histogram {
+		var histogram = new Histogram();
+		histogram.increment(1);
+		histogram.increment(2);
+		histogram.increment(2);
+		return histogram;
+	}
 
 	@:visionTestId("vision.ds.Histogram.length#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_length__default() {
-		var instance = (function() { var histogram = new vision.ds.Histogram(); histogram.increment(1); histogram.increment(2); histogram.increment(2); return histogram; })();
-		var result = instance.length;
-		Assert.notNull(result);
+		Assert.equals(3, createHistogram().length);
 	}
 
 	@:visionTestId("vision.ds.Histogram.median#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_median__default() {
-		var instance = (function() { var histogram = new vision.ds.Histogram(); histogram.increment(1); histogram.increment(2); histogram.increment(2); return histogram; })();
-		var result = instance.median;
-		Assert.notNull(result);
+		Assert.equals(2, createHistogram().median);
 	}
 
 	@:visionTestId("vision.ds.Histogram.increment#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_increment__default() {
-		var cell = 1;
-		var instance = (function() { var histogram = new vision.ds.Histogram(); histogram.increment(1); histogram.increment(2); histogram.increment(2); return histogram; })();
-		var result = instance.increment(cell);
-		Assert.notNull(result);
+		var instance = createHistogram();
+		var result = instance.increment(5);
+		Assert.equals(1, instance.underlying[5]);
+		Assert.equals(instance, result);
 	}
 
 	@:visionTestId("vision.ds.Histogram.decrement#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_decrement__default() {
-		var cell = 1;
-		var instance = (function() { var histogram = new vision.ds.Histogram(); histogram.increment(1); histogram.increment(2); histogram.increment(2); return histogram; })();
-		var result = instance.decrement(cell);
-		Assert.notNull(result);
+		var instance = createHistogram();
+		var result = instance.decrement(2);
+		Assert.equals(1, instance.underlying[2]);
+		Assert.equals(instance, result);
 	}
-
 }
