@@ -40,7 +40,7 @@ The forward-looking redesign plan lives in [ROADMAP.md](ROADMAP.md).
 - `tests/ci/LocalCi.hx`
   - Local multi-target compile/run harness that mirrors CI behavior more closely than `test.hxml` does.
 - `test.hxml`
-  - Fast interpreter entrypoint from repo root. It runs the already-generated suite from `tests/generated`.
+  - Fast interpreter entrypoint from repo root. It runs the authored suite from `tests/src`, while `tests/generated` remains reference-only during migration.
 
 ## Current End-to-End Flow
 
@@ -423,7 +423,7 @@ Today, the system works like this:
 
 1. Macro detection discovers public members.
 2. The generator can scaffold utest files into `tests/generated/src/tests`, but that path is now reference-only.
-3. The committed suite in `tests/generated` is then compiled and run by `test.hxml`, local CI, and GitHub Actions.
+3. The committed suite in `tests/src` is then compiled and run by `test.hxml`, local CI, and GitHub Actions, while `tests/generated` and `tests/compile.hxml` remain reference-only.
 4. The committed suite is already partly manual, so it should be treated as a curated artifact, not as disposable pure output.
 
 If you redesign this area, the biggest win will come from making generation metadata explicit enough that the repo can safely distinguish:

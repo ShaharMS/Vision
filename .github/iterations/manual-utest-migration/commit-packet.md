@@ -2,54 +2,54 @@
 
 ## Commit Intent
 
-- Pass type: `initial implementation pass`
+- Pass type: `review follow-up`
 - Plan step: `.github/plans/manual-utest-migration-1-cutover.md`
-- Scope: `Cut over the operational test entrypoints from tests/generated/src to tests/src, seed the manual inventory for src/vision, and capture the iteration bookkeeping for the step-1 cutover pass.`
-- Reason this is one commit: `The promoted tests/src tree, entrypoint rewires, migration inventory, and packet bookkeeping establish one atomic cutover to the authored suite and should land together.`
+- Scope: `Address RVW-001 and RVW-002 by fixing the remaining stale README operational-path statements, replacing mojibake-prone PrettyReporter literals with ASCII-safe output, and capturing the review-follow-up bookkeeping for step 1.`
+- Reason this is one commit: `The README correction, reporter output fix, implementer/review packet updates, and commit bookkeeping together resolve one review round for the step-1 cutover without mixing in later migration work.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `tests/src/**` | `yes` | `Promotes the authored test root that now owns the executable suite.` |
-| `test.hxml` | `yes` | `Moves the repo-root fast path to tests/src.` |
-| `tests/ci/LocalCi.hx` | `yes` | `Moves the local CI harness to tests/src and removes stale generated class paths.` |
-| `.github/workflows/main.yml` | `yes` | `Moves GitHub Actions compilation to tests/src.` |
-| `tests/catalog/manual-test-inventory.json` | `yes` | `Adds the checked-in migration inventory for every src/vision module.` |
-| `tests/README.md` | `yes` | `Documents tests/generated and tests/compile.hxml as reference-only during migration.` |
-| `.github/iterations/manual-utest-migration/*.md` | `yes` | `Preserves the iteration packet set and this pass bookkeeping alongside the cutover.` |
-| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Provides the resumable progress note for this iteration.` |
+| `tests/README.md` | `yes` | `Removes the last stale operational-path statements that still described tests/generated as the active suite.` |
+| `tests/src/PrettyReporter.hx` | `yes` | `Replaces mojibake-prone literals with ASCII-safe output in the promoted reporter.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the implementer-side response, verification, and pass history for RVW-001 and RVW-002.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Preserves the normalized @Inspect findings that this follow-up commit addresses.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the commit grouping, gitflow decision, and exclusion set for this pass.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Keeps the cross-agent event trail current through review intake, implementation follow-up, and commit packaging.` |
 | `.github/plans/manual-utest-migration-*.md` | `no` | `These plan files were already untracked workspace state before this pass and are explicitly excluded by instruction.` |
 
 ## Gitflow Decision
 
-- Starting branch: `main`
+- Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `created and switched from main before committing this pass`
+- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for this review follow-up`
 
 ## Commit Message
 
 ```text
-feat(tests): cut over manual utest entrypoints
+fix(tests): address inspect review for step 1 cutover
 
-Move repo-root, LocalCi, and GitHub Actions execution to tests/src,
-seed the manual src/vision inventory, and keep tests/generated as
-reference-only during migration.
+Resolve RVW-001 by correcting the remaining README statements that
+still described tests/generated as the operational suite, and resolve
+RVW-002 by replacing mojibake-prone reporter literals with ASCII-safe
+output for the promoted tests/src reporter.
 
 Plan: .github/plans/manual-utest-migration-1-cutover.md
-Pass: initial implementation pass
+Pass: review follow-up
 ```
 
 ## Result
 
-- Commit hash: `captured in git history for the single step-1 cutover commit`
-- Push result: `captured by the same git push that publishes the feature branch`
+- Commit hash: `captured in git history for this single review-follow-up commit`
+- Push result: `captured by the push that publishes the follow-up on feature/manual-utest-migration-1-cutover`
 - Workspace status after commit: `expected clean except for the intentionally excluded pre-existing plan files`
 - Remaining uncommitted files: `the pre-existing .github/plans/manual-utest-migration*.md files excluded by instruction`
-- Follow-up needed: `Run @Inspect against the committed cutover and preserve the Windows Haxe -- passthrough caveat.`
+- Follow-up needed: `Run @Inspect again on the committed follow-up to confirm RVW-001 and RVW-002 are satisfied.`
 
 ## Commit History
 
 | Pass | Commit | Branch | Notes |
 |------|--------|--------|-------|
-| `1` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Cuts execution over to tests/src, adds the manual inventory, excludes the pre-existing plan files, and relies on the VISION_CI_* fallback because this Windows Haxe build rejects -- passthrough before LocalCi runs.` |
+| `1` | `9439dd742d49f6605b5d2f605431145141533250` | `feature/manual-utest-migration-1-cutover` | `Cuts execution over to tests/src, adds the manual inventory, excludes the pre-existing plan files, and relies on the VISION_CI_* fallback because this Windows Haxe build rejects -- passthrough before LocalCi runs.` |
+| `2` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-001 and RVW-002 follow-up, keeps the same feature branch, and continues to exclude the pre-existing untracked plan files.` |

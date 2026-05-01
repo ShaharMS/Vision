@@ -47,9 +47,9 @@ class PrettyReporter {
 
 	function startTests(runner:Runner) {
 		startTime = haxe.Timer.stamp();
-		log(CYAN + BOLD + "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•" + RESET);
+		log(CYAN + BOLD + "================================================================" + RESET);
 		log(CYAN + BOLD + "                    Vision Test Suite                           " + RESET);
-		log(CYAN + BOLD + "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•" + RESET + "\n");
+		log(CYAN + BOLD + "================================================================" + RESET + "\n");
 	}
 
 	function exit(exitCode:Int) {
@@ -94,7 +94,7 @@ class PrettyReporter {
 
 		var statusColor = success ? GREEN : (isSkipped ? LIGHT_BLUE : RED);
 		var statusText = success ? "Success" : (isSkipped ? "Skipped" : "Failure");
-		var statusEmoji = success ? "âœ“" : (isSkipped ? "âŠ˜" : "âœ—");
+		var statusEmoji = success ? "[PASS]" : (isSkipped ? "[SKIP]" : "[FAIL]");
 		var now = Date.now();
 		var timeStr = StringTools.lpad(Std.string(now.getHours()), "0", 2) + ":"
 			+ StringTools.lpad(Std.string(now.getMinutes()), "0", 2) + ":"
@@ -116,18 +116,18 @@ class PrettyReporter {
 
 		var total = mySuccesses + myFailures + mySkipped + myErrors;
 		if (myFailures == 0 && myErrors == 0) {
-			log(GREEN + BOLD + "ðŸ¥³ ðŸ¥³ ðŸ¥³ All tests passed! ðŸ¥³ ðŸ¥³ ðŸ¥³" + RESET);
+			log(GREEN + BOLD + "All tests passed!" + RESET);
 			if (mySkipped > 0)
-				log("    - " + RESET + BOLD + LIGHT_BLUE + " " + Std.string(mySkipped) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + LIGHT_BLUE + "Skipped ðŸ¤·" + RESET);
+				log("    - " + RESET + BOLD + LIGHT_BLUE + " " + Std.string(mySkipped) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + LIGHT_BLUE + "Skipped" + RESET);
 		} else {
 			log(RED + BOLD + "Final Test Status:" + RESET);
-			log("    - " + RESET + BOLD + GREEN + " " + Std.string(mySuccesses) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + GREEN + "Passed ðŸ¥³" + RESET);
+			log("    - " + RESET + BOLD + GREEN + " " + Std.string(mySuccesses) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + GREEN + "Passed" + RESET);
 			if (myFailures > 0)
-				log("    - " + RESET + BOLD + RED + " " + Std.string(myFailures) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + RED + "Failed ðŸ¥º" + RESET);
+				log("    - " + RESET + BOLD + RED + " " + Std.string(myFailures) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + RED + "Failed" + RESET);
 			if (myErrors > 0)
-				log("    - " + RESET + BOLD + YELLOW + " " + Std.string(myErrors) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + YELLOW + "Errors ðŸ’¥" + RESET);
+				log("    - " + RESET + BOLD + YELLOW + " " + Std.string(myErrors) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + YELLOW + "Errors" + RESET);
 			if (mySkipped > 0)
-				log("    - " + RESET + BOLD + LIGHT_BLUE + " " + Std.string(mySkipped) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + LIGHT_BLUE + "Skipped ðŸ¤·" + RESET);
+				log("    - " + RESET + BOLD + LIGHT_BLUE + " " + Std.string(mySkipped) + RESET + " " + BOLD + WHITE + "Tests " + RESET + BOLD + LIGHT_BLUE + "Skipped" + RESET);
 		}
 
 		log(getTestStatusBar(mySuccesses, myFailures, mySkipped, myErrors));
@@ -148,10 +148,10 @@ class PrettyReporter {
 		if (actualWidth < consoleWidth) successWidth += (consoleWidth - actualWidth);
 		else if (actualWidth > consoleWidth) successWidth -= (actualWidth - consoleWidth);
 
-		var output = "â•”";
-		for (_ in 0...consoleWidth) output += "â•";
-		output += "â•—\n";
-		output += "â•‘" + RESET + BOLD + GREEN_BACKGROUND;
+		var output = "+";
+		for (_ in 0...consoleWidth) output += "-";
+		output += "+\n";
+		output += "|" + RESET + BOLD + GREEN_BACKGROUND;
 		for (_ in 0...successWidth) output += " ";
 		output += RED_BACKGROUND;
 		for (_ in 0...failureWidth) output += " ";
@@ -159,10 +159,10 @@ class PrettyReporter {
 		for (_ in 0...skippedWidth) output += " ";
 		output += YELLOW_BACKGROUND;
 		for (_ in 0...errorWidth) output += " ";
-		output += RESET + "â•‘\n";
-		output += "â•š";
-		for (_ in 0...consoleWidth) output += "â•";
-		output += "â•";
+		output += RESET + "|\n";
+		output += "+";
+		for (_ in 0...consoleWidth) output += "-";
+		output += "+";
 		return output;
 	}
 }
