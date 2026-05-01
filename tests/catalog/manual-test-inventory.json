@@ -1,7 +1,7 @@
 {
     "sourceRoot": "src/vision",
     "referenceRoot": "tests/generated/src",
-    "generatedAt": "2026-05-01T20:16:18",
+    "generatedAt": "2026-05-01T20:34:20",
     "statusLegend": {
         "needs-migration": "Module has either a promoted scaffold-derived suite or no authored suite yet and still needs manual semantic migration.",
         "manual": "Suite is fully owned and manually maintained in tests/src.",

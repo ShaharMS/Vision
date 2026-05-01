@@ -39,7 +39,7 @@ class ManualInventoryBuilder {
 				testFile: testFile,
 				status: status,
 				members: members,
-				deferredMembers: status == "excluded" ? [] : members.copy(),
+				deferredMembers: resolveDeferredMembers(existingEntry, status, members),
 				notes: resolveNotes(existingEntry, status, testFile)
 			});
 		}
@@ -92,6 +92,37 @@ class ManualInventoryBuilder {
 		return testFile == null ? MISSING_NOTE : PROMOTED_NOTE;
 	}
 
+	static function resolveDeferredMembers(existingEntry:Dynamic, status:String, members:Array<String>):Array<String> {
+		if (status == "excluded") return [];
+		if (existingEntry == null) return members.copy();
+
+		var existingDeferred = readStringArray(existingEntry, "deferredMembers");
+		if (existingDeferred == null) existingDeferred = readStringArray(existingEntry, "uncoveredMembers");
+		if (existingDeferred == null) return members.copy();
+
+		var previousMembers = readStringArray(existingEntry, "members");
+		var deferredMembers:Array<String> = [];
+		for (member in members) {
+			var trackedPreviously = previousMembers != null && previousMembers.indexOf(member) != -1;
+			var stillDeferred = existingDeferred.indexOf(member) != -1;
+			if (stillDeferred || !trackedPreviously) deferredMembers.push(member);
+		}
+		return deferredMembers;
+	}
+
+	static function readStringArray(entry:Dynamic, fieldName:String):Null<Array<String>> {
+		if (entry == null) return null;
+		var value:Dynamic = Reflect.field(entry, fieldName);
+		if (value == null) return null;
+
+		var result:Array<String> = [];
+		for (item in cast(value, Array<Dynamic>)) {
+			if (item == null) continue;
+			result.push(Std.string(item));
+		}
+		return result;
+	}
+
 	static function discoverPublicMembers(sourceFile:String):Array<String> {
 		var members:Array<String> = [];
 		for (line in File.getContent(sourceFile).replace("\r\n", "\n").split("\n")) {
@@ -120,6 +151,7 @@ class ManualInventoryBuilder {
 	static function validateInventory(inventory:Dynamic):Void {
 		var problems:Array<String> = [];
 		validateSourceCoverage(inventory, problems);
+		validateDeferredCoverage(inventory, problems);
 		validatePromotedTests(inventory, problems);
 		if (problems.length == 0) return;
 		for (problem in problems) Sys.println('ERROR: $problem');
@@ -138,6 +170,29 @@ class ManualInventoryBuilder {
 			var expected = discoverPublicMembers(sourceFile);
 			var actual:Array<String> = cast Reflect.field(entry, "members");
 			if (!arraysEqual(expected, actual)) problems.push('Member mismatch for $modulePath: expected ${expected.join(", ")} but found ${actual.join(", ")}');
+		}
+	}
+
+	static function validateDeferredCoverage(inventory:Dynamic, problems:Array<String>):Void {
+		var modules = Reflect.field(inventory, "modules");
+		for (modulePath in Reflect.fields(modules)) {
+			var entry = Reflect.field(modules, modulePath);
+			var status:String = cast Reflect.field(entry, "status");
+			var members = readStringArray(entry, "members");
+			var deferredMembers = readStringArray(entry, "deferredMembers");
+			if (deferredMembers == null) {
+				problems.push('Missing deferredMembers for $modulePath');
+				continue;
+			}
+			if (status == "excluded") {
+				if (deferredMembers.length != 0) problems.push('Excluded module $modulePath must not carry deferred members');
+				continue;
+			}
+			for (member in deferredMembers) {
+				if (members != null && members.indexOf(member) == -1) {
+					problems.push('Deferred member ${modulePath}.${member} is not present in members');
+				}
+			}
 		}
 	}
 
