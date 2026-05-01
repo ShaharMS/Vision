@@ -3,7 +3,7 @@
 ## Iteration
 
 - Slug: `manual-utest-migration`
-- Status: `implementation committed; awaiting review`
+- Status: `review follow-up committed; awaiting reinspection`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
@@ -21,9 +21,9 @@
 ## Current Loop State
 
 - Next agent: `@Inspect`
-- Review round: `0`
-- Latest verification: `haxe test.hxml passed; the equivalent VISION_CI_* LocalCi compile-only fallback was verified because this Windows Haxe build rejects -- passthrough before LocalCi runs.`
-- Latest decision: `Step 1 cutover was prepared as one feature-branch commit; pre-existing untracked plan files remain intentionally excluded from this pass.`
+- Review round: `2`
+- Latest verification: `haxe manual-inventory.hxml passed; targeted ArrayTools and ImageTools inventory spot-checks plus touched-file diagnostics also passed.`
+- Latest decision: `The RVW-003 inventory-completeness follow-up is committed on feature/manual-utest-migration-1-cutover and ready for reinspection.`
 
 ## Packet Links
 
@@ -38,10 +38,10 @@
 ## Open Items
 
 - Blockers: `none recorded`
-- Outstanding findings: `none yet`
-- Next action: `Inspect the committed step 1 cutover and confirm no default path still uses tests/generated/src or tests/compile.hxml.`
+- Outstanding findings: `RVW-003 pending reinspection`
+- Next action: `Run @Inspect against f46848c831cf35ed2b6a8cd6d7e379d118a22bde..HEAD, then normalize the verdict with @Intake.`
 
 ## Resume Notes
 
-- Current context: `The step 1 cutover implementation is committed on feature/manual-utest-migration-1-cutover with tests/src promoted to the operational root, a checked-in manual inventory, and tests/generated documented as reference-only.`
-- Recovery instructions: `Review the committed cutover on the feature branch, preserve the Windows Haxe -- passthrough caveat, and continue ignoring the pre-existing untracked plan files unless a later pass explicitly adopts them.`
+- Current context: `Step 1 now has the initial cutover commit plus two review-follow-up commits: the README/reporter cleanup and the RVW-003 inventory-completeness fix.`
+- Recovery instructions: `Review the full committed delta through HEAD against the baseline, confirm the ArrayTools and ImageTools inventory completeness plus the repeatable generator path, preserve the accepted Windows passthrough caveat, and continue ignoring the pre-existing untracked plan files unless final plan bookkeeping adopts them.`
