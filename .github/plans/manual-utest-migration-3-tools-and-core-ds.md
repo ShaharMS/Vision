@@ -1,6 +1,6 @@
 # Plan: Manual Utest Migration — Step 3: Rewrite Tools And Core Data Structures
 
-> **Status**: 🔲 Not started
+> **Status**: ✅ Completed
 > **Prerequisite**: [manual-utest-migration-2-harness.md](manual-utest-migration-2-harness.md)
 > **Next**: [manual-utest-migration-4-image-and-geometry-ds.md](manual-utest-migration-4-image-and-geometry-ds.md)
 > **Parent**: [manual-utest-migration-overview.md](manual-utest-migration-overview.md)

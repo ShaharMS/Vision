@@ -2,22 +2,24 @@
 
 ## Commit Intent
 
-- Pass type: `review follow-up`
+- Pass type: `plan-bookkeeping closeout`
 - Plan step: `.github/plans/manual-utest-migration-3-tools-and-core-ds.md`
-- Scope: `Package the explicit RVW-013 follow-up for step 3: semantic MathTools wrapper assertions for isFinite, isNaN, parseFloat, parseInt, and parseBool, plus the matching iteration packet and progress-note updates for the new review round and implementation evidence.`
-- Reason this is one commit: `RVW-013 is the sole remaining blocker opened against the previously committed step-3 delta, so the MathTools wrapper coverage and the matching review bookkeeping belong together as one coherent review-follow-up response.`
+- Scope: `Package the approved step-3 closeout bookkeeping: the review-packet approval state, the updated run ledger and resumable progress note, the parent/step plan status markers, and the iteration timeline handoff that points recovery at step 4.`
+- Reason this is one commit: `These changes are all bookkeeping-only fallout from the same approved step-3 plan slice, so splitting them would separate one closeout state transition across multiple commits without improving reviewability.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `tests/src/tests/MathToolsTest.hx` | `yes` | `Adds the semantic wrapper coverage required by RVW-013.` |
-| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Keeps the resumable progress note aligned with the committed RVW-013 follow-up and next review handoff.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the RVW-013 implementation response plus the focused verification evidence.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the step-3 review round that opened RVW-013 against the prior implementation commit.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures this review-follow-up grouping, gitflow decision, commit message, and push intent.` |
-| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Records the review round, the implementation response, and the @Inscribe commit event for this pass.` |
-| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass does not change the durable stop-state report.` |
+| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Keeps the resumable progress note aligned with the approved step-3 closeout state and the step-4 recovery handoff.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Records the approved step-3 inspection result that closed RVW-013 and confirmed D-003 is the only remaining waiver.` |
+| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Captures that step 3 is closed out and the next recovery move is the step-4 bootstrap retarget.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures this closeout grouping, gitflow decision, commit message, and push intent.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Records the approval closeout sequence and the @Inscribe commit event for this pass.` |
+| `.github/plans/manual-utest-migration-3-tools-and-core-ds.md` | `yes` | `Marks the selected step as completed after approval.` |
+| `.github/plans/manual-utest-migration-overview.md` | `yes` | `Marks step 3 completed in the parent migration plan chain.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `no` | `The implementation evidence was already committed with the RVW-013 follow-up and does not change in this closeout pass.` |
+| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This is not a final stop report update; it remains intentionally unchanged.` |
 
 ## Gitflow Decision
 
@@ -28,23 +30,24 @@
 ## Commit Message
 
 ```text
-fix(tools-ds): address inspect review for step 3
+docs(plans): close out manual utest migration step 3
 
-Add semantic MathTools wrapper coverage for isFinite, isNaN,
-parseFloat, parseInt, and parseBool after RVW-013 exposed the
-remaining step-3 member-level coverage gap.
+Record the approved step-3 bookkeeping state after review closed
+RVW-013, marked the tools/core-ds migration complete, and pointed
+the next recovery step at the image/geometry suite rewrite.
 
 Plan: .github/plans/manual-utest-migration-3-tools-and-core-ds.md
-Pass: review follow-up for RVW-013 MathTools wrapper coverage
+Pass: plan-bookkeeping closeout
+Approved head: 7cf5d491504c87db4fd2c8dbcce15cfff4e869fe
 ```
 
 ## Result
 
 - Commit hash: `this commit`
 - Push result: `push this commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available`
-- Workspace status after commit: `expected clean after staging the MathTools review-follow-up delta`
+- Workspace status after commit: `expected clean after staging the approved step-3 closeout bookkeeping files`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Hand the committed RVW-013 response back to review for reinspection of the selected step-3 delta while carrying forward D-003 and the Windows env-var filtered-run caveat.`
+- Follow-up needed: `Retarget the iteration to .github/plans/manual-utest-migration-4-image-and-geometry-ds.md while carrying forward D-003 and the Windows env-var filtered-run fallback.`
 
 ## Commit History
 
@@ -63,4 +66,5 @@ Pass: review follow-up for RVW-013 MathTools wrapper coverage
 | `11` | `a6c6894864eb40a3e8fb1510103435b391d31292` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-006 and RVW-007 review follow-up, including the Queue.has and ByteArray.getInt8 library fixes, the new edge-case coverage in QueueTest and ByteArrayTest, and the matching iteration packet updates.` |
 | `12` | `1c05e1ebf05e0ef2d04436eada47b1c91ce6e51f` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-008, RVW-009, and RVW-010 review follow-up, including the MathTools.isBetweenRange(s), ArrayTools.distanceTo, and Histogram.length library fixes, the strengthened semantic coverage in MathToolsTest, ArrayToolsTest, and HistogramTest, and the matching iteration packet updates.` |
 | `13` | `e616da22e10ea88d1140780219ac4ed6d2164807` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-011 and RVW-012 review follow-up, including the semantic Color constant coverage, the deterministic sys temp-file ImageTools coverage, and the matching iteration packet updates.` |
-| `14` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-013 review follow-up, including the semantic MathTools wrapper coverage, the updated progress note, and the matching iteration packet updates.` |
+| `14` | `7cf5d491504c87db4fd2c8dbcce15cfff4e869fe` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-013 review follow-up, including the semantic MathTools wrapper coverage, the updated progress note, and the matching iteration packet updates.` |
+| `15` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-3 closeout bookkeeping, including the review-packet approval state, the updated run ledger and progress note, and the plan status changes that mark step 3 complete before the step-4 retarget.` |

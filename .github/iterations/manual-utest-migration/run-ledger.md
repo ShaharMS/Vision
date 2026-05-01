@@ -3,7 +3,7 @@
 ## Iteration
 
 - Slug: `manual-utest-migration`
-- Status: `step 3 selected; bootstrap in progress`
+- Status: `step 3 closed out; step 4 retarget pending`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
@@ -20,10 +20,10 @@
 
 ## Current Loop State
 
-- Next agent: `@Implement`
-- Review round: `0`
-- Latest verification: `Step 2 closeout was committed as e902a4633ee5d45a3488270ea48e9d7215ed914c and the working tree is clean.`
-- Latest decision: `Step 3 bootstrap has been indexed and the next handoff is implementation of the tools/core-ds rewrite scope.`
+- Next agent: `@Index`
+- Review round: `5`
+- Latest verification: `Step 3 approved after the three grouped VISION_TESTS runs passed, touched authored diagnostics were clean, and D-003 remained the only accepted narrow waiver.`
+- Latest decision: `@Inspect approved the committed delta through 7cf5d491504c87db4fd2c8dbcce15cfff4e869fe with no remaining findings.`
 
 ## Packet Links
 
@@ -39,9 +39,9 @@
 
 - Blockers: `none recorded`
 - Outstanding findings: `none`
-- Next action: `Invoke @Index for the step-3 bootstrap state, then delegate implementation for .github/plans/manual-utest-migration-3-tools-and-core-ds.md.`
+- Next action: `Invoke @Index for the step-4 bootstrap state, then delegate implementation for .github/plans/manual-utest-migration-4-image-and-geometry-ds.md.`
 
 ## Resume Notes
 
-- Current context: `Step 2 is complete and committed; the active iteration scope is now the step 3 tools/core-data-structure rewrite on a clean baseline.`
-- Recovery instructions: `Index the step-3 bootstrap state, then rewrite the targeted vision.tools and core vision.ds suites with semantic assertions, shared edge-case helpers, and inventory status updates while carrying forward the accepted RVW-005 waiver and the Windows filtered-run fallback.`
+- Current context: `Step 3 is approved and closed out; the next remaining work is to retarget the iteration to step 4.`
+- Recovery instructions: `Retarget the ledger to .github/plans/manual-utest-migration-4-image-and-geometry-ds.md, index the step-4 bootstrap state, and carry forward D-003 and the Windows filtered-run fallback.`
