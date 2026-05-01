@@ -2,11 +2,10 @@
 
 - Active step: `.github/plans/manual-utest-migration-2-harness.md`
 - Overview: `.github/plans/manual-utest-migration-overview.md`
-- Iteration state: `step 2 initial harness implementation is committed and awaiting review.`
-- Step-2 baseline: `Clean recovery point is 4649713738100c31fb9277bcf66e4b7e31678648 on feature/manual-utest-migration-1-cutover.`
-- Major carry-forward outcomes: `tests/src` remains the operational suite for `test.hxml`, `tests/ci/LocalCi.hx`, and GitHub Actions; `tests/catalog/manual-test-inventory.json` still covers every `src/vision` module; tests/src/Main.hx now supports deterministic suite and case filtering through tests/src/tests/support/ManualSuites.hx; shared helpers now live under tests/src/tests/support; and .vscode/tasks.json plus tests/README.md document the env-var filter path verified on this Windows Haxe build.`
-- Branch: `feature/manual-utest-migration-1-cutover`
-- Current step-2 scope: `The initial harness implementation is committed on this branch, including an authored ImageTest.test_getPixel__outOfBounds case and FromBytesTest helper adoption that exercise the shared support surface.`
-- Local verification caveat: `The direct Windows command haxe tests/ci/local-ci.hxml -- --targets=interp --compile-only still fails before LocalCi runs on this Haxe build, so local verification in this environment must keep using the documented VISION_CI_* env-var fallback.`
-- Residual limitation: `tests/generator/ManualInventoryBuilder.hx` still only discovers single-line public declarations, so multiline public signatures remain outside the current inventory scan.`
-- Next review focus: `Review the committed .github/plans/manual-utest-migration-2-harness.md delta against 4649713738100c31fb9277bcf66e4b7e31678648 with emphasis on deterministic filtering through Runner.addCase(..., ?pattern), the curated ManualSuites registry, and the helper/task/doc contract.`
+- Iteration state: `step 2 is approved and closed out; the next recovery point is retargeting the iteration to step 3.`
+- Approved range: `4649713738100c31fb9277bcf66e4b7e31678648..a811b9d6e98d50dcf625add678f9747873efab87 on feature/manual-utest-migration-1-cutover.`
+- Harness outcomes: `tests/src/Main.hx now supports deterministic suite and case filtering, tests/src/tests/support/ManualSuites.hx centralizes authored suite registration, shared helpers under tests/src/tests/support are in active use, .vscode/tasks.json exposes suite/case/current-file entrypoints, and tests/README.md documents the verified filter contract for this Windows environment.`
+- Accepted waiver: `D-003 remains in force only for tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7, where the retained reference-only generated runner still shows unresolved utest.Runner and PrettyReporter diagnostics until step 7 deletes tests/generated and tests/compile.hxml.`
+- Windows passthrough caveat: `The direct Windows commands haxe test.hxml -- --tests ... and haxe tests/ci/local-ci.hxml -- --targets=interp --compile-only still fail before Main or LocalCi runs on this Haxe build, so local verification here continues to rely on the documented VISION_TESTS, VISION_TEST_CASES, and VISION_CI_* environment-variable fallbacks.`
+- Residual risks: `Opening tests/generated/src/Main.hx directly still shows the accepted red diagnostics, and the authored suite still carries the pre-existing deprecation warnings from tests/src/tests/GaussTest.hx and tests/src/tests/ImageToolsTest.hx.`
+- Next action: `Retarget the iteration to .github/plans/manual-utest-migration-3-tools-and-core-ds.md and begin the tools/core-ds migration work while carrying forward D-003 plus the Windows passthrough caveat.`

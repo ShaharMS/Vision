@@ -11,6 +11,7 @@
 
 | Decision ID | Applies to | Approved by | Reason | Follow-up |
 |-------------|------------|-------------|--------|-----------|
+| `D-003` | `RVW-005 / tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7` | `@Inspect` | `Accepted RVW-005 as a narrow waiver because the unresolved utest.Runner and PrettyReporter diagnostics are confined to the retained reference-only tests/generated/src/Main.hx runner, while the authored harness, repo-root test.hxml entrypoint, VS Code settings/tasks, LocalCi, and the GitHub workflow all operate on tests/src and satisfy the reviewed gates.` | `Supersedes PENDING-RVW-005. Remove the exception when .github/plans/manual-utest-migration-7-decommission-and-coverage.md deletes tests/generated and tests/compile.hxml.` |
 
 ## Pending Waiver Requests
 

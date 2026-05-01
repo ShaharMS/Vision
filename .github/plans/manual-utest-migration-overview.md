@@ -13,7 +13,7 @@ The requested end state is an authored `utest` suite that is owned by humans, ca
 | Order | Plan File | Summary |
 |-------|-----------|---------|
 | 1 | [manual-utest-migration-1-cutover.md](manual-utest-migration-1-cutover.md) | ✅ Completed — moved operational test entrypoints off the generated tree and recorded a coverage inventory. |
-| 2 | [manual-utest-migration-2-harness.md](manual-utest-migration-2-harness.md) | Build the authored runner, shared helpers, and VS Code-friendly suite and case filtering. |
+| 2 | [manual-utest-migration-2-harness.md](manual-utest-migration-2-harness.md) | ✅ Completed — built the authored runner, shared helpers, and VS Code-friendly suite and case filtering. |
 | 3 | [manual-utest-migration-3-tools-and-core-ds.md](manual-utest-migration-3-tools-and-core-ds.md) | Rewrite `vision.tools` and core collection/value-type tests with semantic assertions and edge cases. |
 | 4 | [manual-utest-migration-4-image-and-geometry-ds.md](manual-utest-migration-4-image-and-geometry-ds.md) | Rewrite image-centric, matrix, and geometry data-structure suites around explicit invariants. |
 | 5 | [manual-utest-migration-5-algorithms.md](manual-utest-migration-5-algorithms.md) | Replace algorithm smoke tests with deterministic fixture-driven behavioral coverage. |

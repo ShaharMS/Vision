@@ -3,7 +3,7 @@
 ## Iteration
 
 - Slug: `manual-utest-migration`
-- Status: `step 2 implementation committed; review pending`
+- Status: `step 2 approved and closed out; step 3 retarget pending`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
@@ -20,10 +20,10 @@
 
 ## Current Loop State
 
-- Next agent: `@Inspect`
-- Review round: `1`
-- Latest verification: `The implementation pass recorded a passing suite-filter run, a passing case-filter run, and clean touched-file diagnostics for the edited harness, support, task, and README files.`
-- Latest decision: `The initial step-2 harness implementation is committed on feature/manual-utest-migration-1-cutover and is ready for review against baseline 4649713738100c31fb9277bcf66e4b7e31678648.`
+- Next agent: `@Iterate`
+- Review round: `3`
+- Latest verification: `The approved step-2 range remains 4649713738100c31fb9277bcf66e4b7e31678648..a811b9d6e98d50dcf625add678f9747873efab87, the plans now mark step 2 complete, and the closeout packet set preserves D-003 plus the Windows env-var fallback contract for local verification.`
+- Latest decision: `Step 2 is closed out on feature/manual-utest-migration-1-cutover; the next loop should retarget the iteration to step 3 while carrying forward D-003 until step 7 removes tests/generated and tests/compile.hxml.`
 
 ## Packet Links
 
@@ -39,9 +39,9 @@
 
 - Blockers: `none recorded`
 - Outstanding findings: `none`
-- Next action: `Delegate review for .github/plans/manual-utest-migration-2-harness.md against 4649713738100c31fb9277bcf66e4b7e31678648..HEAD, with focus on deterministic filtering, helper adoption, task wiring, and the documented Windows env-var fallback.`
+- Next action: `Retarget the iteration to .github/plans/manual-utest-migration-3-tools-and-core-ds.md and begin the next implementation pass while preserving D-003 and the accepted Windows passthrough caveats as carried context.`
 
 ## Resume Notes
 
-- Current context: `The step-2 harness implementation is committed on the feature branch and the next durable handoff is review of that delta.`
-- Recovery instructions: `Review the diff from 4649713738100c31fb9277bcf66e4b7e31678648 to HEAD, confirm suite and case filtering still route through Runner.addCase(..., ?pattern), verify .vscode/tasks.json uses the env-var path that works on this Windows build, and preserve the accepted LocalCi passthrough caveat unless a reproducible local fix lands.`
+- Current context: `Step 2 is approved and closed out on the feature branch; the next durable action is retargeting the iteration to step 3.`
+- Recovery instructions: `Advance the selected scope to .github/plans/manual-utest-migration-3-tools-and-core-ds.md, keep D-003 in force only for tests/generated/src/Main.hx until step 7 deletes that reference-only surface, and preserve the Windows passthrough caveats for test.hxml and LocalCi in this environment.`
