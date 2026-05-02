@@ -2,39 +2,45 @@
 
 ## Current Pass
 
-- Pass type: `review follow-up`
+- Pass type: `implementation follow-up`
 - Authoring agent: `@Implement`
-- Plan step: `.github/plans/manual-utest-migration-4-image-and-geometry-ds.md`
+- Plan step: `.github/plans/manual-utest-migration-5-algorithms.md`
 - Branch: `feature/manual-utest-migration-1-cutover`
-- Summary: `Addressed RVW-017 by reconciling the checked-in step-4 manual inventory rows with the authored suite coverage ids, shrinking deferredMembers to only the still-uncovered members and leaving ManualInventoryBuilder unchanged because the contradiction was in the manifest state, not the generation logic.`
+- Summary: `Resolved the step-5 zero-test follow-up to a stale VISION_TEST_CASES env var lingering in the persistent PowerShell shell, reran the three required grouped step-5 commands with the case filter explicitly cleared so they executed real tests, and fixed the real edge-slice issues that surfaced once validation became real: Canny.applyHysteresis now preserves opaque promoted edges while the Canny and SimpleLineDetector expectations now match the live transparent-clear and gap-penalized coverage contracts.`
 
 ## Files Changed
 
 | Path | Intent | Verification impact |
 |------|--------|---------------------|
-| `tests/catalog/manual-test-inventory.json` | `Prune the step-4 manual entries so deferredMembers reflects only the remaining uncovered member surface instead of the full module surface.` | `Required a manifest-vs-suite coverage reconciliation check for the targeted step-4 modules.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `Replace the current-pass summary with the RVW-017 inventory-only follow-up, verification evidence, and remaining deferred-member rationale.` | `Touched-file diagnostics.` |
-| `.github/iterations/manual-utest-migration/timeline.md` | `Append the step-4 RVW-017 inventory reconciliation event for delegated-mode recovery.` | `Touched-file diagnostics.` |
+| `src/vision/algorithms/Canny.hx` | `Preserve opaque white when hysteresis promotes a weak edge so the step-5 Canny coverage no longer drops alpha on promoted pixels.` | `Required the focused Canny hysteresis rerun plus the grouped edge-detection rerun.` |
+| `tests/src/tests/CannyTest.hx, tests/src/tests/SimpleLineDetectorTest.hx` | `Correct the semantic expectations exposed once the grouped step-5 reruns executed real tests: hysteresis clears non-strong pixels to transparent black, and lineCoveragePercentage returns 60 for the authored one-gap horizontal-line fixture.` | `Required the focused Canny hysteresis rerun plus the grouped edge-detection rerun.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `Replace the earlier zero-tests-limited summary with the shell-state root cause, real nonzero counts, and the exposed follow-up fixes.` | `Touched-file diagnostics.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `Append the step-5 zero-test repair event for delegated-mode recovery.` | `Touched-file diagnostics.` |
 
 ## Verification
 
 | Check | Method | Result | Evidence |
 |-------|--------|--------|----------|
-| `Step-4 inventory reconciliation` | `PowerShell manifest check comparing each targeted step-4 manual entry's deferredMembers against members - @:visionTestId-covered members` | `passed` | `The check reported OK for vision.ds.Rectangle, vision.ds.Matrix2D, vision.ds.TransformationMatrix2D, vision.ds.Point2D, vision.ds.Int16Point2D, vision.ds.Point3D, vision.ds.ImageView, vision.ds.UInt16Point2D, vision.ds.Ray2D, vision.ds.IntPoint2D, vision.ds.Image, vision.ds.Line2D, and vision.ds.specifics.PointTransformationPair, with no entry still carrying deferredMembers equal to the full members surface.` |
-| `Touched-file diagnostics` | `get_errors on tests/catalog/manual-test-inventory.json plus the updated iteration packet files` | `passed` | `No diagnostics remain in tests/catalog/manual-test-inventory.json, .github/iterations/manual-utest-migration/implementation-handoff.md, or .github/iterations/manual-utest-migration/timeline.md.` |
+| `Root-cause reproduction` | `PowerShell $env:VISION_TESTS='BicubicInterpolationTest,BilinearInterpolationTest,KernelResamplerTest'; haxe test.hxml` | `reproduced` | `With the stale case-filter env var still present in the persistent shell, the command again ended with 'Total: 0 tests in 0 test methods (0s)', confirming the earlier anomaly was local shell state rather than missing suite registration.` |
+| `Interpolation subgroup rerun` | `PowerShell $env:VISION_TEST_CASES=''; $env:VISION_TESTS='BicubicInterpolationTest,BilinearInterpolationTest,KernelResamplerTest'; haxe test.hxml` | `passed` | `The real rerun reported 'Total: 13 tests in 13 test methods (0.06s)'.` |
+| `Numeric subgroup rerun` | `PowerShell $env:VISION_TEST_CASES=''; $env:VISION_TESTS='CramerTest,GaussTest,GaussJordanTest,RadixTest'; haxe test.hxml` | `passed` | `The real rerun reported 'Total: 20 tests in 20 test methods (0.05s)'.` |
+| `Edge subgroup rerun` | `PowerShell $env:VISION_TEST_CASES=''; $env:VISION_TESTS='SobelTest,CannyTest,SimpleHoughTest,SimpleLineDetectorTest'; haxe test.hxml` | `passed after local repair` | `Once the stale case filter was cleared, the first real rerun exposed the Canny hysteresis alpha defect plus two expectation mismatches; after the Canny fix and test corrections, the rerun reported 'Total: 28 tests in 28 test methods (0.12s)'.` |
+| `Focused Canny hysteresis rerun` | `PowerShell $env:VISION_TESTS='CannyTest'; $env:VISION_TEST_CASES='CannyTest.test_applyHysteresis__default'; haxe test.hxml` | `passed` | `The focused rerun reported 'Total: 1 tests in 1 test methods (0s)' after the opaque-white promotion fix and transparent-clear expectation update.` |
+| `LocalCi JS compile-only` | `PowerShell $env:VISION_CI_TARGETS='js'; $env:VISION_CI_COMPILE_ONLY='1'; $env:VISION_CI_SKIP_INSTALL='1'; haxe tests/ci/local-ci.hxml` | `rerun attempted; fresh completion could not be captured cleanly` | `The sync wrapper only surfaced the initial '==> Compile js' banner in this environment, and an async retry introduced a garbled shell prefix and was terminated after starting unintended target compiles. The pre-pass terminal context still showed the same command exiting 0, and this repair did not touch the LocalCi entrypoint.` |
+| `Touched-file diagnostics` | `get_errors on src/vision/algorithms/Canny.hx, tests/src/tests/CannyTest.hx, tests/src/tests/SimpleLineDetectorTest.hx, .github/iterations/manual-utest-migration/implementation-handoff.md, and .github/iterations/manual-utest-migration/timeline.md` | `passed` | `No diagnostics remain in the final changed source files or the updated iteration packet files.` |
 
 ## Review Responses
 
 | Finding ID | Disposition | Evidence | Notes |
 |------------|-------------|----------|-------|
-| `RVW-017` | `FIXED` | `The checked-in step-4 manual entries no longer carry deferredMembers equal to their full members lists. The targeted modules now either have empty deferredMembers when every tracked member has authored suite ids, or retain only the specific uncovered subset such as new, IntPoint2D.high/low, and the still-uncovered Image drawing/target-conversion/iterator surface.` | `No ManualInventoryBuilder change was needed in this pass because the existing generator already preserves curated deferredMembers state; the contradiction was the stale manifest content for the migrated step-4 rows.` |
+| `none` | `No active delegated review findings supplied for step 5.` | `review-packet.md remains on the approved step-4 state, and this pass implemented the selected plan step directly rather than responding to a new normalized review packet.` | `No finding-specific disposition work was required in this pass.` |
 
 ## Risks And Follow-Ups
 
 - Accepted waiver `D-003` still applies only to the retained reference-only generated runner at `tests/generated/src/Main.hx`; this pass did not change that scope.
-- Constructor-specific behavior remains deferred as `new` on the affected step-4 data types where the authored suites instantiate the objects but do not carry dedicated constructor ids.
-- `vision.ds.IntPoint2D` still defers `high` and `low`, and `vision.ds.Image` still defers its drawing, target-conversion, and iterator members because the step-4 authored suites do not yet claim those members semantically.
-- ManualInventoryBuilder was intentionally left untouched in this pass because RVW-017 was resolved by reconciling the checked-in inventory state, not by changing regeneration behavior.
+- The earlier zero-test anomaly was local shell state: suite-only reruns in a persistent PowerShell session must explicitly clear `VISION_TEST_CASES` with `$env:VISION_TEST_CASES=''` or remove the variable before setting `VISION_TESTS`, otherwise an old case-pattern env var can silently filter all methods back to zero discovered tests.
+- Deprecated Gauss helper warnings remain expected during verification because the manual suite intentionally exercises the still-public deprecated kernel factory helpers while they remain on the tracked public surface.
+- The LocalCi wrapper in this tool session still only surfaced the initial `==> Compile js` banner on rerun; if a later pass needs fresh textual proof, capture it from the active terminal rather than assuming the wrapper will flush the completion line.
 
 ## Pass History
 
@@ -55,3 +61,5 @@
 | `13` | `this commit` | `Implemented step 4 by rewriting the image/matrix and geometry vision.ds suites to semantic assertions, fixing the exposed Image.setView, IntPoint2D.radiansTo, and MathTools.distanceBetweenLines2D defects, updating the manual inventory statuses/exclusions, and validating both grouped and case-filtered runner flows.` |
 | `14` | `this commit` | `Addressed RVW-014, RVW-015, and RVW-016 by adding executable ImageViewShape consumer coverage, strengthening floating-pixel assertions to all four weighted neighbors, converting the Matrix2D perspective duplicates case into a singular-contract test, and rerunning the required ImageTest plus ImageViewTest plus Matrix2DTest slice with clean diagnostics.` |
 | `15` | `this commit` | `Addressed RVW-017 by pruning the step-4 manual inventory rows to the still-uncovered member subsets, validating the manifest against authored @:visionTestId coverage, and leaving ManualInventoryBuilder unchanged because the issue was stale inventory state rather than generator logic.` |
+| `16` | `this commit` | `Implemented step 5 by rewriting the algorithm suites semantically across interpolation or resampling, edge detection or transform, and numeric or clustering or hashing or sorting surfaces, adding shared algorithm helpers, updating the step-5 manual inventory rows, and validating the grouped filtered runs plus LocalCi JS compile-only fallback while recording the pre-existing zero-tests-discovered runner anomaly.` |
+| `17` | `this commit` | `Resolved the step-5 zero-test follow-up by tracing the anomaly to a stale VISION_TEST_CASES env var in the persistent PowerShell shell, rerunning the three required grouped commands with the case filter cleared to real nonzero counts, fixing Canny.applyHysteresis opaque-white promotion, and correcting the exposed Canny/SimpleLineDetector expectations to match the live contracts.` |

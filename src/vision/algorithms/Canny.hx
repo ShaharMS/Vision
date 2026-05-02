@@ -81,7 +81,7 @@ class Canny {
 				for (i in 0...2) {
 					for (j in 0...2) {
 						if (isCandidate(neighbors[i][j])) {
-							copy.setPixel(x - 1 + i, y - 1 + j, 0xFFFFFF);
+							copy.setPixel(x - 1 + i, y - 1 + j, Color.WHITE);
 							traverseEdge(x - 1 + i, y - 1 + j);
 						}
 					}

@@ -1,78 +1,53 @@
 package tests;
 
-import tests.support.Factories;
-import utest.Assert;
+import tests.support.ApproxAssertions;
+import tests.support.ImageAssertions;
+import tests.support.ManualFixtures;
+import tests.support.ResamplerAssertions;
 import vision.algorithms.KernelResampler;
+import vision.ds.Color;
 import vision.ds.Image;
 
 @:access(vision.algorithms.KernelResampler)
-@:visionMaturity("mixed")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class KernelResamplerTest extends utest.Test {
-
 	@:visionTestId("vision.algorithms.KernelResampler.resize#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_resize__default() {
-		var image = Factories.gradientImage(3, 3);
-		var width = 3;
-		var height = 3;
-		var kernelRadius = 3;
-		var kernel = (arg0) -> 1.0;
-		var result = vision.algorithms.KernelResampler.resize(image, width, height, kernelRadius, kernel);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-		Assert.equals(width, result.width);
-		Assert.equals(height, result.height);
+		var result = KernelResampler.resize(ManualFixtures.interpolationImage(), 1, 1, 1, (_) -> 1.0);
+		ImageAssertions.hasDimensions(result, 1, 1);
+		ImageAssertions.pixelEquals(result, 0, 0, Color.fromRGBA(63, 63, 63, 255));
 	}
 
 	@:visionTestId("vision.algorithms.KernelResampler.resize#tiny")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_resize__tiny() {
-		var image = Factories.gradientImage(3, 3);
-		var width = 3;
-		var height = 3;
-		var kernelRadius = 3;
-		var kernel = (arg0) -> 1.0;
-		var result = vision.algorithms.KernelResampler.resize(image, width, height, kernelRadius, kernel);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-		Assert.equals(width, result.width);
-		Assert.equals(height, result.height);
+		var expected = Color.fromRGBA(12, 34, 56, 255);
+		var result = KernelResampler.resize(new Image(1, 1, expected), 1, 1, 1, (_) -> 1.0);
+		ResamplerAssertions.uniformColor(result, expected);
 	}
 
 	@:visionTestId("vision.algorithms.KernelResampler.resize#checkerboard")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_resize__checkerboard() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var width = 3;
-		var height = 3;
-		var kernelRadius = 3;
-		var kernel = (arg0) -> 1.0;
-		var result = vision.algorithms.KernelResampler.resize(image, width, height, kernelRadius, kernel);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-		Assert.equals(width, result.width);
-		Assert.equals(height, result.height);
+		var result = KernelResampler.resize(ManualFixtures.tinyCheckerboardImage(), 1, 1, 1, (_) -> 1.0);
+		ImageAssertions.hasDimensions(result, 1, 1);
+		ImageAssertions.pixelEquals(result, 0, 0, Color.fromRGBA(127, 127, 127, 255));
 	}
 
 	@:visionTestId("vision.algorithms.KernelResampler.cubicKernel#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_cubicKernel__default() {
-		var t = 1.0;
-		var b = 1.0;
-		var c = 1.0;
-		var result = vision.algorithms.KernelResampler.cubicKernel(t, b, c);
-		Assert.isFalse(Math.isNaN(result));
+		ApproxAssertions.equalsFloat(1, KernelResampler.cubicKernel(0, 0, 0.5));
+		ApproxAssertions.equalsFloat(0, KernelResampler.cubicKernel(2, 0, 0.5));
+		ApproxAssertions.equalsFloat(KernelResampler.cubicKernel(0.5, 1 / 3, 1 / 3), KernelResampler.cubicKernel(-0.5, 1 / 3, 1 / 3));
 	}
-
 }

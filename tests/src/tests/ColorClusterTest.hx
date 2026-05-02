@@ -1,35 +1,38 @@
 package tests;
 
+import tests.support.CollectionAssertions;
 import utest.Assert;
 import vision.ds.Color;
 import vision.ds.kmeans.ColorCluster;
 
 @:access(vision.ds.kmeans.ColorCluster)
-@:visionMaturity("mixed")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class ColorClusterTest extends utest.Test {
+	function createCluster():ColorCluster {
+		return new ColorCluster(Color.fromRGBA(51, 102, 153, 255), [Color.RED, Color.GREEN]);
+	}
+
+	@:visionTestId("vision.ds.kmeans.ColorCluster.new#default")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_new__default() {
+		var result = createCluster();
+		Assert.equals(Color.fromRGBA(51, 102, 153, 255), result.centroid);
+		CollectionAssertions.values([Color.RED, Color.GREEN], result.items);
+	}
 
 	@:visionTestId("vision.ds.kmeans.ColorCluster.centroid#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_centroid__default() {
-		var ctor_centroid = (0xFF336699 : vision.ds.Color);
-		var ctor_items = [cast 1, cast 2, cast 3];
-		var instance = new vision.ds.kmeans.ColorCluster(ctor_centroid, ctor_items);
-		var result = instance.centroid;
-		Assert.notNull(result);
+		Assert.equals(Color.fromRGBA(51, 102, 153, 255), createCluster().centroid);
 	}
 
 	@:visionTestId("vision.ds.kmeans.ColorCluster.items#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_items__default() {
-		var ctor_centroid = (0xFF336699 : vision.ds.Color);
-		var ctor_items = [cast 1, cast 2, cast 3];
-		var instance = new vision.ds.kmeans.ColorCluster(ctor_centroid, ctor_items);
-		var result = instance.items;
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		CollectionAssertions.values([Color.RED, Color.GREEN], createCluster().items);
 	}
-
 }

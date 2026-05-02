@@ -33,19 +33,9 @@
             "testFile": "tests/src/tests/PixelFormatTest.hx"
         },
         "vision.algorithms.Gauss": {
-            "deferredMembers": [
-                "create1x1Kernel",
-                "create3x3Kernel",
-                "create5x5Kernel",
-                "create7x7Kernel",
-                "create9x9Kernel",
-                "createKernelOfSize",
-                "create2DKernelOfSize",
-                "create1DKernelOfSize",
-                "fastBlur"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/Gauss.hx",
             "members": [
                 "create1x1Kernel",
@@ -87,12 +77,9 @@
             "testFile": null
         },
         "vision.algorithms.Perwitt": {
-            "deferredMembers": [
-                "convolveWithPerwittOperator",
-                "detectEdges"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/Perwitt.hx",
             "members": [
                 "convolveWithPerwittOperator",
@@ -334,12 +321,9 @@
             "testFile": null
         },
         "vision.algorithms.Sobel": {
-            "deferredMembers": [
-                "convolveWithSobelOperator",
-                "detectEdges"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/Sobel.hx",
             "members": [
                 "convolveWithSobelOperator",
@@ -348,12 +332,9 @@
             "testFile": "tests/src/tests/SobelTest.hx"
         },
         "vision.algorithms.LanczosInterpolation": {
-            "deferredMembers": [
-                "RADIUS",
-                "interpolate"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/LanczosInterpolation.hx",
             "members": [
                 "RADIUS",
@@ -474,15 +455,9 @@
             "testFile": null
         },
         "vision.algorithms.Canny": {
-            "deferredMembers": [
-                "grayscale",
-                "applyGaussian",
-                "applySobelFilters",
-                "nonMaxSuppression",
-                "applyHysteresis"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/Canny.hx",
             "members": [
                 "grayscale",
@@ -722,12 +697,9 @@
             "testFile": null
         },
         "vision.algorithms.BilinearInterpolation": {
-            "deferredMembers": [
-                "interpolate",
-                "interpolateMissingPixels"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/BilinearInterpolation.hx",
             "members": [
                 "interpolate",
@@ -780,12 +752,9 @@
             "testFile": null
         },
         "vision.algorithms.SimpleHough": {
-            "deferredMembers": [
-                "detectLines",
-                "mapLines"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/SimpleHough.hx",
             "members": [
                 "detectLines",
@@ -794,11 +763,9 @@
             "testFile": "tests/src/tests/SimpleHoughTest.hx"
         },
         "vision.algorithms.Cramer": {
-            "deferredMembers": [
-                "solveVariablesFor"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/Cramer.hx",
             "members": [
                 "solveVariablesFor"
@@ -820,13 +787,9 @@
             "testFile": "tests/src/tests/PointTransformationPairTest.hx"
         },
         "vision.algorithms.KMeans": {
-            "deferredMembers": [
-                "generateClustersUsingConvergence",
-                "getImageColorClusters",
-                "pickElementsAtRandom"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/KMeans.hx",
             "members": [
                 "generateClustersUsingConvergence",
@@ -866,11 +829,9 @@
             "testFile": null
         },
         "vision.algorithms.MitchellNetravaliInterpolation": {
-            "deferredMembers": [
-                "interpolate"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/MitchellNetravaliInterpolation.hx",
             "members": [
                 "interpolate"
@@ -1014,11 +975,9 @@
             "testFile": null
         },
         "vision.algorithms.BicubicInterpolation": {
-            "deferredMembers": [
-                "interpolate"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/BicubicInterpolation.hx",
             "members": [
                 "interpolate"
@@ -1432,11 +1391,9 @@
             "testFile": null
         },
         "vision.algorithms.BilateralFilter": {
-            "deferredMembers": [
-                "filter"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/BilateralFilter.hx",
             "members": [
                 "filter"
@@ -1557,11 +1514,9 @@
             "testFile": "tests/src/tests/UInt16Point2DTest.hx"
         },
         "vision.algorithms.CatmullRomInterpolation": {
-            "deferredMembers": [
-                "interpolate"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/CatmullRomInterpolation.hx",
             "members": [
                 "interpolate"
@@ -1648,13 +1603,9 @@
             "testFile": "tests/src/tests/QueueTest.hx"
         },
         "vision.ds.kmeans.ColorCluster": {
-            "deferredMembers": [
-                "centroid",
-                "items",
-                "new"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/ds/kmeans/ColorCluster.hx",
             "members": [
                 "centroid",
@@ -1684,11 +1635,9 @@
             "testFile": "tests/src/tests/HistogramTest.hx"
         },
         "vision.algorithms.Radix": {
-            "deferredMembers": [
-                "sort"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/Radix.hx",
             "members": [
                 "sort"
@@ -1712,11 +1661,9 @@
             "testFile": null
         },
         "vision.algorithms.PerspectiveWarp": {
-            "deferredMembers": [
-                "generateMatrix"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/PerspectiveWarp.hx",
             "members": [
                 "generateMatrix"
@@ -1762,12 +1709,9 @@
             "testFile": "tests/src/tests/QueueCellTest.hx"
         },
         "vision.algorithms.Laplace": {
-            "deferredMembers": [
-                "convolveWithLaplacianOperator",
-                "laplacianOfGaussian"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/Laplace.hx",
             "members": [
                 "convolveWithLaplacianOperator",
@@ -1831,12 +1775,9 @@
             "testFile": "tests/src/tests/PixelTest.hx"
         },
         "vision.algorithms.ImageHashing": {
-            "deferredMembers": [
-                "ahash",
-                "phash"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/ImageHashing.hx",
             "members": [
                 "ahash",
@@ -1857,12 +1798,9 @@
             "testFile": null
         },
         "vision.algorithms.KernelResampler": {
-            "deferredMembers": [
-                "resize",
-                "cubicKernel"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/KernelResampler.hx",
             "members": [
                 "resize",
@@ -1871,11 +1809,9 @@
             "testFile": "tests/src/tests/KernelResamplerTest.hx"
         },
         "vision.algorithms.GaussJordan": {
-            "deferredMembers": [
-                "invert"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/GaussJordan.hx",
             "members": [
                 "invert"
@@ -1883,15 +1819,9 @@
             "testFile": "tests/src/tests/GaussJordanTest.hx"
         },
         "vision.algorithms.SimpleLineDetector": {
-            "deferredMembers": [
-                "image",
-                "findLineFromPoint",
-                "lineCoveragePercentage",
-                "correctLines",
-                "new"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/SimpleLineDetector.hx",
             "members": [
                 "image",
@@ -1903,11 +1833,9 @@
             "testFile": "tests/src/tests/SimpleLineDetectorTest.hx"
         },
         "vision.algorithms.RobertsCross": {
-            "deferredMembers": [
-                "convolveWithRobertsCross"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+                "deferredMembers": [],
+                "notes": "Manual semantic suite authored under tests/src and maintained by hand.",
+                "status": "manual",
             "sourceFile": "src/vision/algorithms/RobertsCross.hx",
             "members": [
                 "convolveWithRobertsCross"

@@ -1,127 +1,126 @@
 package tests;
 
-import tests.support.Factories;
+import tests.support.AlgorithmFixtures;
+import tests.support.ApproxAssertions;
 import utest.Assert;
 import vision.algorithms.SimpleLineDetector;
+import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.Int16Point2D;
 import vision.ds.Line2D;
 import vision.ds.Point2D;
 
 @:access(vision.algorithms.SimpleLineDetector)
-@:visionMaturity("mixed")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class SimpleLineDetectorTest extends utest.Test {
+	function assertHorizontalLine(line:Line2D, expectedMinX:Float, expectedMaxX:Float, expectedY:Float):Void {
+		var minX = Math.min(line.start.x, line.end.x);
+		var maxX = Math.max(line.start.x, line.end.x);
+		ApproxAssertions.equalsFloat(expectedMinX, minX);
+		ApproxAssertions.equalsFloat(expectedMaxX, maxX);
+		ApproxAssertions.equalsFloat(expectedY, line.start.y);
+		ApproxAssertions.equalsFloat(expectedY, line.end.y);
+	}
+
+	function assertVerticalLine(line:Line2D, expectedX:Float, expectedMinY:Float, expectedMaxY:Float):Void {
+		var minY = Math.min(line.start.y, line.end.y);
+		var maxY = Math.max(line.start.y, line.end.y);
+		ApproxAssertions.equalsFloat(expectedX, line.start.x);
+		ApproxAssertions.equalsFloat(expectedX, line.end.x);
+		ApproxAssertions.equalsFloat(expectedMinY, minY);
+		ApproxAssertions.equalsFloat(expectedMaxY, maxY);
+	}
 
 	@:visionTestId("vision.algorithms.SimpleLineDetector.image#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	@:Ignored("static image cache is unset until detection runs")
-	function ignored_test_image__default() {
-		var result = vision.algorithms.SimpleLineDetector.image;
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
+	function test_image__default() {
+		Assert.isTrue(SimpleLineDetector.image == null);
+	}
+
+	@:visionTestId("vision.algorithms.SimpleLineDetector.new#default")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_new__default() {
+		Assert.notNull(new SimpleLineDetector(new Image(1, 1, Color.BLACK)));
 	}
 
 	@:visionTestId("vision.algorithms.SimpleLineDetector.findLineFromPoint#default")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_findLineFromPoint__default() {
-		var image = Factories.whiteLineImage(8, 8);
-		var point = new vision.ds.Int16Point2D(0, 1);
-		var minLineLength = 1.0;
-		var preferTTB = false;
-		var preferRTL = false;
-		var result = vision.algorithms.SimpleLineDetector.findLineFromPoint(image, point, minLineLength, preferTTB, preferRTL);
+		var result = SimpleLineDetector.findLineFromPoint(AlgorithmFixtures.horizontalLineImage(), new Int16Point2D(0, 2), 1.0);
 		Assert.notNull(result);
+		assertHorizontalLine(result, 0, 4, 2);
 	}
 
 	@:visionTestId("vision.algorithms.SimpleLineDetector.findLineFromPoint#tiny")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_findLineFromPoint__tiny() {
-		var image = Factories.whiteLineImage(8, 8);
-		var point = new vision.ds.Int16Point2D(0, 1);
-		var minLineLength = 1.0;
-		var preferTTB = false;
-		var preferRTL = false;
-		var result = vision.algorithms.SimpleLineDetector.findLineFromPoint(image, point, minLineLength, preferTTB, preferRTL);
-		Assert.notNull(result);
+		var result = SimpleLineDetector.findLineFromPoint(AlgorithmFixtures.horizontalLineImage(), new Int16Point2D(0, 2), 10.0);
+		Assert.isTrue(result == null);
 	}
 
 	@:visionTestId("vision.algorithms.SimpleLineDetector.findLineFromPoint#checkerboard")
-	@:visionMaturity("smoke")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_findLineFromPoint__checkerboard() {
-		var image = Factories.whiteLineImage(8, 8);
-		var point = new vision.ds.Int16Point2D(0, 1);
-		var minLineLength = 1.0;
-		var preferTTB = false;
-		var preferRTL = false;
-		var result = vision.algorithms.SimpleLineDetector.findLineFromPoint(image, point, minLineLength, preferTTB, preferRTL);
+		var result = SimpleLineDetector.findLineFromPoint(AlgorithmFixtures.verticalLineImage(), new Int16Point2D(2, 0), 1.0, true);
 		Assert.notNull(result);
+		assertVerticalLine(result, 2, 0, 4);
 	}
 
 	@:visionTestId("vision.algorithms.SimpleLineDetector.lineCoveragePercentage#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_lineCoveragePercentage__default() {
-		var image = Factories.gradientImage(3, 3);
-		var line = new vision.ds.Line2D(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(10.0, 10.0));
-		var result = vision.algorithms.SimpleLineDetector.lineCoveragePercentage(image, line);
-		Assert.isFalse(Math.isNaN(result));
+		var result = SimpleLineDetector.lineCoveragePercentage(AlgorithmFixtures.horizontalLineImage(), new Line2D(new Point2D(0, 2), new Point2D(4, 2)));
+		ApproxAssertions.equalsFloat(100, result);
 	}
 
 	@:visionTestId("vision.algorithms.SimpleLineDetector.lineCoveragePercentage#tiny")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_lineCoveragePercentage__tiny() {
-		var image = Factories.gradientImage(3, 3);
-		var line = new vision.ds.Line2D(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(10.0, 10.0));
-		var result = vision.algorithms.SimpleLineDetector.lineCoveragePercentage(image, line);
-		Assert.isFalse(Math.isNaN(result));
+		var result = SimpleLineDetector.lineCoveragePercentage(AlgorithmFixtures.horizontalLineImage(), null);
+		ApproxAssertions.equalsFloat(0, result);
 	}
 
 	@:visionTestId("vision.algorithms.SimpleLineDetector.lineCoveragePercentage#checkerboard")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_lineCoveragePercentage__checkerboard() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var line = new vision.ds.Line2D(new vision.ds.Point2D(0.0, 0.0), new vision.ds.Point2D(10.0, 10.0));
-		var result = vision.algorithms.SimpleLineDetector.lineCoveragePercentage(image, line);
-		Assert.isFalse(Math.isNaN(result));
+		var image = AlgorithmFixtures.horizontalLineImage();
+		image.setPixel(2, 2, Color.BLACK);
+		var result = SimpleLineDetector.lineCoveragePercentage(image, new Line2D(new Point2D(0, 2), new Point2D(4, 2)));
+		ApproxAssertions.equalsFloat(60, result);
 	}
 
 	@:visionTestId("vision.algorithms.SimpleLineDetector.correctLines#default")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_correctLines__default() {
-		var lines = [new vision.ds.Line2D(new vision.ds.Point2D(0.0, 1.0), new vision.ds.Point2D(7.0, 1.0)), new vision.ds.Line2D(new vision.ds.Point2D(0.0, 2.0), new vision.ds.Point2D(7.0, 2.0))];
-		var distanceThreshold = 1.0;
-		var degError = 1.0;
-		var result = vision.algorithms.SimpleLineDetector.correctLines(lines, distanceThreshold, degError);
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		var lines = [new Line2D(new Point2D(0, 1), new Point2D(2, 1)), new Line2D(new Point2D(2, 1), new Point2D(4, 1))];
+		var result = SimpleLineDetector.correctLines(lines, 0.5, 1.0);
+		Assert.equals(1, result.length);
+		assertHorizontalLine(result[0], 0, 4, 1);
 	}
 
 	@:visionTestId("vision.algorithms.SimpleLineDetector.correctLines#duplicates")
-	@:visionMaturity("structural")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_correctLines__duplicates() {
-		var lines = [new vision.ds.Line2D(new vision.ds.Point2D(0.0, 1.0), new vision.ds.Point2D(7.0, 1.0)), new vision.ds.Line2D(new vision.ds.Point2D(0.0, 2.0), new vision.ds.Point2D(7.0, 2.0))];
-		var distanceThreshold = 1.0;
-		var degError = 1.0;
-		var result = vision.algorithms.SimpleLineDetector.correctLines(lines, distanceThreshold, degError);
-		Assert.notNull(result);
-		Assert.isTrue(result.length >= 0);
+		var lines = [new Line2D(new Point2D(4, 1), new Point2D(2, 1)), new Line2D(new Point2D(2, 1), new Point2D(0, 1))];
+		var result = SimpleLineDetector.correctLines(lines, 0.5, 1.0);
+		Assert.equals(1, result.length);
+		assertHorizontalLine(result[0], 0, 4, 1);
 	}
-
 }
