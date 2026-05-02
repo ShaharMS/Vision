@@ -39,9 +39,10 @@ class Hough {
 		return detectLinesFromVotePoints(votePoints, width, height, lineOptions);
 	}
 
-	public static function detectLineSegments(image:Image, ?options:ProbabilisticHoughLineOptions):Array<Line2D> {
-		resolveProbabilisticOptions(options);
-		return [];
+	public static function detectLineSegments(image:Image, ?options:ProbabilisticHoughLineOptions, ?edgeImage:Image):Array<Line2D> {
+		var segmentOptions = resolveProbabilisticOptions(options);
+		var sourceImage = edgeImage == null ? image : edgeImage;
+		return HoughProbabilisticSegments.detect(sourceImage, segmentOptions);
 	}
 
 	public static function detectCircles(image:Image, ?options:HoughCircleOptions):Array<Circle2D> {

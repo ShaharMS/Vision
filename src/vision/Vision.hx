@@ -13,6 +13,7 @@ import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
 import vision.ds.Point3D;
 import vision.ds.specifics.ImageExpansionMode;
+import vision.ds.specifics.ProbabilisticHoughLineOptions;
 import vision.algorithms.PerspectiveWarp;
 import vision.ds.specifics.PointTransformationPair;
 import vision.algorithms.BilinearInterpolation;
@@ -34,6 +35,7 @@ import vision.algorithms.Perwitt;
 import vision.algorithms.Sobel;
 import vision.ds.Kernel2D;
 import vision.ds.canny.CannyObject;
+import vision.algorithms.Hough;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.gaussian.GaussianKernelSize;
 import vision.ds.Ray2D;
@@ -1275,6 +1277,30 @@ class Vision {
         }
         return SimpleLineDetector.correctLines(actualLines);
     }
+
+	/**
+		Detects bounded Hough line segments in an image.
+
+		By default, this wrapper derives a Canny edge image before voting. Pass `edgeImage`
+		when you already have a reusable binary edge map and want to avoid recomputing it.
+
+		@param image The image whose bounds define the returned `Line2D` segments.
+		@param candidateThreshold The minimum accumulator votes required before a candidate line is converted into one or more bounded segments.
+		@param minLineLength The minimum accepted segment length, in pixels, after gap linking. Shorter segments are discarded.
+		@param maxLineGap The maximum gap length, in pixels, that can still be bridged while extending a single returned segment.
+		@param edgeImage An optional precomputed edge image to reuse instead of running Canny again.
+
+		@return The detected Hough line segments.
+	**/
+	public static function houghLineSegmentDetection(image:Image, candidateThreshold:Int = 20, minLineLength:Float = 10, maxLineGap:Float = 2, ?edgeImage:Image):Array<Line2D> {
+		var options = new ProbabilisticHoughLineOptions();
+		options.candidateThreshold = candidateThreshold;
+		options.minLineLength = minLineLength;
+		options.maxLineGap = maxLineGap;
+		options.voteThreshold = 1;
+		var sourceEdges = edgeImage == null ? cannyEdgeDetection(image, 1, X5, 0.05, 0.16) : edgeImage;
+		return Hough.detectLineSegments(image, options, sourceEdges);
+	}
 
 	/**
 		Applies the sobel filter to an image.
