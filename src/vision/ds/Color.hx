@@ -1063,7 +1063,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		@param simple When enabled, gets the gray by averaging this color's channel values, instead of using a special ratio for more accurate grayscaling. Defaults to `false`
 	**/
 	public inline function grayscale(simple:Bool = false):Color {
-		final gray = if (simple) Std.int((red + green + blue) / 3) else Std.int(0.2126 * red + 0.7152 * green + 0.0722 * blue);
+		final gray = if (simple) Std.int(Math.round((red + green + blue) / 3)) else Std.int(Math.round(0.2126 * red + 0.7152 * green + 0.0722 * blue));
 		return this = setRGBA(gray, gray, gray, alpha);
 	}
 

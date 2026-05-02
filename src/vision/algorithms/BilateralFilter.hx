@@ -87,7 +87,15 @@ class BilateralFilter {
 			}
 
 			// normalization by division and color construction, all inline :p
-			image.setPixel(x, y, Color.fromRGBA(((Std.int(numeratorSumR / denominatorSum) & 0xFF)), ((Std.int(numeratorSumG / denominatorSum) & 0xFF)), (Std.int(numeratorSumB / denominatorSum) & 0xFF)));
+			image.setPixel(
+				x,
+				y,
+				Color.fromRGBA(
+					(Std.int(Math.round(numeratorSumR / denominatorSum)) & 0xFF),
+					(Std.int(Math.round(numeratorSumG / denominatorSum)) & 0xFF),
+					(Std.int(Math.round(numeratorSumB / denominatorSum)) & 0xFF)
+				)
+			);
 		});
 
 		// cleanup

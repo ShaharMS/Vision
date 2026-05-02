@@ -20,7 +20,9 @@ class ImageHashing {
         var length = Math.floor(Math.sqrt(hashByteSize / 4));
 
         // Resize
-        clone.resize(length, length, BilinearInterpolation);
+        if (clone.width != length || clone.height != length) {
+            clone.resize(length, length, BilinearInterpolation);
+        }
 
         // Grayscale
         for (x in 0...length) {

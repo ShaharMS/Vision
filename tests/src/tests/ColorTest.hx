@@ -534,7 +534,7 @@ class ColorTest extends utest.Test {
 	@:visionLifecycle("active")
 	function test_grayscale__default() {
 		var instance = sample();
-		assertColor(cast 0x805E5E5E, instance.grayscale(false));
+		assertColor(cast 0x805F5F5F, instance.grayscale(false));
 	}
 
 	@:visionTestId("vision.ds.Color.blackOrWhite#default")

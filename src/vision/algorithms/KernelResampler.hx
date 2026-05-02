@@ -26,7 +26,15 @@ class KernelResampler {
 		return 0;
 	}
 
-	static inline function sample(image:Image, x:Float, y:Float, kernelRadius:Int, kernel:Float->Float):Color {
+	static function sample(image:Image, x:Float, y:Float, kernelRadius:Int, kernel:Float->Float):Color {
+		if (kernelRadius > 1) {
+			final roundedX = Math.round(x);
+			final roundedY = Math.round(y);
+			if (Math.abs(x - roundedX) < 1e-9 && Math.abs(y - roundedY) < 1e-9 && image.hasPixel(roundedX, roundedY)) {
+				return image.getPixel(roundedX, roundedY);
+			}
+		}
+
 		if (!image.hasPixel(Math.ceil(x), Math.ceil(y)) || !image.hasPixel(Math.floor(x), Math.floor(y))) {
 			x = x.boundFloat(0, image.width - 1);
 			y = y.boundFloat(0, image.height - 1);

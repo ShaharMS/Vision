@@ -2,55 +2,53 @@
 
 ## Commit Intent
 
-- Pass type: `bootstrap bookkeeping`
+- Pass type: `initial implementation`
 - Plan step: `.github/plans/manual-utest-migration-7-decommission-and-coverage.md`
-- Scope: `Package the step-7 retarget and bootstrap bookkeeping: record b8f290faf6c491696c146c6926089a5a23fa719c as the clean baseline after the approved step-6 closeout, point recovery at generator or generated-tree deletion, stale-doc cleanup, the final inventory sweep, and proof that the manual suite no longer depends on generator entrypoints, and append the bootstrap event without touching application source or plan files.`
-- Reason this is one commit: `The progress note, run ledger, timeline, and packet refresh all describe the same step-7 bootstrap transition on the existing feature branch, so splitting them would separate one recovery-state change into multiple documentation-only commits.`
+- Scope: `Package the explicit step-7 decommission-and-coverage implementation pass: delete tests/generated, tests/generator, and the obsolete generator-only config or catalog surfaces; rewrite the surviving docs and manual inventory for the manual-only system; carry the narrow BilateralFilter or ImageHashing or Color or KernelResampler fixes required to close the final validation sweep; and resolve D-003 by deleting the waived generated surface.`
+- Reason this is one commit: `The deleted generator surfaces, the manual-only docs or inventory updates, the narrow proof-run fixes, and the iteration packet updates together form one repository cutover point from the mixed migration-era test system to the final manual-only test system.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Records the clean step-7 bootstrap state and the deletion or doc-cleanup focus for delegated implementation.` |
-| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Pins b8f290faf6c491696c146c6926089a5a23fa719c as the clean baseline, sets the step-7 scope, and hands control to @Implement.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the step-7 bootstrap grouping, branch decision, included files, and clean-baseline context while preserving the existing full-hash history rows through pass 26.` |
-| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the @Inscribe bootstrap-bookkeeping event for the final delegated implementation step.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `no` | `The approved RVW-018 and RVW-019 state is already committed in b8f290faf6c491696c146c6926089a5a23fa719c and does not change during this bootstrap-only pass.` |
-| `.github/plans/manual-utest-migration-7-decommission-and-coverage.md` | `no` | `The selected step is already active, and this pass must not change plan files.` |
-| `.github/plans/manual-utest-migration-overview.md` | `no` | `The parent overview already points at the final step and is out of scope for this bookkeeping pass.` |
-| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass is not a final stop report update.` |
+| `tests/generator/**`, `tests/generated/**`, `tests/config.json`, `tests/compile.hxml`, `tests/catalog/test-health.json`, `tests/catalog/test-manifest.json`, `tests/catalog/test-report.md`, and `manual-inventory.hxml` | `yes` | `These are the retired generator-owned surfaces that step 7 decommissions in one cutover.` |
+| `tests/README.md`, `tests/ROADMAP.md`, and `tests/REGENERATION_EXECUTION_PLAN.md` | `yes` | `These docs now describe the maintained manual-only workflow and the retired generator paths.` |
+| `tests/catalog/manual-test-inventory.json` | `yes` | `Records the final manual or excluded ownership state after generator removal.` |
+| `src/vision/algorithms/BilateralFilter.hx`, `src/vision/algorithms/ImageHashing.hx`, `src/vision/algorithms/KernelResampler.hx`, `src/vision/ds/Color.hx`, and `tests/src/tests/ColorTest.hx` | `yes` | `Carry the narrow fixes and expectation update exposed by the final proof reruns.` |
+| `.github/agent-progress/manual-utest-migration.md`, `.github/iterations/manual-utest-migration/decision-log.md`, `.github/iterations/manual-utest-migration/implementation-handoff.md`, `.github/iterations/manual-utest-migration/commit-packet.md`, and `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Capture the completed implementation pass, the D-003 resolution, the explicit step-7 grouping, and the commit event for future recovery.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `no` | `Step 7 has not been reviewed yet, so the packet stays on the approved step-6 review state.` |
+| `.github/plans/manual-utest-migration-7-decommission-and-coverage.md` | `no` | `This pass implements the selected step but does not close it out.` |
+| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass is not the final orchestrator stop report.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because feature/manual-utest-migration-1-cutover already satisfies gitflow for this step-7 bootstrap-only bookkeeping pass`
+- Branch action: `stayed on the existing feature branch because feature/manual-utest-migration-1-cutover already satisfies gitflow for the selected step-7 implementation pass`
 
 ## Commit Message
 
 ```text
-docs(iterations): bootstrap decommission and coverage step 7
+refactor(tests): decommission generated test system
 
-Record the clean baseline at b8f290faf6c491696c146c6926089a5a23fa719c,
-retarget recovery to the final decommission-and-coverage step,
-and carry forward D-003 plus the Windows filtered-run caveat
-until the reference-only generated runner is deleted. This keeps
-delegated implementation focused on generator or generated-tree
-removal, stale-doc cleanup, the final inventory sweep, and proof
-that manual tests no longer depend on generator entrypoints.
+Delete the generator-owned suite, config, and catalog surfaces,
+rewrite the surviving test docs and manual inventory for the
+manual-only workflow, carry the narrow proof-run fixes in the
+affected algorithm and color code paths, and resolve D-003 by
+removing the waived generated runner surface.
 
 Plan: .github/plans/manual-utest-migration-7-decommission-and-coverage.md
-Pass: bootstrap bookkeeping
+Pass: initial implementation
 ```
 
 ## Result
 
-- Clean baseline before this pass: `b8f290faf6c491696c146c6926089a5a23fa719c`
-- Commit hash: `Reported from branch history after the bootstrap object exists because the tracked packet is part of the committed tree and cannot self-record its own object id within the same commit.`
-- Push result: `Push the resulting bootstrap commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available.`
-- Workspace status after commit: `Expected clean after staging the selected step-7 bootstrap bookkeeping files.`
+- Clean baseline before this pass: `b4e8135ababc5a093d33e46db1c6cc59862e3c3e`
+- Commit hash: `Reported from branch history after the plan-step object exists because the tracked packet participates in the same tree and cannot embed its own object id before creation.`
+- Push result: `Push the resulting step-7 implementation commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available.`
+- Workspace status after commit: `Expected clean after staging the selected step-7 implementation files.`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Delegate .github/plans/manual-utest-migration-7-decommission-and-coverage.md to @Implement, delete the reference-only generated surface, remove D-003 with that deletion, and prove the manual suite no longer depends on generator entrypoints.`
+- Follow-up needed: `Hand the committed step-7 implementation range to @Inspect or @Iterate for review and final bookkeeping.`
 
 ## Commit History
 
@@ -82,3 +80,4 @@ Pass: bootstrap bookkeeping
 | `24` | `98de21b40c311cbba83806a9f0f7ee0b12f5adee` | `feature/manual-utest-migration-1-cutover` | `Packages the selected step-6 implementation delta, including deterministic format round-trip and malformed-input coverage, representative Vision facade compatibility checks, helper and exception suites, the exposed format-loader/exporter and exception-surface fixes, and the matching inventory, README, and iteration bookkeeping updates.` |
 | `25` | `00c283516ed3ca30dc431ff481b3c975db961073` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-018 and RVW-019 review follow-up, including the explicit ImageLoadingFailed malformed-input assertions, the MatrixError.Add_MismatchingDimensions test repair, and the matching iteration packet updates.` |
 | `26` | `b8f290faf6c491696c146c6926089a5a23fa719c` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-6 closeout bookkeeping, marks the plans complete, and points the next recovery step at decommission-and-coverage while preserving D-003 plus the Windows env-var filtered-run fallback and stale-case-filter reset note.` |
+| `27` | `b4e8135ababc5a093d33e46db1c6cc59862e3c3e` | `feature/manual-utest-migration-1-cutover` | `Packages the step-7 bootstrap bookkeeping, records the clean baseline after the approved step-6 closeout, and retargets the iteration to the final decommission-and-coverage implementation scope.` |
