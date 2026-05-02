@@ -2,53 +2,51 @@
 
 ## Commit Intent
 
-- Pass type: Review follow-up for step 3 RVW-004 (probabilistic Hough segments)
+- Pass type: Plan-bookkeeping closeout for approved step 3 (probabilistic Hough segments)
 - Plan step: .github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md
-- Scope: Commit the RVW-004 remediation in `Hough.hx`, `Vision.hx`, and `HoughProbabilisticTest.hx`, plus the matching implementation-handoff, timeline, and commit-packet updates, in one reviewable follow-up pass.
-- Reason this is one commit: The edge-image size guard, wrapper-contract documentation, focused mismatch regression, and durable packet updates all answer the same committed review finding and should stay together for re-review.
+- Scope: Commit the approved-step closeout bookkeeping across the durable packet set, plan files, and progress note so step 3 closes cleanly and step 4 becomes the active scope in one atomic history entry.
+- Reason this is one commit: The approved review normalization, run-ledger activation, timeline/progress backfill, and plan-status updates all describe the same step-3 closeout transition and should remain together for downstream recovery.
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| src/vision/algorithms/Hough.hx | Yes | Rejects a custom `edgeImage` unless it matches the source image dimensions before probabilistic segment extraction runs. |
-| src/vision/Vision.hx | Yes | Documents the same-size custom edge-map requirement on the public `houghLineSegmentDetection(...)` wrapper. |
-| tests/src/tests/HoughProbabilisticTest.hx | Yes | Adds the focused wrapper regression that expects a clear `VisionException` for mismatched custom edge-image dimensions. |
-| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Yes | Records the RVW-004 remediation scope, verification, and review response in the implementer-facing packet. |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the remediation event and appends the @Inscribe commit transition for this pass. |
-| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the review-follow-up intent, inclusion boundary, gitflow decision, and self-reference-safe post-commit state for this pass. |
+| .github/agent-progress/hough-harris-feature-detection.md | Yes | Records the approved step-3 outcome and routes the iteration to the step-4 implementation scope. |
+| .github/iterations/hough-harris-feature-detection/review-packet.md | Yes | Preserves the normalized approved step-3 review state in the durable packet set. |
+| .github/iterations/hough-harris-feature-detection/run-ledger.md | Yes | Activates step 4, updates the baseline and latest approved anchor, and reroutes the next loop to @Implement. |
+| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the approval, activation, and @Inscribe closeout transitions for this pass. |
+| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the approved-step closeout intent, inclusion boundary, gitflow decision, and self-reference-safe post-commit state for this pass. |
+| .github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md | Yes | Marks step 3 as completed after the approved review outcome. |
+| .github/plans/hough-harris-feature-detection-overview.md | Yes | Updates the overview progress table so step 3 is completed and step 4 is next. |
 | .github/agents/Iterate.agent.md | No | Pre-existing unrelated user edit that must remain untouched and uncommitted. |
-| .github/iterations/hough-harris-feature-detection/review-packet.md | No | Excluded packet update outside the selected commit scope for this pass. |
-| .github/iterations/hough-harris-feature-detection/run-ledger.md | No | Orchestrator-owned ledger update that must remain out of this commit. |
 
 ## Gitflow Decision
 
 - Starting branch: feature/hough-harris-feature-detection
 - Target branch: feature/hough-harris-feature-detection
-- Branch action: No branch change required because this RVW-004 follow-up belongs on the existing dedicated feature branch for the iteration
+- Branch action: No branch change required because this approved-step closeout belongs on the existing dedicated feature branch for the iteration
 
 ## Commit Message
 
 ```text
-fix(vision): address inspect review for step 3 edge image size
+docs(plans): close out approved step 3
 
-Reject mismatched custom edge-image inputs for probabilistic Hough
-segments, document the same-size wrapper contract, and add the focused
-wrapper regression requested in review.
+Record the approved step-3 outcome across the durable packet set,
+mark the step completed in the plan files, and activate step 4 without
+absorbing the unrelated Iterate.agent user edit.
 
 Plan: .github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md
-Pass: review follow-up
-Finding: RVW-004
+Pass: plan-bookkeeping closeout
 ```
 
 ## Result
 
-- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the last reviewed step-3 pass instead of self-reporting a same-commit hash per HH-DEC-005
-- Committed review anchor: 8ff088abf6ee728e1a2b2c73f2b5ce39c61b0fa3
+- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the approved step-3 review commit instead of self-reporting a same-commit hash per HH-DEC-005
+- Committed review anchor: f00c53ddbc0437335eb0b27d2ec41f7ece6a442a
 - Push result: Intentionally reported out-of-band after push because the committed packet cannot self-observe post-commit transport state
-- Workspace status now: The selected RVW-004 follow-up files are committed; the unrelated `.github/agents/Iterate.agent.md` edit and the excluded `review-packet.md` and `run-ledger.md` updates remain uncommitted
-- Remaining uncommitted files: .github/agents/Iterate.agent.md; .github/iterations/hough-harris-feature-detection/review-packet.md; .github/iterations/hough-harris-feature-detection/run-ledger.md
-- Follow-up needed: Route the committed RVW-004 response back to @Inspect, keep the unrelated `.github/agents/Iterate.agent.md` edit and excluded orchestrator-owned packet files out of scope, and let a later packet refresh record this pass's concrete hash if needed.
+- Workspace status now: The selected approved-step closeout files are committed; only the unrelated `.github/agents/Iterate.agent.md` edit remains uncommitted.
+- Remaining uncommitted files: .github/agents/Iterate.agent.md
+- Follow-up needed: Start step 4 implementation from the approved step-3 baseline, preserve the unrelated `.github/agents/Iterate.agent.md` user edit out of scope, and let a later packet refresh record this pass's concrete hash if needed.
 
 ## Commit History
 
@@ -64,3 +62,4 @@ Finding: RVW-004
 | 8 | Committed via @Inscribe under HH-DEC-005 as the initial step-3 implementation pass | feature/hough-harris-feature-detection | Introduces probabilistic Hough line segments, adds the `Vision.houghLineSegmentDetection(...)` wrapper, preserves focused probabilistic coverage, and keeps the unrelated `.github/agents/Iterate.agent.md` edit plus the orchestrator-owned run-ledger out of scope |
 | 9 | Committed via @Inscribe under HH-DEC-005 as the RVW-003 step-3 review follow-up | feature/hough-harris-feature-detection | Restricts duplicate merges to true colinear fragments with small along-line gaps, corrects merged segment construction on a shared axis, adds the adjacent-parallel regression, and keeps the unrelated `.github/agents/Iterate.agent.md` edit plus the excluded review-packet and run-ledger updates out of scope |
 | 10 | Committed via @Inscribe under HH-DEC-005 as the RVW-004 step-3 review follow-up | feature/hough-harris-feature-detection | Rejects mismatched custom `edgeImage` sizes, documents the same-size wrapper requirement, adds the focused mismatch regression, and keeps the unrelated `.github/agents/Iterate.agent.md` edit plus the excluded review-packet and run-ledger updates out of scope |
+| 11 | Committed via @Inscribe under HH-DEC-005 as the approved step-3 closeout bookkeeping pass | feature/hough-harris-feature-detection | Records the approved review outcome, activates step 4 in the durable packet set, marks step 3 completed in the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` edit out of scope |

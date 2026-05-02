@@ -2,12 +2,12 @@
 
 ## Review Source
 
-- Source type: Incoming @Inspect committed approval for the initial step 2 standard-Hough review
-- Scope: .github/plans/hough-harris-feature-detection-2-standard-hough-lines.md
-- Baseline: 6ead9a7c4c4fb1e61f4d9e1f73bbb8b3fcc4f15f..017144f965192b3a8120bce90d35b2be71e321c9
+- Source type: Incoming @Inspect committed approval review for the step 3 probabilistic-Hough segment follow-up
+- Scope: .github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md
+- Baseline: cd9aaa1d159d1af6db164342876dd5db98584bd7..f00c53ddbc0437335eb0b27d2ec41f7ece6a442a
 - Reviewer: @Inspect
-- Reviewer notes: @Inspect found no new findings across the committed range through 017144f965192b3a8120bce90d35b2be71e321c9, approved the standard polar accumulator, bounded-line mapping, and HH-DEC-006 `SimpleHough.detectLines(...)` compatibility bridge, and noted only a non-blocking residual risk that coarse theta/rho settings can still surface near-duplicate peaks around the same underlying line.
-- Current remediation state: No step-2 remediation is required. Commit 017144f965192b3a8120bce90d35b2be71e321c9 is the approved initial step-2 implementation pass, the coarse-setting near-duplicate-peak note remains a residual risk rather than an open finding, and the earlier RVW-001/RVW-002 history stays closed below for durable iteration context.
+- Reviewer notes: @Inspect found no new findings, explicitly approved the RVW-003 duplicate-merge tightening and the RVW-004 explicit same-size custom `edgeImage` contract, and left only non-blocking follow-up gaps around default Canny-path coverage and possible future support-map semantics.
+- Current remediation state: RVW-003 and RVW-004 are fixed for the step-3 follow-up above. The approved review opened no new findings, and the wrapper-default plus integer-raster-sampling review points remain accepted for this step without further remediation.
 
 ## Review Checklist
 
@@ -21,12 +21,14 @@
 
 ## Findings
 
-Historical iteration findings are preserved below for continuity. This approved step-2 review opened no new finding IDs.
+Historical iteration findings are preserved below for continuity. The latest approved step-3 re-review keeps RVW-001 and RVW-002 closed, records RVW-003 and RVW-004 as remediated, and opens no new findings.
 
 | Finding ID | Severity | File | Concern | Required action | Evidence |
 |------------|----------|------|---------|-----------------|----------|
 | RVW-001 | BLOCKER | src/vision/ds/HoughLine2D.hx | `toRay2D(...)` treated `theta` as the line direction even though the type uses standard Hough normal-angle semantics, so the returned ray was perpendicular to the represented line. | Rotate the direction by `Math.PI / 2` or derive it from the clipped line, then add a direct regression test for known horizontal and vertical Hough lines. | The original @Inspect review narrowed the behavior issue to HoughLine2D conversion semantics; the latest approved re-review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 confirmed the earlier fix remains correct. |
 | RVW-002 | MAJOR | .github/iterations/hough-harris-feature-detection/run-ledger.md; .github/iterations/hough-harris-feature-detection/review-packet.md; .github/iterations/hough-harris-feature-detection/implementation-handoff.md; .github/iterations/hough-harris-feature-detection/commit-packet.md; .github/iterations/hough-harris-feature-detection/execution-report.md; .github/agent-progress/hough-harris-feature-detection.md | The metadata-only follow-up commit 5aa9a66676ea402e6b15e5d31660e89feefa84c5 did not update the durable packet/progress state to the current committed reality, so several fields still anchored the latest pass at d9f707d9d0e3802f6ceb99418ef3cecbfd359734 or described the follow-up as pending @Inscribe or not yet committed. | Refresh the durable packet/progress files to record 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as the committed metadata follow-up, update latest-pass/comparison/workspace-status fields, and change next-agent/verdict text to the actual post-commit review state. | The earlier @Inspect re-review on 38c18abbb3c6b9c38117c533588c15f23475e704..5aa9a66676ea402e6b15e5d31660e89feefa84c5 opened the durable-state gap; the latest approved re-review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 accepted the response and HH-DEC-005 as sufficient resolution. |
+| RVW-003 | BLOCKER | src/vision/algorithms/HoughProbabilisticSegments.hx | `shouldMerge(...)` only checks similar theta/rho plus padded bounding-box overlap, so nearby parallel segments can be treated as duplicates; `mergeLine(...)` then chooses the farthest endpoints across both segments and synthesizes a diagonal that was not present in the source image. | Restrict duplicate merges to true colinear fragments with only small along-line gaps, and add a regression test that keeps adjacent parallel segments distinct. | The latest @Inspect review on cd9aaa1d159d1af6db164342876dd5db98584bd7..526786924edaa97df5f4f13fe93db24a47142d40 accepted the wrapper defaults and integer raster sampling for step 3, but opened RVW-003 after tracing the probabilistic duplicate-suppression path through `shouldMerge(...)` and `mergeLine(...)`. |
+| RVW-004 | MAJOR | src/vision/Vision.hx; src/vision/algorithms/Hough.hx | `Vision.houghLineSegmentDetection(...)` documents image-bounded output, but the custom `edgeImage` path discards the original image dimensions and clips segment results against `edgeImage.width/height`, so mismatched edge images can change the returned geometry instead of only contributing support pixels. | Either use the custom `edgeImage` only for support sampling while clipping and returning segments against `image.width/image.height`, or reject and document mismatched `edgeImage` sizes explicitly. | The latest @Inspect re-review on cd9aaa1d159d1af6db164342876dd5db98584bd7..8ff088abf6ee728e1a2b2c73f2b5ce39c61b0fa3 explicitly accepted the RVW-003 remediation, but found that the public step-3 wrapper still violates its documented image-bounded contract on the custom-`edgeImage` path. |
 
 ## Dispositions
 
@@ -34,12 +36,14 @@ Historical iteration findings are preserved below for continuity. This approved 
 |------------|--------|-------|----------|-------|
 | RVW-001 | ALREADY SATISFIED | @Implement | The latest approved @Inspect review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 confirmed the earlier HoughLine2D fix still holds and found no regression. | No further action is required for RVW-001. |
 | RVW-002 | FIXED | @Implement | The latest approved @Inspect review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 accepted the durable packet/progress refresh and HH-DEC-005's self-reference-safe packet convention as the committed resolution. | The step is approved; the remaining narrative wording residuals are non-blocking and do not reopen RVW-002. |
+| RVW-003 | FIXED | @Implement | The latest approved @Inspect re-review on cd9aaa1d159d1af6db164342876dd5db98584bd7..f00c53ddbc0437335eb0b27d2ec41f7ece6a442a found no new findings and kept the duplicate-merge tightening accepted for `HoughProbabilisticSegments`, including the stricter colinearity and along-line-gap checks plus the adjacent-parallel regression coverage. | No further action is required for RVW-003. |
+| RVW-004 | FIXED | @Implement | The latest approved @Inspect re-review on cd9aaa1d159d1af6db164342876dd5db98584bd7..f00c53ddbc0437335eb0b27d2ec41f7ece6a442a accepted the explicit same-size custom `edgeImage` contract on `Vision.houghLineSegmentDetection(...)` and found no remaining blocker on the custom-edge-image path. | No further action is required for RVW-004. The noted default Canny-path coverage and future support-map semantics gaps are non-blocking follow-ups and do not reopen this step. |
 
 ## Approval Gate
 
 - Current verdict: APPROVED
 - Approval blockers: None
-- Next reviewer: None; step 2 is approved and ready for downstream @Index curation.
+- Next reviewer: @Index for downstream curation.
 
 ## Review History
 
@@ -60,3 +64,9 @@ Historical iteration findings are preserved below for continuity. This approved 
 | Step 2 round 0 | PENDING INITIAL REVIEW | @Inscribe | Committed the initial step-2 standard-Hough implementation pass on 6ead9a7c4c4fb1e61f4d9e1f73bbb8b3fcc4f15f..017144f965192b3a8120bce90d35b2be71e321c9 and routed the new scope to @Inspect. |
 | Step 2 round 1 | APPROVED | @Inspect | Reviewed committed range 6ead9a7c4c4fb1e61f4d9e1f73bbb8b3fcc4f15f..017144f965192b3a8120bce90d35b2be71e321c9; found no new findings, approved the standard polar accumulator, bounded-line mapping, and HH-DEC-006 `SimpleHough.detectLines(...)` compatibility bridge, and left only the non-blocking residual risk of near-duplicate peaks at coarse settings. |
 | Step 2 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 as ALREADY SATISFIED and RVW-002 as FIXED, recorded that the step-2 approved review opened no new findings, marked the approval gate APPROVED, and routed the approved packet to @Index for downstream curation. |
+| Step 3 round 1 | CHANGES REQUESTED | @Inspect | Reviewed committed range cd9aaa1d159d1af6db164342876dd5db98584bd7..526786924edaa97df5f4f13fe93db24a47142d40; accepted the `Vision.houghLineSegmentDetection(...)` wrapper defaults and integer raster sampling for this step, but opened RVW-003 because the probabilistic duplicate-suppression merge can collapse distinct nearby parallel segments into a synthetic diagonal. |
+| Step 3 round 1 normalized | CHANGES REQUESTED | @Intake | Preserved RVW-003 as OPEN, recorded the accepted wrapper-default and integer-raster-sampling review points as non-findings, and routed the step-3 duplicate-suppression fix back to @Implement before the next committed @Inspect pass. |
+| Step 3 round 2 | CHANGES REQUESTED | @Inspect | Reviewed committed range cd9aaa1d159d1af6db164342876dd5db98584bd7..8ff088abf6ee728e1a2b2c73f2b5ce39c61b0fa3; explicitly accepted the RVW-003 duplicate-suppression remediation, but opened RVW-004 because `Vision.houghLineSegmentDetection(...)` documents image-bounded output while the custom `edgeImage` path discards the source image dimensions and clips against `edgeImage.width/height`. |
+| Step 3 round 2 normalized | CHANGES REQUESTED | @Intake | Preserved RVW-003 as FIXED, recorded RVW-004 as OPEN, and routed the image-bounds versus custom-`edgeImage` contract remediation back to @Implement before the next committed @Inspect pass. |
+| Step 3 round 3 | APPROVED | @Inspect | Reviewed committed range cd9aaa1d159d1af6db164342876dd5db98584bd7..f00c53ddbc0437335eb0b27d2ec41f7ece6a442a; found no new findings, approved the RVW-003 duplicate-merge tightening and the RVW-004 explicit same-size `edgeImage` contract, and noted only non-blocking gaps around default Canny-path coverage and possible future support-map semantics. |
+| Step 3 round 3 normalized | APPROVED | @Intake | Preserved RVW-003 and RVW-004 as FIXED, recorded that the approved step-3 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
