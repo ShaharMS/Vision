@@ -2,12 +2,12 @@
 
 ## Review Source
 
-- Source type: Incoming @Inspect committed approval review for the step 3 probabilistic-Hough segment follow-up
-- Scope: .github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md
-- Baseline: cd9aaa1d159d1af6db164342876dd5db98584bd7..f00c53ddbc0437335eb0b27d2ec41f7ece6a442a
+- Source type: Incoming @Inspect committed approval review for the step 4 Hough API parity pass
+- Scope: .github/plans/hough-harris-feature-detection-4-hough-api-parity.md
+- Baseline: 733a30a21990e85e69a20a39b60f62d45d9e27d6..1eb8c2605bee09c0a00b6db18416d2e757bc1a1d
 - Reviewer: @Inspect
-- Reviewer notes: @Inspect found no new findings, explicitly approved the RVW-003 duplicate-merge tightening and the RVW-004 explicit same-size custom `edgeImage` contract, and left only non-blocking follow-up gaps around default Canny-path coverage and possible future support-map semantics.
-- Current remediation state: RVW-003 and RVW-004 are fixed for the step-3 follow-up above. The approved review opened no new findings, and the wrapper-default plus integer-raster-sampling review points remain accepted for this step without further remediation.
+- Reviewer notes: @Inspect found no new findings, agreed that the production Hough line path already satisfied the parity scope, accepted the committed parity coverage plus HH-DEC-007's explicit multi-scale omission, and left only non-blocking gaps around the intentional multi-scale omission and raw-intensity rather than Sobel-magnitude weighting.
+- Current remediation state: RVW-001 through RVW-004 remain closed. The approved step-4 review opened no new findings, accepted the committed coverage-only delta plus HH-DEC-007 for this scope, and does not require additional remediation before downstream curation.
 
 ## Review Checklist
 
@@ -21,7 +21,7 @@
 
 ## Findings
 
-Historical iteration findings are preserved below for continuity. The latest approved step-3 re-review keeps RVW-001 and RVW-002 closed, records RVW-003 and RVW-004 as remediated, and opens no new findings.
+Historical iteration findings are preserved below for continuity. The latest approved step-4 review keeps RVW-001 through RVW-004 closed, confirms that the production Hough line path already satisfied the parity scope, and opens no new findings.
 
 | Finding ID | Severity | File | Concern | Required action | Evidence |
 |------------|----------|------|---------|-----------------|----------|
@@ -70,3 +70,5 @@ Historical iteration findings are preserved below for continuity. The latest app
 | Step 3 round 2 normalized | CHANGES REQUESTED | @Intake | Preserved RVW-003 as FIXED, recorded RVW-004 as OPEN, and routed the image-bounds versus custom-`edgeImage` contract remediation back to @Implement before the next committed @Inspect pass. |
 | Step 3 round 3 | APPROVED | @Inspect | Reviewed committed range cd9aaa1d159d1af6db164342876dd5db98584bd7..f00c53ddbc0437335eb0b27d2ec41f7ece6a442a; found no new findings, approved the RVW-003 duplicate-merge tightening and the RVW-004 explicit same-size `edgeImage` contract, and noted only non-blocking gaps around default Canny-path coverage and possible future support-map semantics. |
 | Step 3 round 3 normalized | APPROVED | @Intake | Preserved RVW-003 and RVW-004 as FIXED, recorded that the approved step-3 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
+| Step 4 round 1 | APPROVED | @Inspect | Reviewed committed range 733a30a21990e85e69a20a39b60f62d45d9e27d6..1eb8c2605bee09c0a00b6db18416d2e757bc1a1d; found no new findings, agreed that the production Hough line path already satisfied the parity scope, accepted the committed parity coverage plus HH-DEC-007's explicit multi-scale omission, and noted only non-blocking gaps around the intentional multi-scale omission and raw-intensity rather than Sobel-magnitude weighting. |
+| Step 4 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 through RVW-004 as closed, recorded that the approved step-4 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
