@@ -2,50 +2,49 @@
 
 ## Commit Intent
 
-- Pass type: `review follow-up`
-- Plan step: `.github/plans/manual-utest-migration-7-decommission-and-coverage.md`
-- Scope: `Package the explicit step-7 review follow-up for RVW-020 and RVW-021: remove the stale tracked root .unittest metadata, ignore future editor-cache output under .unittest/, retire the now-satisfied D-003 and PENDING-RVW-005 decision-log state, and include the matching iteration packet updates.`
-- Reason this is one commit: `The root .unittest deletions, the ignore-rule update, the decision-log closure, and the packet refresh together form one narrow correction to the already-committed step-7 decommission pass.`
+- Pass type: `queue-exhausted closeout`
+- Plan step: `.github/realized/manual-utest-migration-overview.md`
+- Scope: `Package the final queue-exhausted closeout bookkeeping for the completed manual-utest-migration iteration: move the completed overview and all seven subplans from .github/plans/ to .github/realized/, preserve the final approved stop state in the run ledger, review packet, execution report, timeline, and progress note, and leave the feature branch clean at stop.`
+- Reason this is one commit: `All remaining changes are completion bookkeeping for one finished iteration, so the realized-plan move and final packet refresh should land atomically as a single closeout slice.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `.gitignore` | `yes` | `Ignore future root .unittest editor-cache output now that the stale tracked cache files are being removed from repository state.` |
-| `.unittest/positions.json` and `.unittest/results.json` | `yes` | `Delete the stale tracked root .unittest metadata that still points at deleted generated-suite files.` |
-| `.github/iterations/manual-utest-migration/decision-log.md` | `yes` | `Retire the active D-003 and PENDING-RVW-005 entries now that the waived generated-runner surface is gone.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md`, `.github/iterations/manual-utest-migration/review-packet.md`, `.github/iterations/manual-utest-migration/run-ledger.md`, `.github/iterations/manual-utest-migration/commit-packet.md`, and `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Capture the review findings, implementer response, current loop state, explicit commit grouping, and commit event for the step-7 follow-up.` |
-| `.github/agent-progress/manual-utest-migration.md` | `no` | `This delegated review-follow-up pass does not add new progress-note content.` |
-| `.github/plans/manual-utest-migration-7-decommission-and-coverage.md` | `no` | `The selected step remains the same; this pass does not change plan content.` |
-| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `Final orchestrator stop reporting remains out of scope for this review-follow-up commit.` |
+| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Preserve the final approved queue-exhausted recovery note with no remaining next action.` |
+| `.github/iterations/manual-utest-migration/execution-report.md`, `.github/iterations/manual-utest-migration/review-packet.md`, `.github/iterations/manual-utest-migration/run-ledger.md`, `.github/iterations/manual-utest-migration/commit-packet.md`, and `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Capture the final approved stop state, the explicit closeout grouping, and the append-only closeout event for the completed iteration.` |
+| `.github/plans/manual-utest-migration-*.md -> .github/realized/manual-utest-migration-*.md` | `yes` | `Move the completed overview and all seven subplans out of the active plans directory and into the realized record.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `no` | `The latest implementation pass is already committed and remains the historical handoff for 4d5676ec111e2edb504afa4033e35f32739711fc.` |
+| `.github/iterations/manual-utest-migration/decision-log.md` | `no` | `No further waiver or decision changes are needed after the approved D-003 and PENDING-RVW-005 retirement.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because feature/manual-utest-migration-1-cutover already satisfies gitflow for the selected RVW-020/RVW-021 review-follow-up pass`
+- Branch action: `stayed on the existing feature branch because feature/manual-utest-migration-1-cutover already satisfies gitflow for the final queue-exhausted closeout pass`
 
 ## Commit Message
 
 ```text
-fix(tests): address step-7 review follow-up
+docs(plans): finalize manual-utest-migration closeout
 
-Remove the stale tracked root .unittest cache, ignore future
-editor metadata, close the satisfied D-003 and PENDING-RVW-005
-decision-log state, and refresh the iteration packets for the
-RVW-020 and RVW-021 follow-up.
+Move the completed manual-utest-migration overview and step
+plans into .github/realized/, refresh the final approved
+packet set and progress note for the queue-exhausted stop
+state, and record the rewritten execution report for the
+finished iteration.
 
-Plan: .github/plans/manual-utest-migration-7-decommission-and-coverage.md
-Pass: review follow-up
+Plan: .github/realized/manual-utest-migration-overview.md
+Pass: queue-exhausted closeout
 ```
 
 ## Result
 
-- Clean baseline before this pass: `f9c59b654357eb1e8da8f5a7908dc1e8cefc2c8b`
-- Push result: `Origin already tracks feature/manual-utest-migration-1-cutover, so push the resulting review-follow-up commit with git push origin feature/manual-utest-migration-1-cutover immediately after creation.`
-- Workspace status after commit: `Expected clean after staging the selected RVW-020/RVW-021 follow-up files.`
+- Clean baseline before this pass: `4d5676ec111e2edb504afa4033e35f32739711fc`
+- Push result: `Origin already tracks feature/manual-utest-migration-1-cutover, so push the resulting queue-exhausted closeout commit with git push origin feature/manual-utest-migration-1-cutover immediately after creation.`
+- Workspace status after commit: `Expected clean after staging the final packet refresh and realized-plan move as one closeout slice.`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Hand the committed RVW-020/RVW-021 delta to @Inspect for step-7 re-review.`
+- Follow-up needed: `none; the manual-utest-migration iteration is complete once the closeout commit is published`
 
 ## Commit History
 
@@ -79,3 +78,4 @@ Pass: review follow-up
 | `26` | `b8f290faf6c491696c146c6926089a5a23fa719c` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-6 closeout bookkeeping, marks the plans complete, and points the next recovery step at decommission-and-coverage while preserving D-003 plus the Windows env-var filtered-run fallback and stale-case-filter reset note.` |
 | `27` | `b4e8135ababc5a093d33e46db1c6cc59862e3c3e` | `feature/manual-utest-migration-1-cutover` | `Packages the step-7 bootstrap bookkeeping, records the clean baseline after the approved step-6 closeout, and retargets the iteration to the final decommission-and-coverage implementation scope.` |
 | `28` | `f9c59b654357eb1e8da8f5a7908dc1e8cefc2c8b` | `feature/manual-utest-migration-1-cutover` | `Packages the step-7 decommission-and-coverage implementation delta, including the generator/generated-tree deletion, the manual-only docs and inventory reconciliation, the final BilateralFilter or ImageHashing or Color or KernelResampler fixes, D-003 resolution by deleting the waived generated-runner surface, and the matching iteration packet updates.` |
+| `29` | `4d5676ec111e2edb504afa4033e35f32739711fc` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-020 and RVW-021 review follow-up, including the root .unittest cache cleanup, the .gitignore ignore rule, the D-003 plus PENDING-RVW-005 decision-log retirement, and the matching iteration packet updates.` |

@@ -1,6 +1,6 @@
 # Plan: Manual Utest Migration — Step 7: Decommission The Auto System And Finalize Coverage
 
-> **Status**: 🔲 Not started
+> **Status**: ✅ Completed
 > **Prerequisite**: [manual-utest-migration-6-formats-and-facade.md](manual-utest-migration-6-formats-and-facade.md)
 > **Next**: None — this is the final step.
 > **Parent**: [manual-utest-migration-overview.md](manual-utest-migration-overview.md)

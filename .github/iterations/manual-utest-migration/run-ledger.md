@@ -3,14 +3,14 @@
 ## Iteration
 
 - Slug: `manual-utest-migration`
-- Status: `step 7 bootstrapped; awaiting delegated implementation`
+- Status: `iteration complete; queue exhausted`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
 
-- Plan overview: `.github/plans/manual-utest-migration-overview.md`
-- Active step: `.github/plans/manual-utest-migration-7-decommission-and-coverage.md`
-- Iteration goal: Delete the old generator or generated test system once the manual tree is authoritative, rewrite stale docs, finish the manual coverage sweep, and prove the repository no longer depends on generator entrypoints.
+- Plan overview: `.github/realized/manual-utest-migration-overview.md`
+- Active step: `.github/realized/manual-utest-migration-7-decommission-and-coverage.md`
+- Iteration goal: Complete the manual utest migration end to end, retire the generated test system, reconcile the final coverage and packet state, and leave the realized plan chain plus iteration artifacts as the durable completion record.
 
 ## Repo Baseline
 
@@ -20,10 +20,10 @@
 
 ## Current Loop State
 
-- Next agent: `@Inspect`
+- Next agent: `none`
 - Review round: `1`
-- Latest verification: `@Inscribe packaged the step-7 RVW-020/RVW-021 follow-up after confirming the staged slice is limited to the root .unittest deletions, the .gitignore update, the D-003 plus PENDING-RVW-005 closure, and the matching packet refresh.`
-- Latest decision: `The step-7 review-follow-up delta is now ready for @Inspect re-review on the existing feature branch.`
+- Latest verification: `@Inspect approved f9c59b654357eb1e8da8f5a7908dc1e8cefc2c8b..4d5676ec111e2edb504afa4033e35f32739711fc after confirming the stale tracked root .unittest metadata is gone, .gitignore now covers future editor cache output, decision-log.md no longer presents D-003 or PENDING-RVW-005 as active, and the touched packet files remain diagnostics-clean.`
+- Latest decision: `All manual-utest-migration steps are approved, the plan chain now lives under .github/realized/, no active waiver remains, and the iteration is fully closed out on the feature branch.`
 
 ## Packet Links
 
@@ -38,10 +38,10 @@
 ## Open Items
 
 - Blockers: `none recorded`
-- Outstanding findings: `RVW-020, RVW-021 awaiting @Inspect re-review of the committed follow-up`
-- Next action: `Hand the committed RVW-020/RVW-021 follow-up back to @Inspect for step-7 re-review.`
+- Outstanding findings: `none`
+- Next action: `none`
 
 ## Resume Notes
 
-- Current context: `Steps 1 through 6 are approved and closed out on the feature branch, the step-7 implementation is committed in f9c59b654357eb1e8da8f5a7908dc1e8cefc2c8b, and the RVW-020/RVW-021 follow-up is now the next committed feature-branch delta awaiting re-review.`
-- Recovery instructions: `Continue from the committed RVW-020/RVW-021 follow-up, preserve the Windows env-var filtered-run fallback plus the stale-VISION_TEST_CASES reset requirement for any filtered reruns, and keep explicit @Inspect timeline entries in the loop before each @Intake normalization.`
+- Current context: `The manual-utest-migration overview and all seven subplans are complete, the final follow-up is approved in f9c59b654357eb1e8da8f5a7908dc1e8cefc2c8b..4d5676ec111e2edb504afa4033e35f32739711fc, the plan chain now lives under .github/realized/, and the iteration is fully closed out on feature/manual-utest-migration-1-cutover.`
+- Recovery instructions: `No recovery work remains; keep the realized plan chain and iteration packet set as the durable completion record.`
