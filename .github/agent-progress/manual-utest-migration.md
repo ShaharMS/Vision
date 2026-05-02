@@ -1,14 +1,12 @@
 # Manual Utest Migration
 
-- Active step: `.github/plans/manual-utest-migration-6-formats-and-facade.md`
+- Active step: `.github/plans/manual-utest-migration-7-decommission-and-coverage.md`
 - Overview: `.github/plans/manual-utest-migration-overview.md`
-- Iteration state: `step 6 is approved and closed out; the next recovery point is retargeting the iteration to step 7.`
-- Approved range: `98de21b40c311cbba83806a9f0f7ee0b12f5adee..00c283516ed3ca30dc431ff481b3c975db961073 on feature/manual-utest-migration-1-cutover.`
-- Latest approved code commit: `00c283516ed3ca30dc431ff481b3c975db961073 on feature/manual-utest-migration-1-cutover.`
-- Step-6 outcome: `The authored suite now covers format or conversion round trips and malformed-input contracts, representative Vision facade compatibility or delegation invariants, and the remaining helper and exception surfaces, while the step-6 loop also fixed the exposed format-loader or exporter and exception-surface defects.`
-- Review outcome: `RVW-018 and RVW-019 are approved in the published follow-up range after FromBytesTest proved ImageLoadingFailed for malformed PNG or BMP inputs and MatrixOperationErrorTest switched to MatrixError.Add_MismatchingDimensions instead of ordinal coercions.`
-- Foundation carried forward: `Steps 1 through 6 now provide tests/src as the operational test root, deterministic suite or case filtering, ManualSuites registration, shared support helpers, and semantic manual coverage across the tools, core vision.ds, image, matrix, geometry, algorithm, format, facade, helper, and exception surfaces.`
-- Accepted waiver: `D-003 remains in force only for tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7, where the retained reference-only generated runner still shows unresolved utest.Runner and PrettyReporter diagnostics until step 7 deletes tests/generated and tests/compile.hxml.`
+- Iteration state: `Step 6 is approved and closed out; the iteration is bootstrapped on step 7 and awaiting delegated implementation.`
+- Baseline and latest bookkeeping commit: `b8f290faf6c491696c146c6926089a5a23fa719c on feature/manual-utest-migration-1-cutover.`
+- Latest review outcome: `RVW-018 and RVW-019 are approved in the published follow-up range 98de21b40c311cbba83806a9f0f7ee0b12f5adee..00c283516ed3ca30dc431ff481b3c975db961073, and the approved step-6 closeout is now the clean baseline for step 7.`
+- Step-7 focus: `Delete tests/generated, tests/generator, tests/compile.hxml, and the remaining reference-only generated surface once the manual tree and inventory are confirmed authoritative; clean stale generator-forward docs; finish the final manual-inventory sweep; and prove the manual suite no longer depends on generator entrypoints.`
+- Accepted waiver: `D-003 remains in force only for tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7 until step 7 deletes tests/generated/src/Main.hx and the rest of the reference-only generated surface.`
 - Windows filtered-run caveat: `The direct Windows command haxe test.hxml -- --tests ... still fails before Main runs on this Haxe build, so local filtered verification here continues to rely on the documented VISION_TESTS and VISION_TEST_CASES environment-variable fallback; in persistent PowerShell sessions, clear VISION_TEST_CASES before suite-only reruns so stale case patterns do not collapse discovery to zero tests.`
-- Residual risks: `Beyond D-003, the remaining non-blocking noise is limited to the pre-existing utest enum-abstract warning and the intentionally exercised deprecated Gauss helper warnings noted in the approval round.`
-- Next action: `Retarget the iteration to .github/plans/manual-utest-migration-7-decommission-and-coverage.md and begin the decommission-and-coverage pass while carrying forward D-003 plus the Windows env-var filtered-run fallback and stale-VISION_TEST_CASES reset requirement.`
+- Open blockers: `none recorded`
+- Next action: `Delegate .github/plans/manual-utest-migration-7-decommission-and-coverage.md to @Implement for generator/generated-tree deletion, stale-doc cleanup, the final inventory sweep, and proof that the manual suite no longer depends on generator entrypoints.`

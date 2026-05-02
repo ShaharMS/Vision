@@ -2,55 +2,55 @@
 
 ## Commit Intent
 
-- Pass type: `plan-bookkeeping closeout`
-- Plan step: `.github/plans/manual-utest-migration-6-formats-and-facade.md`
-- Scope: `Package the approved step-6 closeout bookkeeping: record the final approval state after @Inspect accepted the follow-up range 98de21b40c311cbba83806a9f0f7ee0b12f5adee..00c283516ed3ca30dc431ff481b3c975db961073, mark step 6 complete in the plans, update the run ledger and progress note for recovery, preserve RVW-018 and RVW-019 as approved in the review packet, and append the closeout event without changing application source files.`
-- Reason this is one commit: `The review approval state, run-ledger and progress-note recovery edits, plan status changes, and timeline entry all describe the same approved step-6 closeout transition, so they belong in one atomic documentation commit on the existing feature branch.`
+- Pass type: `bootstrap bookkeeping`
+- Plan step: `.github/plans/manual-utest-migration-7-decommission-and-coverage.md`
+- Scope: `Package the step-7 retarget and bootstrap bookkeeping: record b8f290faf6c491696c146c6926089a5a23fa719c as the clean baseline after the approved step-6 closeout, point recovery at generator or generated-tree deletion, stale-doc cleanup, the final inventory sweep, and proof that the manual suite no longer depends on generator entrypoints, and append the bootstrap event without touching application source or plan files.`
+- Reason this is one commit: `The progress note, run ledger, timeline, and packet refresh all describe the same step-7 bootstrap transition on the existing feature branch, so splitting them would separate one recovery-state change into multiple documentation-only commits.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Records the approved step-6 closeout state and points recovery at step 7.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the normalized approval state for RVW-018 and RVW-019 in the selected step-6 range.` |
-| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Moves the ledger from closeout-in-progress to closed-out and points the next loop at step 7.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the grouping, branch decision, included files, and closeout intent for this approved step-6 pass while preserving the existing full-hash history rows through pass 25.` |
-| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the @Inscribe closeout event to the cross-agent history.` |
-| `.github/plans/manual-utest-migration-6-formats-and-facade.md` | `yes` | `Marks step 6 complete in the step plan.` |
-| `.github/plans/manual-utest-migration-overview.md` | `yes` | `Marks step 6 complete in the parent overview.` |
+| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Records the clean step-7 bootstrap state and the deletion or doc-cleanup focus for delegated implementation.` |
+| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Pins b8f290faf6c491696c146c6926089a5a23fa719c as the clean baseline, sets the step-7 scope, and hands control to @Implement.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the step-7 bootstrap grouping, branch decision, included files, and clean-baseline context while preserving the existing full-hash history rows through pass 26.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the @Inscribe bootstrap-bookkeeping event for the final delegated implementation step.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `no` | `The approved RVW-018 and RVW-019 state is already committed in b8f290faf6c491696c146c6926089a5a23fa719c and does not change during this bootstrap-only pass.` |
+| `.github/plans/manual-utest-migration-7-decommission-and-coverage.md` | `no` | `The selected step is already active, and this pass must not change plan files.` |
+| `.github/plans/manual-utest-migration-overview.md` | `no` | `The parent overview already points at the final step and is out of scope for this bookkeeping pass.` |
 | `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass is not a final stop report update.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-6 plan-bookkeeping closeout pass`
+- Branch action: `stayed on the existing feature branch because feature/manual-utest-migration-1-cutover already satisfies gitflow for this step-7 bootstrap-only bookkeeping pass`
 
 ## Commit Message
 
 ```text
-docs(plans): close out formats and facade step 6
+docs(iterations): bootstrap decommission and coverage step 7
 
-Record the approved step-6 bookkeeping after @Inspect accepted the
-follow-up range 98de21b40c311cbba83806a9f0f7ee0b12f5adee..
-00c283516ed3ca30dc431ff481b3c975db961073, including the
-RVW-018 and RVW-019 approval state and the carried-forward
-D-003 plus Windows filtered-run recovery notes. This pass
-updates the iteration packets, progress note, and plan status
-so the next recovery point is the step-7 retarget on the
-existing feature branch.
+Record the clean baseline at b8f290faf6c491696c146c6926089a5a23fa719c,
+retarget recovery to the final decommission-and-coverage step,
+and carry forward D-003 plus the Windows filtered-run caveat
+until the reference-only generated runner is deleted. This keeps
+delegated implementation focused on generator or generated-tree
+removal, stale-doc cleanup, the final inventory sweep, and proof
+that manual tests no longer depend on generator entrypoints.
 
-Plan: .github/plans/manual-utest-migration-6-formats-and-facade.md
-Pass: plan-bookkeeping closeout
+Plan: .github/plans/manual-utest-migration-7-decommission-and-coverage.md
+Pass: bootstrap bookkeeping
 ```
 
 ## Result
 
-- Commit hash: `Recorded from branch history after the closeout object exists; the tracked packet cannot self-embed its own resulting object id within the same commit.`
-- Push result: `Push the resulting closeout commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available.`
-- Workspace status after commit: `Expected clean after staging the selected step-6 closeout bookkeeping files.`
+- Clean baseline before this pass: `b8f290faf6c491696c146c6926089a5a23fa719c`
+- Commit hash: `Reported from branch history after the bootstrap object exists because the tracked packet is part of the committed tree and cannot self-record its own object id within the same commit.`
+- Push result: `Push the resulting bootstrap commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available.`
+- Workspace status after commit: `Expected clean after staging the selected step-7 bootstrap bookkeeping files.`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Retarget the iteration to .github/plans/manual-utest-migration-7-decommission-and-coverage.md and preserve D-003 plus the Windows env-var filtered-run fallback and stale-VISION_TEST_CASES reset requirement during the next pass.`
+- Follow-up needed: `Delegate .github/plans/manual-utest-migration-7-decommission-and-coverage.md to @Implement, delete the reference-only generated surface, remove D-003 with that deletion, and prove the manual suite no longer depends on generator entrypoints.`
 
 ## Commit History
 
@@ -81,3 +81,4 @@ Pass: plan-bookkeeping closeout
 | `23` | `facad364a1d996a3156d647d9c405118a2425d75` | `feature/manual-utest-migration-1-cutover` | `Packages the follow-on packet-consistency repair that preserves row 22 for 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd, aligns the live step-6 packet history or resumable notes with the already-pushed bootstrap pass, and keeps delegated implementation next.` |
 | `24` | `98de21b40c311cbba83806a9f0f7ee0b12f5adee` | `feature/manual-utest-migration-1-cutover` | `Packages the selected step-6 implementation delta, including deterministic format round-trip and malformed-input coverage, representative Vision facade compatibility checks, helper and exception suites, the exposed format-loader/exporter and exception-surface fixes, and the matching inventory, README, and iteration bookkeeping updates.` |
 | `25` | `00c283516ed3ca30dc431ff481b3c975db961073` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-018 and RVW-019 review follow-up, including the explicit ImageLoadingFailed malformed-input assertions, the MatrixError.Add_MismatchingDimensions test repair, and the matching iteration packet updates.` |
+| `26` | `b8f290faf6c491696c146c6926089a5a23fa719c` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-6 closeout bookkeeping, marks the plans complete, and points the next recovery step at decommission-and-coverage while preserving D-003 plus the Windows env-var filtered-run fallback and stale-case-filter reset note.` |
