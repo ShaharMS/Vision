@@ -1,6 +1,6 @@
 # Plan: Manual Utest Migration — Step 6: Rewrite Formats, Facade, Helpers, And Exceptions
 
-> **Status**: 🔲 Not started
+> **Status**: ✅ Completed
 > **Prerequisite**: [manual-utest-migration-5-algorithms.md](manual-utest-migration-5-algorithms.md)
 > **Next**: [manual-utest-migration-7-decommission-and-coverage.md](manual-utest-migration-7-decommission-and-coverage.md)
 > **Parent**: [manual-utest-migration-overview.md](manual-utest-migration-overview.md)

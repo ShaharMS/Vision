@@ -2,43 +2,55 @@
 
 ## Commit Intent
 
-- Pass type: `review follow-up`
+- Pass type: `plan-bookkeeping closeout`
 - Plan step: `.github/plans/manual-utest-migration-6-formats-and-facade.md`
-- Scope: `Package the RVW-018 and RVW-019 step-6 review follow-up by tightening the malformed PNG or BMP assertions to the explicit ImageLoadingFailed contract, replacing MatrixOperationErrorTest's ordinal-based enum coercions with MatrixError.Add_MismatchingDimensions, and carrying the matching implementation or review or ledger or timeline packet refresh on the existing feature branch.`
-- Reason this is one commit: `The touched tests and iteration files all come from the same step-6 inspection round, depend on the same focused verification evidence, and belong together as one explicit review-follow-up commit for the current branch.`
+- Scope: `Package the approved step-6 closeout bookkeeping: record the final approval state after @Inspect accepted the follow-up range 98de21b40c311cbba83806a9f0f7ee0b12f5adee..00c283516ed3ca30dc431ff481b3c975db961073, mark step 6 complete in the plans, update the run ledger and progress note for recovery, preserve RVW-018 and RVW-019 as approved in the review packet, and append the closeout event without changing application source files.`
+- Reason this is one commit: `The review approval state, run-ledger and progress-note recovery edits, plan status changes, and timeline entry all describe the same approved step-6 closeout transition, so they belong in one atomic documentation commit on the existing feature branch.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `tests/src/tests/FromBytesTest.hx, tests/src/tests/MatrixOperationErrorTest.hx` | `yes` | `Carries the exact RVW-018 and RVW-019 test fixes that bind the malformed-input and MatrixError coverage back to the named public contracts.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md, .github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Records the implemented review responses and the normalized CHANGES REQUESTED context that this follow-up addresses.` |
-| `.github/iterations/manual-utest-migration/run-ledger.md, .github/iterations/manual-utest-migration/timeline.md` | `yes` | `Advances the resumable loop state to the post-commit handoff and appends the matching step-6 review-follow-up event.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Retargets the packet from the prior implementation pass to the current RVW-018 or RVW-019 review follow-up while preserving the existing full-hash history rows through pass 24.` |
+| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Records the approved step-6 closeout state and points recovery at step 7.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the normalized approval state for RVW-018 and RVW-019 in the selected step-6 range.` |
+| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Moves the ledger from closeout-in-progress to closed-out and points the next loop at step 7.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the grouping, branch decision, included files, and closeout intent for this approved step-6 pass while preserving the existing full-hash history rows through pass 25.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the @Inscribe closeout event to the cross-agent history.` |
+| `.github/plans/manual-utest-migration-6-formats-and-facade.md` | `yes` | `Marks step 6 complete in the step plan.` |
+| `.github/plans/manual-utest-migration-overview.md` | `yes` | `Marks step 6 complete in the parent overview.` |
 | `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass is not a final stop report update.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-6 review-follow-up pass`
+- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-6 plan-bookkeeping closeout pass`
 
 ## Commit Message
 
 ```text
-fix(tests): address inspect review for step 6
+docs(plans): close out formats and facade step 6
+
+Record the approved step-6 bookkeeping after @Inspect accepted the
+follow-up range 98de21b40c311cbba83806a9f0f7ee0b12f5adee..
+00c283516ed3ca30dc431ff481b3c975db961073, including the
+RVW-018 and RVW-019 approval state and the carried-forward
+D-003 plus Windows filtered-run recovery notes. This pass
+updates the iteration packets, progress note, and plan status
+so the next recovery point is the step-7 retarget on the
+existing feature branch.
 
 Plan: .github/plans/manual-utest-migration-6-formats-and-facade.md
-Pass: review follow-up
+Pass: plan-bookkeeping closeout
 ```
 
 ## Result
 
-- Commit hash: `To be written in the post-commit packet refresh because the packet cannot embed its own resulting object id inside the same single-commit pass.`
-- Push result: `To be written in the post-commit packet refresh after the origin push completes for the review-follow-up commit.`
-- Workspace status after commit: `Expected clean except for the post-commit packet refresh fields that require the final commit id and push result.`
-- Remaining uncommitted files: `.github/iterations/manual-utest-migration/commit-packet.md`
-- Follow-up needed: `Hand the published step-6 review follow-up back to @Inspect for re-review while preserving D-003 plus the Windows env-var filtered-run fallback and stale-VISION_TEST_CASES reset requirement.`
+- Commit hash: `Recorded from branch history after the closeout object exists; the tracked packet cannot self-embed its own resulting object id within the same commit.`
+- Push result: `Push the resulting closeout commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available.`
+- Workspace status after commit: `Expected clean after staging the selected step-6 closeout bookkeeping files.`
+- Remaining uncommitted files: `none expected`
+- Follow-up needed: `Retarget the iteration to .github/plans/manual-utest-migration-7-decommission-and-coverage.md and preserve D-003 plus the Windows env-var filtered-run fallback and stale-VISION_TEST_CASES reset requirement during the next pass.`
 
 ## Commit History
 
@@ -68,3 +80,4 @@ Pass: review follow-up
 | `22` | `3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd` | `feature/manual-utest-migration-1-cutover` | `Packages the committed step-6 bootstrap and packet-hygiene refresh, including the explicit @Inspect timeline backfill, the step-6 ledger or progress retarget, and the iteration guidance or template updates that remove placeholder commit wording from future packets.` |
 | `23` | `facad364a1d996a3156d647d9c405118a2425d75` | `feature/manual-utest-migration-1-cutover` | `Packages the follow-on packet-consistency repair that preserves row 22 for 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd, aligns the live step-6 packet history or resumable notes with the already-pushed bootstrap pass, and keeps delegated implementation next.` |
 | `24` | `98de21b40c311cbba83806a9f0f7ee0b12f5adee` | `feature/manual-utest-migration-1-cutover` | `Packages the selected step-6 implementation delta, including deterministic format round-trip and malformed-input coverage, representative Vision facade compatibility checks, helper and exception suites, the exposed format-loader/exporter and exception-surface fixes, and the matching inventory, README, and iteration bookkeeping updates.` |
+| `25` | `00c283516ed3ca30dc431ff481b3c975db961073` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-018 and RVW-019 review follow-up, including the explicit ImageLoadingFailed malformed-input assertions, the MatrixError.Add_MismatchingDimensions test repair, and the matching iteration packet updates.` |

@@ -17,7 +17,7 @@ The requested end state is an authored `utest` suite that is owned by humans, ca
 | 3 | [manual-utest-migration-3-tools-and-core-ds.md](manual-utest-migration-3-tools-and-core-ds.md) | ✅ Completed — rewrote `vision.tools` and core collection/value-type tests with semantic assertions and edge cases. |
 | 4 | [manual-utest-migration-4-image-and-geometry-ds.md](manual-utest-migration-4-image-and-geometry-ds.md) | ✅ Completed — rewrote image-centric, matrix, and geometry data-structure suites around explicit invariants. |
 | 5 | [manual-utest-migration-5-algorithms.md](manual-utest-migration-5-algorithms.md) | ✅ Completed — replaced algorithm smoke tests with deterministic fixture-driven behavioral coverage. |
-| 6 | [manual-utest-migration-6-formats-and-facade.md](manual-utest-migration-6-formats-and-facade.md) | Rewrite format, facade, helper, and exception coverage around round trips and failure contracts. |
+| 6 | [manual-utest-migration-6-formats-and-facade.md](manual-utest-migration-6-formats-and-facade.md) | ✅ Completed — rewrote format, facade, helper, and exception coverage around round trips and failure contracts. |
 | 7 | [manual-utest-migration-7-decommission-and-coverage.md](manual-utest-migration-7-decommission-and-coverage.md) | Delete the old auto system, update docs, and prove the manual suite covers the intended surface. |
 
 ## Key Decisions

@@ -3,7 +3,7 @@
 ## Iteration
 
 - Slug: `manual-utest-migration`
-- Status: `step 6 review follow-up committed; awaiting re-review`
+- Status: `step 6 approved and closed out; step 7 retarget pending`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
@@ -20,10 +20,10 @@
 
 ## Current Loop State
 
-- Next agent: `@Inspect`
+- Next agent: `@Iterate`
 - Review round: `2`
-- Latest verification: `@Implement addressed RVW-018 and RVW-019 in the working tree, reran the focused format slice to 16 tests, reran the invalid-input case-filter proof to 1 test, reran the focused facade or helper or exception slice to 28 tests, and cleared touched-file diagnostics on the changed tests plus packet files.`
-- Latest decision: `RVW-018 and RVW-019 are packaged in the published step-6 review follow-up and now await @Inspect re-review.`
+- Latest verification: `The approved step-6 range remains 98de21b40c311cbba83806a9f0f7ee0b12f5adee..00c283516ed3ca30dc431ff481b3c975db961073, the plans now mark step 6 complete, and the closeout packet set preserves D-003 plus the Windows env-var filtered-run fallback, including the stale-case-filter recovery note.`
+- Latest decision: `Step 6 is closed out on feature/manual-utest-migration-1-cutover; the next loop should retarget the iteration to step 7 while carrying forward D-003 and the Windows filtered-run fallback.`
 
 ## Packet Links
 
@@ -38,10 +38,10 @@
 ## Open Items
 
 - Blockers: `none recorded`
-- Outstanding findings: `RVW-018, RVW-019 pending @Inspect re-review`
-- Next action: `Hand the published step-6 review follow-up for RVW-018 and RVW-019 back to @Inspect for re-review while preserving D-003 plus the Windows env-var filtered-run fallback.`
+- Outstanding findings: `none`
+- Next action: `Retarget the iteration to .github/plans/manual-utest-migration-7-decommission-and-coverage.md and begin the next pass while preserving D-003 plus the Windows env-var filtered-run fallback and stale-VISION_TEST_CASES reset requirement as carried context.`
 
 ## Resume Notes
 
-- Current context: `Step 5 is approved and closed out, the step-6 bootstrap or hygiene refresh remains recorded in 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd, and the round-1 step-6 follow-up for RVW-018 and RVW-019 is now published after the facad364a1d996a3156d647d9c405118a2425d75..98de21b40c311cbba83806a9f0f7ee0b12f5adee review.`
-- Recovery instructions: `Ask @Inspect to review the published RVW-018 or RVW-019 follow-up, keep D-003 in force only for tests/generated/src/Main.hx until step 7 deletes that reference-only surface, preserve the Windows env-var filtered-run fallback plus the stale-VISION_TEST_CASES reset requirement for local suite-only reruns, and keep explicit @Inspect timeline entries in the loop before each @Intake normalization.`
+- Current context: `Step 6 is approved and closed out on the feature branch; the next durable action is retargeting the iteration to step 7.`
+- Recovery instructions: `Advance the selected scope to .github/plans/manual-utest-migration-7-decommission-and-coverage.md, keep D-003 in force only for tests/generated/src/Main.hx until step 7 deletes that reference-only surface, and preserve the Windows env-var filtered-run fallback plus the stale-VISION_TEST_CASES reset requirement for local suite-only reruns in this environment.`
