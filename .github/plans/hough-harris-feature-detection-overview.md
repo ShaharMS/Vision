@@ -18,8 +18,8 @@ This plan standardizes the Hough family around real polar-space voting and image
 | Order | Plan File | Summary |
 |-------|-----------|---------|
 | 1 | [hough-harris-feature-detection-1-foundation.md](.github/plans/hough-harris-feature-detection-1-foundation.md) | ✅ Completed — Added shared types, options, numeric-map conventions, and compatibility seams for the new detectors. |
-| 2 | [hough-harris-feature-detection-2-standard-hough-lines.md](.github/plans/hough-harris-feature-detection-2-standard-hough-lines.md) | ▶ Next — Replace the current ray-oriented accumulator with a standard polar Hough line transform. |
-| 3 | [hough-harris-feature-detection-3-probabilistic-hough-segments.md](.github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md) | Add probabilistic Hough line-segment detection with `minLineLength` and `maxLineGap` behavior. |
+| 2 | [hough-harris-feature-detection-2-standard-hough-lines.md](.github/plans/hough-harris-feature-detection-2-standard-hough-lines.md) | ✅ Completed — Replaced the ray-oriented accumulator with a standard polar Hough line transform and a SimpleHough compatibility bridge. |
+| 3 | [hough-harris-feature-detection-3-probabilistic-hough-segments.md](.github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md) | ▶ Next — Add probabilistic Hough line-segment detection with `minLineLength` and `maxLineGap` behavior. |
 | 4 | [hough-harris-feature-detection-4-hough-api-parity.md](.github/plans/hough-harris-feature-detection-4-hough-api-parity.md) | Add weighted voting, angle bounds, and point-set entry points that bring the Hough surface closer to OpenCV. |
 | 5 | [hough-harris-feature-detection-5-hough-circles.md](.github/plans/hough-harris-feature-detection-5-hough-circles.md) | Add a separate gradient-based Hough circle detector with radius and center controls. |
 | 6 | [hough-harris-feature-detection-6-harris-response.md](.github/plans/hough-harris-feature-detection-6-harris-response.md) | Compute raw Harris response maps from image gradients and local structure tensors. |

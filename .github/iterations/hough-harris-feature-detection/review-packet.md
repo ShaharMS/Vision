@@ -2,24 +2,26 @@
 
 ## Review Source
 
-- Source type: Incoming @Inspect committed approval re-review after the durable-state response commit
-- Scope: .github/plans/hough-harris-feature-detection-1-foundation.md
-- Baseline: 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74
+- Source type: Incoming @Inspect committed approval for the initial step 2 standard-Hough review
+- Scope: .github/plans/hough-harris-feature-detection-2-standard-hough-lines.md
+- Baseline: 6ead9a7c4c4fb1e61f4d9e1f73bbb8b3fcc4f15f..017144f965192b3a8120bce90d35b2be71e321c9
 - Reviewer: @Inspect
-- Reviewer notes: @Inspect found no new findings across the committed range through 5dbcf5db667bfe7c1494fc1e42de36e1734f7d74, confirmed RVW-001 remains fixed, accepted HH-DEC-005 as the self-reference-safe packet convention for the RVW-002 response, and approved the step with only non-blocking narrative wording residuals.
-- Current remediation state: No further remediation is required for step 1. Commit 5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 is the approved committed RVW-002 durable-state response, and HH-DEC-005 now governs the accepted self-reference-safe packet convention for later metadata refreshes.
+- Reviewer notes: @Inspect found no new findings across the committed range through 017144f965192b3a8120bce90d35b2be71e321c9, approved the standard polar accumulator, bounded-line mapping, and HH-DEC-006 `SimpleHough.detectLines(...)` compatibility bridge, and noted only a non-blocking residual risk that coarse theta/rho settings can still surface near-duplicate peaks around the same underlying line.
+- Current remediation state: No step-2 remediation is required. Commit 017144f965192b3a8120bce90d35b2be71e321c9 is the approved initial step-2 implementation pass, the coarse-setting near-duplicate-peak note remains a residual risk rather than an open finding, and the earlier RVW-001/RVW-002 history stays closed below for durable iteration context.
 
 ## Review Checklist
 
 - [x] Plan intent reviewed
-- [x] Verification claims checked
-- [x] Repository conventions checked
-- [ ] Shared package boundaries checked
+- [ ] Verification claims checked
+- [ ] Repository conventions checked
+- [x] Shared package boundaries checked
 - [ ] Naming and structure checked
 - [ ] Nesting and complexity checked
 - [x] Risks and regressions checked
 
 ## Findings
+
+Historical iteration findings are preserved below for continuity. This approved step-2 review opened no new finding IDs.
 
 | Finding ID | Severity | File | Concern | Required action | Evidence |
 |------------|----------|------|---------|-----------------|----------|
@@ -37,7 +39,7 @@
 
 - Current verdict: APPROVED
 - Approval blockers: None
-- Next reviewer: None; step 1 is approved and ready for downstream iteration curation.
+- Next reviewer: None; step 2 is approved and ready for downstream @Index curation.
 
 ## Review History
 
@@ -55,3 +57,6 @@
 | 3 follow-up committed | PENDING RE-REVIEW | @Inscribe | Committed and pushed the metadata-only RVW-002 response using HH-DEC-005's self-reference-safe committed-review-anchor convention and routed the step back to @Inspect without trying to self-record same-commit hash or push metadata. |
 | 4 | APPROVED | @Inspect | Reviewed committed range 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74; found no new findings, confirmed RVW-001 remains fixed, accepted HH-DEC-005 as the self-reference-safe packet convention for RVW-002, and approved the step with only non-blocking narrative wording residuals. |
 | 4 normalized | APPROVED | @Intake | Preserved RVW-001 as ALREADY SATISFIED and RVW-002 as FIXED, marked the approval gate APPROVED, and recorded HH-DEC-005 acceptance as the durable packet convention for the approved step. |
+| Step 2 round 0 | PENDING INITIAL REVIEW | @Inscribe | Committed the initial step-2 standard-Hough implementation pass on 6ead9a7c4c4fb1e61f4d9e1f73bbb8b3fcc4f15f..017144f965192b3a8120bce90d35b2be71e321c9 and routed the new scope to @Inspect. |
+| Step 2 round 1 | APPROVED | @Inspect | Reviewed committed range 6ead9a7c4c4fb1e61f4d9e1f73bbb8b3fcc4f15f..017144f965192b3a8120bce90d35b2be71e321c9; found no new findings, approved the standard polar accumulator, bounded-line mapping, and HH-DEC-006 `SimpleHough.detectLines(...)` compatibility bridge, and left only the non-blocking residual risk of near-duplicate peaks at coarse settings. |
+| Step 2 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 as ALREADY SATISFIED and RVW-002 as FIXED, recorded that the step-2 approved review opened no new findings, marked the approval gate APPROVED, and routed the approved packet to @Index for downstream curation. |
