@@ -1,6 +1,6 @@
 # Plan: Manual Utest Migration — Step 5: Rewrite Algorithm Suites
 
-> **Status**: 🔲 Not started
+> **Status**: ✅ Completed
 > **Prerequisite**: [manual-utest-migration-4-image-and-geometry-ds.md](manual-utest-migration-4-image-and-geometry-ds.md)
 > **Next**: [manual-utest-migration-6-formats-and-facade.md](manual-utest-migration-6-formats-and-facade.md)
 > **Parent**: [manual-utest-migration-overview.md](manual-utest-migration-overview.md)

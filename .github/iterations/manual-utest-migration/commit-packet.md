@@ -2,61 +2,54 @@
 
 ## Commit Intent
 
-- Pass type: `initial implementation pass`
+- Pass type: `plan-bookkeeping closeout`
 - Plan step: `.github/plans/manual-utest-migration-5-algorithms.md`
-- Scope: `Package the selected step-5 algorithm rewrite and zero-test discovery repair: semantic interpolation or resampling rewrites, edge-detection or transform rewrites, numeric or clustering or hashing or sorting rewrites, shared algorithm or resampler helpers, manual inventory updates, the exposed Canny library fix, corrected Canny and SimpleLineDetector expectations, and the current step-5 iteration-state files.`
-- Reason this is one commit: `The user explicitly selected one plan-step commit for step 5. The zero-test discovery repair did not start a separate review loop; it validated the same implementation pass, exposed a real Canny defect plus two expectation mismatches, and was repaired before the first review handoff, so the full step-5 delta belongs in one atomic commit on the existing feature branch.`
+- Scope: `Package the approved step-5 closeout bookkeeping: record the final approval state after @Inspect accepted the committed algorithm migration through dcbe4c634fe2fafcd42229ee9956c4774f474117, mark step 5 complete in the plans, update the run ledger and progress note for recovery, and append the closeout event without changing source files.`
+- Reason this is one commit: `The review approval state, run-ledger or progress-note recovery edits, plan status changes, and timeline entry all describe the same approved step-5 closeout transition, so they belong in one atomic documentation commit on the existing feature branch.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `.github/agent-progress/manual-utest-migration.md, .github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Carry the current step-5 recovery baseline and selected-scope context that belongs with the implementation pass.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md, .github/iterations/manual-utest-migration/commit-packet.md, .github/iterations/manual-utest-migration/timeline.md` | `yes` | `Record the implementation summary, commit grouping, and cross-agent history for the selected step-5 pass.` |
-| `src/vision/algorithms/Canny.hx` | `yes` | `Fixes the opaque-white hysteresis promotion defect exposed by the real grouped edge rerun after clearing the stale case filter.` |
-| `tests/catalog/manual-test-inventory.json` | `yes` | `Promotes the migrated step-5 algorithm surfaces to manual coverage and records the updated deferred-member state.` |
-| `tests/src/tests/support/AlgorithmFixtures.hx, tests/src/tests/support/ResamplerAssertions.hx` | `yes` | `Adds shared deterministic fixtures and resampler assertions reused across the rewritten algorithm suites.` |
-| `tests/src/tests/BicubicInterpolationTest.hx, tests/src/tests/BilateralFilterTest.hx, tests/src/tests/BilinearInterpolationTest.hx, tests/src/tests/CatmullRomInterpolationTest.hx, tests/src/tests/KernelResamplerTest.hx, tests/src/tests/LanczosInterpolationTest.hx, tests/src/tests/MitchellNetravaliInterpolationTest.hx` | `yes` | `Rewrites the interpolation and resampling suites to semantic fixture-driven assertions.` |
-| `tests/src/tests/CannyTest.hx, tests/src/tests/LaplaceTest.hx, tests/src/tests/PerspectiveWarpTest.hx, tests/src/tests/PerwittTest.hx, tests/src/tests/RobertsCrossTest.hx, tests/src/tests/SimpleHoughTest.hx, tests/src/tests/SimpleLineDetectorTest.hx, tests/src/tests/SobelTest.hx` | `yes` | `Rewrites the edge-detection and transform suites and carries the exposed expectation repairs.` |
-| `tests/src/tests/ColorClusterTest.hx, tests/src/tests/CramerTest.hx, tests/src/tests/GaussJordanTest.hx, tests/src/tests/GaussTest.hx, tests/src/tests/ImageHashingTest.hx, tests/src/tests/KMeansTest.hx, tests/src/tests/RadixTest.hx` | `yes` | `Rewrites the numeric, clustering, hashing, and sorting suites to semantic assertions.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `no` | `No step-5 review round has been normalized yet; the review packet remains on the approved step-4 state.` |
+| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Records the approved step-5 closeout state and points recovery at step 6.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the normalized approval state for the selected step-5 range.` |
+| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Moves the ledger from closeout-in-progress to closed-out and points the next loop at step 6.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the grouping, branch decision, included files, and commit intent for this closeout pass.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the @Inscribe closeout event to the cross-agent history.` |
+| `.github/plans/manual-utest-migration-5-algorithms.md` | `yes` | `Marks step 5 complete in the step plan.` |
+| `.github/plans/manual-utest-migration-overview.md` | `yes` | `Marks step 5 complete in the parent overview.` |
 | `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass is not a final stop report update.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-5 implementation pass`
+- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-5 plan-bookkeeping closeout pass`
 
 ## Commit Message
 
 ```text
-feat(algorithms): rewrite step 5 algorithm suites
+docs(plans): close out algorithms step 5
 
-Package the selected step-5 migration as one plan-step commit:
-semantic rewrites across interpolation or resampling,
-edge-detection or transform, and numeric or clustering or hashing
-or sorting coverage, plus shared algorithm fixtures or assertions
-and the updated manual inventory rows.
-
-This also folds in the zero-test discovery repair by recording the
-stale VISION_TEST_CASES shell-state root cause, rerunning the
-grouped step-5 validations with the case filter cleared to real
-counts, fixing Canny.applyHysteresis opaque-edge promotion, and
-correcting the exposed Canny and SimpleLineDetector expectations
-before the first review handoff.
+Record the approved step-5 bookkeeping after @Inspect accepted the
+algorithm migration range through
+dcbe4c634fe2fafcd42229ee9956c4774f474117, including the
+grouped rerun recovery and the final approval metadata. This
+pass updates the iteration packets, progress note, and plan
+status so the next recovery point is step 6 on the existing
+feature branch.
 
 Plan: .github/plans/manual-utest-migration-5-algorithms.md
-Pass: initial implementation pass
+Pass: plan-bookkeeping closeout
 ```
 
 ## Result
 
 - Commit hash: `this commit`
 - Push result: `push this commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available`
-- Workspace status after commit: `expected clean after staging the selected step-5 implementation files plus the current step-5 iteration-state files`
+- Workspace status after commit: `expected clean after staging the selected step-5 closeout bookkeeping files`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Hand the iteration to @Intake or @Inspect for the first step-5 review pass while carrying forward D-003, the Windows env-var filtered-run fallback, and the stale-shell-case-filter lesson.`
+- Follow-up needed: `Retarget the iteration to .github/plans/manual-utest-migration-6-formats-and-facade.md and preserve D-003 plus the Windows env-var filtered-run fallback, including clearing stale VISION_TEST_CASES before suite-only reruns.`
 
 ## Commit History
 
@@ -76,9 +69,10 @@ Pass: initial implementation pass
 | `12` | `1c05e1ebf05e0ef2d04436eada47b1c91ce6e51f` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-008, RVW-009, and RVW-010 review follow-up, including the MathTools.isBetweenRange(s), ArrayTools.distanceTo, and Histogram.length library fixes, the strengthened semantic coverage in MathToolsTest, ArrayToolsTest, and HistogramTest, and the matching iteration packet updates.` |
 | `13` | `e616da22e10ea88d1140780219ac4ed6d2164807` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-011 and RVW-012 review follow-up, including the semantic Color constant coverage, the deterministic sys temp-file ImageTools coverage, and the matching iteration packet updates.` |
 | `14` | `7cf5d491504c87db4fd2c8dbcce15cfff4e869fe` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-013 review follow-up, including the semantic MathTools wrapper coverage, the updated progress note, and the matching iteration packet updates.` |
-| `15` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-3 closeout bookkeeping, including the review-packet approval state, the updated run ledger and progress note, and the plan status changes that mark step 3 complete before the step-4 retarget.` |
-| `16` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-4 implementation delta, including the semantic image/matrix and geometry suite rewrites, shared image fixtures/assertions, inventory manual-status/exclusion updates, the exposed Image/IntPoint2D/MathTools fixes, and the matching iteration-state files.` |
-| `17` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-014, RVW-015, and RVW-016 review follow-up, including the strengthened ImageViewShape consumer coverage, the asymmetric floating-pixel assertions, the singular Matrix2D duplicates contract, and the matching iteration packet updates.` |
-| `18` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-017 review follow-up, including the step-4 manual inventory reconciliation, the updated review/implementation packet state, and the matching timeline bookkeeping.` |
-| `19` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-4 closeout bookkeeping, marks the plans complete, and points the next recovery step at the algorithms migration while preserving D-003 plus the Windows env-var filtered-run fallback.` |
-| `20` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-5 implementation delta, including the semantic algorithm-suite rewrites, shared AlgorithmFixtures or ResamplerAssertions helpers, manual inventory updates, the exposed Canny hysteresis fix, the corrected Canny or SimpleLineDetector expectations, and the current step-5 iteration-state files.` |
+| `15` | `c9bd5f0478eece29b7f18b255f11bac702340649` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-3 closeout bookkeeping, including the review-packet approval state, the updated run ledger and progress note, and the plan status changes that mark step 3 complete before the step-4 retarget.` |
+| `16` | `b84983fcb72de929f4c54a7e34d36ba9f55bf605` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-4 implementation delta, including the semantic image/matrix and geometry suite rewrites, shared image fixtures or assertions, inventory manual-status or exclusion updates, the exposed Image or IntPoint2D or MathTools fixes, and the matching iteration-state files.` |
+| `17` | `9637756030f9bc5cbaacbd64e00a45ee5a619883` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-014, RVW-015, and RVW-016 review follow-up, including the strengthened ImageViewShape consumer coverage, the asymmetric floating-pixel assertions, the singular Matrix2D duplicates contract, and the matching iteration packet updates.` |
+| `18` | `1d3ea4d4f05c9b5bae9fdc6db56bb4746af98d28` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-017 review follow-up, including the step-4 manual inventory reconciliation, the updated review or implementation packet state, and the matching timeline bookkeeping.` |
+| `19` | `41e803df1d8bbbb9a5c0a6cf02a4f84af5959ca2` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-4 closeout bookkeeping, marks the plans complete, and points the next recovery step at the algorithms migration while preserving D-003 plus the Windows env-var filtered-run fallback.` |
+| `20` | `dcbe4c634fe2fafcd42229ee9956c4774f474117` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-5 implementation delta, including the semantic algorithm-suite rewrites, shared AlgorithmFixtures or ResamplerAssertions helpers, manual inventory updates, the exposed Canny hysteresis fix, the corrected Canny or SimpleLineDetector expectations, and the current step-5 iteration-state files.` |
+| `21` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-5 closeout bookkeeping, marks the plans complete, and points the next recovery step at the formats or facade migration while preserving D-003 plus the Windows env-var filtered-run fallback and stale-case-filter reset note.` |

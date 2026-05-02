@@ -3,7 +3,7 @@
 ## Iteration
 
 - Slug: `manual-utest-migration`
-- Status: `step 5 selected; bootstrap in progress`
+- Status: `step 5 approved and closed out; step 6 retarget pending`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
@@ -20,10 +20,10 @@
 
 ## Current Loop State
 
-- Next agent: `@Implement`
-- Review round: `0`
-- Latest verification: `Step 4 closeout was committed as 41e803df1d8bbbb9a5c0a6cf02a4f84af5959ca2 and the working tree is clean.`
-- Latest decision: `Step 5 bootstrap has been indexed and the next handoff is implementation of the algorithm-suite rewrite scope.`
+- Next agent: `@Iterate`
+- Review round: `1`
+- Latest verification: `The approved step-5 range remains 41e803df1d8bbbb9a5c0a6cf02a4f84af5959ca2..dcbe4c634fe2fafcd42229ee9956c4774f474117, the plans now mark step 5 complete, and the closeout packet set preserves D-003 plus the Windows env-var filtered-run fallback, including the stale-case-filter recovery note.`
+- Latest decision: `Step 5 is closed out on feature/manual-utest-migration-1-cutover; the next loop should retarget the iteration to step 6 while carrying forward D-003 and the Windows filtered-run fallback.`
 
 ## Packet Links
 
@@ -39,9 +39,9 @@
 
 - Blockers: `none recorded`
 - Outstanding findings: `none`
-- Next action: `Invoke @Index for the step-5 bootstrap state, then delegate implementation for .github/plans/manual-utest-migration-5-algorithms.md.`
+- Next action: `Retarget the iteration to .github/plans/manual-utest-migration-6-formats-and-facade.md and begin the next implementation pass while preserving D-003 and the Windows env-var filtered-run fallback as carried context.`
 
 ## Resume Notes
 
-- Current context: `Step 4 is complete and committed; the active iteration scope is now the step 5 algorithm-suite rewrite on a clean baseline.`
-- Recovery instructions: `Index the step-5 bootstrap state, then rewrite the targeted interpolation, edge-detection, and numeric/clustering algorithm suites with deterministic fixtures and justified expectations while carrying forward D-003 and the Windows env-var filtered-run fallback.`
+- Current context: `Step 5 is approved and closed out on the feature branch; the next durable action is retargeting the iteration to step 6.`
+- Recovery instructions: `Advance the selected scope to .github/plans/manual-utest-migration-6-formats-and-facade.md, keep D-003 in force only for tests/generated/src/Main.hx until step 7 deletes that reference-only surface, and preserve the Windows env-var filtered-run fallback plus the stale-VISION_TEST_CASES reset requirement for local suite-only reruns in this environment.`
