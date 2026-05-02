@@ -14,3 +14,4 @@
 
 | Decision ID | Applies to | Approved by | Reason | Follow-up |
 |-------------|------------|-------------|--------|-----------|
+| HH-DEC-005 | RVW-002 on .github/plans/hough-harris-feature-detection-1-foundation.md | @Inspect | Accepted the self-reference-safe packet convention as sufficient for the committed RVW-002 durable-state response, so same-commit hash and post-push self-reporting are no longer approval blockers. | None required for step approval; later packet refreshes may record the concrete response hash from git history if that becomes useful. |

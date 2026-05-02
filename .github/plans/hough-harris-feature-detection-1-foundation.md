@@ -1,6 +1,6 @@
 # Plan: Standardized Hough and Harris Feature Detection — Step 1: Foundation and Shared Types
 
-> **Status**: 🔲 Not started
+> **Status**: ✅ Completed
 > **Prerequisite**: None — this is the first step.
 > **Next**: [hough-harris-feature-detection-2-standard-hough-lines.md](.github/plans/hough-harris-feature-detection-2-standard-hough-lines.md)
 > **Parent**: [hough-harris-feature-detection-overview.md](.github/plans/hough-harris-feature-detection-overview.md)

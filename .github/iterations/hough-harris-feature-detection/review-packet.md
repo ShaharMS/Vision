@@ -2,12 +2,12 @@
 
 ## Review Source
 
-- Source type: Incoming @Inspect committed re-review after metadata-only follow-up commit
+- Source type: Incoming @Inspect committed approval re-review after the durable-state response commit
 - Scope: .github/plans/hough-harris-feature-detection-1-foundation.md
-- Baseline: 38c18abbb3c6b9c38117c533588c15f23475e704..5aa9a66676ea402e6b15e5d31660e89feefa84c5
+- Baseline: 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74
 - Reviewer: @Inspect
-- Reviewer notes: @Inspect confirmed RVW-001 remains fixed across the committed range through 5aa9a66676ea402e6b15e5d31660e89feefa84c5 and found no additional code or test regressions. The remaining issue is that the metadata-only follow-up commit did not refresh the durable packet/progress state to the new committed reality.
-- Current remediation state: 5aa9a66676ea402e6b15e5d31660e89feefa84c5 is the committed metadata-only follow-up under review. The committed RVW-002 response refreshes the durable packet/progress files to treat 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as the committed review anchor, updates the stale latest-pass/comparison/workspace-status fields, and separates the committed response from the reviewed commit history so the packet does not need to invent same-commit hash or push metadata.
+- Reviewer notes: @Inspect found no new findings across the committed range through 5dbcf5db667bfe7c1494fc1e42de36e1734f7d74, confirmed RVW-001 remains fixed, accepted HH-DEC-005 as the self-reference-safe packet convention for the RVW-002 response, and approved the step with only non-blocking narrative wording residuals.
+- Current remediation state: No further remediation is required for step 1. Commit 5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 is the approved committed RVW-002 durable-state response, and HH-DEC-005 now governs the accepted self-reference-safe packet convention for later metadata refreshes.
 
 ## Review Checklist
 
@@ -23,21 +23,21 @@
 
 | Finding ID | Severity | File | Concern | Required action | Evidence |
 |------------|----------|------|---------|-----------------|----------|
-| RVW-001 | BLOCKER | src/vision/ds/HoughLine2D.hx | `toRay2D(...)` treated `theta` as the line direction even though the type uses standard Hough normal-angle semantics, so the returned ray was perpendicular to the represented line. | Rotate the direction by `Math.PI / 2` or derive it from the clipped line, then add a direct regression test for known horizontal and vertical Hough lines. | The original @Inspect review narrowed the behavior issue to HoughLine2D conversion semantics; the latest committed re-review on 38c18abbb3c6b9c38117c533588c15f23475e704..5aa9a66676ea402e6b15e5d31660e89feefa84c5 confirmed the earlier fix remains correct. |
-| RVW-002 | MAJOR | .github/iterations/hough-harris-feature-detection/run-ledger.md; .github/iterations/hough-harris-feature-detection/review-packet.md; .github/iterations/hough-harris-feature-detection/implementation-handoff.md; .github/iterations/hough-harris-feature-detection/commit-packet.md; .github/iterations/hough-harris-feature-detection/execution-report.md; .github/agent-progress/hough-harris-feature-detection.md | The metadata-only follow-up commit 5aa9a66676ea402e6b15e5d31660e89feefa84c5 did not update the durable packet/progress state to the current committed reality, so several fields still anchor the latest pass at d9f707d9d0e3802f6ceb99418ef3cecbfd359734 or describe the follow-up as pending @Inscribe or not yet committed. | Refresh the durable packet/progress files to record 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as the committed metadata follow-up, update latest-pass/comparison/workspace-status fields, and change next-agent/verdict text to the actual post-commit review state. | The latest @Inspect review on 38c18abbb3c6b9c38117c533588c15f23475e704..5aa9a66676ea402e6b15e5d31660e89feefa84c5 reported that the packet/progress state still reflected d9f707d9d0e3802f6ceb99418ef3cecbfd359734 or pending-commit wording instead of the current committed metadata follow-up. |
+| RVW-001 | BLOCKER | src/vision/ds/HoughLine2D.hx | `toRay2D(...)` treated `theta` as the line direction even though the type uses standard Hough normal-angle semantics, so the returned ray was perpendicular to the represented line. | Rotate the direction by `Math.PI / 2` or derive it from the clipped line, then add a direct regression test for known horizontal and vertical Hough lines. | The original @Inspect review narrowed the behavior issue to HoughLine2D conversion semantics; the latest approved re-review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 confirmed the earlier fix remains correct. |
+| RVW-002 | MAJOR | .github/iterations/hough-harris-feature-detection/run-ledger.md; .github/iterations/hough-harris-feature-detection/review-packet.md; .github/iterations/hough-harris-feature-detection/implementation-handoff.md; .github/iterations/hough-harris-feature-detection/commit-packet.md; .github/iterations/hough-harris-feature-detection/execution-report.md; .github/agent-progress/hough-harris-feature-detection.md | The metadata-only follow-up commit 5aa9a66676ea402e6b15e5d31660e89feefa84c5 did not update the durable packet/progress state to the current committed reality, so several fields still anchored the latest pass at d9f707d9d0e3802f6ceb99418ef3cecbfd359734 or described the follow-up as pending @Inscribe or not yet committed. | Refresh the durable packet/progress files to record 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as the committed metadata follow-up, update latest-pass/comparison/workspace-status fields, and change next-agent/verdict text to the actual post-commit review state. | The earlier @Inspect re-review on 38c18abbb3c6b9c38117c533588c15f23475e704..5aa9a66676ea402e6b15e5d31660e89feefa84c5 opened the durable-state gap; the latest approved re-review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 accepted the response and HH-DEC-005 as sufficient resolution. |
 
 ## Dispositions
 
 | Finding ID | Status | Owner | Evidence | Reply |
 |------------|--------|-------|----------|-------|
-| RVW-001 | ALREADY SATISFIED | @Implement | The latest @Inspect review on 38c18abbb3c6b9c38117c533588c15f23475e704..5aa9a66676ea402e6b15e5d31660e89feefa84c5 confirmed the earlier HoughLine2D fix still holds and found no new code or test regressions. | No further action was needed for RVW-001 in this round. |
-| RVW-002 | FIXED | @Implement | run-ledger.md, review-packet.md, implementation-handoff.md, commit-packet.md, execution-report.md, and .github/agent-progress/hough-harris-feature-detection.md now record 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as the committed review anchor, and the packet distinguishes that reviewed commit from the committed response pass instead of claiming same-commit hash or push metadata. | Refreshed the durable packet/progress state to the actual post-5aa9a66676ea402e6b15e5d31660e89feefa84c5 review state and adopted committed-review-anchor wording so the response remains technically correct without requiring same-commit self-hash or push reporting. |
+| RVW-001 | ALREADY SATISFIED | @Implement | The latest approved @Inspect review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 confirmed the earlier HoughLine2D fix still holds and found no regression. | No further action is required for RVW-001. |
+| RVW-002 | FIXED | @Implement | The latest approved @Inspect review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 accepted the durable packet/progress refresh and HH-DEC-005's self-reference-safe packet convention as the committed resolution. | The step is approved; the remaining narrative wording residuals are non-blocking and do not reopen RVW-002. |
 
 ## Approval Gate
 
-- Current verdict: PENDING RE-REVIEW
-- Approval blockers: None in the current working tree; @Inspect needs to confirm that anchoring the durable packet/progress state on 5aa9a66676ea402e6b15e5d31660e89feefa84c5 and separating the current response pass resolves RVW-002 without self-referential commit metadata.
-- Next reviewer: @Inspect
+- Current verdict: APPROVED
+- Approval blockers: None
+- Next reviewer: None; step 1 is approved and ready for downstream iteration curation.
 
 ## Review History
 
@@ -53,3 +53,5 @@
 | 3 normalized | CHANGES REQUESTED | @Intake | Preserved RVW-001 as ALREADY SATISFIED and RVW-002 as OPEN, updated the durable review packet to the committed range ending at 5aa9a66676ea402e6b15e5d31660e89feefa84c5, and routed the remaining packet/progress-state refresh back to @Implement before the next re-review. |
 | 3 follow-up | REMEDIATION PENDING COMMIT | @Implement delegated | Refreshed the durable packet/progress state to the actual post-5aa9a66676ea402e6b15e5d31660e89feefa84c5 review state, set that commit as the committed review anchor across the packet/progress set, and clarified that the current response pass cannot self-report its own final hash. |
 | 3 follow-up committed | PENDING RE-REVIEW | @Inscribe | Committed and pushed the metadata-only RVW-002 response using HH-DEC-005's self-reference-safe committed-review-anchor convention and routed the step back to @Inspect without trying to self-record same-commit hash or push metadata. |
+| 4 | APPROVED | @Inspect | Reviewed committed range 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74; found no new findings, confirmed RVW-001 remains fixed, accepted HH-DEC-005 as the self-reference-safe packet convention for RVW-002, and approved the step with only non-blocking narrative wording residuals. |
+| 4 normalized | APPROVED | @Intake | Preserved RVW-001 as ALREADY SATISFIED and RVW-002 as FIXED, marked the approval gate APPROVED, and recorded HH-DEC-005 acceptance as the durable packet convention for the approved step. |
