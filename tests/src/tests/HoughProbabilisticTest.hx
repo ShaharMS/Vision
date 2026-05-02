@@ -2,6 +2,7 @@ package tests;
 
 import tests.support.AlgorithmFixtures;
 import tests.support.ApproxAssertions;
+import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.algorithms.Hough;
 import vision.algorithms.HoughProbabilisticSegments;
@@ -9,6 +10,7 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.Line2D;
 import vision.ds.Point2D;
+import vision.exceptions.VisionException;
 import vision.ds.specifics.ProbabilisticHoughLineOptions;
 import vision.Vision;
 
@@ -88,6 +90,20 @@ class HoughProbabilisticTest extends utest.Test {
 		var result = Vision.houghLineSegmentDetection(image, 5, 5, 1, image);
 		Assert.equals(1, result.length);
 		assertHorizontalLine(result[0], 0, 6, 2);
+	}
+
+	@:visionTestId("vision.Vision.houghLineSegmentDetection#edge-image-size")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_houghLineSegmentDetection__rejectsMismatchedEdgeImageSize() {
+		var image = AlgorithmFixtures.gappedHorizontalLineImage();
+		var mismatchedEdges = new Image(image.width - 1, image.height, Color.BLACK);
+		ExceptionAssertions.expectMessage(
+			() -> Vision.houghLineSegmentDetection(image, 5, 5, 1, mismatchedEdges),
+			VisionException,
+			'Hough Line Segment Detection Error: Custom edgeImage must match the source image dimensions. Expected 7x5 but got 6x5.'
+		);
 	}
 
 	function createOptions(candidateThreshold:Int, minLineLength:Float, maxLineGap:Float, voteThreshold:Int, rhoResolution:Float = 0.01):ProbabilisticHoughLineOptions {

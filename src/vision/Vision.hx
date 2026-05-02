@@ -1283,12 +1283,14 @@ class Vision {
 
 		By default, this wrapper derives a Canny edge image before voting. Pass `edgeImage`
 		when you already have a reusable binary edge map and want to avoid recomputing it.
+		Custom edge maps must match `image.width` and `image.height`; mismatched inputs are rejected
+		so returned segments stay bounded to the source image.
 
 		@param image The image whose bounds define the returned `Line2D` segments.
 		@param candidateThreshold The minimum accumulator votes required before a candidate line is converted into one or more bounded segments.
 		@param minLineLength The minimum accepted segment length, in pixels, after gap linking. Shorter segments are discarded.
 		@param maxLineGap The maximum gap length, in pixels, that can still be bridged while extending a single returned segment.
-		@param edgeImage An optional precomputed edge image to reuse instead of running Canny again.
+		@param edgeImage An optional precomputed edge image to reuse instead of running Canny again. When provided, it must match the source image dimensions.
 
 		@return The detected Hough line segments.
 	**/

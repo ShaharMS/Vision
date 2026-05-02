@@ -7,6 +7,7 @@ import vision.ds.Image;
 import vision.ds.Line2D;
 import vision.ds.Matrix2D;
 import vision.ds.Point2D;
+import vision.exceptions.VisionException;
 import vision.ds.specifics.HoughCircleOptions;
 import vision.ds.specifics.HoughLineOptions;
 import vision.ds.specifics.ProbabilisticHoughLineOptions;
@@ -41,6 +42,9 @@ class Hough {
 
 	public static function detectLineSegments(image:Image, ?options:ProbabilisticHoughLineOptions, ?edgeImage:Image):Array<Line2D> {
 		var segmentOptions = resolveProbabilisticOptions(options);
+		if (edgeImage != null && (edgeImage.width != image.width || edgeImage.height != image.height)) {
+			throw new VisionException('Custom edgeImage must match the source image dimensions. Expected ${image.width}x${image.height} but got ${edgeImage.width}x${edgeImage.height}.', 'Hough Line Segment Detection Error');
+		}
 		var sourceImage = edgeImage == null ? image : edgeImage;
 		return HoughProbabilisticSegments.detect(sourceImage, segmentOptions);
 	}
