@@ -138,24 +138,30 @@ class HoughProbabilisticSegments {
 		if (Math.abs(lhs.candidateRho - rhs.candidateRho) > Math.max(options.rhoResolution * 2, 0.75)) {
 			return false;
 		}
-		return boxesOverlap(lhs.line, rhs.line, Math.max(1.0, options.maxLineGap + 1.0));
+		if (!areColinear(lhs.line, rhs.line)) {
+			return false;
+		}
+		return getAlongLineGap(lhs.line, rhs.line) <= Math.max(1.0, options.maxLineGap + 1.0);
 	}
 
 	static function mergeLine(lhs:Line2D, rhs:Line2D):Line2D {
+		var reference = orderLine(lhs.length >= rhs.length ? lhs : rhs);
+		var axis = getAxis(reference);
+		var origin = reference.start;
 		var points = [lhs.start, lhs.end, rhs.start, rhs.end];
-		var start = points[0];
-		var end = points[1];
-		var maxDistance = start.distanceTo(end);
-		for (i in 0...points.length) {
-			for (j in i + 1...points.length) {
-				var distance = points[i].distanceTo(points[j]);
-				if (distance > maxDistance) {
-					start = points[i];
-					end = points[j];
-					maxDistance = distance;
-				}
+		var minProjection = projectPoint(points[0], origin, axis.x, axis.y);
+		var maxProjection = minProjection;
+		for (index in 1...points.length) {
+			var projection = projectPoint(points[index], origin, axis.x, axis.y);
+			if (projection < minProjection) {
+				minProjection = projection;
+			}
+			if (projection > maxProjection) {
+				maxProjection = projection;
 			}
 		}
+		var start = new Point2D(origin.x + axis.x * minProjection, origin.y + axis.y * minProjection);
+		var end = new Point2D(origin.x + axis.x * maxProjection, origin.y + axis.y * maxProjection);
 		return orderLine(new Line2D(start.copy(), end.copy()));
 	}
 
@@ -210,16 +216,56 @@ class HoughProbabilisticSegments {
 		return new Line2D(line.end.copy(), line.start.copy());
 	}
 
-	static function boxesOverlap(lhs:Line2D, rhs:Line2D, padding:Float):Bool {
-		var lhsMinX = Math.min(lhs.start.x, lhs.end.x) - padding;
-		var lhsMaxX = Math.max(lhs.start.x, lhs.end.x) + padding;
-		var lhsMinY = Math.min(lhs.start.y, lhs.end.y) - padding;
-		var lhsMaxY = Math.max(lhs.start.y, lhs.end.y) + padding;
-		var rhsMinX = Math.min(rhs.start.x, rhs.end.x);
-		var rhsMaxX = Math.max(rhs.start.x, rhs.end.x);
-		var rhsMinY = Math.min(rhs.start.y, rhs.end.y);
-		var rhsMaxY = Math.max(rhs.start.y, rhs.end.y);
-		return lhsMinX <= rhsMaxX && lhsMaxX >= rhsMinX && lhsMinY <= rhsMaxY && lhsMaxY >= rhsMinY;
+	static function areColinear(lhs:Line2D, rhs:Line2D):Bool {
+		return maxOffsetFromLine(lhs, rhs) <= 0.500001 && maxOffsetFromLine(rhs, lhs) <= 0.500001;
+	}
+
+	static function maxOffsetFromLine(reference:Line2D, candidate:Line2D):Float {
+		var axis = getAxis(reference);
+		var origin = reference.start;
+		var startOffset = distanceFromAxis(candidate.start, origin, axis.x, axis.y);
+		var endOffset = distanceFromAxis(candidate.end, origin, axis.x, axis.y);
+		return Math.max(startOffset, endOffset);
+	}
+
+	static function getAlongLineGap(lhs:Line2D, rhs:Line2D):Float {
+		var reference = lhs.length >= rhs.length ? lhs : rhs;
+		var axis = getAxis(reference);
+		var origin = reference.start;
+		var lhsRange = projectRange(lhs, origin, axis.x, axis.y);
+		var rhsRange = projectRange(rhs, origin, axis.x, axis.y);
+		if (lhsRange.max < rhsRange.min) {
+			return rhsRange.min - lhsRange.max;
+		}
+		if (rhsRange.max < lhsRange.min) {
+			return lhsRange.min - rhsRange.max;
+		}
+		return 0.0;
+	}
+
+	static function projectRange(line:Line2D, origin:Point2D, axisX:Float, axisY:Float):{min:Float, max:Float} {
+		var startProjection = projectPoint(line.start, origin, axisX, axisY);
+		var endProjection = projectPoint(line.end, origin, axisX, axisY);
+		return {
+			min: Math.min(startProjection, endProjection),
+			max: Math.max(startProjection, endProjection)
+		};
+	}
+
+	static function getAxis(line:Line2D):Point2D {
+		var ordered = orderLine(line);
+		if (ordered.length <= 0) {
+			return new Point2D(1, 0);
+		}
+		return new Point2D((ordered.end.x - ordered.start.x) / ordered.length, (ordered.end.y - ordered.start.y) / ordered.length);
+	}
+
+	static inline function projectPoint(point:Point2D, origin:Point2D, axisX:Float, axisY:Float):Float {
+		return (point.x - origin.x) * axisX + (point.y - origin.y) * axisY;
+	}
+
+	static inline function distanceFromAxis(point:Point2D, origin:Point2D, axisX:Float, axisY:Float):Float {
+		return Math.abs((point.x - origin.x) * -axisY + (point.y - origin.y) * axisX);
 	}
 
 	static function angleDifference(lhs:Float, rhs:Float):Float {

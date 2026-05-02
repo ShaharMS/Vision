@@ -2,53 +2,52 @@
 
 ## Commit Intent
 
-- Pass type: Initial implementation pass for step 3 (probabilistic Hough segments)
+- Pass type: Review follow-up for step 3 RVW-003 (probabilistic Hough segments)
 - Plan step: .github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md
-- Scope: Commit the step-3 probabilistic Hough segment extractor, the public `Vision.houghLineSegmentDetection(...)` wrapper, focused probabilistic fixtures and tests, and the matching implementation-handoff, timeline, agent-progress, and commit-packet updates in one reviewable feature pass.
-- Reason this is one commit: The new Hough segment algorithm, public wrapper, focused coverage, and step-3 packet/progress state together form one explicit implementation step; splitting them would separate the behavior change from the evidence and review routing that explain it.
+- Scope: Commit the RVW-003 remediation in `HoughProbabilisticSegments.hx` and `HoughProbabilisticTest.hx`, plus the matching implementation-handoff, timeline, and commit-packet updates, in one reviewable follow-up pass.
+- Reason this is one commit: The stricter duplicate-merge guard, corrected merge construction, adjacent-parallel regression, and durable packet updates all answer the same committed review finding and should stay together for re-review.
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| src/vision/algorithms/Hough.hx | Yes | Replaces the empty probabilistic segment stub with the public entry point that delegates to the focused segment extractor and supports optional edge-image reuse. |
-| src/vision/algorithms/HoughProbabilisticSegments.hx | Yes | Adds the candidate-driven probabilistic segment extraction, gap linking, and local duplicate suppression that define the step-3 behavior. |
-| src/vision/Vision.hx | Yes | Exposes the documented `Vision.houghLineSegmentDetection(...)` wrapper for the new segment-oriented API surface. |
-| tests/src/tests/HoughProbabilisticTest.hx | Yes | Adds focused assertions for gap linking, short-line rejection, duplicate suppression, and wrapper output shape. |
-| tests/src/tests/support/AlgorithmFixtures.hx | Yes | Adds deterministic gapped-line, short-segment, and dense-grid fixtures for the new probabilistic coverage. |
-| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Yes | Preserves the step-3 implementation summary and marks the pass as committed via the accepted self-reference-safe packet convention. |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the implementation event and appends the @Inscribe commit event for this pass. |
-| .github/agent-progress/hough-harris-feature-detection.md | Yes | Advances the progress note from working-tree implementation to committed step-3 review-ready state. |
-| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the commit intent, exact inclusion set, gitflow decision, and expected leftovers for this implementation pass. |
+| src/vision/algorithms/HoughProbabilisticSegments.hx | Yes | Restricts duplicate merges to true colinear fragments with bounded along-line gaps and rebuilds merged segments on a shared axis instead of using farthest cross-segment endpoints. |
+| tests/src/tests/HoughProbabilisticTest.hx | Yes | Adds the adjacent-parallel regression that exercises `mergeSegments(...)` directly and keeps nearby parallel segments distinct. |
+| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Yes | Records the RVW-003 remediation scope, verification, and review response in the implementer-facing packet. |
+| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the remediation event and appends the @Inscribe commit transition for this pass. |
+| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the review-follow-up intent, inclusion boundary, gitflow decision, and self-reference-safe post-commit state for this pass. |
 | .github/agents/Iterate.agent.md | No | Pre-existing unrelated user edit that must remain untouched and uncommitted. |
-| .github/iterations/hough-harris-feature-detection/run-ledger.md | No | The current-state ledger remains orchestrator-owned and is intentionally excluded from this implementation commit. |
+| .github/iterations/hough-harris-feature-detection/review-packet.md | No | Excluded packet update outside the selected commit scope for this pass. |
+| .github/iterations/hough-harris-feature-detection/run-ledger.md | No | Orchestrator-owned ledger update that must remain out of this commit. |
 
 ## Gitflow Decision
 
 - Starting branch: feature/hough-harris-feature-detection
 - Target branch: feature/hough-harris-feature-detection
-- Branch action: No branch change required because this explicit step-3 implementation pass belongs on the existing dedicated feature branch for the iteration
+- Branch action: No branch change required because this RVW-003 follow-up belongs on the existing dedicated feature branch for the iteration
 
 ## Commit Message
 
 ```text
-feat(vision): add probabilistic Hough line segment detection
+fix(vision): address inspect review for step 3 segments
 
-Adds Hough.detectLineSegments(...), the Vision.houghLineSegmentDetection(...)
-wrapper, and focused probabilistic fixtures/tests.
+Restrict probabilistic duplicate merges to colinear fragments with small
+along-line gaps, correct merge construction on a shared axis, and add the
+adjacent-parallel regression requested in review.
 
 Plan: .github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md
-Pass: initial implementation
+Pass: review follow-up
+Finding: RVW-003
 ```
 
 ## Result
 
-- Commit hash: Intentionally reported from git history after this pass completes; the committed packet anchors on the approved step-3 baseline instead of a same-commit self-reference per HH-DEC-005
-- Committed review anchor: cd9aaa1d159d1af6db164342876dd5db98584bd7
+- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the last reviewed step-3 pass instead of self-reporting a same-commit hash per HH-DEC-005
+- Committed review anchor: 526786924edaa97df5f4f13fe93db24a47142d40
 - Push result: Intentionally reported out-of-band after push because the committed packet cannot self-observe post-commit transport state
-- Workspace status now: The selected step-3 implementation files are committed; only the unrelated .github/agents/Iterate.agent.md user edit remains uncommitted
-- Remaining uncommitted files: .github/agents/Iterate.agent.md
-- Follow-up needed: Route the committed step-3 implementation pass to @Inspect using cd9aaa1d159d1af6db164342876dd5db98584bd7 as the baseline, keep the orchestrator-owned run-ledger update out of this commit, and continue preserving the unrelated .github/agents/Iterate.agent.md user edit outside the review loop.
+- Workspace status now: The selected RVW-003 follow-up files are committed; the unrelated `.github/agents/Iterate.agent.md` edit and the excluded `review-packet.md` and `run-ledger.md` updates remain uncommitted
+- Remaining uncommitted files: .github/agents/Iterate.agent.md; .github/iterations/hough-harris-feature-detection/review-packet.md; .github/iterations/hough-harris-feature-detection/run-ledger.md
+- Follow-up needed: Route the committed RVW-003 response back to @Inspect, keep the unrelated `.github/agents/Iterate.agent.md` edit and excluded orchestrator-owned packet files out of scope, and let a later packet refresh record this pass's concrete hash if needed.
 
 ## Commit History
 
@@ -61,4 +60,5 @@ Pass: initial implementation
 | 5 | 6ead9a7c4c4fb1e61f4d9e1f73bbb8b3fcc4f15f | feature/hough-harris-feature-detection | Finalized approved-step bookkeeping, marked step 1 completed in the plan set, activated step 2, and kept the unrelated .github/agents/Iterate.agent.md edit out of scope |
 | 6 | 017144f965192b3a8120bce90d35b2be71e321c9 | feature/hough-harris-feature-detection | Initial step-2 implementation pass that introduced the standard polar Hough accumulator, routed `SimpleHough.detectLines(...)` through the new path, and added focused standard-line plus compatibility tests |
 | 7 | Committed via @Inscribe under HH-DEC-005 as the approved step-2 closeout bookkeeping pass | feature/hough-harris-feature-detection | Captures the approved packet normalization, marks step 2 completed in the plan set, activates step 3, and keeps the unrelated .github/agents/Iterate.agent.md edit out of scope |
-| 8 | Committed via @Inscribe under HH-DEC-005 as the initial step-3 implementation pass | feature/hough-harris-feature-detection | Introduces probabilistic Hough line segments, adds the `Vision.houghLineSegmentDetection(...)` wrapper, preserves focused probabilistic coverage, and keeps the unrelated .github/agents/Iterate.agent.md edit plus the orchestrator-owned run-ledger out of scope |
+| 8 | Committed via @Inscribe under HH-DEC-005 as the initial step-3 implementation pass | feature/hough-harris-feature-detection | Introduces probabilistic Hough line segments, adds the `Vision.houghLineSegmentDetection(...)` wrapper, preserves focused probabilistic coverage, and keeps the unrelated `.github/agents/Iterate.agent.md` edit plus the orchestrator-owned run-ledger out of scope |
+| 9 | Committed via @Inscribe under HH-DEC-005 as the RVW-003 step-3 review follow-up | feature/hough-harris-feature-detection | Restricts duplicate merges to true colinear fragments with small along-line gaps, corrects merged segment construction on a shared axis, adds the adjacent-parallel regression, and keeps the unrelated `.github/agents/Iterate.agent.md` edit plus the excluded review-packet and run-ledger updates out of scope |

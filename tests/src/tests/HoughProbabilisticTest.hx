@@ -4,6 +4,7 @@ import tests.support.AlgorithmFixtures;
 import tests.support.ApproxAssertions;
 import utest.Assert;
 import vision.algorithms.Hough;
+import vision.algorithms.HoughProbabilisticSegments;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.Line2D;
@@ -13,6 +14,7 @@ import vision.Vision;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
+@:access(vision.algorithms.HoughProbabilisticSegments)
 class HoughProbabilisticTest extends utest.Test {
 	@:visionTestId("vision.algorithms.Hough.detectLineSegments#default")
 	@:visionMaturity("semantic")
@@ -46,6 +48,21 @@ class HoughProbabilisticTest extends utest.Test {
 		Assert.equals(0, result.length);
 	}
 
+	@:visionTestId("vision.algorithms.HoughProbabilisticSegments.mergeSegments#adjacent-parallel")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("synthetic_geometry")
+	function test_detectLineSegments__keepsAdjacentParallelSegmentsDistinct() {
+		var options = createOptions(6, 6, 0, 6, 1);
+		var result = HoughProbabilisticSegments.mergeSegments([
+			createSegment(new Line2D(new Point2D(0, 2), new Point2D(6, 2)), 2, Math.PI / 2),
+			createSegment(new Line2D(new Point2D(0, 3), new Point2D(6, 3)), 3, Math.PI / 2)
+		], options);
+		Assert.equals(2, result.length);
+		assertHorizontalLine(findSegment(result, new Point2D(0, 2), new Point2D(6, 2)), 0, 6, 2);
+		assertHorizontalLine(findSegment(result, new Point2D(0, 3), new Point2D(6, 3)), 0, 6, 3);
+	}
+
 	@:visionTestId("vision.algorithms.Hough.detectLineSegments#duplicate-suppression")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
@@ -73,9 +90,9 @@ class HoughProbabilisticTest extends utest.Test {
 		assertHorizontalLine(result[0], 0, 6, 2);
 	}
 
-	function createOptions(candidateThreshold:Int, minLineLength:Float, maxLineGap:Float, voteThreshold:Int):ProbabilisticHoughLineOptions {
+	function createOptions(candidateThreshold:Int, minLineLength:Float, maxLineGap:Float, voteThreshold:Int, rhoResolution:Float = 0.01):ProbabilisticHoughLineOptions {
 		var options = new ProbabilisticHoughLineOptions();
-		options.rhoResolution = 0.01;
+		options.rhoResolution = rhoResolution;
 		options.candidateThreshold = candidateThreshold;
 		options.minLineLength = minLineLength;
 		options.maxLineGap = maxLineGap;
@@ -113,6 +130,16 @@ class HoughProbabilisticTest extends utest.Test {
 	function matchesEndpoints(actualStart:Point2D, actualEnd:Point2D, expectedStart:Point2D, expectedEnd:Point2D, tolerance:Float):Bool {
 		return (matchesPoint(actualStart, expectedStart, tolerance) && matchesPoint(actualEnd, expectedEnd, tolerance))
 			|| (matchesPoint(actualStart, expectedEnd, tolerance) && matchesPoint(actualEnd, expectedStart, tolerance));
+	}
+
+	function createSegment(line:Line2D, candidateRho:Float, candidateTheta:Float, supportVotes:Float = 7, candidateVotes:Float = 7) {
+		return {
+			line: line,
+			supportVotes: supportVotes,
+			candidateVotes: candidateVotes,
+			candidateRho: candidateRho,
+			candidateTheta: candidateTheta
+		};
 	}
 
 	function matchesPoint(actual:Point2D, expected:Point2D, tolerance:Float):Bool {
