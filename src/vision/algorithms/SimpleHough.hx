@@ -17,31 +17,12 @@ class SimpleHough {
     }
     
     public static function detectLines(image:Image, threshold:Int):Array<Ray2D> {
-        
-        var accumulator:Map<String, Null<Int>> = [];
+        var options = new HoughLineOptions();
+        options.voteThreshold = threshold;
         var rays:Array<Ray2D> = [];
-
-        image.forEachPixel((x, y, color) -> {
-            if (color.red == 255) {
-                for (deg in 0...179) {
-                    var ray = new Ray2D({x: x, y: y}, null, deg);
-                    var intercept = ray.slope == 0 ? ray.point.x : ray.xIntercept;
-                    var rayAsString = '${Std.int(intercept)}|$deg';
-                    if (accumulator[rayAsString] == null) accumulator[rayAsString] = 1
-                    else accumulator[rayAsString]++;
-                }
-            }
-        });
-
-        for (key => value in accumulator) { 
-            if (value >= threshold) {
-                var x = Std.parseFloat(key.split("|")[0]);
-                var y = 0;
-                var deg = Std.parseInt(key.split("|")[1]);
-                rays.push(new Ray2D({x: x, y: y}, null, deg));
-            }
+        for (line in Hough.detectLines(image, options)) {
+            rays.push(line.toRay2D());
         }
-
         return rays;
     }
 

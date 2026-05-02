@@ -20,6 +20,17 @@ class AlgorithmFixtures {
 		return image;
 	}
 
+	public static function diagonalLineImage(width:Int = 5, height:Int = 5, offset:Int = 0):Image {
+		var image = new Image(width, height, Color.BLACK);
+		for (x in 0...width) {
+			var y = x + offset;
+			if (y >= 0 && y < height) {
+				image.setPixel(x, y, Color.WHITE);
+			}
+		}
+		return image;
+	}
+
 	public static function stepEdgeImage(width:Int = 5, height:Int = 5, stepX:Int = 2):Image {
 		var image = new Image(width, height, Color.BLACK);
 		for (y in 0...height) {
