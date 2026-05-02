@@ -2,50 +2,54 @@
 
 ## Commit Intent
 
-- Pass type: `review follow-up`
+- Pass type: `plan-bookkeeping closeout`
 - Plan step: `.github/plans/manual-utest-migration-4-image-and-geometry-ds.md`
-- Scope: `Package the RVW-017 step-4 follow-up delta: reconcile the promoted image-and-geometry manual inventory rows so deferredMembers reflects only the still-uncovered member surface, and carry the matching iteration packet updates.`
-- Reason this is one commit: `These files answer one explicit review round on the selected step-4 baseline. Splitting the manual inventory reconciliation away from the updated handoff, review packet, commit packet, or timeline would fragment one reviewer-requested remediation slice across multiple commits.`
+- Scope: `Package the approved step-4 closeout bookkeeping: record the final approval state after RVW-017 closed, mark step 4 complete in the plans, update the run ledger and progress note for recovery, and append the closeout event without changing application code.`
+- Reason this is one commit: `The review approval state, run-ledger/progress-note recovery edits, plan status changes, and timeline entry all describe the same approved step-4 closeout transition, so they belong in one atomic documentation commit on the existing feature branch.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `tests/catalog/manual-test-inventory.json` | `yes` | `Prunes the promoted step-4 manual entries so deferredMembers reflects only the members still uncovered by authored @:visionTestId coverage.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `yes` | `Records the RVW-017 inventory-reconciliation summary, targeted manifest-check evidence, and the remaining deferred-member rationale for the selected step-4 review round.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the normalized step-4 review round that opened RVW-017 and defines the exact remediation scope being committed.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md`, `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Capture this review-follow-up grouping, gitflow decision, push intent, and the append-only commit event for recovery.` |
+| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Records the approved step-4 closeout state and points recovery at step 5.` |
+| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the normalized approval state and RVW-017 closure for the selected step-4 range.` |
+| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Moves the ledger from closeout-in-progress to closed-out and points the next loop at step 5.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the grouping, branch decision, included files, and commit intent for this closeout pass.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the @Inscribe closeout event to the cross-agent history.` |
+| `.github/plans/manual-utest-migration-4-image-and-geometry-ds.md` | `yes` | `Marks step 4 complete in the step plan.` |
+| `.github/plans/manual-utest-migration-overview.md` | `yes` | `Marks step 4 complete in the parent overview.` |
 | `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This is not a final stop report update; it remains intentionally unchanged.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-4 review-follow-up pass`
+- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-4 plan-bookkeeping closeout pass`
 
 ## Commit Message
 
 ```text
-fix(tests): address RVW-017 inventory reconciliation
+docs(plans): close out image and geometry step 4
 
-Reconcile the promoted step-4 manual inventory rows so
-deferredMembers now matches the authored uncovered-member
-surface instead of leaving the same modules marked manual
-and fully deferred at the same time.
+Record the approved step-4 bookkeeping after @Inspect accepted the
+image-and-geometry migration range through
+1d3ea4d4f05c9b5bae9fdc6db56bb4746af98d28, including the
+final RVW-017 inventory reconciliation and metadata refreshes.
+This pass updates the iteration packets, progress note, and
+plan status so the next recovery point is step 5 on the
+existing feature branch.
 
 Plan: .github/plans/manual-utest-migration-4-image-and-geometry-ds.md
-Pass: review follow-up
-Baseline: c9bd5f0478eece29b7f18b255f11bac702340649
-Review: RVW-017
+Pass: plan-bookkeeping closeout
 ```
 
 ## Result
 
 - Commit hash: `this commit`
 - Push result: `push this commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available`
-- Workspace status after commit: `expected clean after staging the selected step-4 review-follow-up files`
+- Workspace status after commit: `expected clean after staging the selected step-4 closeout bookkeeping files`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Hand the committed RVW-017 remediation pass back to review intake for reinspection of the selected step-4 baseline while carrying forward D-003 and the Windows env-var filtered-run fallback.`
+- Follow-up needed: `Retarget the iteration to .github/plans/manual-utest-migration-5-algorithms.md and preserve D-003 plus the Windows env-var filtered-run fallback as carried context.`
 
 ## Commit History
 
@@ -69,3 +73,4 @@ Review: RVW-017
 | `16` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-4 implementation delta, including the semantic image/matrix and geometry suite rewrites, shared image fixtures/assertions, inventory manual-status/exclusion updates, the exposed Image/IntPoint2D/MathTools fixes, and the matching iteration-state files.` |
 | `17` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-014, RVW-015, and RVW-016 review follow-up, including the strengthened ImageViewShape consumer coverage, the asymmetric floating-pixel assertions, the singular Matrix2D duplicates contract, and the matching iteration packet updates.` |
 | `18` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-017 review follow-up, including the step-4 manual inventory reconciliation, the updated review/implementation packet state, and the matching timeline bookkeeping.` |
+| `19` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-4 closeout bookkeeping, marks the plans complete, and points the next recovery step at the algorithms migration while preserving D-003 plus the Windows env-var filtered-run fallback.` |

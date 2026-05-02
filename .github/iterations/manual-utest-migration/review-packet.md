@@ -2,13 +2,14 @@
 
 ## Review Source
 
-- Source type: `@Inspect output for committed delta`
-- Scope: `.github/plans/manual-utest-migration-4-image-and-geometry-ds.md`
-- Baseline: `c9bd5f0478eece29b7f18b255f11bac702340649..9637756030f9bc5cbaacbd64e00a45ee5a619883`
+- Source type: `@Inspect approval for committed delta plus metadata refreshes`
+- Scope: `Committed review of .github/plans/manual-utest-migration-4-image-and-geometry-ds.md for c9bd5f0478eece29b7f18b255f11bac702340649..1d3ea4d4f05c9b5bae9fdc6db56bb4746af98d28 plus the current metadata refreshes in .github/plans/manual-utest-migration-4-image-and-geometry-ds.md and .github/iterations/manual-utest-migration/run-ledger.md.`
+- Baseline: `c9bd5f0478eece29b7f18b255f11bac702340649..1d3ea4d4f05c9b5bae9fdc6db56bb4746af98d28`
 - Reviewer: `@Inspect`
-- Gate summary: `Scope evidence PASS; plan intent FAIL; verification FAIL; type safety PASS; convention PASS; complexity PASS; regression FAIL.`
+- Gate summary: `Scope evidence PASS; plan intent PASS; verification PASS; type safety PASS; convention PASS; complexity PASS; regression PASS.`
 - Accepted waivers: `D-003 remains the only active waiver, narrowly scoped to tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7.`
-- Residual risks: `The focused Haxe reruns passed for the image/matrix slice, geometry slice, and both case-filter checks. Remaining non-blocking noise is limited to the accepted D-003 waiver plus the pre-existing utest enum-abstract and Gauss deprecation warnings.`
+- Residual risks: `Independent reruns passed for the image/matrix slice, geometry slice, two case-filter checks, and the direct manifest reconciliation over the targeted step-4 modules. Remaining out-of-scope noise is limited to the accepted D-003 waiver plus the pre-existing utest enum-abstract and deprecated Gauss helper warnings.`
+- Source conflict note: `The incoming approval context also reports RVW-018 as satisfied because the selected-step and ledger state now match the actual review stage, but no prior normalized RVW-018 entry exists in this packet. That source-only context is preserved here and in the round history instead of being reconstructed as a standalone historical finding.`
 
 ## Review Checklist
 
@@ -62,13 +63,13 @@
 | `RVW-014` | `FIXED` | `@Implement` | `The current @Inspect round's open finding set is limited to RVW-017 after reviewing c9bd5f0478eece29b7f18b255f11bac702340649..9637756030f9bc5cbaacbd64e00a45ee5a619883, which drops RVW-014 after the committed ImageViewShape consumer-coverage follow-up.` | `Closed by the committed ImageViewShape consumer-coverage follow-up reviewed in c9bd5f0478eece29b7f18b255f11bac702340649..9637756030f9bc5cbaacbd64e00a45ee5a619883.` |
 | `RVW-015` | `FIXED` | `@Implement` | `The current @Inspect round's open finding set is limited to RVW-017 after reviewing c9bd5f0478eece29b7f18b255f11bac702340649..9637756030f9bc5cbaacbd64e00a45ee5a619883, which drops RVW-015 after the committed Matrix2D singular-duplicates follow-up.` | `Closed by the committed Matrix2D duplicate-handling follow-up reviewed in c9bd5f0478eece29b7f18b255f11bac702340649..9637756030f9bc5cbaacbd64e00a45ee5a619883.` |
 | `RVW-016` | `FIXED` | `@Implement` | `The current @Inspect round's open finding set is limited to RVW-017 after reviewing c9bd5f0478eece29b7f18b255f11bac702340649..9637756030f9bc5cbaacbd64e00a45ee5a619883, which drops RVW-016 after the committed floating-pixel assertion follow-up.` | `Closed by the committed Image floating-pixel coverage follow-up reviewed in c9bd5f0478eece29b7f18b255f11bac702340649..9637756030f9bc5cbaacbd64e00a45ee5a619883.` |
-| `RVW-017` | `OPEN` | `@Implement` | `The current @Inspect round opens RVW-017 because representative step-4 manual inventory entries now claim migrated manual status while still carrying full deferredMembers lists, which the builder semantics treat as explicitly uncovered coverage.` | `No implementer response is recorded yet for the contradictory step-4 manual inventory state.` |
+| `RVW-017` | `FIXED` | `@Implement` | `The approval round reports no material findings, passes all reviewed gates, and explicitly states that the RVW-017 contradiction is gone from the inventory after reviewing c9bd5f0478eece29b7f18b255f11bac702340649..1d3ea4d4f05c9b5bae9fdc6db56bb4746af98d28 plus the current metadata refreshes.` | `Closed by the committed step-4 inventory reconciliation follow-up reviewed in c9bd5f0478eece29b7f18b255f11bac702340649..1d3ea4d4f05c9b5bae9fdc6db56bb4746af98d28, with the selected-step and ledger metadata now aligned to the approved review stage.` |
 
 ## Approval Gate
 
-- Current verdict: `CHANGES REQUESTED`
-- Approval blockers: `RVW-017`
-- Next reviewer: `@Implement`
+- Current verdict: `APPROVED`
+- Approval blockers: `none`
+- Next reviewer: `@Iterate`
 
 ## Review History
 
@@ -88,4 +89,5 @@
 | `12` | `APPROVED` | `@Inspect` | `Reviewed e902a4633ee5d45a3488270ea48e9d7215ed914c..7cf5d491504c87db4fd2c8dbcce15cfff4e869fe for .github/plans/manual-utest-migration-3-tools-and-core-ds.md. RVW-013 no longer reproduces after the committed MathTools wrapper-coverage follow-up, no material findings remain, and the scope evidence, plan intent, verification, type-safety, convention, complexity, and regression gates all pass. D-003 remains the only active waiver for tests/generated/src/Main.hx#L6-L7, while the residual risks are limited to the pre-existing utest/Gauss warnings and the documented Windows env-var filtered-run fallback.` |
 | `13` | `CHANGES REQUESTED` | `@Inspect` | `Reviewed c9bd5f0478eece29b7f18b255f11bac702340649..b84983fcb72de929f4c54a7e34d36ba9f55bf605 for .github/plans/manual-utest-migration-4-image-and-geometry-ds.md. Opened RVW-014 because the excluded ImageViewShape behavior still leaves the non-rectangle and inverted shape branches in src/vision/ds/Image.hx unproven, RVW-015 because Matrix2DTest's PERSPECTIVE duplicates case still uses identity point pairs and only asserts not-null, and RVW-016 because ImageTest's floating-pixel assertions do not distinguish all affected neighbor-write branches. The plan-intent, verification, and regression gates fail, while D-003 plus the pre-existing out-of-scope utest enum-abstract and Gauss deprecation warnings remain residual context only.` |
 | `14` | `CHANGES REQUESTED` | `@Inspect` | `Reviewed c9bd5f0478eece29b7f18b255f11bac702340649..9637756030f9bc5cbaacbd64e00a45ee5a619883 for .github/plans/manual-utest-migration-4-image-and-geometry-ds.md. RVW-014, RVW-015, and RVW-016 drop out after the committed image/matrix follow-up, but RVW-017 now opens because the promoted step-4 manual inventory entries still retain full deferredMembers lists, leaving the same surfaces simultaneously marked manual and fully deferred. The plan-intent, verification, and regression gates fail, while D-003 plus the pre-existing out-of-scope utest enum-abstract and Gauss deprecation warnings remain residual context only.` |
+| `15` | `APPROVED` | `@Inspect` | `Reviewed c9bd5f0478eece29b7f18b255f11bac702340649..1d3ea4d4f05c9b5bae9fdc6db56bb4746af98d28 plus the current metadata refreshes in .github/plans/manual-utest-migration-4-image-and-geometry-ds.md and .github/iterations/manual-utest-migration/run-ledger.md. RVW-017 no longer reproduces after the committed inventory reconciliation follow-up, no material findings remain, and the scope evidence, plan intent, verification, type-safety, convention, complexity, and regression gates all pass. D-003 remains the only active waiver for tests/generated/src/Main.hx#L6-L7, while the residual risks are limited to the pre-existing utest enum-abstract and deprecated Gauss helper warnings. The incoming approval context also reports RVW-018 as satisfied because the selected-step and ledger state now match the actual review stage, but no prior normalized RVW-018 entry exists in this packet.` |
 

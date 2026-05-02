@@ -15,7 +15,7 @@ The requested end state is an authored `utest` suite that is owned by humans, ca
 | 1 | [manual-utest-migration-1-cutover.md](manual-utest-migration-1-cutover.md) | ✅ Completed — moved operational test entrypoints off the generated tree and recorded a coverage inventory. |
 | 2 | [manual-utest-migration-2-harness.md](manual-utest-migration-2-harness.md) | ✅ Completed — built the authored runner, shared helpers, and VS Code-friendly suite and case filtering. |
 | 3 | [manual-utest-migration-3-tools-and-core-ds.md](manual-utest-migration-3-tools-and-core-ds.md) | ✅ Completed — rewrote `vision.tools` and core collection/value-type tests with semantic assertions and edge cases. |
-| 4 | [manual-utest-migration-4-image-and-geometry-ds.md](manual-utest-migration-4-image-and-geometry-ds.md) | Rewrite image-centric, matrix, and geometry data-structure suites around explicit invariants. |
+| 4 | [manual-utest-migration-4-image-and-geometry-ds.md](manual-utest-migration-4-image-and-geometry-ds.md) | ✅ Completed — rewrote image-centric, matrix, and geometry data-structure suites around explicit invariants. |
 | 5 | [manual-utest-migration-5-algorithms.md](manual-utest-migration-5-algorithms.md) | Replace algorithm smoke tests with deterministic fixture-driven behavioral coverage. |
 | 6 | [manual-utest-migration-6-formats-and-facade.md](manual-utest-migration-6-formats-and-facade.md) | Rewrite format, facade, helper, and exception coverage around round trips and failure contracts. |
 | 7 | [manual-utest-migration-7-decommission-and-coverage.md](manual-utest-migration-7-decommission-and-coverage.md) | Delete the old auto system, update docs, and prove the manual suite covers the intended surface. |

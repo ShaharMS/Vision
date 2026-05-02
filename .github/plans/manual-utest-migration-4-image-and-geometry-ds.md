@@ -1,6 +1,6 @@
 # Plan: Manual Utest Migration — Step 4: Rewrite Image And Geometry Data Structures
 
-> **Status**: 🔲 Not started
+> **Status**: ✅ Completed
 > **Prerequisite**: [manual-utest-migration-3-tools-and-core-ds.md](manual-utest-migration-3-tools-and-core-ds.md)
 > **Next**: [manual-utest-migration-5-algorithms.md](manual-utest-migration-5-algorithms.md)
 > **Parent**: [manual-utest-migration-overview.md](manual-utest-migration-overview.md)
