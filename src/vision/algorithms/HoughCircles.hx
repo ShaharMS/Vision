@@ -27,7 +27,7 @@ class HoughCircles {
 		var preparedImage = prepareImage(image, options);
 		var edgeImage = detectEdges(preparedImage, options);
 		if (countEdges(edgeImage) == 0) {
-			edgeImage = preparedImage;
+			return [];
 		}
 
 		var circles = collectCircles(preparedImage, edgeImage, radiusRange, scale, options, false);
@@ -103,10 +103,10 @@ class HoughCircles {
 	}
 
 	static function voteAroundEdge(accumulator:Matrix2D, x:Int, y:Int, radius:Int, scale:Float):Void {
-		var angle = 0.0;
-		while (angle < Math.PI * 2) {
+		var sampleCount = resolvePerimeterSampleCount(radius);
+		for (sampleIndex in 0...sampleCount) {
+			var angle = resolvePerimeterAngle(sampleIndex, sampleCount);
 			voteCenter(accumulator, x - Math.cos(angle) * radius, y - Math.sin(angle) * radius, scale);
-			angle += Math.PI / 36;
 		}
 	}
 
@@ -168,8 +168,9 @@ class HoughCircles {
 	static function hasPerimeterSupport(edgeImage:Image, centerX:Float, centerY:Float, radius:Int, options:HoughCircleOptions):Bool {
 		var visited = new StringMap<Bool>();
 		var support = 0;
-		var angle = 0.0;
-		while (angle < Math.PI * 2) {
+		var sampleCount = resolvePerimeterSampleCount(radius);
+		for (sampleIndex in 0...sampleCount) {
+			var angle = resolvePerimeterAngle(sampleIndex, sampleCount);
 			var sampleX = Std.int(Math.round(centerX + Math.cos(angle) * radius));
 			var sampleY = Std.int(Math.round(centerY + Math.sin(angle) * radius));
 			if (sampleX >= 0 && sampleX < edgeImage.width && sampleY >= 0 && sampleY < edgeImage.height) {
@@ -181,7 +182,6 @@ class HoughCircles {
 					}
 				}
 			}
-			angle += Math.PI / 36;
 		}
 		return support >= resolveSupportThreshold(radius, options);
 	}
@@ -272,6 +272,14 @@ class HoughCircles {
 		}
 		var normalized = value > 1 ? value / 255 : value;
 		return normalized > 1 ? 1 : normalized;
+	}
+
+	static inline function resolvePerimeterSampleCount(radius:Int):Int {
+		return Std.int(Math.max(72, Math.ceil(Math.PI * 2 * Math.max(radius, 1))));
+	}
+
+	static inline function resolvePerimeterAngle(sampleIndex:Int, sampleCount:Int):Float {
+		return (sampleIndex / sampleCount) * Math.PI * 2;
 	}
 
 	static inline function resolveSupportThreshold(radius:Int, options:HoughCircleOptions):Float {

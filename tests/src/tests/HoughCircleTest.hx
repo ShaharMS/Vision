@@ -84,6 +84,31 @@ class HoughCircleTest extends utest.Test {
 		Assert.equals(0, result.length);
 	}
 
+	@:visionTestId("vision.algorithms.Hough.detectCircles#large-radius")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_detectCircles__detectsLargeRadiusAboveThirtySixPixels() {
+		var options = createOptions();
+		options.minimumRadius = 38;
+		options.maximumRadius = 42;
+		var result = Hough.detectCircles(AlgorithmFixtures.filledCircleImage(101, 101, 50, 50, 40), options);
+		var detected = findCircle(result, new Point2D(50, 50), 40, 3.0);
+		Assert.notNull(detected);
+	}
+
+	@:visionTestId("vision.algorithms.Hough.detectCircles#no-edge-image")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_detectCircles__returnsNoCirclesForNonEmptyImageWithoutEdges() {
+		var options = createOptions();
+		options.minimumRadius = 4;
+		options.maximumRadius = 8;
+		var result = Hough.detectCircles(new Image(31, 31, Color.fromRGBA(180, 180, 180)), options);
+		Assert.equals(0, result.length);
+	}
+
 	function createOptions():HoughCircleOptions {
 		var options = new HoughCircleOptions();
 		options.cannyLowThreshold = 20;
