@@ -3,7 +3,7 @@
 ## Iteration
 
 - Slug: hough-harris-feature-detection
-- Status: Committed step 1 CR follow-up is ready for re-review
+- Status: Pending metadata-only RVW-002 follow-up commit before re-review
 - Owning orchestrator: @Iterate
 
 ## Selected Scope
@@ -16,15 +16,15 @@
 
 - Baseline commit: 38c18abbb3c6b9c38117c533588c15f23475e704
 - Working branch: feature/hough-harris-feature-detection
-- Latest committed pass: current HEAD step 1 review-follow-up commit
-- Comparison range: 38c18abbb3c6b9c38117c533588c15f23475e704..HEAD
+- Latest committed pass: d9f707d9d0e3802f6ceb99418ef3cecbfd359734
+- Comparison range: 38c18abbb3c6b9c38117c533588c15f23475e704..d9f707d9d0e3802f6ceb99418ef3cecbfd359734
 
 ## Current Loop State
 
-- Next agent: @Inspect
-- Review round: 1 follow-up committed
-- Latest verification: Focused `HoughStandardTest,SimpleHoughTest` regression pass plus compile-only `interp,js` local CI after the RVW-001 fix
-- Latest decision: Commit the RVW-001/RVW-002 follow-up while preserving the unrelated user edit in .github/agents/Iterate.agent.md and keeping the accepted placeholder/Circle2D foundation scope unchanged
+- Next agent: @Inscribe
+- Review round: 2 metadata-only follow-up pending commit
+- Latest verification: Latest committed code verification remains the focused `HoughStandardTest,SimpleHoughTest` regression pass plus compile-only `interp,js` local CI on d9f707d9d0e3802f6ceb99418ef3cecbfd359734; this pass is metadata-only and only needs touched markdown validation.
+- Latest decision: HH-DEC-004 keeps committed pass references concrete and requires pending packet/progress edits to stay explicitly uncommitted until @Inscribe records a new hash.
 
 ## Packet Links
 
@@ -39,10 +39,10 @@
 ## Open Items
 
 - Blockers: None
-- Outstanding findings: RVW-001 FIXED on the current HEAD follow-up commit; RVW-002 FIXED on the current HEAD follow-up commit; awaiting @Inspect re-review
-- Next action: Hand the current HEAD follow-up commit to @Inspect for re-review.
+- Outstanding findings: RVW-001 is already satisfied on d9f707d9d0e3802f6ceb99418ef3cecbfd359734; RVW-002 is fixed in the pending/uncommitted metadata-only remediation and awaits @Inscribe commit plus @Inspect re-review.
+- Next action: Have @Inscribe commit the pending metadata-only RVW-002 remediation, then return the new concrete follow-up hash to @Inspect for re-review.
 
 ## Resume Notes
 
-- Current context: Step 1 remains the active scope on feature/hough-harris-feature-detection; the latest committed pass is the current HEAD review-follow-up commit that addresses RVW-001 and RVW-002. The working tree now only contains one unrelated user edit in .github/agents/Iterate.agent.md that must remain untouched.
-- Recovery instructions: Read this ledger first, then implementation-handoff.md for the committed follow-up diff and verification, then review-packet.md for the finding dispositions. Use the baseline commit above and current HEAD when preparing the re-review.
+- Current context: Step 1 remains the active scope on feature/hough-harris-feature-detection; the latest committed pass is d9f707d9d0e3802f6ceb99418ef3cecbfd359734, and the working tree contains the pending/uncommitted metadata-only RVW-002 cleanup in packet/progress files plus the unrelated .github/agents/Iterate.agent.md user edit that must remain untouched.
+- Recovery instructions: Read this ledger first, then implementation-handoff.md for the pending metadata-only diff and validation, then review-packet.md for the finding dispositions. Use the baseline commit above and the latest committed pass d9f707d9d0e3802f6ceb99418ef3cecbfd359734 as the committed review anchor until @Inscribe records the next concrete follow-up hash.
