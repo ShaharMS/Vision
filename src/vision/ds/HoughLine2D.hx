@@ -20,7 +20,7 @@ class HoughLine2D {
 	}
 
 	public inline function toRay2D():Ray2D {
-		return new Ray2D(pointOnLine(), null, null, theta);
+		return new Ray2D(pointOnLine(), null, null, theta + Math.PI / 2);
 	}
 
 	public function toLine2D(width:Int, height:Int):Null<Line2D> {
