@@ -76,6 +76,68 @@ class HoughStandardTest extends utest.Test {
 		Assert.isTrue(detected.rho < 0);
 	}
 
+	@:visionTestId("vision.algorithms.Hough.detectLines#weighted-votes")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_detectLines__weightedVotesPreferStrongerLine() {
+		var options = createOptions(1);
+		options.useEdgeValueWeights = true;
+
+		var result = Hough.detectLines(createWeightedParallelLineImage(), options);
+		var stronger = findClippedLine(result, 7, 7, new Point2D(1, 0), new Point2D(1, 6));
+		var weaker = findClippedLine(result, 7, 7, new Point2D(5, 0), new Point2D(5, 6));
+
+		Assert.isTrue(stronger != null);
+		Assert.isTrue(weaker != null);
+		if (stronger == null || weaker == null) return;
+
+		Assert.isTrue(stronger.votes > weaker.votes);
+		ApproxAssertions.equalsFloat(7, stronger.votes, 0.001);
+		ApproxAssertions.equalsFloat((7 * 64) / 255, weaker.votes, 0.001);
+	}
+
+	@:visionTestId("vision.algorithms.Hough.detectLines#theta-bounds")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_detectLines__thetaBoundsRejectOutsideWindow() {
+		var options = createOptions(5);
+		options.thetaResolution = 0.01;
+		options.minTheta = (Math.PI / 2) - 0.2;
+		options.maxTheta = (Math.PI / 2) + 0.2;
+
+		var result = Hough.detectLines(createOrthogonalCrossImage(), options);
+		var horizontal = findClippedLine(result, 5, 5, new Point2D(0, 2), new Point2D(4, 2), 0.05);
+		var vertical = findClippedLine(result, 5, 5, new Point2D(2, 0), new Point2D(2, 4), 0.05);
+
+		Assert.isTrue(horizontal != null);
+		Assert.isNull(vertical);
+	}
+
+	@:visionTestId("vision.algorithms.Hough.detectLinesFromPoints#parity")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_detectLinesFromPoints__matchesImageAccumulatorPath() {
+		var image = AlgorithmFixtures.diagonalLineImage();
+		var options = createOptions(5);
+		var imageResult = Hough.detectLines(image, options);
+		var pointResult = Hough.detectLinesFromPoints(collectPoints(image), image.width, image.height, options);
+		var expectedStart = new Point2D(0, 0);
+		var expectedEnd = new Point2D(4, 4);
+		var imageLine = findClippedLine(imageResult, image.width, image.height, expectedStart, expectedEnd);
+		var pointLine = findClippedLine(pointResult, image.width, image.height, expectedStart, expectedEnd);
+
+		Assert.isTrue(imageLine != null);
+		Assert.isTrue(pointLine != null);
+		if (imageLine == null || pointLine == null) return;
+
+		ApproxAssertions.equalsFloat(imageLine.rho, pointLine.rho, 0.001);
+		ApproxAssertions.equalsFloat(imageLine.theta, pointLine.theta, 0.001);
+		ApproxAssertions.equalsFloat(imageLine.votes, pointLine.votes, 0.001);
+	}
+
 	@:visionTestId("vision.ds.HoughLine2D.toRay2D#horizontal")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
@@ -103,6 +165,34 @@ class HoughStandardTest extends utest.Test {
 		options.rhoResolution = 0.01;
 		options.voteThreshold = voteThreshold;
 		return options;
+	}
+
+	function createWeightedParallelLineImage():Image {
+		var image = new Image(7, 7, Color.BLACK);
+		for (y in 0...7) {
+			image.setPixel(1, y, Color.WHITE);
+			image.setPixel(5, y, Color.fromRGBA(64, 64, 64));
+		}
+		return image;
+	}
+
+	function createOrthogonalCrossImage():Image {
+		var image = AlgorithmFixtures.horizontalLineImage();
+		for (y in 0...image.height) {
+			image.setPixel(2, y, Color.WHITE);
+		}
+		return image;
+	}
+
+	function collectPoints(image:Image):Array<Point2D> {
+		var points:Array<Point2D> = [];
+		image.forEachPixel((x, y, color) -> {
+			if (color.red == 0 && color.green == 0 && color.blue == 0) {
+				return;
+			}
+			points.push(new Point2D(x, y));
+		});
+		return points;
 	}
 
 	function findClippedLine(lines:Array<HoughLine2D>, width:Int, height:Int, start:Point2D, end:Point2D, tolerance:Float = 0.01):Null<HoughLine2D> {
