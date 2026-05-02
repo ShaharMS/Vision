@@ -85,7 +85,8 @@ Purpose: normalized review that another agent can consume without reinterpretati
 
 Purpose: explicit commit grouping and gitflow intent.
 
-- Capture the current pass type, commit scope, included files, excluded files, branch action, commit message, and push result.
+- Capture the current pass type, commit scope, included files, excluded files, branch action, commit message, the actual commit hash, and the actual push result.
+- Do not leave placeholders such as `this commit`; once a commit exists, record the full commit id in the packet history and result section.
 - `@Inscribe` should update this file after every commit-producing pass.
 
 ### 5. `decision-log.md`
@@ -101,7 +102,7 @@ Purpose: append-only event trail for cross-agent recovery.
 
 - Packet-owning agents should add a narrow entry when they finish a major transition they own.
 - `@Index` keeps the sequence readable, backfills missed transitions, and updates the matching `.github/agent-progress/` note.
-- Add entries for bootstrap, first implementation pass, review packet updates, commit events, approvals, plan finalization, and blockers.
+- Add entries for bootstrap, implementation passes, `@Inspect` review verdicts, `@Intake` review normalizations, commit events, approvals, plan finalization, and blockers.
 
 ### 7. `execution-report.md`
 

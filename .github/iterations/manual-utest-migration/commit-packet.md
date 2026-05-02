@@ -45,10 +45,10 @@ Pass: plan-bookkeeping closeout
 
 ## Result
 
-- Commit hash: `this commit`
-- Push result: `push this commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available`
-- Workspace status after commit: `expected clean after staging the selected step-5 closeout bookkeeping files`
-- Remaining uncommitted files: `none expected`
+- Commit hash: `87d4780fdb8cfce014e223582057080c841429b3`
+- Push result: `Pushed 87d4780fdb8cfce014e223582057080c841429b3 to origin/feature/manual-utest-migration-1-cutover successfully.`
+- Workspace status after commit: `Clean after the selected step-5 closeout bookkeeping files were committed and pushed.`
+- Remaining uncommitted files: `none`
 - Follow-up needed: `Retarget the iteration to .github/plans/manual-utest-migration-6-formats-and-facade.md and preserve D-003 plus the Windows env-var filtered-run fallback, including clearing stale VISION_TEST_CASES before suite-only reruns.`
 
 ## Commit History
@@ -75,4 +75,4 @@ Pass: plan-bookkeeping closeout
 | `18` | `1d3ea4d4f05c9b5bae9fdc6db56bb4746af98d28` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-017 review follow-up, including the step-4 manual inventory reconciliation, the updated review or implementation packet state, and the matching timeline bookkeeping.` |
 | `19` | `41e803df1d8bbbb9a5c0a6cf02a4f84af5959ca2` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-4 closeout bookkeeping, marks the plans complete, and points the next recovery step at the algorithms migration while preserving D-003 plus the Windows env-var filtered-run fallback.` |
 | `20` | `dcbe4c634fe2fafcd42229ee9956c4774f474117` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-5 implementation delta, including the semantic algorithm-suite rewrites, shared AlgorithmFixtures or ResamplerAssertions helpers, manual inventory updates, the exposed Canny hysteresis fix, the corrected Canny or SimpleLineDetector expectations, and the current step-5 iteration-state files.` |
-| `21` | `this commit` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-5 closeout bookkeeping, marks the plans complete, and points the next recovery step at the formats or facade migration while preserving D-003 plus the Windows env-var filtered-run fallback and stale-case-filter reset note.` |
+| `21` | `87d4780fdb8cfce014e223582057080c841429b3` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-5 closeout bookkeeping, marks the plans complete, and points the next recovery step at the formats or facade migration while preserving D-003 plus the Windows env-var filtered-run fallback and stale-case-filter reset note.` |

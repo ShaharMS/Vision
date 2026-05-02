@@ -26,8 +26,8 @@
 
 ## Result
 
-- Commit hash:
-- Push result:
+- Commit hash: <actual full commit hash only>
+- Push result: <actual past-tense push result>
 - Workspace status after commit:
 - Remaining uncommitted files:
 - Follow-up needed:
