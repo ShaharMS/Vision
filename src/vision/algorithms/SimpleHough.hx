@@ -1,10 +1,20 @@
 package vision.algorithms;
 
 import vision.ds.Color;
+import vision.ds.HoughLine2D;
 import vision.ds.Ray2D;
 import vision.ds.Image;
+import vision.ds.specifics.HoughLineOptions;
 
 class SimpleHough {
+
+    public static function detectParameterLines(image:Image, ?options:HoughLineOptions):Array<HoughLine2D> {
+        return Hough.detectLines(image, options);
+    }
+
+    public static function mapParameterLines(image:Image, lines:Array<HoughLine2D>):Image {
+        return Hough.mapLines(image, lines);
+    }
     
     public static function detectLines(image:Image, threshold:Int):Array<Ray2D> {
         

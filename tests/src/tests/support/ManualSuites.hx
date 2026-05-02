@@ -20,7 +20,11 @@ class ManualSuites {
 		if (includeTest("FromTest")) runner.addCase(new FromTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("GaussJordanTest")) runner.addCase(new GaussJordanTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("GaussTest")) runner.addCase(new GaussTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("HarrisTest")) runner.addCase(new HarrisTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("HistogramTest")) runner.addCase(new HistogramTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("HoughCircleTest")) runner.addCase(new HoughCircleTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("HoughProbabilisticTest")) runner.addCase(new HoughProbabilisticTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("HoughStandardTest")) runner.addCase(new HoughStandardTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ImageLoadingFailedTest")) runner.addCase(new ImageLoadingFailedTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ImageSavingFailedTest")) runner.addCase(new ImageSavingFailedTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ImageFormatTest")) runner.addCase(new ImageFormatTest(), "setup", "teardown", "test", casePattern);
