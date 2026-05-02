@@ -2,6 +2,7 @@ package tests;
 
 import tests.support.ExceptionAssertions;
 import tests.support.FormatAssertions;
+import vision.exceptions.ImageLoadingFailed;
 import vision.exceptions.Unimplemented;
 import vision.formats.ImageIO;
 import vision.formats.from.FromBytes;
@@ -35,14 +36,14 @@ class FromBytesTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_png__invalidHeaderThrows() {
-		ExceptionAssertions.throwsAny(() -> new FromBytes().png(FormatAssertions.malformedBytes()));
+		ExceptionAssertions.throwsType(() -> new FromBytes().png(FormatAssertions.malformedBytes()), ImageLoadingFailed);
 	}
 
 	@:visionTestId("vision.formats.from.FromBytes.bmp#invalidHeader")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_bmp__invalidHeaderThrows() {
-		ExceptionAssertions.throwsAny(() -> new FromBytes().bmp(FormatAssertions.malformedBytes()));
+		ExceptionAssertions.throwsType(() -> new FromBytes().bmp(FormatAssertions.malformedBytes()), ImageLoadingFailed);
 	}
 
 	@:visionTestId("vision.formats.from.FromBytes.jpeg#unimplementedOnInterp")

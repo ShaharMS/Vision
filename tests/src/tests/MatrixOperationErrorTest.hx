@@ -4,6 +4,7 @@ import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.ds.Matrix2D;
 import vision.exceptions.MatrixOperationError;
+import vision.exceptions.MatrixOperationError.MatrixError;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
@@ -14,7 +15,7 @@ class MatrixOperationErrorTest extends utest.Test {
 	function test_errorByType__describesMismatchedAddition() {
 		var first = createZeroMatrix(2, 2);
 		var second = createZeroMatrix(3, 1);
-		var message = MatrixOperationError.errorByType("add", [first, second], cast 1);
+		var message = MatrixOperationError.errorByType("add", [first, second], MatrixError.Add_MismatchingDimensions);
 
 		Assert.isTrue(message.indexOf("Cannot calculate:") == 0);
 		Assert.isTrue(message.indexOf("+") != -1);
@@ -29,7 +30,7 @@ class MatrixOperationErrorTest extends utest.Test {
 		var first = createZeroMatrix(2, 2);
 		var second = createZeroMatrix(3, 1);
 		var error = ExceptionAssertions.capture(
-			() -> throw new MatrixOperationError("add", [first, second], cast 1)
+			() -> throw new MatrixOperationError("add", [first, second], MatrixError.Add_MismatchingDimensions)
 		);
 
 		Assert.isTrue(Std.isOfType(error, MatrixOperationError));

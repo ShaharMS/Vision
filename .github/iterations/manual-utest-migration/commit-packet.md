@@ -2,40 +2,43 @@
 
 ## Commit Intent
 
-- Pass type: `packet-consistency repair`
+- Pass type: `review follow-up`
 - Plan step: `.github/plans/manual-utest-migration-6-formats-and-facade.md`
-- Scope: `Package the follow-on packet-consistency repair after the committed step-6 bootstrap and packet-hygiene pass 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd: keep row 22 intact, align the live commit packet or run ledger or progress note with that already-pushed bootstrap pass, and append the repair event without touching application source or plan files.`
-- Reason this is one commit: `The commit packet, run ledger, progress note, and append-only timeline all describe the same narrow history-repair transition after 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd, so they belong in one atomic documentation commit on the existing feature branch.`
+- Scope: `Package the RVW-018 and RVW-019 step-6 review follow-up by tightening the malformed PNG or BMP assertions to the explicit ImageLoadingFailed contract, replacing MatrixOperationErrorTest's ordinal-based enum coercions with MatrixError.Add_MismatchingDimensions, and carrying the matching implementation or review or ledger or timeline packet refresh on the existing feature branch.`
+- Reason this is one commit: `The touched tests and iteration files all come from the same step-6 inspection round, depend on the same focused verification evidence, and belong together as one explicit review-follow-up commit for the current branch.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Keeps the resumable note on the active step-6 scope while recording the follow-on packet-consistency repair after 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Retargets the packet to this repair pass, preserves the existing step-6 bootstrap row 22, and appends the next history row.` |
-| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Records that the live step-6 state remains bootstrapped by 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd after the packet-history repair.` |
-| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the @Inscribe packet-consistency repair event after the already-recorded bootstrap or hygiene row.` |
+| `tests/src/tests/FromBytesTest.hx, tests/src/tests/MatrixOperationErrorTest.hx` | `yes` | `Carries the exact RVW-018 and RVW-019 test fixes that bind the malformed-input and MatrixError coverage back to the named public contracts.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md, .github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Records the implemented review responses and the normalized CHANGES REQUESTED context that this follow-up addresses.` |
+| `.github/iterations/manual-utest-migration/run-ledger.md, .github/iterations/manual-utest-migration/timeline.md` | `yes` | `Advances the resumable loop state to the post-commit handoff and appends the matching step-6 review-follow-up event.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Retargets the packet from the prior implementation pass to the current RVW-018 or RVW-019 review follow-up while preserving the existing full-hash history rows through pass 24.` |
 | `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass is not a final stop report update.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-6 packet-consistency repair pass`
+- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-6 review-follow-up pass`
 
 ## Commit Message
 
 ```text
-docs(iterations): repair step 6 packet history
+fix(tests): address inspect review for step 6
+
+Plan: .github/plans/manual-utest-migration-6-formats-and-facade.md
+Pass: review follow-up
 ```
 
 ## Result
 
-- Commit hash: `facad`
-- Push result: `Pushed facad to origin/feature/manual-utest-migration-1-cutover successfully.`
-- Workspace status after commit: `Clean after the step-6 packet-consistency repair bookkeeping files were committed and pushed.`
-- Remaining uncommitted files: `none`
-- Follow-up needed: `Delegate .github/plans/manual-utest-migration-6-formats-and-facade.md to @Implement in delegated mode while preserving D-003 plus the Windows env-var filtered-run fallback, including clearing stale VISION_TEST_CASES before suite-only reruns.`
+- Commit hash: `To be written in the post-commit packet refresh because the packet cannot embed its own resulting object id inside the same single-commit pass.`
+- Push result: `To be written in the post-commit packet refresh after the origin push completes for the review-follow-up commit.`
+- Workspace status after commit: `Expected clean except for the post-commit packet refresh fields that require the final commit id and push result.`
+- Remaining uncommitted files: `.github/iterations/manual-utest-migration/commit-packet.md`
+- Follow-up needed: `Hand the published step-6 review follow-up back to @Inspect for re-review while preserving D-003 plus the Windows env-var filtered-run fallback and stale-VISION_TEST_CASES reset requirement.`
 
 ## Commit History
 
@@ -63,4 +66,5 @@ docs(iterations): repair step 6 packet history
 | `20` | `dcbe4c634fe2fafcd42229ee9956c4774f474117` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-5 implementation delta, including the semantic algorithm-suite rewrites, shared AlgorithmFixtures or ResamplerAssertions helpers, manual inventory updates, the exposed Canny hysteresis fix, the corrected Canny or SimpleLineDetector expectations, and the current step-5 iteration-state files.` |
 | `21` | `87d4780fdb8cfce014e223582057080c841429b3` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-5 closeout bookkeeping, marks the plans complete, and points the next recovery step at the formats or facade migration while preserving D-003 plus the Windows env-var filtered-run fallback and stale-case-filter reset note.` |
 | `22` | `3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd` | `feature/manual-utest-migration-1-cutover` | `Packages the committed step-6 bootstrap and packet-hygiene refresh, including the explicit @Inspect timeline backfill, the step-6 ledger or progress retarget, and the iteration guidance or template updates that remove placeholder commit wording from future packets.` |
-| `23` | `facad` | `feature/manual-utest-migration-1-cutover` | `Packages the follow-on packet-consistency repair that preserves row 22 for 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd, aligns the live step-6 packet history or resumable notes with the already-pushed bootstrap pass, and keeps delegated implementation next.` |
+| `23` | `facad364a1d996a3156d647d9c405118a2425d75` | `feature/manual-utest-migration-1-cutover` | `Packages the follow-on packet-consistency repair that preserves row 22 for 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd, aligns the live step-6 packet history or resumable notes with the already-pushed bootstrap pass, and keeps delegated implementation next.` |
+| `24` | `98de21b40c311cbba83806a9f0f7ee0b12f5adee` | `feature/manual-utest-migration-1-cutover` | `Packages the selected step-6 implementation delta, including deterministic format round-trip and malformed-input coverage, representative Vision facade compatibility checks, helper and exception suites, the exposed format-loader/exporter and exception-surface fixes, and the matching inventory, README, and iteration bookkeeping updates.` |
