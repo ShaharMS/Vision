@@ -2,42 +2,45 @@
 
 ## Current Pass
 
-- Pass type: Delegated implementation pass for step 4 Hough API parity
+- Pass type: Delegated implementation pass for step 5 Hough circles
 - Authoring agent: @Implement delegated
-- Plan step: .github/plans/hough-harris-feature-detection-4-hough-api-parity.md
+- Plan step: .github/plans/hough-harris-feature-detection-5-hough-circles.md
 - Branch: feature/hough-harris-feature-detection
-- Baseline commit: 733a30a21990e85e69a20a39b60f62d45d9e27d6
-- Latest committed review anchor: 733a30a21990e85e69a20a39b60f62d45d9e27d6
-- Summary: Added focused parity coverage for weighted votes, theta-window rejection, and `detectLinesFromPoints(...)` agreement, then verified that the existing `Hough.collectVotePointsFromImage(...) -> detectLinesFromVotePoints(...)` path already satisfies the requested behavior without widening `Vision.hx` or changing `Hough.hx`. Recorded HH-DEC-007 to make the step-4 multi-scale `srn`/`stn` omission explicit.
+- Baseline commit: 8607aaeb509dc29352db55be20d70eefb94f90e6
+- Latest committed review anchor: 8607aaeb509dc29352db55be20d70eefb94f90e6
+- Summary: Added a dedicated `HoughCircles` companion that keeps circle detection isolated from the line accumulator, reuses the existing `Circle2D` and `HoughCircleOptions` surfaces, preprocesses via grayscale plus optional median blur, derives Canny-style edges, votes centers per radius with gradient-directed voting plus a thin-edge angle-sweep fallback, and filters peaks by measured perimeter support before returning circles. Added the documented `Vision.houghCircleDetection(...)` and `Vision.mapHoughCircles(...)` wrappers plus synthetic circle fixtures/tests for a centered circle, `minimumDistance`, radius-bound rejection, and the empty-image default.
 
 ## Files Changed
 
 | Path | Intent | Verification impact |
 |------|--------|---------------------|
-| tests/src/tests/HoughStandardTest.hx | Add targeted regressions for weighted voting, theta bounds, and point-set parity against the standard Hough line detector. | Falsifies the step-4 parity requirements directly and proves the shared vote-point path behaves the same for image and point input. |
-| .github/iterations/hough-harris-feature-detection/decision-log.md | Record HH-DEC-007 to explicitly defer multi-scale standard-Hough parity from this step. | Makes the omission reviewable instead of accidental. |
-| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Refresh the current-pass packet summary for the step-4 parity implementation and preserve pass history. | Gives @Inspect the current code, test, and verification rationale without relying on chat history. |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Append the step-4 implementation transition. | Records the transition for later recovery and review. |
+| src/vision/algorithms/HoughCircles.hx | Add the dedicated Hough circle detector implementation, including preprocessing, center voting, perimeter-support filtering, and thin-edge fallbacks. | Owns the new circle behavior that the focused `HoughCircleTest` suite and compile-only local CI validate. |
+| src/vision/algorithms/Hough.hx | Delegate `detectCircles(...)` to the new companion and add a circle overlay helper. | Keeps the public Hough entry point local while proving the circle path stays separate from the line path. |
+| src/vision/Vision.hx | Add documented `houghCircleDetection(...)` and `mapHoughCircles(...)` wrappers. | Verifies the public wrapper returns `Circle2D` data and exposes a no-custom-code overlay path. |
+| tests/src/tests/support/AlgorithmFixtures.hx | Add synthetic circle fixtures for centered and separated circle images. | Provides stable, debug-friendly image inputs for the new focused circle tests. |
+| tests/src/tests/HoughCircleTest.hx | Add centered-circle, `minimumDistance`, and radius-bound regressions while keeping the empty-image default. | Falsifies the requested step-5 circle behavior directly and proves the wrapper and detector stay on the `Circle2D` surface. |
+| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Refresh the current-pass packet summary for the step-5 circle implementation and preserve pass history. | Gives @Inspect the current code, test, and verification rationale without relying on chat history. |
+| .github/iterations/hough-harris-feature-detection/timeline.md | Append the step-5 implementation transition. | Records the transition for later recovery and review. |
 
 ## Verification
 
 | Check | Method | Result | Evidence |
 |-------|--------|--------|----------|
-| Focused standard Hough suite | PowerShell `haxe test.hxml` with `VISION_TESTS='HoughStandardTest'` | PASS | All 11 focused `HoughStandardTest` methods passed twice, including the new weighted-vote, theta-window, and `detectLinesFromPoints(...)` parity regressions. |
+| Focused Hough circle suite | PowerShell `haxe test.hxml` with `VISION_TESTS='HoughCircleTest'` | PASS | All 5 focused `HoughCircleTest` methods passed after validating the centered wrapper path, separated-circle `minimumDistance` handling, radius-bound rejection, and empty-image behavior. |
 | Compile-only local CI | PowerShell `haxe tests/ci/local-ci.hxml` with `VISION_CI_TARGETS='interp,js'`, `VISION_CI_COMPILE_ONLY='1'`, and `VISION_CI_SKIP_INSTALL='1'` | PASS | The required compile-only `interp` and `js` local CI pass completed successfully. |
-| Touched-scope diagnostics | VS Code `get_errors` on `Hough.hx` and `HoughStandardTest.hx` | PASS | No diagnostics remain in the validated standard-Hough implementation or the new parity regression file. |
+| Touched-scope diagnostics | VS Code `get_errors` on the touched Hough circle implementation and test files | PASS | No diagnostics remain in `HoughCircles.hx`, `Hough.hx`, `Vision.hx`, `AlgorithmFixtures.hx`, or `HoughCircleTest.hx`. |
 
 ## Review Responses
 
 | Finding ID | Disposition | Evidence | Notes |
 |------------|-------------|----------|-------|
-| Step 4 parity scope | ALREADY SATISFIED | The new `HoughStandardTest` regressions pass against the existing `Hough.detectLines(...)` and `detectLinesFromPoints(...)` control path without any production-code edits. | Weighted votes already flow through `resolveEdgeVote(...)`, theta bounds already constrain accumulator bin enumeration, and point input already delegates to `detectLinesFromVotePoints(...)`. |
-| HH-DEC-007 | WON'T FIX BECAUSE | `decision-log.md` now records that OpenCV-style multi-scale standard-Hough parity (`srn`/`stn`) is intentionally deferred from step 4. | This step closes the requested weighted-vote, theta-bound, and point-set parity work without adding a second accumulator mode or widening the public wrapper surface. |
+| Step 5 circle result type | ALREADY SATISFIED | The existing `Circle2D` surface already carries center, radius, and vote count, and the new detector plus wrapper return `Array<Circle2D>` directly. | No extra geometry type was necessary for this step. |
+| Step 5 circle-detector isolation | FIXED | `Hough.detectCircles(...)` now delegates to `HoughCircles.detect(...)`, leaving the line accumulator path unchanged while the new companion owns circle-specific preprocessing, voting, and support validation. | The chosen implementation stays local to the circle path instead of widening the line accumulator. |
 
 ## Risks And Follow-Ups
 
-- Multi-scale standard-Hough parity (`srn`/`stn`) remains intentionally unimplemented after HH-DEC-007. If review wants that OpenCV surface later, it should land as a separate accumulator-mode change instead of being folded into this parity pass.
-- The weighted-vote regression currently exercises grayscale edge strength from the source image. If later review expects Sobel-magnitude weighting instead of raw pixel intensity weighting, that would be a new behavior change rather than an untested gap in the current step.
+- The circle detector is tuned and verified on tight synthetic fixtures. @Inspect should focus on whether the gradient-directed path plus angle-sweep fallback is acceptable for broader natural-image inputs, especially with noisier edge maps or larger radii.
+- `minimumDistance` suppression currently works strictly from center distance after sorting by vote count. Concentric circles with different radii are not covered in this step and may need a separate policy if later review expects them.
 - Preserve the unrelated user edit in .github/agents/Iterate.agent.md throughout the iteration.
 
 ## Pass History
@@ -53,3 +56,4 @@
 | 7 | Committed via @Inscribe under HH-DEC-005 | Addresses RVW-003 by restricting duplicate merges to near-colinear fragments with small along-line gaps, projects merged endpoints back onto a shared axis, adds the adjacent-parallel regression, reruns focused `HoughProbabilisticTest`, reruns compile-only `interp,js`, and confirms clean touched-scope diagnostics. |
 | 8 | Committed via @Inscribe under HH-DEC-005 | Addresses RVW-004 by rejecting mismatched custom `edgeImage` sizes in `Hough.detectLineSegments(...)`, documenting the same-size wrapper requirement, adding the focused mismatch regression, rerunning `HoughProbabilisticTest`, rerunning compile-only `interp,js`, and confirming clean touched-scope diagnostics. |
 | 9 | Working tree (pending @Inscribe) | Adds focused `HoughStandardTest` parity coverage for weighted votes, theta bounds, and `detectLinesFromPoints(...)`, verifies that the existing Hough control path already satisfies the step-4 API-parity scope, records HH-DEC-007 to defer multi-scale `srn`/`stn`, reruns the focused suite twice, reruns compile-only `interp,js`, and confirms clean touched-scope diagnostics. |
+| 10 | Working tree (pending @Inscribe) | Adds the dedicated `HoughCircles` companion, wires `Hough.detectCircles(...)` plus documented `Vision` circle wrappers and overlays to `Circle2D`, adds synthetic circle fixtures and focused `HoughCircleTest` coverage, reruns the focused circle suite, reruns compile-only `interp,js`, and confirms clean touched-scope diagnostics while preserving the unrelated `.github/agents/Iterate.agent.md` user edit. |

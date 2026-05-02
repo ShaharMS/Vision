@@ -2,53 +2,56 @@
 
 ## Commit Intent
 
-- Pass type: Approved step 4 closeout bookkeeping pass
-- Plan step: .github/plans/hough-harris-feature-detection-4-hough-api-parity.md
-- Scope: Commit the step-4 approval-normalized review packet, the step-5 activation ledger and progress updates, the step-4 plan and overview status changes, the matching timeline backfills, and this commit-packet refresh in one atomic docs-only history entry.
-- Reason this is one commit: The approved review normalization, next-step activation, and plan-status bookkeeping all describe the same step-4 closeout transition and should remain together for downstream recovery.
+- Pass type: Initial implementation pass for step 5 Hough circles
+- Plan step: .github/plans/hough-harris-feature-detection-5-hough-circles.md
+- Scope: Commit the dedicated Hough circle detector, the Hough and Vision circle wrapper and delegation changes, the synthetic circle fixtures and focused circle tests, the matching implementation-handoff and timeline updates, and this commit-packet refresh in one atomic history entry.
+- Reason this is one commit: The user requested one explicit plan-step commit, and the detector, wrapper, tests, and packet updates together form the first reviewable step-5 implementation slice.
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| .github/iterations/hough-harris-feature-detection/review-packet.md | Yes | Records the approved step-4 review outcome, the no-new-findings normalization, and the durable approval gate for downstream recovery. |
-| .github/iterations/hough-harris-feature-detection/run-ledger.md | Yes | Activates step 5 and updates the baseline, latest-approved anchor, and next-action state for the next implementation loop. |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the step-4 approval, the step-5 activation backfill, and the matching @Inscribe closeout transition for later recovery. |
-| .github/agent-progress/hough-harris-feature-detection.md | Yes | Captures the approved step-4 outcome, HH-DEC-007 acceptance, and the step-5-ready resume note. |
-| .github/plans/hough-harris-feature-detection-4-hough-api-parity.md | Yes | Marks step 4 as completed in the selected plan chain. |
-| .github/plans/hough-harris-feature-detection-overview.md | Yes | Updates the overview progress table to reflect step-4 completion and step-5 activation. |
-| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the inclusion boundary, gitflow decision, and self-reference-safe post-commit state for this closeout pass. |
-| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | No | The implementation-pass handoff remains accurate and should not be rewritten for this docs-only closeout. |
-| .github/iterations/hough-harris-feature-detection/execution-report.md | No | Run-level closeout reporting is outside this approved-step bookkeeping pass. |
+| src/vision/algorithms/HoughCircles.hx | Yes | Introduces the dedicated Hough circle detector with preprocessing, center voting, radius iteration, and perimeter-support validation. |
+| src/vision/algorithms/Hough.hx | Yes | Routes the public Hough circle entry point through the dedicated detector and adds the circle overlay helper. |
+| src/vision/Vision.hx | Yes | Adds the documented public wrappers for circle detection and circle overlays. |
+| tests/src/tests/support/AlgorithmFixtures.hx | Yes | Adds synthetic circle fixtures for the focused step-5 regressions. |
+| tests/src/tests/HoughCircleTest.hx | Yes | Adds centered-circle, minimum-distance, radius-bound, and wrapper-focused circle coverage. |
+| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Yes | Preserves the step-5 implementation summary, verification evidence, and risks for the first review. |
+| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the step-5 @Implement transition and the matching @Inscribe commit event for recovery. |
+| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the inclusion boundary, gitflow decision, and self-reference-safe post-commit state for this implementation pass. |
+| .github/iterations/hough-harris-feature-detection/run-ledger.md | No | Orchestrator-owned step-5 activation update; excluded by request and left uncommitted. |
 | .github/agents/Iterate.agent.md | No | Pre-existing unrelated user edit that must remain untouched and uncommitted. |
+| .github/iterations/hough-harris-feature-detection/review-packet.md | No | No committed step-5 review exists yet, so review-packet changes are outside this initial implementation pass. |
+| .github/iterations/hough-harris-feature-detection/execution-report.md | No | Run-level closeout reporting belongs to a later iteration stop, not this implementation commit. |
 
 ## Gitflow Decision
 
 - Starting branch: feature/hough-harris-feature-detection
 - Target branch: feature/hough-harris-feature-detection
-- Branch action: No branch change required because this approved-step closeout belongs on the existing dedicated feature branch for the iteration
+- Branch action: No branch change required because this initial step-5 implementation belongs on the existing dedicated feature branch for the iteration
 
 ## Commit Message
 
 ```text
-docs(plans): close out approved step 4
+feat(hough): add dedicated circle detector and wrapper
 
-Finalize the approved step-4 bookkeeping by recording the
-normalized approval outcome, activating step 5 in the durable
-iteration state, and marking the plan set accordingly.
+Introduce the step-5 Hough circle implementation by adding the
+dedicated detector companion, routing the Hough and Vision
+circle APIs through it, and covering the new behavior with
+synthetic fixtures plus focused circle tests.
 
-Plan: .github/plans/hough-harris-feature-detection-4-hough-api-parity.md
-Pass: plan-bookkeeping closeout
+Plan: .github/plans/hough-harris-feature-detection-5-hough-circles.md
+Pass: initial implementation
 ```
 
 ## Result
 
-- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the approved step-4 review commit instead of self-reporting a same-commit hash per HH-DEC-005
-- Committed review anchor: 1eb8c2605bee09c0a00b6db18416d2e757bc1a1d
+- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the step-5 baseline commit instead of self-reporting a same-commit hash per HH-DEC-005
+- Committed review anchor: 8607aaeb509dc29352db55be20d70eefb94f90e6
 - Push result: Intentionally reported out-of-band after push because the committed packet cannot self-observe post-commit transport state
-- Workspace status now: The selected closeout-bookkeeping files are committed; the unrelated `.github/agents/Iterate.agent.md` edit remains uncommitted by design.
-- Remaining uncommitted files: .github/agents/Iterate.agent.md
-- Follow-up needed: Delegate .github/plans/hough-harris-feature-detection-5-hough-circles.md to @Implement from baseline 1eb8c2605bee09c0a00b6db18416d2e757bc1a1d while preserving the unrelated Iterate.agent change out of scope.
+- Workspace status now: The selected step-5 implementation files are committed; the unrelated `.github/agents/Iterate.agent.md` edit and the orchestrator-owned `.github/iterations/hough-harris-feature-detection/run-ledger.md` update remain uncommitted by design.
+- Remaining uncommitted files: .github/agents/Iterate.agent.md; .github/iterations/hough-harris-feature-detection/run-ledger.md
+- Follow-up needed: Route the committed step-5 implementation pass to @Inspect for the first committed review against baseline 8607aaeb509dc29352db55be20d70eefb94f90e6 while preserving the excluded user and orchestrator-owned edits out of scope.
 
 ## Commit History
 
@@ -67,3 +70,4 @@ Pass: plan-bookkeeping closeout
 | 11 | Committed via @Inscribe under HH-DEC-005 as the approved step-3 closeout bookkeeping pass | feature/hough-harris-feature-detection | Records the approved review outcome, activates step 4 in the durable packet set, marks step 3 completed in the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` edit out of scope |
 | 12 | Committed via @Inscribe under HH-DEC-005 as the initial step-4 implementation pass | feature/hough-harris-feature-detection | Adds focused `HoughStandardTest` parity coverage for weighted votes, theta bounds, and `detectLinesFromPoints(...)`, records HH-DEC-007 to defer multi-scale `srn`/`stn`, and keeps the excluded run-ledger plus unrelated `.github/agents/Iterate.agent.md` edits out of scope |
 | 13 | Committed via @Inscribe under HH-DEC-005 as the approved step-4 closeout bookkeeping pass | feature/hough-harris-feature-detection | Records the approved step-4 review normalization, activates step 5 in the durable packet and progress state, updates the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` edit out of scope |
+| 14 | Committed via @Inscribe under HH-DEC-005 as the initial step-5 implementation pass | feature/hough-harris-feature-detection | Introduces the dedicated `HoughCircles` companion, routes `Hough.detectCircles(...)` plus the documented `Vision` circle wrappers through `Circle2D`, adds synthetic circle fixtures and focused `HoughCircleTest` coverage, refreshes the implementation handoff plus timeline, and keeps the unrelated `.github/agents/Iterate.agent.md` edit plus the excluded run-ledger update out of scope |

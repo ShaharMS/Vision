@@ -50,8 +50,17 @@ class Hough {
 	}
 
 	public static function detectCircles(image:Image, ?options:HoughCircleOptions):Array<Circle2D> {
-		resolveCircleOptions(options);
-		return [];
+		return HoughCircles.detect(image, resolveCircleOptions(options));
+	}
+
+	public static function mapCircles(image:Image, circles:Array<Circle2D>, color:Color = Color.CYAN, centerColor:Color = Color.RED):Image {
+		for (circle in circles) {
+			var centerX = Std.int(Math.round(circle.center.x));
+			var centerY = Std.int(Math.round(circle.center.y));
+			image.drawCircle(centerX, centerY, Std.int(Math.round(circle.radius)), color);
+			image.setPixel(centerX, centerY, centerColor);
+		}
+		return image;
 	}
 
 	public static function mapLines(image:Image, lines:Array<HoughLine2D>, color:Color = Color.CYAN):Image {

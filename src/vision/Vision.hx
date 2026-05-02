@@ -36,6 +36,7 @@ import vision.algorithms.Sobel;
 import vision.ds.Kernel2D;
 import vision.ds.canny.CannyObject;
 import vision.algorithms.Hough;
+import vision.ds.Circle2D;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.gaussian.GaussianKernelSize;
 import vision.ds.Ray2D;
@@ -44,6 +45,7 @@ import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Color;
 import vision.ds.Image;
+import vision.ds.specifics.HoughCircleOptions;
 import vision.tools.MathTools;
 import vision.tools.MathTools.*;
 
@@ -1302,6 +1304,35 @@ class Vision {
 		options.voteThreshold = 1;
 		var sourceEdges = edgeImage == null ? cannyEdgeDetection(image, 1, X5, 0.05, 0.16) : edgeImage;
 		return Hough.detectLineSegments(image, options, sourceEdges);
+	}
+
+	/**
+		Detects circles in an image using the dedicated Hough circle path.
+
+		The detector works from grayscale, denoised image content and applies a Canny-style
+		edge pass internally before voting for circle centers and radii.
+
+		@param image The source image to analyze.
+		@param options Optional circle-detection controls such as radius bounds, center threshold, `dp`, and `minimumDistance`.
+
+		@return The detected circles.
+	**/
+	public static function houghCircleDetection(image:Image, ?options:HoughCircleOptions):Array<Circle2D> {
+		return Hough.detectCircles(image, options);
+	}
+
+	/**
+		Draws detected Hough circles onto an image by marking both the perimeter and center.
+
+		@param image The image to draw onto.
+		@param circles The circles to draw.
+		@param color The perimeter color.
+		@param centerColor The center marker color.
+
+		@return The modified image.
+	**/
+	public static function mapHoughCircles(image:Image, circles:Array<Circle2D>, color:Color = Color.CYAN, centerColor:Color = Color.RED):Image {
+		return Hough.mapCircles(image, circles, color, centerColor);
 	}
 
 	/**

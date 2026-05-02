@@ -81,6 +81,19 @@ class AlgorithmFixtures {
 		return image;
 	}
 
+	public static function filledCircleImage(width:Int = 31, height:Int = 31, centerX:Int = 15, centerY:Int = 15, radius:Int = 6):Image {
+		var image = new Image(width, height, Color.BLACK);
+		image.drawCircle(centerX, centerY, radius, Color.WHITE);
+		return image;
+	}
+
+	public static function separatedCircleImage(width:Int = 48, height:Int = 32, leftCenterX:Int = 14, rightCenterX:Int = 32, centerY:Int = 16, radius:Int = 5):Image {
+		var image = new Image(width, height, Color.BLACK);
+		image.drawCircle(leftCenterX, centerY, radius, Color.WHITE);
+		image.drawCircle(rightCenterX, centerY, radius, Color.WHITE);
+		return image;
+	}
+
 	public static function nonBlackPixelCount(image:Image):Int {
 		var count = 0;
 		for (y in 0...image.height) {
