@@ -20,10 +20,10 @@
 
 ## Current Loop State
 
-- Next agent: `@Implement`
-- Review round: `0`
-- Latest verification: `The approved step-6 closeout bookkeeping is committed in b8f290faf6c491696c146c6926089a5a23fa719c, preserving the RVW-018 and RVW-019 approval state across the packets, marking step 6 complete in the step plan and overview, and carrying forward D-003 plus the Windows env-var filtered-run fallback.`
-- Latest decision: `The iteration is retargeted to step 7 from clean baseline b8f290faf6c491696c146c6926089a5a23fa719c while carrying forward D-003 plus the Windows env-var filtered-run fallback and the stale-VISION_TEST_CASES reset requirement until the generated runner is deleted.`
+- Next agent: `@Inspect`
+- Review round: `1`
+- Latest verification: `@Inscribe packaged the step-7 RVW-020/RVW-021 follow-up after confirming the staged slice is limited to the root .unittest deletions, the .gitignore update, the D-003 plus PENDING-RVW-005 closure, and the matching packet refresh.`
+- Latest decision: `The step-7 review-follow-up delta is now ready for @Inspect re-review on the existing feature branch.`
 
 ## Packet Links
 
@@ -38,10 +38,10 @@
 ## Open Items
 
 - Blockers: `none recorded`
-- Outstanding findings: `none`
-- Next action: `Delegate .github/plans/manual-utest-migration-7-decommission-and-coverage.md to @Implement in delegated mode, remove generator or generated-tree ownership surfaces only after confirming the manual suite and inventory are authoritative, and preserve D-003 plus the Windows env-var filtered-run fallback until the selected step deletes the waived generated runner.`
+- Outstanding findings: `RVW-020, RVW-021 awaiting @Inspect re-review of the committed follow-up`
+- Next action: `Hand the committed RVW-020/RVW-021 follow-up back to @Inspect for step-7 re-review.`
 
 ## Resume Notes
 
-- Current context: `Steps 1 through 6 are approved and closed out on the feature branch, and the iteration is now bootstrapped on the step-7 decommission-and-coverage pass from clean baseline b8f290faf6c491696c146c6926089a5a23fa719c.`
-- Recovery instructions: `Delegate the selected scope to @Implement, keep D-003 in force only for tests/generated/src/Main.hx until the selected step deletes that reference-only surface, preserve the Windows env-var filtered-run fallback plus the stale-VISION_TEST_CASES reset requirement for local suite-only reruns in this environment, and keep explicit @Inspect timeline entries in the loop before each @Intake normalization.`
+- Current context: `Steps 1 through 6 are approved and closed out on the feature branch, the step-7 implementation is committed in f9c59b654357eb1e8da8f5a7908dc1e8cefc2c8b, and the RVW-020/RVW-021 follow-up is now the next committed feature-branch delta awaiting re-review.`
+- Recovery instructions: `Continue from the committed RVW-020/RVW-021 follow-up, preserve the Windows env-var filtered-run fallback plus the stale-VISION_TEST_CASES reset requirement for any filtered reruns, and keep explicit @Inspect timeline entries in the loop before each @Intake normalization.`

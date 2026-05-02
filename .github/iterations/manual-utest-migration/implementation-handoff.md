@@ -2,46 +2,39 @@
 
 ## Current Pass
 
-- Pass type: `plan-step implementation`
+- Pass type: `review-follow-up implementation`
 - Authoring agent: `@Implement`
 - Plan step: `.github/plans/manual-utest-migration-7-decommission-and-coverage.md`
 - Branch: `feature/manual-utest-migration-1-cutover`
-- Summary: `Retired the generator/generated test system, rewrote the surviving test docs around the manual-only tests/src workflow, reconciled the manual inventory to the final manual or excluded state, fixed the numeric and resampler defects exposed during the final proof runs, and resolved D-003 by deleting the waived generated-runner surface.`
+- Summary: `Removed the stale tracked root .unittest cache that still pointed at deleted generated-suite files, ignored future .unittest editor metadata, and closed the now-satisfied D-003 plus PENDING-RVW-005 decision-log state so the step-7 packet matches the committed tree.`
 
 ## Files Changed
 
 | Path | Intent | Verification impact |
 |------|--------|---------------------|
-| `tests/catalog/manual-test-inventory.json` | `Reconciled direct member ownership against the current @:visionTestId coverage, removed stale reference-root metadata, converted the last needs-migration rows to explicit exclusions, and documented the final direct-member exclusion rationale.` | `Required a final inventory audit plus the end-to-end suite reruns.` |
-| `tests/README.md`, `tests/ROADMAP.md`, and `tests/REGENERATION_EXECUTION_PLAN.md` | `Rewrote the surviving test docs around the manual-only workflow, the final inventory contract, and the supported maintenance path after generator removal.` | `Required stale-reference sweeps across docs, test entrypoints, VS Code settings, and workflow surfaces.` |
-| `tests/generator/**`, `tests/generated/**`, `tests/config.json`, `tests/compile.hxml`, `tests/catalog/test-health.json`, `tests/catalog/test-manifest.json`, `tests/catalog/test-report.md`, and `manual-inventory.hxml` | `Deleted the retired generator/generated tree, generator-only catalogs, and the inventory-builder entrypoint that depended on the removed generator.` | `Required filesystem checks plus stale-reference sweeps to prove no live command surface still depends on the removed paths.` |
-| `src/vision/algorithms/BilateralFilter.hx`, `src/vision/algorithms/ImageHashing.hx`, `src/vision/ds/Color.hx`, and `src/vision/algorithms/KernelResampler.hx` | `Fixed the off-by-one and edge-resampling defects exposed while proving the final suite: rounded bilateral output, skipped unnecessary ahash resizing, rounded grayscale conversion, and preserved exact source pixels for higher-radius kernels at exact grid hits.` | `Required focused BilateralFilter, ImageHashing, Color, MitchellNetravaliInterpolation, and KernelResampler reruns before the final full-suite proof.` |
-| `tests/src/tests/ColorTest.hx` | `Updated the grayscale expectation to the corrected rounded grayscale contract.` | `Required a focused ColorTest grayscale rerun and the final full-suite rerun.` |
-| `.github/iterations/manual-utest-migration/implementation-handoff.md` | `Record the completed delegated step-7 implementation pass, the final validation evidence, and the D-003 resolution in one resumable handoff packet.` | `Included in the final touched-file diagnostics sweep.` |
-| `.github/iterations/manual-utest-migration/decision-log.md`, `.github/iterations/manual-utest-migration/timeline.md`, and `.github/agent-progress/manual-utest-migration.md` | `Record the completed step-7 delegated pass, D-003 resolution, and the final resumable validation evidence.` | `Included in the final touched-file diagnostics sweep.` |
+| `.gitignore` | `Ignore the root .unittest editor cache so regenerated local metadata stays out of version control after this cleanup.` | `Required a repo-state check showing the stale cache files are removed and future .unittest output is ignored.` |
+| `.unittest/positions.json` and `.unittest/results.json` | `Delete the stale tracked editor cache files that still referenced removed tests/generated paths.` | `Required filesystem and git-state checks proving the stale metadata surface is gone from the working tree.` |
+| `.github/iterations/manual-utest-migration/decision-log.md` | `Close D-003 and PENDING-RVW-005 so the active waiver state matches the already-deleted generated-runner surface.` | `Required a decision-log readback confirming neither entry remains active.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md` and `.github/iterations/manual-utest-migration/timeline.md` | `Record this delegated review-follow-up pass, the narrow repo-state validation, and the finding dispositions.` | `Included in the touched-packet diagnostics sweep.` |
 
 ## Verification
 
 | Check | Method | Result | Evidence |
 |-------|--------|--------|----------|
-| `Generator reference sweep` | `grep_search across tests/**, .vscode/**, .github/workflows/**, README.md, test.hxml, and tests/ci/** for tests/generated, tests/generator, BuildMacro.generateAll(), tests/compile.hxml, tests/config.json, and manual-inventory.hxml` | `passed` | `No VS Code settings, workflow files, root test entrypoints, or LocalCi surfaces still reference the removed generator paths; the surviving tests docs only retain intentional decommission notes.` |
-| `Full repo-root suite` | `PowerShell Remove-Item Env:VISION_TESTS -ErrorAction SilentlyContinue; Remove-Item Env:VISION_TEST_CASES -ErrorAction SilentlyContinue; haxe test.hxml` | `passed` | `The final clean rerun reported 'All tests passed!' and 'Total: 572 tests in 572 test methods (5.27s)'.` |
-| `Suite-filtered proof` | `PowerShell $env:VISION_TEST_CASES=''; $env:VISION_TESTS='ArrayToolsTest'; haxe test.hxml` | `passed` | `The final suite-filtered rerun reported 'All tests passed!' and 'Total: 27 tests in 27 test methods (0.01s)'.` |
-| `Case-filtered proof` | `PowerShell $env:VISION_TESTS='FromBytesTest'; $env:VISION_TEST_CASES='test_png__invalidHeaderThrows'; haxe test.hxml` | `passed` | `The final case-filtered rerun reported 'All tests passed!' and 'Total: 1 tests in 1 test methods (0s)'.` |
-| `LocalCi compile-only proof` | `PowerShell $env:VISION_CI_TARGETS='interp,js'; $env:VISION_CI_COMPILE_ONLY='1'; $env:VISION_CI_SKIP_INSTALL='1'; haxe tests/ci/local-ci.hxml` | `passed` | `LocalCi compiled both interp and js successfully and reported 'Local CI completed successfully.'` |
-| `Focused regression slice` | `PowerShell suite reruns for ImageHashingTest, BilateralFilterTest, ColorTest, MitchellNetravaliInterpolationTest, and KernelResamplerTest` | `passed` | `The focused follow-up reruns closed the exposed off-by-one and resampler edge regressions at 6/6, 3/3, 58/58, 3/3, and 4/4 respectively.` |
-| `Touched-file diagnostics` | `get_errors on the touched docs, inventory, algorithm files, updated Color test, and iteration packet files` | `passed` | `No diagnostics remain in the touched code, docs, inventory, or packet files after the final sweep.` |
+| `Root .unittest surface retirement` | `PowerShell Test-Path .unittest/positions.json; Test-Path .unittest/results.json plus git status --short .gitignore .unittest/positions.json .unittest/results.json` | `passed` | `Both stale cache files are absent from the working tree, git status reports them deleted, and .gitignore now ignores future .unittest metadata.` |
+| `Decision-log closure readback` | `Read the active decision-log sections after the edit and confirm the D-003 and PENDING-RVW-005 entries now appear only in the closed-history section.` | `passed` | `The Waivers And Exceptions and Pending Waiver Requests tables now show none active, while the new closed-history section records D-003 and PENDING-RVW-005 as retired after step-7 deletion.` |
+| `Touched-packet diagnostics` | `get_errors on decision-log.md, implementation-handoff.md, and timeline.md` | `passed` | `No diagnostics remain in the touched decision-log, implementation-handoff, or timeline packet files after the follow-up refresh.` |
 
 ## Review Responses
 
-- No active review findings were supplied for step 7; the selected iteration packet started from the approved step-6 review state.
+- `RVW-020` — `FIXED`: deleted the tracked root `.unittest/positions.json` and `.unittest/results.json` files that still hardcoded deleted `tests/generated/...` paths, and added `.unittest/` to `.gitignore` so the editor cache no longer acts as repo truth.
+- `RVW-021` — `FIXED`: removed `D-003` and `PENDING-RVW-005` from the active decision-log tables and recorded both entries as closed now that `D-004` deleted the waived generated-runner surface.
 
 ## Risks And Follow-Ups
 
-- Accepted waiver `D-003` is resolved in this pass because the generated runner surface and its dependent generator paths were deleted.
-- Suite-only reruns in the persistent PowerShell shell must continue to clear `VISION_TEST_CASES` with `$env:VISION_TEST_CASES=''` before setting `VISION_TESTS`, otherwise a stale case-pattern env var can silently filter all methods back to zero discovered tests.
-- The manual inventory now treats `deferredMembers` as explicit direct-member exclusions with documented rationale; future test work should shrink those exclusions incrementally rather than reviving generator ownership.
-- The repo still emits the pre-existing `@:enum abstract` and deprecated Gauss helper warnings during Haxe test execution; those warnings predate this follow-up and remain non-blocking residual context.
+- No runtime or test-source files changed in this pass; the scope is limited to stale editor metadata and iteration bookkeeping.
+- The root `.unittest` cache is now intentionally ignored. If local editor runs regenerate it, the files should remain untracked and should not be treated as repository state.
+- `D-003` and `PENDING-RVW-005` are retired; no active waiver remains for the deleted generated-runner surface.
 
 ## Pass History
 
@@ -66,4 +59,4 @@
 | `17` | `dcbe4c634fe2fafcd42229ee9956c4774f474117` | `Resolved the step-5 zero-test follow-up by tracing the anomaly to a stale VISION_TEST_CASES env var in the persistent PowerShell shell, rerunning the three required grouped commands with the case filter cleared to real nonzero counts, fixing Canny.applyHysteresis opaque-white promotion, and correcting the exposed Canny/SimpleLineDetector expectations to match the live contracts.` |
 | `18` | `98de21b40c311cbba83806a9f0f7ee0b12f5adee` | `Implemented step 6 by rewriting the format conversion, Vision facade, VisionThread, and remaining exception suites semantically, fixing the exposed format-loader and exception-surface defects, reconciling the manual inventory or framework exclusions, and validating the focused format plus facade/helper/exception reruns, a case-filter proof, and the LocalCi python compile-only fallback.` |
 | `19` | `00c283516ed3ca30dc431ff481b3c975db961073` | `Addressed RVW-018 and RVW-019 by asserting ImageLoadingFailed in FromBytesTest malformed-input coverage, replacing MatrixOperationErrorTest cast-based enum coercions with MatrixError.Add_MismatchingDimensions, rerunning the required focused slices and malformed-input case-filter proof, and refreshing the step-6 implementation packet.` |
-| `20` | `uncommitted` | `Implemented step 7 by reconciling the final manual inventory, deleting the generator/generated tree and generator-only catalogs, rewriting the surviving tests docs around the manual-only workflow, fixing the exposed BilateralFilter, ImageHashing, Color, and KernelResampler defects, and proving the final full/suite/case/LocalCi paths while resolving D-003.` |
+| `20` | `f9c59b654357eb1e8da8f5a7908dc1e8cefc2c8b` | `Implemented step 7 by reconciling the final manual inventory, deleting the generator/generated tree and generator-only catalogs, rewriting the surviving tests docs around the manual-only workflow, fixing the exposed BilateralFilter, ImageHashing, Color, and KernelResampler defects, and proving the final full/suite/case/LocalCi paths while resolving D-003.` |

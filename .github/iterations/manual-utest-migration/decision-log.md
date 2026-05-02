@@ -12,10 +12,17 @@
 
 | Decision ID | Applies to | Approved by | Reason | Follow-up |
 |-------------|------------|-------------|--------|-----------|
-| `D-003` | `RVW-005 / tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7` | `@Inspect` | `Accepted RVW-005 as a narrow waiver because the unresolved utest.Runner and PrettyReporter diagnostics are confined to the retained reference-only tests/generated/src/Main.hx runner, while the authored harness, repo-root test.hxml entrypoint, VS Code settings/tasks, LocalCi, and the GitHub workflow all operate on tests/src and satisfy the reviewed gates.` | `Supersedes PENDING-RVW-005. Remove the exception when .github/plans/manual-utest-migration-7-decommission-and-coverage.md deletes tests/generated and tests/compile.hxml.` |
+| `none active` | `n/a` | `n/a` | `Step 7 deleted the only previously waived generated-runner surface, so no active exceptions remain.` | `n/a` |
 
 ## Pending Waiver Requests
 
 | Request ID | Applies to | Requested by | Reason | Follow-up |
 |------------|------------|--------------|--------|-----------|
-| `PENDING-RVW-005` | `.github/plans/manual-utest-migration-2-harness.md` | `@Implement` | `tests/generated/src/Main.hx is a retained reference-only runner during the manual migration. Clearing the remaining editor diagnostics with a code change would require either reactivating generated-tree build ownership or mutating the reference artifact purely to satisfy workspace display behavior, both of which conflict with the step-1 cutover and step-2 harness intent. The active command surfaces still compile and run tests/src via test.hxml, .vscode/settings.json, .vscode/tasks.json, tests/ci/LocalCi.hx, and .github/workflows/main.yml, while get_errors confines the red diagnostics to tests/generated/src/Main.hx and reports no errors for tests/src/Main.hx, tests/src/PrettyReporter.hx, or tests/generated/src/PrettyReporter.hx.` | `If approved, scope the waiver only to tests/generated/src/Main.hx until .github/plans/manual-utest-migration-7-decommission-and-coverage.md removes tests/generated and tests/compile.hxml.` |
+| `none active` | `n/a` | `n/a` | `PENDING-RVW-005 is closed because the deleted generated-runner surface no longer needs a waiver.` | `n/a` |
+
+## Closed Waivers And Requests
+
+| Entry ID | Closed by | Original scope | Closure reason |
+|----------|-----------|----------------|----------------|
+| `D-003` | `D-004` | `RVW-005 / tests/generated/src/Main.hx#L6 and tests/generated/src/Main.hx#L7` | `Closed after step 7 deleted tests/generated/src/Main.hx together with tests/generated and tests/compile.hxml, so the waived diagnostics surface no longer exists.` |
+| `PENDING-RVW-005` | `D-003` and `D-004` | `.github/plans/manual-utest-migration-2-harness.md` | `Superseded by D-003 during step 2 and fully retired by D-004 once the generated-runner surface was deleted in step 7.` |

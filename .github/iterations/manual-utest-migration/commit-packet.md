@@ -2,53 +2,50 @@
 
 ## Commit Intent
 
-- Pass type: `initial implementation`
+- Pass type: `review follow-up`
 - Plan step: `.github/plans/manual-utest-migration-7-decommission-and-coverage.md`
-- Scope: `Package the explicit step-7 decommission-and-coverage implementation pass: delete tests/generated, tests/generator, and the obsolete generator-only config or catalog surfaces; rewrite the surviving docs and manual inventory for the manual-only system; carry the narrow BilateralFilter or ImageHashing or Color or KernelResampler fixes required to close the final validation sweep; and resolve D-003 by deleting the waived generated surface.`
-- Reason this is one commit: `The deleted generator surfaces, the manual-only docs or inventory updates, the narrow proof-run fixes, and the iteration packet updates together form one repository cutover point from the mixed migration-era test system to the final manual-only test system.`
+- Scope: `Package the explicit step-7 review follow-up for RVW-020 and RVW-021: remove the stale tracked root .unittest metadata, ignore future editor-cache output under .unittest/, retire the now-satisfied D-003 and PENDING-RVW-005 decision-log state, and include the matching iteration packet updates.`
+- Reason this is one commit: `The root .unittest deletions, the ignore-rule update, the decision-log closure, and the packet refresh together form one narrow correction to the already-committed step-7 decommission pass.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `tests/generator/**`, `tests/generated/**`, `tests/config.json`, `tests/compile.hxml`, `tests/catalog/test-health.json`, `tests/catalog/test-manifest.json`, `tests/catalog/test-report.md`, and `manual-inventory.hxml` | `yes` | `These are the retired generator-owned surfaces that step 7 decommissions in one cutover.` |
-| `tests/README.md`, `tests/ROADMAP.md`, and `tests/REGENERATION_EXECUTION_PLAN.md` | `yes` | `These docs now describe the maintained manual-only workflow and the retired generator paths.` |
-| `tests/catalog/manual-test-inventory.json` | `yes` | `Records the final manual or excluded ownership state after generator removal.` |
-| `src/vision/algorithms/BilateralFilter.hx`, `src/vision/algorithms/ImageHashing.hx`, `src/vision/algorithms/KernelResampler.hx`, `src/vision/ds/Color.hx`, and `tests/src/tests/ColorTest.hx` | `yes` | `Carry the narrow fixes and expectation update exposed by the final proof reruns.` |
-| `.github/agent-progress/manual-utest-migration.md`, `.github/iterations/manual-utest-migration/decision-log.md`, `.github/iterations/manual-utest-migration/implementation-handoff.md`, `.github/iterations/manual-utest-migration/commit-packet.md`, and `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Capture the completed implementation pass, the D-003 resolution, the explicit step-7 grouping, and the commit event for future recovery.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `no` | `Step 7 has not been reviewed yet, so the packet stays on the approved step-6 review state.` |
-| `.github/plans/manual-utest-migration-7-decommission-and-coverage.md` | `no` | `This pass implements the selected step but does not close it out.` |
-| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass is not the final orchestrator stop report.` |
+| `.gitignore` | `yes` | `Ignore future root .unittest editor-cache output now that the stale tracked cache files are being removed from repository state.` |
+| `.unittest/positions.json` and `.unittest/results.json` | `yes` | `Delete the stale tracked root .unittest metadata that still points at deleted generated-suite files.` |
+| `.github/iterations/manual-utest-migration/decision-log.md` | `yes` | `Retire the active D-003 and PENDING-RVW-005 entries now that the waived generated-runner surface is gone.` |
+| `.github/iterations/manual-utest-migration/implementation-handoff.md`, `.github/iterations/manual-utest-migration/review-packet.md`, `.github/iterations/manual-utest-migration/run-ledger.md`, `.github/iterations/manual-utest-migration/commit-packet.md`, and `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Capture the review findings, implementer response, current loop state, explicit commit grouping, and commit event for the step-7 follow-up.` |
+| `.github/agent-progress/manual-utest-migration.md` | `no` | `This delegated review-follow-up pass does not add new progress-note content.` |
+| `.github/plans/manual-utest-migration-7-decommission-and-coverage.md` | `no` | `The selected step remains the same; this pass does not change plan content.` |
+| `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `Final orchestrator stop reporting remains out of scope for this review-follow-up commit.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because feature/manual-utest-migration-1-cutover already satisfies gitflow for the selected step-7 implementation pass`
+- Branch action: `stayed on the existing feature branch because feature/manual-utest-migration-1-cutover already satisfies gitflow for the selected RVW-020/RVW-021 review-follow-up pass`
 
 ## Commit Message
 
 ```text
-refactor(tests): decommission generated test system
+fix(tests): address step-7 review follow-up
 
-Delete the generator-owned suite, config, and catalog surfaces,
-rewrite the surviving test docs and manual inventory for the
-manual-only workflow, carry the narrow proof-run fixes in the
-affected algorithm and color code paths, and resolve D-003 by
-removing the waived generated runner surface.
+Remove the stale tracked root .unittest cache, ignore future
+editor metadata, close the satisfied D-003 and PENDING-RVW-005
+decision-log state, and refresh the iteration packets for the
+RVW-020 and RVW-021 follow-up.
 
 Plan: .github/plans/manual-utest-migration-7-decommission-and-coverage.md
-Pass: initial implementation
+Pass: review follow-up
 ```
 
 ## Result
 
-- Clean baseline before this pass: `b4e8135ababc5a093d33e46db1c6cc59862e3c3e`
-- Commit hash: `Reported from branch history after the plan-step object exists because the tracked packet participates in the same tree and cannot embed its own object id before creation.`
-- Push result: `Push the resulting step-7 implementation commit to origin/feature/manual-utest-migration-1-cutover immediately after creation when origin is available.`
-- Workspace status after commit: `Expected clean after staging the selected step-7 implementation files.`
+- Clean baseline before this pass: `f9c59b654357eb1e8da8f5a7908dc1e8cefc2c8b`
+- Push result: `Origin already tracks feature/manual-utest-migration-1-cutover, so push the resulting review-follow-up commit with git push origin feature/manual-utest-migration-1-cutover immediately after creation.`
+- Workspace status after commit: `Expected clean after staging the selected RVW-020/RVW-021 follow-up files.`
 - Remaining uncommitted files: `none expected`
-- Follow-up needed: `Hand the committed step-7 implementation range to @Inspect or @Iterate for review and final bookkeeping.`
+- Follow-up needed: `Hand the committed RVW-020/RVW-021 delta to @Inspect for step-7 re-review.`
 
 ## Commit History
 
@@ -81,3 +78,4 @@ Pass: initial implementation
 | `25` | `00c283516ed3ca30dc431ff481b3c975db961073` | `feature/manual-utest-migration-1-cutover` | `Packages the RVW-018 and RVW-019 review follow-up, including the explicit ImageLoadingFailed malformed-input assertions, the MatrixError.Add_MismatchingDimensions test repair, and the matching iteration packet updates.` |
 | `26` | `b8f290faf6c491696c146c6926089a5a23fa719c` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-6 closeout bookkeeping, marks the plans complete, and points the next recovery step at decommission-and-coverage while preserving D-003 plus the Windows env-var filtered-run fallback and stale-case-filter reset note.` |
 | `27` | `b4e8135ababc5a093d33e46db1c6cc59862e3c3e` | `feature/manual-utest-migration-1-cutover` | `Packages the step-7 bootstrap bookkeeping, records the clean baseline after the approved step-6 closeout, and retargets the iteration to the final decommission-and-coverage implementation scope.` |
+| `28` | `f9c59b654357eb1e8da8f5a7908dc1e8cefc2c8b` | `feature/manual-utest-migration-1-cutover` | `Packages the step-7 decommission-and-coverage implementation delta, including the generator/generated-tree deletion, the manual-only docs and inventory reconciliation, the final BilateralFilter or ImageHashing or Color or KernelResampler fixes, D-003 resolution by deleting the waived generated-runner surface, and the matching iteration packet updates.` |
