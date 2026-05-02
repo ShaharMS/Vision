@@ -25,11 +25,11 @@ class FormatImageLoader {
             var reader = new PngReader(new BytesInput(bytes));
             var data = reader.read();
             var header = PngTools.getHeader(data);
-            var bytes = PngTools.extract32(data);
-            PngTools.reverseBytes(bytes);
+            var pixels = PngTools.extract32(data);
+            PngTools.reverseBytes(pixels);
             var image = new Image(header.width, header.height);
             try {
-                image.underlying.blit(Image.OFFSET, bytes, 0, bytes.length - 1);
+                image.underlying.blit(Image.OFFSET, pixels, 0, pixels.length);
                 return image;
             } catch (e) {
                 #if !vision_quiet 
@@ -59,7 +59,7 @@ class FormatImageLoader {
             var header = data.header;
             var image = new Image(header.width, header.height);
             try {
-                image.underlying.blit(Image.OFFSET, pixels, 0, pixels.length - 1);
+                image.underlying.blit(Image.OFFSET, pixels, 0, pixels.length);
                 return image;
             } catch (e) {
                 #if !vision_quiet 

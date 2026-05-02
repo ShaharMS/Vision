@@ -196,6 +196,8 @@ This generator is therefore best described as scaffold generation, not full sema
 
 After generation, the driver rewrites a runner file containing one `runner.addCase(new <ClassName>Test())` call per generated class.
 
+For the authored `tests/src` suite, every new manual test class must also be added to `tests/src/tests/support/ManualSuites.hx` so `VISION_TESTS` and `VISION_TEST_CASES` filtering can discover it.
+
 There is an important divergence here:
 
 - `tests/generator/Main.hx` writes `generated/src/Main.hx`.

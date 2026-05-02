@@ -19,6 +19,15 @@ class ImageAssertions {
 		colorApproxEquals(expected, image.getPixel(x, y), tolerance);
 	}
 
+	public static function imagesEqual(expected:Image, actual:Image):Void {
+		hasDimensions(actual, expected.width, expected.height);
+		for (y in 0...expected.height) {
+			for (x in 0...expected.width) {
+				pixelEquals(actual, x, y, expected.getPixel(x, y));
+			}
+		}
+	}
+
 	public static function colorEquals(expected:Color, actual:Color):Void {
 		Assert.equals(expected.alpha, actual.alpha);
 		Assert.equals(expected.red, actual.red);

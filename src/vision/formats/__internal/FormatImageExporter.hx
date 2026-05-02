@@ -1,6 +1,5 @@
 package vision.formats.__internal;
 
-import vision.ds.PixelFormat;
 #if format
 import vision.ds.ByteArray;
 import haxe.io.BytesOutput;
@@ -66,7 +65,7 @@ class FormatImageExporter {
         try {
             var output = new BytesOutput();
             var writer = new JpegWriter(output);
-            var rawPixelData = PixelFormat.convertPixelFormat(image.underlying.sub(Image.OFFSET, image.underlying.length - Image.OFFSET), PixelFormat.ARGB, PixelFormat.RGB);
+            var rawPixelData = image.underlying.sub(Image.OFFSET, image.underlying.length - Image.OFFSET);
             writer.write({
                 pixels: rawPixelData,
                 width: image.width,

@@ -1,122 +1,54 @@
 package tests;
 
 import tests.support.ExceptionAssertions;
-import tests.support.Factories;
-import utest.Assert;
-import vision.ds.ByteArray;
+import tests.support.FormatAssertions;
+import vision.exceptions.Unimplemented;
+import vision.formats.ImageIO;
 import vision.formats.from.FromBytes;
 
-@:access(vision.formats.from.FromBytes)
-@:visionMaturity("mixed")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class FromBytesTest extends utest.Test {
-
-	@:visionTestId("vision.formats.from.FromBytes.png#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_png__default() {
-		var bytes = vision.formats.ImageIO.to.bytes.png(Factories.checkerboardImage(2, 2, 1));
-		var instance = new vision.formats.from.FromBytes();
-		var result = instance.png(bytes);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.formats.from.FromBytes.png#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_png__tiny() {
-		var bytes = vision.formats.ImageIO.to.bytes.png(Factories.checkerboardImage(2, 2, 1));
-		var instance = new vision.formats.from.FromBytes();
-		var result = instance.png(bytes);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.formats.from.FromBytes.png#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_png__checkerboard() {
-		var bytes = vision.formats.ImageIO.to.bytes.png(Factories.checkerboardImage(2, 2, 1));
-		var instance = new vision.formats.from.FromBytes();
-		var result = instance.png(bytes);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.formats.from.FromBytes.bmp#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_bmp__default() {
-		var bytes = vision.formats.ImageIO.to.bytes.bmp(Factories.checkerboardImage(2, 2, 1));
-		var instance = new vision.formats.from.FromBytes();
-		var result = instance.bmp(bytes);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.formats.from.FromBytes.bmp#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_bmp__tiny() {
-		var bytes = vision.formats.ImageIO.to.bytes.bmp(Factories.checkerboardImage(2, 2, 1));
-		var instance = new vision.formats.from.FromBytes();
-		var result = instance.bmp(bytes);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.formats.from.FromBytes.bmp#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_bmp__checkerboard() {
-		var bytes = vision.formats.ImageIO.to.bytes.bmp(Factories.checkerboardImage(2, 2, 1));
-		var instance = new vision.formats.from.FromBytes();
-		var result = instance.bmp(bytes);
-		Assert.notNull(result);
-		Assert.isTrue(result.width > 0);
-		Assert.isTrue(result.height > 0);
-	}
-
-	@:visionTestId("vision.formats.from.FromBytes.jpeg#default")
+	@:visionTestId("vision.formats.from.FromBytes.png#roundTrip")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
-	function test_jpeg__default() {
-		var bytes = vision.ds.ByteArray.from([1, 2, 3, 4]);
-		var instance = new vision.formats.from.FromBytes();
-		ExceptionAssertions.throwsAny(() -> instance.jpeg(bytes));
+	function test_png__roundTrip() {
+		var expected = FormatAssertions.fixtureImage();
+		var bytes = ImageIO.to.bytes.png(expected);
+		var actual = new FromBytes().png(bytes);
+		FormatAssertions.imagesEqual(expected, actual);
 	}
 
-	@:visionTestId("vision.formats.from.FromBytes.jpeg#tiny")
+	@:visionTestId("vision.formats.from.FromBytes.bmp#roundTrip")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
-	function test_jpeg__tiny() {
-		var bytes = vision.ds.ByteArray.from([1, 2, 3, 4]);
-		var instance = new vision.formats.from.FromBytes();
-		ExceptionAssertions.throwsAny(() -> instance.jpeg(bytes));
+	function test_bmp__roundTrip() {
+		var expected = FormatAssertions.fixtureImage();
+		var bytes = ImageIO.to.bytes.bmp(expected);
+		var actual = new FromBytes().bmp(bytes);
+		FormatAssertions.imagesEqual(expected, actual);
 	}
 
-	@:visionTestId("vision.formats.from.FromBytes.jpeg#checkerboard")
+	@:visionTestId("vision.formats.from.FromBytes.png#invalidHeader")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_jpeg__checkerboard() {
-		var bytes = vision.ds.ByteArray.from([1, 2, 3, 4]);
-		var instance = new vision.formats.from.FromBytes();
-		ExceptionAssertions.throwsAny(() -> instance.jpeg(bytes));
+	function test_png__invalidHeaderThrows() {
+		ExceptionAssertions.throwsAny(() -> new FromBytes().png(FormatAssertions.malformedBytes()));
 	}
 
+	@:visionTestId("vision.formats.from.FromBytes.bmp#invalidHeader")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_bmp__invalidHeaderThrows() {
+		ExceptionAssertions.throwsAny(() -> new FromBytes().bmp(FormatAssertions.malformedBytes()));
+	}
+
+	@:visionTestId("vision.formats.from.FromBytes.jpeg#unimplementedOnInterp")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_jpeg__unimplementedOnInterp() {
+		ExceptionAssertions.throwsType(() -> new FromBytes().jpeg(FormatAssertions.malformedBytes()), Unimplemented);
+	}
 }

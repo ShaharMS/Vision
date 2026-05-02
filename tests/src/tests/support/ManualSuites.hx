@@ -21,6 +21,8 @@ class ManualSuites {
 		if (includeTest("GaussJordanTest")) runner.addCase(new GaussJordanTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("GaussTest")) runner.addCase(new GaussTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("HistogramTest")) runner.addCase(new HistogramTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("ImageLoadingFailedTest")) runner.addCase(new ImageLoadingFailedTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("ImageSavingFailedTest")) runner.addCase(new ImageSavingFailedTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ImageFormatTest")) runner.addCase(new ImageFormatTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ImageHashingTest")) runner.addCase(new ImageHashingTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ImageIOTest")) runner.addCase(new ImageIOTest(), "setup", "teardown", "test", casePattern);
@@ -29,14 +31,22 @@ class ManualSuites {
 		if (includeTest("ImageViewTest")) runner.addCase(new ImageViewTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Int16Point2DTest")) runner.addCase(new Int16Point2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("IntPoint2DTest")) runner.addCase(new IntPoint2DTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("InvalidCramerCoefficientsMatrixTest")) runner.addCase(new InvalidCramerCoefficientsMatrixTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("InvalidCramerSetupTest")) runner.addCase(new InvalidCramerSetupTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("InvalidGaussianKernelSizeTest")) runner.addCase(new InvalidGaussianKernelSizeTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("InvalidHeapsPixelFormatTest")) runner.addCase(new InvalidHeapsPixelFormatTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("KMeansTest")) runner.addCase(new KMeansTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("KernelResamplerTest")) runner.addCase(new KernelResamplerTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("LanczosInterpolationTest")) runner.addCase(new LanczosInterpolationTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("LaplaceTest")) runner.addCase(new LaplaceTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("LibraryRequiredTest")) runner.addCase(new LibraryRequiredTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Line2DTest")) runner.addCase(new Line2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("MathToolsTest")) runner.addCase(new MathToolsTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Matrix2DTest")) runner.addCase(new Matrix2DTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("MatrixOperationErrorTest")) runner.addCase(new MatrixOperationErrorTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("MitchellNetravaliInterpolationTest")) runner.addCase(new MitchellNetravaliInterpolationTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("MultithreadFailureTest")) runner.addCase(new MultithreadFailureTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("OutOfBoundsTest")) runner.addCase(new OutOfBoundsTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("PerspectiveWarpTest")) runner.addCase(new PerspectiveWarpTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("PerwittTest")) runner.addCase(new PerwittTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("PixelFormatTest")) runner.addCase(new PixelFormatTest(), "setup", "teardown", "test", casePattern);
@@ -52,12 +62,16 @@ class ManualSuites {
 		if (includeTest("RobertsCrossTest")) runner.addCase(new RobertsCrossTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("SimpleHoughTest")) runner.addCase(new SimpleHoughTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("SimpleLineDetectorTest")) runner.addCase(new SimpleLineDetectorTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("SingularMatrixErrorTest")) runner.addCase(new SingularMatrixErrorTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("SobelTest")) runner.addCase(new SobelTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ToBytesTest")) runner.addCase(new ToBytesTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ToTest")) runner.addCase(new ToTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("TransformationMatrix2DTest")) runner.addCase(new TransformationMatrix2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("UInt16Point2DTest")) runner.addCase(new UInt16Point2DTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("UnimplementedTest")) runner.addCase(new UnimplementedTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("VisionTest")) runner.addCase(new VisionTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("VisionExceptionTest")) runner.addCase(new VisionExceptionTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("VisionThreadTest")) runner.addCase(new VisionThreadTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("WebResponseErrorTest")) runner.addCase(new WebResponseErrorTest(), "setup", "teardown", "test", casePattern);
 	}
 }

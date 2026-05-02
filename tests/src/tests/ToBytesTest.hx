@@ -1,121 +1,46 @@
 package tests;
 
 import tests.support.Factories;
+import tests.support.FormatAssertions;
 import utest.Assert;
-import vision.ds.Image;
+import vision.formats.ImageIO;
 import vision.formats.to.ToBytes;
 
-@:access(vision.formats.to.ToBytes)
-@:visionMaturity("mixed")
+@:visionMaturity("semantic")
 @:visionLifecycle("active")
 class ToBytesTest extends utest.Test {
-
-	@:visionTestId("vision.formats.to.ToBytes.png#default")
-	@:visionMaturity("structural")
+	@:visionTestId("vision.formats.to.ToBytes.png#roundTrip")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
-	function test_png__default() {
-		var image = Factories.gradientImage(3, 3);
-		var instance = new vision.formats.to.ToBytes();
-		var result = instance.png(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
+	function test_png__roundTrip() {
+		var expected = FormatAssertions.fixtureImage();
+		var bytes = new ToBytes().png(expected);
+
+		FormatAssertions.bytesStartWith(bytes, [0x89, 0x50, 0x4E, 0x47]);
+		FormatAssertions.imagesEqual(expected, ImageIO.from.bytes.png(bytes));
 	}
 
-	@:visionTestId("vision.formats.to.ToBytes.png#tiny")
-	@:visionMaturity("structural")
+	@:visionTestId("vision.formats.to.ToBytes.bmp#roundTrip")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
-	function test_png__tiny() {
-		var image = Factories.gradientImage(3, 3);
-		var instance = new vision.formats.to.ToBytes();
-		var result = instance.png(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
+	function test_bmp__roundTrip() {
+		var expected = FormatAssertions.fixtureImage();
+		var bytes = new ToBytes().bmp(expected);
+
+		FormatAssertions.bytesStartWith(bytes, [0x42, 0x4D]);
+		FormatAssertions.imagesEqual(expected, ImageIO.from.bytes.bmp(bytes));
 	}
 
-	@:visionTestId("vision.formats.to.ToBytes.png#checkerboard")
-	@:visionMaturity("structural")
+	@:visionTestId("vision.formats.to.ToBytes.jpeg#signature")
+	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
-	function test_png__checkerboard() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var instance = new vision.formats.to.ToBytes();
-		var result = instance.png(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
-	}
+	function test_jpeg__writesJpegSignature() {
+		var bytes = new ToBytes().jpeg(Factories.checkerboardImage(8, 8, 2));
 
-	@:visionTestId("vision.formats.to.ToBytes.bmp#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_bmp__default() {
-		var image = Factories.gradientImage(3, 3);
-		var instance = new vision.formats.to.ToBytes();
-		var result = instance.bmp(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
+		Assert.isTrue(bytes.length > 4);
+		FormatAssertions.bytesStartWith(bytes, [0xFF, 0xD8]);
 	}
-
-	@:visionTestId("vision.formats.to.ToBytes.bmp#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_bmp__tiny() {
-		var image = Factories.gradientImage(3, 3);
-		var instance = new vision.formats.to.ToBytes();
-		var result = instance.bmp(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
-	}
-
-	@:visionTestId("vision.formats.to.ToBytes.bmp#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_bmp__checkerboard() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var instance = new vision.formats.to.ToBytes();
-		var result = instance.bmp(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
-	}
-
-	@:visionTestId("vision.formats.to.ToBytes.jpeg#default")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_jpeg__default() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var instance = new vision.formats.to.ToBytes();
-		var result = instance.jpeg(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
-	}
-
-	@:visionTestId("vision.formats.to.ToBytes.jpeg#tiny")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_jpeg__tiny() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var instance = new vision.formats.to.ToBytes();
-		var result = instance.jpeg(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
-	}
-
-	@:visionTestId("vision.formats.to.ToBytes.jpeg#checkerboard")
-	@:visionMaturity("structural")
-	@:visionLifecycle("active")
-	@:visionRequires("image_fixture")
-	function test_jpeg__checkerboard() {
-		var image = Factories.checkerboardImage(8, 8, 2);
-		var instance = new vision.formats.to.ToBytes();
-		var result = instance.jpeg(image);
-		Assert.notNull(result);
-		Assert.isTrue(result.length > 0);
-	}
-
 }

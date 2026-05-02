@@ -9,16 +9,14 @@
     },
     "modules": {
         "vision.exceptions.SingularMatrixError": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/SingularMatrixError.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/SingularMatrixErrorTest.hx"
         },
         "vision.ds.PixelFormat": {
             "deferredMembers": [
@@ -51,14 +49,9 @@
             "testFile": "tests/src/tests/GaussTest.hx"
         },
         "vision.formats.to.ToBytes": {
-            "deferredMembers": [
-                "new",
-                "png",
-                "bmp",
-                "jpeg"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic suite uses deterministic fixtures, byte signatures, and round-trip coverage for the byte exporters.",
+            "status": "manual",
             "sourceFile": "src/vision/formats/to/ToBytes.hx",
             "members": [
                 "new",
@@ -88,18 +81,15 @@
             "testFile": "tests/src/tests/PerwittTest.hx"
         },
         "vision.exceptions.MatrixOperationError": {
-            "deferredMembers": [
-                "new",
-                "errorByType"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/MatrixOperationError.hx",
             "members": [
                 "new",
                 "errorByType"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/MatrixOperationErrorTest.hx"
         },
         "vision.ds.ByteArray": {
             "deferredMembers": [
@@ -251,19 +241,9 @@
             "testFile": "tests/src/tests/Matrix2DTest.hx"
         },
         "vision.formats.from.FromFramework": {
-            "deferredMembers": [
-                "js",
-                "flixel",
-                "flash",
-                "openfl",
-                "lime",
-                "heaps",
-                "kha",
-                "haxeui",
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Target-gated framework adapter container intentionally excluded from manual migration; each branch only exposes optional framework-specific wrappers around FrameworkImageIO.",
+            "status": "excluded",
             "sourceFile": "src/vision/formats/from/FromFramework.hx",
             "members": [
                 "js",
@@ -297,13 +277,9 @@
             "testFile": null
         },
         "vision.formats.from.From": {
-            "deferredMembers": [
-                "new",
-                "bytes",
-                "framework"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic suite validates stable accessor behavior and byte-loader delegation for the public From facade.",
+            "status": "manual",
             "sourceFile": "src/vision/formats/from/From.hx",
             "members": [
                 "new",
@@ -362,13 +338,9 @@
             "testFile": "tests/src/tests/TransformationMatrix2DTest.hx"
         },
         "vision.formats.to.To": {
-            "deferredMembers": [
-                "new",
-                "bytes",
-                "framework"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic suite validates stable accessor behavior and byte-writer delegation for the public To facade.",
+            "status": "manual",
             "sourceFile": "src/vision/formats/to/To.hx",
             "members": [
                 "new",
@@ -397,16 +369,14 @@
             "testFile": "tests/src/tests/Point2DTest.hx"
         },
         "vision.exceptions.ImageSavingFailed": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/ImageSavingFailed.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/ImageSavingFailedTest.hx"
         },
         "vision.ds.Int16Point2D": {
             "deferredMembers": [
@@ -427,19 +397,9 @@
             "testFile": "tests/src/tests/Int16Point2DTest.hx"
         },
         "vision.formats.to.ToFramework": {
-            "deferredMembers": [
-                "js",
-                "flixel",
-                "flash",
-                "openfl",
-                "lime",
-                "heaps",
-                "kha",
-                "haxeui",
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Target-gated framework adapter container intentionally excluded from manual migration; each branch only exposes optional framework-specific wrappers around FrameworkImageIO.",
+            "status": "excluded",
             "sourceFile": "src/vision/formats/to/ToFramework.hx",
             "members": [
                 "js",
@@ -647,30 +607,25 @@
             "testFile": "tests/src/tests/MathToolsTest.hx"
         },
         "vision.exceptions.InvalidGaussianKernelSize": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/InvalidGaussianKernelSize.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/InvalidGaussianKernelSizeTest.hx"
         },
         "vision.exceptions.WebResponseError": {
-            "deferredMembers": [
-                "new",
-                "error"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/WebResponseError.hx",
             "members": [
                 "new",
                 "error"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/WebResponseErrorTest.hx"
         },
         "vision.ds.ImageFormat": {
             "deferredMembers": [
@@ -685,16 +640,14 @@
             "testFile": "tests/src/tests/ImageFormatTest.hx"
         },
         "vision.exceptions.InvalidCramerSetup": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/InvalidCramerSetup.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/InvalidCramerSetupTest.hx"
         },
         "vision.algorithms.BilinearInterpolation": {
                 "deferredMembers": [],
@@ -716,40 +669,34 @@
             "testFile": null
         },
         "vision.exceptions.InvalidCramerCoefficientsMatrix": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/InvalidCramerCoefficientsMatrix.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/InvalidCramerCoefficientsMatrixTest.hx"
         },
         "vision.exceptions.ImageLoadingFailed": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/ImageLoadingFailed.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/ImageLoadingFailedTest.hx"
         },
         "vision.exceptions.LibraryRequired": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/LibraryRequired.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/LibraryRequiredTest.hx"
         },
         "vision.algorithms.SimpleHough": {
                 "deferredMembers": [],
@@ -847,12 +794,9 @@
             "testFile": null
         },
         "vision.formats.ImageIO": {
-            "deferredMembers": [
-                "from",
-                "to"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic suite validates the stable static accessors and deterministic round trips through the ImageIO facade.",
+            "status": "manual",
             "sourceFile": "src/vision/formats/ImageIO.hx",
             "members": [
                 "from",
@@ -862,7 +806,6 @@
         },
         "vision.Vision": {
             "deferredMembers": [
-                "combine",
                 "tint",
                 "grayscale",
                 "invert",
@@ -892,7 +835,6 @@
                 "affineTransform",
                 "projectiveTransform",
                 "nearestNeighborBlur",
-                "gaussianBlur",
                 "medianBlur",
                 "simpleLine2DDetection",
                 "sobelEdgeDiffOperator",
@@ -900,17 +842,14 @@
                 "robertEdgeDiffOperator",
                 "laplacianEdgeDiffOperator",
                 "cannyEdgeDetection",
-                "sobelEdgeDetection",
                 "perwittEdgeDetection",
                 "laplacianOfGaussianEdgeDetection",
                 "convolutionRidgeDetection",
-                "bilateralDenoise",
-                "simpleImageSimilarity",
                 "kmeansPosterize",
                 "kmeansGroupImageColors"
             ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "notes": "Manual semantic facade suite covers representative public compatibility and delegation invariants while the deeper algorithm expectations remain in the algorithm-specific suites.",
+            "status": "manual",
             "sourceFile": "src/vision/Vision.hx",
             "members": [
                 "combine",
@@ -963,16 +902,14 @@
             "testFile": "tests/src/tests/VisionTest.hx"
         },
         "vision.exceptions.VisionException": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/VisionException.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/VisionExceptionTest.hx"
         },
         "vision.algorithms.BicubicInterpolation": {
                 "deferredMembers": [],
@@ -1003,16 +940,14 @@
             "testFile": "tests/src/tests/Point3DTest.hx"
         },
         "vision.exceptions.InvalidHeapsPixelFormat": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/InvalidHeapsPixelFormat.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/InvalidHeapsPixelFormatTest.hx"
         },
         "vision.ds.Color": {
             "deferredMembers": [
@@ -1401,16 +1336,14 @@
             "testFile": "tests/src/tests/BilateralFilterTest.hx"
         },
         "vision.exceptions.MultithreadFailure": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/MultithreadFailure.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/MultithreadFailureTest.hx"
         },
         "vision.ds.canny.CannyObject": {
             "deferredMembers": [],
@@ -1444,19 +1377,9 @@
             "testFile": null
         },
         "vision.helpers.VisionThread": {
-            "deferredMembers": [
-                "job",
-                "onFailed",
-                "onDone",
-                "jobDone",
-                "relaunchEvents",
-                "count",
-                "new",
-                "start",
-                "create"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic suite validates constructor state, completion/failure callbacks, and relaunch-event behavior for VisionThread.",
+            "status": "manual",
             "sourceFile": "src/vision/helpers/VisionThread.hx",
             "members": [
                 "job",
@@ -1484,16 +1407,14 @@
             "testFile": null
         },
         "vision.exceptions.OutOfBounds": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/OutOfBounds.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/OutOfBoundsTest.hx"
         },
         "vision.ds.UInt16Point2D": {
             "deferredMembers": [
@@ -1671,14 +1592,9 @@
             "testFile": "tests/src/tests/PerspectiveWarpTest.hx"
         },
         "vision.formats.from.FromBytes": {
-            "deferredMembers": [
-                "new",
-                "png",
-                "bmp",
-                "jpeg"
-            ],
-            "notes": "Promoted into tests/src during cutover, but the suite still needs manual semantic migration.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic suite uses deterministic fixtures, exact PNG and BMP round trips, and malformed-input failure assertions for the byte loaders.",
+            "status": "manual",
             "sourceFile": "src/vision/formats/from/FromBytes.hx",
             "members": [
                 "new",
@@ -1786,16 +1702,14 @@
             "testFile": "tests/src/tests/ImageHashingTest.hx"
         },
         "vision.exceptions.Unimplemented": {
-            "deferredMembers": [
-                "new"
-            ],
-            "notes": "No authored suite exists under tests/src yet.",
-            "status": "needs-migration",
+            "deferredMembers": [],
+            "notes": "Manual semantic constructor/message suite authored under tests/src and maintained by hand.",
+            "status": "manual",
             "sourceFile": "src/vision/exceptions/Unimplemented.hx",
             "members": [
                 "new"
             ],
-            "testFile": null
+            "testFile": "tests/src/tests/UnimplementedTest.hx"
         },
         "vision.algorithms.KernelResampler": {
                 "deferredMembers": [],

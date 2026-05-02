@@ -8,9 +8,9 @@ class InvalidGaussianKernelSize extends VisionException {
 	}
 
 	static inline function getReason(size:Int) {
+		if (size == 0) return "Is the kernel size 0?";
 		if (size < 0) return "Is the kernel size a negative value?";
 		if (size % 2 == 0) return "Is the kernel size even?";
-		if (size == 0) return "Is the kernel size 0?";
 		return "";
 	}
 
