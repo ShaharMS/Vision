@@ -2,12 +2,12 @@
 
 ## Review Source
 
-- Source type: Incoming @Inspect approved review for the step 6 Harris response pass
-- Scope: .github/plans/hough-harris-feature-detection-6-harris-response.md
-- Baseline: 688607c968589a1cb41135c918176a695d7c532f..b4efeb55bb7b208bed103e3565f3684ff467446d
+- Source type: Incoming @Inspect approved review for the step 7 Harris corners and API pass
+- Scope: .github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md
+- Baseline: ec3e6f565ce78527634dd5bebe23aebb44108a01..093d99d222ee5cc6c18d5f5cb290848f7ba044e0
 - Reviewer: @Inspect
-- Reviewer notes: @Inspect found no new findings, explicitly accepted border clamping, even `blockSize` values, and keeping normalization out of step 6, and noted only non-blocking synthetic-only coverage gaps.
-- Current remediation state: RVW-001 through RVW-006 remain closed for the active step-6 scope. The step is approved, and the remaining synthetic-only coverage gaps stay non-blocking.
+- Reviewer notes: @Inspect found no new findings, explicitly accepted the fixed 3x3 non-max suppression window, `minimumDistance` semantics, and HH-DEC-008's scored public output shape, and noted only non-blocking synthetic-coverage gaps.
+- Current remediation state: RVW-001 through RVW-006 remain closed for the active step-7 scope. The step is approved, HH-DEC-008's scored public output shape is explicitly accepted for this step, and the remaining synthetic-only coverage gaps stay non-blocking.
 
 ## Review Checklist
 
@@ -21,7 +21,7 @@
 
 ## Findings
 
-Historical iteration findings are preserved below for continuity. The latest approved step-6 review opens no new findings, keeps RVW-001 through RVW-006 closed, records border clamping, even `blockSize` values, and keeping normalization out of step 6 as accepted non-findings, and leaves only synthetic-only coverage gaps as non-blocking residuals.
+Historical iteration findings are preserved below for continuity. The latest approved step-7 review opens no new findings, keeps RVW-001 through RVW-006 closed, records the fixed 3x3 non-max suppression window, `minimumDistance` semantics, and HH-DEC-008's scored public output shape as accepted non-findings, and leaves only synthetic-coverage gaps as non-blocking residuals.
 
 | Finding ID | Severity | File | Concern | Required action | Evidence |
 |------------|----------|------|---------|-----------------|----------|
@@ -82,3 +82,5 @@ Historical iteration findings are preserved below for continuity. The latest app
 | Step 5 round 2 normalized | APPROVED | @Intake | Preserved RVW-005 and RVW-006 as FIXED, recorded that the approved step-5 re-review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
 | Step 6 round 1 | APPROVED | @Inspect | Reviewed committed range 688607c968589a1cb41135c918176a695d7c532f..b4efeb55bb7b208bed103e3565f3684ff467446d; found no new findings, explicitly accepted border clamping, even `blockSize` values, and keeping normalization out of step 6, and noted only non-blocking synthetic-only coverage gaps. |
 | Step 6 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 through RVW-006 as closed, recorded that the approved step-6 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
+| Step 7 round 1 | APPROVED | @Inspect | Reviewed committed range ec3e6f565ce78527634dd5bebe23aebb44108a01..093d99d222ee5cc6c18d5f5cb290848f7ba044e0; found no new findings, explicitly accepted the fixed 3x3 non-max suppression window, `minimumDistance` semantics, and HH-DEC-008's scored public output shape, and noted only non-blocking synthetic-coverage gaps. |
+| Step 7 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 through RVW-006 as closed, recorded that the approved step-7 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |

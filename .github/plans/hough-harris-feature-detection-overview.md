@@ -23,8 +23,8 @@ This plan standardizes the Hough family around real polar-space voting and image
 | 4 | [hough-harris-feature-detection-4-hough-api-parity.md](.github/plans/hough-harris-feature-detection-4-hough-api-parity.md) | ✅ Completed — Added parity coverage for weighted votes, theta bounds, point-set input, and explicit multi-scale omission. |
 | 5 | [hough-harris-feature-detection-5-hough-circles.md](.github/plans/hough-harris-feature-detection-5-hough-circles.md) | ✅ Completed — Added a dedicated Hough circle detector, the Vision wrapper, and circle-specific regressions for large radii and no-edge inputs. |
 | 6 | [hough-harris-feature-detection-6-harris-response.md](.github/plans/hough-harris-feature-detection-6-harris-response.md) | ✅ Completed — Implemented the raw Harris response map and synthetic score-ordering coverage. |
-| 7 | [hough-harris-feature-detection-7-harris-corners-and-api.md](.github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md) | ▶ Next — Turn Harris response maps into usable corner outputs and expose documented `Vision.hx` wrappers. |
-| 8 | [hough-harris-feature-detection-8-docs-tests-and-closeout.md](.github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md) | Finish demos, docs, suite registration, inventory updates, and cross-target regression checks. |
+| 7 | [hough-harris-feature-detection-7-harris-corners-and-api.md](.github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md) | ✅ Completed — Added Harris corner extraction, scored public wrappers, and deterministic corner-selection coverage. |
+| 8 | [hough-harris-feature-detection-8-docs-tests-and-closeout.md](.github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md) | ▶ Next — Finish demos, docs, suite registration, inventory updates, and cross-target regression checks. |
 
 ## Key Decisions
 
