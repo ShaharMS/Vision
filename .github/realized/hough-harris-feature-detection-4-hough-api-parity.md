@@ -1,9 +1,9 @@
 # Plan: Standardized Hough and Harris Feature Detection — Step 4: Hough API Parity and Point-Set Input
 
 > **Status**: ✅ Completed
-> **Prerequisite**: [hough-harris-feature-detection-3-probabilistic-hough-segments.md](.github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md)
-> **Next**: [hough-harris-feature-detection-5-hough-circles.md](.github/plans/hough-harris-feature-detection-5-hough-circles.md)
-> **Parent**: [hough-harris-feature-detection-overview.md](.github/plans/hough-harris-feature-detection-overview.md)
+> **Prerequisite**: [hough-harris-feature-detection-3-probabilistic-hough-segments.md](hough-harris-feature-detection-3-probabilistic-hough-segments.md)
+> **Next**: [hough-harris-feature-detection-5-hough-circles.md](hough-harris-feature-detection-5-hough-circles.md)
+> **Parent**: [hough-harris-feature-detection-overview.md](hough-harris-feature-detection-overview.md)
 
 ## TL;DR
 

@@ -1,14 +1,13 @@
 # Hough Harris Feature Detection
 
 - Iteration directory: `.github/iterations/hough-harris-feature-detection`
-- Selected overview: `.github/plans/hough-harris-feature-detection-overview.md`
-- Active step: `.github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md`
-- Current loop phase: step 7 `.github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md` is approved, and step 8 `.github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md` is now the active implementation scope for docs, demos, suite registration, inventory updates, and final regression evidence
-- Branch and commit state: `feature/hough-harris-feature-detection`; active-step baseline `093d99d222ee5cc6c18d5f5cb290848f7ba044e0`; latest approved review anchor `093d99d222ee5cc6c18d5f5cb290848f7ba044e0`; the next loop starts from the approved step-7 Harris-corners commit on the feature branch
-- Packet integrity: `run-ledger.md` now activates step 8, `review-packet.md` records the approved step-7 outcome, `timeline.md` includes the approval and activation backfill entries, `decision-log.md` keeps HH-DEC-005 through HH-DEC-008 durable, and the unrelated `.github/agents/Iterate.agent.md` user edit remains out of scope
-- Latest durable outcome: step 7 is approved on `093d99d222ee5cc6c18d5f5cb290848f7ba044e0`; the accepted outcome confirms the fixed 3x3 non-max suppression window, `minimumDistance` semantics, and HH-DEC-008's scored `HarrisCorner2D` public output shape, and preserves the focused `HarrisTest` plus compile-only `interp,js` evidence in the packet history
-- Open non-blocking notes: the approved step-7 review kept only synthetic-only coverage gaps as non-blocking residuals; they do not reopen the step
-- Working-tree caution: preserve the unrelated user modification in `.github/agents/Iterate.agent.md`; do not overwrite or revert it during step 8 work
-- Verification evidence preserved: the approved step-7 history includes focused `haxe test.hxml` coverage for `HarrisTest`, the required compile-only `haxe tests/ci/local-ci.hxml` run with `VISION_CI_TARGETS='interp,js'`, `VISION_CI_COMPILE_ONLY='1'`, and `VISION_CI_SKIP_INSTALL='1'`, and clean touched-scope diagnostics across the Harris-corner and public-wrapper slice that landed in review
-- Review focus for the next agent: implement the final step-8 docs/tests closeout so demos, docs, manual suite registration, inventory coverage, and the closing regression evidence all match the approved Hough and Harris public surfaces
-- Next agent routing: `@Implement`, then `@Inspect`, then `@Intake`, then `@Index`
+- Selected overview: `.github/realized/hough-harris-feature-detection-overview.md`
+- Final step: `.github/realized/hough-harris-feature-detection-8-docs-tests-and-closeout.md`
+- Iteration state: all eight plan steps are approved and complete, the selected plan is fully realized, and the iteration is stopping because the queue is exhausted
+- Branch and commit state: `feature/hough-harris-feature-detection`; iteration baseline `38c18abbb3c6b9c38117c533588c15f23475e704`; final approved review range `1cb52f1295a10ad91ee90f3e2b8f3d5638db90db..ba719e361b7601eb95364e5801e82cceb2fd981b`; final approved implementation commit `ba719e361b7601eb95364e5801e82cceb2fd981b`
+- Latest durable outcome: `@Inspect` approved the final step after rerunning the combined filtered `HoughStandardTest,HoughProbabilisticTest,HoughCircleTest,HarrisTest,SimpleHoughTest` suite at 42/42 passing methods, rerunning the compile-only `interp,js` LocalCi slice, and confirming the touched docs, inventory, and packet files are diagnostics-clean
+- Packet integrity: `run-ledger.md` points at the realized overview and final step, `commit-packet.md` captures the final queue-exhausted closeout scope under HH-DEC-005, `review-packet.md` records the final approved range with no open findings, `timeline.md` now includes the archive plus closeout-commit transition, `execution-report.md` matches the queue-exhausted stop state, and `decision-log.md` keeps HH-DEC-005 through HH-DEC-008 durable
+- Accepted convention: HH-DEC-005 remains the accepted packet-state convention for committed iteration artifacts
+- Open blockers: none
+- Outstanding findings: none
+- Working-tree caution: preserve the unrelated user modification in `.github/agents/Iterate.agent.md`; it remains out of scope for the realized closeout state

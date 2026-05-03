@@ -1,6 +1,6 @@
 # Plan: Standardized Hough and Harris Feature Detection
 
-## Status: 🔄 In progress
+## Status: ✅ All steps completed
 
 ## Publication Status
 
@@ -17,14 +17,14 @@ This plan standardizes the Hough family around real polar-space voting and image
 
 | Order | Plan File | Summary |
 |-------|-----------|---------|
-| 1 | [hough-harris-feature-detection-1-foundation.md](.github/plans/hough-harris-feature-detection-1-foundation.md) | ✅ Completed — Added shared types, options, numeric-map conventions, and compatibility seams for the new detectors. |
-| 2 | [hough-harris-feature-detection-2-standard-hough-lines.md](.github/plans/hough-harris-feature-detection-2-standard-hough-lines.md) | ✅ Completed — Replaced the ray-oriented accumulator with a standard polar Hough line transform and a SimpleHough compatibility bridge. |
-| 3 | [hough-harris-feature-detection-3-probabilistic-hough-segments.md](.github/plans/hough-harris-feature-detection-3-probabilistic-hough-segments.md) | ✅ Completed — Added probabilistic Hough line-segment detection, the Vision wrapper, and explicit custom edge-map validation. |
-| 4 | [hough-harris-feature-detection-4-hough-api-parity.md](.github/plans/hough-harris-feature-detection-4-hough-api-parity.md) | ✅ Completed — Added parity coverage for weighted votes, theta bounds, point-set input, and explicit multi-scale omission. |
-| 5 | [hough-harris-feature-detection-5-hough-circles.md](.github/plans/hough-harris-feature-detection-5-hough-circles.md) | ✅ Completed — Added a dedicated Hough circle detector, the Vision wrapper, and circle-specific regressions for large radii and no-edge inputs. |
-| 6 | [hough-harris-feature-detection-6-harris-response.md](.github/plans/hough-harris-feature-detection-6-harris-response.md) | ✅ Completed — Implemented the raw Harris response map and synthetic score-ordering coverage. |
-| 7 | [hough-harris-feature-detection-7-harris-corners-and-api.md](.github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md) | ✅ Completed — Added Harris corner extraction, scored public wrappers, and deterministic corner-selection coverage. |
-| 8 | [hough-harris-feature-detection-8-docs-tests-and-closeout.md](.github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md) | ▶ Next — Finish demos, docs, suite registration, inventory updates, and cross-target regression checks. |
+| 1 | [hough-harris-feature-detection-1-foundation.md](hough-harris-feature-detection-1-foundation.md) | ✅ Completed — Added shared types, options, numeric-map conventions, and compatibility seams for the new detectors. |
+| 2 | [hough-harris-feature-detection-2-standard-hough-lines.md](hough-harris-feature-detection-2-standard-hough-lines.md) | ✅ Completed — Replaced the ray-oriented accumulator with a standard polar Hough line transform and a SimpleHough compatibility bridge. |
+| 3 | [hough-harris-feature-detection-3-probabilistic-hough-segments.md](hough-harris-feature-detection-3-probabilistic-hough-segments.md) | ✅ Completed — Added probabilistic Hough line-segment detection, the Vision wrapper, and explicit custom edge-map validation. |
+| 4 | [hough-harris-feature-detection-4-hough-api-parity.md](hough-harris-feature-detection-4-hough-api-parity.md) | ✅ Completed — Added parity coverage for weighted votes, theta bounds, point-set input, and explicit multi-scale omission. |
+| 5 | [hough-harris-feature-detection-5-hough-circles.md](hough-harris-feature-detection-5-hough-circles.md) | ✅ Completed — Added a dedicated Hough circle detector, the Vision wrapper, and circle-specific regressions for large radii and no-edge inputs. |
+| 6 | [hough-harris-feature-detection-6-harris-response.md](hough-harris-feature-detection-6-harris-response.md) | ✅ Completed — Implemented the raw Harris response map and synthetic score-ordering coverage. |
+| 7 | [hough-harris-feature-detection-7-harris-corners-and-api.md](hough-harris-feature-detection-7-harris-corners-and-api.md) | ✅ Completed — Added Harris corner extraction, scored public wrappers, and deterministic corner-selection coverage. |
+| 8 | [hough-harris-feature-detection-8-docs-tests-and-closeout.md](hough-harris-feature-detection-8-docs-tests-and-closeout.md) | ✅ Completed — Refreshed the public docs and demos, clarified the compatibility story, synced suite registration, updated the manual inventory, and preserved final regression evidence. |
 
 ## Key Decisions
 
@@ -39,7 +39,7 @@ This plan standardizes the Hough family around real polar-space voting and image
 ## Iteration Bootstrap Metadata
 
 - **Recommended iteration slug** — `hough-harris-feature-detection`
-- **First step to execute** — [hough-harris-feature-detection-1-foundation.md](.github/plans/hough-harris-feature-detection-1-foundation.md)
+- **First step to execute** — [hough-harris-feature-detection-1-foundation.md](hough-harris-feature-detection-1-foundation.md)
 - **Verification evidence to preserve** — targeted `haxe test.hxml` runs with `VISION_TESTS` filters for the new Hough/Harris suites; targeted compile-only `haxe tests/ci/local-ci.hxml` runs with `VISION_CI_TARGETS='interp,js'`, `VISION_CI_COMPILE_ONLY='1'`, and `VISION_CI_SKIP_INSTALL='1'`
 - **Review focus for later agents** — backward compatibility of `Vision.hx`, whether full lines are clipped consistently to image bounds, whether probabilistic segments avoid duplicate fragments, whether Harris thresholds are scale-stable, and whether new numeric helpers avoid leaking float-only semantics into unrelated image APIs
 - **Commit-splitting guidance** — keep at least one commit for foundation/types, one or more commits for the Hough family, one or more commits for Harris, and a final commit for docs/tests/inventory reconciliation

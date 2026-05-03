@@ -1,9 +1,9 @@
 # Plan: Standardized Hough and Harris Feature Detection — Step 7: Harris Corners and Public API
 
 > **Status**: ✅ Completed
-> **Prerequisite**: [hough-harris-feature-detection-6-harris-response.md](.github/plans/hough-harris-feature-detection-6-harris-response.md)
-> **Next**: [hough-harris-feature-detection-8-docs-tests-and-closeout.md](.github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md)
-> **Parent**: [hough-harris-feature-detection-overview.md](.github/plans/hough-harris-feature-detection-overview.md)
+> **Prerequisite**: [hough-harris-feature-detection-6-harris-response.md](hough-harris-feature-detection-6-harris-response.md)
+> **Next**: [hough-harris-feature-detection-8-docs-tests-and-closeout.md](hough-harris-feature-detection-8-docs-tests-and-closeout.md)
+> **Parent**: [hough-harris-feature-detection-overview.md](hough-harris-feature-detection-overview.md)
 
 ## TL;DR
 

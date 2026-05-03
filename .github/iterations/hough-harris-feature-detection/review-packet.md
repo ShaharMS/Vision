@@ -2,26 +2,29 @@
 
 ## Review Source
 
-- Source type: Incoming @Inspect approved review for the step 7 Harris corners and API pass
-- Scope: .github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md
-- Baseline: ec3e6f565ce78527634dd5bebe23aebb44108a01..093d99d222ee5cc6c18d5f5cb290848f7ba044e0
-- Reviewer: @Inspect
-- Reviewer notes: @Inspect found no new findings, explicitly accepted the fixed 3x3 non-max suppression window, `minimumDistance` semantics, and HH-DEC-008's scored public output shape, and noted only non-blocking synthetic-coverage gaps.
-- Current remediation state: RVW-001 through RVW-006 remain closed for the active step-7 scope. The step is approved, HH-DEC-008's scored public output shape is explicitly accepted for this step, and the remaining synthetic-only coverage gaps stay non-blocking.
+- Source type: `@Inspect approved review for the final step-8 docs, tests, and closeout pass`
+- Scope: `Approved review of .github/realized/hough-harris-feature-detection-8-docs-tests-and-closeout.md for the committed final-step delta.`
+- Baseline: `1cb52f1295a10ad91ee90f3e2b8f3d5638db90db..ba719e361b7601eb95364e5801e82cceb2fd981b`
+- Reviewer: `@Inspect`
+- Scope evidence: `Reviewed the selected step plan, required iteration packet files, current git state, the full final-step delta, focused diffs for all touched files, and the claimed verification commands while excluding the unrelated .github/agents/Iterate.agent.md user edit.`
+- Gate summary: `Scope evidence PASS; plan intent PASS; verification PASS; type safety PASS; convention PASS; complexity PASS; regression PASS.`
+- Accepted waivers: `No new waiver was required; the review accepted the SimpleHough compatibility story, the refreshed manual inventory shape, and the retained GeneratedSuites compatibility registry as repo-valid for the final closeout.`
+- Residual risks: `VisionMain.hx uses synthetic circle and Harris fixtures for local inspectability, so the final demo surface proves discoverability rather than robustness on noisy natural images.`
+- Current remediation state: `RVW-001 through RVW-006 remain closed for the final step scope. The final step is approved, the compatibility story, inventory shape, and docs/demo closeout wording are explicitly accepted for this step, the plan chain is archived under .github/realized/, and the remaining synthetic-demo coverage gaps stay non-blocking with no further review routing required.`
 
 ## Review Checklist
 
 - [x] Plan intent reviewed
 - [x] Verification claims checked
-- [ ] Repository conventions checked
-- [ ] Shared package boundaries checked
-- [ ] Naming and structure checked
-- [ ] Nesting and complexity checked
+- [x] Repository conventions checked
+- [x] Shared package boundaries checked
+- [x] Naming and structure checked
+- [x] Nesting and complexity checked
 - [x] Risks and regressions checked
 
 ## Findings
 
-Historical iteration findings are preserved below for continuity. The latest approved step-7 review opens no new findings, keeps RVW-001 through RVW-006 closed, records the fixed 3x3 non-max suppression window, `minimumDistance` semantics, and HH-DEC-008's scored public output shape as accepted non-findings, and leaves only synthetic-coverage gaps as non-blocking residuals.
+Historical iteration findings are preserved below for continuity. The latest approved final-step review opens no new findings, keeps RVW-001 through RVW-006 closed, records the accepted SimpleHough compatibility story, refreshed manual inventory shape, and final docs/demo wording as non-findings, and leaves only synthetic-demo coverage gaps as non-blocking residuals.
 
 | Finding ID | Severity | File | Concern | Required action | Evidence |
 |------------|----------|------|---------|-----------------|----------|
@@ -45,9 +48,9 @@ Historical iteration findings are preserved below for continuity. The latest app
 
 ## Approval Gate
 
-- Current verdict: APPROVED
-- Approval blockers: None
-- Next reviewer: @Index
+- Current verdict: `APPROVED`
+- Approval blockers: `none`
+- Next reviewer: `none`
 
 ## Review History
 
@@ -84,3 +87,5 @@ Historical iteration findings are preserved below for continuity. The latest app
 | Step 6 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 through RVW-006 as closed, recorded that the approved step-6 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
 | Step 7 round 1 | APPROVED | @Inspect | Reviewed committed range ec3e6f565ce78527634dd5bebe23aebb44108a01..093d99d222ee5cc6c18d5f5cb290848f7ba044e0; found no new findings, explicitly accepted the fixed 3x3 non-max suppression window, `minimumDistance` semantics, and HH-DEC-008's scored public output shape, and noted only non-blocking synthetic-coverage gaps. |
 | Step 7 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 through RVW-006 as closed, recorded that the approved step-7 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
+| Step 8 round 1 | APPROVED | @Inspect | Reviewed committed range 1cb52f1295a10ad91ee90f3e2b8f3d5638db90db..ba719e361b7601eb95364e5801e82cceb2fd981b; found no new findings, accepted the SimpleHough compatibility story, the refreshed manual inventory shape, and the final docs/demo wording for the closeout pass, and noted only non-blocking synthetic-demo coverage gaps. |
+| Step 8 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 through RVW-006 as closed, recorded that the approved final-step review opened no new findings, marked the final step APPROVED, and routed the packet to @Index for downstream curation. |

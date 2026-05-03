@@ -1,9 +1,9 @@
 # Plan: Standardized Hough and Harris Feature Detection — Step 3: Probabilistic Hough Segments
 
 > **Status**: ✅ Completed
-> **Prerequisite**: [hough-harris-feature-detection-2-standard-hough-lines.md](.github/plans/hough-harris-feature-detection-2-standard-hough-lines.md)
-> **Next**: [hough-harris-feature-detection-4-hough-api-parity.md](.github/plans/hough-harris-feature-detection-4-hough-api-parity.md)
-> **Parent**: [hough-harris-feature-detection-overview.md](.github/plans/hough-harris-feature-detection-overview.md)
+> **Prerequisite**: [hough-harris-feature-detection-2-standard-hough-lines.md](hough-harris-feature-detection-2-standard-hough-lines.md)
+> **Next**: [hough-harris-feature-detection-4-hough-api-parity.md](hough-harris-feature-detection-4-hough-api-parity.md)
+> **Parent**: [hough-harris-feature-detection-overview.md](hough-harris-feature-detection-overview.md)
 
 ## TL;DR
 

@@ -1,9 +1,9 @@
 # Plan: Standardized Hough and Harris Feature Detection — Step 8: Docs, Tests, and Closeout
 
-> **Status**: 🔲 Not started
-> **Prerequisite**: [hough-harris-feature-detection-7-harris-corners-and-api.md](.github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md)
+> **Status**: ✅ Completed
+> **Prerequisite**: [hough-harris-feature-detection-7-harris-corners-and-api.md](hough-harris-feature-detection-7-harris-corners-and-api.md)
 > **Next**: None — this is the final step.
-> **Parent**: [hough-harris-feature-detection-overview.md](.github/plans/hough-harris-feature-detection-overview.md)
+> **Parent**: [hough-harris-feature-detection-overview.md](hough-harris-feature-detection-overview.md)
 
 ## TL;DR
 

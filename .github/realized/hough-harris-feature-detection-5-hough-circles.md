@@ -1,9 +1,9 @@
 # Plan: Standardized Hough and Harris Feature Detection — Step 5: Hough Circles
 
 > **Status**: ✅ Completed
-> **Prerequisite**: [hough-harris-feature-detection-4-hough-api-parity.md](.github/plans/hough-harris-feature-detection-4-hough-api-parity.md)
-> **Next**: [hough-harris-feature-detection-6-harris-response.md](.github/plans/hough-harris-feature-detection-6-harris-response.md)
-> **Parent**: [hough-harris-feature-detection-overview.md](.github/plans/hough-harris-feature-detection-overview.md)
+> **Prerequisite**: [hough-harris-feature-detection-4-hough-api-parity.md](hough-harris-feature-detection-4-hough-api-parity.md)
+> **Next**: [hough-harris-feature-detection-6-harris-response.md](hough-harris-feature-detection-6-harris-response.md)
+> **Parent**: [hough-harris-feature-detection-overview.md](hough-harris-feature-detection-overview.md)
 
 ## TL;DR
 

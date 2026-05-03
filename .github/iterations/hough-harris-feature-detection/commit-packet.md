@@ -2,26 +2,25 @@
 
 ## Commit Intent
 
-- Pass type: Initial implementation pass for step 8 docs, tests, and closeout
-- Plan step: .github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md
-- Scope: Commit the final Hough/Harris closeout edits in `Vision.hx`, `VisionMain.hx`, `HarrisTest.hx`, `SimpleHoughTest.hx`, `GeneratedSuites.hx`, `tests/README.md`, and `manual-test-inventory.json`, plus the matching `implementation-handoff.md`, `timeline.md`, and this commit-packet refresh in one explicit plan-step implementation commit.
-- Reason this is one commit: The user requested exactly one initial implementation pass for the final step, and the public docs, demo surface, suite reconciliation, inventory refresh, and packet updates are one coherent closeout slice.
+- Pass type: Final queue-exhausted closeout bookkeeping pass for the completed Hough/Harris plan chain
+- Plan step: .github/realized/hough-harris-feature-detection-8-docs-tests-and-closeout.md
+- Parent overview: .github/realized/hough-harris-feature-detection-overview.md
+- Scope: Commit the archived Hough/Harris overview-plus-step move from `.github/plans/` to `.github/realized/`, the final approved queue-exhausted refresh for `run-ledger.md`, `review-packet.md`, `timeline.md`, `execution-report.md`, `.github/agent-progress/hough-harris-feature-detection.md`, and this commit-packet update, while preserving the unrelated `.github/agents/Iterate.agent.md` user edit outside the closeout scope.
+- Reason this is one commit: The user requested exactly one final closeout pass, and the realized-plan archive move plus the final stop-state packet, progress, and reporting updates form one coherent bookkeeping slice after the approved implementation commit `ba719e361b7601eb95364e5801e82cceb2fd981b`.
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| src/vision/Vision.hx | Yes | Refreshes the public Hough/Harris wrapper docs so the standard, probabilistic, circle, and raw-versus-extracted Harris paths are explicit. |
-| src/VisionMain.hx | Yes | Replaces the legacy SimpleHough ray demo with standard/probabilistic/circle/Harris demo coverage for local inspection. |
-| tests/src/tests/HarrisTest.hx | Yes | Adds direct public `Vision.harrisCornerResponse(...)` and `Vision.harrisCorners(...)` coverage to the final closeout slice. |
-| tests/src/tests/SimpleHoughTest.hx | Yes | Makes the SimpleHough compatibility position explicit in the retained legacy shim suite. |
-| tests/src/tests/support/GeneratedSuites.hx | Yes | Keeps the retained compatibility registry aligned for the new Hough/Harris suites. |
-| tests/README.md | Yes | Documents the combined closeout suite filter and the SimpleHough/GeneratedSuites compatibility notes. |
-| tests/catalog/manual-test-inventory.json | Yes | Refreshes the final Hough/Harris direct-ownership inventory and Vision facade notes. |
-| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Yes | Preserves the step-8 implementation summary and verification record for review. |
+| .github/iterations/hough-harris-feature-detection/run-ledger.md | Yes | Records the final queue-exhausted realized-plan state, selected realized overview and step, and no-next-agent stop condition. |
+| .github/iterations/hough-harris-feature-detection/review-packet.md | Yes | Preserves the final approved review range, accepted closeout conventions, and no-open-findings queue-exhausted state. |
+| .github/iterations/hough-harris-feature-detection/execution-report.md | Yes | Converts the final stop report from working-tree state to the committed queue-exhausted closeout state while preserving HH-DEC-005. |
 | .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Records the step-8 implementation transition and this commit-producing pass. |
+| .github/agent-progress/hough-harris-feature-detection.md | Yes | Keeps the resumable progress note aligned with the realized-plan archive and final packet integrity state. |
 | .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the commit boundary, gitflow decision, and self-reference-safe result notes for this pass. |
-| .github/iterations/hough-harris-feature-detection/run-ledger.md | No | Orchestrator-owned update explicitly excluded from this implementation commit. |
+| .github/realized/hough-harris-feature-detection-overview.md | Yes | Marks the overview complete in its realized home after the queue-exhausted archive move. |
+| .github/realized/hough-harris-feature-detection-1-foundation.md through .github/realized/hough-harris-feature-detection-8-docs-tests-and-closeout.md | Yes | Preserve the realized copies of the completed Hough/Harris subplans after archiving the plan chain. |
+| .github/plans/hough-harris-feature-detection-overview.md and .github/plans/hough-harris-feature-detection-1-foundation.md through .github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md | Yes | Remove the completed Hough/Harris overview and subplans from the active plans directory after archiving them under `.github/realized/`. |
 | .github/agents/Iterate.agent.md | No | Pre-existing unrelated user edit that must remain untouched and uncommitted. |
 
 ## Gitflow Decision
@@ -33,27 +32,25 @@
 ## Commit Message
 
 ```text
-feat(vision): close out Hough/Harris docs and suites
+docs(plans): finalize Hough/Harris queue-exhausted closeout
 
-Refresh the public Vision docs and demo surface, add direct
-Harris facade coverage, sync the retained GeneratedSuites
-compatibility registry, and update the manual inventory for the
-final Hough/Harris closeout while keeping the unrelated
-Iterate.agent edit and orchestrator-owned run-ledger update
-out of scope.
+Archive the completed Hough/Harris overview and subplans under
+.github/realized/, refresh the final queue-exhausted packet,
+progress, and execution-report state, and keep the unrelated
+Iterate.agent user edit out of scope.
 
-Plan: .github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md
-Pass: initial implementation
+Plan: .github/realized/hough-harris-feature-detection-8-docs-tests-and-closeout.md
+Pass: queue-exhausted closeout
 ```
 
 ## Result
 
-- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the step-8 baseline `1cb52f1295a10ad91ee90f3e2b8f3d5638db90db` instead of self-reporting a same-commit hash per HH-DEC-005.
-- Committed review anchor: 1cb52f1295a10ad91ee90f3e2b8f3d5638db90db
+- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the final approved implementation commit `ba719e361b7601eb95364e5801e82cceb2fd981b` and approved review range `1cb52f1295a10ad91ee90f3e2b8f3d5638db90db..ba719e361b7601eb95364e5801e82cceb2fd981b` instead of self-reporting a same-commit hash per HH-DEC-005.
+- Committed approval anchor: ba719e361b7601eb95364e5801e82cceb2fd981b
 - Push result: Intentionally reported out-of-band after push because the committed packet cannot self-observe post-commit transport state.
-- Workspace status now: The selected step-8 implementation files are committed; only the unrelated `.github/agents/Iterate.agent.md` user edit and the orchestrator-owned `.github/iterations/hough-harris-feature-detection/run-ledger.md` update remain uncommitted by design.
-- Remaining uncommitted files: .github/agents/Iterate.agent.md; .github/iterations/hough-harris-feature-detection/run-ledger.md
-- Follow-up needed: Route the committed step-8 implementation pass to @Inspect against baseline `1cb52f1295a10ad91ee90f3e2b8f3d5638db90db`.
+- Workspace status now: The selected queue-exhausted closeout files are committed; only the unrelated `.github/agents/Iterate.agent.md` user edit remains uncommitted by design.
+- Remaining uncommitted files: .github/agents/Iterate.agent.md
+- Follow-up needed: None. The selected plan is fully realized and the iteration queue is exhausted.
 
 ## Commit History
 
@@ -80,3 +77,4 @@ Pass: initial implementation
 | 19 | Committed via @Inscribe under HH-DEC-005 as the initial step-7 implementation pass | feature/hough-harris-feature-detection | Introduces deterministic Harris corner selection on top of the reviewed response map, adds documented `Vision` Harris wrappers plus focused corner-selection regressions, records HH-DEC-008, and keeps the unrelated `.github/agents/Iterate.agent.md` user edit plus the excluded orchestrator-owned run-ledger update out of scope |
 | 20 | 1cb52f1295a10ad91ee90f3e2b8f3d5638db90db | feature/hough-harris-feature-detection | Approved step-7 closeout bookkeeping pass that records the approved step-7 review normalization, activates step 8 in the durable packet and progress state, updates the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` user edit out of scope |
 | 21 | Committed via @Inscribe under HH-DEC-005 as the initial step-8 implementation pass | feature/hough-harris-feature-detection | Closes step 8 with public Hough/Harris doc refreshes, standard/probabilistic/circle/Harris demos, direct `Vision` Harris wrapper coverage, explicit `SimpleHoughTest` compatibility positioning, Hough/Harris `GeneratedSuites` sync, the final manual inventory ownership refresh, and preservation of the unrelated `.github/agents/Iterate.agent.md` user edit plus the excluded orchestrator-owned run-ledger update |
+| 22 | Committed via @Inscribe under HH-DEC-005 as the final queue-exhausted closeout bookkeeping pass | feature/hough-harris-feature-detection | Archives the approved Hough/Harris overview and step chain under `.github/realized/`, refreshes the final run-ledger, review-packet, timeline, execution-report, progress note, and commit-packet state, and keeps the unrelated `.github/agents/Iterate.agent.md` user edit out of scope |

@@ -2,83 +2,105 @@
 
 ## Run Summary
 
-- Iteration slug: hough-harris-feature-detection
-- Final state: In progress
-- Stop reason: Active iteration; committed metadata-only follow-up 5aa9a66676ea402e6b15e5d31660e89feefa84c5 remains the review anchor, the current RVW-002 response is committed and pushed under HH-DEC-005, and @Inspect re-review is pending
-- Report author: @Implement delegated
-- Scope: Bootstrap, committed execution, and the current metadata-only RVW-002 follow-up for .github/plans/hough-harris-feature-detection-1-foundation.md
-- Branch: feature/hough-harris-feature-detection
-- Baseline commit: 38c18abbb3c6b9c38117c533588c15f23475e704
-- Committed review anchor: 5aa9a66676ea402e6b15e5d31660e89feefa84c5
+- Iteration slug: `hough-harris-feature-detection`
+- Final state: `all steps approved and realized`
+- Stop reason: `iteration queue exhausted`
+- Report author: `@Iterate`
+- Scope: `.github/realized/hough-harris-feature-detection-overview.md`
+- Branch: `feature/hough-harris-feature-detection`
+- Run baseline commit: `38c18abbb3c6b9c38117c533588c15f23475e704`
+- Final approved code commit: `ba719e361b7601eb95364e5801e82cceb2fd981b`
+- Closeout commit: `Committed via @Inscribe under HH-DEC-005 as the final queue-exhausted closeout bookkeeping pass; the committed report remains anchored on ba719e361b7601eb95364e5801e82cceb2fd981b instead of self-reporting a same-commit hash or push result.`
 
 ## What Actually Happened
 
-1. Selected the attached overview, resolved the first operable step to .github/plans/hough-harris-feature-detection-1-foundation.md, and captured the baseline repo state.
-2. Created the iteration packet directory and populated the bootstrap ledger, handoff, review, commit, decision, timeline, and execution report files.
-3. Landed the first step 1 foundation implementation pass on feature/hough-harris-feature-detection at cf66c470cd87e2445d43cc1fd885710b30a824c5.
-4. Consumed the committed @Inspect review, fixed HoughLine2D.toRay2D normal-vs-direction semantics, added direct horizontal and vertical regression coverage, and refreshed the packet/progress files so the next pass resumes from the committed feature-branch state.
-5. Produced the committed step 1 CR follow-up d9f707d9d0e3802f6ceb99418ef3cecbfd359734 that packages the RVW-001 remediation, the first packet-state refresh, and the preserved exclusion of the unrelated .github/agents/Iterate.agent.md user edit.
-6. Produced the committed metadata-only packet refresh 5aa9a66676ea402e6b15e5d31660e89feefa84c5, which advanced the feature branch but still left some durable current-state fields anchored at d9f707d9d0e3802f6ceb99418ef3cecbfd359734 or pending wording.
-7. Applied the current narrow RVW-002 response in the working tree, refreshing the durable packet/progress state to the actual post-5aa9a66676ea402e6b15e5d31660e89feefa84c5 review anchor and clarifying that the current response pass cannot self-report its own eventual hash.
-8. Committed and pushed the current metadata-only RVW-002 response using HH-DEC-005 so the packet remains anchored on 5aa9a66676ea402e6b15e5d31660e89feefa84c5 instead of self-reporting same-commit hash or post-push transport state.
+1. Bootstrapped the iteration from the attached overview, created the packet set, landed the step-1 foundation types, options, and compatibility seam, fixed `HoughLine2D.toRay2D` after review, and accepted HH-DEC-005 so committed packet files do not self-report same-commit hash or post-push state.
+2. Replaced the legacy accumulator experiment with a standard polar Hough line detector, kept `SimpleHough` as a compatibility shim, and closed the parity slice with weighted-vote, theta-bound, and point-set coverage while explicitly deferring multi-scale `srn` or `stn` under HH-DEC-007.
+3. Added probabilistic line-segment detection plus the `Vision.houghLineSegmentDetection(...)` wrapper, then fixed review findings by tightening duplicate suppression to near-colinear fragments with small along-line gaps and rejecting mismatched custom `edgeImage` dimensions.
+4. Added dedicated Hough circle detection plus the `Vision` wrapper, then fixed review findings by scaling perimeter-support sampling with radius and returning no detections when the supplied or computed edge map is empty.
+5. Implemented raw Harris response computation and deterministic Harris corner extraction, exposed them through documented `Vision` wrappers, and preserved the scored `HarrisCorner2D` public output shape under HH-DEC-008.
+6. Closed step 8 by refreshing `Vision.hx` docs, replacing the old SimpleHough demo flow in `VisionMain.hx` with standard, probabilistic, circle, and Harris demos, making `SimpleHoughTest` explicitly compatibility-only, syncing the retained `GeneratedSuites.hx` registry, updating the manual inventory and tests docs, and receiving approval on `1cb52f1295a10ad91ee90f3e2b8f3d5638db90db..ba719e361b7601eb95364e5801e82cceb2fd981b`.
+7. Marked the overview and all eight subplans complete, moved the finished plan chain from `.github/plans/` to `.github/realized/`, and recorded the final queue-exhausted closeout state across the ledger, review packet, timeline, execution report, and progress note.
 
 ## Files Changed
 
 | Path | Final disposition | Notes |
 |------|-------------------|-------|
-| src/vision/ds/HoughLine2D.hx | Modified | Review-remediation fix for Hough normal-angle to line-direction conversion |
-| tests/src/tests/HoughStandardTest.hx | Modified | Added direct horizontal and vertical HoughLine2D.toRay2D regression coverage |
-| .github/iterations/hough-harris-feature-detection/commit-packet.md | Modified | Records pass 3 as 5aa9a66676ea402e6b15e5d31660e89feefa84c5 and documents the committed RVW-002 response under the self-reference-safe packet convention |
-| .github/iterations/hough-harris-feature-detection/decision-log.md | Modified | Extends HH-DEC-005 so same-commit hash and push reporting stay out of the packet until a later refresh can record them concretely |
-| .github/iterations/hough-harris-feature-detection/run-ledger.md | Modified | Updates the committed review anchor to 5aa9a66676ea402e6b15e5d31660e89feefa84c5 and reroutes the current response from @Inscribe to pending @Inspect re-review |
-| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Modified | Replaces the current-pass summary with the RVW-002 committed-review-anchor response and preserves concrete pass history through pass 3 |
-| .github/iterations/hough-harris-feature-detection/review-packet.md | Modified | Marks RVW-002 as fixed in the committed response and carries the self-reference-safe explanation for @Inspect |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Modified | Appends the committed-review-anchor alignment transition and the @Inscribe commit event |
-| .github/iterations/hough-harris-feature-detection/execution-report.md | Modified | Records 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as the committed review anchor and the committed RVW-002 response state |
-| .github/agent-progress/hough-harris-feature-detection.md | Modified | Corrects branch/commit/next-step state for the next consumer around the post-5aa9a66676ea402e6b15e5d31660e89feefa84c5 review anchor |
+| `src/vision/algorithms/Hough.hx`, `src/vision/algorithms/SimpleHough.hx`, `src/vision/algorithms/HoughProbabilisticSegments.hx`, `src/vision/algorithms/HoughCircles.hx`, `src/vision/algorithms/Harris.hx`, `src/vision/algorithms/HarrisCorners.hx` | `modified/created` | `Added the standardized Hough/Harris implementation surfaces, helper classes, and review-driven fixes.` |
+| `src/vision/ds/HoughLine2D.hx`, `src/vision/ds/Circle2D.hx`, `src/vision/ds/HarrisCorner2D.hx`, `src/vision/ds/specifics/HoughLineOptions.hx`, `src/vision/ds/specifics/ProbabilisticHoughLineOptions.hx`, `src/vision/ds/specifics/HoughCircleOptions.hx`, `src/vision/ds/specifics/HarrisResponseOptions.hx`, `src/vision/ds/specifics/HarrisCornerOptions.hx` | `modified/created` | `Introduced the public parameter and result types plus detector-option structures.` |
+| `src/vision/Vision.hx`, `src/VisionMain.hx` | `modified` | `Added the user-facing wrappers, docs, and final demo surfaces for standard lines, probabilistic segments, circles, and Harris response/corners.` |
+| `tests/src/tests/HoughStandardTest.hx`, `tests/src/tests/HoughProbabilisticTest.hx`, `tests/src/tests/HoughCircleTest.hx`, `tests/src/tests/HarrisTest.hx`, `tests/src/tests/SimpleHoughTest.hx` | `modified/created` | `Added focused semantic coverage, review regressions, and explicit compatibility positioning.` |
+| `tests/src/tests/support/AlgorithmFixtures.hx`, `tests/src/tests/support/ManualSuites.hx`, `tests/src/tests/support/GeneratedSuites.hx` | `modified` | `Expanded synthetic fixtures, kept the authored registry authoritative, and synced the retained compatibility registry.` |
+| `tests/README.md`, `tests/catalog/manual-test-inventory.json` | `modified` | `Documented the final filtered-run workflow and reconciled Hough/Harris ownership coverage.` |
+| `.github/iterations/hough-harris-feature-detection/*.md` | `updated` | `Captured implementation, review, decision, approval, and final-stop state across the durable packet set.` |
+| `.github/agent-progress/hough-harris-feature-detection.md` | `updated` | `Recorded the approved-step transitions and final queue-exhausted recovery state.` |
+| `.github/realized/hough-harris-feature-detection-*.md` | `moved/updated` | `The completed overview and all eight subplans now live under `.github/realized/`.` |
 
 ## Verification Run
 
 | Check | Method | Result | Evidence |
 |-------|--------|--------|----------|
-| Focused Hough regression plus compatibility surface | `VISION_TESTS='HoughStandardTest,SimpleHoughTest' haxe test.hxml` | PASS | Verified on committed pass d9f707d9d0e3802f6ceb99418ef3cecbfd359734, including direct horizontal and vertical HoughLine2D.toRay2D coverage and SimpleHough compatibility. |
-| Step-required compile-only local CI | `VISION_CI_TARGETS='interp,js' VISION_CI_COMPILE_ONLY='1' VISION_CI_SKIP_INSTALL='1' haxe tests/ci/local-ci.hxml` | PASS | Verified on committed pass d9f707d9d0e3802f6ceb99418ef3cecbfd359734 with `Compile interp`, `Compile js`, and `Local CI completed successfully.` |
-| Post-5aa durable-state scan | VS Code `grep_search` over the touched packet/progress files for stale d9 latest-state anchors and pending-commit wording | PASS | No stale latest-state field still anchors the packet/progress set at d9f707d9d0e3802f6ceb99418ef3cecbfd359734 or describes 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as pending. |
-| Touched metadata diagnostics | VS Code `get_errors` on the touched markdown files in the iteration directory and agent-progress note | PASS | No errors found in the touched metadata scope after the current pass. |
+| `Foundation compatibility slice` | `VISION_TESTS=HoughStandardTest,SimpleHoughTest; haxe test.hxml` | `passed` | `Preserved the HoughLine2D.toRay2D fix and SimpleHough compatibility evidence from the step-1 review loop.` |
+| `Probabilistic segment slice` | `VISION_TESTS=HoughProbabilisticTest; haxe test.hxml` | `passed` | `Preserved the adjacent-parallel merge and edge-image-size review regressions in the step-3 packet history.` |
+| `Circle slice` | `VISION_TESTS=HoughCircleTest; haxe test.hxml` | `passed` | `Preserved the large-radius and no-edge review regressions in the step-5 packet history.` |
+| `Harris slice` | `VISION_TESTS=HarrisTest; haxe test.hxml` | `passed` | `Preserved the raw-response ordering, deterministic corner selection, and Vision wrapper coverage from steps 6 and 7.` |
+| `Final combined Hough/Harris closeout slice` | `VISION_TESTS=HoughStandardTest,HoughProbabilisticTest,HoughCircleTest,HarrisTest,SimpleHoughTest; haxe test.hxml` | `passed` | `42 tests in 42 methods passed on the approved final-step commit ba719e361b7601eb95364e5801e82cceb2fd981b.` |
+| `Final compile-only local CI` | `VISION_CI_TARGETS=interp,js VISION_CI_COMPILE_ONLY=1 VISION_CI_SKIP_INSTALL=1 haxe tests/ci/local-ci.hxml` | `passed` | `The interp/js compile-only slice passed on the approved final-step commit ba719e361b7601eb95364e5801e82cceb2fd981b.` |
 
 ## Review And Remediation
 
-| Round | Verdict | Findings addressed | Notes |
-|-------|---------|--------------------|-------|
-| 0 | PENDING IMPLEMENTATION | None yet | Waiting for the first delegated implementation pass |
-| 1 | CHANGES REQUESTED | RVW-001, RVW-002 | @Inspect accepted the placeholder Hough/Harris and Circle2D foundation scope but opened HoughLine2D conversion and stale packet/progress-state findings on committed pass cf66c470cd87e2445d43cc1fd885710b30a824c5. |
-| 1 follow-up | REMEDIATION COMMITTED | RVW-001 FIXED | d9f707d9d0e3802f6ceb99418ef3cecbfd359734 carries the HoughLine2D semantics fix, direct regression coverage, and the first packet refresh. |
-| 2 | CHANGES REQUESTED | RVW-002 | @Inspect confirmed RVW-001 on d9f707d9d0e3802f6ceb99418ef3cecbfd359734 but kept RVW-002 open because some committed-state packet/progress fields were still symbolic. |
-| 2 follow-up | REMEDIATION COMMITTED | RVW-002 PARTIALLY ADDRESSED | 5aa9a66676ea402e6b15e5d31660e89feefa84c5 carried the metadata-only packet refresh, but @Inspect later found that some durable current-state fields still anchored on d9f707d9d0e3802f6ceb99418ef3cecbfd359734 or pending wording. |
-| 3 | CHANGES REQUESTED | RVW-002 | @Inspect reviewed 38c18abbb3c6b9c38117c533588c15f23475e704..5aa9a66676ea402e6b15e5d31660e89feefa84c5 and kept RVW-002 open because the durable packet/progress state still described the committed metadata follow-up as pending or stale. |
-| 3 follow-up | REMEDIATION COMMITTED | RVW-002 FIXED | The current metadata-only response is committed and pushed; it refreshes durable packet/progress files to treat 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as the committed review anchor and keeps same-commit hash or push reporting out of the packet per HH-DEC-005. |
+| Step | Verdict | Findings addressed | Notes |
+|------|---------|--------------------|-------|
+| `Step 1 foundation` | `CHANGES REQUESTED -> APPROVED` | `RVW-001`, `RVW-002` | `Corrected HoughLine2D normal-angle conversion, then converged on the HH-DEC-005 packet convention so durable metadata stays anchored on an already-reviewed commit.` |
+| `Step 2 standard lines` | `APPROVED` | `none` | `The standard polar Hough accumulator and SimpleHough bridge passed focused line and compatibility coverage without follow-up findings.` |
+| `Step 3 probabilistic segments` | `CHANGES REQUESTED -> APPROVED` | `RVW-003`, `RVW-004` | `Restricted duplicate merging to near-colinear fragments with small along-line gaps and rejected mismatched custom edge-image dimensions in the Vision wrapper.` |
+| `Step 4 parity coverage` | `APPROVED` | `none` | `Weighted votes, theta bounds, point-set entry, and the explicit multi-scale omission were accepted as implemented.` |
+| `Step 5 circles` | `CHANGES REQUESTED -> APPROVED` | `RVW-005`, `RVW-006` | `Scaled perimeter sampling with radius and removed the grayscale-as-edge fallback so no-edge inputs now return no circles.` |
+| `Steps 6 and 7 Harris response/corners` | `APPROVED` | `none` | `The raw response map, deterministic corner extraction, and scored HarrisCorner2D wrapper shape were accepted without rework.` |
+| `Step 8 docs/tests/closeout` | `APPROVED` | `none` | `Docs, demos, suite registration, inventory ownership, and compatibility notes were approved with only non-blocking synthetic-demo residuals.` |
 
 ## Commits And Pushes
 
 | Commit | Branch | Push result | Notes |
 |--------|--------|-------------|-------|
-| cf66c470cd87e2445d43cc1fd885710b30a824c5 | feature/hough-harris-feature-detection | Created during the step 1 foundation pass | Initial step 1 foundation checkpoint. |
-| d9f707d9d0e3802f6ceb99418ef3cecbfd359734 | feature/hough-harris-feature-detection | Created and pushed as the first review follow-up | Carries the RVW-001 code fix, direct regression coverage, and the first packet refresh while preserving the unrelated .github/agents/Iterate.agent.md edit outside the commit scope. |
-| 5aa9a66676ea402e6b15e5d31660e89feefa84c5 | feature/hough-harris-feature-detection | Present on origin/feature/hough-harris-feature-detection during this pass | Metadata-only packet concretization commit that now serves as the committed review anchor for the current RVW-002 response. |
-
-The current RVW-002 response is also committed and pushed on the same branch, but HH-DEC-005 keeps its concrete hash and push result out of the same committed packet contents until a later refresh can record them after the fact.
+| `cf66c470cd87e2445d43cc1fd885710b30a824c5` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `feat(hough-harris): add step 1 foundation checkpoint` |
+| `d9f707d9d0e3802f6ceb99418ef3cecbfd359734` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `fix(hough-harris): address inspect review for step 1 foundation` |
+| `5aa9a66676ea402e6b15e5d31660e89feefa84c5` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `chore(iteration): concretize step 1 committed packet metadata` |
+| `5dbcf5db667bfe7c1494fc1e42de36e1734f7d74` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `chore(iteration): address RVW-002 packet state follow-up` |
+| `6ead9a7c4c4fb1e61f4d9e1f73bbb8b3fcc4f15f` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `docs(plans): close out approved step 1 bookkeeping` |
+| `017144f965192b3a8120bce90d35b2be71e321c9` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `feat(hough): add polar line accumulator and SimpleHough bridge` |
+| `cd9aaa180ec82df1c2368da631c232c84a54a8a6` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `docs(plans): close out approved step 2 and activate step 3` |
+| `5267869ea3a7e6721c397173fdfeb20f84395d5f` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `feat(vision): add probabilistic Hough line segment detection` |
+| `8ff088a8597ad0c47ce4f4a4043ef536553df16a` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `fix(vision): address inspect review for step 3 segments` |
+| `f00c53d848ed2f17874e8127f9c243a242c5c9ba` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `fix(vision): address inspect review for step 3 edge image size` |
+| `733a30ab2b2d64f70a2a5c04dd7107af6b4fd584` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `docs(plans): close out approved step 3` |
+| `1eb8c26caa0335a60106030c865764f6cbfb3185` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `test(hough): add step 4 parity coverage` |
+| `8607aae986307f1465b4325b2f7055f3df2ec6ce` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `docs(plans): close out approved step 4` |
+| `dd1084109a61edf39ea26386431b7814f5cfd0a1` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `feat(hough): add dedicated circle detector and wrapper` |
+| `2aeee29ce665bb73cdeeb00afcfb6cae263d61a6` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `fix(hough): address inspect review for step 5 circles` |
+| `688607c42ed1f2ebcb8ce1bc6cf1f1508a020f6a` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `docs(plans): close out approved step 5` |
+| `b4efeb52a710e5e6b845c7b7098c5cfc53e345d5` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `feat(harris): implement raw response computation` |
+| `ec3e6f57e0476fcc9a5fc3894cc6d433efb6bddd` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `docs(plans): close out approved Harris step 6` |
+| `093d99d222ee5cc6c18d5f5cb290848f7ba044e0` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `feat(harris): add corner extraction and Vision wrappers` |
+| `1cb52f1295a10ad91ee90f3e2b8f3d5638db90db` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `docs(plans): close out approved Harris step 7` |
+| `ba719e361b7601eb95364e5801e82cceb2fd981b` | `feature/hough-harris-feature-detection` | `published from @Inscribe` | `feat(vision): close out Hough/Harris docs and suites` |
+| `Committed via @Inscribe under HH-DEC-005 as the final queue-exhausted closeout bookkeeping pass` | `feature/hough-harris-feature-detection` | `intentionally reported out-of-band after push` | `docs(plans): finalize Hough/Harris queue-exhausted closeout` |
 
 ## Waivers, Exceptions, And Blockers
 
-- None recorded.
+- `HH-DEC-005` remains the accepted packet-state convention: committed iteration artifacts do not self-report their own same-commit hash or post-push transport results.
+- `HH-DEC-007` keeps multi-scale `srn` or `stn` Hough parity out of scope for this iteration; the omission is documented and tested as intentional.
+- The final-step review accepted the retained `GeneratedSuites.hx` compatibility registry and the single-`testFile` inventory schema with split `vision.Vision` wrapper ownership as repo-valid non-blocking shape.
+- Outstanding findings: none.
+- Blockers: none recorded.
 
 ## Final Workspace State
 
-- Git status summary: The selected-pass metadata changes are committed; only the pre-existing user edit in .github/agents/Iterate.agent.md remains uncommitted.
-- Diagnostics summary: The touched metadata files are clean after targeted diagnostics, and the latest committed Haxe verification remains the focused tests plus compile-only local CI on d9f707d9d0e3802f6ceb99418ef3cecbfd359734.
-- Remaining uncommitted files: .github/agents/Iterate.agent.md.
+- Git status summary: `After this final queue-exhausted closeout pass, only the unrelated pre-existing .github/agents/Iterate.agent.md user edit remains uncommitted; the realized-plan archive plus the packet, progress, and report refresh are included in this pass.`
+- Diagnostics summary: `The approved final-step docs, inventory, and packet slice is diagnostics-clean, and the final filtered suite plus interp/js compile-only validation both passed on ba719e361b7601eb95364e5801e82cceb2fd981b.`
+- Remaining uncommitted files: `.github/agents/Iterate.agent.md`
 
 ## User-Facing Closeout
 
-- Summary: The durable RVW-002 response is committed and pushed, the packet/progress set now treats 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as the committed review anchor, and the committed response no longer pretends to know its own same-commit hash or push result.
-- Next recommended action: Route the committed metadata-only response to @Inspect for re-review, then record the concrete response hash in a later packet refresh only if another commit-producing pass becomes necessary.
+- Summary: `The hough-harris-feature-detection iteration is complete. Vision now exposes standardized Hough lines, probabilistic segments, circles, and Harris response or corner APIs with focused authored coverage, the final docs or demos or inventory are reconciled, and the finished plan chain is stored under .github/realized/.`
+- Next recommended action: `None — the iteration queue is exhausted.`
