@@ -2,26 +2,26 @@
 
 ## Review Source
 
-- Source type: Incoming @Inspect committed approval review for the step 4 Hough API parity pass
-- Scope: .github/plans/hough-harris-feature-detection-4-hough-api-parity.md
-- Baseline: 733a30a21990e85e69a20a39b60f62d45d9e27d6..1eb8c2605bee09c0a00b6db18416d2e757bc1a1d
+- Source type: Incoming @Inspect approved re-review for the step 5 Hough circle follow-up
+- Scope: .github/plans/hough-harris-feature-detection-5-hough-circles.md
+- Baseline: 8607aaeb509dc29352db55be20d70eefb94f90e6..2aeee29a06368859b8d3d54c664b1b6004932efa
 - Reviewer: @Inspect
-- Reviewer notes: @Inspect found no new findings, agreed that the production Hough line path already satisfied the parity scope, accepted the committed parity coverage plus HH-DEC-007's explicit multi-scale omission, and left only non-blocking gaps around the intentional multi-scale omission and raw-intensity rather than Sobel-magnitude weighting.
-- Current remediation state: RVW-001 through RVW-004 remain closed. The approved step-4 review opened no new findings, accepted the committed coverage-only delta plus HH-DEC-007 for this scope, and does not require additional remediation before downstream curation.
+- Reviewer notes: @Inspect found no new findings, approved the large-radius sampling fix and the no-edge early-return behavior, and noted only non-blocking gaps around synthetic-only coverage and concentric-circle policy.
+- Current remediation state: RVW-001 through RVW-006 are closed for the active step-5 scope. The step is approved, and the remaining synthetic-only coverage and concentric-circle policy notes stay non-blocking.
 
 ## Review Checklist
 
 - [x] Plan intent reviewed
 - [ ] Verification claims checked
 - [ ] Repository conventions checked
-- [x] Shared package boundaries checked
+- [ ] Shared package boundaries checked
 - [ ] Naming and structure checked
 - [ ] Nesting and complexity checked
 - [x] Risks and regressions checked
 
 ## Findings
 
-Historical iteration findings are preserved below for continuity. The latest approved step-4 review keeps RVW-001 through RVW-004 closed, confirms that the production Hough line path already satisfied the parity scope, and opens no new findings.
+Historical iteration findings are preserved below for continuity. The latest approved step-5 re-review keeps RVW-001 through RVW-004 closed, marks RVW-005 and RVW-006 fixed, and records only non-blocking residual gaps around synthetic-only coverage and concentric-circle policy.
 
 | Finding ID | Severity | File | Concern | Required action | Evidence |
 |------------|----------|------|---------|-----------------|----------|
@@ -29,6 +29,8 @@ Historical iteration findings are preserved below for continuity. The latest app
 | RVW-002 | MAJOR | .github/iterations/hough-harris-feature-detection/run-ledger.md; .github/iterations/hough-harris-feature-detection/review-packet.md; .github/iterations/hough-harris-feature-detection/implementation-handoff.md; .github/iterations/hough-harris-feature-detection/commit-packet.md; .github/iterations/hough-harris-feature-detection/execution-report.md; .github/agent-progress/hough-harris-feature-detection.md | The metadata-only follow-up commit 5aa9a66676ea402e6b15e5d31660e89feefa84c5 did not update the durable packet/progress state to the current committed reality, so several fields still anchored the latest pass at d9f707d9d0e3802f6ceb99418ef3cecbfd359734 or described the follow-up as pending @Inscribe or not yet committed. | Refresh the durable packet/progress files to record 5aa9a66676ea402e6b15e5d31660e89feefa84c5 as the committed metadata follow-up, update latest-pass/comparison/workspace-status fields, and change next-agent/verdict text to the actual post-commit review state. | The earlier @Inspect re-review on 38c18abbb3c6b9c38117c533588c15f23475e704..5aa9a66676ea402e6b15e5d31660e89feefa84c5 opened the durable-state gap; the latest approved re-review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 accepted the response and HH-DEC-005 as sufficient resolution. |
 | RVW-003 | BLOCKER | src/vision/algorithms/HoughProbabilisticSegments.hx | `shouldMerge(...)` only checks similar theta/rho plus padded bounding-box overlap, so nearby parallel segments can be treated as duplicates; `mergeLine(...)` then chooses the farthest endpoints across both segments and synthesizes a diagonal that was not present in the source image. | Restrict duplicate merges to true colinear fragments with only small along-line gaps, and add a regression test that keeps adjacent parallel segments distinct. | The latest @Inspect review on cd9aaa1d159d1af6db164342876dd5db98584bd7..526786924edaa97df5f4f13fe93db24a47142d40 accepted the wrapper defaults and integer raster sampling for step 3, but opened RVW-003 after tracing the probabilistic duplicate-suppression path through `shouldMerge(...)` and `mergeLine(...)`. |
 | RVW-004 | MAJOR | src/vision/Vision.hx; src/vision/algorithms/Hough.hx | `Vision.houghLineSegmentDetection(...)` documents image-bounded output, but the custom `edgeImage` path discards the original image dimensions and clips segment results against `edgeImage.width/height`, so mismatched edge images can change the returned geometry instead of only contributing support pixels. | Either use the custom `edgeImage` only for support sampling while clipping and returning segments against `image.width/image.height`, or reject and document mismatched `edgeImage` sizes explicitly. | The latest @Inspect re-review on cd9aaa1d159d1af6db164342876dd5db98584bd7..8ff088abf6ee728e1a2b2c73f2b5ce39c61b0fa3 explicitly accepted the RVW-003 remediation, but found that the public step-3 wrapper still violates its documented image-bounded contract on the custom-`edgeImage` path. |
+| RVW-005 | BLOCKER | src/vision/algorithms/HoughCircles.hx | The perimeter-support acceptance math can never admit radii above 36 px because the required support threshold grows with `radius` while the perimeter sample budget remains capped by the fixed angular step. | Tie the acceptance threshold to the actual perimeter sample budget or increase sampling density with radius, and add a regression that exercises a radius above 36 px. | The incoming @Inspect review on 8607aaeb509dc29352db55be20d70eefb94f90e6..dd1084109a61edf39ea26386431b7814f5cfd0a1 traced the fixed-angle perimeter sampling path and found that it tops out at 36 support samples while the threshold continues scaling with `radius`, making larger radii unreachable. |
+| RVW-006 | MAJOR | src/vision/algorithms/HoughCircles.hx | When Canny yields no edges, `HoughCircles` falls back to grayscale-as-edge and then treats any nonzero pixel as an edge candidate, so arbitrary bright regions can vote as circles on nonempty no-edge images. | Keep the fallback constrained to real edge candidates or return no circles when there are no edges, and add a regression for a nonempty image that still has no edges. | The incoming @Inspect review on 8607aaeb509dc29352db55be20d70eefb94f90e6..dd1084109a61edf39ea26386431b7814f5cfd0a1 followed the no-edge fallback path and found that the subsequent voting logic treats any nonzero grayscale pixel as an edge, allowing bright non-edge regions to accumulate circle votes. |
 
 ## Dispositions
 
@@ -38,12 +40,14 @@ Historical iteration findings are preserved below for continuity. The latest app
 | RVW-002 | FIXED | @Implement | The latest approved @Inspect review on 38c18abbb3c6b9c38117c533588c15f23475e704..5dbcf5db667bfe7c1494fc1e42de36e1734f7d74 accepted the durable packet/progress refresh and HH-DEC-005's self-reference-safe packet convention as the committed resolution. | The step is approved; the remaining narrative wording residuals are non-blocking and do not reopen RVW-002. |
 | RVW-003 | FIXED | @Implement | The latest approved @Inspect re-review on cd9aaa1d159d1af6db164342876dd5db98584bd7..f00c53ddbc0437335eb0b27d2ec41f7ece6a442a found no new findings and kept the duplicate-merge tightening accepted for `HoughProbabilisticSegments`, including the stricter colinearity and along-line-gap checks plus the adjacent-parallel regression coverage. | No further action is required for RVW-003. |
 | RVW-004 | FIXED | @Implement | The latest approved @Inspect re-review on cd9aaa1d159d1af6db164342876dd5db98584bd7..f00c53ddbc0437335eb0b27d2ec41f7ece6a442a accepted the explicit same-size custom `edgeImage` contract on `Vision.houghLineSegmentDetection(...)` and found no remaining blocker on the custom-edge-image path. | No further action is required for RVW-004. The noted default Canny-path coverage and future support-map semantics gaps are non-blocking follow-ups and do not reopen this step. |
+| RVW-005 | FIXED | @Implement | The latest approved @Inspect re-review on 8607aaeb509dc29352db55be20d70eefb94f90e6..2aeee29a06368859b8d3d54c664b1b6004932efa accepted the large-radius perimeter-sampling fix and found no remaining blocker on support-threshold scaling for radii above 36 px. | No further action is required for RVW-005. The remaining synthetic-only coverage and concentric-circle policy gaps are non-blocking and do not reopen the step. |
+| RVW-006 | FIXED | @Implement | The latest approved @Inspect re-review on 8607aaeb509dc29352db55be20d70eefb94f90e6..2aeee29a06368859b8d3d54c664b1b6004932efa accepted the no-edge early-return behavior and found no remaining blocker on bright non-edge regions voting as circles. | No further action is required for RVW-006. The remaining synthetic-only coverage and concentric-circle policy gaps are non-blocking and do not reopen the step. |
 
 ## Approval Gate
 
 - Current verdict: APPROVED
 - Approval blockers: None
-- Next reviewer: @Index for downstream curation.
+- Next reviewer: @Index
 
 ## Review History
 
@@ -72,3 +76,7 @@ Historical iteration findings are preserved below for continuity. The latest app
 | Step 3 round 3 normalized | APPROVED | @Intake | Preserved RVW-003 and RVW-004 as FIXED, recorded that the approved step-3 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
 | Step 4 round 1 | APPROVED | @Inspect | Reviewed committed range 733a30a21990e85e69a20a39b60f62d45d9e27d6..1eb8c2605bee09c0a00b6db18416d2e757bc1a1d; found no new findings, agreed that the production Hough line path already satisfied the parity scope, accepted the committed parity coverage plus HH-DEC-007's explicit multi-scale omission, and noted only non-blocking gaps around the intentional multi-scale omission and raw-intensity rather than Sobel-magnitude weighting. |
 | Step 4 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 through RVW-004 as closed, recorded that the approved step-4 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
+| Step 5 round 1 | CHANGES REQUESTED | @Inspect | Reviewed committed range 8607aaeb509dc29352db55be20d70eefb94f90e6..dd1084109a61edf39ea26386431b7814f5cfd0a1; explicitly accepted detector isolation from the line path, but opened RVW-005 because the perimeter-support acceptance math cannot admit radii above 36 px under the fixed angular sampling budget and RVW-006 because the no-edge fallback lets non-edge bright regions vote as circles. |
+| Step 5 round 1 normalized | CHANGES REQUESTED | @Intake | Preserved RVW-005 and RVW-006 as OPEN, kept detector isolation from the line path explicitly accepted as a non-finding, and routed the step-5 circle follow-up back to @Implement for remediation before the next committed @Inspect pass. |
+| Step 5 round 2 | APPROVED | @Inspect | Reviewed committed range 8607aaeb509dc29352db55be20d70eefb94f90e6..2aeee29a06368859b8d3d54c664b1b6004932efa; found no new findings, approved the large-radius sampling fix and the no-edge early-return behavior, and noted only non-blocking gaps around synthetic-only coverage and concentric-circle policy. |
+| Step 5 round 2 normalized | APPROVED | @Intake | Preserved RVW-005 and RVW-006 as FIXED, recorded that the approved step-5 re-review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
