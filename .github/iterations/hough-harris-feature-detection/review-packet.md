@@ -2,17 +2,17 @@
 
 ## Review Source
 
-- Source type: Incoming @Inspect approved re-review for the step 5 Hough circle follow-up
-- Scope: .github/plans/hough-harris-feature-detection-5-hough-circles.md
-- Baseline: 8607aaeb509dc29352db55be20d70eefb94f90e6..2aeee29a06368859b8d3d54c664b1b6004932efa
+- Source type: Incoming @Inspect approved review for the step 6 Harris response pass
+- Scope: .github/plans/hough-harris-feature-detection-6-harris-response.md
+- Baseline: 688607c968589a1cb41135c918176a695d7c532f..b4efeb55bb7b208bed103e3565f3684ff467446d
 - Reviewer: @Inspect
-- Reviewer notes: @Inspect found no new findings, approved the large-radius sampling fix and the no-edge early-return behavior, and noted only non-blocking gaps around synthetic-only coverage and concentric-circle policy.
-- Current remediation state: RVW-001 through RVW-006 are closed for the active step-5 scope. The step is approved, and the remaining synthetic-only coverage and concentric-circle policy notes stay non-blocking.
+- Reviewer notes: @Inspect found no new findings, explicitly accepted border clamping, even `blockSize` values, and keeping normalization out of step 6, and noted only non-blocking synthetic-only coverage gaps.
+- Current remediation state: RVW-001 through RVW-006 remain closed for the active step-6 scope. The step is approved, and the remaining synthetic-only coverage gaps stay non-blocking.
 
 ## Review Checklist
 
 - [x] Plan intent reviewed
-- [ ] Verification claims checked
+- [x] Verification claims checked
 - [ ] Repository conventions checked
 - [ ] Shared package boundaries checked
 - [ ] Naming and structure checked
@@ -21,7 +21,7 @@
 
 ## Findings
 
-Historical iteration findings are preserved below for continuity. The latest approved step-5 re-review keeps RVW-001 through RVW-004 closed, marks RVW-005 and RVW-006 fixed, and records only non-blocking residual gaps around synthetic-only coverage and concentric-circle policy.
+Historical iteration findings are preserved below for continuity. The latest approved step-6 review opens no new findings, keeps RVW-001 through RVW-006 closed, records border clamping, even `blockSize` values, and keeping normalization out of step 6 as accepted non-findings, and leaves only synthetic-only coverage gaps as non-blocking residuals.
 
 | Finding ID | Severity | File | Concern | Required action | Evidence |
 |------------|----------|------|---------|-----------------|----------|
@@ -80,3 +80,5 @@ Historical iteration findings are preserved below for continuity. The latest app
 | Step 5 round 1 normalized | CHANGES REQUESTED | @Intake | Preserved RVW-005 and RVW-006 as OPEN, kept detector isolation from the line path explicitly accepted as a non-finding, and routed the step-5 circle follow-up back to @Implement for remediation before the next committed @Inspect pass. |
 | Step 5 round 2 | APPROVED | @Inspect | Reviewed committed range 8607aaeb509dc29352db55be20d70eefb94f90e6..2aeee29a06368859b8d3d54c664b1b6004932efa; found no new findings, approved the large-radius sampling fix and the no-edge early-return behavior, and noted only non-blocking gaps around synthetic-only coverage and concentric-circle policy. |
 | Step 5 round 2 normalized | APPROVED | @Intake | Preserved RVW-005 and RVW-006 as FIXED, recorded that the approved step-5 re-review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
+| Step 6 round 1 | APPROVED | @Inspect | Reviewed committed range 688607c968589a1cb41135c918176a695d7c532f..b4efeb55bb7b208bed103e3565f3684ff467446d; found no new findings, explicitly accepted border clamping, even `blockSize` values, and keeping normalization out of step 6, and noted only non-blocking synthetic-only coverage gaps. |
+| Step 6 round 1 normalized | APPROVED | @Intake | Preserved RVW-001 through RVW-006 as closed, recorded that the approved step-6 review opened no new findings, marked the approval gate APPROVED, and routed the packet to @Index for downstream curation. |
