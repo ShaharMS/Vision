@@ -2,6 +2,7 @@ package tests;
 
 import utest.Assert;
 import vision.algorithms.Harris;
+import vision.Vision;
 import vision.ds.Color;
 import vision.ds.HarrisCorner2D;
 import vision.ds.Image;
@@ -18,6 +19,17 @@ class HarrisTest extends utest.Test {
 	@:visionRequires("image_fixture")
 	function test_computeResponse__default() {
 		var response = Harris.computeResponse(new Image(3, 2, Color.BLACK));
+		Assert.equals(3, response.width);
+		Assert.equals(2, response.height);
+		Assert.equals(0.0, response.get(0, 0));
+	}
+
+	@:visionTestId("vision.Vision.harrisCornerResponse#default")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_harrisCornerResponse__default() {
+		var response = Vision.harrisCornerResponse(new Image(3, 2, Color.BLACK));
 		Assert.equals(3, response.width);
 		Assert.equals(2, response.height);
 		Assert.equals(0.0, response.get(0, 0));
@@ -61,6 +73,25 @@ class HarrisTest extends utest.Test {
 		options.maxCorners = 4;
 		var result = Harris.detectCorners(new Image(3, 3, Color.BLACK), options);
 		Assert.equals(0, result.length);
+	}
+
+	@:visionTestId("vision.Vision.harrisCorners#square-corners")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_harrisCorners__squareReturnsFourCorners() {
+		var options = new HarrisCornerOptions();
+		options.relativeThreshold = 0.15;
+		options.minimumDistance = 4;
+		options.maxCorners = 4;
+		options.borderMargin = 2;
+		var corners = Vision.harrisCorners(createCornerFixture(), options);
+		Assert.equals(4, corners.length);
+		assertSortedByStrength(corners);
+		assertContainsCornerNear(corners, 6, 6, 2.0);
+		assertContainsCornerNear(corners, 11, 6, 2.0);
+		assertContainsCornerNear(corners, 6, 14, 2.0);
+		assertContainsCornerNear(corners, 11, 14, 2.0);
 	}
 
 	@:visionTestId("vision.algorithms.Harris.detectCorners#square-corners")

@@ -1232,6 +1232,11 @@ class Vision {
 	/**
 		Uses a simple, partially recursive algorithm to detect line segments in an image.
 
+		This legacy image-space segment finder is separate from the newer Hough family:
+		use `vision.algorithms.Hough.detectLines(...)` for standard theta/rho lines and
+		`Vision.houghLineSegmentDetection(...)` for probabilistic Hough segments. `SimpleHough`
+		now remains only as a compatibility shim that converts standard parameter lines back to rays.
+
 		those lines can be partially incomplete, but they will be detected as lines.
 
 		@param image The image to be line detected.
@@ -1287,6 +1292,10 @@ class Vision {
 	/**
 		Detects bounded Hough line segments in an image.
 
+		This is the probabilistic Hough family member: it starts from the same standard
+		theta/rho candidate lines as `vision.algorithms.Hough.detectLines(...)`, then clips
+		supported runs back to bounded `Line2D` segments.
+
 		By default, this wrapper derives a Canny edge image before voting. Pass `edgeImage`
 		when you already have a reusable binary edge map and want to avoid recomputing it.
 		Custom edge maps must match `image.width` and `image.height`; mismatched inputs are rejected
@@ -1312,6 +1321,9 @@ class Vision {
 
 	/**
 		Detects circles in an image using the dedicated Hough circle path.
+
+		Circle voting is a separate Hough family member with its own center/radius search
+		space; it does not reuse the line accumulator or the probabilistic segment path.
 
 		The detector works from grayscale, denoised image content and applies a Canny-style
 		edge pass internally before voting for circle centers and radii.
@@ -1342,6 +1354,9 @@ class Vision {
 	/**
 		Computes the raw Harris corner-response map for an image.
 
+		This returns the raw score surface only. Use `harrisCorners(...)` when you want
+		thresholded, non-max-suppressed corner extraction on top of the same response map.
+
 		Use this wrapper when you want the raw `Matrix2D` response surface for custom
 		thresholding, visualization, or reusing the numeric map across multiple corner-selection
 		passes.
@@ -1357,6 +1372,9 @@ class Vision {
 
 	/**
 		Detects Harris corners in an image and preserves each corner score.
+
+		This is the extracted-corner layer on top of `harrisCornerResponse(...)`. Use the
+		raw response wrapper when you want to inspect or reuse the underlying score map.
 
 		Returned corners stay sorted from strongest to weakest response, then by image coordinates
 		to keep `maxCorners` truncation deterministic across runs. Reusing `HarrisCorner2D` keeps

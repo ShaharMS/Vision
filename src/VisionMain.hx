@@ -1,13 +1,16 @@
 package;
 
 import vision.formats.ImageIO;
-import vision.algorithms.SimpleHough;
+import vision.algorithms.Hough;
 import vision.ds.Matrix2D;
 import vision.ds.Color;
 import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Ray2D;
 import vision.ds.Kernel2D;
+import vision.ds.specifics.HarrisCornerOptions;
+import vision.ds.specifics.HoughCircleOptions;
+import vision.ds.specifics.HoughLineOptions;
 using vision.tools.ImageTools;
 
 #if js
@@ -295,14 +298,47 @@ using vision.tools.MathTools;
 			end = haxe.Timer.stamp();
 			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			var lines = SimpleHough.detectLines(orgImage.clone().cannyEdgeDetection(1, X5, 0.05, 0.16), 40);
-			var newI = orgImage.clone();
-			for (l in lines) {
-				newI.drawRay2D(l, 0x00FFD5);
-			}
-			printImage(newI);
+			var houghOptions = new HoughLineOptions();
+			houghOptions.voteThreshold = 40;
+			var edges = orgImage.clone().cannyEdgeDetection(1, X5, 0.05, 0.16);
+			var parameterLines = Hough.detectLines(edges, houghOptions);
+			printImage(Hough.mapLines(orgImage.clone(), parameterLines));
 			end = haxe.Timer.stamp();
-			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			trace("Standard Hough line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			var segments = Vision.houghLineSegmentDetection(orgImage.clone(), 20, 10, 2);
+			var segmentImage = orgImage.clone();
+			for (segment in segments) {
+				segmentImage.drawLine2D(segment, 0x00FFD5);
+			}
+			printImage(segmentImage);
+			end = haxe.Timer.stamp();
+			trace("Probabilistic Hough line segment detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			var circleFixture = new Image(80, 80, Color.BLACK);
+			circleFixture.fillCircle(40, 40, 16, Color.WHITE);
+			var circleOptions = new HoughCircleOptions();
+			circleOptions.minimumRadius = 12;
+			circleOptions.maximumRadius = 20;
+			circleOptions.centerThreshold = 8;
+			printImage(Vision.mapHoughCircles(circleFixture.clone(), Vision.houghCircleDetection(circleFixture.clone(), circleOptions)));
+			end = haxe.Timer.stamp();
+			trace("Hough circle detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			var cornerFixture = new Image(40, 40, Color.BLACK);
+			cornerFixture.fillRect(10, 10, 16, 16, Color.WHITE);
+			var cornerOptions = new HarrisCornerOptions();
+			cornerOptions.relativeThreshold = 0.15;
+			cornerOptions.minimumDistance = 4;
+			cornerOptions.maxCorners = 4;
+			cornerOptions.borderMargin = 2;
+			var cornerImage = cornerFixture.clone();
+			for (corner in Vision.harrisCorners(cornerFixture.clone(), cornerOptions)) {
+				cornerImage.drawCircle(Std.int(Math.round(corner.point.x)), Std.int(Math.round(corner.point.y)), 2, Color.CYAN);
+			}
+			printImage(cornerImage);
+			end = haxe.Timer.stamp();
+			trace("Harris corner detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().sobelEdgeDetection());
 			end = haxe.Timer.stamp();
@@ -423,15 +459,23 @@ using vision.tools.MathTools;
 			end = haxe.Timer.stamp();
 			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			var lines = SimpleHough.detectLines(image.clone().cannyEdgeDetection(1, X5, 0.05, 0.16), 100);
-			var newI = image.clone();
-			for (l in lines) {
-				newI.drawRay2D(l, 0x00FFD5);
-			}
-			printImage(image.clone().cannyEdgeDetection(1, X5, 0.05, 0.16));
-			printImage(newI);
+			var houghOptions = new HoughLineOptions();
+			houghOptions.voteThreshold = 100;
+			var edges = image.clone().cannyEdgeDetection(1, X5, 0.05, 0.16);
+			var parameterLines = Hough.detectLines(edges, houghOptions);
+			printImage(edges);
+			printImage(Hough.mapLines(image.clone(), parameterLines));
 			end = haxe.Timer.stamp();
-			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			trace("Standard Hough line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			start = haxe.Timer.stamp();
+			var segments = Vision.houghLineSegmentDetection(image.clone(), 80, 40, 4);
+			var segmentImage = image.clone();
+			for (segment in segments) {
+				segmentImage.drawLine2D(segment, 0x00FFD5);
+			}
+			printImage(segmentImage);
+			end = haxe.Timer.stamp();
+			trace("Probabilistic Hough line segment detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			
 		});
 		#end

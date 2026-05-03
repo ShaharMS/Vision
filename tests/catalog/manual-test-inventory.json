@@ -1,6 +1,6 @@
 {
         "sourceRoot":  "src/vision",
-        "generatedAt":  "2026-05-02T14:34:06",
+        "generatedAt":  "2026-05-03T07:26:04",
         "statusLegend":  {
                                                   "needs-migration":  "Module has either a promoted scaffold-derived suite or no authored suite yet and still needs manual semantic migration.",
                                                   "manual":  "Suite is fully owned and manually maintained in tests/src.",
@@ -656,16 +656,97 @@
                                         "vision.algorithms.SimpleHough":  {
                                                                                                                     "deferredMembers":  [
 
-                                                                                                                                                            ],
-                                                                                                                    "notes":  "Manual semantic suite authored under tests/src and maintained by hand.",
+                                                                                                                                                            "mapParameterLines"
+                                                                                                                                                    ],
+                                                                                                                    "notes":  "Manual semantic compatibility suite keeps the legacy ray-returning shim explicit while the standard theta/rho ownership lives in HoughStandardTest. Remaining deferredMembers are the parameter-line overlay helper intentionally excluded from separate member-level ownership in the final manual inventory.",
                                                                                                                     "status":  "manual",
                                                                                                                     "sourceFile":  "src/vision/algorithms/SimpleHough.hx",
                                                                                                                     "members":  [
+                                                                                                                                                    "detectParameterLines",
                                                                                                                                                     "detectLines",
                                                                                                                                                     "mapLines"
                                                                                                                                             ],
                                                                                                                     "testFile":  "tests/src/tests/SimpleHoughTest.hx"
                                                                                                             },
+                                        "vision.algorithms.Harris":  {
+                                                                                                             "deferredMembers":  [
+
+                                                                                                                                     ],
+                                                                                                             "notes":  "Manual semantic suite authored under tests/src and maintained by hand. The same suite covers both the raw response map and extracted-corner layers for the Harris detector.",
+                                                                                                             "status":  "manual",
+                                                                                                             "sourceFile":  "src/vision/algorithms/Harris.hx",
+                                                                                                             "members":  [
+                                                                                                                                     "createResponseMap",
+                                                                                                                                     "computeResponse",
+                                                                                                                                     "detectCorners",
+                                                                                                                                     "detectCornersFromResponse"
+                                                                                                                             ],
+                                                                                                             "testFile":  "tests/src/tests/HarrisTest.hx"
+                                                                                                     },
+                                        "vision.algorithms.Hough":  {
+                                                                                                            "deferredMembers":  [
+                                                                                                                                            "mapCircles",
+                                                                                                                                            "mapLines"
+                                                                                                                                    ],
+                                                                                                            "notes":  "Manual semantic suites authored under tests/src and maintained by hand. HoughStandardTest, HoughProbabilisticTest, and HoughCircleTest split direct ownership across standard lines, probabilistic segments, and circles. Remaining deferredMembers are drawing helpers intentionally excluded from direct member-level ownership because consuming suites assert detector geometry rather than raster overlays.",
+                                                                                                            "status":  "manual",
+                                                                                                            "sourceFile":  "src/vision/algorithms/Hough.hx",
+                                                                                                            "members":  [
+                                                                                                                                            "createAccumulator",
+                                                                                                                                            "detectLines",
+                                                                                                                                            "detectLinesFromPoints",
+                                                                                                                                            "detectLineSegments",
+                                                                                                                                            "detectCircles"
+                                                                                                                                    ],
+                                                                                                            "testFile":  "tests/src/tests/HoughStandardTest.hx"
+                                                                                                    },
+                                        "vision.algorithms.HoughProbabilisticSegments":  {
+                                                                                                                              "deferredMembers":  [
+                                                                                                                                                              "detect"
+                                                                                                                                                      ],
+                                                                                                                              "notes":  "Manual semantic suite directly owns the adjacent-parallel merge regression while the public detectLineSegments contract stays on vision.algorithms.Hough.",
+                                                                                                                              "status":  "manual",
+                                                                                                                              "sourceFile":  "src/vision/algorithms/HoughProbabilisticSegments.hx",
+                                                                                                                              "members":  [
+                                                                                                                                                              "mergeSegments"
+                                                                                                                                                      ],
+                                                                                                                              "testFile":  "tests/src/tests/HoughProbabilisticTest.hx"
+                                                                                                                      },
+                                        "vision.ds.Circle2D":  {
+                                                                                            "deferredMembers":  [
+                                                                                                                    "toString"
+                                                                                                            ],
+                                                                                            "notes":  "Manual semantic suite authored under tests/src and maintained by hand. The direct ownership surface covers the circle value object's constructor, copied state, and stable field values.",
+                                                                                            "status":  "manual",
+                                                                                            "sourceFile":  "src/vision/ds/Circle2D.hx",
+                                                                                            "members":  [
+                                                                                                                            "center",
+                                                                                                                            "radius",
+                                                                                                                            "votes",
+                                                                                                                            "new",
+                                                                                                                            "copy"
+                                                                                                                    ],
+                                                                                            "testFile":  "tests/src/tests/HoughCircleTest.hx"
+                                                                                    },
+                                        "vision.ds.HoughLine2D":  {
+                                                                                              "deferredMembers":  [
+                                                                                                                              "copy",
+                                                                                                                              "pointOnLine",
+                                                                                                                              "toString"
+                                                                                                                      ],
+                                                                                              "notes":  "Manual semantic suite authored under tests/src and maintained by hand. The direct ownership surface covers standard-Hough value state plus image-bounded and ray-based conversion semantics.",
+                                                                                              "status":  "manual",
+                                                                                              "sourceFile":  "src/vision/ds/HoughLine2D.hx",
+                                                                                              "members":  [
+                                                                                                                              "rho",
+                                                                                                                              "theta",
+                                                                                                                              "votes",
+                                                                                                                              "new",
+                                                                                                                              "toRay2D",
+                                                                                                                              "toLine2D"
+                                                                                                                      ],
+                                                                                              "testFile":  "tests/src/tests/HoughStandardTest.hx"
+                                                                                      },
                                         "vision.algorithms.Cramer":  {
                                                                                                           "deferredMembers":  [
 
@@ -808,6 +889,7 @@
                                                                                                                                     "nearestNeighborBlur",
                                                                                                                                     "medianBlur",
                                                                                                                                     "simpleLine2DDetection",
+                                                                                                                                    "mapHoughCircles",
                                                                                                                                     "sobelEdgeDiffOperator",
                                                                                                                                     "perwittEdgeDiffOperator",
                                                                                                                                     "robertEdgeDiffOperator",
@@ -819,7 +901,7 @@
                                                                                                                                     "kmeansPosterize",
                                                                                                                                     "kmeansGroupImageColors"
                                                                                                                             ],
-                                                                                    "notes":  "Manual semantic facade suite covers representative public compatibility and delegation invariants while the deeper algorithm expectations remain in the algorithm-specific suites. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module.",
+                                                                                    "notes":  "Manual semantic facade suite covers representative public compatibility and delegation invariants while the deeper algorithm expectations remain in the algorithm-specific suites. Hough and Harris wrapper ownership is split across VisionTest, HoughProbabilisticTest, HoughCircleTest, and HarrisTest. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module.",
                                                                                     "status":  "manual",
                                                                                     "sourceFile":  "src/vision/Vision.hx",
                                                                                     "members":  [
@@ -856,6 +938,10 @@
                                                                                                                     "gaussianBlur",
                                                                                                                     "medianBlur",
                                                                                                                     "simpleLine2DDetection",
+                                                                                                                    "houghLineSegmentDetection",
+                                                                                                                    "houghCircleDetection",
+                                                                                                                    "harrisCornerResponse",
+                                                                                                                    "harrisCorners",
                                                                                                                     "sobelEdgeDiffOperator",
                                                                                                                     "perwittEdgeDiffOperator",
                                                                                                                     "robertEdgeDiffOperator",

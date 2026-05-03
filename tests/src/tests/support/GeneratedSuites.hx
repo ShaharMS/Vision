@@ -20,7 +20,11 @@ class GeneratedSuites {
 		if (includeTest("FromTest")) runner.addCase(new FromTest());
 		if (includeTest("GaussJordanTest")) runner.addCase(new GaussJordanTest());
 		if (includeTest("GaussTest")) runner.addCase(new GaussTest());
+		if (includeTest("HarrisTest")) runner.addCase(new HarrisTest());
 		if (includeTest("HistogramTest")) runner.addCase(new HistogramTest());
+		if (includeTest("HoughCircleTest")) runner.addCase(new HoughCircleTest());
+		if (includeTest("HoughProbabilisticTest")) runner.addCase(new HoughProbabilisticTest());
+		if (includeTest("HoughStandardTest")) runner.addCase(new HoughStandardTest());
 		if (includeTest("ImageFormatTest")) runner.addCase(new ImageFormatTest());
 		if (includeTest("ImageHashingTest")) runner.addCase(new ImageHashingTest());
 		if (includeTest("ImageIOTest")) runner.addCase(new ImageIOTest());

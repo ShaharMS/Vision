@@ -14,6 +14,10 @@ import vision.ds.specifics.HoughLineOptions;
 @:access(vision.algorithms.SimpleHough)
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
+/**
+	Compatibility suite for the legacy ray-returning `SimpleHough` shim.
+	Standard theta/rho behavior lives in `HoughStandardTest`.
+**/
 class SimpleHoughTest extends utest.Test {
 	@:visionTestId("vision.algorithms.SimpleHough.detectLines#default")
 	@:visionMaturity("semantic")

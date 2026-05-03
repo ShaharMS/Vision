@@ -2,52 +2,58 @@
 
 ## Commit Intent
 
-- Pass type: Plan-bookkeeping closeout pass for approved step 7 Harris corners and API
-- Plan step: .github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md
-- Scope: Commit the approved step-7 review normalization, the step-8 activation updates in the durable packet and progress state, the step-7 completed and overview progress-table plan updates, the @Index timeline backfill entries, and this commit-packet refresh in one docs-only closeout commit.
-- Reason this is one commit: The user requested exactly one approved-step closeout bookkeeping pass, and the approval normalization, step-8 activation, and plan/progress updates are one coherent durable-state transition.
+- Pass type: Initial implementation pass for step 8 docs, tests, and closeout
+- Plan step: .github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md
+- Scope: Commit the final Hough/Harris closeout edits in `Vision.hx`, `VisionMain.hx`, `HarrisTest.hx`, `SimpleHoughTest.hx`, `GeneratedSuites.hx`, `tests/README.md`, and `manual-test-inventory.json`, plus the matching `implementation-handoff.md`, `timeline.md`, and this commit-packet refresh in one explicit plan-step implementation commit.
+- Reason this is one commit: The user requested exactly one initial implementation pass for the final step, and the public docs, demo surface, suite reconciliation, inventory refresh, and packet updates are one coherent closeout slice.
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| .github/agent-progress/hough-harris-feature-detection.md | Yes | Preserves the @Index durable progress note that records step 7 approval and routes the next loop to the step-8 closeout scope. |
-| .github/iterations/hough-harris-feature-detection/review-packet.md | Yes | Records the normalized approved step-7 review outcome so the durable packet matches the committed review result. |
-| .github/iterations/hough-harris-feature-detection/run-ledger.md | Yes | Activates step 8 as the new scope, updates the baseline and approved review anchor to 093d99d222ee5cc6c18d5f5cb290848f7ba044e0, and routes the next loop to @Implement. |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the @Inspect, @Intake, @Index, and @Inscribe approval-closeout transitions for recovery. |
-| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the selected inclusion boundary, gitflow decision, and self-reference-safe result notes for this approved step-7 closeout bookkeeping pass. |
-| .github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md | Yes | Marks the approved step 7 plan as completed. |
-| .github/plans/hough-harris-feature-detection-overview.md | Yes | Advances the overview progress table to show step 7 completed and step 8 active. |
+| src/vision/Vision.hx | Yes | Refreshes the public Hough/Harris wrapper docs so the standard, probabilistic, circle, and raw-versus-extracted Harris paths are explicit. |
+| src/VisionMain.hx | Yes | Replaces the legacy SimpleHough ray demo with standard/probabilistic/circle/Harris demo coverage for local inspection. |
+| tests/src/tests/HarrisTest.hx | Yes | Adds direct public `Vision.harrisCornerResponse(...)` and `Vision.harrisCorners(...)` coverage to the final closeout slice. |
+| tests/src/tests/SimpleHoughTest.hx | Yes | Makes the SimpleHough compatibility position explicit in the retained legacy shim suite. |
+| tests/src/tests/support/GeneratedSuites.hx | Yes | Keeps the retained compatibility registry aligned for the new Hough/Harris suites. |
+| tests/README.md | Yes | Documents the combined closeout suite filter and the SimpleHough/GeneratedSuites compatibility notes. |
+| tests/catalog/manual-test-inventory.json | Yes | Refreshes the final Hough/Harris direct-ownership inventory and Vision facade notes. |
+| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Yes | Preserves the step-8 implementation summary and verification record for review. |
+| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Records the step-8 implementation transition and this commit-producing pass. |
+| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the commit boundary, gitflow decision, and self-reference-safe result notes for this pass. |
+| .github/iterations/hough-harris-feature-detection/run-ledger.md | No | Orchestrator-owned update explicitly excluded from this implementation commit. |
 | .github/agents/Iterate.agent.md | No | Pre-existing unrelated user edit that must remain untouched and uncommitted. |
 
 ## Gitflow Decision
 
 - Starting branch: feature/hough-harris-feature-detection
 - Target branch: feature/hough-harris-feature-detection
-- Branch action: No branch change required because this approved step-7 closeout bookkeeping pass belongs on the existing dedicated feature branch for the iteration.
+- Branch action: No branch change required because this initial step-8 implementation pass belongs on the existing dedicated feature branch for the iteration.
 
 ## Commit Message
 
 ```text
-docs(plans): close out approved Harris step 7
+feat(vision): close out Hough/Harris docs and suites
 
-Record the approved step-7 review normalization, activate step 8
-in the durable packet and progress state, update the plan set, and
-preserve the unrelated Iterate.agent user edit outside the commit
-scope.
+Refresh the public Vision docs and demo surface, add direct
+Harris facade coverage, sync the retained GeneratedSuites
+compatibility registry, and update the manual inventory for the
+final Hough/Harris closeout while keeping the unrelated
+Iterate.agent edit and orchestrator-owned run-ledger update
+out of scope.
 
-Plan: .github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md
-Pass: plan-bookkeeping closeout
+Plan: .github/plans/hough-harris-feature-detection-8-docs-tests-and-closeout.md
+Pass: initial implementation
 ```
 
 ## Result
 
-- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the approved step-7 commit `093d99d222ee5cc6c18d5f5cb290848f7ba044e0` instead of self-reporting a same-commit hash per HH-DEC-005.
-- Committed review anchor: 093d99d222ee5cc6c18d5f5cb290848f7ba044e0
+- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the step-8 baseline `1cb52f1295a10ad91ee90f3e2b8f3d5638db90db` instead of self-reporting a same-commit hash per HH-DEC-005.
+- Committed review anchor: 1cb52f1295a10ad91ee90f3e2b8f3d5638db90db
 - Push result: Intentionally reported out-of-band after push because the committed packet cannot self-observe post-commit transport state.
-- Workspace status now: The selected step-7 closeout bookkeeping files are committed; only the unrelated `.github/agents/Iterate.agent.md` user edit remains uncommitted by design.
-- Remaining uncommitted files: .github/agents/Iterate.agent.md
-- Follow-up needed: Delegate the active step-8 docs/tests closeout plan to @Implement against baseline `093d99d222ee5cc6c18d5f5cb290848f7ba044e0`.
+- Workspace status now: The selected step-8 implementation files are committed; only the unrelated `.github/agents/Iterate.agent.md` user edit and the orchestrator-owned `.github/iterations/hough-harris-feature-detection/run-ledger.md` update remain uncommitted by design.
+- Remaining uncommitted files: .github/agents/Iterate.agent.md; .github/iterations/hough-harris-feature-detection/run-ledger.md
+- Follow-up needed: Route the committed step-8 implementation pass to @Inspect against baseline `1cb52f1295a10ad91ee90f3e2b8f3d5638db90db`.
 
 ## Commit History
 
@@ -72,4 +78,5 @@ Pass: plan-bookkeeping closeout
 | 17 | Committed via @Inscribe under HH-DEC-005 as the initial step-6 implementation pass | feature/hough-harris-feature-detection | Introduces the raw `Harris.computeResponse(...)` scoring core with luminance conversion, separable derivative kernels, box or Gaussian local-tensor accumulation, focused `HarrisTest` score-ordering coverage, and the matching handoff/timeline/commit-packet updates while preserving the unrelated `.github/agents/Iterate.agent.md` edit and excluding the orchestrator-owned run-ledger update |
 | 18 | Committed via @Inscribe under HH-DEC-005 as the approved step-6 closeout bookkeeping pass | feature/hough-harris-feature-detection | Records the approved step-6 review normalization, activates step 7 in the durable ledger and progress state, updates the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` user edit out of scope |
 | 19 | Committed via @Inscribe under HH-DEC-005 as the initial step-7 implementation pass | feature/hough-harris-feature-detection | Introduces deterministic Harris corner selection on top of the reviewed response map, adds documented `Vision` Harris wrappers plus focused corner-selection regressions, records HH-DEC-008, and keeps the unrelated `.github/agents/Iterate.agent.md` user edit plus the excluded orchestrator-owned run-ledger update out of scope |
-| 20 | Committed via @Inscribe under HH-DEC-005 as the approved step-7 closeout bookkeeping pass | feature/hough-harris-feature-detection | Records the approved step-7 review normalization, activates step 8 in the durable packet and progress state, updates the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` user edit out of scope |
+| 20 | 1cb52f1295a10ad91ee90f3e2b8f3d5638db90db | feature/hough-harris-feature-detection | Approved step-7 closeout bookkeeping pass that records the approved step-7 review normalization, activates step 8 in the durable packet and progress state, updates the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` user edit out of scope |
+| 21 | Committed via @Inscribe under HH-DEC-005 as the initial step-8 implementation pass | feature/hough-harris-feature-detection | Closes step 8 with public Hough/Harris doc refreshes, standard/probabilistic/circle/Harris demos, direct `Vision` Harris wrapper coverage, explicit `SimpleHoughTest` compatibility positioning, Hough/Harris `GeneratedSuites` sync, the final manual inventory ownership refresh, and preservation of the unrelated `.github/agents/Iterate.agent.md` user edit plus the excluded orchestrator-owned run-ledger update |
