@@ -2,42 +2,40 @@
 
 ## Current Pass
 
-- Pass type: Delegated CR follow-up implementation pass for step 5 Hough circles
+- Pass type: Delegated initial implementation pass for step 6 Harris response
 - Authoring agent: @Implement delegated
-- Plan step: .github/plans/hough-harris-feature-detection-5-hough-circles.md
+- Plan step: .github/plans/hough-harris-feature-detection-6-harris-response.md
 - Branch: feature/hough-harris-feature-detection
-- Baseline commit: 8607aaeb509dc29352db55be20d70eefb94f90e6
-- Latest committed review anchor: dd1084109a61edf39ea26386431b7814f5cfd0a1
-- Summary: Addressed RVW-005 and RVW-006 in `HoughCircles` by returning no circles when Canny produces no edge candidates and by scaling the sweep/perimeter sampling density with radius so larger circles can satisfy the existing perimeter-support check. Added focused regressions for a 40 px radius circle and a nonempty image with no edges.
+- Baseline commit: 688607c968589a1cb41135c918176a695d7c532f
+- Latest committed review anchor: 688607c968589a1cb41135c918176a695d7c532f
+- Summary: Implemented the raw Harris response core in `Harris.computeResponse(...)` using luminance conversion, separable derivative kernels for `Ix` and `Iy`, local structure-tensor accumulation over box or Gaussian windows, and raw `Matrix2D` Harris scores. Added focused score-ordering coverage that keeps a synthetic corner above edge interiors and flat regions under both default and Gaussian-window settings, while intentionally leaving corner extraction in step 7.
 
 ## Files Changed
 
 | Path | Intent | Verification impact |
 |------|--------|---------------------|
-| src/vision/algorithms/HoughCircles.hx | Remove the grayscale-as-edge fallback and scale perimeter sampling with radius for both support checks and sweep fallback votes. | Owns the RVW-005 and RVW-006 behavior that the focused `HoughCircleTest` regressions and compile-only local CI validate. |
-| tests/src/tests/HoughCircleTest.hx | Add regressions for a radius above 36 px and a nonempty image with no edges. | Falsifies the two open step-5 review findings directly. |
-| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Refresh the current-pass packet summary for the step-5 CR follow-up and preserve pass history. | Gives @Inspect the current remediation scope, evidence, and finding dispositions without relying on chat history. |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Append the step-5 CR follow-up transition. | Records the remediation transition for later recovery and review. |
+| src/vision/algorithms/Harris.hx | Replace the zeroed response placeholder with grayscale intensity sampling, separable derivative kernels, box or Gaussian local-tensor accumulation, and raw Harris score computation. | Owns the step-6 numerical core that the focused `HarrisTest` ordering checks and compile-only local CI validate. |
+| tests/src/tests/HarrisTest.hx | Add synthetic ordering coverage for corners versus edge interiors and flat regions, including a Gaussian-window option path. | Falsifies the selected step's core score-ordering requirements directly. |
+| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Refresh the current-pass packet summary for the step-6 Harris response implementation pass and preserve pass history. | Gives @Inspect the current implementation scope, evidence, and rationale without relying on chat history. |
+| .github/iterations/hough-harris-feature-detection/timeline.md | Append the step-6 implementation transition. | Records the initial Harris-response implementation pass for later recovery and review. |
 
 ## Verification
 
 | Check | Method | Result | Evidence |
 |-------|--------|--------|----------|
-| Focused Hough circle suite | PowerShell `$env:VISION_TESTS='HoughCircleTest'; haxe test.hxml` | PASS | All 7 focused `HoughCircleTest` methods passed, including the new large-radius and no-edge regressions plus the existing centered, `minimumDistance`, radius-bound, empty-image, and `Circle2D.copy()` coverage. |
+| Focused Harris suite | PowerShell `$env:VISION_TESTS='HarrisTest'; haxe test.hxml` | PASS | All 4 focused `HarrisTest` methods passed, including the new corner-versus-edge ordering checks for both default and Gaussian-window response computation plus the existing response-shape and placeholder `detectCorners(...)` coverage. |
 | Compile-only local CI | PowerShell `haxe tests/ci/local-ci.hxml` with `VISION_CI_TARGETS='interp,js'`, `VISION_CI_COMPILE_ONLY='1'`, and `VISION_CI_SKIP_INSTALL='1'` | PASS | The required compile-only `interp` and `js` local CI pass completed successfully. |
-| Touched-scope diagnostics | VS Code `get_errors` on the touched Hough circle implementation and test files | PASS | No diagnostics remain in `HoughCircles.hx` or `HoughCircleTest.hx`. |
+| Touched-scope diagnostics | VS Code `get_errors` on the touched Harris implementation and test files | PASS | No diagnostics remain in `Harris.hx` or `HarrisTest.hx`. |
 
 ## Review Responses
 
-| Finding ID | Disposition | Evidence | Notes |
-|------------|-------------|----------|-------|
-| RVW-005 | FIXED | `HoughCircles` now samples the circle perimeter at `max(72, ceil(2 * pi * radius))` positions for both the angle-sweep fallback and perimeter-support validation, and `test_detectCircles__detectsLargeRadiusAboveThirtySixPixels()` passes on a 40 px synthetic circle. | Larger radii are no longer blocked by the old fixed 72-angle sampling budget. |
-| RVW-006 | FIXED | `HoughCircles.detect(...)` now returns no circles when the Canny edge map is empty, and `test_detectCircles__returnsNoCirclesForNonEmptyImageWithoutEdges()` passes on a nonempty uniform image. | Bright grayscale content is no longer substituted as an edge map for circle voting. |
+No step-6 review findings are open yet. This pass intentionally keeps `detectCorners(...)` as a thin placeholder and does not add a normalization or visualization helper, because the selected step stops at the raw `Matrix2D` response surface and the new score-ordering tests already validate the numerical output directly.
 
 ## Risks And Follow-Ups
 
-- The circle detector is still primarily covered by synthetic fixtures. @Inspect should focus on whether the circumference-scaled sweep fallback remains acceptable on noisier natural images and whether the existing support threshold is still tuned well for very large radii.
-- `minimumDistance` suppression still works strictly from center distance after sorting by vote count. Concentric circles with different radii are not covered in this step and may need a separate policy if later review expects them.
+- The Harris response path is still covered primarily by synthetic fixtures. @Inspect should focus on whether the separable derivative/window math stays numerically reasonable on natural imagery and whether the clamped border handling is acceptable for the library's current conventions.
+- Even `blockSize` values intentionally use the same left-biased discrete window support as the separable convolution helper. @Inspect should confirm that this remains an acceptable OpenCV-like compromise for the current options surface, especially around the default `blockSize = 2` case.
+- `detectCorners(...)` still delegates through `computeResponse(...)` and returns an empty array by plan. Corner selection, thresholding, and spacing logic remain the next-step scope.
 - Preserve the unrelated user edit in .github/agents/Iterate.agent.md throughout the iteration.
 
 ## Pass History
@@ -55,3 +53,4 @@
 | 9 | Working tree (pending @Inscribe) | Adds focused `HoughStandardTest` parity coverage for weighted votes, theta bounds, and `detectLinesFromPoints(...)`, verifies that the existing Hough control path already satisfies the step-4 API-parity scope, records HH-DEC-007 to defer multi-scale `srn`/`stn`, reruns the focused suite twice, reruns compile-only `interp,js`, and confirms clean touched-scope diagnostics. |
 | 10 | dd1084109a61edf39ea26386431b7814f5cfd0a1 | Adds the dedicated `HoughCircles` companion, wires `Hough.detectCircles(...)` plus documented `Vision` circle wrappers and overlays to `Circle2D`, adds synthetic circle fixtures and focused `HoughCircleTest` coverage, reruns the focused circle suite, reruns compile-only `interp,js`, and confirms clean touched-scope diagnostics while preserving the unrelated `.github/agents/Iterate.agent.md` user edit. |
 | 11 | Committed via @Inscribe under HH-DEC-005 | Addresses RVW-005 and RVW-006 by scaling Hough circle perimeter sampling with radius, returning no circles when Canny yields no edges, adding the focused large-radius and no-edge regressions, rerunning `HoughCircleTest`, rerunning compile-only `interp,js`, and confirming clean touched-scope diagnostics while preserving the unrelated `.github/agents/Iterate.agent.md` user edit. |
+| 12 | Committed via @Inscribe under HH-DEC-005 | Implements the step-6 Harris response core with grayscale intensity sampling, separable derivative kernels, box or Gaussian local-tensor accumulation, focused `HarrisTest` ordering coverage, the required compile-only `interp,js` local CI pass, and clean touched-scope diagnostics while preserving the unrelated `.github/agents/Iterate.agent.md` user edit and excluding the orchestrator-owned run-ledger update. |

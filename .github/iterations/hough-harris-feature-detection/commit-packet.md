@@ -2,52 +2,51 @@
 
 ## Commit Intent
 
-- Pass type: Approved-step closeout bookkeeping pass for step 5 Hough circles
-- Plan step: .github/plans/hough-harris-feature-detection-5-hough-circles.md
-- Scope: Commit the step-5 approval normalization in the durable packet/progress state, mark the step-5 plan completed, activate step 6 in the run ledger, preserve the @Index timeline and progress-note backfills, and refresh this commit-packet in one atomic history entry.
-- Reason this is one commit: The user requested exactly one post-approval bookkeeping commit, and the review-packet, run-ledger, timeline, progress-note, and plan updates together form the single docs-only closeout slice that transitions the iteration from approved step 5 to active step 6.
+- Pass type: Initial implementation pass for step 6 Harris response
+- Plan step: .github/plans/hough-harris-feature-detection-6-harris-response.md
+- Scope: Commit the raw Harris response implementation in `Harris.computeResponse(...)`, the focused `HarrisTest` score-ordering coverage, the step-6 implementation-handoff and timeline updates from @Implement, and this commit-packet refresh in one atomic implementation history entry.
+- Reason this is one commit: The user requested exactly one explicit step-6 implementation commit, and the Harris response core, focused tests, and matching packet updates together form the smallest reviewable slice for the raw-response step.
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| .github/iterations/hough-harris-feature-detection/review-packet.md | Yes | Preserves the normalized approved step-5 review outcome, closes RVW-005 and RVW-006 durably, and routes the packet to @Index. |
-| .github/iterations/hough-harris-feature-detection/run-ledger.md | Yes | Activates .github/plans/hough-harris-feature-detection-6-harris-response.md as the new scope, records 2aeee29a06368859b8d3d54c664b1b6004932efa as the baseline and latest approved review anchor, and routes the next loop to @Implement. |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the @Index approval and activation backfills plus the matching @Inscribe closeout-commit event for recovery. |
-| .github/agent-progress/hough-harris-feature-detection.md | Yes | Preserves the durable summary that step 5 is approved, step 6 is active, and the unrelated .github/agents/Iterate.agent.md edit remains out of scope. |
-| .github/plans/hough-harris-feature-detection-5-hough-circles.md | Yes | Marks the approved step-5 plan as completed. |
-| .github/plans/hough-harris-feature-detection-overview.md | Yes | Advances the overview progress table so step 5 is completed and step 6 is the next active scope. |
+| src/vision/algorithms/Harris.hx | Yes | Introduces the step-6 raw Harris response computation with luminance sampling, separable derivatives, local tensor accumulation, and raw score-map output. |
+| tests/src/tests/HarrisTest.hx | Yes | Adds focused step-6 score-ordering coverage for corners versus edge interiors and flat regions, including the Gaussian-window option path. |
+| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Yes | Preserves the current step-6 implementation summary, verification evidence, and committed pass-history wording for @Inspect recovery. |
+| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the @Implement step-6 transition and the matching @Inscribe commit event for recovery. |
 | .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the selected inclusion boundary, gitflow decision, and self-reference-safe result notes for this approved-step closeout pass. |
+| .github/iterations/hough-harris-feature-detection/run-ledger.md | No | Orchestrator-owned activation update that the user explicitly excluded from this implementation commit. |
 | .github/agents/Iterate.agent.md | No | Pre-existing unrelated user edit that must remain untouched and uncommitted. |
 
 ## Gitflow Decision
 
 - Starting branch: feature/hough-harris-feature-detection
 - Target branch: feature/hough-harris-feature-detection
-- Branch action: No branch change required because this approved step-5 closeout bookkeeping pass belongs on the existing dedicated feature branch for the iteration.
+- Branch action: No branch change required because this explicit step-6 implementation pass belongs on the existing dedicated feature branch for the iteration.
 
 ## Commit Message
 
 ```text
-docs(plans): close out approved step 5
+feat(harris): implement raw response computation
 
-Record the approved step-5 Hough-circle outcome in the durable
-packet and progress state, mark the step-5 plan completed, and
-activate step 6 as the next implementation scope while
-preserving the unrelated Iterate.agent edit outside the commit.
+Implement the step-6 Harris response path with grayscale intensity
+sampling, separable derivative kernels, box or Gaussian local-tensor
+aggregation, and focused score-ordering regressions that keep
+synthetic corners above edge interiors and flat regions.
 
-Plan: .github/plans/hough-harris-feature-detection-5-hough-circles.md
-Pass: plan-bookkeeping closeout
+Plan: .github/plans/hough-harris-feature-detection-6-harris-response.md
+Pass: initial implementation
 ```
 
 ## Result
 
-- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the approved step-5 review-follow-up commit `2aeee29a06368859b8d3d54c664b1b6004932efa` instead of self-reporting a same-commit hash per HH-DEC-005.
-- Committed review anchor: 2aeee29a06368859b8d3d54c664b1b6004932efa
+- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the approved step-5 closeout commit `688607c968589a1cb41135c918176a695d7c532f` instead of self-reporting a same-commit hash per HH-DEC-005.
+- Committed review anchor: 688607c968589a1cb41135c918176a695d7c532f
 - Push result: Intentionally reported out-of-band after push because the committed packet cannot self-observe post-commit transport state.
-- Workspace status now: The selected approved-step closeout files are committed; only the unrelated `.github/agents/Iterate.agent.md` user edit remains uncommitted by design.
-- Remaining uncommitted files: .github/agents/Iterate.agent.md
-- Follow-up needed: Start the step-6 implementation loop from the approved step-5 anchor `2aeee29a06368859b8d3d54c664b1b6004932efa` while preserving the excluded user edit out of scope.
+- Workspace status now: The selected step-6 implementation files are committed; the unrelated `.github/agents/Iterate.agent.md` user edit and the excluded orchestrator-owned `.github/iterations/hough-harris-feature-detection/run-ledger.md` update remain uncommitted by design.
+- Remaining uncommitted files: .github/agents/Iterate.agent.md; .github/iterations/hough-harris-feature-detection/run-ledger.md
+- Follow-up needed: Route the committed step-6 implementation pass to @Inspect against baseline commit `688607c968589a1cb41135c918176a695d7c532f` while preserving the excluded user and orchestrator-owned edits out of scope.
 
 ## Commit History
 
@@ -69,3 +68,4 @@ Pass: plan-bookkeeping closeout
 | 14 | dd1084109a61edf39ea26386431b7814f5cfd0a1 | feature/hough-harris-feature-detection | Initial step-5 implementation pass that introduced the dedicated `HoughCircles` companion, routed `Hough.detectCircles(...)` plus the documented `Vision` circle wrappers through `Circle2D`, added synthetic circle fixtures and focused `HoughCircleTest` coverage, refreshed the implementation handoff plus timeline, and kept the unrelated `.github/agents/Iterate.agent.md` edit plus the excluded run-ledger update out of scope |
 | 15 | Committed via @Inscribe under HH-DEC-005 as the RVW-005 and RVW-006 step-5 review follow-up | feature/hough-harris-feature-detection | Scales Hough circle perimeter sampling with radius, removes the grayscale-as-edge fallback when no edges exist, adds the focused large-radius and nonempty-no-edge regressions, refreshes the implementation handoff plus timeline/commit-packet state, and keeps the unrelated `.github/agents/Iterate.agent.md` edit plus the excluded review-packet and run-ledger updates out of scope |
 | 16 | Committed via @Inscribe under HH-DEC-005 as the approved step-5 closeout bookkeeping pass | feature/hough-harris-feature-detection | Records the approved step-5 review normalization, activates step 6 in the durable packet and progress state, updates the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` edit out of scope |
+| 17 | Committed via @Inscribe under HH-DEC-005 as the initial step-6 implementation pass | feature/hough-harris-feature-detection | Introduces the raw `Harris.computeResponse(...)` scoring core with luminance conversion, separable derivative kernels, box or Gaussian local-tensor accumulation, focused `HarrisTest` score-ordering coverage, and the matching handoff/timeline/commit-packet updates while preserving the unrelated `.github/agents/Iterate.agent.md` edit and excluding the orchestrator-owned run-ledger update |
