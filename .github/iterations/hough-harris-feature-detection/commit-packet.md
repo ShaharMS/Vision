@@ -2,53 +2,55 @@
 
 ## Commit Intent
 
-- Pass type: Approved step 6 plan-bookkeeping closeout pass
-- Plan step: .github/plans/hough-harris-feature-detection-6-harris-response.md
-- Scope: Commit the step-6 approval-normalized `review-packet.md`, the `run-ledger.md` and progress-note activation of step 7, the `timeline.md` approval and activation backfill entries, the step-6 plan completion plus overview progress update, and this commit-packet refresh in one docs-only closeout history entry.
-- Reason this is one commit: The user requested exactly one approved-step closeout commit, and the approval normalization, step-7 activation, and plan/progress bookkeeping form a single durable state transition for the iteration.
+- Pass type: Initial implementation pass for step 7 Harris corners and API
+- Plan step: .github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md
+- Scope: Commit the step-7 Harris corner extraction code and tests in `Harris.hx`, `HarrisCorners.hx`, `Vision.hx`, and `HarrisTest.hx`, the HH-DEC-008 public output-shape decision entry, the refreshed implementation handoff plus timeline entries from @Implement, and this commit-packet refresh in one implementation commit.
+- Reason this is one commit: The user requested exactly one explicit plan-step commit for the initial step-7 implementation pass, and the Harris corner algorithm, public wrapper surface, focused regression coverage, and durable packet updates form one coherent feature slice.
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| .github/iterations/hough-harris-feature-detection/review-packet.md | Yes | Records the approved step-6 review verdict, accepted non-findings, and normalization history. |
-| .github/iterations/hough-harris-feature-detection/run-ledger.md | Yes | Activates step 7 and updates the baseline, review anchor, next action, and resume instructions. |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the step-6 approval, normalization, @Index closeout backfill, step-7 activation, and the matching @Inscribe closeout commit event. |
-| .github/agent-progress/hough-harris-feature-detection.md | Yes | Refreshes the durable resume note to the approved step-6 outcome and step-7 active scope. |
-| .github/plans/hough-harris-feature-detection-6-harris-response.md | Yes | Marks the approved step-6 plan as completed. |
-| .github/plans/hough-harris-feature-detection-overview.md | Yes | Advances the overview progress table from step 6 next to step 7 next. |
-| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the selected inclusion boundary, gitflow decision, and self-reference-safe result notes for this approved-step closeout pass. |
-| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | No | The current handoff already captures the committed step-6 implementation pass and does not change during approval closeout. |
+| src/vision/algorithms/Harris.hx | Yes | Routes `detectCorners(...)` through the reviewed response-map path and exposes `detectCornersFromResponse(...)` for direct response reuse. |
+| src/vision/algorithms/HarrisCorners.hx | Yes | Adds deterministic Harris corner selection with thresholding, 3x3 non-max suppression, border exclusion, distance filtering, and `maxCorners`. |
+| src/vision/Vision.hx | Yes | Exposes the documented public `harrisCornerResponse(...)` and `harrisCorners(...)` wrappers. |
+| tests/src/tests/HarrisTest.hx | Yes | Adds the focused square-corner, `minimumDistance`, and `maxCorners` regressions for the new corner-selection surface. |
+| .github/iterations/hough-harris-feature-detection/decision-log.md | Yes | Records HH-DEC-008 so the scored-corner public output shape is durable for later work. |
+| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Yes | Preserves the current step-7 implementation summary, verification evidence, and risks for @Inspect. |
+| .github/iterations/hough-harris-feature-detection/timeline.md | Yes | Preserves the @Implement step-7 transition and the matching @Inscribe commit event for recovery. |
+| .github/iterations/hough-harris-feature-detection/commit-packet.md | Yes | Records the selected inclusion boundary, gitflow decision, and self-reference-safe result notes for this initial step-7 implementation pass. |
+| .github/iterations/hough-harris-feature-detection/run-ledger.md | No | Orchestrator-owned step-7 activation update that the user explicitly excluded from this commit. |
 | .github/agents/Iterate.agent.md | No | Pre-existing unrelated user edit that must remain untouched and uncommitted. |
 
 ## Gitflow Decision
 
 - Starting branch: feature/hough-harris-feature-detection
 - Target branch: feature/hough-harris-feature-detection
-- Branch action: No branch change required because this approved-step closeout pass belongs on the existing dedicated feature branch for the iteration.
+- Branch action: No branch change required because this initial step-7 implementation pass belongs on the existing dedicated feature branch for the iteration.
 
 ## Commit Message
 
 ```text
-docs(plans): close out approved Harris step 6
+feat(harris): add corner extraction and Vision wrappers
 
-Record the approved step-6 Harris response review in the durable packet,
-mark the step plan completed, activate step 7 in the ledger and
-progress note, and preserve the unrelated Iterate.agent user edit
-outside the commit scope.
+Implement deterministic Harris corner extraction on top of the
+reviewed response map, expose the public Vision Harris wrappers,
+add focused corner-selection regressions, record HH-DEC-008, and
+preserve the unrelated Iterate.agent user edit plus the excluded
+orchestrator-owned run-ledger update outside the commit scope.
 
-Plan: .github/plans/hough-harris-feature-detection-6-harris-response.md
-Pass: plan-bookkeeping closeout
+Plan: .github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md
+Pass: initial implementation
 ```
 
 ## Result
 
-- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the approved step-6 review anchor `b4efeb55bb7b208bed103e3565f3684ff467446d` instead of self-reporting a same-commit hash per HH-DEC-005.
-- Committed review anchor: b4efeb55bb7b208bed103e3565f3684ff467446d
+- Commit hash: Intentionally reported from git history after this pass completes; the committed packet remains anchored on the step-7 baseline commit `ec3e6f565ce78527634dd5bebe23aebb44108a01` instead of self-reporting a same-commit hash per HH-DEC-005.
+- Committed review anchor: ec3e6f565ce78527634dd5bebe23aebb44108a01
 - Push result: Intentionally reported out-of-band after push because the committed packet cannot self-observe post-commit transport state.
-- Workspace status now: The selected step-6 closeout bookkeeping files are committed; only the unrelated `.github/agents/Iterate.agent.md` user edit remains uncommitted by design.
-- Remaining uncommitted files: .github/agents/Iterate.agent.md
-- Follow-up needed: Delegate .github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md to @Implement using the approved step-6 commit `b4efeb55bb7b208bed103e3565f3684ff467446d` as the new baseline.
+- Workspace status now: The selected step-7 implementation files are committed; only the unrelated `.github/agents/Iterate.agent.md` user edit and the excluded orchestrator-owned `run-ledger.md` update remain uncommitted by design.
+- Remaining uncommitted files: .github/agents/Iterate.agent.md; .github/iterations/hough-harris-feature-detection/run-ledger.md
+- Follow-up needed: Route the committed step-7 implementation pass to @Inspect for the first review against baseline `ec3e6f565ce78527634dd5bebe23aebb44108a01`.
 
 ## Commit History
 
@@ -72,3 +74,4 @@ Pass: plan-bookkeeping closeout
 | 16 | Committed via @Inscribe under HH-DEC-005 as the approved step-5 closeout bookkeeping pass | feature/hough-harris-feature-detection | Records the approved step-5 review normalization, activates step 6 in the durable packet and progress state, updates the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` edit out of scope |
 | 17 | Committed via @Inscribe under HH-DEC-005 as the initial step-6 implementation pass | feature/hough-harris-feature-detection | Introduces the raw `Harris.computeResponse(...)` scoring core with luminance conversion, separable derivative kernels, box or Gaussian local-tensor accumulation, focused `HarrisTest` score-ordering coverage, and the matching handoff/timeline/commit-packet updates while preserving the unrelated `.github/agents/Iterate.agent.md` edit and excluding the orchestrator-owned run-ledger update |
 | 18 | Committed via @Inscribe under HH-DEC-005 as the approved step-6 closeout bookkeeping pass | feature/hough-harris-feature-detection | Records the approved step-6 review normalization, activates step 7 in the durable ledger and progress state, updates the plan files, and keeps the unrelated `.github/agents/Iterate.agent.md` user edit out of scope |
+| 19 | Committed via @Inscribe under HH-DEC-005 as the initial step-7 implementation pass | feature/hough-harris-feature-detection | Introduces deterministic Harris corner selection on top of the reviewed response map, adds documented `Vision` Harris wrappers plus focused corner-selection regressions, records HH-DEC-008, and keeps the unrelated `.github/agents/Iterate.agent.md` user edit plus the excluded orchestrator-owned run-ledger update out of scope |

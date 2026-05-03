@@ -35,8 +35,10 @@ import vision.algorithms.Perwitt;
 import vision.algorithms.Sobel;
 import vision.ds.Kernel2D;
 import vision.ds.canny.CannyObject;
+import vision.algorithms.Harris;
 import vision.algorithms.Hough;
 import vision.ds.Circle2D;
+import vision.ds.HarrisCorner2D;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.gaussian.GaussianKernelSize;
 import vision.ds.Ray2D;
@@ -45,6 +47,8 @@ import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Color;
 import vision.ds.Image;
+import vision.ds.specifics.HarrisCornerOptions;
+import vision.ds.specifics.HarrisResponseOptions;
 import vision.ds.specifics.HoughCircleOptions;
 import vision.tools.MathTools;
 import vision.tools.MathTools.*;
@@ -1333,6 +1337,39 @@ class Vision {
 	**/
 	public static function mapHoughCircles(image:Image, circles:Array<Circle2D>, color:Color = Color.CYAN, centerColor:Color = Color.RED):Image {
 		return Hough.mapCircles(image, circles, color, centerColor);
+	}
+
+	/**
+		Computes the raw Harris corner-response map for an image.
+
+		Use this wrapper when you want the raw `Matrix2D` response surface for custom
+		thresholding, visualization, or reusing the numeric map across multiple corner-selection
+		passes.
+
+		@param image The source image to analyze.
+		@param options Optional Harris response settings such as `blockSize`, `apertureSize`, `k`, and `useGaussianWindow`.
+
+		@return The raw Harris response map.
+	**/
+	public static function harrisCornerResponse(image:Image, ?options:HarrisResponseOptions):Matrix2D {
+		return Harris.computeResponse(image, options);
+	}
+
+	/**
+		Detects Harris corners in an image and preserves each corner score.
+
+		Returned corners stay sorted from strongest to weakest response, then by image coordinates
+		to keep `maxCorners` truncation deterministic across runs. Reusing `HarrisCorner2D` keeps
+		the response strength available for later ranking or descriptor seeding while still letting
+		callers mark `corner.point` directly with image drawing helpers such as `image.drawCircle(...)`.
+
+		@param image The source image to analyze.
+		@param options Optional corner-detection controls such as `relativeThreshold`, `minimumDistance`, `maxCorners`, and `borderMargin`.
+
+		@return The detected Harris corners.
+	**/
+	public static function harrisCorners(image:Image, ?options:HarrisCornerOptions):Array<HarrisCorner2D> {
+		return Harris.detectCorners(image, options);
 	}
 
 	/**

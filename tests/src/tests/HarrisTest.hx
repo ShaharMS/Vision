@@ -3,6 +3,7 @@ package tests;
 import utest.Assert;
 import vision.algorithms.Harris;
 import vision.ds.Color;
+import vision.ds.HarrisCorner2D;
 import vision.ds.Image;
 import vision.ds.Matrix2D;
 import vision.ds.specifics.HarrisCornerOptions;
@@ -62,6 +63,61 @@ class HarrisTest extends utest.Test {
 		Assert.equals(0, result.length);
 	}
 
+	@:visionTestId("vision.algorithms.Harris.detectCorners#square-corners")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	@:visionRequires("image_fixture")
+	function test_detectCorners__squareReturnsFourCorners() {
+		var options = new HarrisCornerOptions();
+		options.relativeThreshold = 0.15;
+		options.minimumDistance = 4;
+		options.maxCorners = 4;
+		options.borderMargin = 2;
+		var corners = Harris.detectCorners(createCornerFixture(), options);
+		Assert.equals(4, corners.length);
+		assertSortedByStrength(corners);
+		assertContainsCornerNear(corners, 6, 6, 2.0);
+		assertContainsCornerNear(corners, 11, 6, 2.0);
+		assertContainsCornerNear(corners, 6, 14, 2.0);
+		assertContainsCornerNear(corners, 11, 14, 2.0);
+	}
+
+	@:visionTestId("vision.algorithms.Harris.detectCornersFromResponse#minimum-distance")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_detectCornersFromResponse__minimumDistanceKeepsStrongestPeak() {
+		var response = createResponseFixture(12, 12, [
+			{x: 3, y: 3, value: 12.0},
+			{x: 5, y: 3, value: 10.0},
+			{x: 8, y: 8, value: 8.0}
+		]);
+		var options = new HarrisCornerOptions();
+		options.relativeThreshold = 0;
+		options.minimumDistance = 3;
+		var corners = Harris.detectCornersFromResponse(response, options);
+		Assert.equals(2, corners.length);
+		assertCorner(corners[0], 3, 3, 12.0);
+		assertCorner(corners[1], 8, 8, 8.0);
+	}
+
+	@:visionTestId("vision.algorithms.Harris.detectCornersFromResponse#max-corners")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_detectCornersFromResponse__maxCornersKeepsStrongestResponses() {
+		var response = createResponseFixture(12, 12, [
+			{x: 7, y: 2, value: 12.0},
+			{x: 2, y: 7, value: 10.0},
+			{x: 2, y: 2, value: 9.0}
+		]);
+		var options = new HarrisCornerOptions();
+		options.relativeThreshold = 0;
+		options.maxCorners = 2;
+		var corners = Harris.detectCornersFromResponse(response, options);
+		Assert.equals(2, corners.length);
+		assertCorner(corners[0], 7, 2, 12.0);
+		assertCorner(corners[1], 2, 7, 10.0);
+	}
+
 	function createCornerFixture():Image {
 		var image = new Image(18, 18, Color.BLACK);
 		for (y in 6...15) {
@@ -79,5 +135,42 @@ class HarrisTest extends utest.Test {
 			}
 		}
 		return maximum;
+	}
+
+	function createResponseFixture(width:Int, height:Int, peaks:Array<{x:Int, y:Int, value:Float}>):Matrix2D {
+		var response = Harris.createResponseMap(width, height);
+		for (peak in peaks) response.set(peak.x, peak.y, peak.value);
+		return response;
+	}
+
+	function assertCorner(corner:HarrisCorner2D, expectedX:Int, expectedY:Int, expectedScore:Float):Void {
+		Assert.equals(expectedX, Std.int(corner.point.x));
+		Assert.equals(expectedY, Std.int(corner.point.y));
+		Assert.equals(expectedScore, corner.score);
+	}
+
+	function assertContainsCornerNear(corners:Array<HarrisCorner2D>, expectedX:Int, expectedY:Int, maximumDistance:Float):Void {
+		for (corner in corners) {
+			var deltaX = corner.point.x - expectedX;
+			var deltaY = corner.point.y - expectedY;
+			if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= maximumDistance) return;
+		}
+		Assert.fail('Expected a detected corner near ($expectedX, $expectedY).');
+	}
+
+	function assertSortedByStrength(corners:Array<HarrisCorner2D>):Void {
+		for (index in 1...corners.length) {
+			var previous = corners[index - 1];
+			var current = corners[index];
+			if (previous.score > current.score) continue;
+			if (previous.score == current.score && isCoordinateOrdered(previous, current)) continue;
+			Assert.fail('Expected corners to be ordered deterministically by score then coordinates.');
+		}
+	}
+
+	function isCoordinateOrdered(left:HarrisCorner2D, right:HarrisCorner2D):Bool {
+		if (left.point.y < right.point.y) return true;
+		if (left.point.y > right.point.y) return false;
+		return left.point.x <= right.point.x;
 	}
 }

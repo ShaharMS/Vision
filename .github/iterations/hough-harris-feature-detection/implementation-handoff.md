@@ -2,40 +2,43 @@
 
 ## Current Pass
 
-- Pass type: Delegated initial implementation pass for step 6 Harris response
+- Pass type: Delegated initial implementation pass for step 7 Harris corners and API
 - Authoring agent: @Implement delegated
-- Plan step: .github/plans/hough-harris-feature-detection-6-harris-response.md
+- Plan step: .github/plans/hough-harris-feature-detection-7-harris-corners-and-api.md
 - Branch: feature/hough-harris-feature-detection
-- Baseline commit: 688607c968589a1cb41135c918176a695d7c532f
-- Latest committed review anchor: 688607c968589a1cb41135c918176a695d7c532f
-- Summary: Implemented the raw Harris response core in `Harris.computeResponse(...)` using luminance conversion, separable derivative kernels for `Ix` and `Iy`, local structure-tensor accumulation over box or Gaussian windows, and raw `Matrix2D` Harris scores. Added focused score-ordering coverage that keeps a synthetic corner above edge interiors and flat regions under both default and Gaussian-window settings, while intentionally leaving corner extraction in step 7.
+- Baseline commit: ec3e6f565ce78527634dd5bebe23aebb44108a01
+- Latest committed review anchor: ec3e6f565ce78527634dd5bebe23aebb44108a01
+- Summary: Implemented Harris corner extraction on top of the approved raw response path with relative thresholding, 3x3 non-max suppression, border exclusion, greedy `minimumDistance` filtering, `maxCorners`, and deterministic score-then-coordinate ordering. Added `Harris.detectCornersFromResponse(...)` for direct response-map reuse, exposed documented `Vision.harrisCornerResponse(...)` and `Vision.harrisCorners(...)` wrappers, extended focused Harris coverage for square corners plus synthetic spacing/limit cases, and recorded HH-DEC-008 to keep `HarrisCorner2D` public.
 
 ## Files Changed
 
 | Path | Intent | Verification impact |
 |------|--------|---------------------|
-| src/vision/algorithms/Harris.hx | Replace the zeroed response placeholder with grayscale intensity sampling, separable derivative kernels, box or Gaussian local-tensor accumulation, and raw Harris score computation. | Owns the step-6 numerical core that the focused `HarrisTest` ordering checks and compile-only local CI validate. |
-| tests/src/tests/HarrisTest.hx | Add synthetic ordering coverage for corners versus edge interiors and flat regions, including a Gaussian-window option path. | Falsifies the selected step's core score-ordering requirements directly. |
-| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Refresh the current-pass packet summary for the step-6 Harris response implementation pass and preserve pass history. | Gives @Inspect the current implementation scope, evidence, and rationale without relying on chat history. |
-| .github/iterations/hough-harris-feature-detection/timeline.md | Append the step-6 implementation transition. | Records the initial Harris-response implementation pass for later recovery and review. |
+| src/vision/algorithms/HarrisCorners.hx | Add deterministic Harris corner extraction over a precomputed response map with thresholding, 3x3 non-max suppression, border exclusion, greedy distance suppression, and `maxCorners`. | Owns the new corner-selection logic that the focused response-map and square-corner tests falsify directly. |
+| src/vision/algorithms/Harris.hx | Delegate `detectCorners(...)` through the approved raw response path and expose `detectCornersFromResponse(...)` for callers or tests that already have a response map. | Keeps the public algorithm entry point on top of the reviewed step-6 response computation without duplicating selection logic. |
+| src/vision/Vision.hx | Add documented public wrappers for Harris response maps and scored corner detection, including overlay guidance via `image.drawCircle(...)`. | Validates that the new Harris public surface compiles cleanly across the required `interp,js` CI slice. |
+| tests/src/tests/HarrisTest.hx | Add deterministic corner-selection coverage for square fixtures, `minimumDistance`, and `maxCorners` while keeping the existing response-map ordering and flat-image checks. | Falsifies the selected step's corner-selection requirements directly before the broader compile-only pass. |
+| .github/iterations/hough-harris-feature-detection/decision-log.md | Record HH-DEC-008 for the public scored-corner output shape. | Gives @Inspect a durable rationale for the `HarrisCorner2D` public choice without relying on chat context. |
+| .github/iterations/hough-harris-feature-detection/implementation-handoff.md | Refresh the current-pass packet summary for the step-7 Harris corner implementation pass and preserve pass history. | Gives @Inspect the current implementation scope, evidence, and rationale without relying on chat history. |
+| .github/iterations/hough-harris-feature-detection/timeline.md | Append the step-7 implementation transition. | Records the initial Harris-corner implementation pass for later recovery and review. |
 
 ## Verification
 
 | Check | Method | Result | Evidence |
 |-------|--------|--------|----------|
-| Focused Harris suite | PowerShell `$env:VISION_TESTS='HarrisTest'; haxe test.hxml` | PASS | All 4 focused `HarrisTest` methods passed, including the new corner-versus-edge ordering checks for both default and Gaussian-window response computation plus the existing response-shape and placeholder `detectCorners(...)` coverage. |
-| Compile-only local CI | PowerShell `haxe tests/ci/local-ci.hxml` with `VISION_CI_TARGETS='interp,js'`, `VISION_CI_COMPILE_ONLY='1'`, and `VISION_CI_SKIP_INSTALL='1'` | PASS | The required compile-only `interp` and `js` local CI pass completed successfully. |
-| Touched-scope diagnostics | VS Code `get_errors` on the touched Harris implementation and test files | PASS | No diagnostics remain in `Harris.hx` or `HarrisTest.hx`. |
+| Focused Harris suite | PowerShell `Remove-Item Env:VISION_TEST_CASES -ErrorAction SilentlyContinue; $env:VISION_TESTS='HarrisTest'; haxe test.hxml` | PASS | All 7 focused `HarrisTest` methods passed, including the new square-corner, `minimumDistance`, and `maxCorners` cases plus the existing response-ordering and flat-image coverage. |
+| Compile-only local CI | PowerShell `Remove-Item Env:VISION_TESTS -ErrorAction SilentlyContinue; Remove-Item Env:VISION_TEST_CASES -ErrorAction SilentlyContinue; $env:VISION_CI_TARGETS='interp,js'; $env:VISION_CI_COMPILE_ONLY='1'; $env:VISION_CI_SKIP_INSTALL='1'; haxe tests/ci/local-ci.hxml` | PASS | The required compile-only `interp` and `js` local CI pass completed successfully after adding the public Harris wrappers. |
+| Touched-scope diagnostics | VS Code `get_errors` on the touched Harris implementation, helper, public wrapper, and test files | PASS | No diagnostics remain in `Harris.hx`, `HarrisCorners.hx`, `Vision.hx`, or `HarrisTest.hx`. |
 
 ## Review Responses
 
-No step-6 review findings are open yet. This pass intentionally keeps `detectCorners(...)` as a thin placeholder and does not add a normalization or visualization helper, because the selected step stops at the raw `Matrix2D` response surface and the new score-ordering tests already validate the numerical output directly.
+No step-7 review findings are open yet. HH-DEC-008 makes the public output-shape decision explicit: `Vision.harrisCorners(...)` returns `Array<HarrisCorner2D>` instead of `Array<Point2D>` so callers can keep score-aware ranking and later descriptor-seeding value without losing the simple overlay path through `corner.point` and `image.drawCircle(...)`.
 
 ## Risks And Follow-Ups
 
-- The Harris response path is still covered primarily by synthetic fixtures. @Inspect should focus on whether the separable derivative/window math stays numerically reasonable on natural imagery and whether the clamped border handling is acceptable for the library's current conventions.
-- Even `blockSize` values intentionally use the same left-biased discrete window support as the separable convolution helper. @Inspect should confirm that this remains an acceptable OpenCV-like compromise for the current options surface, especially around the default `blockSize = 2` case.
-- `detectCorners(...)` still delegates through `computeResponse(...)` and returns an empty array by plan. Corner selection, thresholding, and spacing logic remain the next-step scope.
+- The corner-selection layer is still validated primarily with synthetic fixtures and a single square image. @Inspect should focus on whether the fixed 3x3 non-max neighborhood and relative-threshold default remain usable on noisier natural images.
+- `minimumDistance` suppression currently accepts corners at exactly the requested distance and uses a greedy strongest-first pass. @Inspect should confirm that this matches the intended OpenCV-like semantics for downstream callers.
+- The public shape now preserves scores via `HarrisCorner2D`; @Inspect should focus on whether keeping scored results public is the right long-term contract for later descriptor work or whether a second points-only convenience wrapper is warranted in a later step.
 - Preserve the unrelated user edit in .github/agents/Iterate.agent.md throughout the iteration.
 
 ## Pass History
@@ -54,3 +57,4 @@ No step-6 review findings are open yet. This pass intentionally keeps `detectCor
 | 10 | dd1084109a61edf39ea26386431b7814f5cfd0a1 | Adds the dedicated `HoughCircles` companion, wires `Hough.detectCircles(...)` plus documented `Vision` circle wrappers and overlays to `Circle2D`, adds synthetic circle fixtures and focused `HoughCircleTest` coverage, reruns the focused circle suite, reruns compile-only `interp,js`, and confirms clean touched-scope diagnostics while preserving the unrelated `.github/agents/Iterate.agent.md` user edit. |
 | 11 | Committed via @Inscribe under HH-DEC-005 | Addresses RVW-005 and RVW-006 by scaling Hough circle perimeter sampling with radius, returning no circles when Canny yields no edges, adding the focused large-radius and no-edge regressions, rerunning `HoughCircleTest`, rerunning compile-only `interp,js`, and confirming clean touched-scope diagnostics while preserving the unrelated `.github/agents/Iterate.agent.md` user edit. |
 | 12 | Committed via @Inscribe under HH-DEC-005 | Implements the step-6 Harris response core with grayscale intensity sampling, separable derivative kernels, box or Gaussian local-tensor accumulation, focused `HarrisTest` ordering coverage, the required compile-only `interp,js` local CI pass, and clean touched-scope diagnostics while preserving the unrelated `.github/agents/Iterate.agent.md` user edit and excluding the orchestrator-owned run-ledger update. |
+| 13 | Working tree (pending @Inscribe) | Implements step-7 Harris corner extraction with deterministic response-map selection, documented `Vision` Harris wrappers, focused square/distance/limit coverage, the required compile-only `interp,js` local CI pass, clean touched-scope diagnostics, and HH-DEC-008's public scored-corner decision while preserving the unrelated `.github/agents/Iterate.agent.md` user edit. |

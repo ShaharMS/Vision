@@ -30,8 +30,13 @@ class Harris {
 
 	public static function detectCorners(image:Image, ?options:HarrisCornerOptions):Array<HarrisCorner2D> {
 		var resolvedOptions = resolveCornerOptions(options);
-		computeResponse(image, resolvedOptions);
-		return [];
+		var response = computeResponse(image, resolvedOptions);
+		return detectCornersFromResponse(response, resolvedOptions);
+	}
+
+	public static function detectCornersFromResponse(response:Matrix2D, ?options:HarrisCornerOptions):Array<HarrisCorner2D> {
+		var resolvedOptions = resolveCornerOptions(options);
+		return HarrisCorners.detect(response, resolvedOptions);
 	}
 
 	static inline function resolveResponseOptions(?options:HarrisResponseOptions):HarrisResponseOptions {
