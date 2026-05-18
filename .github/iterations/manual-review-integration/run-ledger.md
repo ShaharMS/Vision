@@ -3,28 +3,28 @@
 ## Iteration
 
 - Slug: `manual-review-integration`
-- Status: `README-alignment follow-up ready for re-review`
+- Status: `iteration complete; queue exhausted`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
 
-- Plan overview: `.github/plans/manual-review-integration.md`
-- Active step: `.github/plans/manual-review-integration.md`
+- Plan overview: `.github/realized/manual-review-integration.md`
+- Active step: `.github/realized/manual-review-integration.md`
 - Iteration goal: `Capture the current manual CR in a durable ID-based manual-review file and update the agent workflow so manual reviews stay in the normal Iterate loop until resolved, rebutted, or waived.`
 
 ## Repo Baseline
 
 - Baseline commit: `335f39bcc395811550af568338118d9a1936cb8e`
 - Working branch: `feature/hough-harris-feature-detection`
-- Latest committed pass: `81fd5691f99cc93eb2c08b072119482aa0d3662f`
+- Latest committed pass: `e1c2dfcf5dcabf8da44181e7351bf4274fe6a1ea`
 - Comparison range: `335f39bcc395811550af568338118d9a1936cb8e..HEAD`
 
 ## Current Loop State
 
-- Next agent: `@Inspect`
-- Review round: `3`
-- Latest verification: `The initial workflow-only implementation pass committed as cda69c809a63d02609b696ee64737735388cb5bf, the first bookkeeping follow-up committed as 89548eadb9a7f329c2d26df90cceaf1be984a22c, the packet-anchor response committed as 81fd5691f99cc93eb2c08b072119482aa0d3662f, and the latest normalized review accepted the narrow metadata slice plus clean markdown diagnostics while challenging only the workflow contract conflict.`
-- Latest decision: `The core manual-review workflow change is accepted in principle, the latest already-committed packet anchor is now 81fd5691f99cc93eb2c08b072119482aa0d3662f, and MRI-DEC-003 now follows the clarified iteration README rule that lets the current response describe itself separately while the durable packet stays anchored on the latest already-committed pass.`
+- Next agent: `none`
+- Review round: `4`
+- Latest verification: `@Inspect approved 81fd5691f99cc93eb2c08b072119482aa0d3662f..e1c2dfcf5dcabf8da44181e7351bf4274fe6a1ea with no material findings after confirming the README-aligned latest-already-committed anchor convention resolves the earlier packet-state conflict and the touched markdown files remain diagnostics-clean.`
+- Latest decision: `The manual-review workflow integration is approved end to end, RVW-001 and RVW-002 are closed, the single-file plan now lives under .github/realized/, and the iteration is fully closed out on the feature branch.`
 
 ## Packet Links
 
@@ -39,10 +39,10 @@
 ## Open Items
 
 - Blockers: `none recorded`
-- Outstanding findings: `RVW-001, RVW-002`
-- Next action: `Route the README-alignment response to @Inspect for re-review with 81fd5691f99cc93eb2c08b072119482aa0d3662f retained as the latest already-committed packet anchor.`
+- Outstanding findings: `none`
+- Next action: `none`
 
 ## Resume Notes
 
-- Current context: `The initial workflow-only implementation pass is committed as cda69c809a63d02609b696ee64737735388cb5bf, the first bookkeeping-only follow-up is committed as 89548eadb9a7f329c2d26df90cceaf1be984a22c, the packet-anchor response is committed as 81fd5691f99cc93eb2c08b072119482aa0d3662f, and the remaining work is the current README-alignment response for RVW-001 plus RVW-002 before re-review.`
-- Recovery instructions: `Read this ledger first, then .github/plans/manual-review-integration.md, then review-packet.md for RVW-001 and RVW-002. Preserve the pre-existing dirty .github/agents/Iterate.agent.md edit, review-packet.md, the unrelated untracked Hough/Harris plan files, and cr.md outside the selected scope while reviewing the current metadata-only response under the clarified latest-already-committed anchor rule.`
+- Current context: `The manual-review integration workflow change is approved, the realized plan now lives at .github/realized/manual-review-integration.md, the final approved follow-up is 81fd5691f99cc93eb2c08b072119482aa0d3662f..e1c2dfcf5dcabf8da44181e7351bf4274fe6a1ea, and the iteration is fully closed out on feature/hough-harris-feature-detection.`
+- Recovery instructions: `No recovery work remains; keep the realized plan, manual-reviewes.md, and the iteration packet set as the durable completion record while preserving the unrelated local leftovers outside this finished scope.`

@@ -1,6 +1,6 @@
 # Plan: Manual Review Integration
 
-> **Status**: 🔄 In progress
+> **Status**: ✅ Completed
 > **Prerequisite**: None — this is a standalone workflow update.
 > **Next**: None — stop after the workflow and manual review capture are in place.
 
