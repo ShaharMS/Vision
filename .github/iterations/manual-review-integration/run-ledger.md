@@ -16,14 +16,15 @@
 
 - Baseline commit: `335f39bcc395811550af568338118d9a1936cb8e`
 - Working branch: `feature/hough-harris-feature-detection`
+- Latest committed pass: `89548eadb9a7f329c2d26df90cceaf1be984a22c`
 - Comparison range: `335f39bcc395811550af568338118d9a1936cb8e..HEAD`
 
 ## Current Loop State
 
-- Next agent: `@Inspect`
-- Review round: `1`
-- Latest verification: `The initial workflow-only implementation pass committed as cda69c809a63d02609b696ee64737735388cb5bf with clean markdown diagnostics on the touched workflow files, and this follow-up narrows the next review to durable iteration metadata only.`
-- Latest decision: `The core manual-review workflow change is accepted in principle, and the bookkeeping-only metadata follow-up is now ready for @Inspect to verify closure of RVW-001 and RVW-002.`
+- Next agent: `@Inscribe`
+- Review round: `2`
+- Latest verification: `The initial workflow-only implementation pass committed as cda69c809a63d02609b696ee64737735388cb5bf, the first bookkeeping follow-up committed as 89548eadb9a7f329c2d26df90cceaf1be984a22c, and the latest normalized review accepted the narrow metadata slice plus clean markdown diagnostics while leaving only the explicit latest-commit bookkeeping open.`
+- Latest decision: `The core manual-review workflow change is accepted in principle, RVW-001 now requires the ledger to carry the latest committed pass explicitly, and MRI-DEC-003 anchors the durable packet on bookkeeping follow-up commit 89548eadb9a7f329c2d26df90cceaf1be984a22c while the current response pass is described separately until a later refresh can record it concretely.`
 
 ## Packet Links
 
@@ -39,9 +40,9 @@
 
 - Blockers: `none recorded`
 - Outstanding findings: `RVW-001, RVW-002`
-- Next action: `Run @Inspect on the bookkeeping-only metadata delta, then let @Intake normalize the follow-up verdict.`
+- Next action: `Commit the current metadata-only response that records 89548eadb9a7f329c2d26df90cceaf1be984a22c as the latest committed pass, then route the follow-up to @Inspect for re-review.`
 
 ## Resume Notes
 
-- Current context: `The initial workflow-only implementation pass is committed as cda69c809a63d02609b696ee64737735388cb5bf on feature/hough-harris-feature-detection, the review is normalized, and the remaining work is a metadata-only follow-up for RVW-001 plus RVW-002 before re-review.`
-- Recovery instructions: `Read this ledger first, then .github/plans/manual-review-integration.md, then review-packet.md for RVW-001 and RVW-002. Preserve the pre-existing dirty .github/agents/Iterate.agent.md edit, review-packet.md, the unrelated untracked Hough/Harris plan files, and cr.md outside the selected scope while re-reviewing the bookkeeping-only follow-up.`
+- Current context: `The initial workflow-only implementation pass is committed as cda69c809a63d02609b696ee64737735388cb5bf, the first bookkeeping-only follow-up is committed as 89548eadb9a7f329c2d26df90cceaf1be984a22c, and the remaining work is the current metadata-only response for RVW-001 plus RVW-002 before re-review.`
+- Recovery instructions: `Read this ledger first, then .github/plans/manual-review-integration.md, then review-packet.md for RVW-001 and RVW-002. Preserve the pre-existing dirty .github/agents/Iterate.agent.md edit, review-packet.md, the unrelated untracked Hough/Harris plan files, and cr.md outside the selected scope while committing the current metadata-only response under MRI-DEC-003.`

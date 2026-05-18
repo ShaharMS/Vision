@@ -2,10 +2,10 @@
 
 ## Commit Intent
 
-- Pass type: `Review follow-up (bookkeeping-only)`
+- Pass type: `Review follow-up (metadata-only anchor)`
 - Plan step: `.github/plans/manual-review-integration.md`
-- Scope: `Reconcile the durable current-state and commit-bookkeeping files to the already-committed implementation pass cda69c809a63d02609b696ee64737735388cb5bf so RVW-001 and RVW-002 can be re-reviewed as a metadata-only follow-up.`
-- Reason this is one commit: `The selected files all repair the same review-only bookkeeping slice and should land together without reopening the workflow implementation scope.`
+- Scope: `Record 89548eadb9a7f329c2d26df90cceaf1be984a22c explicitly as the latest committed bookkeeping anchor across the durable packet files and adopt MRI-DEC-003 so the current response is described separately without self-reporting its own final hash or push result.`
+- Reason this is one commit: `The selected files all answer RVW-001 and RVW-002 in the same metadata-only bookkeeping slice and should land together without reopening the workflow implementation scope.`
 
 ## Candidate Files
 
@@ -13,7 +13,7 @@
 |------|---------|--------|
 | `.github/iterations/manual-review-integration/run-ledger.md` | `Yes` | `Move the durable current-state owner to the post-implementation, ready-for-re-review state cited by RVW-001.` |
 | `.github/iterations/manual-review-integration/commit-packet.md` | `Yes` | `Replace placeholder implementation bookkeeping with the actual committed pass details and lock the narrow review-follow-up scope.` |
-| `.github/iterations/manual-review-integration/implementation-handoff.md` | `Yes` | `Record the actual implementation commit in the durable pass history cited by RVW-002.` |
+| `.github/iterations/manual-review-integration/decision-log.md` | `Yes` | `Record MRI-DEC-003 as the self-reference-safe packet convention for the current metadata-only response.` |
 | `.github/iterations/manual-review-integration/timeline.md` | `Yes` | `Keep the append-only event trail aligned with the implementation commit, the normalized review, and this bookkeeping follow-up.` |
 | `.github/iterations/manual-review-integration/execution-report.md` | `Yes` | `Reflect that the workflow implementation is committed and the next loop is a bookkeeping-only re-review.` |
 | `.github/agent-progress/manual-review-integration.md` | `Yes` | `Align the resumable progress note to the post-implementation re-review state.` |
@@ -25,6 +25,8 @@
 | `cr.md` | `No` | `Source material only; preserve it outside the commit.` |
 | `.github/plans/hough-harris-feature-detection*.md` | `No` | `Unrelated untracked files in the working tree.` |
 
+The current response pass is metadata-only and follows `MRI-DEC-003`: the durable packet records the latest already-committed bookkeeping follow-up `89548eadb9a7f329c2d26df90cceaf1be984a22c` as its concrete anchor, while this response pass is described separately until a later refresh can record its hash and push result from git history.
+
 ## Gitflow Decision
 
 - Starting branch: `feature/hough-harris-feature-detection`
@@ -34,19 +36,20 @@
 ## Commit Message
 
 ```text
-docs(iteration): reconcile manual-review bookkeeping
+docs(iteration): record manual-review commit anchor
 ```
 
 ## Result
 
-- Reconciled implementation commit: `cda69c809a63d02609b696ee64737735388cb5bf`
-- Reconciled implementation push result: `Pushed successfully to origin/feature/hough-harris-feature-detection (335f39b -> cda69c8).`
-- Expected workspace status after this follow-up commit: `Retain only excluded files, including .github/agents/Iterate.agent.md, .github/iterations/manual-review-integration/review-packet.md, cr.md, and the unrelated .github/plans/hough-harris-feature-detection*.md files.`
-- Expected remaining uncommitted files after this follow-up commit: `.github/agents/Iterate.agent.md`, `.github/iterations/manual-review-integration/review-packet.md`, `cr.md`, and the unrelated .github/plans/hough-harris-feature-detection*.md files.`
-- Next reviewer after this follow-up commit: `@Inspect`
+- Latest committed bookkeeping pass: `89548eadb9a7f329c2d26df90cceaf1be984a22c`
+- Latest committed push result: `Pushed successfully to origin/feature/hough-harris-feature-detection (cda69c8 -> 89548ea).`
+- Workspace status after latest committed pass: `Retained only excluded files, including .github/agents/Iterate.agent.md, .github/iterations/manual-review-integration/review-packet.md, cr.md, and the unrelated .github/plans/hough-harris-feature-detection*.md files.`
+- Remaining uncommitted files after latest committed pass: `.github/agents/Iterate.agent.md`, `.github/iterations/manual-review-integration/review-packet.md`, `cr.md`, and the unrelated .github/plans/hough-harris-feature-detection*.md files.`
+- Next reviewer after the current response commit: `@Inspect`
 
 ## Commit History
 
 | Pass | Commit | Branch | Notes |
 |------|--------|--------|-------|
 | `Initial implementation` | `cda69c809a63d02609b696ee64737735388cb5bf` | `feature/hough-harris-feature-detection` | `Workflow-only manual-review integration with partial staging on .github/agents/Iterate.agent.md so only the in-scope manual-review hunks were committed while unrelated local edits stayed unstaged.` |
+| `Bookkeeping follow-up` | `89548eadb9a7f329c2d26df90cceaf1be984a22c` | `feature/hough-harris-feature-detection` | `Reconciled the durable current-state artifacts to the committed implementation pass, fixed the cda-era placeholder bookkeeping, and pushed the narrow metadata-only follow-up while leaving review-packet.md and the unrelated Iterate-agent hunks out of scope.` |
