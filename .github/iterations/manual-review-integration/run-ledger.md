@@ -3,7 +3,7 @@
 ## Iteration
 
 - Slug: `manual-review-integration`
-- Status: `bootstrapped; delegated implementation pending`
+- Status: `bookkeeping-only follow-up ready for re-review`
 - Owning orchestrator: `@Iterate`
 
 ## Selected Scope
@@ -20,10 +20,10 @@
 
 ## Current Loop State
 
-- Next agent: `@Implement`
-- Review round: `0`
-- Latest verification: `Bootstrap only; no implementation verification has run yet for this iteration.`
-- Latest decision: `MRI-DEC-001 captures the durable manual-review file contract and MRI-DEC-002 keeps this iteration scoped to workflow integration rather than product-code remediation.`
+- Next agent: `@Inspect`
+- Review round: `1`
+- Latest verification: `The initial workflow-only implementation pass committed as cda69c809a63d02609b696ee64737735388cb5bf with clean markdown diagnostics on the touched workflow files, and this follow-up narrows the next review to durable iteration metadata only.`
+- Latest decision: `The core manual-review workflow change is accepted in principle, and the bookkeeping-only metadata follow-up is now ready for @Inspect to verify closure of RVW-001 and RVW-002.`
 
 ## Packet Links
 
@@ -38,10 +38,10 @@
 ## Open Items
 
 - Blockers: `none recorded`
-- Outstanding findings: `none`
-- Next action: `Delegate .github/plans/manual-review-integration.md to @Implement in delegated mode so it can create manual-reviewes.md and update the relevant agent prompts without starting product-work remediation from cr.md.`
+- Outstanding findings: `RVW-001, RVW-002`
+- Next action: `Run @Inspect on the bookkeeping-only metadata delta, then let @Intake normalize the follow-up verdict.`
 
 ## Resume Notes
 
-- Current context: `This iteration exists only to integrate manual reviews into the agent workflow. Preserve the pre-existing dirty .github/agents/Iterate.agent.md edit, the unrelated untracked Hough/Harris plan files under .github/plans/, and cr.md outside this iteration's scope except where the selected plan explicitly consumes cr.md as source material for manual-reviewes.md.`
-- Recovery instructions: `Read this ledger first, then .github/plans/manual-review-integration.md, then the packet files in this iteration directory. Treat manual-reviewes.md as a new durable review source that must be created during the implementation pass.`
+- Current context: `The initial workflow-only implementation pass is committed as cda69c809a63d02609b696ee64737735388cb5bf on feature/hough-harris-feature-detection, the review is normalized, and the remaining work is a metadata-only follow-up for RVW-001 plus RVW-002 before re-review.`
+- Recovery instructions: `Read this ledger first, then .github/plans/manual-review-integration.md, then review-packet.md for RVW-001 and RVW-002. Preserve the pre-existing dirty .github/agents/Iterate.agent.md edit, review-packet.md, the unrelated untracked Hough/Harris plan files, and cr.md outside the selected scope while re-reviewing the bookkeeping-only follow-up.`

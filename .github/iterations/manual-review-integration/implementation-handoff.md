@@ -38,4 +38,4 @@
 
 | Pass | Commit | Summary |
 |------|--------|---------|
-| `1` | `uncommitted` | `Captured the current manual CR as manual-reviewes.md and updated Iterate plus Intake so in-scope manual-review findings stay in the normal review loop until closure.` |
+| `1` | `cda69c809a63d02609b696ee64737735388cb5bf` | `Captured the current manual CR as manual-reviewes.md and updated Iterate plus Intake so in-scope manual-review findings stay in the normal review loop until closure.` |
