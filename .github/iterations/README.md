@@ -63,6 +63,7 @@ Purpose: current state only.
 
 - Replaceable summary.
 - Must always point to the selected plan step, parent overview, current branch, baseline commit, latest commit, next agent, and current status.
+- When the current response pass is still in the working tree or is being committed in the same pass that updates the ledger, `latest commit` may point to the latest already-committed pass instead of the response pass being authored. In that case, the ledger must describe the current response separately in the loop state or next action so the file stays truthful about both the concrete anchor and the in-flight response.
 - Must always include the matching `.github/agent-progress/` note path.
 
 ### 2. `implementation-handoff.md`
@@ -87,6 +88,7 @@ Purpose: explicit commit grouping and gitflow intent.
 
 - Capture the current pass type, commit scope, included files, excluded files, branch action, commit message, the actual commit hash, and the actual push result.
 - Do not leave placeholders such as `this commit`; once a commit exists, record the full commit id in the packet history and result section.
+- If the packet file itself is part of the current commit-producing pass, it may stay anchored on the latest already-committed pass and describe the current response separately until a later refresh records the new hash and push result from git history. Make that convention explicit instead of implying that the current pass is uncommitted when it already exists.
 - `@Inscribe` should update this file after every commit-producing pass.
 
 ### 5. `decision-log.md`
