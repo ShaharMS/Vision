@@ -48,7 +48,7 @@ class SimpleHoughTest extends utest.Test {
 		var rays = SimpleHough.detectLines(AlgorithmFixtures.horizontalLineImage(), 5);
 		Assert.isTrue(parameterLines.length > 0);
 		Assert.equals(parameterLines.length, rays.length);
-		Assert.isTrue(hasMatchingRay(rays, parameterLines[0].toRay2D()));
+		Assert.isTrue(hasMatchingRay(rays, parameterLines[0]));
 	}
 
 	@:visionTestId("vision.algorithms.SimpleHough.detectLines#checkerboard")

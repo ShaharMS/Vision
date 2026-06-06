@@ -5,18 +5,17 @@ import tests.support.ApproxAssertions;
 import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.algorithms.Hough;
-import vision.algorithms.HoughProbabilisticSegments;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.Line2D;
 import vision.ds.Point2D;
-import vision.exceptions.VisionException;
+import vision.exceptions.HoughEdgeImageSizeMismatch;
 import vision.ds.specifics.ProbabilisticHoughLineOptions;
 import vision.Vision;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
-@:access(vision.algorithms.HoughProbabilisticSegments)
+@:access(vision.algorithms.Hough)
 class HoughProbabilisticTest extends utest.Test {
 	@:visionTestId("vision.algorithms.Hough.detectLineSegments#default")
 	@:visionMaturity("semantic")
@@ -50,13 +49,13 @@ class HoughProbabilisticTest extends utest.Test {
 		Assert.equals(0, result.length);
 	}
 
-	@:visionTestId("vision.algorithms.HoughProbabilisticSegments.mergeSegments#adjacent-parallel")
+	@:visionTestId("vision.algorithms.Hough.mergeProbabilisticSegments#adjacent-parallel")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:visionRequires("synthetic_geometry")
 	function test_detectLineSegments__keepsAdjacentParallelSegmentsDistinct() {
 		var options = createOptions(6, 6, 0, 6, 1);
-		var result = HoughProbabilisticSegments.mergeSegments([
+		var result = Hough.mergeProbabilisticSegments([
 			createSegment(new Line2D(new Point2D(0, 2), new Point2D(6, 2)), 2, Math.PI / 2),
 			createSegment(new Line2D(new Point2D(0, 3), new Point2D(6, 3)), 3, Math.PI / 2)
 		], options);
@@ -101,8 +100,8 @@ class HoughProbabilisticTest extends utest.Test {
 		var mismatchedEdges = new Image(image.width - 1, image.height, Color.BLACK);
 		ExceptionAssertions.expectMessage(
 			() -> Vision.houghLineSegmentDetection(image, 5, 5, 1, mismatchedEdges),
-			VisionException,
-			'Hough Line Segment Detection Error: Custom edgeImage must match the source image dimensions. Expected 7x5 but got 6x5.'
+			HoughEdgeImageSizeMismatch,
+			'Hough Feature Extraction Error: Custom edgeImage must match the source image dimensions. Expected 7x5 but got 6x5.'
 		);
 	}
 

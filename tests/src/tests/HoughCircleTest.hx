@@ -18,11 +18,10 @@ class HoughCircleTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_circle2D_copy__default() {
-		var copy = new Circle2D(new Point2D(2, 3), 4, 5).copy();
+		var copy = new Circle2D(new Point2D(2, 3), 4).copy();
 		Assert.equals(2.0, copy.center.x);
 		Assert.equals(3.0, copy.center.y);
 		Assert.equals(4.0, copy.radius);
-		Assert.equals(5.0, copy.votes);
 	}
 
 	@:visionTestId("vision.algorithms.Hough.detectCircles#default")
@@ -49,7 +48,6 @@ class HoughCircleTest extends utest.Test {
 		ApproxAssertions.equalsFloat(15, detected.center.x, 2.0);
 		ApproxAssertions.equalsFloat(15, detected.center.y, 2.0);
 		ApproxAssertions.equalsFloat(5, detected.radius, 2.0);
-		Assert.isTrue(detected.votes >= options.centerThreshold);
 	}
 
 	@:visionTestId("vision.algorithms.Hough.detectCircles#minimum-distance")

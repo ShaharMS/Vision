@@ -38,7 +38,7 @@ import vision.ds.canny.CannyObject;
 import vision.algorithms.Harris;
 import vision.algorithms.Hough;
 import vision.ds.Circle2D;
-import vision.ds.HarrisCorner2D;
+import vision.ds.IntPoint2D;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.gaussian.GaussianKernelSize;
 import vision.ds.Ray2D;
@@ -1348,7 +1348,13 @@ class Vision {
 		@return The modified image.
 	**/
 	public static function mapHoughCircles(image:Image, circles:Array<Circle2D>, color:Color = Color.CYAN, centerColor:Color = Color.RED):Image {
-		return Hough.mapCircles(image, circles, color, centerColor);
+		for (circle in circles) {
+			var centerX = Std.int(Math.round(circle.center.x));
+			var centerY = Std.int(Math.round(circle.center.y));
+			image.drawCircle(centerX, centerY, Std.int(Math.round(circle.radius)), color);
+			image.setPixel(centerX, centerY, centerColor);
+		}
+		return image;
 	}
 
 	/**
@@ -1371,22 +1377,20 @@ class Vision {
 	}
 
 	/**
-		Detects Harris corners in an image and preserves each corner score.
+		Detects Harris corners in an image.
 
 		This is the extracted-corner layer on top of `harrisCornerResponse(...)`. Use the
-		raw response wrapper when you want to inspect or reuse the underlying score map.
+		raw response wrapper when you want to inspect, rank, or reuse the underlying score map.
 
 		Returned corners stay sorted from strongest to weakest response, then by image coordinates
-		to keep `maxCorners` truncation deterministic across runs. Reusing `HarrisCorner2D` keeps
-		the response strength available for later ranking or descriptor seeding while still letting
-		callers mark `corner.point` directly with image drawing helpers such as `image.drawCircle(...)`.
+		to keep `maxCorners` truncation deterministic across runs.
 
 		@param image The source image to analyze.
 		@param options Optional corner-detection controls such as `relativeThreshold`, `minimumDistance`, `maxCorners`, and `borderMargin`.
 
-		@return The detected Harris corners.
+		@return The detected Harris corner positions.
 	**/
-	public static function harrisCorners(image:Image, ?options:HarrisCornerOptions):Array<HarrisCorner2D> {
+	public static function harrisCorners(image:Image, ?options:HarrisCornerOptions):Array<IntPoint2D> {
 		return Harris.detectCorners(image, options);
 	}
 

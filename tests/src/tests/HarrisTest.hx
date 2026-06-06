@@ -4,8 +4,8 @@ import utest.Assert;
 import vision.algorithms.Harris;
 import vision.Vision;
 import vision.ds.Color;
-import vision.ds.HarrisCorner2D;
 import vision.ds.Image;
+import vision.ds.IntPoint2D;
 import vision.ds.Matrix2D;
 import vision.ds.specifics.HarrisCornerOptions;
 import vision.ds.specifics.HarrisResponseOptions;
@@ -87,7 +87,7 @@ class HarrisTest extends utest.Test {
 		options.borderMargin = 2;
 		var corners = Vision.harrisCorners(createCornerFixture(), options);
 		Assert.equals(4, corners.length);
-		assertSortedByStrength(corners);
+		assertSortedByStrength(createCornerFixture(), corners);
 		assertContainsCornerNear(corners, 6, 6, 2.0);
 		assertContainsCornerNear(corners, 11, 6, 2.0);
 		assertContainsCornerNear(corners, 6, 14, 2.0);
@@ -106,7 +106,7 @@ class HarrisTest extends utest.Test {
 		options.borderMargin = 2;
 		var corners = Harris.detectCorners(createCornerFixture(), options);
 		Assert.equals(4, corners.length);
-		assertSortedByStrength(corners);
+		assertSortedByStrength(createCornerFixture(), corners);
 		assertContainsCornerNear(corners, 6, 6, 2.0);
 		assertContainsCornerNear(corners, 11, 6, 2.0);
 		assertContainsCornerNear(corners, 6, 14, 2.0);
@@ -127,8 +127,8 @@ class HarrisTest extends utest.Test {
 		options.minimumDistance = 3;
 		var corners = Harris.detectCornersFromResponse(response, options);
 		Assert.equals(2, corners.length);
-		assertCorner(corners[0], 3, 3, 12.0);
-		assertCorner(corners[1], 8, 8, 8.0);
+		assertCorner(corners[0], 3, 3);
+		assertCorner(corners[1], 8, 8);
 	}
 
 	@:visionTestId("vision.algorithms.Harris.detectCornersFromResponse#max-corners")
@@ -145,8 +145,8 @@ class HarrisTest extends utest.Test {
 		options.maxCorners = 2;
 		var corners = Harris.detectCornersFromResponse(response, options);
 		Assert.equals(2, corners.length);
-		assertCorner(corners[0], 7, 2, 12.0);
-		assertCorner(corners[1], 2, 7, 10.0);
+		assertCorner(corners[0], 7, 2);
+		assertCorner(corners[1], 2, 7);
 	}
 
 	function createCornerFixture():Image {
@@ -174,34 +174,36 @@ class HarrisTest extends utest.Test {
 		return response;
 	}
 
-	function assertCorner(corner:HarrisCorner2D, expectedX:Int, expectedY:Int, expectedScore:Float):Void {
-		Assert.equals(expectedX, Std.int(corner.point.x));
-		Assert.equals(expectedY, Std.int(corner.point.y));
-		Assert.equals(expectedScore, corner.score);
+	function assertCorner(corner:IntPoint2D, expectedX:Int, expectedY:Int):Void {
+		Assert.equals(expectedX, corner.x);
+		Assert.equals(expectedY, corner.y);
 	}
 
-	function assertContainsCornerNear(corners:Array<HarrisCorner2D>, expectedX:Int, expectedY:Int, maximumDistance:Float):Void {
+	function assertContainsCornerNear(corners:Array<IntPoint2D>, expectedX:Int, expectedY:Int, maximumDistance:Float):Void {
 		for (corner in corners) {
-			var deltaX = corner.point.x - expectedX;
-			var deltaY = corner.point.y - expectedY;
+			var deltaX = corner.x - expectedX;
+			var deltaY = corner.y - expectedY;
 			if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= maximumDistance) return;
 		}
 		Assert.fail('Expected a detected corner near ($expectedX, $expectedY).');
 	}
 
-	function assertSortedByStrength(corners:Array<HarrisCorner2D>):Void {
+	function assertSortedByStrength(image:Image, corners:Array<IntPoint2D>):Void {
+		var response = Harris.computeResponse(image);
 		for (index in 1...corners.length) {
 			var previous = corners[index - 1];
 			var current = corners[index];
-			if (previous.score > current.score) continue;
-			if (previous.score == current.score && isCoordinateOrdered(previous, current)) continue;
+			var previousScore = response.get(previous.x, previous.y);
+			var currentScore = response.get(current.x, current.y);
+			if (previousScore > currentScore) continue;
+			if (previousScore == currentScore && isCoordinateOrdered(previous, current)) continue;
 			Assert.fail('Expected corners to be ordered deterministically by score then coordinates.');
 		}
 	}
 
-	function isCoordinateOrdered(left:HarrisCorner2D, right:HarrisCorner2D):Bool {
-		if (left.point.y < right.point.y) return true;
-		if (left.point.y > right.point.y) return false;
-		return left.point.x <= right.point.x;
+	function isCoordinateOrdered(left:IntPoint2D, right:IntPoint2D):Bool {
+		if (left.y < right.y) return true;
+		if (left.y > right.y) return false;
+		return left.x <= right.x;
 	}
 }

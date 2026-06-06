@@ -5,11 +5,12 @@ import tests.support.ApproxAssertions;
 import utest.Assert;
 import vision.algorithms.Hough;
 import vision.ds.Color;
-import vision.ds.HoughLine2D;
 import vision.ds.Image;
 import vision.ds.Point2D;
+import vision.ds.Ray2D;
 import vision.ds.specifics.HoughLineOptions;
 
+@:access(vision.algorithms.Hough)
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class HoughStandardTest extends utest.Test {
@@ -37,11 +38,11 @@ class HoughStandardTest extends utest.Test {
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_detectLines__horizontalLine() {
-		var result = Hough.detectLines(AlgorithmFixtures.horizontalLineImage(), createOptions(5));
-		var detected = findClippedLine(result, 5, 5, new Point2D(0, 2), new Point2D(4, 2));
+		var candidates = Hough.detectLineCandidates(AlgorithmFixtures.horizontalLineImage(), createOptions(5));
+		var detected = findClippedLine([for (candidate in candidates) candidate.ray], 5, 5, new Point2D(0, 2), new Point2D(4, 2));
 		Assert.isTrue(detected != null);
 		if (detected == null) return;
-		ApproxAssertions.equalsFloat(5, detected.votes);
+		ApproxAssertions.equalsFloat(5, findCandidateVotes(candidates, detected));
 	}
 
 	@:visionTestId("vision.algorithms.Hough.detectLines#vertical")
@@ -84,17 +85,19 @@ class HoughStandardTest extends utest.Test {
 		var options = createOptions(1);
 		options.useEdgeValueWeights = true;
 
-		var result = Hough.detectLines(createWeightedParallelLineImage(), options);
-		var stronger = findClippedLine(result, 7, 7, new Point2D(1, 0), new Point2D(1, 6));
-		var weaker = findClippedLine(result, 7, 7, new Point2D(5, 0), new Point2D(5, 6));
+		var candidates = Hough.detectLineCandidates(createWeightedParallelLineImage(), options);
+		var stronger = findClippedLine([for (candidate in candidates) candidate.ray], 7, 7, new Point2D(1, 0), new Point2D(1, 6));
+		var weaker = findClippedLine([for (candidate in candidates) candidate.ray], 7, 7, new Point2D(5, 0), new Point2D(5, 6));
 
 		Assert.isTrue(stronger != null);
 		Assert.isTrue(weaker != null);
 		if (stronger == null || weaker == null) return;
 
-		Assert.isTrue(stronger.votes > weaker.votes);
-		ApproxAssertions.equalsFloat(7, stronger.votes, 0.001);
-		ApproxAssertions.equalsFloat((7 * 64) / 255, weaker.votes, 0.001);
+		var strongerVotes = findCandidateVotes(candidates, stronger);
+		var weakerVotes = findCandidateVotes(candidates, weaker);
+		Assert.isTrue(strongerVotes > weakerVotes);
+		ApproxAssertions.equalsFloat(7, strongerVotes, 0.001);
+		ApproxAssertions.equalsFloat((7 * 64) / 255, weakerVotes, 0.001);
 	}
 
 	@:visionTestId("vision.algorithms.Hough.detectLines#theta-bounds")
@@ -122,12 +125,12 @@ class HoughStandardTest extends utest.Test {
 	function test_detectLinesFromPoints__matchesImageAccumulatorPath() {
 		var image = AlgorithmFixtures.diagonalLineImage();
 		var options = createOptions(5);
-		var imageResult = Hough.detectLines(image, options);
-		var pointResult = Hough.detectLinesFromPoints(collectPoints(image), image.width, image.height, options);
+		var imageCandidates = Hough.detectLineCandidates(image, options);
+		var pointCandidates = Hough.detectLineCandidatesFromPoints(collectPoints(image), image.width, image.height, options);
 		var expectedStart = new Point2D(0, 0);
 		var expectedEnd = new Point2D(4, 4);
-		var imageLine = findClippedLine(imageResult, image.width, image.height, expectedStart, expectedEnd);
-		var pointLine = findClippedLine(pointResult, image.width, image.height, expectedStart, expectedEnd);
+		var imageLine = findClippedLine([for (candidate in imageCandidates) candidate.ray], image.width, image.height, expectedStart, expectedEnd);
+		var pointLine = findClippedLine([for (candidate in pointCandidates) candidate.ray], image.width, image.height, expectedStart, expectedEnd);
 
 		Assert.isTrue(imageLine != null);
 		Assert.isTrue(pointLine != null);
@@ -135,25 +138,25 @@ class HoughStandardTest extends utest.Test {
 
 		ApproxAssertions.equalsFloat(imageLine.rho, pointLine.rho, 0.001);
 		ApproxAssertions.equalsFloat(imageLine.theta, pointLine.theta, 0.001);
-		ApproxAssertions.equalsFloat(imageLine.votes, pointLine.votes, 0.001);
+		ApproxAssertions.equalsFloat(findCandidateVotes(imageCandidates, imageLine), findCandidateVotes(pointCandidates, pointLine), 0.001);
 	}
 
-	@:visionTestId("vision.ds.HoughLine2D.toRay2D#horizontal")
+	@:visionTestId("vision.ds.Ray2D.fromPolar#horizontal")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
-	function test_toRay2D__horizontalLineDirection() {
-		var ray = new HoughLine2D(2, Math.PI / 2).toRay2D();
+	function test_fromPolar__horizontalLineDirection() {
+		var ray = Ray2D.fromPolar(2, Math.PI / 2);
 		var nextPoint = ray.getPointAtX(ray.point.x + 5);
 
 		ApproxAssertions.equalsFloat(2, ray.point.y);
 		ApproxAssertions.equalsFloat(2, nextPoint.y);
 	}
 
-	@:visionTestId("vision.ds.HoughLine2D.toRay2D#vertical")
+	@:visionTestId("vision.ds.Ray2D.fromPolar#vertical")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
-	function test_toRay2D__verticalLineDirection() {
-		var ray = new HoughLine2D(3, 0).toRay2D();
+	function test_fromPolar__verticalLineDirection() {
+		var ray = Ray2D.fromPolar(3, 0);
 		var nextPoint = ray.getPointAtY(ray.point.y + 5);
 
 		ApproxAssertions.equalsFloat(3, ray.point.x);
@@ -195,7 +198,7 @@ class HoughStandardTest extends utest.Test {
 		return points;
 	}
 
-	function findClippedLine(lines:Array<HoughLine2D>, width:Int, height:Int, start:Point2D, end:Point2D, tolerance:Float = 0.01):Null<HoughLine2D> {
+	function findClippedLine(lines:Array<Ray2D>, width:Int, height:Int, start:Point2D, end:Point2D, tolerance:Float = 0.01):Null<Ray2D> {
 		for (line in lines) {
 			var clipped = line.toLine2D(width, height);
 			if (clipped == null) {
@@ -206,6 +209,16 @@ class HoughStandardTest extends utest.Test {
 			}
 		}
 		return null;
+	}
+
+	function findCandidateVotes(candidates:Array<Dynamic>, ray:Ray2D):Float {
+		for (candidate in candidates) {
+			if (candidate.ray == ray) {
+				return candidate.votes;
+			}
+		}
+		Assert.fail('Expected to find candidate votes for the detected ray.');
+		return 0;
 	}
 
 	function matchesEndpoints(actualStart:Point2D, actualEnd:Point2D, expectedStart:Point2D, expectedEnd:Point2D, tolerance:Float):Bool {
