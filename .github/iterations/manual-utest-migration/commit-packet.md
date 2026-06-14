@@ -2,54 +2,40 @@
 
 ## Commit Intent
 
-- Pass type: `plan-bookkeeping closeout`
-- Plan step: `.github/plans/manual-utest-migration-5-algorithms.md`
-- Scope: `Package the approved step-5 closeout bookkeeping: record the final approval state after @Inspect accepted the committed algorithm migration through dcbe4c634fe2fafcd42229ee9956c4774f474117, mark step 5 complete in the plans, update the run ledger and progress note for recovery, and append the closeout event without changing source files.`
-- Reason this is one commit: `The review approval state, run-ledger or progress-note recovery edits, plan status changes, and timeline entry all describe the same approved step-5 closeout transition, so they belong in one atomic documentation commit on the existing feature branch.`
+- Pass type: `packet-consistency repair`
+- Plan step: `.github/plans/manual-utest-migration-6-formats-and-facade.md`
+- Scope: `Package the follow-on packet-consistency repair after the committed step-6 bootstrap and packet-hygiene pass 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd: keep row 22 intact, align the live commit packet or run ledger or progress note with that already-pushed bootstrap pass, and append the repair event without touching application source or plan files.`
+- Reason this is one commit: `The commit packet, run ledger, progress note, and append-only timeline all describe the same narrow history-repair transition after 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd, so they belong in one atomic documentation commit on the existing feature branch.`
 
 ## Candidate Files
 
 | Path | Include | Reason |
 |------|---------|--------|
-| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Records the approved step-5 closeout state and points recovery at step 6.` |
-| `.github/iterations/manual-utest-migration/review-packet.md` | `yes` | `Carries the normalized approval state for the selected step-5 range.` |
-| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Moves the ledger from closeout-in-progress to closed-out and points the next loop at step 6.` |
-| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Captures the grouping, branch decision, included files, and commit intent for this closeout pass.` |
-| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the @Inscribe closeout event to the cross-agent history.` |
-| `.github/plans/manual-utest-migration-5-algorithms.md` | `yes` | `Marks step 5 complete in the step plan.` |
-| `.github/plans/manual-utest-migration-overview.md` | `yes` | `Marks step 5 complete in the parent overview.` |
+| `.github/agent-progress/manual-utest-migration.md` | `yes` | `Keeps the resumable note on the active step-6 scope while recording the follow-on packet-consistency repair after 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd.` |
+| `.github/iterations/manual-utest-migration/commit-packet.md` | `yes` | `Retargets the packet to this repair pass, preserves the existing step-6 bootstrap row 22, and appends the next history row.` |
+| `.github/iterations/manual-utest-migration/run-ledger.md` | `yes` | `Records that the live step-6 state remains bootstrapped by 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd after the packet-history repair.` |
+| `.github/iterations/manual-utest-migration/timeline.md` | `yes` | `Appends the @Inscribe packet-consistency repair event after the already-recorded bootstrap or hygiene row.` |
 | `.github/iterations/manual-utest-migration/execution-report.md` | `no` | `This pass is not a final stop report update.` |
 
 ## Gitflow Decision
 
 - Starting branch: `feature/manual-utest-migration-1-cutover`
 - Target branch: `feature/manual-utest-migration-1-cutover`
-- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-5 plan-bookkeeping closeout pass`
+- Branch action: `stayed on the existing feature branch because gitflow is already satisfied for the selected step-6 packet-consistency repair pass`
 
 ## Commit Message
 
 ```text
-docs(plans): close out algorithms step 5
-
-Record the approved step-5 bookkeeping after @Inspect accepted the
-algorithm migration range through
-dcbe4c634fe2fafcd42229ee9956c4774f474117, including the
-grouped rerun recovery and the final approval metadata. This
-pass updates the iteration packets, progress note, and plan
-status so the next recovery point is step 6 on the existing
-feature branch.
-
-Plan: .github/plans/manual-utest-migration-5-algorithms.md
-Pass: plan-bookkeeping closeout
+docs(iterations): repair step 6 packet history
 ```
 
 ## Result
 
-- Commit hash: `87d4780fdb8cfce014e223582057080c841429b3`
-- Push result: `Pushed 87d4780fdb8cfce014e223582057080c841429b3 to origin/feature/manual-utest-migration-1-cutover successfully.`
-- Workspace status after commit: `Clean after the selected step-5 closeout bookkeeping files were committed and pushed.`
+- Commit hash: `facad`
+- Push result: `Pushed facad to origin/feature/manual-utest-migration-1-cutover successfully.`
+- Workspace status after commit: `Clean after the step-6 packet-consistency repair bookkeeping files were committed and pushed.`
 - Remaining uncommitted files: `none`
-- Follow-up needed: `Retarget the iteration to .github/plans/manual-utest-migration-6-formats-and-facade.md and preserve D-003 plus the Windows env-var filtered-run fallback, including clearing stale VISION_TEST_CASES before suite-only reruns.`
+- Follow-up needed: `Delegate .github/plans/manual-utest-migration-6-formats-and-facade.md to @Implement in delegated mode while preserving D-003 plus the Windows env-var filtered-run fallback, including clearing stale VISION_TEST_CASES before suite-only reruns.`
 
 ## Commit History
 
@@ -76,3 +62,5 @@ Pass: plan-bookkeeping closeout
 | `19` | `41e803df1d8bbbb9a5c0a6cf02a4f84af5959ca2` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-4 closeout bookkeeping, marks the plans complete, and points the next recovery step at the algorithms migration while preserving D-003 plus the Windows env-var filtered-run fallback.` |
 | `20` | `dcbe4c634fe2fafcd42229ee9956c4774f474117` | `feature/manual-utest-migration-1-cutover` | `Packages the initial step-5 implementation delta, including the semantic algorithm-suite rewrites, shared AlgorithmFixtures or ResamplerAssertions helpers, manual inventory updates, the exposed Canny hysteresis fix, the corrected Canny or SimpleLineDetector expectations, and the current step-5 iteration-state files.` |
 | `21` | `87d4780fdb8cfce014e223582057080c841429b3` | `feature/manual-utest-migration-1-cutover` | `Packages the approved step-5 closeout bookkeeping, marks the plans complete, and points the next recovery step at the formats or facade migration while preserving D-003 plus the Windows env-var filtered-run fallback and stale-case-filter reset note.` |
+| `22` | `3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd` | `feature/manual-utest-migration-1-cutover` | `Packages the committed step-6 bootstrap and packet-hygiene refresh, including the explicit @Inspect timeline backfill, the step-6 ledger or progress retarget, and the iteration guidance or template updates that remove placeholder commit wording from future packets.` |
+| `23` | `facad` | `feature/manual-utest-migration-1-cutover` | `Packages the follow-on packet-consistency repair that preserves row 22 for 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd, aligns the live step-6 packet history or resumable notes with the already-pushed bootstrap pass, and keeps delegated implementation next.` |

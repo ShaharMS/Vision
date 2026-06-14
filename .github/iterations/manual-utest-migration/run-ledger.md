@@ -22,8 +22,8 @@
 
 - Next agent: `@Implement`
 - Review round: `0`
-- Latest verification: `The live step-5 closeout packet now records 87d4780fdb8cfce014e223582057080c841429b3 as the actual closeout commit, the implementation handoff history now uses real commit ids instead of placeholders, and the iteration guidance now requires explicit @Inspect timeline entries plus actual commit hashes in commit packets.`
-- Latest decision: `The iteration is retargeted to step 6 from clean baseline 87d4780fdb8cfce014e223582057080c841429b3 while carrying forward D-003 and the Windows env-var filtered-run fallback, including clearing stale VISION_TEST_CASES before suite-only reruns.`
+- Latest verification: `The packet-consistency repair recorded as facad keeps the committed step-6 bootstrap or hygiene pass 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd intact in the live history while aligning the commit packet, progress note, and append-only timeline before delegated implementation.`
+- Latest decision: `Keep step 6 active on feature/manual-utest-migration-1-cutover after the packet-history repair, preserve D-003 plus the Windows env-var filtered-run fallback, and delegate implementation next from the retargeted step-6 scope.`
 
 ## Packet Links
 
@@ -43,5 +43,5 @@
 
 ## Resume Notes
 
-- Current context: `Step 5 is approved and closed out, and the iteration is now bootstrapped on the step-6 formats, facade, helper, and exception migration from clean baseline 87d4780fdb8cfce014e223582057080c841429b3.`
+- Current context: `Step 5 is approved and closed out, the step-6 bootstrap or hygiene refresh remains recorded in 3bfc8312d0ea5cbf4eb9f0025add1a2cdd2767bd, the packet-consistency repair is recorded as facad, and the iteration remains active on the step-6 formats, facade, helper, and exception migration from baseline 87d4780fdb8cfce014e223582057080c841429b3.`
 - Recovery instructions: `Delegate the selected scope to @Implement, keep D-003 in force only for tests/generated/src/Main.hx until step 7 deletes that reference-only surface, preserve the Windows env-var filtered-run fallback plus the stale-VISION_TEST_CASES reset requirement for local suite-only reruns, and expect explicit @Inspect timeline entries before each @Intake normalization.`
