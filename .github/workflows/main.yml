@@ -264,16 +264,7 @@ jobs:
             fi
           fi
           if [ "${{ matrix.target }}" = "cppia" ]; then
-            CPPPATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
-            CPPia="${CPPPATH}/bin/Linux/cppia"
-            if [ -x "${CPPia}" ]; then
-              "${CPPia}" bin/cppia/tests.cppia
-            elif command -v cppia >/dev/null 2>&1; then
-              cppia bin/cppia/tests.cppia
-            else
-              echo "cppia runtime not found. Install hxcpp or add cppia to PATH.";
-              exit 1
-            fi
+            haxelib run hxcpp bin/cppia/tests.cppia
           fi
           if [ "${{ matrix.target }}" = "interp" ]; then
             echo "Interp already executed in compile step."
