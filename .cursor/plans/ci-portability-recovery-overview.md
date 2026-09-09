@@ -11,7 +11,7 @@ Restore trustworthy cross-target CI without weakening feature coverage. The curr
 | Order | Plan File | Summary |
 | --- | --- | --- |
 | 1 | [ci-portability-recovery-1-thread-fallback.md](ci-portability-recovery-1-thread-fallback.md) | Give non-threaded system targets deterministic `VisionThread` behavior. ✅ |
-| 2 | [ci-portability-recovery-2-portable-format-assertions.md](ci-portability-recovery-2-portable-format-assertions.md) | Make color and unsupported-format coverage compare portable semantics. |
+| 2 | [ci-portability-recovery-2-portable-format-assertions.md](ci-portability-recovery-2-portable-format-assertions.md) | Make color and unsupported-format coverage compare portable semantics. ✅ |
 | 3 | [ci-portability-recovery-3-neko-test-partition.md](ci-portability-recovery-3-neko-test-partition.md) | Keep Neko coverage below its generated-program stack limit. |
 
 ## Key Decisions
@@ -22,6 +22,6 @@ Restore trustworthy cross-target CI without weakening feature coverage. The curr
 
 ## Iteration Bootstrap
 
-- **Iteration slug**: `ci-portability-recovery-2-portable-format-assertions`
+- **Iteration slug**: `ci-portability-recovery-3-neko-test-partition`
 - **Required evidence**: PHP compile, targeted interpreter tests, and fresh GitHub Actions logs after each pushed step.
 - **Artifacts to verify**: `VisionThreadTest`, format/color suites, and Neko target execution.

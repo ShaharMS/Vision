@@ -1,6 +1,6 @@
 # Plan: CI Portability Recovery — Step 2: Portable Format Assertions
 
-> **Status**: 🔲 Not started
+> **Status**: ✅ Completed
 > **Prerequisite**: [Step 1](ci-portability-recovery-1-thread-fallback.md)
 > **Next**: [Step 3](ci-portability-recovery-3-neko-test-partition.md)
 > **Parent**: [ci-portability-recovery-overview.md](ci-portability-recovery-overview.md)

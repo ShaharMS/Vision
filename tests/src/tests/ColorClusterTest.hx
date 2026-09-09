@@ -1,6 +1,7 @@
 package tests;
 
 import tests.support.CollectionAssertions;
+import tests.support.ColorAssertions;
 import utest.Assert;
 import vision.ds.Color;
 import vision.ds.kmeans.ColorCluster;
@@ -18,7 +19,7 @@ class ColorClusterTest extends utest.Test {
 	@:visionLifecycle("active")
 	function test_new__default() {
 		var result = createCluster();
-		Assert.equals(Color.fromRGBA(51, 102, 153, 255), result.centroid);
+		ColorAssertions.equalsColor(Color.fromRGBA(51, 102, 153, 255), result.centroid);
 		CollectionAssertions.values([Color.RED, Color.GREEN], result.items);
 	}
 
@@ -26,7 +27,7 @@ class ColorClusterTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_centroid__default() {
-		Assert.equals(Color.fromRGBA(51, 102, 153, 255), createCluster().centroid);
+		ColorAssertions.equalsColor(Color.fromRGBA(51, 102, 153, 255), createCluster().centroid);
 	}
 
 	@:visionTestId("vision.ds.kmeans.ColorCluster.items#default")

@@ -556,6 +556,6 @@ class ColorTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_toInt__default() {
-		Assert.equals(-2144115047, sample().toInt());
+		ColorAssertions.equalsColor(-2144115047, cast sample().toInt());
 	}
 }
