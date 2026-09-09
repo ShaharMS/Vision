@@ -174,7 +174,9 @@ jobs:
           haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp ceb70d040f0792f004ccf1ed7eb6fcea01d7f3ff
           HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
           pushd "$HXCPP_PATH/project" > /dev/null
-          haxe compile-cppia.hxml
+          # The hosted runner reports host CPUs beyond this job's allocation. Limit
+          # hxcpp's worker pool so source bootstrapping does not thrash indefinitely.
+          HXCPP_COMPILE_THREADS=4 haxe compile-cppia.hxml
           popd > /dev/null
       - name: Compile (${{ matrix.target }})
         run: |
