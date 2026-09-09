@@ -129,6 +129,9 @@ jobs:
               if ! lua -e "require('rex_pcre2')" >/dev/null 2>&1; then
                 sudo luarocks install lrexlib-pcre2
               fi
+              if ! lua -e "require('lua-utf8')" >/dev/null 2>&1; then
+                sudo luarocks install luautf8
+              fi
             fi
             if [ "$TARGET" = "cs" ]; then
               sudo apt-get install -y mono-complete
@@ -143,7 +146,7 @@ jobs:
                 fi
               fi
               if ! command -v hl >/dev/null 2>&1; then
-                sudo apt-get install -y git make build-essential libpcre2-dev libpng-dev zlib1g-dev libssl-dev libmbedtls-dev libturbojpeg0-dev libjpeg-turbo8-dev libvorbis-dev libogg-dev libsdl2-dev libgl1-mesa-dev libglu1-mesa-dev
+                sudo apt-get install -y git make build-essential libpcre2-dev libpng-dev zlib1g-dev libssl-dev libmbedtls-dev libturbojpeg0-dev libjpeg-turbo8-dev libvorbis-dev libogg-dev libsdl2-dev libgl1-mesa-dev libglu1-mesa-dev libopenal-dev libuv1-dev libsqlite3-dev
                 git clone --depth 1 --branch 1.15 https://github.com/HaxeFoundation/hashlink.git /tmp/hashlink
                 make -C /tmp/hashlink
                 sudo make -C /tmp/hashlink install
@@ -244,7 +247,6 @@ jobs:
             python bin/python/tests.py
           fi
           if [ "${{ matrix.target }}" = "lua" ]; then
-            printf "return utf8\n" > lua-utf8.lua
             lua bin/lua/tests.lua
           fi
           if [ "${{ matrix.target }}" = "php" ]; then
