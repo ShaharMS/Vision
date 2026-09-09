@@ -169,7 +169,7 @@ class HarrisTest extends utest.Test {
 	}
 
 	function createResponseFixture(width:Int, height:Int, peaks:Array<{x:Int, y:Int, value:Float}>):Matrix2D {
-		var response = Harris.createResponseMap(width, height);
+		var response = new Matrix2D(width, height, 0);
 		for (peak in peaks) response.set(peak.x, peak.y, peak.value);
 		return response;
 	}

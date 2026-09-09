@@ -7,39 +7,43 @@ import vision.ds.Matrix2D;
 import vision.ds.harris.HarrisCornerCandidate;
 import vision.ds.specifics.HarrisCornerOptions;
 import vision.ds.specifics.HarrisResponseOptions;
+import vision.tools.MathTools;
+import vision.Vision;
 
 /**
-	Harris corner detection.
+	Finds corner-like points in an image.
 
-	The pipeline has two layers:
-
-	1. **Response map** — convert the image to gradients, smooth structure-tensor terms
-	   inside a local window, then score every pixel with
-	   `det(M) - k * trace(M)^2`, where `M` is the summed gradient covariance.
-	2. **Corner extraction** — threshold the response map, keep local maxima, sort by
-	   strength, and apply minimum-distance / `maxCorners` filtering.
-
-	Use `computeResponse(...)` when you want the raw score surface for custom selection or
-	visualization. Use `detectCorners(...)` or `Vision.harrisCorners(...)` when you want
-	ready-to-use corner positions as `IntPoint2D`.
+	A corner is a small area where the picture changes in more than one direction, such as
+	the corner of a window or a book. Use `computeResponse(...)` when you want a score for
+	every pixel, or `detectCorners(...)` when you want ready-to-use point positions.
 **/
 class Harris {
+	// A central difference compares the immediate pixels on either side of the current pixel.
+	static inline var CENTRAL_DIFFERENCE_WEIGHT = 0.5;
+	// A Gaussian window needs a non-zero spread; half a pixel is the smallest useful spread here.
+	static inline var MINIMUM_GAUSSIAN_SIGMA = 0.5;
+	// Three standard deviations span the requested window, keeping most of the weight inside it.
+	static inline var GAUSSIAN_WINDOW_SIGMA_SPAN = 3.0;
 
 	/**
-		Allocates a zero-filled Harris response map with the given dimensions.
-	**/
-	public static function createResponseMap(width:Int, height:Int):Matrix2D {
-		var response = new Matrix2D(width, height);
-		response.fill(0);
-		return response;
-	}
+		Measures how strongly each pixel resembles a corner.
 
-	/**
-		Computes the Harris corner-response map for an image.
+		The detector:
 
-		The image is converted to grayscale intensity, differentiated with separable
-		binomial kernels, then windowed to produce `Ix^2`, `Iy^2`, and `Ix*Iy` sums.
-		Each pixel score is `det - k * trace^2`.
+		1. Converts the image to grayscale so brightness is easier to compare.
+		2. Looks for brightness changes from left to right and top to bottom.
+		3. Combines nearby changes into one score for each pixel.
+
+		A high positive score means that pixel is likely to be at a corner. Internally, the
+		score is calculated from this small change matrix:
+
+		```txt
+		┌ Iₓ²   IₓIᵧ ┐
+		│ IₓIᵧ Iᵧ²  │
+		└             ┘
+
+		score = det(M) − k × trace(M)²
+		```
 	**/
 	public static function computeResponse(image:Image, ?options:HarrisResponseOptions):Matrix2D {
 		var resolvedOptions = options == null ? new HarrisResponseOptions() : options;
@@ -63,6 +67,7 @@ class Harris {
 		suppression, sorting, and spacing filters from `HarrisCornerOptions`.
 	**/
 	public static function detectCorners(image:Image, ?options:HarrisCornerOptions):Array<IntPoint2D> {
+		// First score every pixel, then keep only the strongest well-spaced peaks.
 		var resolvedOptions = options == null ? new HarrisCornerOptions() : options;
 		return detectCornersFromResponse(computeResponse(image, resolvedOptions), resolvedOptions);
 	}
@@ -122,38 +127,49 @@ class Harris {
 		return [for (corner in corners) corner.point];
 	}
 
-	/** Forces derivative aperture to a positive odd size (OpenCV-style Sobel sizing). **/
+	/** Makes the brightness-change stencil positive and odd, so it has one center pixel. **/
 	static inline function normalizeApertureSize(apertureSize:Int):Int {
 		if (apertureSize <= 1) return 1;
 		return apertureSize % 2 == 0 ? apertureSize + 1 : apertureSize;
 	}
 
-	/** Clamps structure-tensor window size to at least 1. **/
+	/** Keeps the nearby comparison area at least one pixel wide. **/
 	static inline function normalizeBlockSize(blockSize:Int):Int {
 		return blockSize < 1 ? 1 : blockSize;
 	}
 
-	/** Converts RGB input to a single-channel luminance map for gradient computation. **/
+	/**
+		Converts the image through the public grayscale API before calculating changes.
+
+		This deliberately reuses `Vision.grayscale(...)` instead of repeating its luminance
+		weights here, so Harris sees brightness exactly as the rest of the library does.
+	**/
 	static function createIntensityMap(image:Image):Matrix2D {
+		var grayscale = Vision.grayscale(image.clone());
 		var intensity = new Matrix2D(image.width, image.height);
 		for (y in 0...image.height) {
 			for (x in 0...image.width) {
-				var pixel = image.getPixel(x, y);
-				intensity.set(x, y, 0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue);
+				intensity.set(x, y, grayscale.getPixel(x, y).red);
 			}
 		}
 		return intensity;
 	}
 
-	/** Builds the separable smoothing kernel paired with the derivative kernel. **/
+	/** Builds the gentle blur paired with the brightness-change kernel. **/
 	static function createSmoothingKernel(apertureSize:Int):Array<Float> {
 		if (apertureSize == 1) return [1.0];
 		return normalizeKernel(buildBinomialKernel(apertureSize));
 	}
 
-	/** Builds a 1D derivative kernel (central difference or binomial-smoothed variant). **/
+	/**
+		Builds a one-dimensional brightness-change kernel.
+
+		A one-pixel aperture uses the standard central difference: half the change from the
+		left neighbor to the right neighbor. Larger apertures add binomial smoothing first,
+		which makes the detector less sensitive to isolated noisy pixels.
+	**/
 	static function createDerivativeKernel(apertureSize:Int):Array<Float> {
-		if (apertureSize == 1) return [-0.5, 0.0, 0.5];
+		if (apertureSize == 1) return [-CENTRAL_DIFFERENCE_WEIGHT, 0.0, CENTRAL_DIFFERENCE_WEIGHT];
 		var smoothingKernel = buildBinomialKernel(apertureSize);
 		var derivativeKernel:Array<Float> = [];
 		var center = (smoothingKernel.length - 1) / 2.0;
@@ -163,7 +179,7 @@ class Harris {
 		return normalizeAbsKernel(derivativeKernel);
 	}
 
-	/** Expands Pascal's triangle row into a normalized 1D binomial kernel. **/
+	/** Expands Pascal's triangle into weights that emphasize nearby pixels without adding a hard edge. **/
 	static function buildBinomialKernel(size:Int):Array<Float> {
 		var kernel:Array<Float> = [1.0];
 		for (_ in 1...size) {
@@ -178,14 +194,20 @@ class Harris {
 		return kernel;
 	}
 
-	/** Window weights for summing gradient products (box or Gaussian). **/
+	/**
+		Builds the weights for combining nearby brightness changes.
+
+		The default box window gives every nearby pixel equal influence. A Gaussian window
+		favors pixels near the center; its spread is chosen so three standard deviations fit
+		across the requested window.
+	**/
 	static function createWindowKernel(blockSize:Int, useGaussianWindow:Bool):Array<Float> {
 		var size = normalizeBlockSize(blockSize);
 		if (size == 1) return [1.0];
 		if (!useGaussianWindow) return [for (_ in 0...size) 1.0 / size];
 		var kernel:Array<Float> = [];
 		var center = (size - 1) / 2.0;
-		var sigma = Math.max(0.5, size / 3.0);
+		var sigma = Math.max(MINIMUM_GAUSSIAN_SIGMA, size / GAUSSIAN_WINDOW_SIGMA_SPAN);
 		for (index in 0...size) {
 			var distance = index - center;
 			kernel.push(Math.exp(-(distance * distance) / (2 * sigma * sigma)));
@@ -193,7 +215,7 @@ class Harris {
 		return normalizeKernel(kernel);
 	}
 
-	/** Normalizes kernel weights to sum to 1. **/
+	/** Scales weights so smoothing keeps an even-brightness image at the same brightness. **/
 	static function normalizeKernel(kernel:Array<Float>):Array<Float> {
 		var sum = 0.0;
 		for (value in kernel) sum += value;
@@ -201,7 +223,7 @@ class Harris {
 		return [for (value in kernel) value / sum];
 	}
 
-	/** Normalizes derivative kernel by sum of absolute values. **/
+	/** Scales brightness-change weights so aperture size does not inflate the response by itself. **/
 	static function normalizeAbsKernel(kernel:Array<Float>):Array<Float> {
 		var sum = 0.0;
 		for (value in kernel) sum += Math.abs(value);
@@ -209,13 +231,13 @@ class Harris {
 		return [for (value in kernel) value / sum];
 	}
 
-	/** Applies a separable 2D convolution (horizontal then vertical). **/
+	/** Applies one horizontal pass and one vertical pass, which is faster than a full 2D pass. **/
 	static function convolveSeparable(source:Matrix2D, kernelX:Array<Float>, kernelY:Array<Float>):Matrix2D {
 		var horizontal = convolveHorizontal(source, kernelX);
 		return convolveVertical(horizontal, kernelY);
 	}
 
-	/** 1D horizontal convolution with edge clamping. **/
+	/** Applies one horizontal kernel while reusing the nearest edge pixel beyond the image. **/
 	static function convolveHorizontal(source:Matrix2D, kernel:Array<Float>):Matrix2D {
 		var result = new Matrix2D(source.width, source.height);
 		var start = -Std.int(kernel.length / 2);
@@ -229,7 +251,7 @@ class Harris {
 		return result;
 	}
 
-	/** 1D vertical convolution with edge clamping. **/
+	/** Applies one vertical kernel while reusing the nearest edge pixel beyond the image. **/
 	static function convolveVertical(source:Matrix2D, kernel:Array<Float>):Matrix2D {
 		var result = new Matrix2D(source.width, source.height);
 		var start = -Std.int(kernel.length / 2);
@@ -243,14 +265,14 @@ class Harris {
 		return result;
 	}
 
-	/** Reads a matrix sample, clamping out-of-bounds coordinates to the nearest edge. **/
+	/** Reads a matrix value; requests outside the image use the nearest edge value. **/
 	static function sampleMatrix(matrix:Matrix2D, x:Int, y:Int):Float {
-		var clampedX = x < 0 ? 0 : x >= matrix.width ? matrix.width - 1 : x;
-		var clampedY = y < 0 ? 0 : y >= matrix.height ? matrix.height - 1 : y;
+		var clampedX = MathTools.clamp(x, 0, matrix.width - 1);
+		var clampedY = MathTools.clamp(y, 0, matrix.height - 1);
 		return matrix.get(clampedX, clampedY);
 	}
 
-	/** Element-wise square (used for Ix^2 and Iy^2 terms). **/
+	/** Squares every brightness-change value so opposite directions contribute equally. **/
 	static function squareMatrix(source:Matrix2D):Matrix2D {
 		var result = new Matrix2D(source.width, source.height);
 		for (y in 0...source.height) {
@@ -262,7 +284,7 @@ class Harris {
 		return result;
 	}
 
-	/** Element-wise product (used for the Ix*Iy cross term). **/
+	/** Multiplies horizontal and vertical brightness changes to capture diagonal change. **/
 	static function multiplyMatrices(left:Matrix2D, right:Matrix2D):Matrix2D {
 		var result = new Matrix2D(left.width, left.height);
 		for (y in 0...left.height) {
@@ -271,9 +293,14 @@ class Harris {
 		return result;
 	}
 
-	/** Combines windowed structure-tensor sums into the Harris score `det - k * trace^2`. **/
+	/**
+		Combines nearby brightness changes into one corner score per pixel.
+
+		The response starts explicitly filled with zero, which keeps the result portable even
+		on targets whose default array entries are `null`; every score is then written below.
+	**/
 	static function createHarrisScores(sumIx2:Matrix2D, sumIy2:Matrix2D, sumIxIy:Matrix2D, k:Float):Matrix2D {
-		var response = createResponseMap(sumIx2.width, sumIx2.height);
+		var response = new Matrix2D(sumIx2.width, sumIx2.height, 0);
 		for (y in 0...response.height) {
 			for (x in 0...response.width) {
 				var det = sumIx2.get(x, y) * sumIy2.get(x, y) - sumIxIy.get(x, y) * sumIxIy.get(x, y);
@@ -284,7 +311,7 @@ class Harris {
 		return response;
 	}
 
-	/** Non-maximum suppression: pixel must beat its 8-neighborhood with stable tie-breaking. **/
+	/** Accepts only a peak that is stronger than its eight neighbors, with a stable tie-breaker. **/
 	static function isLocalMaximum(response:Matrix2D, x:Int, y:Int, value:Float):Bool {
 		for (neighborY in (y > 0 ? y - 1 : 0)...(y + 1 < response.height ? y + 2 : response.height)) {
 			for (neighborX in (x > 0 ? x - 1 : 0)...(x + 1 < response.width ? x + 2 : response.width)) {
@@ -297,7 +324,7 @@ class Harris {
 		return true;
 	}
 
-	/** Sorts corner candidates by score (desc), then by position for determinism. **/
+	/** Orders stronger corners first, then uses position to keep equal scores predictable. **/
 	static function compareCornerCandidates(left:HarrisCornerCandidate, right:HarrisCornerCandidate):Int {
 		if (left.score != right.score) return left.score > right.score ? -1 : 1;
 		if (left.point.y != right.point.y) return left.point.y < right.point.y ? -1 : 1;
