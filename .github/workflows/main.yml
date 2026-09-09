@@ -143,7 +143,7 @@ jobs:
                 fi
               fi
               if ! command -v hl >/dev/null 2>&1; then
-                sudo apt-get install -y git make build-essential libpcre2-dev libpng-dev zlib1g-dev libssl-dev libmbedtls-dev libturbojpeg0-dev libjpeg-turbo8-dev libvorbis-dev libogg-dev libsdl2-dev
+                sudo apt-get install -y git make build-essential libpcre2-dev libpng-dev zlib1g-dev libssl-dev libmbedtls-dev libturbojpeg0-dev libjpeg-turbo8-dev libvorbis-dev libogg-dev libsdl2-dev libgl1-mesa-dev libglu1-mesa-dev
                 git clone --depth 1 --branch 1.15 https://github.com/HaxeFoundation/hashlink.git /tmp/hashlink
                 make -C /tmp/hashlink
                 sudo make -C /tmp/hashlink install
@@ -168,18 +168,8 @@ jobs:
         if: ${{ matrix.target == 'cppia' }}
         run: |
           HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
-          if [ ! -f "$HXCPP_PATH/build-tool/toolchain/haxe-target.xml" ]; then
-            haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
-            HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
-            pushd "$HXCPP_PATH/tools/hxcpp" > /dev/null
-            haxe compile.hxml
-            popd > /dev/null
-            pushd "$HXCPP_PATH/project" > /dev/null
-            neko build.n
-            popd > /dev/null
-          fi
           pushd "$HXCPP_PATH/project" > /dev/null
-          haxelib run hxcpp Build.xml -Dlinux -Dcppia
+          haxe compile-cppia.hxml
           popd > /dev/null
       - name: Compile (${{ matrix.target }})
         run: |
@@ -188,7 +178,10 @@ jobs:
             OUTDIR=$(dirname "${{ matrix.output }}")
             mkdir -p "$OUTDIR"
           fi
-          BASE_CMD="haxe --class-path tests/src --main Main --library vision --library format --library utest -debug -D vision_skip_golden -D vision_skip_invalid_tests"
+          BASE_CMD="haxe --class-path tests/src --main Main --library vision --library format --library utest -D vision_skip_golden -D vision_skip_invalid_tests"
+          if [ "${{ matrix.target }}" != "lua" ]; then
+            BASE_CMD="$BASE_CMD -debug"
+          fi
           if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
             BASE_CMD="$BASE_CMD --no-inline"
           fi
