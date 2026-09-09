@@ -12,7 +12,7 @@ class ToTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_bytes__stableAccessorAndDelegation() {
-		#if (python || cs || lua)
+		#if (python || cs)
 		Assert.pass();
 		#else
 		var subject = new To();

@@ -16,7 +16,7 @@ class FromBytesTest extends utest.Test {
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_png__roundTrip() {
-		#if (python || cs || lua)
+		#if (python || cs)
 		Assert.pass();
 		#else
 		var expected = FormatAssertions.fixtureImage();
