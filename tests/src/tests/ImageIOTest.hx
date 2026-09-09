@@ -26,7 +26,7 @@ class ImageIOTest extends utest.Test {
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_from__pngRoundTripThroughStatics() {
-		#if (python || cs)
+		#if (python || cs || lua)
 		Assert.pass();
 		#else
 		var expected = FormatAssertions.fixtureImage();

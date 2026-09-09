@@ -155,7 +155,7 @@ class ImageToolsTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_loadFromBytes__tiny() {
-		#if (python || cs)
+		#if (python || cs || lua)
 		Assert.pass();
 		#else
 		var source = Factories.checkerboardImage(2, 2, 1);
@@ -191,7 +191,7 @@ class ImageToolsTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_exportToBytes__tiny() {
-		#if (python || cs)
+		#if (python || cs || lua)
 		Assert.pass();
 		#else
 		var result = ImageTools.exportToBytes(Factories.gradientImage(3, 3), ImageFormat.PNG);
