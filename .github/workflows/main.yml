@@ -189,19 +189,27 @@ jobs:
             OUTDIR=$(dirname "${{ matrix.output }}")
             mkdir -p "$OUTDIR"
           fi
-          CMD="haxe --class-path tests/src --main Main --library vision --library format --library utest -debug -D vision_skip_golden -D vision_skip_invalid_tests"
+          BASE_CMD="haxe --class-path tests/src --main Main --library vision --library format --library utest -debug -D vision_skip_golden -D vision_skip_invalid_tests"
           if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
-            CMD="$CMD --no-inline"
+            BASE_CMD="$BASE_CMD --no-inline"
           fi
-          if [ "${{ matrix.target }}" = "interp" ]; then
-            CMD="$CMD --interp"
+          if [ "${{ matrix.target }}" = "neko" ]; then
+            for BATCH in 1 2 3 4 5 6 7 8; do
+              CMD="$BASE_CMD -D vision_neko_batched -D vision_neko_batch_$BATCH --neko bin/neko/tests-$BATCH.n"
+              echo "$CMD"
+              $CMD
+            done
+          elif [ "${{ matrix.target }}" = "interp" ]; then
+            CMD="$BASE_CMD --interp"
           elif [ "${{ matrix.output }}" != "" ]; then
-            CMD="$CMD ${{ matrix.flag }} ${{ matrix.output }}"
+            CMD="$BASE_CMD ${{ matrix.flag }} ${{ matrix.output }}"
           else
-            CMD="$CMD ${{ matrix.flag }}"
+            CMD="$BASE_CMD ${{ matrix.flag }}"
           fi
-          echo "$CMD"
-          $CMD
+          if [ "${{ matrix.target }}" != "neko" ]; then
+            echo "$CMD"
+            $CMD
+          fi
 
       - name: Run (${{ matrix.target }})
         run: |
@@ -209,8 +217,10 @@ jobs:
             node bin/js/tests.js
           fi
           if [ "${{ matrix.target }}" = "neko" ]; then
-            cp bin/neko/tests.n /tmp/tests.n
-            neko /tmp/tests.n
+            for BATCH in 1 2 3 4 5 6 7 8; do
+              cp "bin/neko/tests-$BATCH.n" "/tmp/tests-$BATCH.n"
+              neko "/tmp/tests-$BATCH.n"
+            done
           fi
           if [ "${{ matrix.target }}" = "hl" ]; then
             hl bin/hl/tests.hl
