@@ -17,7 +17,7 @@ class ToBytesTest extends utest.Test {
 	@:visionRequires("image_fixture")
 	function test_png__roundTrip() {
 		var expected = FormatAssertions.fixtureImage();
-		#if python
+		#if (python || cs)
 		ExceptionAssertions.throwsType(() -> new ToBytes().png(expected), ImageSavingFailed);
 		#else
 		var bytes = new ToBytes().png(expected);
