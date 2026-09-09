@@ -47,6 +47,14 @@ $env:VISION_TEST_CASES='test_png__invalidHeaderThrows'
 haxe test.hxml
 ```
 
+Run the focused Hough/Harris closeout slice:
+
+```powershell
+$env:VISION_TEST_CASES=''
+$env:VISION_TESTS='HoughStandardTest,HoughProbabilisticTest,HoughCircleTest,HarrisTest,SimpleHoughTest'
+haxe test.hxml
+```
+
 Run the Local CI compile-only harness for a narrow target slice:
 
 ```powershell
@@ -60,6 +68,8 @@ Notes:
 
 - On this Windows Haxe build, direct passthrough commands such as `haxe test.hxml -- --tests ArrayToolsTest` still fail before `Main` runs. Use the environment-variable fallback locally.
 - In persistent PowerShell sessions, clear `VISION_TEST_CASES` before suite-only reruns so stale case filters do not collapse discovery to zero tests.
+- `SimpleHoughTest` remains the compatibility suite for the legacy ray-returning shim; direct standard, probabilistic, circle, and Harris ownership lives in `HoughStandardTest`, `HoughProbabilisticTest`, `HoughCircleTest`, and `HarrisTest`.
+- `tests/src/Main.hx` executes `ManualSuites.addCases(...)`; `GeneratedSuites.hx` is only for compatibility with older tooling, so keep it aligned when touching suites that may still be consumed there.
 
 ## Adding Or Updating Coverage
 

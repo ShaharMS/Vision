@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        haxe-version: [4.2.5, 4.3.7]
+        haxe-version: [4.3.7]
         target: [interp, neko, hl, js, cpp, jvm, python, lua, php, cs, java, cppia]
         include:
           - target: interp
@@ -50,7 +50,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup Haxe (${{ matrix.haxe-version }})
         uses: krdlab/setup-haxe@v1
-        continue-on-error: ${{ matrix.haxe-version == '4.2.5' }}
         with:
           haxe-version: ${{ matrix.haxe-version }}
 
@@ -126,9 +125,12 @@ jobs:
           if [ "$TARGET" = "lua" ] || [ "$TARGET" = "cs" ] || [ "$TARGET" = "hl" ] || [ "$TARGET" = "cpp" ] || [ "$TARGET" = "cppia" ]; then
             sudo apt-get update
             if [ "$TARGET" = "lua" ]; then
-              sudo apt-get install -y lua5.3 liblua5.3-dev luarocks
+              sudo apt-get install -y lua5.3 liblua5.3-dev lua-luv luarocks
               if ! lua -e "require('rex_pcre2')" >/dev/null 2>&1; then
                 sudo luarocks install lrexlib-pcre2
+              fi
+              if ! lua -e "require('lua-utf8')" >/dev/null 2>&1; then
+                sudo luarocks install luautf8
               fi
             fi
             if [ "$TARGET" = "cs" ]; then
@@ -144,7 +146,7 @@ jobs:
                 fi
               fi
               if ! command -v hl >/dev/null 2>&1; then
-                sudo apt-get install -y git make build-essential libpcre2-dev zlib1g-dev libssl-dev libmbedtls-dev libturbojpeg0-dev libjpeg-turbo8-dev libvorbis-dev libogg-dev libsdl2-dev
+                sudo apt-get install -y git make build-essential libpcre2-dev libpng-dev zlib1g-dev libssl-dev libmbedtls-dev libturbojpeg0-dev libjpeg-turbo8-dev libvorbis-dev libogg-dev libsdl2-dev libgl1-mesa-dev libglu1-mesa-dev libopenal-dev libuv1-dev libsqlite3-dev
                 git clone --depth 1 --branch 1.15 https://github.com/HaxeFoundation/hashlink.git /tmp/hashlink
                 make -C /tmp/hashlink
                 sudo make -C /tmp/hashlink install
@@ -168,19 +170,13 @@ jobs:
       - name: Build hxcpp tools (cppia runtime)
         if: ${{ matrix.target == 'cppia' }}
         run: |
+          # The released host predates the cppia callable crash fix in HaxeFoundation/hxcpp#1324.
+          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp ceb70d040f0792f004ccf1ed7eb6fcea01d7f3ff
           HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
-          if [ ! -f "$HXCPP_PATH/build-tool/toolchain/haxe-target.xml" ]; then
-            haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
-            HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
-            pushd "$HXCPP_PATH/tools/hxcpp" > /dev/null
-            haxe compile.hxml
-            popd > /dev/null
-            pushd "$HXCPP_PATH/project" > /dev/null
-            neko build.n
-            popd > /dev/null
-          fi
-          pushd "$HXCPP_PATH" > /dev/null
-          haxelib run hxcpp project/Build.xml -Dlinux -Dcppia
+          pushd "$HXCPP_PATH/project" > /dev/null
+          # The hosted runner reports host CPUs beyond this job's allocation. Limit
+          # hxcpp's worker pool so source bootstrapping does not thrash indefinitely.
+          HXCPP_COMPILE_THREADS=4 haxe compile-cppia.hxml
           popd > /dev/null
       - name: Compile (${{ matrix.target }})
         run: |
@@ -189,19 +185,30 @@ jobs:
             OUTDIR=$(dirname "${{ matrix.output }}")
             mkdir -p "$OUTDIR"
           fi
-          CMD="haxe --class-path tests/src --main Main --library vision --library format --library utest -debug -D vision_skip_golden -D vision_skip_invalid_tests"
+          BASE_CMD="haxe --class-path tests/src --main Main --library vision --library format --library utest -D vision_skip_golden -D vision_skip_invalid_tests"
+          if [ "${{ matrix.target }}" != "lua" ]; then
+            BASE_CMD="$BASE_CMD -debug"
+          fi
           if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
-            CMD="$CMD --no-inline"
+            BASE_CMD="$BASE_CMD --no-inline"
           fi
-          if [ "${{ matrix.target }}" = "interp" ]; then
-            CMD="$CMD --interp"
+          if [ "${{ matrix.target }}" = "neko" ]; then
+            for BATCH in 1 2 3 4 5 6 7 8; do
+              CMD="$BASE_CMD -D vision_neko_batched -D vision_neko_batch_$BATCH --neko bin/neko/tests-$BATCH.n"
+              echo "$CMD"
+              $CMD
+            done
+          elif [ "${{ matrix.target }}" = "interp" ]; then
+            CMD="$BASE_CMD --interp"
           elif [ "${{ matrix.output }}" != "" ]; then
-            CMD="$CMD ${{ matrix.flag }} ${{ matrix.output }}"
+            CMD="$BASE_CMD ${{ matrix.flag }} ${{ matrix.output }}"
           else
-            CMD="$CMD ${{ matrix.flag }}"
+            CMD="$BASE_CMD ${{ matrix.flag }}"
           fi
-          echo "$CMD"
-          $CMD
+          if [ "${{ matrix.target }}" != "neko" ]; then
+            echo "$CMD"
+            $CMD
+          fi
 
       - name: Run (${{ matrix.target }})
         run: |
@@ -209,8 +216,10 @@ jobs:
             node bin/js/tests.js
           fi
           if [ "${{ matrix.target }}" = "neko" ]; then
-            cp bin/neko/tests.n /tmp/tests.n
-            neko /tmp/tests.n
+            for BATCH in 1 2 3 4 5 6 7 8; do
+              cp "bin/neko/tests-$BATCH.n" "/tmp/tests-$BATCH.n"
+              neko "/tmp/tests-$BATCH.n"
+            done
           fi
           if [ "${{ matrix.target }}" = "hl" ]; then
             hl bin/hl/tests.hl
@@ -242,7 +251,6 @@ jobs:
             python bin/python/tests.py
           fi
           if [ "${{ matrix.target }}" = "lua" ]; then
-            printf "return utf8\n" > lua-utf8.lua
             lua bin/lua/tests.lua
           fi
           if [ "${{ matrix.target }}" = "php" ]; then
@@ -260,16 +268,7 @@ jobs:
             fi
           fi
           if [ "${{ matrix.target }}" = "cppia" ]; then
-            CPPPATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
-            CPPia="${CPPPATH}/bin/Linux/cppia"
-            if [ -x "${CPPia}" ]; then
-              "${CPPia}" bin/cppia/tests.cppia
-            elif command -v cppia >/dev/null 2>&1; then
-              cppia bin/cppia/tests.cppia
-            else
-              echo "cppia runtime not found. Install hxcpp or add cppia to PATH.";
-              exit 1
-            fi
+            haxelib run hxcpp bin/cppia/tests.cppia
           fi
           if [ "${{ matrix.target }}" = "interp" ]; then
             echo "Interp already executed in compile step."

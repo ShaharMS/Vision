@@ -5,7 +5,6 @@ import utest.Assert;
 import vision.ds.Point2D;
 import vision.ds.Ray2D;
 
-@:access(vision.ds.Ray2D)
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Ray2DTest extends utest.Test {

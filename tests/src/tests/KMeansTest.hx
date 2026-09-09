@@ -1,6 +1,7 @@
 package tests;
 
 import tests.support.CollectionAssertions;
+import tests.support.ColorAssertions;
 import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.algorithms.KMeans;
@@ -58,8 +59,8 @@ class KMeansTest extends utest.Test {
 		var result = KMeans.getImageColorClusters(image, 2);
 		result.sort((lhs, rhs) -> lhs.centroid.red - rhs.centroid.red);
 		Assert.equals(2, result.length);
-		Assert.equals(Color.BLACK, result[0].centroid);
-		Assert.equals(Color.WHITE, result[1].centroid);
+		ColorAssertions.equalsColor(Color.BLACK, result[0].centroid);
+		ColorAssertions.equalsColor(Color.WHITE, result[1].centroid);
 		Assert.equals(1, result[0].items.length);
 		Assert.equals(1, result[1].items.length);
 	}
@@ -71,7 +72,7 @@ class KMeansTest extends utest.Test {
 	function test_getImageColorClusters__tiny() {
 		var result = KMeans.getImageColorClusters(new Image(1, 1, Color.MAGENTA), 16);
 		Assert.equals(1, result.length);
-		Assert.equals(Color.MAGENTA, result[0].centroid);
+		ColorAssertions.equalsColor(Color.MAGENTA, result[0].centroid);
 		Assert.equals(1, result[0].items.length);
 	}
 

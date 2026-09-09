@@ -331,14 +331,20 @@ ImageAssertions.pixelEquals(instance, 2, 1, ManualFixtures.coordinateColor(2, 1)
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 function test_forEachPixel__default() {
-var visited = [];
-createImage(2, 2).forEachPixel((x, y, color) -> visited.push('${x},${y}:${color.toInt()}'));
-CollectionAssertions.values([
-'0,0:${ManualFixtures.coordinateColor(0, 0).toInt()}',
-'0,1:${ManualFixtures.coordinateColor(0, 1).toInt()}',
-'1,0:${ManualFixtures.coordinateColor(1, 0).toInt()}',
-'1,1:${ManualFixtures.coordinateColor(1, 1).toInt()}',
-], visited);
+var visited:Array<{x:Int, y:Int, color:Color}> = [];
+createImage(2, 2).forEachPixel((x, y, color) -> visited.push({x: x, y: y, color: color}));
+var expected = [
+	{x: 0, y: 0},
+	{x: 0, y: 1},
+	{x: 1, y: 0},
+	{x: 1, y: 1}
+];
+Assert.equals(expected.length, visited.length);
+for (index in 0...expected.length) {
+	Assert.equals(expected[index].x, visited[index].x);
+	Assert.equals(expected[index].y, visited[index].y);
+	ImageAssertions.colorEquals(ManualFixtures.coordinateColor(expected[index].x, expected[index].y), visited[index].color);
+}
 }
 
 @:visionTestId("vision.ds.Image.forEachPixelInView#default")

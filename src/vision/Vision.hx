@@ -13,6 +13,7 @@ import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
 import vision.ds.Point3D;
 import vision.ds.specifics.ImageExpansionMode;
+import vision.ds.specifics.ProbabilisticHoughLineOptions;
 import vision.algorithms.PerspectiveWarp;
 import vision.ds.specifics.PointTransformationPair;
 import vision.algorithms.BilinearInterpolation;
@@ -34,6 +35,10 @@ import vision.algorithms.Perwitt;
 import vision.algorithms.Sobel;
 import vision.ds.Kernel2D;
 import vision.ds.canny.CannyObject;
+import vision.algorithms.Harris;
+import vision.algorithms.Hough;
+import vision.ds.Circle2D;
+import vision.ds.IntPoint2D;
 import vision.algorithms.SimpleLineDetector;
 import vision.ds.gaussian.GaussianKernelSize;
 import vision.ds.Ray2D;
@@ -42,6 +47,9 @@ import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Color;
 import vision.ds.Image;
+import vision.ds.specifics.HarrisCornerOptions;
+import vision.ds.specifics.HarrisResponseOptions;
+import vision.ds.specifics.HoughCircleOptions;
 import vision.tools.MathTools;
 import vision.tools.MathTools.*;
 
@@ -1224,6 +1232,11 @@ class Vision {
 	/**
 		Uses a simple, partially recursive algorithm to detect line segments in an image.
 
+		This legacy image-space segment finder is separate from the newer Hough family:
+		use `vision.algorithms.Hough.detectLines(...)` for standard theta/rho lines and
+		`Vision.houghLineSegmentDetection(...)` for probabilistic Hough segments. `SimpleHough`
+		now remains only as a compatibility shim that converts standard parameter lines back to rays.
+
 		those lines can be partially incomplete, but they will be detected as lines.
 
 		@param image The image to be line detected.
@@ -1275,6 +1288,111 @@ class Vision {
         }
         return SimpleLineDetector.correctLines(actualLines);
     }
+
+	/**
+		Detects bounded Hough line segments in an image.
+
+		This is the probabilistic Hough family member: it starts from the same standard
+		theta/rho candidate lines as `vision.algorithms.Hough.detectLines(...)`, then clips
+		supported runs back to bounded `Line2D` segments.
+
+		By default, this wrapper derives a Canny edge image before voting. Pass `edgeImage`
+		when you already have a reusable binary edge map and want to avoid recomputing it.
+		Custom edge maps must match `image.width` and `image.height`; mismatched inputs are rejected
+		so returned segments stay bounded to the source image.
+
+		@param image The image whose bounds define the returned `Line2D` segments.
+		@param candidateThreshold The minimum accumulator votes required before a candidate line is converted into one or more bounded segments.
+		@param minLineLength The minimum accepted segment length, in pixels, after gap linking. Shorter segments are discarded.
+		@param maxLineGap The maximum gap length, in pixels, that can still be bridged while extending a single returned segment.
+		@param edgeImage An optional precomputed edge image to reuse instead of running Canny again. When provided, it must match the source image dimensions.
+
+		@return The detected Hough line segments.
+	**/
+	public static function houghLineSegmentDetection(image:Image, candidateThreshold:Int = 20, minLineLength:Float = 10, maxLineGap:Float = 2, ?edgeImage:Image):Array<Line2D> {
+		var options = new ProbabilisticHoughLineOptions();
+		options.candidateThreshold = candidateThreshold;
+		options.minLineLength = minLineLength;
+		options.maxLineGap = maxLineGap;
+		options.voteThreshold = 1;
+		var sourceEdges = edgeImage == null ? cannyEdgeDetection(image, 1, X5, 0.05, 0.16) : edgeImage;
+		return Hough.detectLineSegments(image, options, sourceEdges);
+	}
+
+	/**
+		Detects circles in an image using the dedicated Hough circle path.
+
+		Circle voting is a separate Hough family member with its own center/radius search
+		space; it does not reuse the line accumulator or the probabilistic segment path.
+
+		The detector works from grayscale, denoised image content and applies a Canny-style
+		edge pass internally before voting for circle centers and radii.
+
+		@param image The source image to analyze.
+		@param options Optional circle-detection controls such as radius bounds, center threshold, `dp`, and `minimumDistance`.
+
+		@return The detected circles.
+	**/
+	public static function houghCircleDetection(image:Image, ?options:HoughCircleOptions):Array<Circle2D> {
+		return Hough.detectCircles(image, options);
+	}
+
+	/**
+		Draws detected Hough circles onto an image by marking both the perimeter and center.
+
+		@param image The image to draw onto.
+		@param circles The circles to draw.
+		@param color The perimeter color.
+		@param centerColor The center marker color.
+
+		@return The modified image.
+	**/
+	public static function mapHoughCircles(image:Image, circles:Array<Circle2D>, color:Color = Color.CYAN, centerColor:Color = Color.RED):Image {
+		for (circle in circles) {
+			var centerX = Std.int(Math.round(circle.center.x));
+			var centerY = Std.int(Math.round(circle.center.y));
+			image.drawCircle(centerX, centerY, Std.int(Math.round(circle.radius)), color);
+			image.setPixel(centerX, centerY, centerColor);
+		}
+		return image;
+	}
+
+	/**
+		Computes the raw Harris corner-response map for an image.
+
+		This returns the raw score surface only. Use `harrisCorners(...)` when you want
+		thresholded, non-max-suppressed corner extraction on top of the same response map.
+
+		Use this wrapper when you want the raw `Matrix2D` response surface for custom
+		thresholding, visualization, or reusing the numeric map across multiple corner-selection
+		passes.
+
+		@param image The source image to analyze.
+		@param options Optional Harris response settings such as `blockSize`, `apertureSize`, `k`, and `useGaussianWindow`.
+
+		@return The raw Harris response map.
+	**/
+	public static function harrisCornerResponse(image:Image, ?options:HarrisResponseOptions):Matrix2D {
+		return Harris.computeResponse(image, options);
+	}
+
+	/**
+		Detects Harris corners in an image.
+
+		This is the extracted-corner layer on top of `harrisCornerResponse(...)`. Use the
+		raw response wrapper when you want to inspect, rank, or reuse the underlying score map.
+
+		Returned corners stay sorted from strongest to weakest response, then by image coordinates
+		to keep `maxCorners` truncation deterministic across runs.
+
+		@param image The source image to analyze.
+		@param options Optional corner-detection controls such as `relativeThreshold`, `minimumDistance`, `maxCorners`, and `borderMargin`.
+
+		@return The detected Harris corner positions.
+	**/
+	public static function harrisCorners(image:Image, ?options:HarrisCornerOptions):Array<IntPoint2D> {
+		return Harris.detectCorners(image, options);
+	}
 
 	/**
 		Applies the sobel filter to an image.

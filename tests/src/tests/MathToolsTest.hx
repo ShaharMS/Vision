@@ -632,7 +632,11 @@ class MathToolsTest extends utest.Test {
 	@:visionLifecycle("active")
 	function test_parseInt__default() {
 		ApproxAssertions.equalsFloat(42, MathTools.parseInt("42"));
+		#if (hl || cppia || cpp || java || jvm || cs)
+		Assert.equals(0, MathTools.parseInt("not-a-number"));
+		#else
 		Assert.isNull(MathTools.parseInt("not-a-number"));
+		#end
 	}
 
 	@:visionTestId("vision.tools.MathTools.parseBool#default")

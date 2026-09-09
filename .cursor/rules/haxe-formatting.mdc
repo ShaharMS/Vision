@@ -1,0 +1,17 @@
+---
+description: Haxe formatting - tabs, braces, spacing per hxformat.json
+globs: "**/*.hx"
+alwaysApply: false
+---
+
+# Haxe formatting
+
+Treat [hxformat.json](../../hxformat.json) as authoritative. Do not invent a second style.
+
+- **Indentation:** tabs (`character: tab`, `tabWidth: 4`), not spaces
+- **Braces:** same-line style for if/else/catch/try/do-while bodies (`sameLine` block in hxformat.json)
+- **Spacing:** one blank line after `package` and between types (`emptyLines.afterPackage`, `emptyLines.betweenTypes`)
+- **Final newline:** required (`emptyLines.finalNewline`)
+- **Case labels:** indent switch case labels (`indentCaseLabels: true`)
+
+Before editing, match neighboring files in the same folder. Run hxformat when making substantial formatting changes.

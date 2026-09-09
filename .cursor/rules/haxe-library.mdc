@@ -1,0 +1,71 @@
+---
+description: Vision library layering, naming, documentation, and Haxe patterns for src/
+globs: "src/**/*.hx"
+alwaysApply: false
+---
+
+# Vision library conventions
+
+Read neighboring files in the same layer before adding code. Reference patterns: `Vision.hx`, `algorithms/Harris.hx`, `algorithms/Hough.hx`, `ds/specifics/HoughLineOptions.hx`.
+
+## Layer boundaries
+
+| Layer | Path | Responsibility |
+|-------|------|----------------|
+| Public API | `src/vision/Vision.hx` | Stable wrappers, defaults, mutation semantics, rich docs |
+| Algorithms | `src/vision/algorithms/` | Static `detect*` / `compute*` / `map*` logic |
+| Types | `src/vision/ds/`, `ds/specifics/` | Geometry, abstracts, `*Options` config |
+| Tools | `src/vision/tools/` | `using`-activated extensions |
+| Formats | `src/vision/formats/` | I/O facades; platform code in `__internal/` |
+| Errors | `src/vision/exceptions/` | `VisionException` hierarchy |
+
+- New user-facing detectors/transforms surface through **`Vision.hx`** with documentation — not only algorithm classes
+- Algorithm classes stay **static**; split large families across files (`Hough` + `HoughCircles` + `HoughProbabilisticSegments`; `Harris` + `HarrisCorners`)
+- Options in **`ds/specifics/`** as `@:structInit` classes named `*Options` with field defaults
+- Result geometry in **`ds/`** (`HoughLine2D`, `HarrisCorner2D`, `Circle2D`)
+- Accumulators/response maps: **`Matrix2D`**; pixel data: **`Image`**
+- Platform-specific code: `formats/__internal/` or `#if js` / `#if sys` splits
+
+## Naming
+
+**`Vision.hx`:** `camelCase` user-intent names (`cannyEdgeDetection`, `houghLineSegmentDetection`, `harrisCornerResponse`). Prefer `?options:SomeOptions` for newer APIs.
+
+**Algorithms:** entry points `detect*`, `compute*`, `create*`, `map*`; variants `detectXFromY`; private helpers `resolve*Options`, `normalize*`, phase verbs (`convolveSeparable`, `extractPeaks`). Use `static inline` for small resolvers and hot-path math.
+
+**Data structures:** geometry `*2D` suffix; conversion methods `toLine2D()`, `toRay2D()`, `copy()`. Result fields often `(default, null)`; options use public `var` with defaults.
+
+**Exceptions:** `VisionException(message, typeLabel)` or typed subclass (`OutOfBounds`, `InvalidGaussianKernelSize`). `typeLabel` is a short human-readable category.
+
+## Documentation depth by layer
+
+**`Vision.hx` — rich:** multi-line `/** ... **/` on every public method; behavior, defaults, mutation notes; `@param` / `@return` / `@throws`; markdown tables with hosted before/after images where helpful; cross-link related APIs and algorithm paths.
+
+**Algorithms — medium:** class-level doc (what it does, optional attribution); bullet list of stages/entry points; method docs shorter or omitted when self-explanatory.
+
+**`ds/` and `*Options` — minimal:** self-documenting field names; options often have no doc block.
+
+**Tools:** class doc explains `using vision.tools.ImageTools` (or similar) activation.
+
+## Typing and imports
+
+- Abstracts for core buffers: `Image`, `Color`, `Matrix2D`, `ByteArray`, `CannyObject`
+- `enum abstract` for typed constants; plain `enum` for small closed sets
+- Explicit `import vision.*` paths; no wildcard package imports
+- `using` for extensions: `MathTools`, `ArrayTools`, `ImageTools`, `Canny` pipeline chaining
+- `@:access(vision.ds.Image)` on tools/format internals needing package-private APIs
+- Group conditional imports with `#if js` / `#if format` / `#if sys`
+
+## Options pattern
+
+```haxe
+@:structInit
+class HoughLineOptions {
+    public var rhoResolution:Float = 1;
+    public var voteThreshold:Int = 100;
+    public function new() {}
+}
+
+static inline function resolveLineOptions(?options:HoughLineOptions):HoughLineOptions {
+    return options == null ? new HoughLineOptions() : options;
+}
+```

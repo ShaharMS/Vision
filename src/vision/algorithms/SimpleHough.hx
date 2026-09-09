@@ -1,38 +1,28 @@
 package vision.algorithms;
 
 import vision.ds.Color;
-import vision.ds.Ray2D;
 import vision.ds.Image;
+import vision.ds.Ray2D;
+import vision.ds.specifics.HoughLineOptions;
 
 class SimpleHough {
+
+    public static function detectParameterLines(image:Image, ?options:HoughLineOptions):Array<Ray2D> {
+        return Hough.detectLines(image, options);
+    }
+
+    public static function mapParameterLines(image:Image, lines:Array<Ray2D>):Image {
+        for (line in lines) {
+            var clipped = line.toLine2D(image.width, image.height);
+            if (clipped != null) image.drawLine2D(clipped, Color.CYAN);
+        }
+        return image;
+    }
     
     public static function detectLines(image:Image, threshold:Int):Array<Ray2D> {
-        
-        var accumulator:Map<String, Null<Int>> = [];
-        var rays:Array<Ray2D> = [];
-
-        image.forEachPixel((x, y, color) -> {
-            if (color.red == 255) {
-                for (deg in 0...179) {
-                    var ray = new Ray2D({x: x, y: y}, null, deg);
-                    var intercept = ray.slope == 0 ? ray.point.x : ray.xIntercept;
-                    var rayAsString = '${Std.int(intercept)}|$deg';
-                    if (accumulator[rayAsString] == null) accumulator[rayAsString] = 1
-                    else accumulator[rayAsString]++;
-                }
-            }
-        });
-
-        for (key => value in accumulator) { 
-            if (value >= threshold) {
-                var x = Std.parseFloat(key.split("|")[0]);
-                var y = 0;
-                var deg = Std.parseInt(key.split("|")[1]);
-                rays.push(new Ray2D({x: x, y: y}, null, deg));
-            }
-        }
-
-        return rays;
+        var options = new HoughLineOptions();
+        options.voteThreshold = threshold;
+        return Hough.detectLines(image, options);
     }
 
     public static function mapLines(image:Image, rays:Array<Ray2D>):Image {

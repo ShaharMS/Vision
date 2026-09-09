@@ -17,6 +17,13 @@ class Matrix2DTest extends utest.Test {
 		return Matrix2D.createFilled([1, 2], [3, 4]);
 	}
 
+	@:visionTestId("vision.ds.Matrix2D.new#fillValue")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_new__fillValue() {
+		assertMatrix([[0.0, 0.0], [0.0, 0.0]], new Matrix2D(2, 2, 0));
+	}
+
 	function assertMatrix(expected:Array<Array<Float>>, actual:Matrix2D):Void {
 		CollectionAssertions.nestedValues(expected, actual.underlying.to2DArray());
 	}

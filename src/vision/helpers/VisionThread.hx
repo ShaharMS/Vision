@@ -57,7 +57,7 @@ class VisionThread {
 			job();
 			jobDone = true;
 		});
-		#elseif (sys)
+		#elseif (target.threaded)
 		underlying = sys.thread.Thread.create(() -> {
 			try {
 				job();
@@ -67,6 +67,14 @@ class VisionThread {
 				onFailedWrapper(e);
 			}
 		});
+		#else
+		try {
+			job();
+			jobDone = true;
+			onDone();
+		} catch (e) {
+			onFailedWrapper(e);
+		}
 		#end
 	}
 

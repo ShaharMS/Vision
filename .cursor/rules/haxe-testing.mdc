@@ -1,0 +1,52 @@
+---
+description: Vision utest conventions, registration, fixtures, and verification commands
+globs: "tests/**/*.hx"
+alwaysApply: false
+---
+
+# Vision testing conventions
+
+See [`tests/README.md`](../../tests/README.md) for full workflow. Authored suites only — no generator pipeline.
+
+## Suite structure
+
+- One `utest.Test` subclass per owned module: `{Module}Test` under `tests/src/tests/`
+- Package `tests`; support helpers in `tests.support`
+- Method names: `test_<member>__<scenario>` (e.g. `test_detectLines__horizontalLine`)
+- Use `utest.Assert`; reuse support helpers before adding one-off helpers
+
+## Metadata
+
+- `@:visionTestId("vision.module.Member#scenario")` on each test method
+- `@:visionMaturity("semantic")`, `@:visionLifecycle("active")` on class and methods when applicable
+- `@:visionRequires("image_fixture")` when a fixture dependency applies
+- `@:access(...)` on the test class when testing package-private members
+
+## Registration and inventory
+
+When adding or changing coverage:
+
+1. Register in [`tests/src/tests/support/ManualSuites.hx`](../../tests/src/tests/support/ManualSuites.hx)
+2. Keep [`tests/src/tests/support/GeneratedSuites.hx`](../../tests/src/tests/support/GeneratedSuites.hx) aligned for legacy compatibility
+3. Update [`tests/catalog/manual-test-inventory.json`](../../tests/catalog/manual-test-inventory.json) when member ownership or exclusions change
+
+## Fixture helpers (prefer these)
+
+| Helper | Use for |
+|--------|---------|
+| `AlgorithmFixtures` | Synthetic images: lines, edges, circles, grids |
+| `Factories` | Blank, gradient, checkerboard images |
+| `ImageAssertions` | Dimensions, pixel/image equality |
+| `ApproxAssertions` | Float comparison with tolerance |
+| `ExceptionAssertions` | `throwsType`, `expectMessage`, `capture` |
+| `FormatAssertions` | Bytes round-trip, malformed input |
+
+## Verification commands
+
+| Scope | Command |
+|-------|---------|
+| Behavioral (narrow) | `haxe test.hxml` with `VISION_TESTS` / `VISION_TEST_CASES` env vars |
+| Compile breadth | `haxe tests/ci/local-ci.hxml -- --targets=interp,js` (add compile-only + skip-install env vars for speed) |
+| Library compile | `haxe compile.hxml` |
+
+On Windows local runs, prefer env vars over `haxe test.hxml -- --tests` (see `tests/README.md`). Clear `VISION_TEST_CASES` before suite-only reruns.

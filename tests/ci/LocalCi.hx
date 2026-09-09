@@ -229,11 +229,11 @@ class LocalCi {
             args.push("vision_no_inline");
         }
 
+        if (target == "neko") {
+            return compileNekoBatches(args);
+        }
 
         switch (target) {
-            case "neko":
-                args.push("--neko");
-                args.push("bin/neko/tests.n");
             case "hl":
                 args.push("--hl");
                 args.push("bin/hl/tests.hl");
@@ -282,6 +282,23 @@ class LocalCi {
         return Sys.command("haxe", args) == 0;
     }
 
+    static function compileNekoBatches(baseArgs:Array<String>):Bool {
+        for (batch in 1...9) {
+            Sys.println("  batch " + batch);
+            var args = baseArgs.copy();
+            args.push("-D");
+            args.push("vision_neko_batched");
+            args.push("-D");
+            args.push("vision_neko_batch_" + batch);
+            args.push("--neko");
+            args.push("bin/neko/tests-" + batch + ".n");
+            if (Sys.command("haxe", args) != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     static function runTarget(target:String, config:{targets:Array<String>, compile:Bool, run:Bool, skipInstall:Bool, allowInline:Bool, allowInlineTargets:Array<String>, skipGolden:Bool, skipInvalidTests:Bool, showHelp:Bool}):Bool {
         Sys.println("\n==> Run " + target);
         var isWindows = Sys.systemName() == "Windows";
@@ -315,7 +332,7 @@ class LocalCi {
             case "js":
                 return Sys.command("node", ["bin/js/tests.js"]) == 0;
             case "neko":
-                return Sys.command(isWindows ? "neko.exe" : "neko", ["bin/neko/tests.n"]) == 0;
+                return runNekoBatches(isWindows);
             case "hl":
                 return Sys.command(isWindows ? "hl.exe" : "hl", ["bin/hl/tests.hl"]) == 0;
             case "cpp":
@@ -358,6 +375,17 @@ class LocalCi {
                 Sys.println("Unknown target: " + target);
                 return false;
         }
+    }
+
+    static function runNekoBatches(isWindows:Bool):Bool {
+        var command = isWindows ? "neko.exe" : "neko";
+        for (batch in 1...9) {
+            Sys.println("  batch " + batch);
+            if (Sys.command(command, ["bin/neko/tests-" + batch + ".n"]) != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     static function ensureRuntime(target:String, isWindows:Bool):Bool {
