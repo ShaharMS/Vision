@@ -1,6 +1,6 @@
 # Plan: Seam carving — Step 2: api
 
-> Status: Not started
+> Status: Completed
 > Parent: [overview](seam-carving-overview.md)
 > Prerequisite: Step 1
 > Next: Step 3
@@ -32,3 +32,5 @@ Commit this completed step and push.
 ## Verification
 
 haxe compile.hxml
+
+Evidence: haxe compile.hxml passes. API returns a fresh image, validates dimensions before allocation, documents energy, tie order, alpha and limits.
