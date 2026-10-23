@@ -201,7 +201,7 @@ jobs:
           if [ "${{ matrix.target }}" != "lua" ]; then
             BASE_CMD="$BASE_CMD -debug"
           fi
-          if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
+          if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ] || [ "${{ matrix.target }}" = "cppia" ]; then
             BASE_CMD="$BASE_CMD --no-inline"
           fi
           if [ "${{ matrix.target }}" = "neko" ]; then
@@ -287,6 +287,7 @@ jobs:
             fi
           fi
           if [ "${{ matrix.target }}" = "cppia" ]; then
+            VISION_TESTS=SeamCarvingTest haxelib run hxcpp bin/cppia/tests.cppia
             haxelib run hxcpp bin/cppia/tests.cppia
           fi
           if [ "${{ matrix.target }}" = "interp" ]; then

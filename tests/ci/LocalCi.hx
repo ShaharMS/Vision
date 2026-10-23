@@ -427,7 +427,7 @@ class LocalCi {
     static function shouldDisableInline(target:String, config:{allowInline:Bool, allowInlineTargets:Array<String>}):Bool {
         if (config.allowInline) return false;
         if (config.allowInlineTargets != null && config.allowInlineTargets.indexOf(target) != -1) return false;
-        return false;
+        return target == "java" || target == "jvm" || target == "cppia";
     }
 
     static function ensureTool(isWindows:Bool, command:String, wingetIds:Array<String>, chocoId:String, forceInstall:Bool = false):Bool {
