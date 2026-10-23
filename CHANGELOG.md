@@ -26,6 +26,7 @@
 
 - Corrected behavior across edge detectors, K-means, image hashing, linear algebra, geometry, color handling, byte arrays, queues and math utilities.
 - Added `InvalidHeapsPixelFormat` and `SingularMatrixError` diagnostics.
+- Fixed `vision_quiet` compilation for matrix conversion and PNG/BMP loading; invalid PNG/BMP input returns a transparent 1x1 placeholder in quiet mode.
 - Added inline protection for targets with generated method-size limits and support for non-threaded sys targets.
 - Fixed JavaScript job completion/failure dispatch and Node handling of typed exceptions and browser-only operations.
 

@@ -16,7 +16,7 @@ class FormatImageLoader {
         Load an image from bytes.
 
         @param bytes The bytes of the image, in PNG format
-        @return The loaded image
+        @return The loaded image, or an transparent 1x1 image on invalid input when `vision_quiet` is enabled
         @throws ImageLoadingFailed if the loaded image is not a PNG
         @throws ImageLoadingFailed if the PNG has incorrect header data.
     **/
@@ -34,6 +34,8 @@ class FormatImageLoader {
             } catch (e) {
                 #if !vision_quiet 
                 throw new ImageLoadingFailed(PNG, e.message); 
+                #else
+                return image;
                 #end
             }
         } catch (e:haxe.Exception) {
@@ -41,13 +43,16 @@ class FormatImageLoader {
             throw new ImageLoadingFailed(PNG, e.message); 
             #end
         }
+        #if vision_quiet
+        return new Image(1, 1);
+        #end
     }
 
     /**
         Load an image from bytes.
 
         @param bytes The bytes of the image, in BMP format
-        @return The loaded image
+        @return The loaded image, or an transparent 1x1 image on invalid input when `vision_quiet` is enabled
         @throws ImageLoadingFailed if the loaded image is not a BMP
         @throws ImageLoadingFailed if the BMP has incorrect header data, and reports it has more bytes than it should.
     **/
@@ -64,6 +69,8 @@ class FormatImageLoader {
             } catch (e) {
                 #if !vision_quiet 
                 throw new ImageLoadingFailed(BMP, e.message);
+                #else
+                return image;
                 #end
             }
         } catch (e:haxe.Exception) {
@@ -71,7 +78,9 @@ class FormatImageLoader {
             throw new ImageLoadingFailed(BMP, e.message);
             #end
         }
-
+        #if vision_quiet
+        return new Image(1, 1);
+        #end
     }
 }
 

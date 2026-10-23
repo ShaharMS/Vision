@@ -214,6 +214,13 @@ jobs:
             $CMD
           fi
 
+      - name: Verify quiet mode and large image headers
+        if: ${{ matrix.target == 'interp' }}
+        env:
+          VISION_TESTS: SeamCarvingTest,FromBytesTest,TransformationMatrix2DTest
+          VISION_TEST_CASES: (quiet|carve|compute)
+        run: haxe test.hxml -D vision_quiet -D vision_higher_width_cap
+
       - name: Run (${{ matrix.target }})
         run: |
           if [ "${{ matrix.target }}" = "js" ]; then
