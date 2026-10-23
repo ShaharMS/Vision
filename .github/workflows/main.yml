@@ -164,6 +164,7 @@ jobs:
           haxelib dev vision $GITHUB_WORKSPACE
           haxelib install utest --quiet
           haxelib install format --quiet
+          if [ "${{ matrix.target }}" = "js" ]; then haxelib install hxnodejs --quiet; fi
           haxelib install hxcpp --quiet
           haxelib install hxjava --quiet
           haxelib install hxcs --quiet
@@ -186,6 +187,9 @@ jobs:
             mkdir -p "$OUTDIR"
           fi
           BASE_CMD="haxe --class-path tests/src --main Main --library vision --library format --library utest -D vision_skip_golden -D vision_skip_invalid_tests"
+          if [ "${{ matrix.target }}" = "js" ]; then
+            BASE_CMD="$BASE_CMD --library hxnodejs"
+          fi
           if [ "${{ matrix.target }}" != "lua" ]; then
             BASE_CMD="$BASE_CMD -debug"
           fi

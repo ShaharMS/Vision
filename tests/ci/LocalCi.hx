@@ -173,6 +173,8 @@ class LocalCi {
         var libs = DEFAULT_LIBS.copy();
         for (target in targets) {
             switch (target) {
+                case "js":
+                    addUnique(libs, "hxnodejs");
                 case "cpp" | "cppia":
                     addUnique(libs, "hxcpp");
                 case "java" | "jvm":
@@ -238,6 +240,8 @@ class LocalCi {
                 args.push("--hl");
                 args.push("bin/hl/tests.hl");
             case "js":
+                args.push("--library");
+                args.push("hxnodejs");
                 args.push("--js");
                 args.push("bin/js/tests.js");
             case "cpp":

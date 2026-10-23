@@ -11,3 +11,5 @@ Add classic Avidan-Shamir seam removal, generated documentation and release veri
 3. [Step 3: tests](seam-carving-3-tests.md)
 4. [Step 4: documentation](seam-carving-4-documentation.md)
 5. [Step 5: release-readiness](seam-carving-5-release-readiness.md)
+
+Release-audit findings require two focused follow-ups: [Node CI](seam-carving-5a-node-ci.md) and [Node runtime](seam-carving-5b-node-runtime.md), before final readiness closeout.
