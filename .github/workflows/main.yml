@@ -4,6 +4,7 @@ on: [push, pull_request]
 jobs:
   tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -73,6 +74,7 @@ jobs:
           haxelib setup "$HAXE_STD_PATH/../lib"
 
       - name: Setup runtime (all targets)
+        timeout-minutes: 15
         run: |
           set -e
           TARGET="${{ matrix.target }}"
@@ -134,7 +136,7 @@ jobs:
               fi
             fi
             if [ "$TARGET" = "cs" ]; then
-              sudo apt-get install -y mono-complete
+              sudo apt-get install -y --no-install-recommends mono-runtime mono-mcs libmono-system-io-compression4.0-cil
             fi
             if [ "$TARGET" = "cpp" ] || [ "$TARGET" = "cppia" ]; then
               sudo apt-get install -y build-essential
@@ -169,6 +171,7 @@ jobs:
           haxelib install hxjava --quiet
           haxelib install hxcs --quiet
       - name: Build hxcpp tools (cppia runtime)
+        timeout-minutes: 15
         if: ${{ matrix.target == 'cppia' }}
         run: |
           # The released host predates the cppia callable crash fix in HaxeFoundation/hxcpp#1324.
