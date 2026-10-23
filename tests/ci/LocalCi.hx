@@ -294,6 +294,8 @@ class LocalCi {
             args.push("vision_neko_batched");
             args.push("-D");
             args.push("vision_neko_batch_" + batch);
+            args.push("-dce");
+            args.push("full");
             args.push("--neko");
             args.push("bin/neko/tests-" + batch + ".n");
             if (Sys.command("haxe", args) != 0) {

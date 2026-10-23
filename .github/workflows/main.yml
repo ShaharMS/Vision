@@ -198,7 +198,7 @@ jobs:
           fi
           if [ "${{ matrix.target }}" = "neko" ]; then
             for BATCH in 1 2 3 4 5 6 7 8; do
-              CMD="$BASE_CMD -D vision_neko_batched -D vision_neko_batch_$BATCH --neko bin/neko/tests-$BATCH.n"
+              CMD="$BASE_CMD -dce full -D vision_neko_batched -D vision_neko_batch_$BATCH --neko bin/neko/tests-$BATCH.n"
               echo "$CMD"
               $CMD
             done
