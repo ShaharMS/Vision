@@ -288,8 +288,9 @@ jobs:
           fi
           if [ "${{ matrix.target }}" = "cppia" ]; then
             HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
-            VISION_TESTS=SeamCarvingTest "$HXCPP_PATH/bin/Linux64/Cppia" -jit bin/cppia/tests.cppia
-            "$HXCPP_PATH/bin/Linux64/Cppia" -jit bin/cppia/tests.cppia
+            haxe --class-path tests/src --main SeamCarvingMain --library vision --library utest -dce full --cppia bin/cppia/seam-tests.cppia
+            "$HXCPP_PATH/bin/Linux64/Cppia" bin/cppia/seam-tests.cppia
+            "$HXCPP_PATH/bin/Linux64/Cppia" bin/cppia/tests.cppia
           fi
           if [ "${{ matrix.target }}" = "interp" ]; then
             echo "Interp already executed in compile step."

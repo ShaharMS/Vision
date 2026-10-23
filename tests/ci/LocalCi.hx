@@ -376,7 +376,7 @@ class LocalCi {
                     Sys.println("cppia runtime not found. Please install hxcpp/cppia or add cppia.exe to PATH.");
                     return false;
                 }
-                return Sys.command(cppiaPath, ["-jit", "bin/cppia/tests.cppia"]) == 0;
+                return Sys.command(cppiaPath, ["bin/cppia/tests.cppia"]) == 0;
             default:
                 Sys.println("Unknown target: " + target);
                 return false;
