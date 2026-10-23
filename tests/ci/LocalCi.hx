@@ -717,13 +717,13 @@ class LocalCi {
         var hxcppPath = getHaxelibPath("hxcpp");
         if (hxcppPath != null) {
             // Prefer the host built from the active, patched haxelib checkout.
+            var platformDirectory = isWindows ? "Windows64" : Sys.systemName() == "Mac" ? "Mac64" : "Linux64";
+            var hostName = isWindows ? "Cppia.exe" : "Cppia";
+            var legacyDirectory = isWindows ? "Windows" : Sys.systemName() == "Mac" ? "Mac" : "Linux";
             var candidates = [
-                Path.join([hxcppPath, "bin", "Windows64", "Cppia.exe"]),
-                Path.join([hxcppPath, "bin", "Linux64", "Cppia"]),
-                Path.join([hxcppPath, "bin", "Mac64", "Cppia"]),
+                Path.join([hxcppPath, "bin", platformDirectory, hostName]),
                 Path.join([hxcppPath, "bin", exe]),
-                Path.join([hxcppPath, "bin", "Windows", exe]),
-                Path.join([hxcppPath, "bin", "Linux", exe])
+                Path.join([hxcppPath, "bin", legacyDirectory, exe])
             ];
             for (candidate in candidates) {
                 if (FileSystem.exists(candidate)) return candidate;

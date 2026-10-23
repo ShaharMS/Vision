@@ -1,6 +1,6 @@
 # Plan: Seam carving release audit - Node runtime compatibility
 
-> Status: Completed
+> Status: ✅ Completed
 > Parent: [overview](seam-carving-overview.md)
 
 ## TL;DR

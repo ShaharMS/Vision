@@ -1,6 +1,6 @@
 # Plan: Seam carving release audit - Node CI exit status
 
-> Status: Completed
+> Status: ✅ Completed
 > Parent: [overview](seam-carving-overview.md)
 
 ## TL;DR

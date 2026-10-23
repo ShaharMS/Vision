@@ -1,6 +1,6 @@
 # Plan: Release audit - Neko module loading
 
-> Status: Completed
+> Status: ✅ Completed
 > Parent: [overview](seam-carving-overview.md)
 
 ## TL;DR

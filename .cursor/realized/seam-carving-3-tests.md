@@ -1,6 +1,6 @@
 # Plan: Seam carving — Step 3: tests
 
-> Status: Completed
+> Status: ✅ Completed
 > Parent: [overview](seam-carving-overview.md)
 > Prerequisite: Step 2
 > Next: Step 4

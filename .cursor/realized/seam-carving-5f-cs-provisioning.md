@@ -1,6 +1,6 @@
 # Plan: Release audit - focused C# provisioning
 
-> Status: Completed
+> Status: ✅ Completed
 > Parent: [overview](seam-carving-overview.md)
 
 ## TL;DR

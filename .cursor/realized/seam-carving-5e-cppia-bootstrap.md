@@ -1,6 +1,6 @@
 # Plan: Release audit - noninteractive cppia bootstrap
 
-> Status: Completed
+> Status: ✅ Completed
 > Parent: [overview](seam-carving-overview.md)
 
 ## TL;DR

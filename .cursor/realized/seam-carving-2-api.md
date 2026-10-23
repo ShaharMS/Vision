@@ -1,6 +1,6 @@
 # Plan: Seam carving — Step 2: api
 
-> Status: Completed
+> Status: ✅ Completed
 > Parent: [overview](seam-carving-overview.md)
 > Prerequisite: Step 1
 > Next: Step 3
