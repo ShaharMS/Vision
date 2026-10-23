@@ -24,3 +24,5 @@ Run the six new seam cases in a separate process, then require the full suite to
 ## Verification
 
 Remote run 40010003388 exposed Gaussian failures and exit 139 after Cramer tests; no exclusions or assertion changes are used. The next remote result decides whether this is a usable configuration.
+
+No-inline experiment failed before the first seam case with argument-count mismatch / hxSehException in run 40010722215. Reverted cppia no-inline. Next diagnostic uses the documented cpp.cppia.Host -jit option on the same pinned host; both focused and broad suites remain required.

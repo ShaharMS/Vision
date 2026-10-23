@@ -376,7 +376,7 @@ class LocalCi {
                     Sys.println("cppia runtime not found. Please install hxcpp/cppia or add cppia.exe to PATH.");
                     return false;
                 }
-                return Sys.command(cppiaPath, ["bin/cppia/tests.cppia"]) == 0;
+                return Sys.command(cppiaPath, ["-jit", "bin/cppia/tests.cppia"]) == 0;
             default:
                 Sys.println("Unknown target: " + target);
                 return false;
@@ -427,7 +427,7 @@ class LocalCi {
     static function shouldDisableInline(target:String, config:{allowInline:Bool, allowInlineTargets:Array<String>}):Bool {
         if (config.allowInline) return false;
         if (config.allowInlineTargets != null && config.allowInlineTargets.indexOf(target) != -1) return false;
-        return target == "java" || target == "jvm" || target == "cppia";
+        return target == "java" || target == "jvm";
     }
 
     static function ensureTool(isWindows:Bool, command:String, wingetIds:Array<String>, chocoId:String, forceInstall:Bool = false):Bool {
