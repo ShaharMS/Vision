@@ -6,7 +6,7 @@ import haxe.Exception;
 class VisionThread {
 	static var COUNT:Int = 0;
 
-	var underlying:#if js js.lib.Promise<Void> #elseif (target.threaded) sys.thread.Thread #else Dynamic #end;
+	var underlying:#if js js.lib.Promise<Bool> #elseif (target.threaded) sys.thread.Thread #else Dynamic #end;
 
 	/**
 	 * The currently assigned job. should be a function with 0 parameters and no return type (`Void` `->` `Void`)
@@ -53,9 +53,20 @@ class VisionThread {
 
 	public function start() {
 		#if js
-		underlying = new js.lib.Promise((onDone, onFailedWrapper) -> {
-			job();
-			jobDone = true;
+		underlying = new js.lib.Promise((resolve, reject) -> {
+			try {
+				job();
+				jobDone = true;
+				onDone();
+				resolve(true);
+			} catch (error) {
+				try {
+					onFailedWrapper(error);
+					resolve(false);
+				} catch (failure) {
+					reject(failure);
+				}
+			}
 		});
 		#elseif (target.threaded)
 		underlying = sys.thread.Thread.create(() -> {
