@@ -201,7 +201,7 @@ jobs:
           if [ "${{ matrix.target }}" != "lua" ]; then
             BASE_CMD="$BASE_CMD -debug"
           fi
-          if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ] ]; then
+          if [ "${{ matrix.target }}" = "java" ] || [ "${{ matrix.target }}" = "jvm" ]; then
             BASE_CMD="$BASE_CMD --no-inline"
           fi
           if [ "${{ matrix.target }}" = "neko" ]; then
