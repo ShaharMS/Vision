@@ -136,4 +136,48 @@ class Array2DTest extends utest.Test {
 	function test_to2DArray__default() {
 		CollectionAssertions.nestedValues([[1, 2], [3, 4]], createSequentialArray().to2DArray());
 	}
+	@:visionTestId("vision.ds.Array2D.get#fractional-grid")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_get__fractionalGridPreservesPrecision() {
+		var grid = new Array2D<Float>(3, 2, 0.0);
+		for (y in 0...2) for (x in 0...3) grid.set(x, y, (1 + x + y * 3) / 8);
+		var sum = 0.0;
+		for (y in 0...2) for (x in 0...3) sum += grid.get(x, y);
+		Assert.floatEquals(2.625, sum);
+	}
+
+	@:visionTestId("vision.ds.Array2D.length#dynamic-resize")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_length__dynamicBufferGrowsAndShrinks() {
+		var grid = new Array2D<Dynamic>(2, 2);
+		Assert.equals(4, grid.length);
+		grid.inner[0] = "kept";
+		grid.length = 6;
+		Assert.equals(6, grid.length);
+		Assert.equals("kept", grid.inner[0]);
+		Assert.equals(null, grid.inner[5]);
+		grid.length = 2;
+		Assert.equals(2, grid.length);
+		Assert.equals("kept", grid.inner[0]);
+		grid.length = 0;
+		Assert.equals(0, grid.length);
+	}
+
+	@:visionTestId("vision.ds.Array2D.to2DArray#fractional-row-mutation")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_to2DArray__fractionalRowsKeepLengthAndValues() {
+		var grid = new Array2D<Float>(3, 2, 0.0);
+		for (y in 0...2) for (x in 0...3) grid.set(x, y, (1 + x + y * 3) / 8);
+		var rows = grid.to2DArray();
+		CollectionAssertions.nestedValues([[0.125, 0.25, 0.375], [0.5, 0.625, 0.75]], rows);
+		Assert.floatEquals(0.375, rows[0].pop());
+		Assert.equals(2, rows[0].length);
+		Assert.floatEquals(0.125, rows[0].shift());
+		Assert.equals(1, rows[0].length);
+		Assert.floatEquals(0.375, grid.get(2, 0));
+	}
+
 }
