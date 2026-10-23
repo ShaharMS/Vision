@@ -88,8 +88,8 @@ class Vision {
 		for interpolation or enlargement. No seam insertion or object-protection mask is applied.
 
 		```haxe
-		var narrower = Vision.carve(image, 225, image.height);
-		var shorter = Vision.carve(image, image.width, 168);
+		var narrower = Vision.carve(image, 112, image.height);
+		var shorter = Vision.carve(image, image.width, 84);
 		```
 
 		| Original | Width reduced | Height reduced |

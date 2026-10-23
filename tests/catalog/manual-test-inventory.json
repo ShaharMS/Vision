@@ -7,6 +7,14 @@
                                                   "excluded":  "Declaration surface intentionally excluded from direct manual test ownership; module notes explain whether the exclusion is due to metadata-only shape, target gating, or consumer-driven coverage."
                                           },
         "modules":  {
+        "vision.algorithms.SeamCarving": {
+            "status": "manual",
+            "sourceFile": "src/vision/algorithms/SeamCarving.hx",
+            "testFile": "tests/src/tests/SeamCarvingTest.hx",
+            "members": ["compute"],
+            "deferredMembers": [],
+            "notes": "Semantic seam tests include exhaustive path minimization, transpose parity, recomputation, deterministic ties, dimensions, source independence and exact surviving RGBA pixels. Also owns Vision.carve wrapper coverage."
+        },
                                         "vision.exceptions.SingularMatrixError":  {
                                                                                                                                     "deferredMembers":  [
 
@@ -904,7 +912,7 @@
                                                                                     "notes":  "Manual semantic facade suite covers representative public compatibility and delegation invariants while the deeper algorithm expectations remain in the algorithm-specific suites. Hough and Harris wrapper ownership is split across VisionTest, HoughProbabilisticTest, HoughCircleTest, and HarrisTest. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module.",
                                                                                     "status":  "manual",
                                                                                     "sourceFile":  "src/vision/Vision.hx",
-                                                                                    "members":  [
+                                                                                    "members":  ["carve",
                                                                                                                     "combine",
                                                                                                                     "tint",
                                                                                                                     "grayscale",

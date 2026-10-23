@@ -5,6 +5,7 @@ import tests.*;
 
 class ManualSuites {
 	public static function addCases(runner:Runner, includeTest:String->Bool, ?casePattern:EReg):Void {
+		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ArrayToolsTest")) runner.addCase(new ArrayToolsTest(), "setup", "teardown", "test", casePattern);
