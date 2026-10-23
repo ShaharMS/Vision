@@ -42,3 +42,7 @@ From repo root:
 - Lua requires its native dependencies (`rex_pcre2`, `luv`, `bit`/`bit32`, and sockets as applicable). CI installs these modules; PNG export uses stored DEFLATE blocks on Lua.
 - Neko batches use `-dce full` so unreachable image methods cannot exceed the VM function-scope limit. Seam tests execute in batch 1.
 - The interpreter job also exercises `vision_quiet` with `vision_higher_width_cap` using focused seam, malformed-format and fractional-matrix regressions.
+
+## Current cppia release blocker
+
+The pinned hxcpp host runs the standalone seam suite (`SeamCarvingMain`) successfully. The broad suite still fails existing Gaussian assertions and segfaults around the Cramer tests. CI deliberately retains that failure. No-inline and JIT modes were tested and did not resolve it. See `.cursor/plans/seam-carving-5g-cppia-runtime.md` for exact runs and resume evidence; cppia is not release-qualified yet.

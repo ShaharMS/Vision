@@ -1,4 +1,4 @@
-# Plan: Seam carving — Step 3: tests
+# Plan: Seam carving â€” Step 3: tests
 
 > Status: Completed
 > Parent: [overview](seam-carving-overview.md)

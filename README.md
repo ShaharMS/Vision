@@ -270,3 +270,12 @@ If you see some code that you think is not understandable, or some place that la
 | `vision_fancy_array_access` | Enables a fancy, shortened way to access arrays of multi-dimensional arrays (specifically Array2D) using double square brackets: `array[[x, y]]`. This is enabled by default. When disabled, only direct `get` and `set` calls are allowed. | 2.0.0 - now |
 | `vision_hlc_color_compile` | When compiling to C code using the C transpiler of Hashlink, the word TRANSPARENT can clash with existing `#define`s in the resulting C code. To work around this, the defines disables `Color.TRANSPARENT`. You can use `Color.TRANSPARENT_COLOR` instead. | 2.0.0 - now |
 | `vision_disable_inline_protection` | Disables the inline-stripping build macro used on java, jvm, and lua targets. Leave this off unless you explicitly want inline fields preserved on those targets. Pay attention - inlining was disabled on these targets because of errors related to variable count/function size | 2.2.0 - now |
+
+
+## Building a release candidate
+
+Run `haxe test.hxml` and the relevant targets in `tests/ci/local-ci.hxml` before packaging. Tests require `utest`; the library itself does not.
+
+On Windows, `powershell -NoProfile -File build-release.ps1` (or `release-to-haxelib.bat`) creates a timestamped ZIP under `release/` without deleting earlier candidates or publishing anything. After reviewing the candidate, submit that ZIP explicitly with `haxelib submit <zip-path>`.
+
+For Neko builds, use `-dce full` to discard unreachable image methods that can exceed the VM function-scope limit. Local and GitHub CI apply this flag to the Neko batches.

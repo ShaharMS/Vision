@@ -1,4 +1,4 @@
-# Plan: Seam carving — Step 4: documentation
+# Plan: Seam carving â€” Step 4: documentation
 
 > Status: Completed
 > Parent: [overview](seam-carving-overview.md)

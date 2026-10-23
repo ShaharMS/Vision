@@ -1,4 +1,4 @@
-# Plan: Seam carving — Step 2: api
+# Plan: Seam carving â€” Step 2: api
 
 > Status: Completed
 > Parent: [overview](seam-carving-overview.md)

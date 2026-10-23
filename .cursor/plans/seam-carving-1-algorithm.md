@@ -1,4 +1,4 @@
-# Plan: Seam carving — Step 1: algorithm
+# Plan: Seam carving â€” Step 1: algorithm
 
 > Status: Completed
 > Parent: [overview](seam-carving-overview.md)
