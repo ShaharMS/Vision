@@ -714,20 +714,22 @@ class LocalCi {
 
     static function findCppiaExecutable(isWindows:Bool):Null<String> {
         var exe = isWindows ? "cppia.exe" : "cppia";
-        if (commandExists(exe, isWindows)) return exe;
-
         var hxcppPath = getHaxelibPath("hxcpp");
-        if (hxcppPath == null) return null;
-
-        var candidates = [
-            Path.join([hxcppPath, "bin", exe]),
-            Path.join([hxcppPath, "bin", "Windows", exe]),
-            Path.join([hxcppPath, "bin", "Windows64", "Cppia.exe"]),
-            Path.join([hxcppPath, "bin", "Linux", exe])
-        ];
-        for (candidate in candidates) {
-            if (FileSystem.exists(candidate)) return candidate;
+        if (hxcppPath != null) {
+            // Prefer the host built from the active, patched haxelib checkout.
+            var candidates = [
+                Path.join([hxcppPath, "bin", "Windows64", "Cppia.exe"]),
+                Path.join([hxcppPath, "bin", "Linux64", "Cppia"]),
+                Path.join([hxcppPath, "bin", "Mac64", "Cppia"]),
+                Path.join([hxcppPath, "bin", exe]),
+                Path.join([hxcppPath, "bin", "Windows", exe]),
+                Path.join([hxcppPath, "bin", "Linux", exe])
+            ];
+            for (candidate in candidates) {
+                if (FileSystem.exists(candidate)) return candidate;
+            }
         }
+        if (commandExists(exe, isWindows)) return exe;
         return null;
     }
 

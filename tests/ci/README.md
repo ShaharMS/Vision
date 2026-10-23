@@ -43,6 +43,6 @@ From repo root:
 - Neko batches use `-dce full` so unreachable image methods cannot exceed the VM function-scope limit. Seam tests execute in batch 1.
 - The interpreter job also exercises `vision_quiet` with `vision_higher_width_cap` using focused seam, malformed-format and fractional-matrix regressions.
 
-## Current cppia release blocker
+## cppia host configuration
 
-The pinned hxcpp host runs the standalone seam suite (`SeamCarvingMain`) successfully. The broad suite still fails existing Gaussian assertions and segfaults around the Cramer tests. CI deliberately retains that failure. No-inline and JIT modes were tested and did not resolve it. See `.cursor/plans/seam-carving-5g-cppia-runtime.md` for exact runs and resume evidence; cppia is not release-qualified yet.
+Use the pinned, patched interpreter host described in [cppia/README.md](cppia/README.md). The unpatched released host fails generic-array and matrix tests. GitHub CI builds the patched host; the local runner prefers the active haxelib checkout's host (including Linux64/Cppia) over an unrelated PATH executable. JIT mode is not qualified.

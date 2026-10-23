@@ -12,6 +12,8 @@ New-Item -ItemType Directory -Path $packageRoot -ErrorAction Stop | Out-Null
 foreach ($name in @('extraParams.hxml', 'CHANGELOG.md', 'LICENSE', 'README.md', 'haxelib.json', 'hxformat.json', 'src')) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $packageRoot -Recurse -ErrorAction Stop
 }
+# Ship the required cppia host compatibility patch and reproducible build helper.
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'tests/ci/cppia') -Destination (Join-Path $packageRoot 'cppia') -Recurse -ErrorAction Stop
 $archive = "$packageRoot.zip"
 Compress-Archive -Path (Join-Path $packageRoot '*') -DestinationPath $archive -ErrorAction Stop
 Write-Output $archive

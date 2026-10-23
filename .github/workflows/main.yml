@@ -173,20 +173,7 @@ jobs:
       - name: Build hxcpp tools (cppia runtime)
         timeout-minutes: 15
         if: ${{ matrix.target == 'cppia' }}
-        run: |
-          # The released host predates the cppia callable crash fix in HaxeFoundation/hxcpp#1324.
-          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp ceb70d040f0792f004ccf1ed7eb6fcea01d7f3ff
-          HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
-          # Git checkouts do not ship hxcpp.n. Bootstrap it explicitly so CI never
-          # reaches hxcpp's interactive first-use prompt.
-          pushd "$HXCPP_PATH/tools/hxcpp" > /dev/null
-          haxe compile.hxml
-          popd > /dev/null
-          pushd "$HXCPP_PATH/project" > /dev/null
-          # The hosted runner reports host CPUs beyond this job's allocation. Limit
-          # hxcpp's worker pool so source bootstrapping does not thrash indefinitely.
-          HXCPP_COMPILE_THREADS=4 haxe compile-cppia.hxml
-          popd > /dev/null
+        run: bash tests/ci/cppia/build-host.sh
       - name: Compile (${{ matrix.target }})
         run: |
           mkdir -p bin

@@ -279,3 +279,7 @@ Run `haxe test.hxml` and the relevant targets in `tests/ci/local-ci.hxml` before
 On Windows, `powershell -NoProfile -File build-release.ps1` (or `release-to-haxelib.bat`) creates a timestamped ZIP under `release/` without deleting earlier candidates or publishing anything. After reviewing the candidate, submit that ZIP explicitly with `haxelib submit <zip-path>`.
 
 For Neko builds, use `-dce full` to discard unreachable image methods that can exceed the VM function-scope limit. Local and GitHub CI apply this flag to the Neko batches.
+
+### cppia runtime requirement
+
+The cppia interpreter needs the pinned hxcpp array-compatibility fixes in [the host build instructions](tests/ci/cppia/README.md). In a source checkout run `bash tests/ci/cppia/build-host.sh`; release ZIPs include the same helper and patch under `cppia/`. The helper selects the documented hxcpp version in the active haxelib repository, so use an isolated repository if another project needs a different version. JIT mode is not qualified. Other targets do not use this patch.

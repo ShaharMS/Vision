@@ -34,6 +34,7 @@
 
 - Replaced generated test scaffolding with authored behavioral `utest` suites, suite/case filtering and a maintained coverage inventory.
 - Added a local multi-target CI runner and repaired runtime setup across the target matrix.
+- Added a pinned cppia interpreter-host patch for generic/typed array interoperability, fractional values, resize and length handling, with reproducible build tooling included in release ZIPs.
 - Node tests now use `hxnodejs` and return a failing process status when assertions fail.
 - Removed the test-only `utest` dependency from the library package.
 - Added a package-only PowerShell builder; the release batch file stops if packaging fails before offering submission.

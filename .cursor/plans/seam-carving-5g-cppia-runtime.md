@@ -50,3 +50,9 @@ The Docker reproduction matches Haxe 4.3.7, format 3.8.0, utest 1.13.2, and hxcp
 Patched interpreter candidate c118fed3eb55 and earlier partial candidates still failed zero fills. The final candidate (image tagged vision-cppia-lab:length-fix-candidate; exact digest recorded at closeout) corrects length handling for resized placeholder arrays as well. All 619 tests pass locally on the original Vision code, including four new runtime regressions.
 
 This continuation uses separate commits for (1) runtime regressions, (2) pinned host patches/build and package integration, (3) final verification closeout. Global no-inline and JIT are not used, and no suite exclusions are added. Qualify interpreted cppia with the patched host; do not describe an unpatched released hxcpp host as passing.
+
+## Candidate selected for CI verification
+
+The final host patch preserves the existing typed interpreter path while normalizing typed/generic receivers, implements dynamic resize, preserves fractional reads and uses correct public lengths for placeholder arrays. All 619 tests pass locally with no source changes to Vision algorithms/data structures and no expectation changes. Four new regressions were added to existing suites. The earlier constructor/setter/general-dispatch experiments are not retained.
+
+The pin, compatibility patch, idempotent host build script and isolated Dockerfile are added under tests/ci/cppia. Release ZIPs include the same tools under cppia/. CI and the local runner select this host; JIT remains outside the qualified configuration. Remote matrix verification remains required before closeout.
