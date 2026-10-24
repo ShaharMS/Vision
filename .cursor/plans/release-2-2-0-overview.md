@@ -2,7 +2,7 @@
 
 ## Status: In progress
 
-Merge the qualified feature work, restore the historical changelog/release-note styles, publish the GitHub release, and prepare the exact Haxelib submission command for the user. User input on release-note content is pending and required before publication. The final Haxelib command must not run here.
+Merge the qualified feature work, restore the historical changelog/release-note styles, publish the GitHub release, and prepare the exact Haxelib submission command for the user. On 2026-10-24 the user approved the proposed release-note wording and emphasis: Seam carving, Hough line/circle detection, Harris corners, higher-quality resizing, modern image I/O, and cross-target reliability. The final Haxelib command must not run here.
 
 ## Sub-plans
 

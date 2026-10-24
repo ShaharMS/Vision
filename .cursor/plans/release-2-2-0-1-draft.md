@@ -32,4 +32,4 @@ Compare headings, bold bullets, scope against 2.1.0..HEAD; JSON metadata check.
 
 Compare headings, bold bullets, scope against 2.1.0..HEAD; JSON metadata check.
 
-Evidence: Preserved all 2.1.0-and-earlier changelog bytes; new entries use module headings and bold bullets. GitHub draft uses the previous release headings, emoji and changelog links. #54 merged at a439049; #53 merged at 3c186e7 after confirming its source tree matches the previously verified feature tree. Release-note input is pending before finalization/publication.
+Evidence: Preserved all 2.1.0-and-earlier changelog bytes; new entries use module headings and bold bullets. GitHub draft uses the previous release headings, emoji and changelog links. #54 merged at a439049; #53 merged at 3c186e7 after confirming its source tree matches the previously verified feature tree. The user approved the proposed wording and emphasis on 2026-10-24; haxelib.json uses that exact summary.

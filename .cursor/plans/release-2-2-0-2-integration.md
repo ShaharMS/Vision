@@ -1,6 +1,6 @@
 # Plan: Vision 2.2.0 - Step 2: integration
 
-> Status: Not started
+> Status: In progress
 > Parent: [overview](release-2-2-0-overview.md)
 > Prerequisite: Step 1
 
@@ -31,3 +31,7 @@ Main tree contains every required commit; release metadata says 2.2.0; full targ
 ## Verification
 
 Main tree contains every required commit; release metadata says 2.2.0; full target matrix green.
+
+Approved release summary: Seam carving, Hough line/circle detection, Harris corners, higher-quality resizing, modern image I/O, and cross-target reliability.
+
+PR #54 merged at a439049ceb18ee8f41578e57f0364a6e42708500; #53 merged into dev at 3c186e71ff5e166083697b78b838d848aa910405. #55 carries final notes into dev; #56 promotes dev to main. Existing source review threads were verified against 9a74abe and resolved.
