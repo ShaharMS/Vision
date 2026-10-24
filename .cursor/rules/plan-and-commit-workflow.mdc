@@ -1,0 +1,17 @@
+---
+description: Plan-driven workflow, commits, and verification discipline
+alwaysApply: true
+---
+
+# Plan & commit workflow
+
+Agents: `.cursor/agents/` (`inquire`, `implement`, `inspect`, `iterate`). Overview: `AGENTS.md`.
+
+- **Plans** - many small sub-plans; one layer per step -> `.github/PLAN-CONVENTION.md`
+- **Commits** - one descriptive commit per completed sub-plan -> `.github/COMMIT-CONVENTION.md`
+- **Resume** - `.cursor/iterations/{slug}/run-ledger.md` when execution is in flight
+- **One plan at a time** - do not split attention across unrelated plans
+- **Verify before done** - run plan verification + diagnostics for touched scope
+- **Leave a clean tree** - commit agent-authored files unless commit/push is the blocker
+
+Planning writes to `.cursor/plans/`; completed plans move to `.cursor/realized/`.

@@ -8,7 +8,7 @@ import vision.ds.QueueCell;
 @:visionLifecycle("active")
 class QueueCellTest extends utest.Test {
 	function createCell():QueueCell<Int> {
-		return new QueueCell(1, new QueueCell(2, null, null), new QueueCell(0, null, null));
+		return new QueueCell<Int>(1, new QueueCell<Int>(2, null, null), new QueueCell<Int>(0, null, null));
 	}
 
 	@:visionTestId("vision.ds.QueueCell.previous#default")

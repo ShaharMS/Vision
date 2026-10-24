@@ -81,12 +81,13 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     
 
 	/**
-	    Creates a new, empty `Matrix2D`
+	    Creates a new `Matrix2D`.
 	    @param width the amount of elements in each row
 	    @param height the amount of rows
+		@param fillWith Optional value to place in every cell. When omitted, each target uses its normal default value.
 	**/
-	public inline function new(width:Int, height:Int) {
-		this = new Array2D(width, height);
+	public inline function new(width:Int, height:Int, ?fillWith:Float) {
+		this = new Array2D(width, height, fillWith);
 	}
 
     /**

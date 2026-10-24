@@ -94,7 +94,11 @@ class ArrayToolsTest extends utest.Test {
 	@:visionLifecycle("active")
 	function test_min__empty() {
 		var values:Array<Int> = [];
+		#if (hl || cppia || cpp || java || jvm || cs)
+		Assert.equals(0, ArrayTools.min(values));
+		#else
 		Assert.equals(null, ArrayTools.min(values));
+		#end
 	}
 
 	@:visionTestId("vision.tools.ArrayTools.min#valueFunction")

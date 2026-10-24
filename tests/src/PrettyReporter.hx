@@ -53,7 +53,9 @@ class PrettyReporter {
 	}
 
 	function exit(exitCode:Int) {
-		#if sys
+		#if nodejs
+		js.Node.process.exitCode = exitCode;
+		#elseif sys
 		Sys.exit(exitCode);
 		#else
 		log("Exiting with code " + Std.string(exitCode));

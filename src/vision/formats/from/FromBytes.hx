@@ -52,7 +52,7 @@ import vision.ds.ByteArray;
     }
 
     public function jpeg(bytes:ByteArray):Image {
-        #if js
+        #if (js && !nodejs)
         return vision.formats.__internal.JsImageLoader.loadBytesSync(bytes, "image/jpeg");
         #else
         throw new Unimplemented('vision.formats.from.FromBytes.jpeg');
