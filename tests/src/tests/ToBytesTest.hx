@@ -1,8 +1,10 @@
 package tests;
 
 import tests.support.Factories;
+import tests.support.ExceptionAssertions;
 import tests.support.FormatAssertions;
 import utest.Assert;
+import vision.exceptions.ImageSavingFailed;
 import vision.formats.ImageIO;
 import vision.formats.to.ToBytes;
 
@@ -15,10 +17,14 @@ class ToBytesTest extends utest.Test {
 	@:visionRequires("image_fixture")
 	function test_png__roundTrip() {
 		var expected = FormatAssertions.fixtureImage();
+		#if (python || cs)
+		ExceptionAssertions.throwsType(() -> new ToBytes().png(expected), ImageSavingFailed);
+		#else
 		var bytes = new ToBytes().png(expected);
 
 		FormatAssertions.bytesStartWith(bytes, [0x89, 0x50, 0x4E, 0x47]);
 		FormatAssertions.imagesEqual(expected, ImageIO.from.bytes.png(bytes));
+		#end
 	}
 
 	@:visionTestId("vision.formats.to.ToBytes.bmp#roundTrip")

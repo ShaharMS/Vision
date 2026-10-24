@@ -1,6 +1,7 @@
 package;
 
 import vision.formats.ImageIO;
+import vision.algorithms.Hough;
 import vision.algorithms.SimpleHough;
 import vision.ds.Matrix2D;
 import vision.ds.Color;
@@ -8,6 +9,9 @@ import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Ray2D;
 import vision.ds.Kernel2D;
+import vision.ds.specifics.HarrisCornerOptions;
+import vision.ds.specifics.HoughCircleOptions;
+import vision.ds.specifics.HoughLineOptions;
 using vision.tools.ImageTools;
 
 #if js
@@ -24,6 +28,9 @@ using vision.tools.MathTools;
 @:noCompletion class VisionMain {
 	static function main() {
 		var start:Float, end:Float;
+		#if (feature_detection_tests && js)
+		demoFeatureDetectionOffline();
+		#end
 		#if (true)
 		#if (js || interp)
 		#if (!compile_unit_tests)
@@ -284,7 +291,85 @@ using vision.tools.MathTools;
 			#end
 
 			#if feature_detection_tests
-			printSectionDivider("Feature detection tests");
+			var houghEdges = orgImage.clone().cannyEdgeDetection(1, X5, 0.05, 0.16);
+
+			printSectionDivider("Hough ray detection (standard)");
+			start = haxe.Timer.stamp();
+			var houghOptions = new HoughLineOptions();
+			houghOptions.voteThreshold = 40;
+			var rays = Hough.detectLines(houghEdges, houghOptions);
+			trace('Detected ${rays.length} rays');
+			printImage(houghEdges);
+			printImage(SimpleHough.mapParameterLines(orgImage.clone(), rays));
+			end = haxe.Timer.stamp();
+			trace("Standard Hough ray detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+
+			printSectionDivider("Hough segment detection (probabilistic)");
+			start = haxe.Timer.stamp();
+			var segments = Vision.houghLineSegmentDetection(orgImage.clone(), 20, 10, 2, houghEdges);
+			trace('Detected ${segments.length} segments');
+			var segmentImage = orgImage.clone();
+			for (segment in segments) {
+				segmentImage.drawLine2D(segment, 0x00FFD5);
+			}
+			printImage(segmentImage);
+			end = haxe.Timer.stamp();
+			trace("Probabilistic Hough segment detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+
+			printSectionDivider("Hough circle detection");
+			start = haxe.Timer.stamp();
+			var circleFixture = new Image(80, 80, Color.BLACK);
+			circleFixture.fillCircle(40, 40, 16, Color.WHITE);
+			var circleOptions = new HoughCircleOptions();
+			circleOptions.minimumRadius = 12;
+			circleOptions.maximumRadius = 20;
+			circleOptions.centerThreshold = 8;
+			var circles = Vision.houghCircleDetection(circleFixture.clone(), circleOptions);
+			trace('Detected ${circles.length} circles on synthetic fixture');
+			printImage(Vision.mapHoughCircles(circleFixture.clone(), circles));
+			var photoCircleOptions = new HoughCircleOptions();
+			photoCircleOptions.minimumRadius = 8;
+			photoCircleOptions.maximumRadius = 40;
+			photoCircleOptions.centerThreshold = 12;
+			photoCircleOptions.blurRadius = 1;
+			var photoCircles = Vision.houghCircleDetection(orgImage.clone(), photoCircleOptions);
+			trace('Detected ${photoCircles.length} circles on photo');
+			printImage(Vision.mapHoughCircles(orgImage.clone(), photoCircles));
+			end = haxe.Timer.stamp();
+			trace("Hough circle detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+
+			printSectionDivider("Harris corner detection");
+			start = haxe.Timer.stamp();
+			var cornerFixture = new Image(40, 40, Color.BLACK);
+			cornerFixture.fillRect(10, 10, 16, 16, Color.WHITE);
+			var cornerOptions = new HarrisCornerOptions();
+			cornerOptions.relativeThreshold = 0.15;
+			cornerOptions.minimumDistance = 4;
+			cornerOptions.maxCorners = 4;
+			cornerOptions.borderMargin = 2;
+			var fixtureCorners = Vision.harrisCorners(cornerFixture.clone(), cornerOptions);
+			trace('Detected ${fixtureCorners.length} corners on synthetic fixture');
+			var cornerFixtureImage = cornerFixture.clone();
+			for (corner in fixtureCorners) {
+				cornerFixtureImage.drawCircle(corner.x, corner.y, 2, Color.CYAN);
+			}
+			printImage(cornerFixtureImage);
+			var photoCornerOptions = new HarrisCornerOptions();
+			photoCornerOptions.relativeThreshold = 0.08;
+			photoCornerOptions.minimumDistance = 8;
+			photoCornerOptions.maxCorners = 48;
+			photoCornerOptions.borderMargin = 4;
+			var photoCorners = Vision.harrisCorners(orgImage.clone(), photoCornerOptions);
+			trace('Detected ${photoCorners.length} corners on photo');
+			var photoCornerImage = orgImage.clone();
+			for (corner in photoCorners) {
+				photoCornerImage.drawCircle(corner.x, corner.y, 2, Color.CYAN);
+			}
+			printImage(photoCornerImage);
+			end = haxe.Timer.stamp();
+			trace("Harris corner detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+
+			printSectionDivider("Legacy and edge detection");
 			start = haxe.Timer.stamp();
 			var lines = Vision.simpleLine2DDetection(orgImage.clone(), 50, 10);
 			var newI = orgImage.clone();
@@ -294,15 +379,6 @@ using vision.tools.MathTools;
 			printImage(newI);
 			end = haxe.Timer.stamp();
 			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			start = haxe.Timer.stamp();
-			var lines = SimpleHough.detectLines(orgImage.clone().cannyEdgeDetection(1, X5, 0.05, 0.16), 40);
-			var newI = orgImage.clone();
-			for (l in lines) {
-				newI.drawRay2D(l, 0x00FFD5);
-			}
-			printImage(newI);
-			end = haxe.Timer.stamp();
-			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
 			printImage(image.clone().sobelEdgeDetection());
 			end = haxe.Timer.stamp();
@@ -409,31 +485,36 @@ using vision.tools.MathTools;
 		#end
 
 		#if (feature_detection_tests && js)
-		ImageTools.loadFromFile("./sudoku.jpg", sudoku -> {
-			printSectionDivider("Line detection tests");
+		if (Browser.document != null) {
+			ImageTools.loadFromFile("./sudoku.jpg", sudoku -> {
 			var image = sudoku.resize(400);
 			printImage(image);
+			var sudokuEdges = image.clone().cannyEdgeDetection(1, X5, 0.05, 0.16);
+
+			printSectionDivider("Sudoku Hough ray detection");
 			start = haxe.Timer.stamp();
-			var lines = Vision.simpleLine2DDetection(image.clone(), 50, 30);
-			var newI = image.clone();
-			for (l in lines) {
-				newI.drawLine2D(l, 0x00FFD5);
-			}
-			printImage(newI);
+			var houghOptions = new HoughLineOptions();
+			houghOptions.voteThreshold = 100;
+			var rays = Hough.detectLines(sudokuEdges, houghOptions);
+			trace('Detected ${rays.length} rays');
+			printImage(sudokuEdges);
+			printImage(SimpleHough.mapParameterLines(image.clone(), rays));
 			end = haxe.Timer.stamp();
-			trace("Simple line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			trace("Sudoku ray detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+
+			printSectionDivider("Sudoku Hough segment detection");
 			start = haxe.Timer.stamp();
-			var lines = SimpleHough.detectLines(image.clone().cannyEdgeDetection(1, X5, 0.05, 0.16), 100);
-			var newI = image.clone();
-			for (l in lines) {
-				newI.drawRay2D(l, 0x00FFD5);
+			var segments = Vision.houghLineSegmentDetection(image.clone(), 80, 40, 4, sudokuEdges);
+			trace('Detected ${segments.length} segments');
+			var segmentImage = image.clone();
+			for (segment in segments) {
+				segmentImage.drawLine2D(segment, 0x00FFD5);
 			}
-			printImage(image.clone().cannyEdgeDetection(1, X5, 0.05, 0.16));
-			printImage(newI);
+			printImage(segmentImage);
 			end = haxe.Timer.stamp();
-			trace("Hough Style Line detection took: " + MathTools.truncate(end - start, 4) + " seconds");
-			
-		});
+			trace("Sudoku segment detection took: " + MathTools.truncate(end - start, 4) + " seconds");
+			});
+		}
 		#end
 		#end
 
@@ -500,6 +581,64 @@ using vision.tools.MathTools;
 		#end
 	}
 	
+	#if (feature_detection_tests && js)
+	/**
+		Synthetic feature-detection demos that run immediately without loading external images.
+
+		Open with `haxe compile.hxml`, then serve or open `bin/index.html`.
+	**/
+	static function demoFeatureDetectionOffline():Void {
+		printSectionDivider("Offline Hough ray detection (synthetic cross)");
+		var lineFixture = new Image(120, 120, Color.BLACK);
+		lineFixture.drawLine(10, 60, 110, 60, Color.WHITE);
+		lineFixture.drawLine(60, 10, 60, 110, Color.WHITE);
+		var lineEdges = lineFixture.cannyEdgeDetection(1, X5, 0.05, 0.16);
+		var houghOptions = new HoughLineOptions();
+		houghOptions.voteThreshold = 20;
+		var rays = Hough.detectLines(lineEdges, houghOptions);
+		trace('Detected ${rays.length} rays on synthetic cross');
+		printImage(lineFixture);
+		printImage(lineEdges);
+		printImage(SimpleHough.mapParameterLines(lineFixture.clone(), rays));
+
+		printSectionDivider("Offline Hough segment detection (synthetic cross)");
+		var segments = Vision.houghLineSegmentDetection(lineFixture.clone(), 15, 8, 2, lineEdges);
+		trace('Detected ${segments.length} segments on synthetic cross');
+		var segmentImage = lineFixture.clone();
+		for (segment in segments) {
+			segmentImage.drawLine2D(segment, 0x00FFD5);
+		}
+		printImage(segmentImage);
+
+		printSectionDivider("Offline Hough circle detection (synthetic)");
+		var circleFixture = new Image(80, 80, Color.BLACK);
+		circleFixture.fillCircle(40, 40, 16, Color.WHITE);
+		var circleOptions = new HoughCircleOptions();
+		circleOptions.minimumRadius = 12;
+		circleOptions.maximumRadius = 20;
+		circleOptions.centerThreshold = 8;
+		var circles = Vision.houghCircleDetection(circleFixture.clone(), circleOptions);
+		trace('Detected ${circles.length} circles on synthetic fixture');
+		printImage(Vision.mapHoughCircles(circleFixture.clone(), circles));
+
+		printSectionDivider("Offline Harris corner detection (synthetic)");
+		var cornerFixture = new Image(40, 40, Color.BLACK);
+		cornerFixture.fillRect(10, 10, 16, 16, Color.WHITE);
+		var cornerOptions = new HarrisCornerOptions();
+		cornerOptions.relativeThreshold = 0.15;
+		cornerOptions.minimumDistance = 4;
+		cornerOptions.maxCorners = 4;
+		cornerOptions.borderMargin = 2;
+		var corners = Vision.harrisCorners(cornerFixture.clone(), cornerOptions);
+		trace('Detected ${corners.length} corners on synthetic fixture');
+		var cornerImage = cornerFixture.clone();
+		for (corner in corners) {
+			cornerImage.drawCircle(corner.x, corner.y, 2, Color.CYAN);
+		}
+		printImage(cornerImage);
+	}
+	#end
+
 	public static function printImage(image:Image) {
 	#if js
 		var c = Browser.document.createCanvasElement();

@@ -1,0 +1,641 @@
+--- a/src/hx/cppia/ArrayBuiltin.cpp
++++ b/src/hx/cppia/ArrayBuiltin.cpp
+@@ -4,6 +4,15 @@
+ 
+ namespace hx
+ {
++template<typename ELEM>
++static Array_obj<ELEM> *resolveArray(hx::Object *value)
++{
++   cpp::VirtualArray_obj *virtualArray = dynamic_cast<cpp::VirtualArray_obj *>(value);
++   if (virtualArray)
++      return Array<ELEM>(cpp::VirtualArray(virtualArray)).mPtr;
++   return Array<ELEM>(Dynamic(value)).mPtr;
++}
++
+ 
+ const char *gArrayFuncNames[] =
+ {
+@@ -113,7 +122,7 @@
+    }
+    int runInt(CppiaCtx *ctx) HXCPP_OVERRIDE
+    {
+-      Array_obj<ELEM> *thisVal = reinterpret_cast<Array_obj<ELEM>*>(thisExpr->runObject(ctx));
++      Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+       BCR_CHECK;
+       int i = args[0]->runInt(ctx);
+       BCR_CHECK;
+@@ -127,7 +136,7 @@
+    }
+    Float  runFloat(CppiaCtx *ctx) HXCPP_OVERRIDE
+    {
+-      Array_obj<ELEM> *thisVal = reinterpret_cast<Array_obj<ELEM>*>(thisExpr->runObject(ctx));
++      Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+       BCR_CHECK;
+       int i = args[0]->runInt(ctx);
+       BCR_CHECK;
+@@ -141,7 +150,7 @@
+    }
+    String  runString(CppiaCtx *ctx) HXCPP_OVERRIDE
+    {
+-      Array_obj<ELEM> *thisVal = reinterpret_cast<Array_obj<ELEM>*>(thisExpr->runObject(ctx));
++      Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+       BCR_CHECK;
+       int i = args[0]->runInt(ctx);
+       BCR_CHECK;
+@@ -155,7 +164,7 @@
+    }
+    hx::Object *runObject(CppiaCtx *ctx) HXCPP_OVERRIDE
+    {
+-      Array_obj<ELEM> *thisVal = reinterpret_cast<Array_obj<ELEM>*>(thisExpr->runObject(ctx));
++      Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+       BCR_CHECK;
+       int i = args[0]->runInt(ctx);
+       BCR_CHECK;
+@@ -458,7 +467,7 @@
+    {
+       if (FUNC==afPush)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          ELEM elem;
+          runValue(elem,ctx,args[0]);
+@@ -468,19 +477,19 @@
+       }
+       if (FUNC==afPop)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return ValToInt(thisVal->pop());
+       }
+       if (FUNC==afShift)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return ValToInt(thisVal->shift());
+       }
+       if (FUNC==afContains)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          ELEM elem;
+          runValue(elem,ctx,args[0]);
+@@ -489,7 +498,7 @@
+       }
+       if (FUNC==afRemove)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          ELEM elem;
+          runValue(elem,ctx,args[0]);
+@@ -498,7 +507,7 @@
+       }
+       if (FUNC==afIndexOf)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          ELEM elem;
+          runValue(elem,ctx,args[0]);
+@@ -509,7 +518,7 @@
+       }
+       if (FUNC==afLastIndexOf)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          ELEM elem;
+          runValue(elem,ctx,args[0]);
+@@ -520,7 +529,7 @@
+       }
+       if (FUNC==af__get)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int idx = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -528,7 +537,7 @@
+       }
+       if (FUNC==af__set)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int i = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -544,7 +553,7 @@
+       }
+       if (FUNC==af__crement)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int idx = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -564,25 +573,25 @@
+    {
+       if (FUNC==afPop)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return ValToFloat(thisVal->pop());
+       }
+       if (FUNC==afShift)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return ValToFloat(thisVal->shift());
+       }
+       if (FUNC==af__get)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return ValToFloat(thisVal->__get(args[0]->runInt(ctx)));
+       }
+       if (FUNC==af__set)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int i = args[0]->runInt(ctx);
+          ELEM elem;
+@@ -597,7 +606,7 @@
+       }
+       if (FUNC==af__crement)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          ELEM &elem = thisVal->Item(args[0]->runInt(ctx));
+ 
+          Float result = ValToFloat(CREMENT::run(elem));
+@@ -618,19 +627,19 @@
+    {
+       if (FUNC==afPop)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return ValToString(thisVal->pop());
+       }
+       if (FUNC==afShift)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return ValToString(thisVal->shift());
+       }
+       if (FUNC==af__get)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int idx = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -638,7 +647,7 @@
+       }
+       if (FUNC==af__set)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int i = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -653,7 +662,7 @@
+       }
+       if (FUNC==af__crement)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int idx = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -669,7 +678,7 @@
+ 
+       if (FUNC==afJoin)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          String space = args[0]->runString(ctx);
+          BCR_CHECK;
+@@ -678,7 +687,7 @@
+ 
+       if (FUNC==afToString)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return thisVal->toString();
+       }
+@@ -692,7 +701,7 @@
+    {
+       if (FUNC==af__get)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int idx = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -700,7 +709,7 @@
+       }
+       if (FUNC==af__set)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int i = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -714,7 +723,7 @@
+       }
+       if (FUNC==af__crement)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int idx = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -730,13 +739,13 @@
+ 
+       if (FUNC==afPop)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return Dynamic(thisVal->pop()).mPtr;
+       }
+       if (FUNC==afShift)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return Dynamic(thisVal->shift()).mPtr;
+       }
+@@ -744,7 +753,7 @@
+ 
+       if (FUNC==afConcat)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          Array_obj<ELEM> *inVal = (Array_obj<ELEM>*)args[0]->runObject(ctx);
+          BCR_CHECK;
+@@ -752,13 +761,13 @@
+       }
+       if (FUNC==afCopy)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return thisVal->copy().mPtr;
+       }
+       if (FUNC==afSplice)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int pos = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -768,7 +777,7 @@
+       }
+       if (FUNC==afSlice)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          int pos = args[0]->runInt(ctx);
+          BCR_CHECK;
+@@ -779,7 +788,7 @@
+       if (FUNC==afMap)
+       {
+          // TODO - maybe make this more efficient
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          Dynamic func = args[0]->runObject(ctx);
+          BCR_CHECK;
+@@ -792,7 +801,7 @@
+       }
+       if (FUNC==afFilter)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          Dynamic func = args[0]->runObject(ctx);
+          BCR_CHECK;
+@@ -801,13 +810,13 @@
+ 
+       if (FUNC==afIterator)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return thisVal->iterator().mPtr;
+       }
+       if (FUNC==afKeyValueIterator)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_CHECK;
+          return thisVal->keyValueIterator().mPtr;
+       }
+@@ -825,19 +834,19 @@
+    {
+       if (FUNC==afPop)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          thisVal->pop();
+       }
+       if (FUNC==afShift)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          thisVal->shift();
+       }
+       if (FUNC==af__set)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          int i = args[0]->runInt(ctx);
+          BCR_VCHECK;
+@@ -851,7 +860,7 @@
+       }
+       if (FUNC==af__crement)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          int idx = args[0]->runInt(ctx);
+          BCR_VCHECK;
+@@ -872,13 +881,13 @@
+ 
+       if (FUNC==afReverse)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          thisVal->reverse();
+       }
+       if (FUNC==afSort)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          Dynamic func = args[0]->runObject(ctx);
+          BCR_VCHECK;
+@@ -886,7 +895,7 @@
+       }
+       if (FUNC==afInsert)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          int pos = args[0]->runInt(ctx);
+          BCR_VCHECK;
+@@ -897,7 +906,7 @@
+       }
+       if (FUNC==afUnshift)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          ELEM elem;
+          runValue(elem,ctx,args[0]);
+@@ -906,7 +915,7 @@
+       }
+       if (FUNC==af__SetSizeExact)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          int size = args[0]->runInt(ctx);
+          BCR_VCHECK;
+@@ -915,7 +924,7 @@
+ 
+       if (FUNC==afResize)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM>*)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          int size = args[0]->runInt(ctx);
+          BCR_VCHECK;
+@@ -925,7 +934,7 @@
+ 
+       if (FUNC==afBlit)
+       {
+-         Array_obj<ELEM> *thisVal = (Array_obj<ELEM> *)thisExpr->runObject(ctx);
++         Array_obj<ELEM> *thisVal = resolveArray<ELEM>(thisExpr->runObject(ctx));
+          BCR_VCHECK;
+          int destElem = args[0]->runInt(ctx);
+          BCR_VCHECK;
+--- a/src/hx/cppia/ArrayVirtual.cpp
++++ b/src/hx/cppia/ArrayVirtual.cpp
+@@ -169,7 +169,7 @@
+    {
+       if (FUNC==afPush)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_CHECK;
+          hx::Object * val = args[0]->runObject(ctx);
+          BCR_CHECK;
+@@ -177,7 +177,7 @@
+       }
+       if (FUNC==afContains)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_CHECK;
+          hx::Object * val = args[0]->runObject(ctx);
+          BCR_CHECK;
+@@ -185,7 +185,7 @@
+       }
+       if (FUNC==afRemove)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_CHECK;
+          hx::Object * val = args[0]->runObject(ctx);
+          BCR_CHECK;
+@@ -193,7 +193,7 @@
+       }
+       if (FUNC==afIndexOf)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_CHECK;
+          Dynamic a0 = args[0]->runObject(ctx);
+          BCR_CHECK;
+@@ -203,7 +203,7 @@
+       }
+       if (FUNC==afLastIndexOf)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_CHECK;
+          Dynamic a0 = args[0]->runObject(ctx);
+          BCR_CHECK;
+@@ -217,7 +217,7 @@
+ 
+    Float runFloat(CppiaCtx *ctx) HXCPP_OVERRIDE
+    {
+-      return runInt(ctx);
++      return Dynamic(runObject(ctx));
+    }
+ 
+ 
+@@ -225,7 +225,7 @@
+    {
+       if (FUNC==afJoin)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_CHECK;
+          Dynamic a0 = args[0]->runObject(ctx);
+          BCR_CHECK;
+@@ -234,7 +234,7 @@
+ 
+       if (FUNC==afToString)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_CHECK;
+          return thisVal->toString();
+       }
+@@ -254,14 +254,14 @@
+       if (FUNC==afJoin || FUNC==afToString)
+          return Dynamic(runString(ctx)).mPtr;
+ 
+-      if (FUNC==afSort || FUNC==afInsert || FUNC==afUnshift || FUNC==af__SetSizeExact || FUNC==afBlit)
++      if (FUNC==afSort || FUNC==afInsert || FUNC==afUnshift || FUNC==af__SetSizeExact || FUNC==afResize || FUNC==afBlit)
+       {
+          runVoid(ctx);
+          return 0;
+       }
+ 
+ 
+-      ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++      ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+       BCR_CHECK;
+       CPPIA_CHECK(thisVal);
+ 
+@@ -408,7 +408,7 @@
+    {
+       if (FUNC==afSort)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_VCHECK;
+          Dynamic a0 = args[0]->runObject(ctx);
+          BCR_VCHECK;
+@@ -418,7 +418,7 @@
+       }
+       if (FUNC==afInsert)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_VCHECK;
+          Dynamic pos = args[0]->runObject(ctx);
+          BCR_VCHECK;
+@@ -429,7 +429,7 @@
+       }
+       if (FUNC==afUnshift)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_VCHECK;
+          Dynamic val = args[0]->runObject(ctx);
+          BCR_VCHECK;
+@@ -438,16 +438,25 @@
+       }
+       if (FUNC==af__SetSizeExact)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_VCHECK;
+          int size = args[0]->runInt(ctx);
+          BCR_VCHECK;
+          thisVal->__SetSizeExact(size);
+          return;
+       }
++      if (FUNC==afResize)
++      {
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
++         BCR_VCHECK;
++         int size = args[0]->runInt(ctx);
++         BCR_VCHECK;
++         thisVal->resize(size);
++         return;
++      }
+       if (FUNC==afBlit)
+       {
+-         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)thisExpr->runObject(ctx);
++         ArrayAnyImpl *thisVal = (ArrayAnyImpl *)DynamicToArrayType(thisExpr->runObject(ctx), arrAny);
+          BCR_VCHECK;
+          int destElem = args[0]->runInt(ctx);
+          BCR_VCHECK;
+@@ -573,6 +582,7 @@
+          case afInsert:
+          case afUnshift:
+          case af__SetSizeExact:
++         case afResize:
+          case afBlit:
+             return etVoid;
+ 
+--- a/src/hx/cppia/Cppia.cpp
++++ b/src/hx/cppia/Cppia.cpp
+@@ -4563,16 +4563,18 @@
+    }
+    int runInt(CppiaCtx *ctx) HXCPP_OVERRIDE
+    {
+-      cpp::VirtualArray_obj *obj = (cpp::VirtualArray_obj *)thisExpr->runObject(ctx);
++      hx::Object *obj = thisExpr->runObject(ctx);
+       BCR_CHECK;
+       CPPIA_CHECK(obj);
+-      return obj->get_length();
++      cpp::VirtualArray_obj *virtualArray = dynamic_cast<cpp::VirtualArray_obj *>(obj);
++      return virtualArray ? virtualArray->get_length() : obj->__length();
+    }
+ 
+    #ifdef CPPIA_JIT
+-   static int SLJIT_CALL getLen(cpp::VirtualArray_obj *inVArray)
+-   {
+-      return inVArray->get_length();
++   static int SLJIT_CALL getLen(hx::Object *inVArray)
++   {
++      cpp::VirtualArray_obj *virtualArray = dynamic_cast<cpp::VirtualArray_obj *>(inVArray);
++      return virtualArray ? virtualArray->get_length() : inVArray->__length();
+    }
+    void genCode(CppiaCompiler *compiler, const JitVal &inDest,ExprType destType) HXCPP_OVERRIDE
+    {
+@@ -4664,17 +4666,7 @@
+ 
+       if (!replace && type->arrayType!=arrNotArray && field==HX_CSTRING("length"))
+       {
+-         if (type->arrayType==arrAny)
+-         {
+-            replace = new VirtualArrayLength(this,object);
+-         }
+-         else
+-         {
+-            int offset = (int) offsetof( Array_obj<int>, length );
+-            replace = object ?
+-               (CppiaExpr*)new MemReference<int,locObj>(this,offset,object):
+-               (CppiaExpr*)new MemReference<int,locThis>(this,offset);
+-         }
++         replace = new VirtualArrayLength(this,object);
+       }
+ 
+       if (!replace && type->name==HX_CSTRING("String") && field==HX_CSTRING("length"))

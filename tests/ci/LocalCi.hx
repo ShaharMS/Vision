@@ -173,6 +173,8 @@ class LocalCi {
         var libs = DEFAULT_LIBS.copy();
         for (target in targets) {
             switch (target) {
+                case "js":
+                    addUnique(libs, "hxnodejs");
                 case "cpp" | "cppia":
                     addUnique(libs, "hxcpp");
                 case "java" | "jvm":
@@ -229,15 +231,17 @@ class LocalCi {
             args.push("vision_no_inline");
         }
 
+        if (target == "neko") {
+            return compileNekoBatches(args);
+        }
 
         switch (target) {
-            case "neko":
-                args.push("--neko");
-                args.push("bin/neko/tests.n");
             case "hl":
                 args.push("--hl");
                 args.push("bin/hl/tests.hl");
             case "js":
+                args.push("--library");
+                args.push("hxnodejs");
                 args.push("--js");
                 args.push("bin/js/tests.js");
             case "cpp":
@@ -282,6 +286,25 @@ class LocalCi {
         return Sys.command("haxe", args) == 0;
     }
 
+    static function compileNekoBatches(baseArgs:Array<String>):Bool {
+        for (batch in 1...9) {
+            Sys.println("  batch " + batch);
+            var args = baseArgs.copy();
+            args.push("-D");
+            args.push("vision_neko_batched");
+            args.push("-D");
+            args.push("vision_neko_batch_" + batch);
+            args.push("-dce");
+            args.push("full");
+            args.push("--neko");
+            args.push("bin/neko/tests-" + batch + ".n");
+            if (Sys.command("haxe", args) != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     static function runTarget(target:String, config:{targets:Array<String>, compile:Bool, run:Bool, skipInstall:Bool, allowInline:Bool, allowInlineTargets:Array<String>, skipGolden:Bool, skipInvalidTests:Bool, showHelp:Bool}):Bool {
         Sys.println("\n==> Run " + target);
         var isWindows = Sys.systemName() == "Windows";
@@ -315,7 +338,7 @@ class LocalCi {
             case "js":
                 return Sys.command("node", ["bin/js/tests.js"]) == 0;
             case "neko":
-                return Sys.command(isWindows ? "neko.exe" : "neko", ["bin/neko/tests.n"]) == 0;
+                return runNekoBatches(isWindows);
             case "hl":
                 return Sys.command(isWindows ? "hl.exe" : "hl", ["bin/hl/tests.hl"]) == 0;
             case "cpp":
@@ -360,6 +383,17 @@ class LocalCi {
         }
     }
 
+    static function runNekoBatches(isWindows:Bool):Bool {
+        var command = isWindows ? "neko.exe" : "neko";
+        for (batch in 1...9) {
+            Sys.println("  batch " + batch);
+            if (Sys.command(command, ["bin/neko/tests-" + batch + ".n"]) != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     static function ensureRuntime(target:String, isWindows:Bool):Bool {
         switch (target) {
             case "hl":
@@ -393,7 +427,7 @@ class LocalCi {
     static function shouldDisableInline(target:String, config:{allowInline:Bool, allowInlineTargets:Array<String>}):Bool {
         if (config.allowInline) return false;
         if (config.allowInlineTargets != null && config.allowInlineTargets.indexOf(target) != -1) return false;
-        return false;
+        return target == "java" || target == "jvm";
     }
 
     static function ensureTool(isWindows:Bool, command:String, wingetIds:Array<String>, chocoId:String, forceInstall:Bool = false):Bool {
@@ -680,20 +714,22 @@ class LocalCi {
 
     static function findCppiaExecutable(isWindows:Bool):Null<String> {
         var exe = isWindows ? "cppia.exe" : "cppia";
-        if (commandExists(exe, isWindows)) return exe;
-
         var hxcppPath = getHaxelibPath("hxcpp");
-        if (hxcppPath == null) return null;
-
-        var candidates = [
-            Path.join([hxcppPath, "bin", exe]),
-            Path.join([hxcppPath, "bin", "Windows", exe]),
-            Path.join([hxcppPath, "bin", "Windows64", "Cppia.exe"]),
-            Path.join([hxcppPath, "bin", "Linux", exe])
-        ];
-        for (candidate in candidates) {
-            if (FileSystem.exists(candidate)) return candidate;
+        if (hxcppPath != null) {
+            // Prefer the host built from the active, patched haxelib checkout.
+            var platformDirectory = isWindows ? "Windows64" : Sys.systemName() == "Mac" ? "Mac64" : "Linux64";
+            var hostName = isWindows ? "Cppia.exe" : "Cppia";
+            var legacyDirectory = isWindows ? "Windows" : Sys.systemName() == "Mac" ? "Mac" : "Linux";
+            var candidates = [
+                Path.join([hxcppPath, "bin", platformDirectory, hostName]),
+                Path.join([hxcppPath, "bin", exe]),
+                Path.join([hxcppPath, "bin", legacyDirectory, exe])
+            ];
+            for (candidate in candidates) {
+                if (FileSystem.exists(candidate)) return candidate;
+            }
         }
+        if (commandExists(exe, isWindows)) return exe;
         return null;
     }
 

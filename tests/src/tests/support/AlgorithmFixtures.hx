@@ -20,6 +20,50 @@ class AlgorithmFixtures {
 		return image;
 	}
 
+	public static function diagonalLineImage(width:Int = 5, height:Int = 5, offset:Int = 0):Image {
+		var image = new Image(width, height, Color.BLACK);
+		for (x in 0...width) {
+			var y = x + offset;
+			if (y >= 0 && y < height) {
+				image.setPixel(x, y, Color.WHITE);
+			}
+		}
+		return image;
+	}
+
+	public static function gappedHorizontalLineImage(width:Int = 7, height:Int = 5, y:Int = 2, gapStart:Int = 3, gapLength:Int = 1):Image {
+		var image = new Image(width, height, Color.BLACK);
+		for (x in 0...width) {
+			if (x >= gapStart && x < gapStart + gapLength) {
+				continue;
+			}
+			image.setPixel(x, y, Color.WHITE);
+		}
+		return image;
+	}
+
+	public static function shortHorizontalSegmentImage(width:Int = 5, height:Int = 5, startX:Int = 1, endX:Int = 2, y:Int = 2):Image {
+		var image = new Image(width, height, Color.BLACK);
+		for (x in startX...endX + 1) {
+			image.setPixel(x, y, Color.WHITE);
+		}
+		return image;
+	}
+
+	public static function orthogonalGridImage(width:Int = 9, height:Int = 9, ?positions:Array<Int>):Image {
+		var image = new Image(width, height, Color.BLACK);
+		var gridPositions = positions == null ? [1, 4, 7] : positions;
+		for (position in gridPositions) {
+			for (x in 0...width) {
+				image.setPixel(x, position, Color.WHITE);
+			}
+			for (y in 0...height) {
+				image.setPixel(position, y, Color.WHITE);
+			}
+		}
+		return image;
+	}
+
 	public static function stepEdgeImage(width:Int = 5, height:Int = 5, stepX:Int = 2):Image {
 		var image = new Image(width, height, Color.BLACK);
 		for (y in 0...height) {
@@ -34,6 +78,19 @@ class AlgorithmFixtures {
 		var image = new Image(size, size, background);
 		var middle = Std.int(size / 2);
 		image.setPixel(middle, middle, center);
+		return image;
+	}
+
+	public static function filledCircleImage(width:Int = 31, height:Int = 31, centerX:Int = 15, centerY:Int = 15, radius:Int = 6):Image {
+		var image = new Image(width, height, Color.BLACK);
+		image.drawCircle(centerX, centerY, radius, Color.WHITE);
+		return image;
+	}
+
+	public static function separatedCircleImage(width:Int = 48, height:Int = 32, leftCenterX:Int = 14, rightCenterX:Int = 32, centerY:Int = 16, radius:Int = 5):Image {
+		var image = new Image(width, height, Color.BLACK);
+		image.drawCircle(leftCenterX, centerY, radius, Color.WHITE);
+		image.drawCircle(rightCenterX, centerY, radius, Color.WHITE);
 		return image;
 	}
 

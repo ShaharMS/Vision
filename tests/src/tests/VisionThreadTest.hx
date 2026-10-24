@@ -103,6 +103,23 @@ class VisionThreadTest extends utest.Test {
 		Assert.equals(null, failedPayload);
 	}
 
+	@:visionTestId("vision.helpers.VisionThread.start#routesJobFailure")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_start__routesJobFailure() {
+		var captured:Exception = null;
+		var doneCalls = 0;
+		var subject = new VisionThread(() -> { throw new Exception("job failure"); });
+		subject.onFailed = error -> captured = error;
+		subject.onDone = () -> doneCalls++;
+		subject.start();
+		waitForResolution(subject);
+		Assert.equals(false, subject.jobDone);
+		Assert.notNull(captured);
+		Assert.equals("job failure", captured.message);
+		Assert.equals(0, doneCalls);
+	}
+
 	function waitForResolution(subject:VisionThread):Void {
 		#if sys
 		var attempts = 0;

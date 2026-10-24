@@ -1,6 +1,7 @@
 package tests;
 
 import utest.Assert;
+import tests.support.ColorAssertions;
 import vision.ds.Color;
 import vision.ds.Pixel;
 
@@ -30,6 +31,6 @@ class PixelTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_color__default() {
-		Assert.equals((0xFF336699 : Color), createPixel().color);
+		ColorAssertions.equalsColor(0xFF336699, createPixel().color);
 	}
 }

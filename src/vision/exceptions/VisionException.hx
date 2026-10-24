@@ -1,6 +1,6 @@
 package vision.exceptions;
 
-#if js
+#if (js && !nodejs)
 import js.Syntax;
 
 /**
