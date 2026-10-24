@@ -1,23 +1,43 @@
 # 2.2.0
 
-### `Image.hx`
- - **Added `Image.copyImageFrom`**
+### Content-aware resizing and interpolation
 
-### `vision.ds`
- - **Added `ImageFormat.JPEG`, `ImageFormat.VISION`**
+- Added `Vision.carve(image, width, height)` using Avidan-Shamir minimum-energy seam removal. Supports shrinking width and height, recalculates RGB gradient energy per seam, preserves surviving RGBA pixels, and returns an independent image. Width is reduced before height; enlargement and nonpositive dimensions are rejected.
+- Added reproducible Valve examples and hosted before/after images for `carve`.
+- Added bicubic, Catmull-Rom, Mitchell-Netravali and Lanczos resizing algorithms.
 
-### `vision.tools`
- - **Added `ImageTools.loadFromFile` (synchronous version)**
- - **Added `ImageTools.loadFromBytes`**
- - **Added `ImageTools.loadFromURL`**
- - **Added `ImageTools.exportToBytes`**
- - **Added `ImageTools.exportToFile`**
- - **Deprecated `ImageTools.saveToFile` in favor of `ImageTools.exportToFile`**
+### Feature detection
 
-### `vision.formats`
-  - **New Subdirectory inside the `vision` package for cleaner image format conversions**
-  - **Added `ImageIO` - reads/writes images from/to different formats/frameworks**
-  - **Added support for `jpeg` encoding for non-js platforms using `format`**
+- Added a standard polar Hough accumulator and consolidated the existing `SimpleHough` bridge.
+- Added `Vision.houghLineSegmentDetection` with minimum length, gap and optional precomputed edge-image controls.
+- Added `Vision.houghCircleDetection`, `Vision.mapHoughCircles`, `Circle2D` and detector option types.
+- Added `Vision.harrisCornerResponse` and `Vision.harrisCorners` with configurable response computation and corner selection.
+
+### Image formats and framework integration
+
+- Added `Image.copyImageFrom`, `ImageFormat.JPEG` and `ImageFormat.VISION`.
+- Introduced `vision.formats` and `ImageIO.from` / `ImageIO.to` for byte and framework conversions.
+- Added synchronous file loading, byte loading, URL loading, byte export and file export through `ImageTools`.
+- Deprecated `ImageTools.saveToFile` in favor of `ImageTools.exportToFile`.
+- Added JPEG encoding through `format` on supported targets and PNG export on Lua.
+- JPEG decoding remains browser-dependent; native/Node JPEG byte decoding is not implemented.
+
+### Correctness and portability
+
+- Corrected behavior across edge detectors, K-means, image hashing, linear algebra, geometry, color handling, byte arrays, queues and math utilities.
+- Added `InvalidHeapsPixelFormat` and `SingularMatrixError` diagnostics.
+- Fixed `vision_quiet` compilation for matrix conversion and PNG/BMP loading; invalid PNG/BMP input returns a transparent 1x1 placeholder in quiet mode.
+- Added inline protection for targets with generated method-size limits and support for non-threaded sys targets.
+- Fixed JavaScript job completion/failure dispatch and Node handling of typed exceptions and browser-only operations.
+
+### Tests, CI and packaging
+
+- Replaced generated test scaffolding with authored behavioral `utest` suites, suite/case filtering and a maintained coverage inventory.
+- Added a local multi-target CI runner and repaired runtime setup across the target matrix.
+- Added a pinned cppia interpreter-host patch for generic/typed array interoperability, fractional values, resize and length handling, with reproducible build tooling included in release ZIPs.
+- Node tests now use `hxnodejs` and return a failing process status when assertions fail.
+- Removed the test-only `utest` dependency from the library package.
+- Added a package-only PowerShell builder; the release batch file stops if packaging fails before offering submission.
 
 # 2.1.0
 

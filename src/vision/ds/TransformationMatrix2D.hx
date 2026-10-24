@@ -216,10 +216,10 @@ abstract TransformationMatrix2D(Matrix2D) to Matrix2D {
         #if vision_quiet
         var f = new Matrix2D(3, 3);
         for (i in 0...9) {
-            var value = 0;
-            if (i % 3 < m.width && (i / 3).floor() < m.height)
-                value = m.get(i % 3, (i / 3).floor());
-            f.set(i % 3, (i / 3).floor(), value);
+            var value = 0.;
+            if (i % 3 < m.width && Std.int(i / 3) < m.height)
+                value = m.get(i % 3, Std.int(i / 3));
+            f.set(i % 3, Std.int(i / 3), value);
         }
         return new TransformationMatrix2D(f);
         #else

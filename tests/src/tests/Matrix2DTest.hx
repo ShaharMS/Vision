@@ -399,4 +399,16 @@ class Matrix2DTest extends utest.Test {
 		assertMatrix([[5.0, 5.0], [9.0, 9.0]], result);
 	}
 
+	@:visionTestId("vision.ds.Matrix2D.getDeterminant#recursive-four-by-four")
+	@:visionMaturity("semantic")
+	@:visionLifecycle("active")
+	function test_getDeterminant__recursiveFourByFour() {
+		var matrix = Matrix2D.createFilled([0, 2, 1, 0], [3, 0, 0, 0], [0, 0, 5, 4], [0, 0, 0, 7]);
+		Assert.floatEquals(-210.0, matrix.getDeterminant());
+		// Minor extraction must not mutate the matrix being evaluated.
+		Assert.floatEquals(-210.0, matrix.getDeterminant());
+		Assert.equals(4, matrix.width);
+		Assert.equals(4, matrix.height);
+	}
+
 }

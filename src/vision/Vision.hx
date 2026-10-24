@@ -1,6 +1,7 @@
 package vision;
 
 import vision.algorithms.ImageHashing;
+import vision.algorithms.SeamCarving;
 import vision.ds.ByteArray;
 import vision.ds.kmeans.ColorCluster;
 import haxe.io.Bytes;
@@ -69,6 +70,44 @@ using vision.algorithms.Canny;
 	```
 **/
 class Vision {
+	/**
+		Shrinks an image by removing connected paths of least significant pixels (seam carving).
+
+		Uses the gradient-energy algorithm from [Avidan and Shamir (2007)](https://www.merl.com/publications/TR2007-087).
+		Each pixel's energy is the sum of absolute RGB differences between its horizontal
+		and vertical neighbors, clamped at image borders. Dynamic programming finds the
+		minimum-total-energy 8-connected path from one edge to the opposite edge.
+		Energy is recalculated after every removal. Vertical seams (top to bottom) reduce
+		width first, then horizontal seams (left to right) reduce height. Ties select the
+		leftmost predecessor and endpoint (topmost for horizontal seams).
+
+		Returns a **new image**, leaving the source unchanged, even for unchanged dimensions.
+		Surviving pixels retain their exact colors and alpha; alpha does not affect energy.
+		This preserves strong edges better than uniform resizing in many images, but can
+		distort subjects in busy scenes or after large reductions. Use `Image.resize()`
+		for interpolation or enlargement. No seam insertion or object-protection mask is applied.
+
+		```haxe
+		var narrower = Vision.carve(image, 112, image.height);
+		var shorter = Vision.carve(image, image.width, 84);
+		```
+
+		| Original | Width reduced | Height reduced |
+		| - | - | - |
+		|![Original](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![Width reduced](https://spacebubble-io.pages.dev/vision/docs/valve-carve-width.png)|![Height reduced](https://spacebubble-io.pages.dev/vision/docs/valve-carve-height.png)|
+
+		Time is `O(width * height * removedSeams)`; auxiliary memory is `O(width * height)`.
+
+		@param image The source image, which is not modified.
+		@param width Target width in pixels, between 1 and the source width (inclusive).
+		@param height Target height in pixels, between 1 and the source height (inclusive).
+		@return A new content-aware image with exactly the requested dimensions.
+		@throws VisionException If either target dimension is nonpositive or exceeds the source dimension, including with `vision_quiet` enabled.
+	**/
+	public static function carve(image:Image, width:Int, height:Int):Image {
+		return SeamCarving.compute(image, width, height);
+	}
+
 
 	/**
 	    Combines two images by averaging out the values of each pixel's color channels, according to `percentage`.

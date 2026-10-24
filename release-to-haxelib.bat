@@ -1,21 +1,7 @@
-:: Create a folder named "release", and delete its contents if already exists:
-rmdir /s /q release
-mkdir release
-
-:: Copy the following stuff to that folder - extraParams.hxml, CHANGELOG.md, LICENSE, README.md, haxelib.json, hxformat.json, and src folder:
-
-copy "extraParams.hxml" "release\extraParams.hxml"
-copy "CHANGELOG.md" "release\CHANGELOG.md"
-copy "LICENSE" "release\LICENSE"
-copy "README.md" "release\README.md"
-copy "haxelib.json" "release\haxelib.json"
-copy "hxformat.json" "release\hxformat.json"
-robocopy "src" "release\src" /E
-
-:: Now move to the release folder:
-
-cd release
-
-:: and haxelib submit from there:
-
-haxelib submit .
+@echo off
+setlocal
+rem Build an isolated package first; never delete a previous release candidate.
+powershell -NoProfile -File "%~dp0build-release.ps1"
+if errorlevel 1 exit /b 1
+rem Publishing is an explicit second action. Submit the printed ZIP when ready:
+rem haxelib submit "release\vision-VERSION-TIMESTAMP.zip"

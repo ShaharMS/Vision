@@ -392,7 +392,7 @@ class ImageTools {
 		@returns the image object.
 	**/
 	public static function addToScreen(image:Image, x:Int, y:Int, ?units:{?xUnits:String, ?yUnits:String, ?zIndex:String}):Image {
-		#if (!js)
+		#if (!js || nodejs)
 		#else
 		var c = js.Browser.document.createCanvasElement();
 

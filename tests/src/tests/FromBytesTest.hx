@@ -57,4 +57,15 @@ class FromBytesTest extends utest.Test {
 	function test_jpeg__unimplementedOnInterp() {
 		ExceptionAssertions.throwsType(() -> new FromBytes().jpeg(FormatAssertions.malformedBytes()), Unimplemented);
 	}
+	#if vision_quiet
+	@:visionTestId("vision.formats.from.FromBytes#quiet-invalid-images")
+	function test_quiet__invalidImagesReturnTransparentPlaceholder() {
+		for (image in [new FromBytes().png(FormatAssertions.malformedBytes()), new FromBytes().bmp(FormatAssertions.malformedBytes())]) {
+			Assert.equals(1, image.width);
+			Assert.equals(1, image.height);
+			Assert.equals(0, image.getPixel(0, 0).alpha);
+		}
+	}
+	#end
+
 }

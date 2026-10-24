@@ -4,6 +4,7 @@ on: [push, pull_request]
 jobs:
   tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -73,6 +74,7 @@ jobs:
           haxelib setup "$HAXE_STD_PATH/../lib"
 
       - name: Setup runtime (all targets)
+        timeout-minutes: 15
         run: |
           set -e
           TARGET="${{ matrix.target }}"
@@ -134,7 +136,7 @@ jobs:
               fi
             fi
             if [ "$TARGET" = "cs" ]; then
-              sudo apt-get install -y mono-complete
+              sudo apt-get install -y --no-install-recommends mono-runtime mono-mcs libmono-system-io-compression4.0-cil
             fi
             if [ "$TARGET" = "cpp" ] || [ "$TARGET" = "cppia" ]; then
               sudo apt-get install -y build-essential
@@ -164,20 +166,14 @@ jobs:
           haxelib dev vision $GITHUB_WORKSPACE
           haxelib install utest --quiet
           haxelib install format --quiet
+          if [ "${{ matrix.target }}" = "js" ]; then haxelib install hxnodejs --quiet; fi
           haxelib install hxcpp --quiet
           haxelib install hxjava --quiet
           haxelib install hxcs --quiet
       - name: Build hxcpp tools (cppia runtime)
+        timeout-minutes: 15
         if: ${{ matrix.target == 'cppia' }}
-        run: |
-          # The released host predates the cppia callable crash fix in HaxeFoundation/hxcpp#1324.
-          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp ceb70d040f0792f004ccf1ed7eb6fcea01d7f3ff
-          HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
-          pushd "$HXCPP_PATH/project" > /dev/null
-          # The hosted runner reports host CPUs beyond this job's allocation. Limit
-          # hxcpp's worker pool so source bootstrapping does not thrash indefinitely.
-          HXCPP_COMPILE_THREADS=4 haxe compile-cppia.hxml
-          popd > /dev/null
+        run: bash tests/ci/cppia/build-host.sh
       - name: Compile (${{ matrix.target }})
         run: |
           mkdir -p bin
@@ -186,6 +182,9 @@ jobs:
             mkdir -p "$OUTDIR"
           fi
           BASE_CMD="haxe --class-path tests/src --main Main --library vision --library format --library utest -D vision_skip_golden -D vision_skip_invalid_tests"
+          if [ "${{ matrix.target }}" = "js" ]; then
+            BASE_CMD="$BASE_CMD --library hxnodejs"
+          fi
           if [ "${{ matrix.target }}" != "lua" ]; then
             BASE_CMD="$BASE_CMD -debug"
           fi
@@ -194,7 +193,7 @@ jobs:
           fi
           if [ "${{ matrix.target }}" = "neko" ]; then
             for BATCH in 1 2 3 4 5 6 7 8; do
-              CMD="$BASE_CMD -D vision_neko_batched -D vision_neko_batch_$BATCH --neko bin/neko/tests-$BATCH.n"
+              CMD="$BASE_CMD -dce full -D vision_neko_batched -D vision_neko_batch_$BATCH --neko bin/neko/tests-$BATCH.n"
               echo "$CMD"
               $CMD
             done
@@ -209,6 +208,13 @@ jobs:
             echo "$CMD"
             $CMD
           fi
+
+      - name: Verify quiet mode and large image headers
+        if: ${{ matrix.target == 'interp' }}
+        env:
+          VISION_TESTS: SeamCarvingTest,FromBytesTest,TransformationMatrix2DTest
+          VISION_TEST_CASES: (quiet|carve|compute)
+        run: haxe test.hxml -D vision_quiet -D vision_higher_width_cap
 
       - name: Run (${{ matrix.target }})
         run: |
@@ -268,7 +274,10 @@ jobs:
             fi
           fi
           if [ "${{ matrix.target }}" = "cppia" ]; then
-            haxelib run hxcpp bin/cppia/tests.cppia
+            HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | tr -d '\r')
+            haxe --class-path tests/src --main SeamCarvingMain --library vision --library utest -dce full --cppia bin/cppia/seam-tests.cppia
+            "$HXCPP_PATH/bin/Linux64/Cppia" bin/cppia/seam-tests.cppia
+            "$HXCPP_PATH/bin/Linux64/Cppia" bin/cppia/tests.cppia
           fi
           if [ "${{ matrix.target }}" = "interp" ]; then
             echo "Interp already executed in compile step."

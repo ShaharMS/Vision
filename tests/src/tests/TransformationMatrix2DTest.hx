@@ -108,4 +108,17 @@ class TransformationMatrix2DTest extends utest.Test {
 		ApproxAssertions.equalsFloat(3, identity3D.z);
 	}
 
+	#if vision_quiet
+	@:visionTestId("vision.ds.TransformationMatrix2D.fromMatrix2D#quiet-fractional")
+	function test_quiet__conversionKeepsFractionalValues() {
+		var matrix = new Matrix2D(2, 2);
+		matrix.set(0, 0, 0.25);
+		matrix.set(1, 1, 0.75);
+		var converted:TransformationMatrix2D = matrix;
+		ApproxAssertions.equalsFloat(0.25, converted.a);
+		ApproxAssertions.equalsFloat(0.75, converted.d);
+		ApproxAssertions.equalsFloat(0, converted.tx);
+	}
+	#end
+
 }

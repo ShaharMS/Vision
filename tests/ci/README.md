@@ -38,4 +38,11 @@ From repo root:
 - Local CI adds -D no-deprecation-warnings to reduce noise from deprecated APIs.
 - The runner uses system tools (node, java, python, php, lua, mono, etc.). Ensure they are installed and on PATH.
 - PHP runs with mbstring enabled by default. You can set VISION_PHP_EXT_DIR to the extension directory or set VISION_PHP_DISABLE_MBSTRING=1 to skip.
-- Lua target: I attempted to add runtime shims/stubs and test skips to work around missing Lua modules and limits, then reverted all of it. Lua may still require proper dependencies (rex_pcre2/luv/bit) and can hit the “too many local variables” limit with large generated files.
+- JavaScript runs under Node with `hxnodejs`; its test reporter returns a nonzero process exit status on failure. Browser demos still compile with `haxe compile.hxml`.
+- Lua requires its native dependencies (`rex_pcre2`, `luv`, `bit`/`bit32`, and sockets as applicable). CI installs these modules; PNG export uses stored DEFLATE blocks on Lua.
+- Neko batches use `-dce full` so unreachable image methods cannot exceed the VM function-scope limit. Seam tests execute in batch 1.
+- The interpreter job also exercises `vision_quiet` with `vision_higher_width_cap` using focused seam, malformed-format and fractional-matrix regressions.
+
+## cppia host configuration
+
+Use the pinned, patched interpreter host described in [cppia/README.md](cppia/README.md). The unpatched released host fails generic-array and matrix tests. GitHub CI builds the patched host; the local runner prefers the active haxelib checkout's host (including Linux64/Cppia) over an unrelated PATH executable. JIT mode is not qualified.

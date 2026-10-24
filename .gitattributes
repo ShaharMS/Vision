@@ -1,0 +1,2 @@
+tests/ci/cppia/*.sh text eol=lf
+tests/ci/cppia/*.patch text eol=lf whitespace=-blank-at-eol

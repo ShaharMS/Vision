@@ -6,6 +6,7 @@ import tests.*;
 class ManualSuites {
 	public static function addCases(runner:Runner, includeTest:String->Bool, ?casePattern:EReg):Void {
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
+		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ArrayToolsTest")) runner.addCase(new ArrayToolsTest(), "setup", "teardown", "test", casePattern);
 		// Neko cannot load these image-heavy test modules: its VM rejects their generated function scope before tests start.
