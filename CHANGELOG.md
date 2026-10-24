@@ -1,43 +1,82 @@
 # 2.2.0
 
-### Content-aware resizing and interpolation
+### `Vision.hx`
 
-- Added `Vision.carve(image, width, height)` using Avidan-Shamir minimum-energy seam removal. Supports shrinking width and height, recalculates RGB gradient energy per seam, preserves surviving RGBA pixels, and returns an independent image. Width is reduced before height; enlargement and nonpositive dimensions are rejected.
-- Added reproducible Valve examples and hosted before/after images for `carve`.
-- Added bicubic, Catmull-Rom, Mitchell-Netravali and Lanczos resizing algorithms.
+ - **Added `carve()`** - content-aware shrinking using minimum-energy seam removal. Returns a new image, preserves surviving pixels and alpha, and supports reducing width and height.
+ - **Added `houghLineSegmentDetection()`**
+ - **Added `houghCircleDetection()`**
+ - **Added `mapHoughCircles()`**
+ - **Added `harrisCornerResponse()`**
+ - **Added `harrisCorners()`**
+ - **Added reproducible, hosted before/after examples for `carve()`**
 
-### Feature detection
+### `Image.hx`
 
-- Added a standard polar Hough accumulator and consolidated the existing `SimpleHough` bridge.
-- Added `Vision.houghLineSegmentDetection` with minimum length, gap and optional precomputed edge-image controls.
-- Added `Vision.houghCircleDetection`, `Vision.mapHoughCircles`, `Circle2D` and detector option types.
-- Added `Vision.harrisCornerResponse` and `Vision.harrisCorners` with configurable response computation and corner selection.
+ - **Added `copyImageFrom()`**
+ - **Added raw byte loading and export helpers**
+ - **Added higher-quality resizing through bicubic, Catmull-Rom, Mitchell-Netravali and Lanczos interpolation**
 
-### Image formats and framework integration
+### `vision.ds`
 
-- Added `Image.copyImageFrom`, `ImageFormat.JPEG` and `ImageFormat.VISION`.
-- Introduced `vision.formats` and `ImageIO.from` / `ImageIO.to` for byte and framework conversions.
-- Added synchronous file loading, byte loading, URL loading, byte export and file export through `ImageTools`.
-- Deprecated `ImageTools.saveToFile` in favor of `ImageTools.exportToFile`.
-- Added JPEG encoding through `format` on supported targets and PNG export on Lua.
-- JPEG decoding remains browser-dependent; native/Node JPEG byte decoding is not implemented.
+ - **Added `Circle2D`**
+ - **Added Hough line, line-segment and circle detection options**
+ - **Added Harris response and corner detection options**
+ - **Added `ImageFormat.JPEG` and `ImageFormat.VISION`**
+ - **Added `ImageResizeAlgorithm.CatmullRomInterpolation`, `MitchellNetravaliInterpolation` and `LanczosInterpolation`**
+ - **Implemented the previously unimplemented bicubic resize option**
+ - **Fixed behavior across matrices, geometry, colors, byte arrays and queues**
 
-### Correctness and portability
+### `vision.tools`
 
-- Corrected behavior across edge detectors, K-means, image hashing, linear algebra, geometry, color handling, byte arrays, queues and math utilities.
-- Added `InvalidHeapsPixelFormat` and `SingularMatrixError` diagnostics.
-- Fixed `vision_quiet` compilation for matrix conversion and PNG/BMP loading; invalid PNG/BMP input returns a transparent 1x1 placeholder in quiet mode.
-- Added inline protection for targets with generated method-size limits and support for non-threaded sys targets.
-- Fixed JavaScript job completion/failure dispatch and Node handling of typed exceptions and browser-only operations.
+ - **Added synchronous `ImageTools.loadFromFile()`**
+ - **Added `ImageTools.loadFromBytes()`**
+ - **Added `ImageTools.loadFromURL()`**
+ - **Added `ImageTools.exportToBytes()`**
+ - **Added `ImageTools.exportToFile()`**
+ - **Deprecated `ImageTools.saveToFile()` in favor of `ImageTools.exportToFile()`**
+ - **Fixed math and array utility behavior across targets**
 
-### Tests, CI and packaging
+### `vision.formats`
 
-- Replaced generated test scaffolding with authored behavioral `utest` suites, suite/case filtering and a maintained coverage inventory.
-- Added a local multi-target CI runner and repaired runtime setup across the target matrix.
-- Added a pinned cppia interpreter-host patch for generic/typed array interoperability, fractional values, resize and length handling, with reproducible build tooling included in release ZIPs.
-- Node tests now use `hxnodejs` and return a failing process status when assertions fail.
-- Removed the test-only `utest` dependency from the library package.
-- Added a package-only PowerShell builder; the release batch file stops if packaging fails before offering submission.
+ - **Added the `vision.formats` package for image format and framework conversions**
+ - **Added `ImageIO.from` and `ImageIO.to`**
+ - **Added byte and framework import/export helpers**
+ - **Added JPEG encoding through `format` on supported targets**
+ - **Added PNG export on Lua**
+ - **JPEG decoding remains browser-dependent; native/Node JPEG decoding is not implemented**
+
+### `vision.algorithms`
+
+ - **Added `SeamCarving` for minimum-energy seam removal**
+ - **Added `Hough` for standard line, probabilistic segment and circle detection**
+ - **Updated the existing `SimpleHough` bridge to use the shared Hough implementation**
+ - **Added `Harris` for corner-response maps and corner extraction**
+ - **Added `BicubicInterpolation`, `CatmullRomInterpolation`, `MitchellNetravaliInterpolation` and `LanczosInterpolation`**
+ - **Fixed behavior in edge detection, K-Means, image hashing, linear algebra and related utilities**
+
+### `vision.exceptions`
+
+ - **Added `InvalidHeapsPixelFormat`**
+ - **Added `SingularMatrixError`**
+ - **Added `HoughEdgeImageSizeMismatch`**
+
+### Tests & CI
+
+ - **Replaced generated test scaffolding with authored behavioral `utest` suites**
+ - **Added suite/case filtering, a maintained coverage inventory and a local multi-target CI runner**
+ - **Verified all 12 target jobs, with 619 test methods passing on interpreter, Node and the qualified cppia interpreter**
+ - **Fixed Node tests reporting success after assertion failures**
+ - **Fixed JavaScript job completion/failure callbacks and Node-specific compatibility**
+ - **Fixed Neko module loading through full dead-code elimination**
+ - **Fixed `vision_quiet` compilation for matrix conversion and PNG/BMP loading**
+ - **Added support for non-threaded sys targets and inline protection for constrained targets**
+ - **Added a pinned cppia interpreter-host compatibility patch and reproducible build tools** - the qualified configuration uses Haxe 4.3.7 and the included patched hxcpp host; JIT mode is not qualified.
+
+### Release packaging
+
+ - **Removed the test-only `utest` runtime dependency**
+ - **Added a package-only PowerShell builder that preserves previous release candidates**
+ - **Included the cppia host patch and build tools in release ZIPs**
 
 # 2.1.0
 
