@@ -1,6 +1,6 @@
 # Plan — Vision 3 step 1 — Preserve the image contract
 
-> **Status** 🔲 Not started
+> **Status** ✅ Completed
 >
 > **Prerequisite** First step
 >
@@ -35,3 +35,10 @@ Keep the public declarations in `Image.hx`. Move byte storage ownership into the
 ## Verification
 
 - Run `haxe test.hxml` and `haxe compile.hxml`. Run `haxe tests/ci/local-ci.hxml -- --targets=interp,js,neko` where the runtimes are installed and retain the existing GitHub matrix for the full compiler gate. Cover direct `underlying` edits and mutation/return behavior in `ImageTest` if existing tests miss them.
+
+## Implementation and evidence
+
+- `ImageStorage` wraps the original `ByteArray` without adding a runtime allocation for the wrapper. Constructors share packed allocation and width initialization. VISION byte loads enter through an explicit storage conversion.
+- An image assignment still shares its bytes. Clone copies them. Replacing the storage during resize or through the optional `underlying` setter changes the receiving variable while existing aliases retain their previous storage. Packed data keeps its original header and ARGB byte layout.
+- The interpreter suite passed 619 tests. The browser JS compile and the local Node.js and Neko compile-and-run jobs passed. A focused interpreter probe checked direct byte edits, alias and clone behavior, packed VISION round trips and resize with the default layout and with `vision_higher_width_cap` and `vision_allow_resize` enabled.
+- The optional build exposed pre-existing missing return values in the width and height setters. Both now return the resulting dimension.

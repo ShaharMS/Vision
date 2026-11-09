@@ -2,7 +2,7 @@
 
 ## Status
 
-🔲 Not started
+🔄 In progress
 
 ## Overview
 
@@ -75,7 +75,7 @@ This is a proposed layout. Add files with their implementations. JS, C++, C, Jav
 
 ## Sub-plans
 
-1. [Preserve the image contract](vision-3-backends-1-image-storage.md)
+1. ✅ [Preserve the image contract](vision-3-backends-1-image-storage.md)
 2. [Draw on browser targets](vision-3-backends-2-browser-drawing.md)
 3. [Integrate native frameworks](vision-3-backends-3-framework-drawing.md)
 4. [Qualify bulk operations](vision-3-backends-4-bulk-operations.md)
@@ -83,4 +83,4 @@ This is a proposed layout. Add files with their implementations. JS, C++, C, Jav
 
 ## Iteration bootstrap
 
-Start with `vision-3-backends-1-image-storage`. Keep the existing target matrix and API behavior results as the baseline. Each adapter must add its own render or device evidence before being listed as supported.
+Continue with `vision-3-backends-2-browser-drawing`. Keep the existing target matrix and API behavior results as the baseline. Each adapter must add its own render or device evidence before being listed as supported.

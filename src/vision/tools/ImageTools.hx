@@ -168,7 +168,7 @@ class ImageTools {
 		image = image == null ? new Image(0, 0) : image;
 		image.copyImageFrom(
 			switch fileFormat {
-				case VISION: cast bytes;
+				case VISION: Image.fromStorageBytes(bytes);
 				case PNG: ImageIO.from.bytes.png(bytes);
 				case BMP: ImageIO.from.bytes.bmp(bytes);
 				case JPEG: ImageIO.from.bytes.jpeg(bytes);

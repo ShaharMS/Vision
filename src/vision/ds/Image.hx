@@ -1,6 +1,7 @@
 package vision.ds;
 
 import vision.formats.ImageIO;
+import vision.backend.ImageStorage;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm
@@ -23,7 +24,7 @@ using vision.tools.ArrayTools;
 	Represents a 2D image, as a matrix of Colors.
 **/
 @:transitive
-abstract Image(ByteArray) {
+abstract Image(ImageStorage) {
 	#if vision_higher_width_cap
 	/**
 		the first 4 bytes represent image width,  
@@ -39,13 +40,11 @@ abstract Image(ByteArray) {
 		the last byte represents view shape
 	**/
 	#end
-	static var OFFSET = #if vision_higher_width_cap 21 #else 11 #end;
-
-	static var WIDTH_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
-	static var VIEW_XY_BYTES = #if vision_higher_width_cap 8 #else 4 #end;
-	static var VIEW_WH_BYTES = #if vision_higher_width_cap 8 #else 4 #end;
-	static var VIEW_SHAPE_BYTES = 1;
-	static var DATA_GAP = #if vision_higher_width_cap 4 #else 2 #end;
+	static inline final OFFSET = ImageStorage.PIXEL_OFFSET;
+	static inline final WIDTH_BYTES = ImageStorage.FIELD_BYTES;
+	static inline final VIEW_XY_BYTES = WIDTH_BYTES * 2;
+	static inline final VIEW_WH_BYTES = WIDTH_BYTES * 2;
+	static inline final DATA_GAP = WIDTH_BYTES;
 
 	/**
 		Returns the underlying type of this abstract.
@@ -53,12 +52,13 @@ abstract Image(ByteArray) {
 	public var underlying(get, #if vision_allow_resize set #else never #end):ByteArray;
 
 	inline function get_underlying() {
-		return this;
+		return this.bytes();
 	}
 
 	#if vision_allow_resize
 	inline function set_underlying(bytes:ByteArray) {
-		return this = bytes;
+		this = new ImageStorage(bytes);
+		return bytes;
 	}
 	#end
 
@@ -74,6 +74,7 @@ abstract Image(ByteArray) {
 	#if vision_allow_resize
 	inline function set_width(value:Int) {
 		resize(value, height);
+		return width;
 	}
 	#end
 
@@ -88,6 +89,7 @@ abstract Image(ByteArray) {
 	#if vision_allow_resize
 	inline function set_height(value:Int) {
 		resize(width, value);
+		return height;
 	}
 	#end
 
@@ -116,13 +118,7 @@ abstract Image(ByteArray) {
 		@param color The color to fill the image with. if unspecified, the image is transparent.
 	**/
 	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
-		this = new ByteArray(width * height * 4 + OFFSET);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (0, width);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
-		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		this = ImageStorage.allocate(width, height);
 		var i = OFFSET;
 		while (i < this.length) {
 			this[i] = color.alpha;
@@ -538,7 +534,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function copyImageFrom(image:Image):Image {
 		var currentView = getView();
-		this = new ByteArray(image.underlying.length);
+		this = new ImageStorage(new ByteArray(image.underlying.length));
 		this.blit(0, image.underlying, 0, image.underlying.length);
 		setView(currentView);
 		return cast this;
@@ -1079,7 +1075,7 @@ abstract Image(ByteArray) {
 		if (this == null) {
 			trace("Warning: Cloning a null image");
 		}
-		return cast this.sub(0, this.length);
+		return fromStorageBytes(this.sub(0, this.length));
 	}
 
 	//--------------------------------------------------------------------------
@@ -1159,7 +1155,7 @@ abstract Image(ByteArray) {
 						var color = getPixel(MathTools.floor(x * xMultiplier), MathTools.floor(y * yMultiplier));
 						image.setPixel(x, y, color);
 					});
-					this = image.underlying;
+					this = cast image;
 				}
 		}
 
@@ -1211,7 +1207,7 @@ abstract Image(ByteArray) {
             }
         }
 
-		this = rotatedImage.underlying;
+		this = cast rotatedImage;
 		return cast this;
 	}
 
@@ -1578,24 +1574,17 @@ abstract Image(ByteArray) {
 		var h = array.length;
 		var w = array[0].length;
 
-		var byteArray:ByteArray = new ByteArray(w * h * 4 + OFFSET);
+		final storage = ImageStorage.allocate(w, h);
 		var flat = array.flatten();
 		for (i in 0...flat.length) {
 			var color = flat[i];
-			byteArray[OFFSET + i * 4] 	  = color.alpha;
-			byteArray[OFFSET + i * 4 + 1] = color.red;
-			byteArray[OFFSET + i * 4 + 2] = color.green;
-			byteArray[OFFSET + i * 4 + 3] = color.blue;
+			storage[OFFSET + i * 4] 	  = color.alpha;
+			storage[OFFSET + i * 4 + 1] = color.red;
+			storage[OFFSET + i * 4 + 2] = color.green;
+			storage[OFFSET + i * 4 + 3] = color.blue;
 		}
 
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (0, w);
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES, 0);
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
-		byteArray.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-
-		return cast byteArray;
+		return cast storage;
 	}
 
 	/**
@@ -1637,18 +1626,13 @@ abstract Image(ByteArray) {
 		} else {
 			h = height;
 		}
-		var array = new ByteArray(width * h * 4 + OFFSET);
-		array.fill(0, array.length, 0);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (0, width);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES, 0);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
-		array.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		final storage = ImageStorage.allocate(width, h);
+		storage.blit(OFFSET, bytes, 0, bytes.length);
+		return cast storage;
+	}
 
-		array.blit(OFFSET, bytes, 0, bytes.length);
-
-		return cast array;
+	static inline function fromStorageBytes(bytes:ByteArray):Image {
+		return cast new ImageStorage(bytes);
 	}
 
 	/**
