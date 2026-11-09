@@ -1,5 +1,9 @@
 package vision.ds;
 
+#if (vision_native && (cpp || hl))
+import vision.formats.__internal.NativeImageIO;
+#end
+
 @:noCompletion
 abstract ImageStorage(ImageData) {
 	public static inline final FIELD_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
@@ -51,9 +55,16 @@ abstract ImageStorage(ImageData) {
 	}
 
 	public function transform(operation:ImageOperation):Bool {
-		if (!prepareSurface() || !this.surface.transform(operation)) return false;
-		this.cpuValid = false;
-		return true;
+		if (prepareSurface() && this.surface.transform(operation)) {
+			this.cpuValid = false;
+			return true;
+		}
+		#if (vision_native && (cpp || hl))
+		final pixels = writePixels();
+		return NativeImageIO.transform(pixels.getData(), pixels.length, PIXEL_OFFSET, operation);
+		#else
+		return false;
+		#end
 	}
 
 	public function readPixels():ByteArray {
@@ -74,6 +85,13 @@ abstract ImageStorage(ImageData) {
 		detach();
 		this.exposed = true;
 		return this.packed;
+	}
+
+	public function copy():ImageStorage {
+		final pixels = readPixels();
+		final copy = new ByteArray(pixels.length);
+		copy.blit(0, pixels, 0, pixels.length);
+		return new ImageStorage(copy);
 	}
 
 	public inline function get(index:Int):Int

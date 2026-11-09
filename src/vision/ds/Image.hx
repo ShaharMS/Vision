@@ -77,8 +77,12 @@ abstract Image(ImageStorage) {
 	inline function storage():ImageStorage return this;
 
 	@:allow(vision.Vision)
-	inline function transformOnGpu(operation:ImageOperation):Bool {
+	inline function transformWithBackend(operation:ImageOperation):Bool {
+		#if (vision_native && (cpp || hl))
+		return !hasView() && this.transform(operation);
+		#else
 		return this.surface != null && !hasView() && this.transform(operation);
+		#end
 	}
 
 	/**
@@ -555,8 +559,7 @@ abstract Image(ImageStorage) {
 	**/
 	public inline function copyImageFrom(image:Image):Image {
 		var currentView = getView();
-		final bytes = image.storage().readPixels();
-		this = new ImageStorage(bytes.sub(0, bytes.length));
+		this = image.storage().copy();
 		setView(currentView);
 		return cast this;
 	}
@@ -1096,7 +1099,7 @@ abstract Image(ImageStorage) {
 		if (this == null) {
 			trace("Warning: Cloning a null image");
 		}
-		return cast new ImageStorage(this.readPixels().sub(0, this.length));
+		return cast this.copy();
 	}
 
 	//--------------------------------------------------------------------------

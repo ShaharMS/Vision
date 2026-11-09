@@ -1,6 +1,6 @@
 # Plan — Vision 3 step 4 — native drawing
 
-> **Status** 🔲 Not started
+> **Status** ✅ Completed
 >
 > **Prerequisite** [Step 3](vision-3-integration-3-operation-dispatch.md)
 >
@@ -30,3 +30,5 @@ Draw ordinary Vision images through a standalone native host and qualify its fal
 ## Verification
 
 - Exercise native pixels and presentation from hxcpp and HashLink on the available host.
+
+The Windows hxcpp and HashLink smoke tests drew edited images, exercised both native color operations, and presented frames through WebGPU and GDI. The native library sources live in the existing internal formats package.

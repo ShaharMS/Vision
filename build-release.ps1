@@ -9,7 +9,7 @@ if ($version -notmatch '^\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$') { throw 'Invali
 $taskStamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
 $packageRoot = Join-Path $OutputDirectory "vision-$version-$taskStamp"
 New-Item -ItemType Directory -Path $packageRoot -ErrorAction Stop | Out-Null
-foreach ($name in @('extraParams.hxml', 'CHANGELOG.md', 'LICENSE', 'README.md', 'haxelib.json', 'hxformat.json', 'src')) {
+foreach ($name in @('extraParams.hxml', 'CHANGELOG.md', 'LICENSE', 'README.md', 'haxelib.json', 'hxformat.json', 'build-native-drawing.ps1', 'src')) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $packageRoot -Recurse -ErrorAction Stop
 }
 # Ship the required cppia host compatibility patch and reproducible build helper.
