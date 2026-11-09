@@ -1,6 +1,6 @@
 # Plan — Vision 3 step 3 — operation dispatch
 
-> **Status** 🔲 Not started
+> **Status** ✅ Completed
 >
 > **Prerequisite** [Step 2](vision-3-integration-2-image-backing.md)
 >
@@ -30,3 +30,5 @@ Route exact whole-image operations through attached storage and retain the curre
 ## Verification
 
 - Compare invert and simple grayscale byte for byte and exercise GPU chains, views, and CPU fallbacks in a browser.
+
+Edge verified that invert and simple grayscale each submitted a WebGL pass through the ordinary Vision API. The chained result matched CPU bytes. Views used the CPU path.

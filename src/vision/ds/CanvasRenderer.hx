@@ -8,6 +8,7 @@ import js.html.ImageData;
 import vision.Vision;
 import vision.formats.__internal.BrowserPixels;
 import vision.formats.__internal.WebGlDraw;
+import vision.formats.__internal.WebGlDraw.WebGlSurface;
 import vision.exceptions.VisionException;
 
 /** Draws Vision images in caller order using a dedicated browser canvas. **/
@@ -16,6 +17,7 @@ class CanvasRenderer {
 	public var usesWebGl(get, never):Bool;
 
 	final pixels = new BrowserPixels();
+	final attached = new Array<ImageStorage>();
 	final gpu:WebGlDraw;
 	final context:CanvasRenderingContext2D;
 	final staging:CanvasElement;
@@ -31,8 +33,7 @@ class CanvasRenderer {
 			gpu = new WebGlDraw(gl);
 		} else {
 			context = canvas.getContext2d();
-			if (context == null)
-				throw new VisionException("The canvas has no compatible drawing context", "CanvasRenderer");
+			if (context == null) throw new VisionException("The canvas has no compatible drawing context", "CanvasRenderer");
 			staging = Browser.document.createCanvasElement();
 			stagingContext = staging.getContext2d();
 		}
@@ -40,6 +41,39 @@ class CanvasRenderer {
 
 	inline function get_usesWebGl():Bool {
 		return gpu != null;
+	}
+
+	/**
+		Associates an image with this renderer's WebGL context so eligible Vision
+		operations can keep their results on the device.
+		Returns false when the context, image size, or mutable byte access requires CPU storage.
+	**/
+	public function attach(image:Image):Bool {
+		checkOpen();
+		if (gpu == null) return false;
+		final storage = image.storage();
+		if (owns(storage)) return image.isGpuBacked;
+		if (storage.surface != null) return false;
+
+		final surface = gpu.createSurface(image.width, image.height);
+		if (surface == null) return false;
+		if (!surface.isAvailable() || !storage.attach(surface)) {
+			surface.dispose();
+			return false;
+		}
+		attached.push(storage);
+		return true;
+	}
+
+	/** Materializes the image's pixels and releases this renderer's texture. **/
+	public function detach(image:Image):Void {
+		final storage = image.storage();
+		if (owns(storage)) storage.detach();
+		attached.remove(storage);
+	}
+
+	function owns(storage:ImageStorage):Bool {
+		return storage.surface is WebGlSurface && (cast storage.surface : WebGlSurface).owner == gpu;
 	}
 
 	/** Draw at a position in canvas pixels with source-over alpha blending. **/
@@ -50,18 +84,21 @@ class CanvasRenderer {
 	/** Draw as if Vision.invert had been applied, leaving the source image untouched. **/
 	public function drawInverted(image:Image, x:Int = 0, y:Int = 0):Void {
 		checkOpen();
-		if (gpu != null && !image.hasView())
-			drawPixels(image, x, y, true);
-		else
-			draw(Vision.invert(image.clone()), x, y);
+		if (gpu != null && !image.hasView()) drawPixels(image, x, y, true);
+		else draw(Vision.invert(image.clone()), x, y);
 	}
 
 	function drawPixels(image:Image, x:Int, y:Int, invert:Bool):Void {
 		checkOpen();
 		final width = image.width;
 		final height = image.height;
-		if (width <= 0 || height <= 0 || canvas.width <= 0 || canvas.height <= 0)
+		if (width <= 0 || height <= 0 || canvas.width <= 0 || canvas.height <= 0) return;
+		final storage = image.storage();
+		if (gpu != null && owns(storage) && storage.prepareSurface()) {
+			final surface:WebGlSurface = cast storage.surface;
+			gpu.presentTexture(surface.texture, width, height, x, y, canvas.width, canvas.height, invert);
 			return;
+		}
 		final changed = pixels.update(image, width, height);
 		if (gpu != null) {
 			gpu.draw(pixels.rgba, width, height, changed, x, y, canvas.width, canvas.height, invert);
@@ -82,28 +119,26 @@ class CanvasRenderer {
 	/** Clears the canvas to transparent before drawing the next frame. **/
 	public function clear():Void {
 		checkOpen();
-		if (gpu != null)
-			gpu.clear();
-		else
-			context.clearRect(0, 0, canvas.width, canvas.height);
+		if (gpu != null) gpu.clear();
+		else context.clearRect(0, 0, canvas.width, canvas.height);
 	}
 
 	/** Releases the renderer's backing resources. **/
 	public function dispose():Void {
-		if (disposed)
-			return;
+		if (disposed) return;
+		for (storage in attached) {
+			if (owns(storage)) storage.detach();
+		}
+		attached.resize(0);
 		disposed = true;
 		pixels.rgba = null;
 		imageData = null;
-		if (gpu != null)
-			gpu.dispose();
-		else
-			staging.width = staging.height = 0;
+		if (gpu != null) gpu.dispose();
+		else staging.width = staging.height = 0;
 	}
 
 	inline function checkOpen():Void {
-		if (disposed)
-			throw new VisionException("The canvas renderer has been disposed", "CanvasRenderer");
+		if (disposed) throw new VisionException("The canvas renderer has been disposed", "CanvasRenderer");
 	}
 }
 #end

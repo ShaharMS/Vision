@@ -48,6 +48,7 @@ import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Color;
 import vision.ds.Image;
+import vision.ds.ImageStorage.ImageOperation;
 import vision.ds.specifics.HarrisCornerOptions;
 import vision.ds.specifics.HarrisResponseOptions;
 import vision.ds.specifics.HoughCircleOptions;
@@ -177,6 +178,8 @@ class Vision {
 		@return The grayscaled image. The original image is modified.
 	**/
 	public static function grayscale(image:Image, simpleGrayscale:Bool = false):Image {
+		if (simpleGrayscale && image.transformOnGpu(ImageOperation.SimpleGrayscale))
+			return image;
 		image.forEachPixelInView((x, y, pixel) -> {
 			var gray = if (!simpleGrayscale) Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) else Std.int((pixel.red + pixel.green + pixel.blue) / 3);
 			image.setUnsafePixel(x, y, Color.fromRGBA(gray, gray, gray));
@@ -207,6 +210,8 @@ class Vision {
 		@return The inverted image. The original image is modified.
 	**/
 	public static function invert(image:Image):Image {
+		if (image.transformOnGpu(ImageOperation.Invert))
+			return image;
 		image.forEachPixelInView((x, y, pixel) -> {
 			image.setUnsafePixel(x, y, Color.fromRGBA(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
 		});

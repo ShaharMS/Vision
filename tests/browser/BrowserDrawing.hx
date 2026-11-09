@@ -2,6 +2,7 @@ import js.Browser;
 import js.html.CanvasElement;
 import js.html.webgl.GL;
 import js.lib.Uint8Array;
+import js.Syntax;
 import vision.Vision;
 import vision.ds.CanvasRenderer;
 import vision.ds.WebGpuInverter;
@@ -13,6 +14,7 @@ class BrowserDrawing {
 		try {
 			testDrawing(false);
 			testDrawing(true);
+			testAttachedImage();
 			testExistingCanvasApi();
 			WebGpuInverter.create().then(inverter -> {
 				if (inverter == null) {
@@ -59,6 +61,53 @@ class BrowserDrawing {
 			throw "addToScreen did not preserve the image or its position";
 		expectPixel(screen, false, 1, 2, [18, 52, 86, 255]);
 		screen.remove();
+	}
+
+	static function testAttachedImage():Void {
+		final canvas = Browser.document.createCanvasElement();
+		canvas.width = 3;
+		canvas.height = 2;
+		final renderer = new CanvasRenderer(canvas);
+		final image = new Image(3, 2, 0x80204060);
+		image.setPixel(1, 1, 0xFF01EF50);
+		final expected = image.clone();
+		Vision.invert(expected);
+		Vision.grayscale(expected, true);
+		if (!renderer.attach(image) || !image.isGpuBacked)
+			throw "The image could not attach to WebGL";
+
+		final gl = canvas.getContextWebGL2();
+		final draws:Dynamic = gl.drawArrays;
+		var passes = 0;
+		Syntax.code("{0}.drawArrays = (mode, first, count) => {1}(mode, first, count)", gl, function(mode:Int, first:Int, count:Int) {
+			passes++;
+			Syntax.code("{0}.call({1}, {2}, {3}, {4})", draws, gl, mode, first, count);
+		});
+		Vision.invert(image);
+		Vision.grayscale(image, true);
+		if (passes != 2)
+			throw "The ordinary Vision calls did not submit both WebGL operations";
+		renderer.draw(image);
+		final color = expected.getPixel(1, 1);
+		expectPixel(canvas, true, 1, 1, [color.red, color.green, color.blue, color.alpha]);
+		if (image.exportToBytes().compare(expected.exportToBytes()) != 0)
+			throw "WebGL storage did not materialize the same pixels";
+
+		image.setPixel(2, 1, 0xFF103254);
+		image.setView({x: 2, y: 1, width: 1, height: 1});
+		Vision.invert(image);
+		if (passes != 3 || image.getPixel(2, 1) != 0xFFEFCDAB || image.getPixel(1, 1) != color)
+			throw "The CPU view fallback changed the wrong pixels";
+		image.removeView();
+		Vision.invert(image);
+		final alias = image;
+		final bytes = alias.underlying;
+		if (image.isGpuBacked || renderer.attach(alias))
+			throw "Exposing mutable pixels must release the GPU backing";
+		bytes[bytes.length - 3] = 0xCD;
+		if (image.getPixel(2, 1) != 0xFFCD3254)
+			throw "An existing byte alias did not update the image";
+		renderer.dispose();
 	}
 
 	static function testDrawing(webGl:Bool) {
