@@ -1,6 +1,9 @@
 package vision.ds;
 
 import vision.formats.ImageIO;
+#if (openfl || flash)
+import vision.formats.__internal.FrameworkImageIO;
+#end
 import vision.backend.ImageStorage;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
@@ -1475,27 +1478,27 @@ abstract Image(ImageStorage) {
 
 	#if (openfl || flash)
 	@:to public function toBitmapData():flash.display.BitmapData {
-		return ImageIO.to.framework.flash.bitmapdata(cast this);
+		return FrameworkImageIO.toBitmapData(cast this);
 	}
 
 	@:from public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
-		return ImageIO.from.framework.flash.bitmapdata(bitmapData);
+		return FrameworkImageIO.fromBitmapData(bitmapData);
 	}
 
 	@:to public function toShape():flash.display.Shape {
-		return ImageIO.to.framework.flash.shape(cast this);
+		return FrameworkImageIO.toShape(cast this);
 	}
 
 	@:from public static function fromShape(shape:flash.display.Shape):Image {
-		return ImageIO.from.framework.flash.shape(shape);
+		return FrameworkImageIO.fromShape(shape);
 	}
 
 	@:to public function toSprite():flash.display.Sprite {
-		return ImageIO.to.framework.flash.sprite(cast this);
+		return FrameworkImageIO.toSprite(cast this);
 	}
 
 	@:from public static function fromSprite(sprite:flash.display.Sprite):Image {
-		return ImageIO.from.framework.flash.sprite(sprite);
+		return FrameworkImageIO.fromSprite(sprite);
 	}
 	#end
 

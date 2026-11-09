@@ -72,14 +72,12 @@ class FrameworkImageIO {
 		bmp.draw(shape);
 		return fromBitmapData(bmp);
 	}
-	#end
-
-	#if openfl
 	public static function toShape(image:Image):flash.display.Shape {
-		var s:openfl.display.Shape = cast toSprite(image);
-		var sh = new openfl.display.Shape();
-		sh.graphics.drawGraphicsData(s.graphics.readGraphicsData());
-		return sh;
+		final shape = new flash.display.Shape();
+		shape.graphics.beginBitmapFill(toBitmapData(image));
+		shape.graphics.drawRect(0, 0, image.width, image.height);
+		shape.graphics.endFill();
+		return shape;
 	}
 	#end
 

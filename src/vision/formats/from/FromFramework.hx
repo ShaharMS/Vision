@@ -34,7 +34,7 @@ import vision.formats.__internal.FrameworkImageIO;
     #end
     #if lime
     public var lime = {
-        image: (image:lime.graphics.Image) -> FrameworkImageIO.fromLimeImage(bitmapData)
+        image: (image:lime.graphics.Image) -> FrameworkImageIO.fromLimeImage(image)
     }
     #end
     #if heaps

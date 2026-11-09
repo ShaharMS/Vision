@@ -1,6 +1,6 @@
 # Plan — Vision 3 step 3 — Integrate native framework drawing
 
-> **Status** 🔲 Not started
+> **Status** ✅ Completed
 >
 > **Prerequisite** [Draw on browser targets](vision-3-backends-2-browser-drawing.md)
 >
@@ -35,3 +35,9 @@ Use the same presentation boundary for Heaps. Qualify OpenFL and Heaps as separa
 ## Verification
 
 - Build and run one hxcpp Lime/OpenFL sample and one HashLink Heaps sample. Verify updates across consecutive frames and record upload counts or texture handles to distinguish reuse from reallocation. Run `haxe tests/ci/local-ci.hxml -- --targets=cpp,hl` with the required runtimes.
+
+## Implementation and evidence
+
+- [OpenFlBitmap](../../src/vision/backend/framework/OpenFlBitmap.hx) presents an image as an OpenFL bitmap and retains the owned bitmap data across same-size updates.
+- [HeapsBitmap](../../src/vision/backend/framework/HeapsBitmap.hx) presents an image as a Heaps bitmap and reuses its texture for same-size updates. Both adapters use the host's drawing loop.
+- Windows native smoke tests passed with Haxe 4.3.7, hxcpp 4.3.2, Lime 8.3.2, OpenFL 9.5.2, Heaps 2.1.0, and HashLink/hlsdl 1.16. The OpenFL frame handler verified pixel updates and bitmap-data identity. Heaps verified matching pixels through texture capture and checked texture identity across the update. [Reproduction](../../tests/framework/README.md)

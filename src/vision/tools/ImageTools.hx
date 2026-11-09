@@ -190,8 +190,10 @@ class ImageTools {
 			return image.copyImageFrom(JsImageLoader.loadFileSync(path));
 		}
 		return image.copyImageFrom(loadFromFileNodeSync(path));
-		#else
+		#elseif sys
 		return loadFromBytes(image, File.getBytes(path), Path.extension(path));
+		#else
+		throw new Unimplemented("Synchronous file loading on this target");
 		#end
 	}
 
@@ -201,7 +203,7 @@ class ImageTools {
 			return image.copyImageFrom(JsImageLoader.loadURLSync(url));
 		}
 		return image.copyImageFrom(loadFromUrlNodeSync(url));
-		#else
+		#elseif sys
 		var http = new Http(url);
 		var requestStatus = 2;
 		http.onBytes = (data) -> {
@@ -230,6 +232,8 @@ class ImageTools {
 		}
 		
 		return image;
+		#else
+		throw new Unimplemented("Synchronous URL loading on this target");
 		#end
 	}
 
@@ -367,8 +371,10 @@ class ImageTools {
 	public static function exportToFile(image:Image, pathWithFileName:String, format:ImageFormat = PNG) {
 		#if js
 		JsImageExporter.saveToFileAsync(image, pathWithFileName, format);
-		#else
+		#elseif sys
 		File.saveBytes(pathWithFileName, exportToBytes(image, format));
+		#else
+		throw new Unimplemented("Saving to a file path on this target");
 		#end
 	}
 
