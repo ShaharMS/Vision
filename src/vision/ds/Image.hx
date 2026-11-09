@@ -4,7 +4,7 @@ import vision.formats.ImageIO;
 #if (openfl || flash)
 import vision.formats.__internal.FrameworkImageIO;
 #end
-import vision.ds.ImageStorage;
+import vision.ds.ImageStorage.ImageOperation;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm
@@ -50,7 +50,7 @@ abstract Image(ImageStorage) {
 	static inline final DATA_GAP = WIDTH_BYTES;
 
 	/**
-		Returns the underlying type of this abstract.
+		Returns the mutable packed bytes. Exposing them materializes and releases any graphics backing.
 	**/
 	public var underlying(get, #if vision_allow_resize set #else never #end):ByteArray;
 
@@ -60,10 +60,26 @@ abstract Image(ImageStorage) {
 
 	#if vision_allow_resize
 	inline function set_underlying(bytes:ByteArray) {
-		this = new ImageStorage(bytes);
+		this = new ImageStorage(bytes, true);
 		return bytes;
 	}
 	#end
+
+	/** Whether this image has an available graphics backing. **/
+	public var isGpuBacked(get, never):Bool;
+
+	inline function get_isGpuBacked():Bool {
+		return this.surface != null && this.surface.isAvailable();
+	}
+
+	@:allow(vision.ds.CanvasRenderer)
+	@:allow(vision.formats.__internal.BrowserPixels)
+	inline function storage():ImageStorage return this;
+
+	@:allow(vision.Vision)
+	inline function transformOnGpu(operation:ImageOperation):Bool {
+		return this.surface != null && !hasView() && this.transform(operation);
+	}
 
 	/**
 		The width of the image.
@@ -134,7 +150,8 @@ abstract Image(ImageStorage) {
 
 	inline function getColorFromStartingBytePos(position:Int):Color {
 		position += OFFSET;
-		var value = this[position] << 24 | this[position + 1] << 16 | this[position + 2] << 8 | this[position + 3];
+		final pixels = this.readPixels();
+		var value = pixels[position] << 24 | pixels[position + 1] << 16 | pixels[position + 2] << 8 | pixels[position + 3];
 		#if (python || php || lua)
 		var signedValue:haxe.Int32 = value;
 		signedValue = signedValue + 0;
@@ -145,10 +162,11 @@ abstract Image(ImageStorage) {
 
 	inline function setColorFromStartingBytePos(position:Int, c:Color) {
 		position += OFFSET;
-		this[position] = c.alpha;
-		this[position + 1] = c.red;
-		this[position + 2] = c.green;
-		this[position + 3] = c.blue;
+		final pixels = this.writePixels();
+		pixels[position] = c.alpha;
+		pixels[position + 1] = c.red;
+		pixels[position + 2] = c.green;
+		pixels[position + 3] = c.blue;
 
 		return c;
 	}
@@ -537,8 +555,8 @@ abstract Image(ImageStorage) {
 	**/
 	public inline function copyImageFrom(image:Image):Image {
 		var currentView = getView();
-		this = new ImageStorage(new ByteArray(image.underlying.length));
-		this.blit(0, image.underlying, 0, image.underlying.length);
+		final bytes = image.storage().readPixels();
+		this = new ImageStorage(bytes.sub(0, bytes.length));
 		setView(currentView);
 		return cast this;
 	}
@@ -1078,7 +1096,7 @@ abstract Image(ImageStorage) {
 		if (this == null) {
 			trace("Warning: Cloning a null image");
 		}
-		return fromStorageBytes(this.sub(0, this.length));
+		return cast new ImageStorage(this.readPixels().sub(0, this.length));
 	}
 
 	//--------------------------------------------------------------------------
@@ -1227,7 +1245,7 @@ abstract Image(ImageStorage) {
 	**/
 	public function toString(special:Bool = true):String {
 		if (!special) {
-			return Std.string(this);
+			return Std.string(this.readPixels());
 		}
 		var s = "\n";
 		var prevY = 0;
@@ -1630,12 +1648,12 @@ abstract Image(ImageStorage) {
 			h = height;
 		}
 		final storage = ImageStorage.allocate(width, h);
-		storage.blit(OFFSET, bytes, 0, bytes.length);
+		storage.writePixels().blit(OFFSET, bytes, 0, bytes.length);
 		return cast storage;
 	}
 
 	static inline function fromStorageBytes(bytes:ByteArray):Image {
-		return cast new ImageStorage(bytes);
+		return cast new ImageStorage(bytes, true);
 	}
 
 	/**
@@ -1643,7 +1661,7 @@ abstract Image(ImageStorage) {
 		@return A new `ByteArray`
 	**/
 	@:to overload public extern inline function exportToBytes():ByteArray {
-		return underlying.sub(OFFSET, underlying.length - OFFSET);
+		return this.readPixels().sub(OFFSET, this.length - OFFSET);
 	}
 
 	/**
@@ -1652,7 +1670,7 @@ abstract Image(ImageStorage) {
 		@return A new `ByteArray`
 	**/
 	overload public extern inline function exportToBytes(?colorFormat:PixelFormat = ARGB):ByteArray {
-		return inline PixelFormat.convertPixelFormat(underlying.sub(OFFSET, underlying.length - OFFSET), ARGB, colorFormat);
+		return inline PixelFormat.convertPixelFormat(this.readPixels().sub(OFFSET, this.length - OFFSET), ARGB, colorFormat);
 	}
 
 	//--------------------------------------------------------------------------
