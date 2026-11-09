@@ -5,6 +5,7 @@ import js.Browser;
 import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
 import js.html.ImageData;
+import vision.Vision;
 import vision.ds.Image;
 import vision.exceptions.VisionException;
 
@@ -42,6 +43,19 @@ class CanvasRenderer {
 
 	/** Draw at a position in canvas pixels with source-over alpha blending. **/
 	public function draw(image:Image, x:Int = 0, y:Int = 0):Void {
+		drawPixels(image, x, y, false);
+	}
+
+	/** Draw as if Vision.invert had been applied, leaving the source image untouched. **/
+	public function drawInverted(image:Image, x:Int = 0, y:Int = 0):Void {
+		checkOpen();
+		if (gpu != null && !image.hasView())
+			drawPixels(image, x, y, true);
+		else
+			draw(Vision.invert(image.clone()), x, y);
+	}
+
+	function drawPixels(image:Image, x:Int, y:Int, invert:Bool):Void {
 		checkOpen();
 		final width = image.width;
 		final height = image.height;
@@ -49,7 +63,7 @@ class CanvasRenderer {
 			return;
 		final changed = pixels.update(image, width, height);
 		if (gpu != null) {
-			gpu.draw(pixels.rgba, width, height, changed, x, y, canvas.width, canvas.height);
+			gpu.draw(pixels.rgba, width, height, changed, x, y, canvas.width, canvas.height, invert);
 			return;
 		}
 		if (imageData == null || imageData.width != width || imageData.height != height) {

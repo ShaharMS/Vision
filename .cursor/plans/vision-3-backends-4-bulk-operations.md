@@ -1,6 +1,6 @@
 # Plan — Vision 3 step 4 — Qualify bulk operations
 
-> **Status** 🔲 Not started
+> **Status** ✅ Completed
 >
 > **Prerequisite** [Integrate native framework drawing](vision-3-backends-3-framework-drawing.md)
 >
@@ -35,3 +35,11 @@ Implement the chosen operation in the relevant backend. Leave the CPU path as th
 ## Verification
 
 - Run `haxe test.hxml` and compare backend output against the CPU fixtures with the declared tolerance. Measure CPU input to CPU output and device-resident input to drawing separately, including initialization and warm runs. Record fallbacks on unsupported devices.
+
+## Implementation and evidence
+
+- [CanvasRenderer.drawInverted](../../src/vision/backend/browser/CanvasRenderer.hx) inverts in the WebGL fragment pass for a full image. Canvas 2D and image views use `Vision.invert` on a copy. The existing synchronous `Vision.invert` call stays available for code that edits or reads CPU pixels immediately.
+- [WebGpuInverter](../../src/vision/backend/browser/WebGpuInverter.hx) is an opt-in asynchronous compute path that returns a new image. The browser test compared its CPU-readable output byte for byte with the CPU implementation, including partial workgroups and opaque output alpha. The WebGPU factory can return null when a device or pipeline is unavailable.
+- Edge passed the pixel tests with ANGLE D3D11 and SwiftShader. The WebGPU compute case passed on the Windows hardware browser run. The [browser fixture](../../tests/browser/drawing.html) reports both the overall result and the WebGPU result.
+- On Intel Arc via ANGLE D3D11, median time across five groups of 30 draws of a 1024×1024 image was 5.71 ms for WebGL inversion, 21.44 ms for CPU clone/invert plus WebGL draw, and 5.77 ms when the caller reused an already inverted CPU result. Draw timing included a completion fence. The first individual draws took 14.3 ms and 22.6 ms respectively after renderer initialization. These measurements apply to inversion and presentation with a reused input, with no GPU readback. [Benchmark](../../tests/browser/BrowserInversionBenchmark.hx)
+- To reproduce the benchmark, run `haxe -cp src -cp tests/browser -main BrowserInversionBenchmark --js bin/browser/inversion-benchmark.js -dce full` and open [inversion-benchmark.html](../../tests/browser/inversion-benchmark.html).

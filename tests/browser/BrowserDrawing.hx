@@ -2,7 +2,9 @@ import js.Browser;
 import js.html.CanvasElement;
 import js.html.webgl.GL;
 import js.lib.Uint8Array;
+import vision.Vision;
 import vision.backend.browser.CanvasRenderer;
+import vision.backend.browser.WebGpuInverter;
 import vision.ds.Image;
 
 class BrowserDrawing {
@@ -10,11 +12,35 @@ class BrowserDrawing {
 		try {
 			testDrawing(false);
 			testDrawing(true);
-			Browser.document.body.setAttribute("data-result", "pass");
+			WebGpuInverter.create().then(inverter -> {
+				if (inverter == null) {
+					Browser.document.body.setAttribute("data-webgpu", "unavailable");
+					pass();
+					return;
+				}
+				final image = new Image(17, 7, 0x8030A070);
+				image.setPixel(16, 6, 0xFF12ABCD);
+				final expected = Vision.invert(image.clone());
+				inverter.invert(image).then(result -> {
+					inverter.dispose();
+					if (result.exportToBytes().compare(expected.exportToBytes()) != 0 || image.getPixel(16, 6) != 0xFF12ABCD)
+						throw "WebGPU compute did not match CPU inversion";
+					Browser.document.body.setAttribute("data-webgpu", "pass");
+					pass();
+				}).catchError(fail);
+			}).catchError(fail);
 		} catch (error:Dynamic) {
-			Browser.document.body.setAttribute("data-result", "fail");
-			Browser.document.body.appendChild(Browser.document.createTextNode(Std.string(error)));
+			fail(error);
 		}
+	}
+
+	static function pass():Void {
+		Browser.document.body.setAttribute("data-result", "pass");
+	}
+
+	static function fail(error:Dynamic):Void {
+		Browser.document.body.setAttribute("data-result", "fail");
+		Browser.document.body.appendChild(Browser.document.createTextNode(Std.string(error)));
 	}
 
 	static function testDrawing(webGl:Bool) {
@@ -47,7 +73,29 @@ class BrowserDrawing {
 		expectPixel(canvas, webGl, 1, 1, [255, 0, 255, 255]);
 		expectPixel(canvas, webGl, 2, 1, [0, 255, 0, 255]);
 		expectPixel(canvas, webGl, 0, 0, [0, 0, 0, 0]);
+		testInverted(renderer, webGl, sprite);
 		renderer.dispose();
+	}
+
+	static function testInverted(renderer:CanvasRenderer, webGl:Bool, sprite:Image):Void {
+		final original = sprite.getPixel(0, 0);
+		final expected = Vision.invert(sprite.clone());
+		renderer.clear();
+		renderer.drawInverted(sprite);
+		for (y in 0...sprite.height) {
+			for (x in 0...sprite.width) {
+				final color = expected.getPixel(x, y);
+				expectPixel(renderer.canvas, webGl, x, y, [color.red, color.green, color.blue, color.alpha]);
+			}
+		}
+		if (sprite.getPixel(0, 0) != original)
+			throw "The source changed during drawing";
+
+		sprite.setView({x: 1, y: 0, width: 1, height: 1});
+		renderer.clear();
+		renderer.drawInverted(sprite);
+		expectPixel(renderer.canvas, webGl, 0, 0, [255, 0, 255, 255]);
+		expectPixel(renderer.canvas, webGl, 1, 0, [255, 0, 255, 255]);
 	}
 
 	static function expectPixel(canvas:CanvasElement, webGl:Bool, x:Int, y:Int, expected:Array<Int>) {

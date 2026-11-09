@@ -22,16 +22,20 @@ class WebGlDraw {
 	static final FRAGMENT = '#version 300 es
 		precision highp float;
 		uniform sampler2D pixels;
+		uniform bool invert;
 		in vec2 uv;
 		out vec4 color;
 		void main() {
 			vec4 rgba = texture(pixels, uv);
+			if (invert)
+				rgba = vec4(vec3(1.0) - rgba.rgb, 1.0);
 			color = vec4(rgba.rgb * rgba.a, rgba.a);
 		}';
 
 	final gl:WebGL2RenderingContext;
 	final program:Program;
 	final rectangle:UniformLocation;
+	final invertColor:UniformLocation;
 	final texture:Texture;
 	final maxSize:Int;
 	var width = 0;
@@ -58,6 +62,7 @@ class WebGlDraw {
 			throw new VisionException(message, "WebGL link");
 		}
 		rectangle = gl.getUniformLocation(program, "rectangle");
+		invertColor = gl.getUniformLocation(program, "invert");
 		maxSize = gl.getParameter(GL.MAX_TEXTURE_SIZE);
 		texture = gl.createTexture();
 		gl.bindTexture(GL.TEXTURE_2D, texture);
@@ -79,7 +84,7 @@ class WebGlDraw {
 		return shader;
 	}
 
-	public function draw(rgba:Uint8Array, width:Int, height:Int, changed:Bool, x:Int, y:Int, canvasWidth:Int, canvasHeight:Int):Void {
+	public function draw(rgba:Uint8Array, width:Int, height:Int, changed:Bool, x:Int, y:Int, canvasWidth:Int, canvasHeight:Int, invert:Bool):Void {
 		if (width > maxSize || height > maxSize)
 			throw new VisionException("Image exceeds the WebGL texture size limit", "WebGL draw");
 		gl.viewport(0, 0, canvasWidth, canvasHeight);
@@ -93,6 +98,7 @@ class WebGlDraw {
 			gl.texSubImage2D(GL.TEXTURE_2D, 0, 0, 0, width, height, GL.RGBA, GL.UNSIGNED_BYTE, rgba);
 		}
 		gl.uniform4f(rectangle, 2.0 * x / canvasWidth - 1, 1 - 2.0 * y / canvasHeight, 2.0 * width / canvasWidth, -2.0 * height / canvasHeight);
+		gl.uniform1i(invertColor, invert ? 1 : 0);
 		gl.drawArrays(GL.TRIANGLE_STRIP, 0, 4);
 	}
 
