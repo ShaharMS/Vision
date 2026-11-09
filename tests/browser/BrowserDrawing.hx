@@ -6,12 +6,14 @@ import vision.Vision;
 import vision.backend.browser.CanvasRenderer;
 import vision.backend.browser.WebGpuInverter;
 import vision.ds.Image;
+import vision.tools.ImageTools;
 
 class BrowserDrawing {
 	static function main() {
 		try {
 			testDrawing(false);
 			testDrawing(true);
+			testExistingCanvasApi();
 			WebGpuInverter.create().then(inverter -> {
 				if (inverter == null) {
 					Browser.document.body.setAttribute("data-webgpu", "unavailable");
@@ -41,6 +43,22 @@ class BrowserDrawing {
 	static function fail(error:Dynamic):Void {
 		Browser.document.body.setAttribute("data-result", "fail");
 		Browser.document.body.appendChild(Browser.document.createTextNode(Std.string(error)));
+	}
+
+	static function testExistingCanvasApi():Void {
+		final image = new Image(2, 3, 0xFFFF0000);
+		image.setPixel(1, 2, 0xFF123456);
+		final canvas = image.toJsCanvas();
+		final converted = Image.fromJsCanvas(canvas);
+		if (converted.width != image.width || converted.height != image.height ||
+			converted.exportToBytes().compare(image.exportToBytes()) != 0)
+			throw "Canvas conversion changed the image";
+		final result = ImageTools.addToScreen(image, 3, 4);
+		final screen:CanvasElement = cast Browser.document.body.lastElementChild;
+		if (result != image || screen.style.left != "3px" || screen.style.top != "4px")
+			throw "addToScreen did not preserve the image or its position";
+		expectPixel(screen, false, 1, 2, [18, 52, 86, 255]);
+		screen.remove();
 	}
 
 	static function testDrawing(webGl:Bool) {

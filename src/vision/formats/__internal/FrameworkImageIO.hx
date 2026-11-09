@@ -3,6 +3,9 @@ package vision.formats.__internal;
 import vision.ds.Image;
 import vision.ds.ByteArray;
 import vision.exceptions.InvalidHeapsPixelFormat;
+#if js
+import vision.backend.browser.CanvasRenderer;
+#end
 
 @:access(vision.ds.Image)
 class FrameworkImageIO {
@@ -145,42 +148,32 @@ class FrameworkImageIO {
 	#end
 	#if js
 	public static function fromJsCanvas(canvas:js.html.CanvasElement):Image {
-		var image:Image = Image.loadFromBytes(new ByteArray(Image.OFFSET + (canvas.width + canvas.height) * 4), canvas.width, canvas.height);
+		final image = new Image(canvas.width, canvas.height);
+		if (canvas.width == 0 || canvas.height == 0)
+			return image;
 
-		final imageData = canvas.getContext2d().getImageData(0, 0, image.width, image.height);
-
-		{
-			var i = 0;
-			while (i < imageData.data.length) {
-        for (o in 0...4)
-				  image.underlying[i + (Image.OFFSET + 1) + o] = imageData.data[i + o];
-				i += 4;
-			}
+		final rgba = canvas.getContext2d().getImageData(0, 0, canvas.width, canvas.height).data;
+		final argb = image.underlying;
+		var index = 0;
+		while (index < rgba.length) {
+			final target = Image.OFFSET + index;
+			argb[target] = rgba[index + 3];
+			argb[target + 1] = rgba[index];
+			argb[target + 2] = rgba[index + 1];
+			argb[target + 3] = rgba[index + 2];
+			index += 4;
 		}
-
 		return image;
 	}
 
 	public static function toJsCanvas(image:Image):js.html.CanvasElement {
-		var c = js.Browser.document.createCanvasElement();
-
-		c.width = image.width;
-		c.height = image.height;
-
-		var ctx = c.getContext2d();
-		final imageData = ctx.getImageData(0, 0, image.width, image.height);
-		var data = imageData.data;
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				var i = (y * image.width + x) * 4;
-        for (o in 0...4)
-				  data[i + o] = image.underlying[i + (Image.OFFSET + 1) + o];
-			}
-		}
-
-		ctx.putImageData(imageData, 0, 0);
-
-		return c;
+		final canvas = js.Browser.document.createCanvasElement();
+		canvas.width = image.width;
+		canvas.height = image.height;
+		final renderer = new CanvasRenderer(canvas, false);
+		renderer.draw(image);
+		renderer.dispose();
+		return canvas;
 	}
 
 	public static function fromJsImage(image:js.html.ImageElement):Image {

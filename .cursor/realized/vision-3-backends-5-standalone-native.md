@@ -4,7 +4,7 @@
 >
 > **Prerequisite** [Qualify bulk operations](vision-3-backends-4-bulk-operations.md)
 >
-> **Next** Final step
+> **Next** [Qualify compiler targets and public entry points](vision-3-backends-6-target-qualification.md)
 >
 > **Parent** [Vision 3 native image and drawing backends](vision-3-backends-overview.md)
 

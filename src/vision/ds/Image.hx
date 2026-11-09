@@ -794,7 +794,7 @@ abstract Image(ImageStorage) {
 			var x = (aX * Math.pow(t, 3)) + (bX * Math.pow(t, 2)) + (cX * t) + p0.x;
 			var y = (aY * Math.pow(t, 3)) + (bY * Math.pow(t, 2)) + (cY * t) + p0.y;
 
-			return {x: x, y: y};
+			return new IntPoint2D(Std.int(x), Std.int(y));
 		}
 
 		var p0 = IntPoint2D.fromPoint2D(line.start);
@@ -845,10 +845,10 @@ abstract Image(ImageStorage) {
 		var points:Array<IntPoint2D> = [];
 		var x = -r, y = 0, err = 2 - 2 * r;
 		do {
-			points.push({x: X + x, y: Y - y});
-			points.push({x: X - x, y: Y + y});
-			points.push({x: X - y, y: Y - x});
-			points.push({x: X + y, y: Y + x});
+			points.push(new IntPoint2D(X + x, Y - y));
+			points.push(new IntPoint2D(X - x, Y + y));
+			points.push(new IntPoint2D(X - y, Y - x));
+			points.push(new IntPoint2D(X + y, Y + x));
 			r = err;
 			if (r <= y) {
 				err += ++y * 2 + 1;
@@ -996,7 +996,7 @@ abstract Image(ImageStorage) {
 	**/
 	public function fillColor(position:IntPoint2D, color:Color) {
 		var queue = new List<IntPoint2D>();
-		queue.push({x: position.x, y: position.y});
+		queue.push(new IntPoint2D(position.x, position.y));
 		var explored:Array<Int64> = [];
 		var originalColor = getPixel(position.x, position.y);
 		var pc = 0;
@@ -1008,7 +1008,7 @@ abstract Image(ImageStorage) {
 			}
 			if (hasPixel(point.x, point.y) && getPixel(point.x, point.y) == originalColor && !explored.contains(Int64.make(point.x, point.y))) {
 				pc++;
-				queue.push({x: point.x, y: point.y});
+				queue.push(new IntPoint2D(point.x, point.y));
 				setPixel(point.x, point.y, color);
 			}
 		}
@@ -1018,10 +1018,10 @@ abstract Image(ImageStorage) {
 				setPixel(v.x, v.y, color);
 			}
 			explored.push(Int64.make(v.x, v.y));
-			fill({x: v.x + 1, y: v.y});
-			fill({x: v.x, y: v.y + 1});
-			fill({x: v.x - 1, y: v.y});
-			fill({x: v.x, y: v.y - 1});
+			fill(new IntPoint2D(v.x + 1, v.y));
+			fill(new IntPoint2D(v.x, v.y + 1));
+			fill(new IntPoint2D(v.x - 1, v.y));
+			fill(new IntPoint2D(v.x, v.y - 1));
 		}
 	}
 
@@ -1036,7 +1036,7 @@ abstract Image(ImageStorage) {
 	**/
 	public function fillUntilColor(position:IntPoint2D, color:Color, borderColor:Color) {
 		var queue = new List<IntPoint2D>();
-		queue.push({x: position.x, y: position.y});
+		queue.push(new IntPoint2D(position.x, position.y));
 		var explored:Array<Int64> = [];
 		var pc = 0;
 		inline function fill(point:IntPoint2D) {
@@ -1053,17 +1053,17 @@ abstract Image(ImageStorage) {
 				return;
 			if (getPixel(point.x, point.y) != borderColor) {
 				pc++;
-				queue.push({x: point.x, y: point.y});
+				queue.push(new IntPoint2D(point.x, point.y));
 				setPixel(point.x, point.y, color);
 			}
 		}
 		while (queue.length > 0) {
 			var v = queue.pop();
 			explored.push(Int64.make(v.x, v.y));
-			fill({x: v.x + 1, y: v.y});
-			fill({x: v.x, y: v.y + 1});
-			fill({x: v.x - 1, y: v.y});
-			fill({x: v.x, y: v.y - 1});
+			fill(new IntPoint2D(v.x + 1, v.y));
+			fill(new IntPoint2D(v.x, v.y + 1));
+			fill(new IntPoint2D(v.x - 1, v.y));
+			fill(new IntPoint2D(v.x, v.y - 1));
 		}
 	}
 

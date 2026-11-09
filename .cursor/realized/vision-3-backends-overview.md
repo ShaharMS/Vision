@@ -2,7 +2,7 @@
 
 ## Status
 
-🔄 In progress
+✅ All steps completed
 
 ## Overview
 
@@ -14,7 +14,7 @@ Vision 2 stores pixels and metadata together in `Image(ByteArray)`. `ByteArray` 
 
 - Vision CI declares 12 Haxe 4.3.7 targets. Its JS job runs under Node, so it provides no browser graphics coverage. The installed 4.3.7 CLI also exposes Flash/SWF and HashLink/C. `--run` uses the interpreter. [GitHub CI](../../.github/workflows/main.yml) · [Local CI](../../tests/ci/README.md) · [Haxe CLI](https://haxe.org/manual/compiler-usage.html)
 - Keep 4.3.7 as the starting floor. Add a pinned Haxe 5 preview check for the shared core and first graphics adapters. The published 5.0.0-preview.1 removes the old `--java` and `--cs` generators and keeps `--jvm`. Its module resolution and macro changes still need compatibility tests. Requiring Haxe 5 would mainly retire two legacy generators and would leave the browser, framework and native graphics integration work. Revisit the floor once the actual adapters build. [Haxe 5 preview release](https://github.com/HaxeFoundation/haxe/releases/tag/5.0.0-preview.1) · [Haxe development compiler source](https://github.com/HaxeFoundation/haxe/blob/development/src/compiler/args.ml)
-- Verified locally on Haxe 4.3.7 with identical module names in `Probe.hx` and `Probe.js.hx`. The JS compiler selected the suffix and `--interp` selected the base. Test this on the pinned 5.x build before relying on the convention there. Use descriptive modules such as `browser/WebGl2Draw.hx` for substantive code. A small `BackendDefaults.js.hx` or a guarded import can select the JS entry point. Browser and Node share that suffix, so distinguish their capabilities at runtime. Use `#if` and explicit adapter setup first. Add a build macro when there is registration or binding boilerplate to generate. [Haxe target defines](https://haxe.org/manual/lf-target-defines.html) · [Haxe macros](https://haxe.org/manual/macro.html)
+- Verified locally on Haxe 4.3.7 and 5.0.0-preview.1 with identical module names in `Probe.hx` and `Probe.js.hx`. The JS compiler selected the suffix and `--interp` selected the base. Use descriptive modules such as `browser/WebGlDraw.hx` for substantive code. Browser and Node share the JS target, so distinguish their capabilities at runtime. The drawing adapters use guarded imports and explicit setup. [Haxe target defines](https://haxe.org/manual/lf-target-defines.html)
 
 ## Source layout
 
@@ -79,8 +79,9 @@ This is a proposed layout. Add files with their implementations. JS, C++, C, Jav
 2. ✅ [Draw on browser targets](vision-3-backends-2-browser-drawing.md)
 3. ✅ [Integrate native frameworks](vision-3-backends-3-framework-drawing.md)
 4. ✅ [Qualify bulk operations](vision-3-backends-4-bulk-operations.md)
-5. [Evaluate standalone native WebGPU](vision-3-backends-5-standalone-native.md)
+5. ✅ [Evaluate standalone native WebGPU](vision-3-backends-5-standalone-native.md)
+6. ✅ [Qualify compiler targets and public entry points](vision-3-backends-6-target-qualification.md)
 
 ## Iteration bootstrap
 
-Continue with `vision-3-backends-5-standalone-native`. Keep the existing target matrix and API behavior results as the baseline. Each adapter must add its own render or device evidence before being listed as supported.
+The CPU compatibility baseline is the Haxe 4.3.7 CI matrix. Each graphics adapter's runtime and device evidence is in its completed sub-plan.

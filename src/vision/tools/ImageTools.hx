@@ -400,30 +400,12 @@ class ImageTools {
 	public static function addToScreen(image:Image, x:Int, y:Int, ?units:{?xUnits:String, ?yUnits:String, ?zIndex:String}):Image {
 		#if (!js || nodejs)
 		#else
-		var c = js.Browser.document.createCanvasElement();
-
-		c.width = image.width;
-		c.height = image.height;
-
-		var ctx = c.getContext2d();
-		var imageData = ctx.getImageData(0, 0, image.width, image.height);
-		var data = imageData.data;
-
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				var i = (y * image.width + x) * 4;
-        for (o in 0...4)
-				  data[i + o] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + o];
-			}
-		}
-
-		ctx.putImageData(imageData, 0, 0);
-
+		final c = image.toJsCanvas();
 		c.style.position = "absolute";
 		if (units == null) units = {};
 
-		c.style.top = (y + units.yUnits) != null ? y + units.yUnits : y + "px";
-		c.style.left = (x + units.xUnits) != null ? x + units.xUnits : x + "px";
+		c.style.top = y + (units.yUnits != null ? units.yUnits : "px");
+		c.style.left = x + (units.xUnits != null ? units.xUnits : "px");
 		if (units.zIndex != null) c.style.zIndex = units.zIndex;
 
 		js.Browser.document.body.appendChild(c);
