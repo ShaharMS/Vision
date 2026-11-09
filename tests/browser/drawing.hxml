@@ -1,0 +1,4 @@
+--class-path src
+--class-path tests/browser
+--main BrowserDrawing
+--js bin/browser/drawing.js

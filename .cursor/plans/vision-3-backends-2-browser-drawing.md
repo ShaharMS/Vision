@@ -1,6 +1,6 @@
 # Plan — Vision 3 step 2 — Draw on browser targets
 
-> **Status** 🔲 Not started
+> **Status** ✅ Completed
 >
 > **Prerequisite** [Preserve the image contract](vision-3-backends-1-image-storage.md)
 >
@@ -35,3 +35,9 @@ Reuse textures and upload changes before drawing. Resolve the destination contex
 ## Verification
 
 - Run `haxe compile.hxml` and the Node JS CI target. Exercise Canvas 2D and WebGL 2 separately in a browser and capture expected pixels before and after edits, including alpha, draw order and a raw byte write. Verify the Canvas 2D path on a fresh canvas when WebGL 2 is unavailable.
+
+## Implementation and evidence
+
+- [CanvasRenderer](../../src/vision/backend/browser/CanvasRenderer.hx) draws at an offset into a caller-supplied canvas. The renderer reuses one staging image and one texture where applicable. It compares the current pixels on each draw so raw byte writes stay visible and identical pixels skip upload. Changes refresh the full texture.
+- From the repository root run `haxe tests/browser/drawing.hxml`, then open [drawing.html](../../tests/browser/drawing.html). The two canvases exercise caller order, source-over alpha, pixel edits and raw byte writes. The page reports `data-result="pass"` after all assertions.
+- Edge headless passed both Canvas 2D and WebGL 2 with SwiftShader. The Canvas 2D case starts with an existing 2D context to exercise fallback. This run verifies drawing behavior through a software WebGL implementation.
