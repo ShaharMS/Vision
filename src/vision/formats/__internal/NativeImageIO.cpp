@@ -32,24 +32,25 @@ static value clear(value handle, value color) {
 }
 
 static value draw(value *arguments, int count) {
-	if (count != 7)
+	if (count != 8)
 		return alloc_bool(false);
 	const int length = val_int(arguments[2]);
 	auto bytes = val_to_buffer(arguments[1]);
 	return alloc_bool(bytes && buffer_size(bytes) == length &&
 		vision_window_draw(window_pointer(arguments[0]), reinterpret_cast<uint8_t *>(buffer_data(bytes)), length,
-			val_int(arguments[3]), val_int(arguments[4]), val_int(arguments[5]), val_int(arguments[6])));
+			val_int(arguments[3]), val_int(arguments[4]), val_int(arguments[5]), val_int(arguments[6]), val_int(arguments[7])));
 }
 
 static value present(value handle) {
 	return alloc_bool(vision_window_present(window_pointer(handle)));
 }
 
-static value transform(value data, value size, value offset, value operation) {
+static value transform(value data, value size, value offset, value operation, value parameter) {
 	const int length = val_int(size);
 	auto bytes = val_to_buffer(data);
 	return alloc_bool(bytes && buffer_size(bytes) == length &&
-		vision_image_transform(reinterpret_cast<uint8_t *>(buffer_data(bytes)), length, val_int(offset), val_int(operation)));
+		vision_image_transform(reinterpret_cast<uint8_t *>(buffer_data(bytes)), length,
+			val_int(offset), val_int(operation), val_int(parameter)));
 }
 
 DEFINE_PRIM(open, 4);
@@ -59,4 +60,4 @@ DEFINE_PRIM(gpu, 1);
 DEFINE_PRIM(clear, 2);
 DEFINE_PRIM_MULT(draw);
 DEFINE_PRIM(present, 1);
-DEFINE_PRIM(transform, 4);
+DEFINE_PRIM(transform, 5);

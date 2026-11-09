@@ -28,13 +28,13 @@ class NativeImageIO {
 
 	public static function clear(window:NativeWindow, color:Int):Void {}
 
-	public static function draw(window:NativeWindow, bytes:NativeBytes, length:Int, width:Int, height:Int, x:Int, y:Int):Bool
+	public static function draw(window:NativeWindow, bytes:NativeBytes, length:Int, offset:Int, width:Int, height:Int, x:Int, y:Int):Bool
 		return false;
 
 	public static function present(window:NativeWindow):Bool
 		return false;
 
-	public static function transform(bytes:NativeBytes, length:Int, offset:Int, operation:Int):Bool
+	public static function transform(bytes:NativeBytes, length:Int, offset:Int, operation:Int, value:Int):Bool
 		return false;
 	#else
 	public static final open:(Int, Int, Bool, Bool) -> NativeWindow = cpp.Lib.load("vision_native", "open", 4);
@@ -42,9 +42,9 @@ class NativeImageIO {
 	public static final poll:NativeWindow->Bool = cpp.Lib.load("vision_native", "poll", 1);
 	public static final gpu:NativeWindow->Bool = cpp.Lib.load("vision_native", "gpu", 1);
 	public static final clear:(NativeWindow, Int) -> Void = cpp.Lib.load("vision_native", "clear", 2);
-	public static final draw:(NativeWindow, NativeBytes, Int, Int, Int, Int, Int) -> Bool = cpp.Lib.load("vision_native", "draw", -1);
+	public static final draw:(NativeWindow, NativeBytes, Int, Int, Int, Int, Int, Int) -> Bool = cpp.Lib.load("vision_native", "draw", -1);
 	public static final present:NativeWindow->Bool = cpp.Lib.load("vision_native", "present", 1);
-	public static final transform:(NativeBytes, Int, Int, Int) -> Bool = cpp.Lib.load("vision_native", "transform", 4);
+	public static final transform:(NativeBytes, Int, Int, Int, Int) -> Bool = cpp.Lib.load("vision_native", "transform", 5);
 	#end
 }
 #end

@@ -26,19 +26,26 @@ class WebGlDraw {
 		}';
 	static final FRAGMENT = '#version 300 es
 		precision highp float;
+		precision highp int;
 		uniform sampler2D pixels;
 		uniform int operation;
+		uniform int threshold;
 		uniform bool present;
 		in vec2 uv;
 		out vec4 color;
 		void main() {
 			vec4 rgba = texture(pixels, uv);
-			if (operation == 1)
+			if (operation == ${(ImageOperation.Invert : Int)})
 				rgba = vec4(vec3(1.0) - rgba.rgb, 1.0);
-			if (operation == 2) {
+			if (operation == ${(ImageOperation.SimpleGrayscale : Int)}) {
 				uvec3 rgb = uvec3(round(rgba.rgb * 255.0));
 				float gray = float((rgb.r + rgb.g + rgb.b) / 3u) / 255.0;
 				rgba = vec4(vec3(gray), 1.0);
+			}
+			if (operation == ${(ImageOperation.BlackAndWhite : Int)}) {
+				ivec3 rgb = ivec3(round(rgba.rgb * 255.0));
+				float level = max(max(rgb.r, rgb.g), rgb.b) > threshold ? 1.0 : 0.0;
+				rgba = vec4(vec3(level), 1.0);
 			}
 			color = present ? vec4(rgba.rgb * rgba.a, rgba.a) : rgba;
 		}';
@@ -47,6 +54,7 @@ class WebGlDraw {
 	final program:Program;
 	final rectangle:UniformLocation;
 	final operation:UniformLocation;
+	final threshold:UniformLocation;
 	final present:UniformLocation;
 	final texture:Texture;
 	final maxSize:Int;
@@ -75,6 +83,7 @@ class WebGlDraw {
 		}
 		rectangle = gl.getUniformLocation(program, "rectangle");
 		operation = gl.getUniformLocation(program, "operation");
+		threshold = gl.getUniformLocation(program, "threshold");
 		present = gl.getUniformLocation(program, "present");
 		maxSize = gl.getParameter(GL.MAX_TEXTURE_SIZE);
 		texture = createTexture();
@@ -127,21 +136,22 @@ class WebGlDraw {
 		gl.enable(GL.BLEND);
 		gl.useProgram(program);
 		gl.uniform4f(rectangle, 2.0 * x / canvasWidth - 1, 1 - 2.0 * y / canvasHeight, 2.0 * width / canvasWidth, -2.0 * height / canvasHeight);
-		render(source, invert ? 1 : 0, true);
+		render(source, invert ? (ImageOperation.Invert : Int) : 0, 0, true);
 	}
 
 	@:allow(vision.formats.__internal.WebGlSurface)
-	function transformTexture(source:Texture, width:Int, height:Int, operation:ImageOperation):Void {
+	function transformTexture(source:Texture, width:Int, height:Int, operation:ImageOperation, value:Int):Void {
 		gl.viewport(0, 0, width, height);
 		gl.disable(GL.BLEND);
 		gl.useProgram(program);
 		gl.uniform4f(rectangle, -1, -1, 2, 2);
-		render(source, operation, false);
+		render(source, operation, value, false);
 	}
 
-	function render(source:Texture, filter:Int, forDisplay:Bool):Void {
+	function render(source:Texture, filter:Int, value:Int, forDisplay:Bool):Void {
 		gl.bindTexture(GL.TEXTURE_2D, source);
 		gl.uniform1i(operation, filter);
+		gl.uniform1i(threshold, value);
 		gl.uniform1i(present, forDisplay ? 1 : 0);
 		gl.drawArrays(GL.TRIANGLE_STRIP, 0, 4);
 	}
@@ -162,6 +172,7 @@ class WebGlDraw {
 class WebGlSurface implements ImageSurface {
 	public final owner:WebGlDraw;
 	public var texture(default, null):Texture;
+	public var onDispose:Void->Void;
 
 	final gl:WebGL2RenderingContext;
 	final width:Int;
@@ -199,14 +210,14 @@ class WebGlSurface implements ImageSurface {
 		return complete;
 	}
 
-	public function transform(operation:ImageOperation):Bool {
+	public function transform(operation:ImageOperation, value:Int):Bool {
 		if (output == null) {
 			output = owner.createTexture();
 			if (output == null) return false;
 			gl.texImage2D(GL.TEXTURE_2D, 0, WebGL2RenderingContext.RGBA8, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 		}
 		if (!bindTarget(output)) return false;
-		owner.transformTexture(texture, width, height, operation);
+		owner.transformTexture(texture, width, height, operation, value);
 		gl.bindFramebuffer(GL.FRAMEBUFFER, null);
 		if (gl.getError() != GL.NO_ERROR) return false;
 		final previous = texture;
@@ -239,6 +250,10 @@ class WebGlSurface implements ImageSurface {
 		texture = null;
 		output = null;
 		framebuffer = null;
+		if (onDispose != null) {
+			onDispose();
+			onDispose = null;
+		}
 	}
 }
 #end

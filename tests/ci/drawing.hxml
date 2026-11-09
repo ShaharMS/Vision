@@ -1,4 +1,4 @@
 --class-path src
---class-path tests/browser
+--class-path tests/ci
 --main BrowserDrawing
 --js bin/browser/drawing.js

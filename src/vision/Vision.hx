@@ -252,6 +252,8 @@ class Vision {
 		@return The converted image. The original image is modified.
 	**/
 	public static function blackAndWhite(image:Image, threshold:Int = 128):Image {
+		if (image.transformWithBackend(ImageOperation.BlackAndWhite, threshold))
+			return image;
 		image.forEachPixelInView((x, y, pixel) -> {
 			var colorValue:Int = MathTools.max(pixel.red, pixel.green, pixel.blue);
 			if (colorValue > threshold) {

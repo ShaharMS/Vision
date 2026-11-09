@@ -15,9 +15,9 @@ void vision_window_close(VisionWindow *window);
 bool vision_window_poll(VisionWindow *window);
 bool vision_window_gpu(VisionWindow *window);
 void vision_window_clear(VisionWindow *window, int color);
-bool vision_window_draw(VisionWindow *window, const uint8_t *argb, int length, int width, int height, int x, int y);
+bool vision_window_draw(VisionWindow *window, const uint8_t *argb, int length, int offset, int width, int height, int x, int y);
 bool vision_window_present(VisionWindow *window);
-bool vision_image_transform(uint8_t *argb, int length, int offset, int operation);
+bool vision_image_transform(uint8_t *argb, int length, int offset, int operation, int value);
 
 #ifdef __cplusplus
 }

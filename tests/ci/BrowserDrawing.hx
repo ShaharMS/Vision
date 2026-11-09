@@ -27,8 +27,8 @@ class BrowserDrawing {
 				final expected = Vision.invert(image.clone());
 				inverter.invert(image).then(result -> {
 					inverter.dispose();
-					if (result.exportToBytes().compare(expected.exportToBytes()) != 0 || image.getPixel(16, 6) != 0xFF12ABCD)
-						throw "WebGPU compute did not match CPU inversion";
+					if (result.exportToBytes().compare(expected.exportToBytes()) != 0
+						|| image.getPixel(16, 6) != 0xFF12ABCD) throw "WebGPU compute did not match CPU inversion";
 					Browser.document.body.setAttribute("data-webgpu", "pass");
 					pass();
 				}).catchError(fail);
@@ -52,13 +52,12 @@ class BrowserDrawing {
 		image.setPixel(1, 2, 0xFF123456);
 		final canvas = image.toJsCanvas();
 		final converted = Image.fromJsCanvas(canvas);
-		if (converted.width != image.width || converted.height != image.height ||
-			converted.exportToBytes().compare(image.exportToBytes()) != 0)
-			throw "Canvas conversion changed the image";
+		if (converted.width != image.width
+			|| converted.height != image.height
+			|| converted.exportToBytes().compare(image.exportToBytes()) != 0) throw "Canvas conversion changed the image";
 		final result = ImageTools.addToScreen(image, 3, 4);
 		final screen:CanvasElement = cast Browser.document.body.lastElementChild;
-		if (result != image || screen.style.left != "3px" || screen.style.top != "4px")
-			throw "addToScreen did not preserve the image or its position";
+		if (result != image || screen.style.left != "3px" || screen.style.top != "4px") throw "addToScreen did not preserve the image or its position";
 		expectPixel(screen, false, 1, 2, [18, 52, 86, 255]);
 		screen.remove();
 	}
@@ -73,8 +72,7 @@ class BrowserDrawing {
 		final expected = image.clone();
 		Vision.invert(expected);
 		Vision.grayscale(expected, true);
-		if (!renderer.attach(image) || !image.isGpuBacked)
-			throw "The image could not attach to WebGL";
+		if (!renderer.attach(image) || !image.isGpuBacked) throw "The image could not attach to WebGL";
 
 		final gl = canvas.getContextWebGL2();
 		final draws:Dynamic = gl.drawArrays;
@@ -85,29 +83,34 @@ class BrowserDrawing {
 		});
 		Vision.invert(image);
 		Vision.grayscale(image, true);
-		if (passes != 2)
-			throw "The ordinary Vision calls did not submit both WebGL operations";
+		if (passes != 2) throw "The ordinary Vision calls did not submit both WebGL operations";
 		renderer.draw(image);
 		final color = expected.getPixel(1, 1);
 		expectPixel(canvas, true, 1, 1, [color.red, color.green, color.blue, color.alpha]);
-		if (image.exportToBytes().compare(expected.exportToBytes()) != 0)
-			throw "WebGL storage did not materialize the same pixels";
+		if (image.exportToBytes().compare(expected.exportToBytes()) != 0) throw "WebGL storage did not materialize the same pixels";
 
 		image.setPixel(2, 1, 0xFF103254);
-		image.setView({x: 2, y: 1, width: 1, height: 1});
+		image.setView({
+			x: 2,
+			y: 1,
+			width: 1,
+			height: 1
+		});
 		Vision.invert(image);
-		if (passes != 3 || image.getPixel(2, 1) != 0xFFEFCDAB || image.getPixel(1, 1) != color)
-			throw "The CPU view fallback changed the wrong pixels";
+		if (passes != 3 || image.getPixel(2, 1) != 0xFFEFCDAB || image.getPixel(1, 1) != color) throw "The CPU view fallback changed the wrong pixels";
 		image.removeView();
 		Vision.invert(image);
 		final alias = image;
 		final bytes = alias.underlying;
-		if (image.isGpuBacked || renderer.attach(alias))
-			throw "Exposing mutable pixels must release the GPU backing";
+		if (image.isGpuBacked || renderer.attach(alias)) throw "Exposing mutable pixels must release the GPU backing";
 		bytes[bytes.length - 3] = 0xCD;
-		if (image.getPixel(2, 1) != 0xFFCD3254)
-			throw "An existing byte alias did not update the image";
+		if (image.getPixel(2, 1) != 0xFFCD3254) throw "An existing byte alias did not update the image";
+		final retained = new Image(1, 1, 0xFF102030);
+		if (!renderer.attach(retained)) throw "The renderer could not attach another image";
+		Vision.invert(retained);
+		Vision.blackAndWhite(retained, 239);
 		renderer.dispose();
+		if (retained.isGpuBacked || retained.getPixel(0, 0) != 0xFF000000) throw "Disposing the renderer did not preserve a pending image";
 	}
 
 	static function testDrawing(webGl:Bool) {
@@ -115,13 +118,12 @@ class BrowserDrawing {
 		canvas.width = 3;
 		canvas.height = 3;
 		Browser.document.body.appendChild(canvas);
-		if (!webGl)
-			canvas.getContext2d();
+		if (!webGl) canvas.getContext2d();
 		final renderer = new CanvasRenderer(canvas);
-		if (renderer.usesWebGl != webGl)
-			throw "Unexpected browser drawing backend";
+		if (renderer.usesWebGl != webGl) throw "Unexpected browser drawing backend";
 
 		final background = new Image(3, 3, 0xFFFF0000);
+		if (!webGl && renderer.attach(background)) throw "Canvas 2D must leave the image on the CPU";
 		final sprite = new Image(2, 2);
 		sprite.setPixel(0, 0, 0xFF00FF00);
 		sprite.setPixel(0, 1, 0x800000FF);
@@ -155,10 +157,14 @@ class BrowserDrawing {
 				expectPixel(renderer.canvas, webGl, x, y, [color.red, color.green, color.blue, color.alpha]);
 			}
 		}
-		if (sprite.getPixel(0, 0) != original)
-			throw "The source changed during drawing";
+		if (sprite.getPixel(0, 0) != original) throw "The source changed during drawing";
 
-		sprite.setView({x: 1, y: 0, width: 1, height: 1});
+		sprite.setView({
+			x: 1,
+			y: 0,
+			width: 1,
+			height: 1
+		});
 		renderer.clear();
 		renderer.drawInverted(sprite);
 		expectPixel(renderer.canvas, webGl, 0, 0, [255, 0, 255, 255]);
@@ -175,8 +181,7 @@ class BrowserDrawing {
 			[for (index in 0...4) rgba[index]];
 		};
 		for (index in 0...4) {
-			if (Math.abs(pixel[index] - expected[index]) > 1)
-				throw 'WebGL=$webGl at ($x, $y) expected $expected, got $pixel';
+			if (Math.abs(pixel[index] - expected[index]) > 1) throw 'WebGL=$webGl at ($x, $y) expected $expected, got $pixel';
 		}
 	}
 }

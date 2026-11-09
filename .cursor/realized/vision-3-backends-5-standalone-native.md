@@ -38,6 +38,6 @@ Use the existing draw boundary from the previous steps. Document binary packagin
 
 ## Implementation and evidence
 
-- Both standalone Windows builds passed with Haxe 4.3.7 and wgpu-native v29.0.1.1 on the RTX 4060 Laptop GPU via Vulkan. hxcpp 4.3.2 used an NDLL and HashLink 1.16 used an HDLL, with both calling the same C surface probe. The probe exercised device creation, acquiring and clearing a Win32 surface texture, presentation and resource teardown. [Reproduction](../../tests/native-webgpu/README.md)
+- Both standalone Windows builds passed with Haxe 4.3.7 and wgpu-native v29.0.1.1 on the RTX 4060 Laptop GPU via Vulkan. hxcpp 4.3.2 used an NDLL and HashLink 1.16 used an HDLL, with both calling the same C surface probe. The probe exercised device creation, acquiring and clearing a Win32 surface texture, presentation and resource teardown. [Reproduction](../../tests/ci/native-webgpu.md)
 - The CPU-only HashLink smoke passed in a directory with no WebGPU library. The C++ and HashLink portable CPU paths also passed their regular CI jobs.
 - The `hlwgpu` package expects an Ash-compatible Future ABI. The probe uses a thin HashLink HDLL and avoids that host requirement. The implementation ships Windows qualification code under tests. Application drawing on native targets uses the OpenFL or Heaps adapters. Standalone texture drawing and packaging for Linux and macOS remain separate work. [hlwgpu runtime requirements](https://lib.haxe.org/p/hlwgpu/0.2.0/)

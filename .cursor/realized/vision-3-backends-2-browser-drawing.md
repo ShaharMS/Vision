@@ -26,7 +26,7 @@ Present ordinary Vision images on a browser canvas through a small Haxe adapter.
 
 ### 1. Add a Canvas 2D presentation path
 
-Add a browser adapter under `src/vision/backend/browser/`. Use a caller-supplied canvas and track changes to CPU pixels, using full refresh when writable bytes have escaped. Keep the existing conversions' contracts.
+Add a browser adapter in the existing data and internal format packages. Use a caller-supplied canvas and track changes to CPU pixels, using full refresh when writable bytes have escaped. Keep the existing conversions' contracts.
 
 ### 2. Add a WebGL 2 presentation path
 
@@ -39,5 +39,5 @@ Reuse textures and upload changes before drawing. Resolve the destination contex
 ## Implementation and evidence
 
 - [CanvasRenderer](../../src/vision/ds/CanvasRenderer.hx) draws at an offset into a caller-supplied canvas. The renderer reuses one staging image and one texture where applicable. It compares the current pixels on each draw so raw byte writes stay visible and identical pixels skip upload. Changes refresh the full texture.
-- From the repository root run `haxe tests/browser/drawing.hxml`, then open [drawing.html](../../tests/browser/drawing.html). The two canvases exercise caller order, source-over alpha, pixel edits and raw byte writes. The page reports `data-result="pass"` after all assertions.
+- From the repository root run `haxe tests/ci/drawing.hxml`, then open [drawing.html](../../tests/ci/drawing.html). The two canvases exercise caller order, source-over alpha, pixel edits and raw byte writes. The page reports `data-result="pass"` after all assertions.
 - Edge headless passed both Canvas 2D and WebGL 2 with SwiftShader. The Canvas 2D case starts with an existing 2D context to exercise fallback. This run verifies drawing behavior through a software WebGL implementation.

@@ -62,6 +62,9 @@ class CanvasRenderer {
 			return false;
 		}
 		attached.push(storage);
+		surface.onDispose = () -> {
+			attached.remove(storage);
+		};
 		return true;
 	}
 
@@ -69,7 +72,6 @@ class CanvasRenderer {
 	public function detach(image:Image):Void {
 		final storage = image.storage();
 		if (owns(storage)) storage.detach();
-		attached.remove(storage);
 	}
 
 	function owns(storage:ImageStorage):Bool {
@@ -126,7 +128,7 @@ class CanvasRenderer {
 	/** Releases the renderer's backing resources. **/
 	public function dispose():Void {
 		if (disposed) return;
-		for (storage in attached) {
+		for (storage in attached.copy()) {
 			if (owns(storage)) storage.detach();
 		}
 		attached.resize(0);

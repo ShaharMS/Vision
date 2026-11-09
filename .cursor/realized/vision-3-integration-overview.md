@@ -2,7 +2,7 @@
 
 ## Status
 
-🔄 In progress
+✅ All steps completed
 
 Keep the existing image and algorithm calls. Move the backend code into existing package boundaries, attach device storage explicitly where a host is available, and use CPU storage for operations with no eligible implementation. Add native drawing and document the resulting API.
 
@@ -13,3 +13,10 @@ Keep the existing image and algorithm calls. Move the backend code into existing
 3. [Route exact whole-image operations through attached storage and retain the current CPU implementations.](vision-3-integration-3-operation-dispatch.md)
 4. [Draw ordinary Vision images through a standalone native host and qualify its fallback.](vision-3-integration-4-native-drawing.md)
 5. [Show ordinary and accelerated usage through runnable examples and qualify the targets.](vision-3-integration-5-examples-and-tests.md)
+
+## Qualified scope
+
+- The regular Vision calls dispatch whole-image inversion, simple grayscale and black-and-white thresholding to an attached WebGL image or the optional native C library. CPU execution covers views, other algorithms and builds without a matching backend.
+- WebGL attachment holds the current pixels on a texture after an operation. CPU reads materialize the latest result, writes invalidate the device copy, and writable packed bytes release the device attachment.
+- Windows hxcpp and HashLink can draw and present an ordinary Vision image through WebGPU or GDI. The standalone renderer composites on the CPU before presentation.
+- Public data types use the existing ds package. Platform implementation files use the existing formats package. Graphics fixtures and instructions live in tests/ci.

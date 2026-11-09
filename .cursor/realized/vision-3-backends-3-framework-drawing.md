@@ -40,4 +40,4 @@ Use the same presentation boundary for Heaps. Qualify OpenFL and Heaps as separa
 
 - [OpenFlBitmap](../../src/vision/formats/to/OpenFlBitmap.hx) presents an image as an OpenFL bitmap and retains the owned bitmap data across same-size updates.
 - [HeapsBitmap](../../src/vision/formats/to/HeapsBitmap.hx) presents an image as a Heaps bitmap and reuses its texture for same-size updates. Both adapters use the host's drawing loop.
-- Windows native smoke tests passed with Haxe 4.3.7, hxcpp 4.3.2, Lime 8.3.2, OpenFL 9.5.2, Heaps 2.1.0, and HashLink/hlsdl 1.16. The OpenFL frame handler verified pixel updates and bitmap-data identity. Heaps verified matching pixels through texture capture and checked texture identity across the update. [Reproduction](../../tests/framework/README.md)
+- Windows native smoke tests passed with Haxe 4.3.7, hxcpp 4.3.2, Lime 8.3.2, OpenFL 9.5.2, Heaps 2.1.0, and HashLink/hlsdl 1.16. The OpenFL frame handler verified pixel updates and bitmap-data identity. Heaps verified matching pixels through texture capture and checked texture identity across the update. [Reproduction](../../tests/ci/framework-drawing.md)

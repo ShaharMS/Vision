@@ -46,3 +46,22 @@ From repo root:
 ## cppia host configuration
 
 Use the pinned, patched interpreter host described in [cppia/README.md](cppia/README.md). The unpatched released host fails generic-array and matrix tests. GitHub CI builds the patched host; the local runner prefers the active haxelib checkout's host (including Linux64/Cppia) over an unrelated PATH executable. JIT mode is not qualified.
+
+## Browser drawing
+
+Run `haxe tests/ci/drawing.hxml` and open [drawing.html](drawing.html) in a browser with WebGL 2. The page reports `data-result="pass"` after the Canvas 2D, WebGL 2, attachment, readback, and compatibility checks. The separate `data-webgpu` result reports whether the compute path ran.
+
+## Standalone native drawing
+
+Use a Windows x64 Native Tools prompt, hxcpp 4.3.2, HashLink 1.16, and optionally the MSVC x64 archive from [wgpu-native v29.0.1.1](https://github.com/gfx-rs/wgpu-native/releases/tag/v29.0.1.1). Run the commands from the repository root with the two variables pointing to the extracted SDK roots.
+
+```powershell
+./build-native-drawing.ps1 -HashLink $visionHashLink -Wgpu $visionWgpu
+haxe -lib vision -cp tests/ci -main NativeDrawingTest --hl bin/native-drawing/test.hl -D vision_native -D hl-ver=1.16.0
+haxe -lib vision -cp tests/ci -main NativeDrawingTest --cpp bin/native-drawing/cpp -D vision_native -D HXCPP_M64
+Copy-Item bin/native-drawing/vision_native.ndll,bin/native-drawing/wgpu_native.dll bin/native-drawing/cpp
+```
+
+Run HashLink from `bin/native-drawing` with `hl test.hl --gpu`. Run the hxcpp smoke from `bin/native-drawing/cpp` with `./NativeDrawingTest.exe --gpu`. Repeat both without `--gpu` to force GDI. The smoke tests use hidden windows.
+
+Omit `-Wgpu` when building the native library for a GDI-only application. That build needs only the appropriate `vision_native.ndll` or `vision_native.hdll` beside the application. A GPU-enabled build also needs `wgpu_native.dll`. Compile the application without `-D vision_native` to use portable Vision without the native library.

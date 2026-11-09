@@ -40,8 +40,8 @@ class NativeImageRenderer {
 	public function draw(image:Image, x:Int = 0, y:Int = 0):Void {
 		checkOpen();
 		if (image.width <= 0 || image.height <= 0) return;
-		final bytes = image.exportToBytes();
-		if (!NativeImageIO.draw(window, bytes.getData(), bytes.length, image.width, image.height, x,
+		final bytes = image.storage().readPixels();
+		if (!NativeImageIO.draw(window, bytes.getData(), bytes.length, ImageStorage.PIXEL_OFFSET, image.width, image.height, x,
 			y)) throw new VisionException("Could not draw the image in the native window", "NativeImageRenderer");
 	}
 

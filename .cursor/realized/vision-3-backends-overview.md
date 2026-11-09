@@ -18,18 +18,7 @@ Vision 2 stores pixels and metadata together in `Image(ByteArray)`. `ByteArray` 
 
 ## Source layout
 
-```text
-src/vision/ds/Image.hx                 Existing Haxe abstract and API
-src/vision/algorithms/                 Existing algorithms and CPU reference paths
-src/vision/backend/                    Internal storage and operation selection in Haxe
-  cpu/                                 Portable Haxe byte operations
-  browser/                             Haxe extern calls for Canvas 2D and WebGL 2
-  framework/                           Optional Haxe adapters for the host renderer
-  native/                              Optional hxcpp and HashLink bindings
-src/vision/backend/browser/webgpu/      Narrow Haxe externs when the WebGPU step lands
-```
-
-This is a proposed layout. Add files with their implementations. JS, C++, C, Java, C#, Python, Lua and PHP compiler output belongs in build output directories. Handwritten code remains Haxe, with GLSL ES for WebGL shaders, WGSL for WebGPU shaders and a small C/C++ binding only if the standalone native step needs it. Haxe externs describe APIs supplied by the host language or framework. The same WGSL can be evaluated on web and native WebGPU. The adapters still own device setup, presentation and transfer handling. [Haxe externs](https://haxe.org/manual/lf-externs.html)
+The follow-up integration uses Vision's existing packages for data types, format adapters and internal platform code. Its plan records the implemented layout. [Backend integration](vision-3-integration-overview.md)
 
 ## Target inventory and implementation
 

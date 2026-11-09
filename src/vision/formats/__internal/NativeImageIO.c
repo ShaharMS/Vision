@@ -293,9 +293,11 @@ static unsigned blend(unsigned source, unsigned destination, unsigned alpha) {
 	return (source * alpha + destination * (255 - alpha) + 127) / 255;
 }
 
-bool vision_window_draw(VisionWindow *window, const uint8_t *argb, int length, int width, int height, int x, int y) {
-	if (!argb || width <= 0 || height <= 0 || (uint64_t)width * height * 4 != (uint64_t)length)
+bool vision_window_draw(VisionWindow *window, const uint8_t *argb, int length, int offset, int width, int height, int x, int y) {
+	if (!argb || offset < 0 || offset > length || width <= 0 || height <= 0 ||
+		(uint64_t)width * height * 4 != (uint64_t)(length - offset))
 		return false;
+	argb += offset;
 	const int64_t right = (int64_t)x + width;
 	const int64_t bottom = (int64_t)y + height;
 	const int end_x = right < window->width ? (int)right : window->width;
@@ -340,10 +342,13 @@ bool vision_window_present(VisionWindow *window) {
 	return result != GDI_ERROR && result != 0;
 }
 
-bool vision_image_transform(uint8_t *argb, int length, int offset, int operation) {
+// These selectors match ImageStorage.ImageOperation.
+enum ImageOperation { INVERT = 1, SIMPLE_GRAYSCALE, BLACK_AND_WHITE };
+
+bool vision_image_transform(uint8_t *argb, int length, int offset, int operation, int value) {
 	if (!argb || offset < 0 || offset > length || (length - offset) % 4 != 0)
 		return false;
-	if (operation == 1) {
+	if (operation == INVERT) {
 		for (int i = offset; i < length; i += 4) {
 			argb[i] = 255;
 			argb[i + 1] ^= 255;
@@ -352,13 +357,23 @@ bool vision_image_transform(uint8_t *argb, int length, int offset, int operation
 		}
 		return true;
 	}
-	if (operation == 2) {
+	if (operation == SIMPLE_GRAYSCALE) {
 		for (int i = offset; i < length; i += 4) {
 			const uint8_t gray = (uint8_t)((argb[i + 1] + argb[i + 2] + argb[i + 3]) / 3);
 			argb[i] = 255;
 			argb[i + 1] = gray;
 			argb[i + 2] = gray;
 			argb[i + 3] = gray;
+		}
+		return true;
+	}
+	if (operation == BLACK_AND_WHITE) {
+		for (int i = offset; i < length; i += 4) {
+			const uint8_t level = (argb[i + 1] > value || argb[i + 2] > value || argb[i + 3] > value) ? 255 : 0;
+			argb[i] = 255;
+			argb[i + 1] = level;
+			argb[i + 2] = level;
+			argb[i + 3] = level;
 		}
 		return true;
 	}

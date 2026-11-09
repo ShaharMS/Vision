@@ -1,6 +1,6 @@
 # Plan — Vision 3 step 5 — examples and tests
 
-> **Status** 🔲 Not started
+> **Status** ✅ Completed
 >
 > **Prerequisite** [Step 4](vision-3-integration-4-native-drawing.md)
 >
@@ -30,3 +30,5 @@ Show ordinary and accelerated usage through runnable examples and qualify the ta
 ## Verification
 
 - Compile examples and run the Haxe 4.3.7 target matrix.
+
+The README contains 15 examples using the ordinary Image and Vision methods, browser drawing, attachment and readback, framework adapters, and standalone Windows presentation. Graphics fixtures now live under the existing tests/ci package. The browser fixture and both native target fixtures passed. The draft PR records the CI results for the final revision.

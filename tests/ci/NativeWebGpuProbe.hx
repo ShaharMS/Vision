@@ -1,6 +1,6 @@
 import vision.ds.Image;
 
-class Probe {
+class NativeWebGpuProbe {
 	#if (vision_native_probe && hl)
 	@:hlNative("vision_gpu", "probe")
 	static function probe():Int return 1;

@@ -54,14 +54,14 @@ abstract ImageStorage(ImageData) {
 		return this.surfaceValid;
 	}
 
-	public function transform(operation:ImageOperation):Bool {
-		if (prepareSurface() && this.surface.transform(operation)) {
+	public function transform(operation:ImageOperation, value:Int):Bool {
+		if (prepareSurface() && this.surface.transform(operation, value)) {
 			this.cpuValid = false;
 			return true;
 		}
 		#if (vision_native && (cpp || hl))
 		final pixels = writePixels();
-		return NativeImageIO.transform(pixels.getData(), pixels.length, PIXEL_OFFSET, operation);
+		return NativeImageIO.transform(pixels.getData(), pixels.length, PIXEL_OFFSET, operation, value);
 		#else
 		return false;
 		#end
@@ -140,7 +140,7 @@ interface ImageSurface {
 	function isAvailable():Bool;
 	function upload(packed:ByteArray):Bool;
 	function download(packed:ByteArray):Void;
-	function transform(operation:ImageOperation):Bool;
+	function transform(operation:ImageOperation, value:Int):Bool;
 	function dispose():Void;
 }
 
@@ -148,4 +148,5 @@ interface ImageSurface {
 enum abstract ImageOperation(Int) to Int {
 	var Invert = 1;
 	var SimpleGrayscale = 2;
+	var BlackAndWhite = 3;
 }

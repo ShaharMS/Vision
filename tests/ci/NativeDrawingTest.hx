@@ -15,11 +15,13 @@ class NativeDrawingTest {
 			final packed = image.underlying;
 			final offset = packed.length - image.width * image.height * 4;
 			final nativeCopy = image.clone().underlying;
-			if (!NativeImageIO.transform(nativeCopy.getData(), nativeCopy.length, offset, 1)) throw "Native transform did not accept the packed buffer";
+			if (!NativeImageIO.transform(nativeCopy.getData(), nativeCopy.length, offset, 1, 0)) throw "Native transform did not accept the packed buffer";
 			Vision.invert(image);
 			if (packed.compare(nativeCopy) != 0 || image.getPixel(1, 2) != 0xFFEDD9C6) throw "Native inversion did not update the original image";
 			Vision.grayscale(image, true);
 			if (image.getPixel(1, 2) != 0xFFD9D9D9) throw "Native grayscale produced a different pixel";
+			Vision.blackAndWhite(image, 217);
+			if (image.getPixel(1, 2) != 0xFF000000) throw "Native threshold changed equality behavior";
 
 			renderer.clear(0xFF102030);
 			renderer.draw(image, -2, 3);

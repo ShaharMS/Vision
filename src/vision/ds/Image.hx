@@ -73,15 +73,16 @@ abstract Image(ImageStorage) {
 	}
 
 	@:allow(vision.ds.CanvasRenderer)
+	@:allow(vision.ds.NativeImageRenderer)
 	@:allow(vision.formats.__internal.BrowserPixels)
 	inline function storage():ImageStorage return this;
 
 	@:allow(vision.Vision)
-	inline function transformWithBackend(operation:ImageOperation):Bool {
+	inline function transformWithBackend(operation:ImageOperation, value:Int = 0):Bool {
 		#if (vision_native && (cpp || hl))
-		return !hasView() && this.transform(operation);
+		return !hasView() && this.transform(operation, value);
 		#else
-		return this.surface != null && !hasView() && this.transform(operation);
+		return this.surface != null && !hasView() && this.transform(operation, value);
 		#end
 	}
 
