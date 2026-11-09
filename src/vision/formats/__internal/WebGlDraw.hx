@@ -1,4 +1,4 @@
-package vision.backend.browser;
+package vision.formats.__internal;
 
 #if js
 import js.html.webgl.GL;

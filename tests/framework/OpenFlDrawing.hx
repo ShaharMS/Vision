@@ -1,6 +1,6 @@
 import openfl.display.Sprite;
 import openfl.events.Event;
-import vision.backend.framework.OpenFlBitmap;
+import vision.formats.to.OpenFlBitmap;
 import vision.ds.Image;
 
 class OpenFlDrawing extends Sprite {

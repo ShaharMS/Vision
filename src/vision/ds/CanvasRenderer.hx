@@ -1,4 +1,4 @@
-package vision.backend.browser;
+package vision.ds;
 
 #if js
 import js.Browser;
@@ -6,7 +6,8 @@ import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
 import js.html.ImageData;
 import vision.Vision;
-import vision.ds.Image;
+import vision.formats.__internal.BrowserPixels;
+import vision.formats.__internal.WebGlDraw;
 import vision.exceptions.VisionException;
 
 /** Draws Vision images in caller order using a dedicated browser canvas. **/

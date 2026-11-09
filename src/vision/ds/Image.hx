@@ -4,7 +4,7 @@ import vision.formats.ImageIO;
 #if (openfl || flash)
 import vision.formats.__internal.FrameworkImageIO;
 #end
-import vision.backend.ImageStorage;
+import vision.ds.ImageStorage;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm

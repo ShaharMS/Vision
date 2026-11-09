@@ -1,5 +1,5 @@
 import hxd.App;
-import vision.backend.framework.HeapsBitmap;
+import vision.formats.to.HeapsBitmap;
 import vision.ds.Image;
 
 class HeapsDrawing extends App {

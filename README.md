@@ -25,7 +25,6 @@ are lacking/have unclear documentation, please open an issue about it**
  - [**`exceptions`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/exceptions) - contains the errors usually thrown by Vision. **Notice - those errors are present just to let you know if you did something unexpected. If you want to get 
 rid of them, define `vision_quiet`.**
  - [**`helpers`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/helpers) - contains some helper classes that may be used by Vision. Theres nothing preventing you from using them yourself though...
- - [**`backend`**](src/vision/backend) contains image storage and the optional browser and framework drawing adapters.
  - [**`Vision.hx`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/Vision.hx) - contains all image manipulation/computer vision methods. After 1.0.0, this class should always remain backwards compatible. It is always recommended to use the methods from this class instead for using the ones in the wanted algorithm's class, since the ones in `Vision` are much less likely to break compatibility, are usually simpler to use, and have much better documentation.
 
 
@@ -74,7 +73,7 @@ image.addToScreen(0, 0); //alternatively, you can do - ImageTools.addToScreen(im
 On browser builds, give `CanvasRenderer` a canvas. It prefers WebGL 2 and can also use Canvas 2D.
 
 ```haxe
-import vision.backend.browser.CanvasRenderer;
+import vision.ds.CanvasRenderer;
 import vision.ds.Image;
 
 final renderer = new CanvasRenderer(canvas);
@@ -85,7 +84,7 @@ renderer.draw(image, 20, 20);
 
 Draw in display order and call `clear()` before a new frame. Call `dispose()` when the renderer is no longer needed. OpenFL and Heaps apps can use `OpenFlBitmap` and `HeapsBitmap` as regular display objects and call `update(image)` after edits. [Browser test](tests/browser/drawing.html) · [Native framework examples](tests/framework/README.md)
 
-The existing Vision algorithms run synchronously on CPU-readable images. Browser apps can use `CanvasRenderer.drawInverted` for an inverted preview or opt into the asynchronous `WebGpuInverter` for a new CPU-readable image. [WebGPU inverter](src/vision/backend/browser/WebGpuInverter.hx)
+The existing Vision algorithms run synchronously on CPU-readable images. Browser apps can use `CanvasRenderer.drawInverted` for an inverted preview or opt into the asynchronous `WebGpuInverter` for a new CPU-readable image. [WebGPU inverter](src/vision/ds/WebGpuInverter.hx)
 ---
 ### Basic Image Manipulation
 

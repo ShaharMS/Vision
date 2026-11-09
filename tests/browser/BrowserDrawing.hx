@@ -3,8 +3,8 @@ import js.html.CanvasElement;
 import js.html.webgl.GL;
 import js.lib.Uint8Array;
 import vision.Vision;
-import vision.backend.browser.CanvasRenderer;
-import vision.backend.browser.WebGpuInverter;
+import vision.ds.CanvasRenderer;
+import vision.ds.WebGpuInverter;
 import vision.ds.Image;
 import vision.tools.ImageTools;
 
