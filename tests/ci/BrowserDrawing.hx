@@ -1,3 +1,4 @@
+import haxe.Timer;
 import js.Browser;
 import js.html.CanvasElement;
 import js.html.webgl.GL;
@@ -18,6 +19,7 @@ class BrowserDrawing {
 			testAttachedImage();
 			testExistingCanvasApi();
 			testScreen(false).then(_ -> testScreen(true))
+				.then(_ -> testFrameRequests())
 				.then(_ -> WebGpuInverter.create())
 				.then(inverter -> {
 					if (inverter == null) {
@@ -103,6 +105,30 @@ class BrowserDrawing {
 				}
 			}
 			Browser.window.requestAnimationFrame(nextFrame);
+		});
+	}
+
+	static function testFrameRequests():Promise<Bool> {
+		return new Promise((resolve, reject) -> {
+			final screen = new Screen(3, 4, 5, 6, {visible: false, frameRate: 20});
+			screen.requestAnimationFrame(_ -> reject("Canceled frame was delivered"));
+			screen.cancelAnimationFrame();
+			screen.requestAnimationFrame(firstDelta -> {
+				if (firstDelta != 0) {
+					screen.dispose();
+					reject("First frame delta should be zero");
+					return;
+				}
+				final started = Timer.stamp();
+				screen.frameRate = 25;
+				screen.requestAnimationFrame(delta -> {
+					final elapsed = Timer.stamp() - started;
+					screen.requestAnimationFrame(_ -> reject("Disposed screen delivered a frame"));
+					screen.dispose();
+					if (delta < 0.038 || Math.abs(delta - elapsed) > 0.010) reject("Frame rate or elapsed seconds did not match the browser clock");
+					else resolve(true);
+				});
+			});
 		});
 	}
 

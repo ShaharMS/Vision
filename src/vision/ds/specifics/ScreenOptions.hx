@@ -5,4 +5,5 @@ package vision.ds.specifics;
 class ScreenOptions {
 	public var preferGpu:Bool = true;
 	public var visible:Bool = true;
+	public var frameRate:Int = 60;
 }

@@ -320,9 +320,10 @@ jobs:
       - name: Run the Screen test
         working-directory: bin/native-drawing/cpp
         run: |
+          set -o pipefail
           if [ "$RUNNER_OS" = Linux ]; then
-            xvfb-run -a ./ScreenDrawingTest
+            xvfb-run -a ./ScreenDrawingTest | grep -F 'Screen frame rate, elapsed seconds, and cancellation passed'
           else
-            SDL_VIDEODRIVER=dummy ./ScreenDrawingTest
-            SDL_VIDEODRIVER=cocoa ./ScreenDrawingTest
+            SDL_VIDEODRIVER=dummy ./ScreenDrawingTest | grep -F 'Screen frame rate, elapsed seconds, and cancellation passed'
+            SDL_VIDEODRIVER=cocoa ./ScreenDrawingTest | grep -F 'Screen frame rate, elapsed seconds, and cancellation passed'
           fi

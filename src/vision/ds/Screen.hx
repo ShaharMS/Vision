@@ -1,5 +1,6 @@
 package vision.ds;
 
+import haxe.Timer;
 import vision.Vision;
 import vision.ds.specifics.ScreenOptions;
 import vision.exceptions.VisionException;
@@ -21,13 +22,21 @@ class Screen {
 	/** Runs once, immediately before the first nonempty image draw. **/
 	public var onFirstDraw:Null<Void->Void>;
 
+	/** Target frames per second for requested frames. Defaults to 60. **/
+	public var frameRate(default, set):Int = 60;
+
 	var drewImage = false;
 	var disposed = false;
+	var pendingFrame:Null<Float->Void>;
+	var lastFrame:Null<Float>;
+	var nextFrame:Null<Float>;
 
 	#if js
 	final renderer:CanvasRenderer;
+	var animationFrame:Null<Int>;
 	#elseif (vision_native && (cpp || hl))
 	final renderer:NativeImageRenderer;
+	var frameTimer:Timer;
 	#end
 
 	/** Opens a screen. Positions and dimensions use pixels. **/
@@ -38,6 +47,7 @@ class Screen {
 		this.width = width;
 		this.height = height;
 		if (options == null) options = {};
+		frameRate = options.frameRate;
 
 		#if js
 		if (Syntax.code("typeof document === 'undefined'")
@@ -120,9 +130,32 @@ class Screen {
 		return true;
 	}
 
+	/**
+		Schedules one callback on the calling thread's event loop. The callback
+		receives elapsed seconds since the previous callback, or zero for the first
+		frame. Request another frame from the callback to continue.
+		Each screen accepts one pending request at a time.
+		Call this on the thread that created the screen.
+	**/
+	public function requestAnimationFrame(callback:Float->Void):Void {
+		checkOpen();
+		if (pendingFrame != null) throw new VisionException("The screen already has a pending frame request", "Screen");
+		pendingFrame = callback;
+		scheduleFrame();
+	}
+
+	/** Cancels the pending request and resets the elapsed time for the next request. **/
+	public function cancelAnimationFrame():Void {
+		cancelScheduledFrame();
+		pendingFrame = null;
+		lastFrame = null;
+		nextFrame = null;
+	}
+
 	/** Removes the screen or closes its window, and releases its drawing resources. **/
 	public function dispose():Void {
 		if (disposed) return;
+		cancelAnimationFrame();
 		#if js
 		renderer.dispose();
 		renderer.canvas.remove();
@@ -130,6 +163,70 @@ class Screen {
 		renderer.dispose();
 		#end
 		disposed = true;
+	}
+
+	function set_frameRate(value:Int):Int {
+		if (value <= 0) throw new VisionException("Screen frame rate must be positive", "Screen");
+		if (frameRate == value) return value;
+		frameRate = value;
+		nextFrame = lastFrame == null ? null : lastFrame + 1 / value;
+		if (pendingFrame != null) {
+			cancelScheduledFrame();
+			scheduleFrame();
+		}
+		return value;
+	}
+
+	function scheduleFrame():Void {
+		#if js
+		animationFrame = Browser.window.requestAnimationFrame(_ -> {
+			animationFrame = null;
+			// Refresh timestamps can vary slightly around the target deadline.
+			dispatchFrame(0.001);
+		});
+		#elseif (vision_native && (cpp || hl))
+		final remaining = nextFrame == null ? 0.0 : nextFrame - Timer.stamp();
+		final delay = Math.ceil(Math.max(1, remaining * 1000));
+		frameTimer = Timer.delay(() -> {
+			frameTimer = null;
+			dispatchFrame(0);
+		}, delay);
+		#end
+	}
+
+	function dispatchFrame(tolerance:Float):Void {
+		if (pendingFrame == null || !poll()) return;
+		final now = Timer.stamp();
+		if (nextFrame != null && now + tolerance < nextFrame) {
+			scheduleFrame();
+			return;
+		}
+
+		final callback = pendingFrame;
+		pendingFrame = null;
+		final delta = lastFrame == null ? 0.0 : Math.max(0, now - lastFrame);
+		lastFrame = now;
+
+		final interval = 1 / frameRate;
+		final deadline = nextFrame == null ? now : nextFrame;
+		// Keep the cadence when slightly late and skip catch-up frames after a stall.
+		final following = deadline + interval;
+		nextFrame = following > now ? following : now + interval;
+		callback(delta);
+	}
+
+	function cancelScheduledFrame():Void {
+		#if js
+		if (animationFrame != null) {
+			Browser.window.cancelAnimationFrame(animationFrame);
+			animationFrame = null;
+		}
+		#elseif (vision_native && (cpp || hl))
+		if (frameTimer != null) {
+			frameTimer.stop();
+			frameTimer = null;
+		}
+		#end
 	}
 
 	function beginDraw(image:Image):Bool {

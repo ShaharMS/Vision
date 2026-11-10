@@ -63,7 +63,7 @@ ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/
 
 Create a `Screen(x, y, width, height)` to open a browser drawing area or a desktop window. Use `draw(image, x, y)` to draw immediately at coordinates inside the screen.
 
-The application owns frame timing. Call `poll()` in a desktop loop to process window events. Assign `onFirstDraw` before drawing if you need a one-time callback. It runs immediately before the first nonempty image draw. `dispose()` closes the window or removes the browser drawing area.
+The application decides when to request frames. `requestAnimationFrame` schedules one callback at the target `frameRate` and supplies elapsed seconds. Call `poll()` if you run a manual desktop loop. Assign `onFirstDraw` before drawing if you need one-time setup immediately before the first nonempty image draw. `dispose()` closes the window or removes the browser drawing area.
 
 The same Screen API builds for browser JavaScript and desktop hxcpp or HashLink. Desktop builds need Vision's native drawing library. [Image API guide](tools/docs/image-api.md) · [Native build instructions](tests/ci/README.md#standalone-native-drawing)
 
