@@ -282,3 +282,46 @@ jobs:
           if [ "${{ matrix.target }}" = "interp" ]; then
             echo "Interp already executed in compile step."
           fi
+
+  native-screen:
+    name: Screen (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Haxe on Linux
+        if: runner.os == 'Linux'
+        uses: krdlab/setup-haxe@v1
+        with:
+          haxe-version: 4.3.7
+      - name: Install SDL and compiler tools
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then
+            sudo apt-get update
+            sudo apt-get install -y libsdl2-dev xvfb
+          else
+            brew install haxe sdl2 pkgconf
+          fi
+      - name: Build the Screen test
+        run: |
+          mkdir -p "$RUNNER_TEMP/screen-haxelib" "$RUNNER_TEMP/screen-hashlink"
+          haxelib setup "$RUNNER_TEMP/screen-haxelib"
+          haxelib install hxcpp 4.3.2 --always
+          curl -fsSL https://raw.githubusercontent.com/HaxeFoundation/hashlink/1.16/src/hl.h -o "$RUNNER_TEMP/screen-hashlink/hl.h"
+          bash build-native-drawing.sh "$RUNNER_TEMP/screen-hashlink"
+          architecture=HXCPP_M64
+          if [ "$(uname -m)" = arm64 ]; then architecture=HXCPP_ARM64; fi
+          haxe -cp src -cp tests/ci -main ScreenDrawingTest --cpp bin/native-drawing/cpp -D vision_native -D "$architecture"
+          cp bin/native-drawing/vision_native.ndll bin/native-drawing/cpp/
+      - name: Run the Screen test
+        working-directory: bin/native-drawing/cpp
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then
+            xvfb-run -a ./ScreenDrawingTest
+          else
+            SDL_VIDEODRIVER=dummy ./ScreenDrawingTest
+          fi
