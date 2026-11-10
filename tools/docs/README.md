@@ -1,4 +1,8 @@
-# Carve documentation images
+# Vision documentation examples
+
+Start with the [image API guide](image-api.md) for pixel editing, browser drawing, framework adapters, and a standalone Windows window.
+
+## Carve documentation images
 
 Reproduce the examples from the existing Spacebubble Valve image:
 

@@ -70,6 +70,8 @@ image.addToScreen(0, 0); //alternatively, you can do - ImageTools.addToScreen(im
 
 ### Draw and process the same image
 
+An `Image` holds the pixels you edit. A `CanvasRenderer` draws them onto a browser canvas. Create one renderer for the canvas, then give it each image and position you want to draw. [Image API recipes and runnable programs](tools/docs/image-api.md)
+
 Vision images keep synchronous pixel access. Operations use the CPU by default. An attached WebGL image can run inversion, simple grayscale, and black-and-white thresholding directly on its texture. A Windows build with the optional native library uses native C implementations for the same operations. Weighted grayscale, image views, and algorithms without a backend implementation use the existing Haxe code.
 
 #### Edit pixels and run an algorithm
@@ -120,15 +122,26 @@ trace(image.getPixel(0, 0));
 #### Draw a browser frame
 
 ```haxe
+import js.Browser;
 import vision.ds.CanvasRenderer;
+import vision.ds.Image;
 
-final renderer = new CanvasRenderer(canvas);
-renderer.clear();
-renderer.draw(background);
-renderer.draw(image, 20, 20);
+class Main {
+	static function main() {
+		final canvas = Browser.document.createCanvasElement();
+		canvas.width = 240;
+		canvas.height = 160;
+		Browser.document.body.appendChild(canvas);
+
+		final renderer = new CanvasRenderer(canvas);
+		final image = new Image(64, 64, 0xFF315A83);
+		image.fillCircle(32, 32, 18, 0xFFFFAA44);
+		renderer.draw(image, 20, 20);
+	}
+}
 ```
 
-`canvas` is an HTML canvas you supply. The renderer prefers WebGL 2. Pass `false` as the second argument to choose Canvas 2D.
+Load the compiled JavaScript from an HTML page with a body. The renderer prefers WebGL 2. Pass `false` as the second argument to choose Canvas 2D. Keep the renderer to draw more images or redraw after edits. [Runnable click-to-redraw example](tools/docs/BrowserImageExample.hx)
 
 ```haxe
 final software = new CanvasRenderer(anotherCanvas, false);
