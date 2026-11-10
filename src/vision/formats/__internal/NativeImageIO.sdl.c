@@ -70,11 +70,16 @@ bool vision_window_poll(VisionWindow *screen) {
 		if (event.type == SDL_QUIT) {
 			for (VisionWindow *entry = windows; entry; entry = entry->next)
 				entry->open = false;
-		} else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) {
+		} else if (event.type == SDL_WINDOWEVENT) {
 			for (VisionWindow *entry = windows; entry; entry = entry->next) {
 				if (SDL_GetWindowID(entry->window) == event.window.windowID) {
-					entry->open = false;
-					SDL_HideWindow(entry->window);
+					if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
+						entry->open = false;
+						SDL_HideWindow(entry->window);
+					} else if (event.window.event == SDL_WINDOWEVENT_EXPOSED && entry->open) {
+						vision_window_present(entry);
+					}
+					break;
 				}
 			}
 		}

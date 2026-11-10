@@ -225,9 +225,44 @@ static bool present_gpu(VisionWindow *window) {
 }
 #endif
 
+static const wchar_t *screen_class = L"VisionScreen";
+
+static LRESULT CALLBACK screen_message(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
+	VisionWindow *window = (VisionWindow *)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
+	switch (message) {
+		case WM_NCCREATE:
+			SetWindowLongPtrW(hwnd, GWLP_USERDATA, (LONG_PTR)((CREATESTRUCTW *)lparam)->lpCreateParams);
+			break;
+		case WM_ERASEBKGND:
+			return 1;
+		case WM_PAINT:
+			if (window && window->hwnd) {
+				PAINTSTRUCT paint;
+				BeginPaint(hwnd, &paint);
+				vision_window_present(window);
+				EndPaint(hwnd, &paint);
+				return 0;
+			}
+			break;
+		case WM_NCDESTROY:
+			if (window) window->hwnd = NULL;
+			SetWindowLongPtrW(hwnd, GWLP_USERDATA, 0);
+			break;
+	}
+	return DefWindowProcW(hwnd, message, wparam, lparam);
+}
+
 VisionWindow *vision_window_open(int x, int y, int width, int height, bool visible, bool prefer_gpu) {
 	if (width <= 0 || height <= 0 || width > 16384 || height > 16384)
 		return NULL;
+	WNDCLASSW window_class = {0};
+	window_class.lpfnWndProc = screen_message;
+	window_class.hInstance = GetModuleHandleW(NULL);
+	window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
+	window_class.lpszClassName = screen_class;
+	if (!RegisterClassW(&window_class) && GetLastError() != ERROR_CLASS_ALREADY_EXISTS)
+		return NULL;
+
 	VisionWindow *window = calloc(1, sizeof(*window));
 	if (!window)
 		return NULL;
@@ -238,9 +273,9 @@ VisionWindow *vision_window_open(int x, int y, int width, int height, bool visib
 		DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 		RECT bounds = {0, 0, width, height};
 		AdjustWindowRect(&bounds, style, FALSE);
-		window->hwnd = CreateWindowExW(0, L"STATIC", L"Vision", style,
+		window->hwnd = CreateWindowExW(0, screen_class, L"Vision", style,
 			x, y, bounds.right - bounds.left, bounds.bottom - bounds.top,
-			NULL, NULL, GetModuleHandleW(NULL), NULL);
+			NULL, NULL, window_class.hInstance, window);
 	}
 	if (!window->hwnd) {
 		vision_window_close(window);

@@ -6,6 +6,7 @@ import vision.ds.specifics.ScreenOptions;
 import vision.exceptions.VisionException;
 #if js
 import js.Browser;
+import js.lib.Promise;
 import js.Syntax;
 import vision.formats.__internal.CanvasRenderer;
 #elseif (vision_native && (cpp || hl))
@@ -22,21 +23,24 @@ class Screen {
 	/** Runs once, immediately before the first nonempty image draw. **/
 	public var onFirstDraw:Null<Void->Void>;
 
-	/** Target frames per second for requested frames. Defaults to 60. **/
+	/** Target frames per second when polling. Defaults to 60. **/
 	public var frameRate(default, set):Int = 60;
 
 	var drewImage = false;
 	var disposed = false;
-	var pendingFrame:Null<Float->Void>;
-	var lastFrame:Null<Float>;
-	var nextFrame:Null<Float>;
+
+	/** Elapsed seconds between completed polls. The first poll reports zero. **/
+	public var deltaTime(default, null):Float = 0;
+
+	var lastPoll:Null<Float>;
 
 	#if js
 	final renderer:CanvasRenderer;
 	var animationFrame:Null<Int>;
+	var pendingPoll:Promise<Bool>;
+	var resolvePoll:Bool->Void;
 	#elseif (vision_native && (cpp || hl))
 	final renderer:NativeImageRenderer;
-	var frameTimer:Timer;
 	#end
 
 	/** Opens a screen. Positions and dimensions use pixels. **/
@@ -119,7 +123,7 @@ class Screen {
 	}
 
 	/** Processes desktop events and reports whether the screen is still open. **/
-	public function poll():Bool {
+	public function processEvents():Bool {
 		if (disposed) return false;
 		#if (vision_native && (cpp || hl) && !js)
 		if (!renderer.poll()) {
@@ -131,32 +135,48 @@ class Screen {
 	}
 
 	/**
-		Schedules one callback on the calling thread's event loop. The callback
-		receives elapsed seconds since the previous callback, or zero for the first
-		frame. Request another frame from the callback to continue.
-		Each screen accepts one pending request at a time.
-		Call this on the thread that created the screen.
+		Waits until the next frame can start, measured from the last completed poll.
+		Desktop builds wait on the calling thread. Browser builds return a promise.
+		A closed screen reports false. Drawing and window event handling are separate.
 	**/
-	public function requestAnimationFrame(callback:Float->Void):Void {
-		checkOpen();
-		if (pendingFrame != null) throw new VisionException("The screen already has a pending frame request", "Screen");
-		pendingFrame = callback;
-		scheduleFrame();
+	#if js
+	public function poll():Promise<Bool> {
+		if (disposed) return Promise.resolve(false);
+		if (pendingPoll != null) return pendingPoll;
+		pendingPoll = new Promise<Bool>((resolve, _) -> {
+			resolvePoll = resolve;
+			function nextFrame(_:Float):Void {
+				final now = Timer.stamp();
+				// Allow small variations in browser refresh timing.
+				if (remainingTime(now) > 0.001) {
+					animationFrame = Browser.window.requestAnimationFrame(nextFrame);
+					return;
+				}
+				completePoll(now);
+				finishBrowserPoll(true);
+			}
+			animationFrame = Browser.window.requestAnimationFrame(nextFrame);
+		});
+		return pendingPoll;
 	}
-
-	/** Cancels the pending request and resets the elapsed time for the next request. **/
-	public function cancelAnimationFrame():Void {
-		cancelScheduledFrame();
-		pendingFrame = null;
-		lastFrame = null;
-		nextFrame = null;
+	#else
+	public function poll():Bool {
+		if (disposed) return false;
+		#if sys
+		final remaining = remainingTime(Timer.stamp());
+		if (remaining > 0) Sys.sleep(remaining);
+		#end
+		completePoll(Timer.stamp());
+		return true;
 	}
+	#end
 
 	/** Removes the screen or closes its window, and releases its drawing resources. **/
 	public function dispose():Void {
 		if (disposed) return;
-		cancelAnimationFrame();
 		#if js
+		if (animationFrame != null) Browser.window.cancelAnimationFrame(animationFrame);
+		finishBrowserPoll(false);
 		renderer.dispose();
 		renderer.canvas.remove();
 		#elseif (vision_native && (cpp || hl))
@@ -165,69 +185,29 @@ class Screen {
 		disposed = true;
 	}
 
-	function set_frameRate(value:Int):Int {
+	inline function set_frameRate(value:Int):Int {
 		if (value <= 0) throw new VisionException("Screen frame rate must be positive", "Screen");
-		if (frameRate == value) return value;
-		frameRate = value;
-		nextFrame = lastFrame == null ? null : lastFrame + 1 / value;
-		if (pendingFrame != null) {
-			cancelScheduledFrame();
-			scheduleFrame();
-		}
-		return value;
+		return frameRate = value;
 	}
 
-	function scheduleFrame():Void {
-		#if js
-		animationFrame = Browser.window.requestAnimationFrame(_ -> {
-			animationFrame = null;
-			// Refresh timestamps can vary slightly around the target deadline.
-			dispatchFrame(0.001);
-		});
-		#elseif (vision_native && (cpp || hl))
-		final remaining = nextFrame == null ? 0.0 : nextFrame - Timer.stamp();
-		final delay = Math.ceil(Math.max(1, remaining * 1000));
-		frameTimer = Timer.delay(() -> {
-			frameTimer = null;
-			dispatchFrame(0);
-		}, delay);
-		#end
+	inline function remainingTime(now:Float):Float {
+		return lastPoll == null ? 0 : lastPoll + 1 / frameRate - now;
 	}
 
-	function dispatchFrame(tolerance:Float):Void {
-		if (pendingFrame == null || !poll()) return;
-		final now = Timer.stamp();
-		if (nextFrame != null && now + tolerance < nextFrame) {
-			scheduleFrame();
-			return;
-		}
-
-		final callback = pendingFrame;
-		pendingFrame = null;
-		final delta = lastFrame == null ? 0.0 : Math.max(0, now - lastFrame);
-		lastFrame = now;
-
-		final interval = 1 / frameRate;
-		final deadline = nextFrame == null ? now : nextFrame;
-		// Keep the cadence when slightly late and skip catch-up frames after a stall.
-		final following = deadline + interval;
-		nextFrame = following > now ? following : now + interval;
-		callback(delta);
+	function completePoll(now:Float):Void {
+		deltaTime = lastPoll == null ? 0 : Math.max(0, now - lastPoll);
+		lastPoll = now;
 	}
 
-	function cancelScheduledFrame():Void {
-		#if js
-		if (animationFrame != null) {
-			Browser.window.cancelAnimationFrame(animationFrame);
-			animationFrame = null;
-		}
-		#elseif (vision_native && (cpp || hl))
-		if (frameTimer != null) {
-			frameTimer.stop();
-			frameTimer = null;
-		}
-		#end
+	#if js
+	function finishBrowserPoll(open:Bool):Void {
+		final resolve = resolvePoll;
+		animationFrame = null;
+		pendingPoll = null;
+		resolvePoll = null;
+		if (resolve != null) resolve(open);
 	}
+	#end
 
 	function beginDraw(image:Image):Bool {
 		checkOpen();

@@ -19,7 +19,7 @@ class BrowserDrawing {
 			testAttachedImage();
 			testExistingCanvasApi();
 			testScreen(false).then(_ -> testScreen(true))
-				.then(_ -> testFrameRequests())
+				.then(_ -> testFrameWait())
 				.then(_ -> WebGpuInverter.create())
 				.then(inverter -> {
 					if (inverter == null) {
@@ -84,7 +84,7 @@ class BrowserDrawing {
 			if (firstDraws != 1) throw "First draw hook did not run synchronously";
 			function nextFrame(_:Float):Void {
 				try {
-					if (!screen.poll()) throw "Screen closed unexpectedly";
+					if (!screen.processEvents()) throw "Screen closed unexpectedly";
 					frames++;
 					if (frames == 1) {
 						expectPixel(canvas, webGl, 1, 2, [18, 52, 86, 255]);
@@ -96,7 +96,7 @@ class BrowserDrawing {
 					expectPixel(canvas, webGl, 3, 4, [255, 170, 68, 255]);
 					if (firstDraws != 1) throw "First draw hook ran twice";
 					screen.dispose();
-					if (screen.poll()) throw "Disposed Screen still reports open";
+					if (screen.processEvents()) throw "Disposed Screen still reports open";
 					if (canvas.parentElement != null) throw "Disposing Screen left its canvas on the page";
 					resolve(true);
 				} catch (error:Dynamic) {
@@ -108,25 +108,26 @@ class BrowserDrawing {
 		});
 	}
 
-	static function testFrameRequests():Promise<Bool> {
-		return new Promise((resolve, reject) -> {
-			final screen = new Screen(3, 4, 5, 6, {visible: false, frameRate: 20});
-			screen.requestAnimationFrame(_ -> reject("Canceled frame was delivered"));
-			screen.cancelAnimationFrame();
-			screen.requestAnimationFrame(firstDelta -> {
-				if (firstDelta != 0) {
-					screen.dispose();
-					reject("First frame delta should be zero");
-					return;
-				}
-				final started = Timer.stamp();
-				screen.frameRate = 25;
-				screen.requestAnimationFrame(delta -> {
-					final elapsed = Timer.stamp() - started;
-					screen.requestAnimationFrame(_ -> reject("Disposed screen delivered a frame"));
-					screen.dispose();
-					if (delta < 0.038 || Math.abs(delta - elapsed) > 0.010) reject("Frame rate or elapsed seconds did not match the browser clock");
-					else resolve(true);
+	static function testFrameWait():Promise<Bool> {
+		final screen = new Screen(3, 4, 5, 6, {preferGpu: false, frameRate: 20});
+		final canvas:CanvasElement = cast Browser.document.body.lastElementChild;
+		screen.draw(new Image(1, 1, 0xFF123456), 1, 2);
+		expectPixel(canvas, false, 1, 2, [18, 52, 86, 255]);
+		return screen.poll().then(ready -> {
+			if (!ready || screen.deltaTime != 0) throw "First poll should report zero delta";
+			final started = Timer.stamp();
+			screen.frameRate = 25;
+			return screen.poll().then(next -> {
+				final elapsed = Timer.stamp() - started;
+				if (!next
+					|| screen.deltaTime < 0.038
+					|| Math.abs(screen.deltaTime - elapsed) > 0.010) throw "Frame rate or elapsed seconds did not match the browser clock";
+				expectPixel(canvas, false, 1, 2, [18, 52, 86, 255]);
+				final pending = screen.poll();
+				screen.dispose();
+				return pending.then(closed -> {
+					if (closed) throw "Disposed screen reported ready";
+					return true;
 				});
 			});
 		});

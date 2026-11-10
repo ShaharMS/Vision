@@ -149,10 +149,10 @@ The screen appears as soon as you construct it. `draw` and `clear` take effect i
 ### Manage a screen's lifetime
 
 - Assign `onFirstDraw` before drawing to run setup once, immediately before the first nonempty image is drawn.
-- Call `requestAnimationFrame` to schedule one callback at the screen's target `frameRate`, which defaults to 60. Each callback receives elapsed seconds since the previous one. The first callback receives zero. Request another frame from the callback to continue.
-- Time spent updating and drawing counts toward the next frame deadline. The browser's refresh rate and the desktop event loop determine when a callback can actually run.
-- Each screen accepts one pending request. Call `cancelAnimationFrame` to cancel it and reset the elapsed time. Closing or disposing the screen cancels its request.
-- With a manual desktop loop, call `poll()` to process window events. It returns false after the window closes or the screen is disposed.
+- In a caller-owned render loop, call `poll()` to wait at the target `frameRate`. It counts from the previous completed poll, so update and draw time reduce the remaining wait. `deltaTime` reports elapsed seconds and starts at zero.
+- Desktop `poll()` returns a boolean after waiting. Browser `poll()` returns a promise that resolves at a suitable browser frame. Disposal completes a pending browser wait with false.
+- Call `processEvents()` separately on desktop to process window events. It reports false when the window closes.
+- Draws persist through polls and repaint events. Use `clear` or another draw to change the contents.
 - To draw layers, clear the screen, draw the background, then draw each foreground image in order.
 - Call `dispose()` to close the window or remove the browser drawing area.
 
