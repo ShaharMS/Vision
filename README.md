@@ -61,29 +61,11 @@ ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/
 
 ### Draw an image on a screen
 
-A `Screen` opens a drawing area when you create it. On the web it appears on the page. On desktop it opens a window. The first two arguments are its position, and the last two are its width and height. [Image API recipes and runnable examples](tools/docs/image-api.md)
+Create a `Screen(x, y, width, height)` to open a browser drawing area or a desktop window. Use `draw(image, x, y)` to draw immediately at coordinates inside the screen.
 
-```haxe
-import vision.ds.Image;
-import vision.ds.Screen;
+The application owns frame timing. Call `poll()` in a desktop loop to process window events. Assign `onFirstDraw` before drawing if you need a one-time callback. It runs immediately before the first nonempty image draw. `dispose()` closes the window or removes the browser drawing area.
 
-class Main {
-	static function main() {
-		final screen = new Screen(24, 32, 320, 180);
-		final badge = new Image(64, 64, 0xFF315A83);
-		badge.fillCircle(32, 32, 18, 0xFFFFAA44);
-
-		screen.start(() -> {
-			screen.clear(0xFF24344D);
-			screen.draw(badge, 20, 20);
-		});
-	}
-}
-```
-
-`draw(badge, 20, 20)` places the badge inside the screen. You can also call `screen.draw(badge)` directly to show a frame without starting an animation. Use `start` to keep a desktop window responsive or to draw new frames on any platform. `stop` stops animation, and `dispose` removes the screen.
-
-The same Haxe source builds for browser JavaScript and desktop hxcpp or HashLink. Desktop builds need Vision's native drawing library. [Build instructions](tests/ci/README.md#standalone-native-drawing) · [Cross-platform animation](tools/docs/ScreenExample.hx)
+The same Screen API builds for browser JavaScript and desktop hxcpp or HashLink. Desktop builds need Vision's native drawing library. [Image API guide](tools/docs/image-api.md) · [Native build instructions](tests/ci/README.md#standalone-native-drawing)
 
 ---
 ### Basic Image Manipulation

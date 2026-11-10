@@ -16,28 +16,6 @@ haxe -cp src -cp tools/docs -lib format --run ImageExamples bin/image-examples
 
 Open the original, region-edited, thresholded, and resized PNGs in `bin/image-examples`. [Complete Haxe program](ImageExamples.hx)
 
-### One animated scene on browser and desktop
-
-[ScreenExample.hx](ScreenExample.hx) uses the same `Screen` calls for all three builds.
-
-```powershell
-haxe -cp src -cp tools/docs -main ScreenExample --js bin/browser/image-example.js
-```
-
-Open [browser-image-example.html](browser-image-example.html). The badge moves and inverts whenever it crosses the screen.
-
-For desktop, build the native libraries and put the appropriate library beside the output. Run from that directory. [Native build instructions](../../tests/ci/README.md#standalone-native-drawing)
-
-```powershell
-haxe -cp src -cp tools/docs -main ScreenExample --hl bin/native-drawing/image-example.hl -D vision_native
-```
-
-```powershell
-haxe -cp src -cp tools/docs -main ScreenExample --cpp bin/native-drawing/example-cpp -D vision_native
-```
-
-On Windows x64, add `-D HXCPP_M64` for the hxcpp build. On arm64 macOS, use `-D HXCPP_ARM64`.
-
 ## Make and edit images
 
 The snippets use `Image` and the usual Vision extensions. Put the statements inside a function.
@@ -166,63 +144,14 @@ final screen = new Screen(24, 32, 320, 180);
 screen.draw(image, 20, 20);
 ```
 
-The screen appears as soon as you construct it. On desktop, call `start` to keep processing window events after the first draw.
+The screen appears as soon as you construct it. `draw` and `clear` take effect immediately.
 
-### Layer images
+### Manage a screen's lifetime
 
-```haxe
-screen.clear(0xFF24344D);
-screen.draw(background);
-screen.draw(badge, 80, 40);
-```
-
-### Run a frame callback
-
-```haxe
-var x = 0;
-screen.start(() -> {
-	screen.draw(background);
-	screen.draw(badge, x, 40);
-	x = (x + 2) % (screen.width - badge.width + 1);
-});
-```
-
-The browser schedules a callback for the next frame and returns from `start`. On desktop, `start` runs the window loop until the window closes or you stop it.
-
-### Edit pixels inside the loop
-
-```haxe
-var column = 0;
-screen.start(() -> {
-	badge.setPixel(column, 0, Color.WHITE);
-	screen.clear(0xFF24344D);
-	screen.draw(badge, 16, 16);
-	column = (column + 1) % badge.width;
-});
-```
-
-### Stop after a fixed number of frames
-
-```haxe
-var frames = 0;
-screen.start(() -> {
-	screen.draw(background);
-	screen.draw(badge, frames, 40);
-	if (++frames == 60)
-		screen.stop();
-});
-```
-
-### Close the screen from a frame callback
-
-```haxe
-var frames = 0;
-screen.start(() -> {
-	screen.draw(image);
-	if (++frames == 120)
-		screen.dispose();
-});
-```
+- Assign `onFirstDraw` before drawing to run setup once, immediately before the first nonempty image is drawn.
+- Schedule frames with your own timer, browser animation callback, or application loop. Call `poll()` in a desktop loop to process window events. It returns false after the window closes or the screen is disposed.
+- To draw layers, clear the screen, draw the background, then draw each foreground image in order.
+- Call `dispose()` to close the window or remove the browser drawing area.
 
 ### Open a second drawing area
 

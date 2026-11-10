@@ -8,7 +8,6 @@ import js.Browser;
 import js.Syntax;
 import vision.formats.__internal.CanvasRenderer;
 #elseif (vision_native && (cpp || hl))
-import haxe.Timer;
 import vision.formats.__internal.NativeImageRenderer;
 #end
 
@@ -19,13 +18,14 @@ class Screen {
 	public final width:Int;
 	public final height:Int;
 
-	var running = false;
-	var drawingFrame = false;
+	/** Runs once, immediately before the first nonempty image draw. **/
+	public var onFirstDraw:Null<Void->Void>;
+
+	var drewImage = false;
 	var disposed = false;
 
 	#if js
 	final renderer:CanvasRenderer;
-	var animationFrame:Null<Int>;
 	#elseif (vision_native && (cpp || hl))
 	final renderer:NativeImageRenderer;
 	#end
@@ -67,26 +67,27 @@ class Screen {
 		checkOpen();
 		#if (js || (vision_native && (cpp || hl)))
 		renderer.clear(color | 0xFF000000);
-		presentIfReady();
+		present();
 		#end
 	}
 
 	/** Draws an image at a position relative to the top-left corner of this screen. **/
 	public function draw(image:Image, x:Int = 0, y:Int = 0):Void {
-		checkOpen();
+		if (!beginDraw(image)) return;
 		#if (js || (vision_native && (cpp || hl)))
 		renderer.draw(image, x, y);
-		presentIfReady();
+		present();
 		#end
 	}
 
 	/** Draws an inverted preview and preserves the original image. **/
 	public function drawInverted(image:Image, x:Int = 0, y:Int = 0):Void {
-		checkOpen();
+		if (!beginDraw(image)) return;
 		#if js
 		renderer.drawInverted(image, x, y);
-		#else
-		draw(Vision.invert(image.clone()), x, y);
+		#elseif (vision_native && (cpp || hl))
+		renderer.draw(Vision.invert(image.clone()), x, y);
+		present();
 		#end
 	}
 
@@ -107,54 +108,21 @@ class Screen {
 		#end
 	}
 
-	/**
-		Draws frames until stop or dispose is called, or until the desktop window closes.
-		On the browser it schedules frames and returns immediately. On desktop it runs
-		the window loop on the calling thread and returns when that loop ends.
-	**/
-	public function start(drawFrame:Void->Void):Void {
-		checkOpen();
-		if (running || drawingFrame) return;
-		running = true;
-
-		#if js
-		function nextFrame(_:Float):Void {
-			animationFrame = null;
-			if (!running) return;
-			runFrame(drawFrame);
-			if (running) animationFrame = Browser.window.requestAnimationFrame(nextFrame);
-		}
-		animationFrame = Browser.window.requestAnimationFrame(nextFrame);
-		#elseif (vision_native && (cpp || hl))
-		while (running) {
-			if (!renderer.poll()) {
-				dispose();
-				return;
-			}
-			final started = Timer.stamp();
-			runFrame(drawFrame);
-			final remaining = 1 / 60 - (Timer.stamp() - started);
-			if (running && remaining > 0) Sys.sleep(remaining);
-		}
-		stop();
-		#end
-	}
-
-	/** Stops the render loop while keeping the screen open. **/
-	public function stop():Void {
-		running = false;
-		#if js
-		if (animationFrame != null) {
-			Browser.window.cancelAnimationFrame(animationFrame);
-			animationFrame = null;
+	/** Processes desktop events and reports whether the screen is still open. **/
+	public function poll():Bool {
+		if (disposed) return false;
+		#if (vision_native && (cpp || hl) && !js)
+		if (!renderer.poll()) {
+			dispose();
+			return false;
 		}
 		#end
+		return true;
 	}
 
 	/** Removes the screen or closes its window, and releases its drawing resources. **/
 	public function dispose():Void {
 		if (disposed) return;
-		stop();
 		#if js
 		renderer.dispose();
 		renderer.canvas.remove();
@@ -164,22 +132,21 @@ class Screen {
 		disposed = true;
 	}
 
-	function runFrame(drawFrame:Void->Void):Void {
-		drawingFrame = true;
-		try {
-			drawFrame();
-		} catch (error:Dynamic) {
-			drawingFrame = false;
-			stop();
-			throw error;
+	function beginDraw(image:Image):Bool {
+		checkOpen();
+		if (image.width <= 0 || image.height <= 0) return false;
+		if (!drewImage) {
+			drewImage = true;
+			final firstDraw = onFirstDraw;
+			onFirstDraw = null;
+			if (firstDraw != null) firstDraw();
 		}
-		drawingFrame = false;
-		presentIfReady();
+		return !disposed;
 	}
 
-	inline function presentIfReady():Void {
+	inline function present():Void {
 		#if (vision_native && (cpp || hl) && !js)
-		if (!drawingFrame && !disposed && !renderer.present()) stop();
+		renderer.present();
 		#end
 	}
 

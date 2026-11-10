@@ -17,23 +17,26 @@ class BrowserDrawing {
 			testDrawing(true);
 			testAttachedImage();
 			testExistingCanvasApi();
-			testScreen(false).then(_ -> testScreen(true)).then(_ -> WebGpuInverter.create()).then(inverter -> {
-				if (inverter == null) {
-					Browser.document.body.setAttribute("data-webgpu", "unavailable");
-					pass();
-					return;
-				}
-				final image = new Image(17, 7, 0x8030A070);
-				image.setPixel(16, 6, 0xFF12ABCD);
-				final expected = Vision.invert(image.clone());
-				inverter.invert(image).then(result -> {
-					inverter.dispose();
-					if (result.exportToBytes().compare(expected.exportToBytes()) != 0
-						|| image.getPixel(16, 6) != 0xFF12ABCD) throw "WebGPU compute did not match CPU inversion";
-					Browser.document.body.setAttribute("data-webgpu", "pass");
-					pass();
-				}).catchError(fail);
-			}).catchError(fail);
+			testScreen(false).then(_ -> testScreen(true))
+				.then(_ -> WebGpuInverter.create())
+				.then(inverter -> {
+					if (inverter == null) {
+						Browser.document.body.setAttribute("data-webgpu", "unavailable");
+						pass();
+						return;
+					}
+					final image = new Image(17, 7, 0x8030A070);
+					image.setPixel(16, 6, 0xFF12ABCD);
+					final expected = Vision.invert(image.clone());
+					inverter.invert(image).then(result -> {
+						inverter.dispose();
+						if (result.exportToBytes().compare(expected.exportToBytes()) != 0
+							|| image.getPixel(16, 6) != 0xFF12ABCD) throw "WebGPU compute did not match CPU inversion";
+						Browser.document.body.setAttribute("data-webgpu", "pass");
+						pass();
+					}).catchError(fail);
+				})
+				.catchError(fail);
 		} catch (error:Dynamic) {
 			fail(error);
 		}
@@ -62,31 +65,44 @@ class BrowserDrawing {
 		return new Promise((resolve, reject) -> {
 			final screen = new Screen(3, 4, 5, 6, {preferGpu: preferGpu});
 			final canvas:CanvasElement = cast Browser.document.body.lastElementChild;
-			final image = new Image(1, 1, 0xFF123456);
+			final image = new Image(1, 1);
 			var frames = 0;
+			var firstDraws = 0;
 			if (canvas.style.left != "3px" || canvas.style.top != "4px" || canvas.width != 5 || canvas.height != 6)
 				throw "Screen did not use the requested geometry";
 			final webGl = preferGpu && canvas.getContextWebGL2() != null;
+			screen.onFirstDraw = () -> {
+				firstDraws++;
+				image.setPixel(0, 0, 0xFF123456);
+			};
+			screen.clear();
+			screen.draw(new Image(0, 0));
+			if (firstDraws != 0) throw "First draw hook ran before an image was drawn";
 			screen.draw(image, 1, 2);
-			screen.start(() -> {
+			if (firstDraws != 1) throw "First draw hook did not run synchronously";
+			function nextFrame(_:Float):Void {
 				try {
+					if (!screen.poll()) throw "Screen closed unexpectedly";
 					frames++;
 					if (frames == 1) {
 						expectPixel(canvas, webGl, 1, 2, [18, 52, 86, 255]);
-						screen.draw(new Image(1, 1, 0xFFFFAA44), 3, 4);
+						screen.drawInverted(new Image(1, 1, 0xFF0055BB), 3, 4);
+						Browser.window.requestAnimationFrame(nextFrame);
 						return;
 					}
 					expectPixel(canvas, webGl, 1, 2, [18, 52, 86, 255]);
 					expectPixel(canvas, webGl, 3, 4, [255, 170, 68, 255]);
-					screen.stop();
+					if (firstDraws != 1) throw "First draw hook ran twice";
 					screen.dispose();
+					if (screen.poll()) throw "Disposed Screen still reports open";
 					if (canvas.parentElement != null) throw "Disposing Screen left its canvas on the page";
 					resolve(true);
 				} catch (error:Dynamic) {
 					screen.dispose();
 					reject(error);
 				}
-			});
+			}
+			Browser.window.requestAnimationFrame(nextFrame);
 		});
 	}
 
