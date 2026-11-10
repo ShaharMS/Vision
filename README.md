@@ -59,200 +59,31 @@ ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/
 );
 ```
 
-Add that image to the screen (available on platforms & libraries that support drawing on screen):
-```haxe
-using vision.tools.ImageTools;
+### Draw an image on a screen
 
-//...
-
-image.addToScreen(0, 0); //alternatively, you can do - ImageTools.addToScreen(image, 0, 0)
-```
-
-### Draw and process the same image
-
-An `Image` holds the pixels you edit. A `CanvasRenderer` draws them onto a browser canvas. Create one renderer for the canvas, then give it each image and position you want to draw. [Image API recipes and runnable programs](tools/docs/image-api.md)
-
-Vision images keep synchronous pixel access. Operations use the CPU by default. An attached WebGL image can run inversion, simple grayscale, and black-and-white thresholding directly on its texture. A Windows build with the optional native library uses native C implementations for the same operations. Weighted grayscale, image views, and algorithms without a backend implementation use the existing Haxe code.
-
-#### Edit pixels and run an algorithm
+A `Screen` opens a drawing area when you create it. On the web it appears on the page. On desktop it opens a window. The first two arguments are its position, and the last two are its width and height. [Image API recipes and runnable examples](tools/docs/image-api.md)
 
 ```haxe
-import vision.ds.Color;
 import vision.ds.Image;
-using vision.Vision;
-
-final image = new Image(64, 64, 0xFF223344);
-image.setPixel(10, 10, 0xFFFF8800);
-image.drawLine(4, 4, 30, 20, Color.WHITE);
-
-final pixel = image.getPixel(10, 10);
-image.invert(); // modifies this image and returns it
-```
-
-#### Process a region
-
-Views work with the same API on CPU and attached images. Operations preserve pixels outside the view.
-
-```haxe
-image.setView({x: 8, y: 8, width: 16, height: 16});
-image.grayscale(true);
-image.removeView();
-```
-
-#### Make an independent copy or export pixels
-
-```haxe
-final edited = image.clone();
-edited.setPixel(0, 0, 0xFF00FF00);
-
-final argb = edited.exportToBytes();
-final restored = Image.loadFromBytes(argb, edited.width, edited.height);
-```
-
-Assigning an image to another variable shares its pixels. Cloning copies its pixels. Reading an attached image or exporting a copy synchronizes its pixels when necessary. Requesting the writable `underlying` buffer also releases the graphics backing, so writes through an existing byte alias stay visible.
-
-```haxe
-final alias = image;
-final packed = alias.underlying; // packed Vision header followed by ARGB pixels
-trace(packed.length);
-alias.setPixel(0, 0, 0xFFFFFFFF);
-trace(image.getPixel(0, 0));
-```
-
-#### Draw a browser frame
-
-```haxe
-import js.Browser;
-import vision.ds.CanvasRenderer;
-import vision.ds.Image;
+import vision.ds.Screen;
 
 class Main {
 	static function main() {
-		final canvas = Browser.document.createCanvasElement();
-		canvas.width = 240;
-		canvas.height = 160;
-		Browser.document.body.appendChild(canvas);
+		final screen = new Screen(24, 32, 320, 180);
+		final badge = new Image(64, 64, 0xFF315A83);
+		badge.fillCircle(32, 32, 18, 0xFFFFAA44);
 
-		final renderer = new CanvasRenderer(canvas);
-		final image = new Image(64, 64, 0xFF315A83);
-		image.fillCircle(32, 32, 18, 0xFFFFAA44);
-		renderer.draw(image, 20, 20);
+		screen.start(() -> {
+			screen.clear(0xFF24344D);
+			screen.draw(badge, 20, 20);
+		});
 	}
 }
 ```
 
-Load the compiled JavaScript from an HTML page with a body. The renderer prefers WebGL 2. Pass `false` as the second argument to choose Canvas 2D. Keep the renderer to draw more images or redraw after edits. [Runnable click-to-redraw example](tools/docs/BrowserImageExample.hx)
+`draw(badge, 20, 20)` places the badge inside the screen. You can also call `screen.draw(badge)` directly to show a frame without starting an animation. Use `start` to keep a desktop window responsive or to draw new frames on any platform. `stop` stops animation, and `dispose` removes the screen.
 
-```haxe
-final software = new CanvasRenderer(anotherCanvas, false);
-software.draw(image, 12, 8);
-software.dispose();
-```
-
-#### Keep a browser image on the device
-
-Attach the image once to the renderer that will draw it. The same Vision calls work when attachment is unavailable. Subsequent ordinary pixel edits are picked up by the next draw or GPU operation.
-
-```haxe
-final attached = renderer.attach(image);
-image.invert();
-image.grayscale(true);
-image.blackAndWhite(128);
-renderer.draw(image, 20, 20);
-```
-
-```haxe
-final color = image.getPixel(0, 0); // read back only when the CPU copy is stale
-image.setPixel(1, 1, 0xFF00FF00);
-renderer.draw(image);
-
-renderer.detach(image); // keep the image and release this renderer's texture
-renderer.dispose(); // also detaches any remaining images
-```
-
-A GPU-backed image can still run operations such as weighted grayscale and Gaussian blur. Those use the CPU implementation. WebGL context loss can make a GPU-only result unavailable until it can be recreated from the source data.
-
-```haxe
-image.grayscale();
-final blurred = image.gaussianBlur();
-renderer.draw(blurred, 32, 12);
-```
-
-#### Preview or compute an inverted image
-
-`drawInverted` changes the preview. For an asynchronous WebGPU result, create the inverter once and dispose of it when it is no longer needed.
-
-```haxe
-renderer.drawInverted(image, 0, 0);
-renderer.draw(image, image.width, 0);
-```
-
-```haxe
-import vision.ds.WebGpuInverter;
-
-WebGpuInverter.create().then(inverter -> {
-	if (inverter == null) {
-		renderer.draw(image.clone().invert());
-		return;
-	}
-	inverter.invert(image).then(result -> {
-		inverter.dispose();
-		renderer.draw(result);
-	}).catchError(error -> {
-		inverter.dispose();
-		throw error;
-	});
-});
-```
-
-#### Put a Vision image in an existing display hierarchy
-
-```haxe
-import vision.formats.to.OpenFlBitmap;
-
-final sprite = new OpenFlBitmap(image);
-addChild(sprite);
-image.setPixel(5, 5, 0xFFFFAA00);
-sprite.update(image);
-```
-
-```haxe
-import vision.formats.to.HeapsBitmap;
-
-final sprite = new HeapsBitmap(image, s2d);
-sprite.x = 20;
-image.invert();
-sprite.update(image);
-```
-
-Call `dispose()` to release the adapter's bitmap data or texture. [Framework smoke tests](tests/ci/framework-drawing.md)
-
-#### Draw in a standalone Windows window
-
-Build the optional native library and compile the application with `-D vision_native`. The same API works with hxcpp or HashLink. A build with wgpu-native presents through WebGPU when available and uses GDI otherwise. Both paths composite ordinary Vision images into a CPU frame before presentation. [Build and test instructions](tests/ci/README.md#standalone-native-drawing)
-
-```haxe
-import vision.ds.NativeImageRenderer;
-
-final window = new NativeImageRenderer(640, 480);
-while (window.poll()) {
-	window.clear(0xFF181818);
-	window.draw(background);
-	window.draw(image, 24, 16);
-	if (!window.present())
-		break;
-	Sys.sleep(1 / 60);
-}
-window.dispose();
-```
-
-```haxe
-final window = new NativeImageRenderer(640, 480, false); // use GDI
-window.clear();
-window.draw(image);
-window.present();
-window.dispose();
-```
+The same Haxe source builds for browser JavaScript and desktop hxcpp or HashLink. Desktop builds need Vision's native drawing library. [Build instructions](tests/ci/README.md#standalone-native-drawing) · [Cross-platform animation](tools/docs/ScreenExample.hx)
 
 ---
 ### Basic Image Manipulation

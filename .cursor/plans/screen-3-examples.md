@@ -1,6 +1,6 @@
 # Plan — Screen step 3 — Rewrite the public drawing examples around Screen
 
-> **Status** 🔲 Not started
+> **Status** ✅ Completed
 >
 > **Prerequisite** [Previous step](screen-2-desktop.md)
 >
@@ -30,3 +30,5 @@ Rewrite the public drawing examples around Screen.
 ## Verification
 
 - Compile the same example for JS and native targets and verify browser output.
+
+ScreenExample compiled to JavaScript and HashLink and type-checked for hxcpp. Edge showed the requested 320 by 180 screen at the requested position.

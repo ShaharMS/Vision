@@ -1,6 +1,6 @@
 # Vision documentation examples
 
-Start with the [image API guide](image-api.md) for pixel editing, browser drawing, framework adapters, and a standalone Windows window.
+Start with the [image API guide](image-api.md) for pixel editing, framework adapters, and the same Screen code on the web and desktop.
 
 ## Carve documentation images
 

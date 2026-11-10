@@ -1,8 +1,8 @@
 # Vision image examples
 
-An `Image` is the pixel data. A browser `<canvas>` is a rectangle on the page. A `CanvasRenderer` connects the two. You create it once for the canvas, then call `draw(image, x, y)` to put an image on that canvas. One renderer can draw several images. Drawing again shows any edits you've made since the previous draw.
+An `Image` holds pixels. A `Screen` is where you draw those pixels. Create a screen with a position and size, then call `draw(image, x, y)`. On browser builds it creates the drawing area on the page. On desktop it creates a window.
 
-For a one-off browser image, use `image.addToScreen(x, y)`. For a scene you redraw, keep a `CanvasRenderer`. In OpenFL and Heaps, the framework owns drawing. Give it a bitmap adapter and call `update(image)` after edits. For a standalone Windows app, `NativeImageRenderer` creates the window and presents your frame.
+Screen coordinates are relative to the top-left corner of the page or desktop. The coordinates passed to `draw` are relative to the top-left corner of the screen. Desktop window managers may override a requested window position.
 
 ## Run the examples
 
@@ -16,27 +16,27 @@ haxe -cp src -cp tools/docs -lib format --run ImageExamples bin/image-examples
 
 Open the original, region-edited, thresholded, and resized PNGs in `bin/image-examples`. [Complete Haxe program](ImageExamples.hx)
 
-### A clickable browser scene
+### One animated scene on browser and desktop
+
+[ScreenExample.hx](ScreenExample.hx) uses the same `Screen` calls for all three builds.
 
 ```powershell
-haxe -cp src -cp tools/docs -main BrowserImageExample --js bin/browser/image-example.js
+haxe -cp src -cp tools/docs -main ScreenExample --js bin/browser/image-example.js
 ```
 
-Open [browser-image-example.html](browser-image-example.html) after compiling. The badge inverts on each click. [Complete Haxe program](BrowserImageExample.hx)
+Open [browser-image-example.html](browser-image-example.html). The badge moves and inverts whenever it crosses the screen.
 
-### A standalone Windows animation
-
-Build the native libraries first. For HashLink, put `vision_native.hdll` and any required `wgpu_native.dll` beside `image-example.hl`, then run it from that directory. [Native build instructions](../../tests/ci/README.md#standalone-native-drawing)
+For desktop, build the native libraries and put the appropriate library beside the output. Run from that directory. [Native build instructions](../../tests/ci/README.md#standalone-native-drawing)
 
 ```powershell
-haxe -cp src -cp tools/docs -main NativeImageExample --hl bin/native-drawing/image-example.hl -D vision_native -D hl-ver=1.16.0
+haxe -cp src -cp tools/docs -main ScreenExample --hl bin/native-drawing/image-example.hl -D vision_native
 ```
-
-For hxcpp, place `vision_native.ndll` and any required `wgpu_native.dll` beside the generated executable. Run it from that directory. [Complete Haxe program](NativeImageExample.hx)
 
 ```powershell
-haxe -cp src -cp tools/docs -main NativeImageExample --cpp bin/native-drawing/example-cpp -D vision_native -D HXCPP_M64
+haxe -cp src -cp tools/docs -main ScreenExample --cpp bin/native-drawing/example-cpp -D vision_native
 ```
+
+On Windows x64, add `-D HXCPP_M64` for the hxcpp build. On arm64 macOS, use `-D HXCPP_ARM64`.
 
 ## Make and edit images
 
@@ -155,121 +155,133 @@ final bytes = sys.io.File.getBytes("card.png");
 final loaded = vision.formats.ImageIO.from.bytes.png(bytes);
 ```
 
-## Draw in a browser
+## Draw to a Screen
 
-### Put one image on the page
+### Open a screen and draw an image
 
 ```haxe
-using vision.tools.ImageTools;
+import vision.ds.Screen;
 
-image.addToScreen(20, 20);
+final screen = new Screen(24, 32, 320, 180);
+screen.draw(image, 20, 20);
 ```
 
-### Create the canvas and its renderer
+The screen appears as soon as you construct it. On desktop, call `start` to keep processing window events after the first draw.
+
+### Layer images
 
 ```haxe
-import js.Browser;
-import vision.ds.CanvasRenderer;
-
-final canvas = Browser.document.createCanvasElement();
-canvas.width = 240;
-canvas.height = 160;
-Browser.document.body.appendChild(canvas);
-
-final renderer = new CanvasRenderer(canvas);
-renderer.draw(image, 20, 20);
+screen.clear(0xFF24344D);
+screen.draw(background);
+screen.draw(badge, 80, 40);
 ```
 
-### Draw a layer over a background
+### Run a frame callback
 
 ```haxe
-renderer.clear();
-renderer.draw(background);
-renderer.draw(badge, 80, 40);
+var x = 0;
+screen.start(() -> {
+	screen.draw(background);
+	screen.draw(badge, x, 40);
+	x = (x + 2) % (screen.width - badge.width + 1);
+});
 ```
 
-### Edit and redraw when clicked
+The browser schedules a callback for the next frame and returns from `start`. On desktop, `start` runs the window loop until the window closes or you stop it.
+
+### Edit pixels inside the loop
 
 ```haxe
-canvas.onclick = _ -> {
-	badge.invert();
-	renderer.clear();
-	renderer.draw(background);
-	renderer.draw(badge, 80, 40);
-};
+var column = 0;
+screen.start(() -> {
+	badge.setPixel(column, 0, Color.WHITE);
+	screen.clear(0xFF24344D);
+	screen.draw(badge, 16, 16);
+	column = (column + 1) % badge.width;
+});
 ```
 
-### Select Canvas 2D for a different canvas
+### Stop after a fixed number of frames
 
 ```haxe
-final previewCanvas = Browser.document.createCanvasElement();
-previewCanvas.width = image.width;
-previewCanvas.height = image.height;
-Browser.document.body.appendChild(previewCanvas);
-
-final previewRenderer = new CanvasRenderer(previewCanvas, false);
-previewRenderer.draw(image);
-previewRenderer.dispose();
+var frames = 0;
+screen.start(() -> {
+	screen.draw(background);
+	screen.draw(badge, frames, 40);
+	if (++frames == 60)
+		screen.stop();
+});
 ```
 
-### Convert to and from a Canvas 2D snapshot
+### Close the screen from a frame callback
 
 ```haxe
-final snapshot = image.toJsCanvas();
-final copy = Image.fromJsCanvas(snapshot);
-Browser.document.body.appendChild(snapshot);
+var frames = 0;
+screen.start(() -> {
+	screen.draw(image);
+	if (++frames == 120)
+		screen.dispose();
+});
 ```
 
-### Attach once and use ordinary Vision calls
-
-Attachment lets the renderer's WebGL context keep this image's pixels on the device. The same calls work when attachment returns false.
+### Open a second drawing area
 
 ```haxe
-renderer.attach(badge);
+final originalScreen = new Screen(24, 32, 180, 120);
+final previewScreen = new Screen(224, 32, 180, 120);
+originalScreen.draw(image);
+previewScreen.drawInverted(image);
+```
+
+### Request the software path
+
+```haxe
+final screen = new Screen(24, 32, 320, 180, {preferGpu: false});
+screen.draw(image);
+```
+
+### Attach an image and use the same Vision calls
+
+Attachment is optional. When the screen supports device-backed images, the eligible whole-image operations can run there. The calls also work when attachment returns false.
+
+```haxe
+screen.attach(badge);
 badge.invert();
 badge.grayscale(true);
 badge.blackAndWhite(140);
-renderer.draw(badge, 80, 40);
+screen.draw(badge, 80, 40);
 ```
 
-### Read a GPU result and edit it again
+### Read an edited pixel and draw again
 
 ```haxe
 final color = badge.getPixel(4, 4);
 badge.setPixel(5, 4, color);
-renderer.draw(badge, 80, 40);
+screen.draw(badge, 80, 40);
 ```
 
-### Keep the image after releasing its texture
+### Keep the image after releasing its device backing
 
 ```haxe
-renderer.detach(badge);
-renderer.dispose();
+screen.detach(badge);
+screen.dispose();
 trace(badge.getPixel(4, 4));
 ```
 
-### Preview inversion while keeping the source
+### Run a filter with the CPU path
 
 ```haxe
-renderer.clear();
-renderer.draw(badge, 16, 20);
-renderer.drawInverted(badge, 112, 20);
-```
-
-### Run an operation with a CPU fallback
-
-Gaussian blur uses the CPU and returns an image. A GPU-backed input can still be passed to it.
-
-```haxe
-renderer.attach(badge);
+screen.attach(badge);
 badge.invert();
 final blurred = badge.gaussianBlur();
-renderer.draw(blurred, 80, 40);
+screen.draw(blurred, 80, 40);
 ```
 
-## Draw in an existing app or a native window
+## Add an image to an existing framework scene
 
-### OpenFL inside a display object
+When you already have a framework-owned scene, use its bitmap adapter to add the image to that scene. A standalone `Screen` owns a separate drawing area.
+
+### OpenFL
 
 ```haxe
 final bitmap = new vision.formats.to.OpenFlBitmap(badge);
@@ -280,46 +292,11 @@ badge.setPixel(5, 5, 0xFFFFAA00);
 bitmap.update(badge);
 ```
 
-### Heaps inside an app
+### Heaps
 
 ```haxe
 final bitmap = new vision.formats.to.HeapsBitmap(badge, s2d);
 bitmap.x = 20;
 badge.invert();
 bitmap.update(badge);
-```
-
-### Draw one native frame
-
-The standalone renderer owns a window. Call `present()` after composing the frame. In an interactive program, keep polling while the window is open.
-
-```haxe
-final window = new vision.ds.NativeImageRenderer(320, 180);
-window.clear(0xFF20304A);
-window.draw(background);
-window.draw(badge, 20, 60);
-window.present();
-```
-
-### Move an image across frames
-
-```haxe
-var x = 0;
-while (window.poll()) {
-	window.clear(0xFF20304A);
-	window.draw(badge, x, 60);
-	if (!window.present())
-		break;
-	x = (x + 2) % (window.width - badge.width + 1);
-	Sys.sleep(1 / 60);
-}
-window.dispose();
-```
-
-### Request the native GDI path
-
-```haxe
-final window = new vision.ds.NativeImageRenderer(320, 180, false);
-trace(window.usesWebGpu); // false
-window.dispose();
 ```

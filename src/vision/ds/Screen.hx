@@ -62,11 +62,11 @@ class Screen {
 		#end
 	}
 
-	/** Clears the screen to the given background color. **/
+	/** Clears the screen to an opaque background color. **/
 	public function clear(color:Color = Color.BLACK):Void {
 		checkOpen();
 		#if (js || (vision_native && (cpp || hl)))
-		renderer.clear(color);
+		renderer.clear(color | 0xFF000000);
 		presentIfReady();
 		#end
 	}
