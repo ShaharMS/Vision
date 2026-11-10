@@ -10,7 +10,7 @@ extern "C" {
 
 typedef struct VisionWindow VisionWindow;
 
-VisionWindow *vision_window_open(int width, int height, bool visible, bool prefer_gpu);
+VisionWindow *vision_window_open(int x, int y, int width, int height, bool visible, bool prefer_gpu);
 void vision_window_close(VisionWindow *window);
 bool vision_window_poll(VisionWindow *window);
 bool vision_window_gpu(VisionWindow *window);

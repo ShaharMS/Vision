@@ -10,6 +10,7 @@ import js.html.webgl.UniformLocation;
 import js.html.webgl.WebGL2RenderingContext;
 import js.lib.Uint8Array;
 import vision.ds.ByteArray;
+import vision.ds.Color;
 import vision.ds.ImageStorage;
 import vision.ds.ImageStorage.ImageOperation;
 import vision.ds.ImageStorage.ImageSurface;
@@ -156,9 +157,10 @@ class WebGlDraw {
 		gl.drawArrays(GL.TRIANGLE_STRIP, 0, 4);
 	}
 
-	public function clear():Void {
+	public function clear(color:Color):Void {
 		gl.bindFramebuffer(GL.FRAMEBUFFER, null);
-		gl.clearColor(0, 0, 0, 0);
+		final alpha = color.alpha / 255;
+		gl.clearColor(color.red * alpha / 255, color.green * alpha / 255, color.blue * alpha / 255, alpha);
 		gl.clear(GL.COLOR_BUFFER_BIT);
 	}
 

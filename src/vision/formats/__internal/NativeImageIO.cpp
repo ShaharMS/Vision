@@ -8,8 +8,11 @@ static VisionWindow *window_pointer(value handle) {
 	return static_cast<VisionWindow *>(val_data(handle));
 }
 
-static value open(value width, value height, value visible, value gpu) {
-	auto window = vision_window_open(val_int(width), val_int(height), val_bool(visible), val_bool(gpu));
+static value open(value *arguments, int count) {
+	if (count != 6)
+		return alloc_null();
+	auto window = vision_window_open(val_int(arguments[0]), val_int(arguments[1]), val_int(arguments[2]), val_int(arguments[3]),
+		val_bool(arguments[4]), val_bool(arguments[5]));
 	return window ? alloc_abstract(vision_window_kind, window) : alloc_null();
 }
 
@@ -53,7 +56,7 @@ static value transform(value data, value size, value offset, value operation, va
 			val_int(offset), val_int(operation), val_int(parameter)));
 }
 
-DEFINE_PRIM(open, 4);
+DEFINE_PRIM_MULT(open);
 DEFINE_PRIM(close, 1);
 DEFINE_PRIM(poll, 1);
 DEFINE_PRIM(gpu, 1);

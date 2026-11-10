@@ -38,6 +38,6 @@ Reuse textures and upload changes before drawing. Resolve the destination contex
 
 ## Implementation and evidence
 
-- [CanvasRenderer](../../src/vision/ds/CanvasRenderer.hx) draws at an offset into a caller-supplied canvas. The renderer reuses one staging image and one texture where applicable. It compares the current pixels on each draw so raw byte writes stay visible and identical pixels skip upload. Changes refresh the full texture.
+- [CanvasRenderer](../../src/vision/formats/__internal/CanvasRenderer.hx) draws at an offset into a caller-supplied canvas. The renderer reuses one staging image and one texture where applicable. It compares the current pixels on each draw so raw byte writes stay visible and identical pixels skip upload. Changes refresh the full texture.
 - From the repository root run `haxe tests/ci/drawing.hxml`, then open [drawing.html](../../tests/ci/drawing.html). The two canvases exercise caller order, source-over alpha, pixel edits and raw byte writes. The page reports `data-result="pass"` after all assertions.
 - Edge headless passed both Canvas 2D and WebGL 2 with SwiftShader. The Canvas 2D case starts with an existing 2D context to exercise fallback. This run verifies drawing behavior through a software WebGL implementation.

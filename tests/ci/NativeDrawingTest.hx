@@ -1,6 +1,6 @@
 import vision.Vision;
 import vision.ds.Image;
-import vision.ds.NativeImageRenderer;
+import vision.formats.__internal.NativeImageRenderer;
 import vision.formats.__internal.NativeImageIO;
 
 class NativeDrawingTest {

@@ -379,41 +379,6 @@ class ImageTools {
 	}
 
 	/**
-		Adds an `Image` to the screen.
-
-		**Currently, this function only works on the web**, and
-		it uses an absolutely positioned canvas element.
-
-		#### Notice - JS Only
-
-		if you want to use this function to add an image to a web page,
-		and also want to use different units than pixels, you can use the `units` parameter.
-
-			addToScreen(image, 50, 20, {xUnits: "vw", yUnits: "vh", zIndex: 1});
-
-		@param image the image to add.
-		@param x the x position of the image.
-		@param y the y position of the image.
-
-		@returns the image object.
-	**/
-	public static function addToScreen(image:Image, x:Int, y:Int, ?units:{?xUnits:String, ?yUnits:String, ?zIndex:String}):Image {
-		#if (!js || nodejs)
-		#else
-		final c = image.toJsCanvas();
-		c.style.position = "absolute";
-		if (units == null) units = {};
-
-		c.style.top = y + (units.yUnits != null ? units.yUnits : "px");
-		c.style.left = x + (units.xUnits != null ? units.xUnits : "px");
-		if (units.zIndex != null) c.style.zIndex = units.zIndex;
-
-		js.Browser.document.body.appendChild(c);
-		#end
-		return image;
-	}
-
-	/**
 		Gets an `Array2D` of all neighboring pixels at `x, y`.
 		
 		The pixels are added to the Array2D from left to right, top to bottom.

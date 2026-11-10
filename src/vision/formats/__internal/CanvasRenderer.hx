@@ -1,4 +1,4 @@
-package vision.ds;
+package vision.formats.__internal;
 
 #if js
 import js.Browser;
@@ -6,12 +6,16 @@ import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
 import js.html.ImageData;
 import vision.Vision;
+import vision.ds.Color;
+import vision.ds.Image;
+import vision.ds.ImageStorage;
 import vision.formats.__internal.BrowserPixels;
 import vision.formats.__internal.WebGlDraw;
 import vision.formats.__internal.WebGlDraw.WebGlSurface;
 import vision.exceptions.VisionException;
 
 /** Draws Vision images in caller order using a dedicated browser canvas. **/
+@:noCompletion
 class CanvasRenderer {
 	public final canvas:CanvasElement;
 	public var usesWebGl(get, never):Bool;
@@ -26,9 +30,9 @@ class CanvasRenderer {
 	var disposed = false;
 
 	/** Prefer WebGL 2 where available. Pass false to request Canvas 2D directly. **/
-	public function new(canvas:CanvasElement, preferWebGl:Bool = true) {
+	public function new(canvas:CanvasElement, preferWebGl:Bool = true, preserve:Bool = false) {
 		this.canvas = canvas;
-		final gl = preferWebGl ? canvas.getContextWebGL2() : null;
+		final gl = preferWebGl ? canvas.getContextWebGL2({preserveDrawingBuffer: preserve}) : null;
 		if (gl != null) {
 			gpu = new WebGlDraw(gl);
 		} else {
@@ -119,10 +123,17 @@ class CanvasRenderer {
 	}
 
 	/** Clears the canvas to transparent before drawing the next frame. **/
-	public function clear():Void {
+	public function clear(color:Color = 0x00000000):Void {
 		checkOpen();
-		if (gpu != null) gpu.clear();
-		else context.clearRect(0, 0, canvas.width, canvas.height);
+		if (gpu != null) {
+			gpu.clear(color);
+		} else {
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			if (color.alpha != 0) {
+				context.fillStyle = 'rgba(${color.red}, ${color.green}, ${color.blue}, ${color.alpha / 255})';
+				context.fillRect(0, 0, canvas.width, canvas.height);
+			}
+		}
 	}
 
 	/** Releases the renderer's backing resources. **/

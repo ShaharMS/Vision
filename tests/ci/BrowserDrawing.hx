@@ -2,12 +2,13 @@ import js.Browser;
 import js.html.CanvasElement;
 import js.html.webgl.GL;
 import js.lib.Uint8Array;
+import js.lib.Promise;
 import js.Syntax;
 import vision.Vision;
-import vision.ds.CanvasRenderer;
+import vision.formats.__internal.CanvasRenderer;
 import vision.ds.WebGpuInverter;
 import vision.ds.Image;
-import vision.tools.ImageTools;
+import vision.ds.Screen;
 
 class BrowserDrawing {
 	static function main() {
@@ -16,7 +17,7 @@ class BrowserDrawing {
 			testDrawing(true);
 			testAttachedImage();
 			testExistingCanvasApi();
-			WebGpuInverter.create().then(inverter -> {
+			testScreen(false).then(_ -> testScreen(true)).then(_ -> WebGpuInverter.create()).then(inverter -> {
 				if (inverter == null) {
 					Browser.document.body.setAttribute("data-webgpu", "unavailable");
 					pass();
@@ -55,11 +56,38 @@ class BrowserDrawing {
 		if (converted.width != image.width
 			|| converted.height != image.height
 			|| converted.exportToBytes().compare(image.exportToBytes()) != 0) throw "Canvas conversion changed the image";
-		final result = ImageTools.addToScreen(image, 3, 4);
-		final screen:CanvasElement = cast Browser.document.body.lastElementChild;
-		if (result != image || screen.style.left != "3px" || screen.style.top != "4px") throw "addToScreen did not preserve the image or its position";
-		expectPixel(screen, false, 1, 2, [18, 52, 86, 255]);
-		screen.remove();
+	}
+
+	static function testScreen(preferGpu:Bool):Promise<Bool> {
+		return new Promise((resolve, reject) -> {
+			final screen = new Screen(3, 4, 5, 6, {preferGpu: preferGpu});
+			final canvas:CanvasElement = cast Browser.document.body.lastElementChild;
+			final image = new Image(1, 1, 0xFF123456);
+			var frames = 0;
+			if (canvas.style.left != "3px" || canvas.style.top != "4px" || canvas.width != 5 || canvas.height != 6)
+				throw "Screen did not use the requested geometry";
+			final webGl = preferGpu && canvas.getContextWebGL2() != null;
+			screen.draw(image, 1, 2);
+			screen.start(() -> {
+				try {
+					frames++;
+					if (frames == 1) {
+						expectPixel(canvas, webGl, 1, 2, [18, 52, 86, 255]);
+						screen.draw(new Image(1, 1, 0xFFFFAA44), 3, 4);
+						return;
+					}
+					expectPixel(canvas, webGl, 1, 2, [18, 52, 86, 255]);
+					expectPixel(canvas, webGl, 3, 4, [255, 170, 68, 255]);
+					screen.stop();
+					screen.dispose();
+					if (canvas.parentElement != null) throw "Disposing Screen left its canvas on the page";
+					resolve(true);
+				} catch (error:Dynamic) {
+					screen.dispose();
+					reject(error);
+				}
+			});
+		});
 	}
 
 	static function testAttachedImage():Void {

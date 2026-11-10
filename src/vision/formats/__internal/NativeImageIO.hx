@@ -15,7 +15,7 @@ package vision.formats.__internal;
 	#end
 class NativeImageIO {
 	#if hl
-	public static function open(width:Int, height:Int, visible:Bool, preferGpu:Bool):NativeWindow
+	public static function open(x:Int, y:Int, width:Int, height:Int, visible:Bool, preferGpu:Bool):NativeWindow
 		return null;
 
 	public static function close(window:NativeWindow):Void {}
@@ -37,7 +37,7 @@ class NativeImageIO {
 	public static function transform(bytes:NativeBytes, length:Int, offset:Int, operation:Int, value:Int):Bool
 		return false;
 	#else
-	public static final open:(Int, Int, Bool, Bool) -> NativeWindow = cpp.Lib.load("vision_native", "open", 4);
+	public static final open:(Int, Int, Int, Int, Bool, Bool) -> NativeWindow = cpp.Lib.load("vision_native", "open", -1);
 	public static final close:NativeWindow->Void = cpp.Lib.load("vision_native", "close", 1);
 	public static final poll:NativeWindow->Bool = cpp.Lib.load("vision_native", "poll", 1);
 	public static final gpu:NativeWindow->Bool = cpp.Lib.load("vision_native", "gpu", 1);

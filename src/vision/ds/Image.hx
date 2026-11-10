@@ -72,8 +72,8 @@ abstract Image(ImageStorage) {
 		return this.surface != null && this.surface.isAvailable();
 	}
 
-	@:allow(vision.ds.CanvasRenderer)
-	@:allow(vision.ds.NativeImageRenderer)
+	@:allow(vision.formats.__internal.CanvasRenderer)
+	@:allow(vision.formats.__internal.NativeImageRenderer)
 	@:allow(vision.formats.__internal.BrowserPixels)
 	inline function storage():ImageStorage return this;
 

@@ -2,8 +2,8 @@
 #include <hl.h>
 #include "NativeImageIO.h"
 
-HL_PRIM VisionWindow *HL_NAME(open)(int width, int height, bool visible, bool gpu) {
-	return vision_window_open(width, height, visible, gpu);
+HL_PRIM VisionWindow *HL_NAME(open)(int x, int y, int width, int height, bool visible, bool gpu) {
+	return vision_window_open(x, y, width, height, visible, gpu);
 }
 
 HL_PRIM void HL_NAME(close)(VisionWindow *window) {
@@ -35,7 +35,7 @@ HL_PRIM bool HL_NAME(transform)(vbyte *bytes, int length, int offset, int operat
 }
 
 #define _WINDOW _ABSTRACT(vision_window)
-DEFINE_PRIM(_WINDOW, open, _I32 _I32 _BOOL _BOOL);
+DEFINE_PRIM(_WINDOW, open, _I32 _I32 _I32 _I32 _BOOL _BOOL);
 DEFINE_PRIM(_VOID, close, _WINDOW);
 DEFINE_PRIM(_BOOL, poll, _WINDOW);
 DEFINE_PRIM(_BOOL, gpu, _WINDOW);

@@ -225,7 +225,7 @@ static bool present_gpu(VisionWindow *window) {
 }
 #endif
 
-VisionWindow *vision_window_open(int width, int height, bool visible, bool prefer_gpu) {
+VisionWindow *vision_window_open(int x, int y, int width, int height, bool visible, bool prefer_gpu) {
 	if (width <= 0 || height <= 0 || width > 16384 || height > 16384)
 		return NULL;
 	VisionWindow *window = calloc(1, sizeof(*window));
@@ -239,7 +239,7 @@ VisionWindow *vision_window_open(int width, int height, bool visible, bool prefe
 		RECT bounds = {0, 0, width, height};
 		AdjustWindowRect(&bounds, style, FALSE);
 		window->hwnd = CreateWindowExW(0, L"STATIC", L"Vision", style,
-			CW_USEDEFAULT, CW_USEDEFAULT, bounds.right - bounds.left, bounds.bottom - bounds.top,
+			x, y, bounds.right - bounds.left, bounds.bottom - bounds.top,
 			NULL, NULL, GetModuleHandleW(NULL), NULL);
 	}
 	if (!window->hwnd) {
@@ -340,42 +340,4 @@ bool vision_window_present(VisionWindow *window) {
 		0, 0, window->width, window->height, window->frame, &info, DIB_RGB_COLORS, SRCCOPY);
 	ReleaseDC(window->hwnd, dc);
 	return result != GDI_ERROR && result != 0;
-}
-
-// These selectors match ImageStorage.ImageOperation.
-enum ImageOperation { INVERT = 1, SIMPLE_GRAYSCALE, BLACK_AND_WHITE };
-
-bool vision_image_transform(uint8_t *argb, int length, int offset, int operation, int value) {
-	if (!argb || offset < 0 || offset > length || (length - offset) % 4 != 0)
-		return false;
-	if (operation == INVERT) {
-		for (int i = offset; i < length; i += 4) {
-			argb[i] = 255;
-			argb[i + 1] ^= 255;
-			argb[i + 2] ^= 255;
-			argb[i + 3] ^= 255;
-		}
-		return true;
-	}
-	if (operation == SIMPLE_GRAYSCALE) {
-		for (int i = offset; i < length; i += 4) {
-			const uint8_t gray = (uint8_t)((argb[i + 1] + argb[i + 2] + argb[i + 3]) / 3);
-			argb[i] = 255;
-			argb[i + 1] = gray;
-			argb[i + 2] = gray;
-			argb[i + 3] = gray;
-		}
-		return true;
-	}
-	if (operation == BLACK_AND_WHITE) {
-		for (int i = offset; i < length; i += 4) {
-			const uint8_t level = (argb[i + 1] > value || argb[i + 2] > value || argb[i + 3] > value) ? 255 : 0;
-			argb[i] = 255;
-			argb[i + 1] = level;
-			argb[i + 2] = level;
-			argb[i + 3] = level;
-		}
-		return true;
-	}
-	return false;
 }

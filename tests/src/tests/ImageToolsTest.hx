@@ -207,36 +207,6 @@ class ImageToolsTest extends utest.Test {
 		CollectionAssertions.bytes([66, 77], result.getBytes(0, 2));
 	}
 
-	@:visionTestId("vision.tools.ImageTools.addToScreen#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_addToScreen__default() {
-		var image = Factories.gradientImage(3, 3);
-		var result = ImageTools.addToScreen(image, 1, 1, null);
-		Assert.equals(cast image, cast result);
-		ImageAssertions.hasDimensions(result, 3, 3);
-	}
-
-	@:visionTestId("vision.tools.ImageTools.addToScreen#tiny")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_addToScreen__tiny() {
-		var image = Factories.checkerboardImage(2, 2, 1);
-		var result = ImageTools.addToScreen(image, 2, 3, null);
-		Assert.equals(cast image, cast result);
-		ImageAssertions.pixelEquals(result, 1, 1, 0xFFFFFFFF);
-	}
-
-	@:visionTestId("vision.tools.ImageTools.addToScreen#checkerboard")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_addToScreen__checkerboard() {
-		var image = labeledImage();
-		var result = ImageTools.addToScreen(image, 0, 0, {xUnits: "px", yUnits: "px", zIndex: "5"});
-		Assert.equals(cast image, cast result);
-		ImageAssertions.pixelEquals(result, 2, 0, 0xFF000033);
-	}
-
 	@:visionTestId("vision.tools.ImageTools.getNeighborsOfPixel#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")

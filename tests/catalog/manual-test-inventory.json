@@ -1314,7 +1314,6 @@
                                                                                                                                         "loadFromURL",
                                                                                                                                         "exportToBytes",
                                                                                                                                         "exportToFile",
-                                                                                                                                        "addToScreen",
                                                                                                                                         "getNeighborsOfPixel",
                                                                                                                                         "getNeighborsOfPixelIter",
                                                                                                                                         "grayscalePixel",
