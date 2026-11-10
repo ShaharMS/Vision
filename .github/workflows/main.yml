@@ -324,4 +324,5 @@ jobs:
             xvfb-run -a ./ScreenDrawingTest
           else
             SDL_VIDEODRIVER=dummy ./ScreenDrawingTest
+            SDL_VIDEODRIVER=cocoa ./ScreenDrawingTest
           fi

@@ -2,7 +2,7 @@
 
 ## Status
 
-🔄 In progress
+✅ All steps completed
 
 Use one public drawing destination for a browser canvas or a standalone desktop window. ImageTools drops its global drawing helper. The existing graphics classes become internal.
 
