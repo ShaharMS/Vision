@@ -28,4 +28,4 @@ mkdir -p "$output"
 "${CC:-cc}" -O2 -std=c11 -fPIC "${link[@]}" -I"$hashlink" "$source/NativeImageIO.hl.c" \
     "$output/vision_window.o" "$output/vision_operations.o" "${sdl_link[@]}" -o "$output/vision_native.hdll"
 "${CXX:-c++}" -O2 -std=c++11 -fPIC "${link[@]}" -I"$hxcpp/include" "$source/NativeImageIO.cpp" \
-    "$output/vision_window.o" "$output/vision_operations.o" "${sdl_link[@]}" "${system_link[@]}" -o "$output/vision_native.ndll"
+    "$output/vision_window.o" "$output/vision_operations.o" "${sdl_link[@]}" ${system_link[@]+"${system_link[@]}"} -o "$output/vision_native.ndll"
