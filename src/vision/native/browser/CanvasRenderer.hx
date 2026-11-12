@@ -1,4 +1,4 @@
-package native.browser;
+package vision.native.browser;
 
 #if js
 import js.Browser;
@@ -9,9 +9,9 @@ import vision.Vision;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.ImageStorage;
-import native.browser.BrowserPixels;
-import native.browser.WebGlRenderer;
-import native.browser.WebGlRenderer.WebGlSurface;
+import vision.native.browser.BrowserPixels;
+import vision.native.browser.WebGlRenderer;
+import vision.native.browser.WebGlRenderer.WebGlSurface;
 import vision.exceptions.VisionException;
 
 /** Draws Vision images in caller order using a dedicated browser canvas. **/

@@ -1,4 +1,4 @@
-package native.hashlink.windows;
+package vision.native.hashlink.windows;
 
 #if (hl && windows && vision_hashlink_screen)
 typedef HashLinkWindow = hl.Abstract<"vision_screen_window">;

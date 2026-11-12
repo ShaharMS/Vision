@@ -1,18 +1,18 @@
-package native.windows;
+package vision.native.windows;
 
 #if (windows && (cpp || (hl && vision_hashlink_screen)))
 	#if hl
-	import native.hashlink.windows.HashLinkWindows;
-	import native.hashlink.windows.HashLinkWindows.HashLinkWindow;
+	import vision.native.hashlink.windows.HashLinkWindows;
+	import vision.native.hashlink.windows.HashLinkWindows.HashLinkWindow;
 	#else
 	import cpp.Native;
 	import cpp.NativeArray;
 	import cpp.Star;
-	import native.windows.Win32.WinBitmapHeader;
-	import native.windows.Win32.WinBitmapInfo;
-	import native.windows.Win32.WinMessage;
-	import native.windows.Win32.WinRect;
-	import native.windows.Win32.WinWindow;
+	import vision.native.windows.Win32.WinBitmapHeader;
+	import vision.native.windows.Win32.WinBitmapInfo;
+	import vision.native.windows.Win32.WinMessage;
+	import vision.native.windows.Win32.WinRect;
+	import vision.native.windows.Win32.WinWindow;
 	#end
 import vision.ds.Color;
 import vision.ds.Image;

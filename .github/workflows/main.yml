@@ -353,7 +353,7 @@ jobs:
         shell: pwsh
         run: |
           $sdk = $env:VISION_HASHLINK_ROOT
-          $source = (Resolve-Path src/native/hashlink/windows/screen.c).Path
+          $source = (Resolve-Path src/vision/native/hashlink/windows/screen.c).Path
           $env:VISION_TESTS = 'ScreenTest'
           New-Item -ItemType Directory -Path bin/native-drawing/hl -Force | Out-Null
           haxe -cp src -cp tests/src -lib utest -main Main --hl bin/native-drawing/hl/tests.hl -D windows -D vision_hashlink_screen -D hl-ver=1.16.0

@@ -1,7 +1,7 @@
 import js.Browser;
 import vision.Vision;
-import native.browser.CanvasRenderer;
-import native.browser.WebGpuInverter;
+import vision.native.browser.CanvasRenderer;
+import vision.native.browser.WebGpuInverter;
 import vision.ds.Image;
 
 class BrowserInversionBenchmark {

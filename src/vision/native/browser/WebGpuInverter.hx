@@ -1,4 +1,4 @@
-package native.browser;
+package vision.native.browser;
 
 #if js
 import haxe.io.Bytes;

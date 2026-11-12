@@ -4,7 +4,7 @@ import vision.ds.Image;
 import vision.ds.ByteArray;
 import vision.exceptions.InvalidHeapsPixelFormat;
 #if js
-import native.browser.CanvasRenderer;
+import vision.native.browser.CanvasRenderer;
 #end
 
 @:access(vision.ds.Image)

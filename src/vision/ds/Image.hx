@@ -72,8 +72,8 @@ abstract Image(ImageStorage) {
 		return this.surface != null && this.surface.isAvailable();
 	}
 
-	@:allow(native.browser.CanvasRenderer)
-	@:allow(native.browser.BrowserPixels)
+	@:allow(vision.native.browser.CanvasRenderer)
+	@:allow(vision.native.browser.BrowserPixels)
 	inline function storage():ImageStorage return this;
 
 	@:allow(vision.Vision)
