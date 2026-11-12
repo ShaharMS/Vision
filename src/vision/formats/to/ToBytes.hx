@@ -3,6 +3,7 @@ package vision.formats.to;
 import vision.ds.ByteArray;
 import vision.ds.Image;
 import vision.exceptions.LibraryRequired;
+import vision.formats._internal.images.Avif;
 import vision.formats._internal.images.Heic;
 import vision.formats._internal.images.Jpeg;
 import vision.formats._internal.images.Webp;
@@ -108,5 +109,16 @@ import vision.ds.ImageAnimation;
     **/
     public function heic(image:Image):ByteArray {
         return Heic.write(image);
+    }
+
+    /**
+        Encodes an opaque AVIF still image with 8-bit RGB palettes.
+
+        @param image The image to encode. The alpha channel is discarded.
+        @return The complete AVIF file
+        @throws Av1BitstreamError If the image exceeds the supported AV1 picture dimensions
+    **/
+    public function avif(image:Image):ByteArray {
+        return Avif.write(image);
     }
 }

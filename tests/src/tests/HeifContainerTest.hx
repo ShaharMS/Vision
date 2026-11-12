@@ -9,12 +9,40 @@ import vision.formats.to.ToBytes;
 import vision.formats.from.FromBytes;
 import vision.formats._internal.images.heic.hevc.HevcConfiguration;
 import vision.formats._internal.images.heic.hevc.HevcNalReader;
+import vision.formats._internal.images.avif.av1.Av1ObuReader;
+import vision.formats._internal.images.avif.av1.Av1SequenceHeader;
+import vision.formats._internal.images.avif.av1.Av1StillFrameHeader;
 import vision.formats._internal.images.heif.HeifContainer;
 import vision.formats._internal.images.heif.HeifContainer.HeifCodedImage;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class HeifContainerTest extends utest.Test {
+	@:visionTestId("vision.formats.to.ToBytes.avif#palettePicture")
+	function test_avif__writesAnRgbPaletteStillPicture():Void {
+		final image = new Image(17, 15, 0xff45b378);
+		image.setPixel(16, 14, 0xff838383);
+		final bytes = new ToBytes().avif(image);
+		final item = HeifContainer.readPrimary(bytes);
+		Assert.equals("av01", item.type);
+		Assert.equals(17, item.width);
+		Assert.equals(15, item.height);
+		final reader = new Av1ObuReader(item.data, 0, item.data.length);
+		final sequenceUnit = reader.next();
+		Assert.equals(1, sequenceUnit.type);
+		final sequence = new Av1SequenceHeader(item.data, sequenceUnit.offset, sequenceUnit.length);
+		Assert.equals(0, sequence.matrixCoefficients);
+		Assert.isFalse(sequence.subsamplingX);
+		Assert.isFalse(sequence.subsamplingY);
+		final frameUnit = reader.next();
+		Assert.equals(6, frameUnit.type);
+		final frame = new Av1StillFrameHeader(sequence, item.data, frameUnit.offset, frameUnit.length, true);
+		Assert.isTrue(frame.screenContent);
+		Assert.isTrue(frame.lossless);
+		Assert.isTrue(frame.tileGroupOffset < frameUnit.offset + frameUnit.length);
+		Assert.isNull(reader.next());
+	}
+
 	@:visionTestId("vision.formats.to.ToBytes.heic#oddDimensions")
 	function test_heic__writesCodedPictureAndCleanAperture():Void {
 		final image = new Image(17, 15);
