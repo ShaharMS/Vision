@@ -14,6 +14,8 @@ class ManualSuites {
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("Av1BitstreamTest")) runner.addCase(new Av1BitstreamTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("HevcCabacTest")) runner.addCase(new HevcCabacTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ArrayToolsTest")) runner.addCase(new ArrayToolsTest(), "setup", "teardown", "test", casePattern);
 		// Neko cannot load these image-heavy test modules: its VM rejects their generated function scope before tests start.
 		// They remain part of the full suite on every other target.
