@@ -13,12 +13,37 @@ import vision.formats._internal.images.avif.av1.Av1PartitionTree.Av1Partition;
 import vision.formats._internal.images.avif.av1.Av1Palette;
 import vision.formats._internal.images.avif.av1.Av1Dequantization;
 import vision.formats._internal.images.avif.av1.Av1InverseTransform;
+import vision.formats._internal.images.avif.av1.Av1Coefficients;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1Coefficients.read#signedSparseBlock")
+	function test_read__decodesSparseCoefficientsAndGolombExtension():Void {
+		final writer = new Av1SymbolEncoder();
+		writer.writeSymbol(0, [31849, 32768, 0]); // Nonzero 4x4 luma transform.
+		writer.writeSymbol(2, [840, 1039, 1980, 4895, 32768, 0]); // EOB at index 2.
+		writer.writeSymbol(0, [16961, 32768, 0]);
+		writer.writeSymbol(0, [29600, 31446, 32768, 0]); // Level one at scan position 2.
+		writer.writeSymbol(0, [18082, 29741, 31877, 32768, 0]);
+		writer.writeSymbol(3, [4034, 8930, 12727, 32768, 0]);
+		final extension = [12536, 19601, 23789, 32768, 0];
+		for (_ in 0...4) writer.writeSymbol(3, extension);
+		writer.writeSymbol(1, [16000, 32768, 0]); // Negative DC.
+		writer.writeLiteral(3, 3); // Golomb-coded value three.
+		writer.writeLiteral(0, 1);
+		final bytes = writer.finish();
+		final symbols = new Av1SymbolDecoder(bytes, 0, bytes.length);
+		final block = new Av1Coefficients(symbols, 0).read(4, 4, 0, 0, 0, () -> TwoDimensional);
+		Assert.equals(3, block.endOfBlock);
+		Assert.equals(18, block.cumulativeLevel);
+		Assert.equals(1, block.dcCategory);
+		Assert.equals("-17,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0", block.values.join(","));
+		symbols.finish();
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1Dequantization.dequantize#scaling")
 	function test_dequantize__scalesClipsAndKeepsCoefficientSign():Void {
 		final coefficients = [for (_ in 0...16) 0];
