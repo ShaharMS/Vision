@@ -30,6 +30,15 @@ class HevcCabacTest extends utest.Test {
 		Assert.equals(1, geometry.chromaFormat);
 		Assert.equals(8, geometry.lumaDepth);
 		Assert.equals(8, geometry.chromaDepth);
+		Assert.equals(3, geometry.minCodingBlockLog2);
+		Assert.equals(6, geometry.ctbLog2);
+		Assert.equals(2, geometry.minTransformBlockLog2);
+		Assert.equals(5, geometry.maxTransformBlockLog2);
+		Assert.equals(1, geometry.interTransformDepth);
+		Assert.equals(1, geometry.intraTransformDepth);
+		Assert.isFalse(geometry.scalingListsEnabled);
+		Assert.isTrue(geometry.sampleAdaptiveOffset);
+		Assert.isNull(geometry.pcm);
 		ExceptionAssertions.throwsType(() -> new HevcConfiguration(bytes.sub(0, bytes.length - 1)), HevcBitstreamError);
 		ExceptionAssertions.throwsType(() -> new HevcSequenceGeometry(configuration.units[1].rbsp.sub(0, 16)), HevcBitstreamError);
 	}
