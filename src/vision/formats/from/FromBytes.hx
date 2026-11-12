@@ -102,7 +102,7 @@ import vision.ds.ByteArray;
     }
 
     /**
-        Decodes an opaque AVIF still image using AV1 RGB palettes.
+        Decodes an opaque AVIF still image with AV1 intra prediction.
 
         @param bytes The complete AVIF file
         @return The decoded image

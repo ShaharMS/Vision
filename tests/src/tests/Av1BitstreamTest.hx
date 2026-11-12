@@ -17,12 +17,32 @@ import vision.formats._internal.images.avif.av1.Av1Coefficients;
 import vision.formats._internal.images.avif.av1.Av1IntraPrediction;
 import vision.formats._internal.images.avif.av1.Av1IntraPrediction.Av1IntraEdges;
 import vision.formats._internal.images.avif.av1.Av1IntraPicture;
+import vision.formats._internal.images.avif.av1.Av1IntraBlockReader;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1IntraBlockReader.read#rectangularTransformDepth")
+	function test_read__reducesOnlyTheLongAxisOfARectangularTransform():Void {
+		final sequenceBytes = Bytes.ofHex("1821e81a8c0040");
+		final sequence = new Av1SequenceHeader(sequenceBytes, 0, sequenceBytes.length);
+		final frameBytes = Bytes.ofHex("1230000014");
+		final frame = new Av1StillFrameHeader(sequence, frameBytes, 0, frameBytes.length, true);
+		final writer = new Av1SymbolEncoder();
+		writer.writeSymbol(0, [31671, 32768, 0]); // Not skipped.
+		writer.writeSymbol(0, [15588, 17027, 19338, 20218, 20682, 21110, 21825, 23244, 24189, 28165, 29093, 30466, 32768, 0]);
+		writer.writeSymbol(0, [9394, 32768, 0]); // No filter intra for this 16x8 block.
+		writer.writeSymbol(1, [12272, 30172, 32768, 0]);
+		final bytes = writer.finish();
+		final symbols = new Av1SymbolDecoder(bytes, 0, bytes.length);
+		final block = new Av1IntraBlockReader(symbols, sequence, frame, 0, 0).read(0, 0, 16, 8, false);
+		Assert.equals(8, block.transformWidth);
+		Assert.equals(8, block.transformHeight);
+		symbols.finish();
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1IntraPicture.decode#libaomStill")
 	function test_decode__reconstructsAnExternalIntraPicture():Void {
 		// libaom still frame from an 8x8 photograph crop, with loop filters disabled.

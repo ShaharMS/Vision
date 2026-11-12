@@ -107,8 +107,9 @@ class Av1IntraBlockReader {
 				+ (leftBlock != null && leftBlock.transformHeight >= transformHeight ? 1 : 0);
 			final levels = symbols.readSymbol(depth[maxDepth[block] - 1][context]);
 			for (_ in 0...levels) {
-				transformWidth = max(4, transformWidth >> 1);
-				transformHeight = max(4, transformHeight >> 1);
+				final originalWidth = transformWidth;
+				if (originalWidth >= transformHeight) transformWidth >>= 1;
+				if (transformHeight >= originalWidth) transformHeight >>= 1;
 			}
 		}
 		final result:Av1IntraBlock = {
