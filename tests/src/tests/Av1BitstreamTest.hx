@@ -8,12 +8,35 @@ import vision.formats._internal.images.avif.av1.Av1ObuReader;
 import vision.formats._internal.images.avif.av1.Av1LosslessTransform;
 import vision.formats._internal.images.avif.av1.Av1SequenceHeader;
 import vision.formats._internal.images.avif.av1.Av1StillFrameHeader;
+import vision.formats._internal.images.avif.av1.Av1PartitionTree;
+import vision.formats._internal.images.avif.av1.Av1PartitionTree.Av1Partition;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1PartitionTree.decode#clippedMixedTree")
+	function test_decode__visitsPartitionLeavesInCodingOrder():Void {
+		final encoder = new Av1SymbolEncoder();
+		final writer = new Av1PartitionTree(0, 0, 20, 14, 64);
+		final written = [];
+		writer.encode(encoder, (x, y, size) -> {
+			if (size > 4 || (size == 4 && y + 2 >= 14)) return Split;
+			if (size == 4 && x == 0 && y == 0) return VerticalB;
+			return None;
+		}, (x, y, width, height) -> written.push('$x:$y:$width:$height'));
+		final bytes = encoder.finish();
+		final decoder = new Av1SymbolDecoder(bytes, 0, bytes.length);
+		final reader = new Av1PartitionTree(0, 0, 20, 14, 64);
+		final decoded = [];
+		reader.decode(decoder, (x, y, width, height) -> decoded.push('$x:$y:$width:$height'));
+		decoder.finish();
+		Assert.equals(written.join(","), decoded.join(","));
+		Assert.equals("0:0:2:4,2:0:2:2,2:2:2:2", decoded.slice(0, 3).join(","));
+		Assert.equals("16:12:2:2,18:12:2:2", decoded.slice(-2).join(","));
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1StillFrameHeader.new#tiledStill")
 	function test_new__readsFrameHeaderAndTileRanges():Void {
 		// Headers extracted from libheif's examples/example.avif.
