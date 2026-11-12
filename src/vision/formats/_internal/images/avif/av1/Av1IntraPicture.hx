@@ -17,7 +17,6 @@ class Av1IntraPicture {
 			|| frame.segments != null || frame.quantizerMatrices != null || frame.deltaQuantizerShift != null
 			|| frame.width > 8192 || frame.height > 8192 || frame.width * 1.0 * frame.height > 8912896)
 			throw new Av1BitstreamError("Unsupported AV1 intra picture parameters.");
-		for (level in frame.loopFilterLevels) if (level != 0) throw new Av1BitstreamError("Unsupported AV1 loop filter.");
 		for (type in frame.restorationTypes) if (type != 0) throw new Av1BitstreamError("Unsupported AV1 loop restoration.");
 		if (frame.cdefStrengths.length > 1) throw new Av1BitstreamError("Unsupported AV1 CDEF index signaling.");
 		for (strength in frame.cdefStrengths)
@@ -46,6 +45,11 @@ class Av1IntraPicture {
 		}
 		final chromaWidth = (frame.width + subX) >> subX;
 		final chromaHeight = (frame.height + subY) >> subY;
+		final levels = frame.loopFilterLevels;
+		final delta = frame.loopFilterDeltas == null ? null : frame.loopFilterDeltas[0];
+		for (plane in 0...planes.length)
+			planes[plane].deblock(plane == 0 ? frame.width : chromaWidth, plane == 0 ? frame.height : chromaHeight,
+				plane != 0, levels[plane == 0 ? 0 : plane + 1], levels[plane == 0 ? 1 : plane + 1], frame.loopFilterSharpness, delta);
 		return [for (i in 0...planes.length) planes[i].crop(i == 0 ? frame.width : chromaWidth, i == 0 ? frame.height : chromaHeight)];
 	}
 
@@ -148,13 +152,15 @@ private class IntraPlane {
 	public final width:Int;
 	public final height:Int;
 	final data:Bytes;
-	final decoded:Bytes;
+	final transformWidths:Bytes;
+	final transformHeights:Bytes;
 
 	public function new(width:Int, height:Int) {
 		this.width = width;
 		this.height = height;
 		data = Bytes.alloc(width * height);
-		decoded = Bytes.alloc((width >> 2) * (height >> 2));
+		transformWidths = Bytes.alloc((width >> 2) * (height >> 2));
+		transformHeights = Bytes.alloc(transformWidths.length);
 	}
 
 	public function crop(width:Int, height:Int):Bytes {
@@ -168,8 +174,16 @@ private class IntraPlane {
 		final bottom = min(y + h, bounds.bottom);
 		for (row in y...bottom) for (column in x...right)
 			data.set(row * width + column, samples[(row - y) * w + column - x]);
-		for (row in (y >> 2)...(bottom >> 2))
-			decoded.fill(row * (width >> 2) + (x >> 2), (right - x) >> 2, 1);
+		for (row in (y >> 2)...(bottom >> 2)) {
+			final offset = row * (width >> 2) + (x >> 2);
+			final length = (right - x) >> 2;
+			transformWidths.fill(offset, length, w);
+			transformHeights.fill(offset, length, h);
+		}
+	}
+
+	public function deblock(width:Int, height:Int, chroma:Bool, vertical:Int, horizontal:Int, sharpness:Int, delta:Null<Int>):Void {
+		Av1LoopFilter.apply(data, this.width, width, height, transformWidths, transformHeights, chroma, vertical, horizontal, sharpness, delta);
 	}
 
 	public function edges(x:Int, y:Int, w:Int, h:Int, bounds:ResidualNeighbors):Av1IntraEdges {
@@ -193,7 +207,7 @@ private class IntraPlane {
 		}];
 	}
 
-	inline function isDecoded(x:Int, y:Int):Bool return decoded.get((y >> 2) * (width >> 2) + (x >> 2)) != 0;
+	inline function isDecoded(x:Int, y:Int):Bool return transformWidths.get((y >> 2) * (width >> 2) + (x >> 2)) != 0;
 	static inline function min(a:Int, b:Int):Int return a < b ? a : b;
 }
 

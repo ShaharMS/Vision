@@ -18,12 +18,27 @@ import vision.formats._internal.images.avif.av1.Av1IntraPrediction;
 import vision.formats._internal.images.avif.av1.Av1IntraPrediction.Av1IntraEdges;
 import vision.formats._internal.images.avif.av1.Av1IntraPicture;
 import vision.formats._internal.images.avif.av1.Av1IntraBlockReader;
+import vision.formats._internal.images.avif.av1.Av1LoopFilter;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1LoopFilter.apply#narrowEdge")
+	function test_apply__filtersOnlyEligibleTransformEdges():Void {
+		final samples = Bytes.alloc(8 * 4);
+		for (y in 0...4) {
+			samples.fill(y * 8, 4, 100);
+			samples.fill(y * 8 + 4, 4, 104);
+		}
+		final sizes = Bytes.ofHex("0404");
+		Av1LoopFilter.apply(samples, 8, 8, 4, sizes, sizes, false, 17, 0, 0, null);
+		Assert.equals("6464656566676868", samples.sub(0, 8).toHex());
+		Av1LoopFilter.apply(samples, 8, 8, 4, Bytes.ofHex("0808"), sizes, false, 17, 0, 0, null);
+		Assert.equals("6464656566676868", samples.sub(0, 8).toHex());
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1IntraBlockReader.read#rectangularTransformDepth")
 	function test_read__reducesOnlyTheLongAxisOfARectangularTransform():Void {
 		final sequenceBytes = Bytes.ofHex("1821e81a8c0040");
