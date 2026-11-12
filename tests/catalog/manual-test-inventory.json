@@ -923,7 +923,13 @@
                                                                                                                                     "laplacianOfGaussianEdgeDetection",
                                                                                                                                     "convolutionRidgeDetection",
                                                                                                                                     "kmeansPosterize",
-                                                                                                                                    "kmeansGroupImageColors"
+                                                                                                                                    "kmeansGroupImageColors",
+                                                                                                                                    "emeansPosterize",
+                                                                                                                                    "emeansGroupImageColors",
+                                                                                                                                    "synthesizePattern",
+                                                                                                                                    "synthesizeTexture",
+                                                                                                                                    "stitchPanorama",
+                                                                                                                                    "rescale"
                                                                                                                             ],
                                                                                     "notes":  "Manual semantic facade suite covers representative public compatibility and delegation invariants while the deeper algorithm expectations remain in the algorithm-specific suites. Hough and Harris wrapper ownership is split across VisionTest, HoughProbabilisticTest, HoughCircleTest, and HarrisTest. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module.",
                                                                                     "status":  "manual",
@@ -1821,6 +1827,7 @@
                                                                                                                                         "drawRect",
                                                                                                                                         "drawQuadraticBezier",
                                                                                                                                         "drawCubicBezier",
+                                                                                                                                        "loadTextFont",
                                                                                                                                         "fillCircle",
                                                                                                                                         "drawCircle",
                                                                                                                                         "fillEllipse",
@@ -1853,7 +1860,7 @@
                                                                                                                                         "next",
                                                                                                                                         "hasNext"
                                                                                                                                 ],
-                                                                                        "notes":  "Manual semantic suite authored under tests/src and maintained by hand. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module.",
+                                                                                        "notes":  "Manual semantic suite authored under tests/src and maintained by hand. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module. Browser text rendering is covered by TextDrawingTest. Font registration is exercised in a local browser probe.",
                                                                                         "status":  "manual",
                                                                                         "sourceFile":  "src/vision/ds/Image.hx",
                                                                                         "members":  [
@@ -1888,6 +1895,7 @@
                                                                                                                         "drawRect",
                                                                                                                         "drawQuadraticBezier",
                                                                                                                         "drawCubicBezier",
+                                                                                                                        "drawText",
                                                                                                                         "fillCircle",
                                                                                                                         "drawCircle",
                                                                                                                         "fillEllipse",
