@@ -6,6 +6,8 @@ import utest.Assert;
 import vision.exceptions.HevcBitstreamError;
 import vision.formats._internal.images.heic.hevc.HevcCabacDecoder;
 import vision.formats._internal.images.heic.hevc.HevcCabacDecoder.HevcCabacContext;
+import vision.formats._internal.images.heic.hevc.HevcConfiguration;
+import vision.formats._internal.images.heic.hevc.HevcSequenceGeometry;
 import vision.formats._internal.images.heic.hevc.HevcNalReader;
 import vision.formats._internal.images.heic.hevc.HevcIntraPrediction;
 import vision.formats._internal.images.heic.hevc.HevcTransform4;
@@ -13,6 +15,25 @@ import vision.formats._internal.images.heic.hevc.HevcTransform4;
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class HevcCabacTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcConfiguration.new#pictureGeometry")
+	function test_new__readsConfigurationAndConformanceCrop():Void {
+		// Decoder configuration from libheif's examples/example.heic.
+		final bytes = Bytes.ofHex("01016000000090000000000078f000fcfdf8f800000f03200001001940010c01ffff016000000300900000030000030078998a02402100010030420101016000000300900000030000030078a0028080359f596662a49126bffc1ab01aac04000003000400000300642022000100074401c172b66240");
+		final configuration = new HevcConfiguration(bytes);
+		Assert.equals(4, configuration.lengthSize);
+		Assert.equals("32,33,34", [for (unit in configuration.units) unit.type].join(","));
+		final geometry = new HevcSequenceGeometry(configuration.units[1].rbsp);
+		Assert.equals(1280, geometry.width);
+		Assert.equals(856, geometry.codedHeight);
+		Assert.equals(854, geometry.height);
+		Assert.equals(2, geometry.cropBottom);
+		Assert.equals(1, geometry.chromaFormat);
+		Assert.equals(8, geometry.lumaDepth);
+		Assert.equals(8, geometry.chromaDepth);
+		ExceptionAssertions.throwsType(() -> new HevcConfiguration(bytes.sub(0, bytes.length - 1)), HevcBitstreamError);
+		ExceptionAssertions.throwsType(() -> new HevcSequenceGeometry(configuration.units[1].rbsp.sub(0, 16)), HevcBitstreamError);
+	}
+
 	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcCabacDecoder.readBin#mixedBins")
 	function test_readBin__handlesContextBypassAndTermination():Void {
 		final bytes = Bytes.ofHex("ff1378ff");
