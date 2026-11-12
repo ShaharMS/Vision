@@ -18,6 +18,11 @@ import vision.ds.Color;
 import vision.ds.Rectangle;
 import vision.ds.ImageView;
 import vision.ds.ImageResizeAlgorithm;
+import vision.ds.specifics.TextOptions;
+import vision.exceptions.VisionException;
+#if js
+import vision.native.browser.BrowserText;
+#end
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
 using vision.tools.MathTools;
@@ -831,20 +836,44 @@ abstract Image(ImageStorage) {
 		if (hasPixel(p3.x, p3.y)) setPixel(p3.x, p3.y, color);
 	}
 
-	// https://github.com/Laerdal/opentype.hx/issues/2
-	// /**
-	// 	Draws a string at position `(x, y)` with font-size `size`.
+	/**
+		Draws shaped text into this image, clipped to its bounds and active view.
 
-	// 	Text drawing starts from the top-left corner of the text.
+		@param x The left edge of each line, or the right edge for right-to-left text
+		@param y The top of the first line
+		@param text The text to draw, with optional line breaks
+		@param options Optional font, direction, color, and line spacing
+		@throws VisionException If text drawing is unavailable on this target
+	**/
+	public function drawText(x:Int, y:Int, text:String, ?options:TextOptions):Void {
+		if (text.length == 0 || width == 0 || height == 0) return;
+		#if js
+		final resolved:TextOptions = options == null ? {} : options;
+		if (!Math.isFinite(resolved.size) || resolved.size <= 0 || !Math.isFinite(resolved.lineHeight)
+			|| resolved.lineHeight < 0 || resolved.weight < 1 || resolved.weight > 1000)
+			throw new VisionException("Text size, line height, or weight is invalid.", "Text Drawing Error");
+		BrowserText.draw(cast this, x, y, text, resolved);
+		#else
+		throw new VisionException("Text drawing requires the browser text backend.", "Text Drawing Error");
+		#end
+	}
 
-	// 	@param x The x coordinate of the top-left corner of the text
-	// 	@param y The y coordinate of the top-left corner of the text
-	// 	@param text The text to draw
-	// 	@param size The font-size to use
-	// **/
-	// public function drawText(x:Int, y:Int, text:String, size:Int) {
-	// 	if (TextDrawer.reportDependencies()) TextDrawer.drawTextOnImage(cast this, x, y, size, text, Resource.getBytes("NotoSans-Regular.ttf"))
-	// }
+	#if js
+	/**
+		Registers a font from bytes for subsequent calls to `drawText()`.
+
+		@param family The name to use in `TextOptions.fontFamily`
+		@param bytes The font data, such as TTF, OTF, or WOFF2
+		@param weight The weight of this face
+		@param italic Whether this face is italic
+		@param features Optional CSS OpenType feature settings, such as `"liga" 1`
+		@return The font family name after the font is loaded
+	**/
+	public static function loadTextFont(family:String, bytes:haxe.io.Bytes, weight:Int = 400, italic:Bool = false,
+		?features:String):js.lib.Promise<String> {
+		return BrowserText.loadFont(family, bytes, weight, italic, features);
+	}
+	#end
 
 	/**
 	 	Fills a circle with the given color:

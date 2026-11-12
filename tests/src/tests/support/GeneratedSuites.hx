@@ -7,6 +7,7 @@ class GeneratedSuites {
 	public static function addCases(runner:Runner, includeTest:String->Bool):Void {
 		#if vision_browser_tests
 		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest());
+		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest());
 		#end
 		#if (vision_browser_tests || (windows && (cpp || (hl && vision_hashlink_screen))))
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest());

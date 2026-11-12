@@ -7,6 +7,7 @@ class ManualSuites {
 	public static function addCases(runner:Runner, includeTest:String->Bool, ?casePattern:EReg):Void {
 		#if vision_browser_tests
 		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest(), "setup", "teardown", "test", casePattern);
 		#end
 		#if (vision_browser_tests || (windows && (cpp || (hl && vision_hashlink_screen))))
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest(), "setup", "teardown", "test", casePattern);
