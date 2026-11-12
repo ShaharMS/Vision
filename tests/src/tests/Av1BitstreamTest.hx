@@ -10,12 +10,38 @@ import vision.formats._internal.images.avif.av1.Av1SequenceHeader;
 import vision.formats._internal.images.avif.av1.Av1StillFrameHeader;
 import vision.formats._internal.images.avif.av1.Av1PartitionTree;
 import vision.formats._internal.images.avif.av1.Av1PartitionTree.Av1Partition;
+import vision.formats._internal.images.avif.av1.Av1Palette;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1Palette.readMap#colorMap")
+	function test_readMap__recoversPaletteSamplesAndIndices():Void {
+		final encoder = new Av1SymbolEncoder();
+		final writer = new Av1Palette();
+		final luma = [15, 17, 250, 253, 255];
+		final cb = [11, 11, 239];
+		final cr = [255, 61, 0];
+		final yMap = Bytes.ofHex("040402020100010102020003");
+		final uvMap = Bytes.ofHex("020100010200");
+		Av1Palette.writeColors(encoder, luma, 8, [15, 18, 250], true);
+		Av1Palette.writeColors(encoder, cb, 8, [50], false);
+		Av1Palette.writeRedDifference(encoder, cr, 8);
+		writer.writeMap(encoder, yMap, 4, 3, luma.length, true);
+		writer.writeMap(encoder, uvMap, 3, 2, cb.length, false);
+		final bytes = encoder.finish();
+		final decoder = new Av1SymbolDecoder(bytes, 0, bytes.length);
+		final reader = new Av1Palette();
+		Assert.equals(luma.join(","), Av1Palette.readColors(decoder, luma.length, 8, [15, 18, 250], true).join(","));
+		Assert.equals(cb.join(","), Av1Palette.readColors(decoder, cb.length, 8, [50], false).join(","));
+		Assert.equals(cr.join(","), Av1Palette.readRedDifference(decoder, cr.length, 8).join(","));
+		Assert.equals(yMap.toHex(), reader.readMap(decoder, 4, 3, luma.length, true).toHex());
+		Assert.equals(uvMap.toHex(), reader.readMap(decoder, 3, 2, cb.length, false).toHex());
+		decoder.finish();
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1PartitionTree.decode#clippedMixedTree")
 	function test_decode__visitsPartitionLeavesInCodingOrder():Void {
 		final encoder = new Av1SymbolEncoder();
