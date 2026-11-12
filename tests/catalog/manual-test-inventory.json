@@ -1859,7 +1859,7 @@
                                                                                                                                         "next",
                                                                                                                                         "hasNext"
                                                                                                                                 ],
-                                                                                        "notes":  "Manual semantic suite authored under tests/src and maintained by hand. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module. Browser text rendering is covered by TextDrawingTest. TextDrawingTest also covers font loading errors.",
+                                                                                        "notes":  "Manual semantic suite authored under tests/src and maintained by hand. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module. Browser text drawing and font errors are covered by TextDrawingTest. Portable outlines are covered by PortableTextTest.",
                                                                                         "status":  "manual",
                                                                                         "sourceFile":  "src/vision/ds/Image.hx",
                                                                                         "members":  [

@@ -80,6 +80,7 @@ class ManualSuites {
 		if (includeTest("ConvChainTest")) runner.addCase(new ConvChainTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("PanoramaTest")) runner.addCase(new PanoramaTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Scale2xTest")) runner.addCase(new Scale2xTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("PortableTextTest")) runner.addCase(new PortableTextTest(), "setup", "teardown", "test", casePattern);
 		#end
 		#end
 

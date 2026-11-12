@@ -60,7 +60,7 @@ class Main {
 
 		function includeTest(name:String):Bool {
 			#if vision_browser_tests
-			return name == "ScreenTest" || name == "WebGpuInverterTest";
+			return name == "ScreenTest" || name == "WebGpuInverterTest" || name == "TextDrawingTest" || name == "PortableTextTest";
 			#else
 			return suiteFilter.length == 0 || suiteFilter.indexOf(name) != -1;
 			#end

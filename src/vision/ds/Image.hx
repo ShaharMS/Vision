@@ -19,6 +19,7 @@ import vision.ds.Rectangle;
 import vision.ds.ImageView;
 import vision.ds.ImageResizeAlgorithm;
 import vision.ds.specifics.TextOptions;
+import vision.algorithms.TextDrawing;
 import vision.exceptions.TextDrawingError;
 #if js
 import vision.native.browser.BrowserText;
@@ -837,27 +838,37 @@ abstract Image(ImageStorage) {
 	}
 
 	/**
-		Draws shaped text into this image, clipped to its bounds and active view.
+		Draws text into this image, clipped to its bounds and active view.
 
-		![Latin ligatures, mixed Arabic and Hebrew, and bold italic text](https://spacebubble.io/vision/docs/mixed-script-text.png)
+		Pass a font from `TextFont.fromBytes()` in `options.font` to draw on any
+		target. Load the desired weight and style as a separate face. On browser
+		pages, omitting the font uses the browser's text engine.
+
+		![Portable rendering of Latin ligatures, Arabic and Hebrew, and a bold italic face](https://spacebubble.io/vision/docs/portable-drawText.png)
 
 		@param x The left edge of each line, or the right edge for right-to-left text
 		@param y The top of the first line
 		@param text The text to draw, with optional line breaks
 		@param options Optional font, direction, color, and line spacing
-		@throws TextDrawingError If text drawing is unavailable on this target
+		@throws TextDrawingError If the options are invalid or a portable font is required
 	**/
 	public function drawText(x:Int, y:Int, text:String, ?options:TextOptions):Void {
 		if (text.length == 0 || width == 0 || height == 0) return;
-		#if js
 		final resolved:TextOptions = options == null ? {} : options;
 		if (!Math.isFinite(resolved.size) || resolved.size <= 0 || !Math.isFinite(resolved.lineHeight)
 			|| resolved.lineHeight < 0 || resolved.weight < 1 || resolved.weight > 1000)
 			throw new TextDrawingError("Text size, line height, or weight is invalid.");
-		BrowserText.draw(cast this, x, y, text, resolved);
-		#else
-		throw new TextDrawingError("Text drawing requires the browser text backend.");
+		if (resolved.font != null) {
+			TextDrawing.draw(cast this, x, y, text, resolved.font, resolved);
+			return;
+		}
+		#if js
+		if (js.Syntax.code("typeof document !== 'undefined'")) {
+			BrowserText.draw(cast this, x, y, text, resolved);
+			return;
+		}
 		#end
+		throw new TextDrawingError("Provide a TextFont in TextOptions.font for portable text drawing.");
 	}
 
 	#if js
