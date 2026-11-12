@@ -78,11 +78,11 @@ class Av1PartitionTree {
 	}
 
 	/** Reads partition symbols and lets the caller decode each coding block before continuing. **/
-	public function decode(symbols:Av1SymbolDecoder, block:(Int, Int, Int, Int) -> Void):Void {
+	public function decode(symbols:Av1SymbolDecoder, block:(Int, Int, Int, Int) -> Void, ?beforeSuperblock:(Int, Int) -> Void):Void {
 		walk((_, _, _, cdf, edge) -> {
 			final symbol:Av1Partition = symbols.readSymbol(cdf);
 			return edge == None ? symbol : symbol == None ? edge : Split;
-		}, block);
+		}, block, beforeSuperblock);
 	}
 
 	/** Writes partitions selected by the caller and visits the resulting coding blocks. **/
@@ -96,11 +96,12 @@ class Av1PartitionTree {
 		}, block);
 	}
 
-	function walk(select:PartitionSelection, block:(Int, Int, Int, Int) -> Void):Void {
+	function walk(select:PartitionSelection, block:(Int, Int, Int, Int) -> Void, ?beforeSuperblock:(Int, Int) -> Void):Void {
 		var y = top;
 		while (y < bottom) {
 			var x = left;
 			while (x < right) {
+				if (beforeSuperblock != null) beforeSuperblock(x, y);
 				visit(x, y, superblock, select, block);
 				x += superblock;
 			}

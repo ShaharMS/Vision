@@ -74,7 +74,8 @@ class Avif {
 		}
 		if (frame == null || frame.width != item.width || frame.height != item.height)
 			throw new Av1BitstreamError("AV1 frame dimensions do not match the primary item.");
-		final planes = frame.screenContent ? Av1PalettePicture.decode(item.data, sequence, frame, tiles)
+		final planes = frame.screenContent && frame.lossless && sequence.matrixCoefficients == 0
+			? Av1PalettePicture.decode(item.data, sequence, frame, tiles)
 			: Av1IntraPicture.decode(item.data, sequence, frame, tiles);
 		return pixels(item.width, item.height, sequence, planes,
 			matrix == null ? sequence.matrixCoefficients : matrix, fullRange == null ? sequence.fullRange : fullRange);

@@ -40,7 +40,7 @@ class Av1InverseTransform {
 		checkKernel(horizontal, widthLog);
 		checkKernel(vertical, heightLog);
 		final rowShift = width == height ? (widthLog < 4 ? widthLog - 2 : 2)
-			: widthLog + heightLog < 6 ? 0 : widthLog + heightLog < 10 ? 1 : 2;
+			: widthLog + heightLog < 6 ? 0 : difference == 2 && (width == 64 || height == 64) ? 2 : 1;
 		final rowLimit = 1 << (depth + 7);
 		final columnLimit = 1 << (depth > 10 ? depth + 5 : 15);
 		final residual = [for (_ in 0...width * height) 0];

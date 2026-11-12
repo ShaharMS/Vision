@@ -37,6 +37,7 @@ class Av1IntraBlockReader {
 	static final fullTransformSet = [9, 0, 10, 11, 3, 1, 2];
 	static final smallTransformSet = [9, 0, 3, 1, 2];
 	static final filterDirections = [0, 1, 2, 6, 0];
+	static final paletteStarts = [31676, 31912, 31823, 32030, 32309, 32265, 32450];
 
 	final symbols:Av1SymbolDecoder;
 	final sequence:Av1SequenceHeader;
@@ -60,6 +61,8 @@ class Av1IntraBlockReader {
 	];
 	final transform1 = copy(Av1IntraBlockTables.transform1);
 	final transform2 = copy(Av1IntraBlockTables.transform2);
+	final lumaPalette = [for (start in paletteStarts) [start, 32768, 0]];
+	final chromaPalette = [32461, 32768, 0];
 
 	public function new(symbols:Av1SymbolDecoder, sequence:Av1SequenceHeader, frame:Av1StillFrameHeader, tileLeft:Int, tileTop:Int) {
 		this.symbols = symbols;
@@ -69,7 +72,7 @@ class Av1IntraBlockReader {
 		this.tileTop = tileTop;
 	}
 
-	/** Reads one block without segmentation, screen-content tools or block-level quantizer deltas. **/
+	/** Reads one block without segmentation, intra block copy or block-level quantizer deltas. **/
 	public function read(x:Int, y:Int, width:Int, height:Int, hasChroma:Bool, ?cdef:Av1Cdef):Av1IntraBlock {
 		final aboveBlock = y > tileTop ? above[x - tileLeft] : null;
 		final leftBlock = x > tileLeft ? left[y - tileTop] : null;
@@ -98,6 +101,12 @@ class Av1IntraBlockReader {
 				alphaV = readAlpha(vSign, uSign);
 			}
 			uvAngle = readAngle(chromaMode, block >= 3);
+		}
+		if (frame.screenContent && block >= 3 && max(width, height) <= 64) {
+			final size = log2(width) + log2(height) - 6;
+			if ((lumaMode == Dc && symbols.readSymbol(lumaPalette[size]) != 0)
+				|| (hasChroma && chromaMode == 0 && symbols.readSymbol(chromaPalette) != 0))
+				throw new Av1BitstreamError("Unsupported palette prediction in a transform-coded AV1 picture.");
 		}
 		final intraFilter = sequence.filterIntra && lumaMode == Dc && max(width, height) <= 32
 			&& symbols.readSymbol(filter[block]) != 0 ? symbols.readSymbol(filterMode) : -1;
@@ -162,6 +171,14 @@ class Av1IntraBlockReader {
 	}
 
 	static function copy(tables:Array<Array<Int>>):Array<Array<Int>> return [for (table in tables) table.copy()];
+	static function log2(value:Int):Int {
+		var bits = 0;
+		while (value > 1) {
+			value >>= 1;
+			bits++;
+		}
+		return bits;
+	}
 	static inline function min(a:Int, b:Int):Int return a < b ? a : b;
 	static inline function max(a:Int, b:Int):Int return a > b ? a : b;
 }
