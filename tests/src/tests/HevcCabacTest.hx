@@ -1,6 +1,8 @@
 package tests;
 
 import haxe.io.Bytes;
+import haxe.io.BytesBuffer;
+import haxe.crypto.Sha256;
 import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.exceptions.HevcBitstreamError;
@@ -9,6 +11,7 @@ import vision.formats._internal.images.heic.hevc.HevcCabacDecoder.HevcCabacConte
 import vision.formats._internal.images.heic.hevc.HevcCabacEncoder;
 import vision.formats._internal.images.heic.hevc.HevcConfiguration;
 import vision.formats._internal.images.heic.hevc.HevcSequenceGeometry;
+import vision.formats._internal.images.heic.hevc.HevcPcmEncoder;
 import vision.formats._internal.images.heic.hevc.HevcNalReader;
 import vision.formats._internal.images.heic.hevc.HevcIntraPrediction;
 import vision.formats._internal.images.heic.hevc.HevcTransform4;
@@ -16,6 +19,25 @@ import vision.formats._internal.images.heic.hevc.HevcTransform4;
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class HevcCabacTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcPcmEncoder.encode#croppedMultiBlock")
+	function test_encode__writesDecodablePcmPicture():Void {
+		final y = Bytes.alloc(34 * 18);
+		final u = Bytes.alloc(y.length >> 2);
+		final v = Bytes.alloc(u.length);
+		for (i in 0...y.length) y.set(i, (i * 13 + (i >> 3)) & 255);
+		for (i in 0...u.length) {
+			u.set(i, (i * 31) & 255);
+			v.set(i, (i * 51 + 17) & 255);
+		}
+		final stream = new BytesBuffer();
+		for (nal in HevcPcmEncoder.encode(34, 18, y, u, v)) {
+			stream.add(Bytes.ofHex("00000001"));
+			stream.add(nal);
+		}
+		// FFmpeg independently decoded this stream to the three original planes.
+		Assert.equals("14aa45917dd66bf64d8185ce3de65317bf575b1f362432fe252660490bd2257f", Sha256.make(stream.getBytes()).toHex());
+	}
+
 	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcCabacEncoder.finish#mixedBins")
 	function test_finish__roundTripsMixedCabacBins():Void {
 		final encoder = new HevcCabacEncoder();
