@@ -75,6 +75,7 @@ class ManualSuites {
 		#if !neko
 		if (includeTest("KMeansTest")) runner.addCase(new KMeansTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("EMeansTest")) runner.addCase(new EMeansTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("PatternSynthesisTest")) runner.addCase(new PatternSynthesisTest(), "setup", "teardown", "test", casePattern);
 		#end
 		#end
 

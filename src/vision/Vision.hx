@@ -10,6 +10,7 @@ import vision.exceptions.Unimplemented;
 import vision.ds.specifics.SimilarityScoringMechanism;
 import vision.algorithms.KMeans;
 import vision.algorithms.EMeans;
+import vision.algorithms.PatternSynthesis;
 import vision.ds.specifics.ColorChannel;
 import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
@@ -1807,5 +1808,22 @@ class Vision {
 	**/
 	public static function emeansGroupImageColors(image:Image, groupCount:Int = 16, epochs:Int = 5):Array<ColorCluster> {
 		return EMeans.getImageColorClusters(image, groupCount, epochs);
+	}
+	/**
+		Generates a new image from overlapping patterns found in a sample.
+
+		Every square patch in the output appears in the sample. Patterns that appear
+		more often in the sample are more likely to be chosen.
+
+		@param sample The image to learn patterns from
+		@param width The output width in pixels
+		@param height The output height in pixels
+		@param patternSize The side length of each square patch
+		@param attempts The maximum number of generation attempts
+		@return A new image assembled from the learned patterns
+		@throws VisionException If the dimensions are invalid or no attempt succeeds
+	**/
+	public static function synthesizePattern(sample:Image, width:Int, height:Int, patternSize:Int = 2, attempts:Int = 8):Image {
+		return PatternSynthesis.synthesize(sample, width, height, patternSize, attempts);
 	}
 }
