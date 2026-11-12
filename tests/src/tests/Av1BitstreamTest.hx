@@ -16,12 +16,29 @@ import vision.formats._internal.images.avif.av1.Av1InverseTransform;
 import vision.formats._internal.images.avif.av1.Av1Coefficients;
 import vision.formats._internal.images.avif.av1.Av1IntraPrediction;
 import vision.formats._internal.images.avif.av1.Av1IntraPrediction.Av1IntraEdges;
+import vision.formats._internal.images.avif.av1.Av1IntraPicture;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1IntraPicture.decode#libaomStill")
+	function test_decode__reconstructsAnExternalIntraPicture():Void {
+		// libaom still frame from an 8x8 photograph crop, with loop filters disabled.
+		final bytes = Bytes.ofHex("0a051808bf6002321818c00000400e1fa9a27418ebaf606eea0b885dabb50ceab4");
+		final units = new Av1ObuReader(bytes, 0, bytes.length);
+		final header = units.next();
+		final sequence = new Av1SequenceHeader(bytes, header.offset, header.length);
+		final frameUnit = units.next();
+		final frame = new Av1StillFrameHeader(sequence, bytes, frameUnit.offset, frameUnit.length, true);
+		final tiles = frame.tiles.readGroup(bytes, frame.tileGroupOffset, bytes.length - frame.tileGroupOffset);
+		final samples = Av1IntraPicture.decode(bytes, sequence, frame, tiles);
+		Assert.equals("665e7d5e7b878fc85f68898e747489b8697979aa99ab9467686766a18a8d8b7b9b9e6a627682776372628f706071896f6d48899a7a3d5d907c545b595b586753", samples[0].toHex());
+		Assert.equals("90909090909090909090909090909090", samples[1].toHex());
+		Assert.equals("7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b", samples[2].toHex());
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1IntraPrediction.predict#directional")
 	function test_predict__projectsReconstructedEdgesAndUpsamples():Void {
 		final edges:Av1IntraEdges = {above: [10, 20, 30, 40, 50, 60, 70, 80], left: [90, 100, 110, 120], corner: 5};
