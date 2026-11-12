@@ -5,6 +5,7 @@ import vision.exceptions.HevcBitstreamError;
 
 /** Adaptive binary arithmetic context for one HEVC syntax element. **/
 @:allow(vision.formats._internal.images.heic.hevc.HevcCabacDecoder)
+@:allow(vision.formats._internal.images.heic.hevc.HevcCabacEncoder)
 @:noCompletion
 class HevcCabacContext {
 	var state:Int;
@@ -25,6 +26,7 @@ class HevcCabacContext {
 
 /** Binary arithmetic decoding for one byte-aligned HEVC CABAC substream. **/
 @:noCompletion
+@:allow(vision.formats._internal.images.heic.hevc.HevcCabacEncoder)
 class HevcCabacDecoder {
 	// H.265 arithmetic decoding probability and transition tables.
 	static final lps = [

@@ -6,6 +6,7 @@ import utest.Assert;
 import vision.exceptions.HevcBitstreamError;
 import vision.formats._internal.images.heic.hevc.HevcCabacDecoder;
 import vision.formats._internal.images.heic.hevc.HevcCabacDecoder.HevcCabacContext;
+import vision.formats._internal.images.heic.hevc.HevcCabacEncoder;
 import vision.formats._internal.images.heic.hevc.HevcConfiguration;
 import vision.formats._internal.images.heic.hevc.HevcSequenceGeometry;
 import vision.formats._internal.images.heic.hevc.HevcNalReader;
@@ -15,6 +16,28 @@ import vision.formats._internal.images.heic.hevc.HevcTransform4;
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class HevcCabacTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcCabacEncoder.finish#mixedBins")
+	function test_finish__roundTripsMixedCabacBins():Void {
+		final encoder = new HevcCabacEncoder();
+		final contexts = [new HevcCabacContext(22, 154), new HevcCabacContext(37, 139)];
+		final bins = [for (i in 0...2048) ((i * i + i * 17) >>> (i % 8)) & 1];
+		for (i in 0...bins.length) {
+			if (i % 5 == 0) encoder.writeTermination(false);
+			if (i % 3 == 0) encoder.writeBypass(bins[i]);
+			else encoder.writeBin(bins[i], contexts[i & 1]);
+		}
+		encoder.writeTermination(true);
+		final bytes = encoder.finish();
+		final decoder = new HevcCabacDecoder(bytes, 0, bytes.length);
+		final decodedContexts = [new HevcCabacContext(22, 154), new HevcCabacContext(37, 139)];
+		for (i in 0...bins.length) {
+			if (i % 5 == 0) Assert.isFalse(decoder.readTermination());
+			Assert.equals(bins[i], i % 3 == 0 ? decoder.readBypass() : decoder.readBin(decodedContexts[i & 1]));
+		}
+		Assert.isTrue(decoder.readTermination());
+		ExceptionAssertions.throwsType(() -> encoder.finish(), HevcBitstreamError);
+	}
+
 	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcConfiguration.new#pictureGeometry")
 	function test_new__readsConfigurationAndConformanceCrop():Void {
 		// Decoder configuration from libheif's examples/example.heic.
