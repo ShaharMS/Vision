@@ -8,16 +8,10 @@ Cross-framework, cross-platform computer vision library for Haxe (`src/vision/`)
 
 | Topic | Location |
 |-------|----------|
-| Workflow (always on) | `.cursor/rules/plan-and-commit-workflow.mdc` |
-| Haxe formatting | `.cursor/rules/haxe-formatting.mdc` |
-| Library code (`src/`) | `.cursor/rules/haxe-library.mdc` |
-| Tests (`tests/`) | `.cursor/rules/haxe-testing.mdc` + `.cursor/skills/vision-tests/SKILL.md` |
-| Active plans | `.cursor/plans/` |
-| Completed plans | `.cursor/realized/` |
-| Iteration / resume state | `.cursor/iterations/` + `.cursor/agent-progress/` |
 | Plan structure & sizing | `.github/PLAN-CONVENTION.md` |
 | Commits & branches | `.github/COMMIT-CONVENTION.md` |
-| Custom agents | `.cursor/agents/` + `.github/AGENT-WORKFLOW.md` |
+
+Keep plans and iteration notes in the system temp directory.
 
 ## Repository layout
 
@@ -53,12 +47,3 @@ Cross-framework, cross-platform computer vision library for Haxe (`src/vision/`)
 | Compile only | `haxe tests/ci/local-ci.hxml -- --compile-only` |
 
 See `tests/ci/README.md` for target selection, env vars, and platform notes.
-
-## Custom agents
-
-| Agent | Use for |
-|-------|---------|
-| `@inquire` | Research + write plans to `.cursor/plans/` |
-| `@implement` | Execute one plan step, verify, commit |
-| `@inspect` | Review diff vs plan + conventions (read-only) |
-| `@iterate` | Autonomous implement → inspect loops |

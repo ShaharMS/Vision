@@ -56,7 +56,7 @@ Run `haxe tests/ci/drawing.hxml` and open [drawing.html](drawing.html) in a brow
 Install hxcpp and utest in the active haxelib repository. Build from the repository root with the Microsoft C++ toolchain available.
 
 ```powershell
-haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
+haxe -cp . -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
 $env:VISION_TESTS = 'ScreenTest'
 ./bin/native-drawing/cpp/Main.exe
 ```

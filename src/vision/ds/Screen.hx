@@ -8,9 +8,9 @@ import vision.exceptions.VisionException;
 import js.Browser;
 import js.lib.Promise;
 import js.Syntax;
-import vision.backend.CanvasRenderer;
+import native.browser.CanvasRenderer;
 #elseif (windows && (cpp || (hl && vision_hashlink_screen)))
-import vision.backend.WindowsRenderer;
+import native.windows.WindowsRenderer;
 #end
 
 /** A drawing destination on a browser page or in a standalone desktop window. **/

@@ -1,6 +1,6 @@
 # Iteration Convention
 
-Active execution state lives under `.cursor/iterations/{iteration-slug}/` so agents can resume without chat memory.
+Active execution state lives under `<temp>/vision/iterations/{iteration-slug}/` so agents can resume without chat memory.
 
 ## Three packet files
 
@@ -16,15 +16,13 @@ Do not create additional packet types for new iterations. Legacy iterations may 
 
 - Slug defaults to the active sub-plan filename without `.md`.
 - Branch defaults to `feature/{slug}` per [COMMIT-CONVENTION.md](COMMIT-CONVENTION.md).
-- Create the directory and three files from [`.cursor/iterations/templates/`](../.cursor/iterations/templates/) before the first code edit.
-- Record the matching `.cursor/agent-progress/{slug}.md` path in `run-ledger.md`.
+- Create the iteration directory and the three packet files before the first code edit.
 
 ## Resume order
 
 1. `run-ledger.md`
 2. Active plan step + parent overview
 3. `implementation-handoff.md` or `review-packet.md` (whichever matches the last transition)
-4. `.cursor/agent-progress/{slug}.md` if present
 
 ## `run-ledger.md`
 

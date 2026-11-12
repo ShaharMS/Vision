@@ -5,13 +5,13 @@ import utest.Assert;
 import utest.Async;
 import vision.Vision;
 import vision.ds.Image;
-import vision.backend.WebGpuInverter;
+import native.browser.WebGpuInverter;
 import tests.support.ImageAssertions;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class WebGpuInverterTest extends utest.Test {
-	@:visionTestId("vision.backend.WebGpuInverter.invert#matchesCpu")
+	@:visionTestId("native.browser.WebGpuInverter.invert#matchesCpu")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	@:timeout(5000)

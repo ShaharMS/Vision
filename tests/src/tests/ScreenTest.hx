@@ -12,7 +12,7 @@ import js.lib.Uint8Array;
 import js.lib.Promise;
 import js.Syntax;
 import vision.Vision;
-import vision.backend.CanvasRenderer;
+import native.browser.CanvasRenderer;
 import vision.ds.Image;
 import vision.ds.Screen;
 #else
@@ -23,7 +23,7 @@ import vision.ds.Screen;
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 @:access(vision.ds.Screen)
-@:access(vision.backend.WindowsRenderer)
+@:access(native.windows.WindowsRenderer)
 class ScreenTest extends utest.Test {
 	#if vision_browser_tests
 	@:visionTestId("vision.ds.Screen.draw#canvas2d")

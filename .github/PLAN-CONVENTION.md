@@ -13,7 +13,7 @@ Plans are the contract between planning and execution. Keep them **small, ordere
 ## File layout
 
 ```
-.cursor/plans/
+<temp>/vision/plans/
   {feature-name}-overview.md
   {feature-name}-1-{short-label}.md
   {feature-name}-2-{short-label}.md
@@ -22,7 +22,6 @@ Plans are the contract between planning and execution. Keep them **small, ordere
 
 - Use **kebab-case** file names.
 - Number sub-plans sequentially.
-- When all sub-plans are done, move overview + sub-plans to `.cursor/realized/` and fix cross-links (`.cursor/plans/` → `.cursor/realized/`).
 
 ## Overview template
 
@@ -39,7 +38,7 @@ Plans are the contract between planning and execution. Keep them **small, ordere
 
 | Order | Plan File | Summary |
 |-------|-----------|---------|
-| 1 | [{feature}-1-{label}.md](.cursor/plans/{feature}-1-{label}.md) | {one line} |
+| 1 | [{feature}-1-{label}.md]({feature}-1-{label}.md) | {one line} |
 
 ## Key Decisions
 
@@ -120,5 +119,5 @@ In [path/to/file.hx](path/to/file.hx):
 
 - One active plan focus at a time.
 - If `{feature}-overview.md` already exists, ask whether to revise, supersede, or abandon before writing.
-- If execution is in flight, read `.cursor/iterations/{slug}/run-ledger.md` and packets before rewriting.
+- If execution is in flight, read `<temp>/vision/iterations/{slug}/run-ledger.md` and packets before rewriting.
 - Write plans to disk in the same turn once scope is clear; do not leave plans only in chat.

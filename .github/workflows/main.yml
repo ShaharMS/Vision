@@ -326,7 +326,7 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           haxelib install utest 1.13.2 --always
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
+          haxe -cp . -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
           exit $LASTEXITCODE
       - name: Run the Screen test
         shell: pwsh
@@ -356,7 +356,7 @@ jobs:
           $source = (Resolve-Path native/hashlink/windows/screen.c).Path
           $env:VISION_TESTS = 'ScreenTest'
           New-Item -ItemType Directory -Path bin/native-drawing/hl -Force | Out-Null
-          haxe -cp src -cp tests/src -lib utest -main Main --hl bin/native-drawing/hl/tests.hl -D windows -D vision_hashlink_screen -D hl-ver=1.16.0
+          haxe -cp . -cp src -cp tests/src -lib utest -main Main --hl bin/native-drawing/hl/tests.hl -D windows -D vision_hashlink_screen -D hl-ver=1.16.0
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           Push-Location bin/native-drawing/hl
           try {

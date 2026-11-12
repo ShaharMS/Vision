@@ -21,8 +21,6 @@ Commits should tell the story of the plan: **one completed sub-plan step → one
 Default: completing one sub-plan produces **exactly one commit** containing:
 
 - All source changes for that step
-- Plan status updates for that step (and parent overview if needed)
-- Iteration packet updates for that pass
 
 Split into multiple commits only when the plan explicitly calls for it or changes are clearly unrelated to the active step.
 
@@ -32,7 +30,7 @@ Split into multiple commits only when the plan explicitly calls for it or change
 <type>(<scope>): <imperative subject ≤72 chars>
 
 <optional body: why, not what>
-Plan: .cursor/plans/{plan-step}.md
+Plan: {plan-step}
 ```
 
 **Types:** `feat`, `fix`, `refactor`, `chore`, `docs`, `style`, `test`
@@ -44,7 +42,7 @@ Plan: .cursor/plans/{plan-step}.md
 ```
 fix(<scope>): address review for <step short title>
 
-Plan: .cursor/plans/{plan-step}.md
+Plan: {plan-step}
 Pass: review follow-up
 ```
 
@@ -60,7 +58,7 @@ Pass: review follow-up
 When `iterate` or delegated `implement` finishes a verified pass:
 
 1. Create or switch to `feature/{iteration-slug}` before the first commit of that iteration.
-2. Stage the step scope + matching packet/plan bookkeeping.
+2. Stage the step scope.
 3. Commit with message per this document.
 4. Push to `origin`.
 5. Record branch, commit hash, and push result in `implementation-handoff.md`.

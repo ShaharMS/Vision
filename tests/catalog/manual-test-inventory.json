@@ -15,9 +15,9 @@
             "deferredMembers": [],
             "notes": "Platform-gated browser and desktop drawing coverage in the shared runner."
         },
-        "vision.backend.WebGpuInverter": {
+        "native.browser.WebGpuInverter": {
             "status": "manual",
-            "sourceFile": "src/vision/backend/WebGpuInverter.hx",
+            "sourceFile": "native/browser/WebGpuInverter.hx",
             "testFile": "tests/src/tests/WebGpuInverterTest.hx",
             "members": ["invert"],
             "deferredMembers": [],
