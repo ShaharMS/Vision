@@ -11,12 +11,61 @@ import vision.formats._internal.images.avif.av1.Av1StillFrameHeader;
 import vision.formats._internal.images.avif.av1.Av1PartitionTree;
 import vision.formats._internal.images.avif.av1.Av1PartitionTree.Av1Partition;
 import vision.formats._internal.images.avif.av1.Av1Palette;
+import vision.formats._internal.images.avif.av1.Av1Dequantization;
+import vision.formats._internal.images.avif.av1.Av1InverseTransform;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1Dequantization.dequantize#scaling")
+	function test_dequantize__scalesClipsAndKeepsCoefficientSign():Void {
+		final coefficients = [for (_ in 0...16) 0];
+		coefficients[0] = -2;
+		coefficients[1] = 3;
+		coefficients[15] = -16384;
+		final matrix = [for (_ in 0...16) 32];
+		matrix[1] = 48;
+		final result = Av1Dequantization.dequantize(coefficients, 4, 4, 8, 1, -1, 0, matrix);
+		Assert.equals(-8, result[0]);
+		Assert.equals(36, result[1]);
+		Assert.equals(-32768, result[15]);
+		final large = [for (_ in 0...32 * 32) 1];
+		Assert.equals(1, Av1Dequantization.dequantize(large, 64, 64, 12, 0, 0, 0)[1023]);
+	}
+
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1InverseTransform.inverse#frequencyImpulse")
+	function test_inverse__reconstructsDctFrequenciesAtAllSizes():Void {
+		for (size in [4, 8, 16, 32, 64]) {
+			final coded = size < 32 ? size : 32;
+			final coefficients = [for (_ in 0...coded * coded) 0];
+			final frequency = (size >> 2) - 1;
+			coefficients[frequency * coded + 1] = 401;
+			final result = Av1InverseTransform.inverse(coefficients, size, size, 8, Dct, Dct);
+			final normalization = size == 4 ? 16 : size == 8 ? 32 : 64;
+			var maxError = 0.0;
+			for (y in 0...size) for (x in 0...size) {
+				final vertical = frequency == 0 ? Math.sqrt(0.5) : Math.cos((y + 0.5) * frequency * Math.PI / size);
+				final expected = Math.round(401 * Math.cos((x + 0.5) * Math.PI / size) * vertical / normalization);
+				maxError = Math.max(maxError, Math.abs(expected - result[y * size + x]));
+			}
+			Assert.isTrue(maxError <= 1);
+		}
+	}
+
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1InverseTransform.inverse#flipAdst")
+	function test_inverse__flipsAdstOutputOnTheSelectedAxis():Void {
+		for (size in [4, 8, 16]) {
+			final coefficients = [for (i in 0...size * size) (i * 37 % 257) - 128];
+			final normal = Av1InverseTransform.inverse(coefficients, size, size, 10, Adst, Adst);
+			final flipped = Av1InverseTransform.inverse(coefficients, size, size, 10, FlipAdst, Adst);
+			final expected = [];
+			for (y in 0...size) for (x in 0...size) expected.push(normal[y * size + size - 1 - x]);
+			Assert.equals(expected.join(","), flipped.join(","));
+		}
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1Palette.readMap#colorMap")
 	function test_readMap__recoversPaletteSamplesAndIndices():Void {
 		final encoder = new Av1SymbolEncoder();
