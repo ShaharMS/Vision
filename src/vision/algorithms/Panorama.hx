@@ -209,7 +209,7 @@ class Panorama {
 		}
 		final width = Math.ceil(right - 1e-6) - Math.floor(left + 1e-6) + 1;
 		final height = Math.ceil(bottom - 1e-6) - Math.floor(top + 1e-6) + 1;
-		if (width <= 0 || height <= 0 || width * 1.0 * height > 64000000)
+		if (width <= 0 || height <= 0 || width * 1.0 * height > 64000000 #if !vision_higher_width_cap || width > 0xffff #end)
 			throw new VisionException("The panorama bounds are too large.", "Panorama Error");
 		final result = new Image(width, height);
 		final startX = Math.floor(left + 1e-6);

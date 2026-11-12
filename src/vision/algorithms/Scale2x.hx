@@ -1,12 +1,14 @@
 package vision.algorithms;
 
 import vision.ds.Image;
+import vision.ds.ImageStorage;
 import vision.exceptions.VisionException;
 
 /** Doubles pixel art using the Scale2x neighborhood rules. **/
 class Scale2x {
 	public static function rescale(image:Image):Image {
-		if (image.width * 1.0 * image.height * 16 > 0x7fffffff || image.width > 0x3fffffff || image.height > 0x3fffffff)
+		if (image.width * 1.0 * image.height * 16 > 0x7fffffff - ImageStorage.PIXEL_OFFSET
+			|| image.width > 0x3fffffff || image.height > 0x3fffffff #if !vision_higher_width_cap || image.width > 0x7fff #end)
 			throw new VisionException("The rescaled image is too large.", "Scale2x Error");
 
 		final result = new Image(image.width * 2, image.height * 2);
