@@ -19,7 +19,7 @@ class Av1LosslessTransform {
 		final result = residual.copy();
 		for (x in 0...4) forwardLine(result, x, 4);
 		for (y in 0...4) forwardLine(result, y * 4, 1);
-		for (i in 0...16) result[i] <<= 2;
+		for (i in 0...16) result[i] *= 4;
 		return result;
 	}
 
