@@ -1414,6 +1414,8 @@ class Vision {
 		the requested spacing and threshold. Use `Harris.computeResponse()` to
 		inspect the scores directly.
 
+		![Detected corners marked on the valve image](https://spacebubble.io/vision/docs/valve-harrisCornerDetection.png)
+
 		@param image The image in which to detect corners
 		@param options Optional settings for scoring and selecting corners
 		@return The corner positions, ordered from strongest to weakest
@@ -1783,6 +1785,8 @@ class Vision {
 		Each distinct RGBA color contributes equally when learning the palette.
 		The resulting image uses the mean color of each group.
 
+		![Original image and eight-color palettes from k-means and e-means](https://spacebubble.io/vision/docs/valve-emeans-comparison.png)
+
 		@param image The image to posterize
 		@param maxColorCount The maximum number of palette colors
 		@param epochs The number of training passes over the distinct colors
@@ -1818,6 +1822,8 @@ class Vision {
 		Every square patch in the output appears in the sample. Patterns that appear
 		more often in the sample are more likely to be chosen.
 
+		![Sample and outputs from the overlapping model and ConvChain](https://spacebubble.io/vision/docs/pattern-synthesis-comparison.png)
+
 		@param sample The image to learn patterns from
 		@param width The output width in pixels
 		@param height The output height in pixels
@@ -1834,6 +1840,8 @@ class Vision {
 
 		The sampler favors square patterns that occur often in the sample and can
 		produce patterns absent from it. Pattern matching wraps around image edges.
+
+		![Sample and outputs from the overlapping model and ConvChain](https://spacebubble.io/vision/docs/pattern-synthesis-comparison.png)
 
 		@param sample The texture to learn from
 		@param width The output width in pixels
@@ -1854,6 +1862,8 @@ class Vision {
 		Photos should have similar scale and orientation. Overlapping pixels are
 		blended, and gaps in the resulting bounds are transparent.
 
+		![Three overlapping newspaper photos stitched into a single image](https://spacebubble.io/vision/docs/newspaper-stitchPanorama.png)
+
 		@param images The ordered photos to stitch
 		@return A new image containing the panorama
 		@throws VisionException If adjacent images cannot be aligned
@@ -1866,6 +1876,8 @@ class Vision {
 
 		Scale2x uses the four neighbors of each pixel to extend diagonal edges.
 		The result uses only colors already present in the source image.
+
+		![Pixel art enlarged using nearest-neighbor and Scale2x](https://spacebubble.io/vision/docs/pixel-art-rescale.png)
 
 		@param image The image to enlarge
 		@return A new image with twice the width and height
