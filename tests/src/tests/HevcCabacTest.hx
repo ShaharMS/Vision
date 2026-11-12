@@ -7,6 +7,8 @@ import vision.exceptions.HevcBitstreamError;
 import vision.formats._internal.images.heic.hevc.HevcCabacDecoder;
 import vision.formats._internal.images.heic.hevc.HevcCabacDecoder.HevcCabacContext;
 import vision.formats._internal.images.heic.hevc.HevcNalReader;
+import vision.formats._internal.images.heic.hevc.HevcIntraPrediction;
+import vision.formats._internal.images.heic.hevc.HevcTransform4;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
@@ -52,5 +54,41 @@ class HevcCabacTest extends utest.Test {
 		final bytes = Bytes.ofHex("06260100000304");
 		final reader = new HevcNalReader(bytes, 0, bytes.length, 1);
 		ExceptionAssertions.throwsType(() -> reader.next(), HevcBitstreamError);
+	}
+	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcIntraPrediction.predict#diagonal")
+	function test_predict__projectsAcrossBothReferenceEdges():Void {
+		final top = [10, 20, 30, 40, 50, 60, 70, 80];
+		final left = [90, 100, 110, 120, 130, 140, 150, 160];
+		final diagonal = HevcIntraPrediction.predict(4, 18, top, left, 85, 8);
+		Assert.equals("85,10,20,30,90,85,10,20,100,90,85,10,110,100,90,85", diagonal.join(","));
+		final positive = HevcIntraPrediction.predict(4, 34, top, left, 85, 8);
+		Assert.equals("20,30,40,50,30,40,50,60,40,50,60,70,50,60,70,80", positive.join(","));
+	}
+
+	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcIntraPrediction.predict#flat")
+	function test_predict__keepsFlatReferencesFlatInEveryMode():Void {
+		final references = [for (_ in 0...8) 731];
+		for (mode in 0...35)
+			for (sample in HevcIntraPrediction.predict(4, mode, references, references, 731, 10, true))
+				Assert.equals(731, sample);
+	}
+
+	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcTransform4.inverse#dst")
+	function test_inverse__matchesIntegerSineTransformVector():Void {
+		final coefficients = [128, 20, -12, 6, -11, 33, 7, -2, 5, 0, -9, 16, 3, -8, 5, -7];
+		final residual = HevcTransform4.inverse(coefficients, 8, true);
+		Assert.equals("1,1,1,0,1,1,1,0,1,1,1,1,0,1,2,2", residual.join(","));
+		final prediction = [for (_ in 0...16) 254];
+		final reconstructed = HevcIntraPrediction.reconstruct(4, prediction, residual, 8);
+		Assert.equals(255, reconstructed[15]);
+		Assert.equals(254, reconstructed[3]);
+	}
+
+	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcTransform4.forward#constant")
+	function test_forward__encodesConstantResidualAsDc():Void {
+		final residual = [for (_ in 0...16) 1];
+		final coefficients = HevcTransform4.forward(residual, 8, false);
+		Assert.equals("128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0", coefficients.join(","));
+		Assert.equals(residual.join(","), HevcTransform4.inverse(coefficients, 8, false).join(","));
 	}
 }

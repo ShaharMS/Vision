@@ -5,6 +5,7 @@ import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.exceptions.Av1BitstreamError;
 import vision.formats._internal.images.avif.av1.Av1ObuReader;
+import vision.formats._internal.images.avif.av1.Av1LosslessTransform;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 
 @:visionMaturity("semantic")
@@ -55,5 +56,21 @@ class Av1BitstreamTest extends utest.Test {
 		final bytes = Bytes.ofHex("0a02aa");
 		final reader = new Av1ObuReader(bytes, 0, bytes.length);
 		ExceptionAssertions.throwsType(() -> reader.next(), Av1BitstreamError);
+	}
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1LosslessTransform.forward#reference")
+	function test_forward__matchesLosslessLiftingVector():Void {
+		final residual = [12, -3, 9, 7, -4, 5, -6, 2, 8, -10, 3, 1, -2, 6, -8, 4];
+		final coefficients = [24, 0, 32, 0, 20, -4, -8, 0, 28, 0, 0, -8, 32, -28, 24, 72];
+		Assert.equals(coefficients.join(","), Av1LosslessTransform.forward(residual, 8).join(","));
+		Assert.equals(residual.join(","), Av1LosslessTransform.inverse(coefficients, 8).join(","));
+	}
+
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1LosslessTransform.reconstruct#sampleRange")
+	function test_reconstruct__addsResidualAndClips():Void {
+		final prediction = [for (i in 0...16) i % 2 == 0 ? 0 : 4095];
+		final residual = [for (i in 0...16) i % 2 == 0 ? -4095 : 4095];
+		final coefficients = Av1LosslessTransform.forward(residual, 12);
+		Assert.equals(residual.join(","), Av1LosslessTransform.inverse(coefficients, 12).join(","));
+		Assert.equals(prediction.join(","), Av1LosslessTransform.reconstruct(prediction, coefficients, 12).join(","));
 	}
 }
