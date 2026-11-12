@@ -3,13 +3,33 @@ package tests;
 import haxe.io.Bytes;
 import tests.support.ExceptionAssertions;
 import utest.Assert;
+import vision.ds.Image;
 import vision.exceptions.HeifContainerError;
+import vision.formats.to.ToBytes;
+import vision.formats._internal.images.heic.hevc.HevcConfiguration;
+import vision.formats._internal.images.heic.hevc.HevcNalReader;
 import vision.formats._internal.images.heif.HeifContainer;
 import vision.formats._internal.images.heif.HeifContainer.HeifCodedImage;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class HeifContainerTest extends utest.Test {
+	@:visionTestId("vision.formats.to.ToBytes.heic#oddDimensions")
+	function test_heic__writesCodedPictureAndCleanAperture():Void {
+		final bytes = new ToBytes().heic(new Image(17, 15));
+		final item = HeifContainer.readPrimary(bytes);
+		Assert.equals("hvc1", item.type);
+		Assert.equals(18, item.width);
+		Assert.equals(16, item.height);
+		Assert.equals("clap", item.properties[4].type);
+		Assert.equals("00000011000000010000000f00000001ffffffff00000002ffffffff00000002", item.properties[4].payload.toHex());
+		final configuration = new HevcConfiguration(item.properties[0].payload);
+		Assert.equals(3, configuration.units.length);
+		final reader = new HevcNalReader(item.data, 0, item.data.length, configuration.lengthSize);
+		Assert.equals(19, reader.next().type);
+		Assert.isNull(reader.next());
+	}
+
 	@:visionTestId("vision.formats._internal.images.heif.HeifContainer#roundTrip")
 	function test_primary__preservesCodedDataAndProperties():Void {
 		for (type in ["av01", "hvc1"]) {

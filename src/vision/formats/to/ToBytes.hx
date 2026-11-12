@@ -3,6 +3,7 @@ package vision.formats.to;
 import vision.ds.ByteArray;
 import vision.ds.Image;
 import vision.exceptions.LibraryRequired;
+import vision.formats._internal.images.Heic;
 import vision.formats._internal.images.Jpeg;
 import vision.formats._internal.images.Webp;
 import vision.formats._internal.images.webp.WebpAnimation;
@@ -96,5 +97,16 @@ import vision.ds.ImageAnimation;
     **/
     public function webpAnimation(animation:ImageAnimation):ByteArray {
         return WebpAnimation.write(animation);
+    }
+
+    /**
+        Encodes an opaque HEIC still image with 8-bit 4:2:0 color.
+
+        @param image The image to encode. The alpha channel is discarded.
+        @return The complete HEIC file
+        @throws HevcBitstreamError If the image exceeds the supported HEVC picture dimensions
+    **/
+    public function heic(image:Image):ByteArray {
+        return Heic.write(image);
     }
 }
