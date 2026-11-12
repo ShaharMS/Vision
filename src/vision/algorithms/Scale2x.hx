@@ -38,9 +38,9 @@ class Scale2x {
 	}
 
 	static inline function choose(center:Color, horizontal:Color, vertical:Color, corner:Color):Color {
-		if (horizontal == vertical) return horizontal;
-		// The corner is farther away. It can break a tie between cardinal neighbors,
-		// but a color seen only in the corner cannot replace the center.
-		return corner == horizontal || corner == vertical ? corner : center;
+		if (horizontal != vertical) return center;
+		// Keep the center at a three-color junction. The diagonal can veto
+		// a proposed change, while the two side neighbors must agree to make it.
+		return corner == center || corner == horizontal ? horizontal : center;
 	}
 }

@@ -1884,16 +1884,15 @@ class Vision {
 	/**
 		Doubles the size of pixel art with the Scale2x algorithm.
 
-		The four nearest neighbors determine the edge. A diagonal neighbor can
-		back up one of the two adjacent neighbors when they disagree. The result
-		uses only colors already present in the source image.
+		Two side neighbors must agree before extending an edge. With corner support,
+		a third color at the diagonal keeps the center color in place.
 
 		![Original pixel art](https://spacebubble.io/vision/docs/pixel-art-source.png)
 		![Standard Scale2x](https://spacebubble.io/vision/docs/pixel-art-scale2x-classic.png)
 		![Scale2x with corner support](https://spacebubble.io/vision/docs/pixel-art-scale2x-corners.png)
 
 		@param image The image to enlarge
-		@param includeCorners Whether diagonal neighbors can break a tie. Set to `false` for standard Scale2x
+		@param includeCorners Whether diagonal neighbors protect three-color junctions. Set to `false` for standard Scale2x
 		@return A new image with twice the width and height
 	**/
 	public static function rescale(image:Image, includeCorners:Bool = true):Image {
