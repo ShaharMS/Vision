@@ -70,11 +70,12 @@ class Av1IntraBlockReader {
 	}
 
 	/** Reads one block without segmentation, screen-content tools or block-level quantizer deltas. **/
-	public function read(x:Int, y:Int, width:Int, height:Int, hasChroma:Bool):Av1IntraBlock {
+	public function read(x:Int, y:Int, width:Int, height:Int, hasChroma:Bool, ?cdef:Av1Cdef):Av1IntraBlock {
 		final aboveBlock = y > tileTop ? above[x - tileLeft] : null;
 		final leftBlock = x > tileLeft ? left[y - tileTop] : null;
 		final skipContext = (aboveBlock != null && aboveBlock.skip ? 1 : 0) + (leftBlock != null && leftBlock.skip ? 1 : 0);
 		final skipped = symbols.readSymbol(skip[skipContext]) != 0;
+		if (cdef != null) cdef.readBlock(symbols, x * 4, y * 4, width, height, skipped);
 		final aboveMode = aboveBlock == null ? 0 : modeContext[aboveBlock.lumaMode];
 		final leftMode = leftBlock == null ? 0 : modeContext[leftBlock.lumaMode];
 		final lumaMode:Av1IntraMode = symbols.readSymbol(yMode[aboveMode * 5 + leftMode]);

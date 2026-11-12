@@ -1,6 +1,8 @@
 package tests;
 
 import haxe.io.Bytes;
+import haxe.io.BytesBuffer;
+import haxe.crypto.Sha256;
 import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.exceptions.Av1BitstreamError;
@@ -25,6 +27,21 @@ import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1Cdef.apply#filteredStill")
+	function test_apply__matchesExternalDirectionalFiltering():Void {
+		// libaom 24x24 photograph crop with nonzero primary and secondary luma strengths.
+		final bytes = Bytes.ofHex("0a0618112f76802032371c400000597010b50507b67e080becbc74d8132cf7faecc0d73dcdab004d9f0edeb7749d1b1612d8156c950a7fa187302f7b8ca89d8588");
+		final units = new Av1ObuReader(bytes, 0, bytes.length);
+		final header = units.next();
+		final sequence = new Av1SequenceHeader(bytes, header.offset, header.length);
+		final frameUnit = units.next();
+		final frame = new Av1StillFrameHeader(sequence, bytes, frameUnit.offset, frameUnit.length, true);
+		final tiles = frame.tiles.readGroup(bytes, frame.tileGroupOffset, bytes.length - frame.tileGroupOffset);
+		final samples = new BytesBuffer();
+		for (plane in Av1IntraPicture.decode(bytes, sequence, frame, tiles)) samples.add(plane);
+		Assert.equals("7714a496ace9a7cec2958c36671c84b01a1d4c27ed42a27498b08412781f455c", Sha256.make(samples.getBytes()).toHex());
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1LoopFilter.apply#narrowEdge")
 	function test_apply__filtersOnlyEligibleTransformEdges():Void {
 		final samples = Bytes.alloc(8 * 4);

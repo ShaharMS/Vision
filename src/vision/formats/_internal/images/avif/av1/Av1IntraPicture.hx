@@ -18,11 +18,9 @@ class Av1IntraPicture {
 			|| frame.width > 8192 || frame.height > 8192 || frame.width * 1.0 * frame.height > 8912896)
 			throw new Av1BitstreamError("Unsupported AV1 intra picture parameters.");
 		for (type in frame.restorationTypes) if (type != 0) throw new Av1BitstreamError("Unsupported AV1 loop restoration.");
-		if (frame.cdefStrengths.length > 1) throw new Av1BitstreamError("Unsupported AV1 CDEF index signaling.");
-		for (strength in frame.cdefStrengths)
-			for (value in strength) if (value != 0) throw new Av1BitstreamError("Unsupported AV1 directional enhancement filter.");
 		final width = (frame.width + 7) & ~7;
 		final height = (frame.height + 7) & ~7;
+		final cdef = new Av1Cdef(width, height, frame);
 		final subX = sequence.subsamplingX ? 1 : 0;
 		final subY = sequence.subsamplingY ? 1 : 0;
 		final planes = [new IntraPlane(width, height)];
@@ -41,7 +39,7 @@ class Av1IntraPicture {
 			if (tile.columnStart != columns[column] || tile.columnEnd != columns[column + 1]
 				|| tile.rowStart != rows[row] || tile.rowEnd != rows[row + 1])
 				throw new Av1BitstreamError("Out-of-order AV1 tile groups.");
-			decodeTile(bytes, sequence, frame, tile, planes, subX, subY);
+			decodeTile(bytes, sequence, frame, tile, planes, subX, subY, cdef);
 		}
 		final chromaWidth = (frame.width + subX) >> subX;
 		final chromaHeight = (frame.height + subY) >> subY;
@@ -50,11 +48,13 @@ class Av1IntraPicture {
 		for (plane in 0...planes.length)
 			planes[plane].deblock(plane == 0 ? frame.width : chromaWidth, plane == 0 ? frame.height : chromaHeight,
 				plane != 0, levels[plane == 0 ? 0 : plane + 1], levels[plane == 0 ? 1 : plane + 1], frame.loopFilterSharpness, delta);
-		return [for (i in 0...planes.length) planes[i].crop(i == 0 ? frame.width : chromaWidth, i == 0 ? frame.height : chromaHeight)];
+		final enhanced = cdef.apply([for (plane in planes) plane.data], subX, subY);
+		return [for (i in 0...planes.length)
+			planes[i].crop(enhanced[i], i == 0 ? frame.width : chromaWidth, i == 0 ? frame.height : chromaHeight)];
 	}
 
 	static function decodeTile(bytes:Bytes, sequence:Av1SequenceHeader, frame:Av1StillFrameHeader, tile:Av1Tile,
-		planes:Array<IntraPlane>, subX:Int, subY:Int):Void {
+		planes:Array<IntraPlane>, subX:Int, subY:Int, cdef:Av1Cdef):Void {
 		final symbols = new Av1SymbolDecoder(bytes, tile.offset, tile.length, frame.updateCdf);
 		final blockReader = new Av1IntraBlockReader(symbols, sequence, frame, tile.columnStart, tile.rowStart);
 		final coefficients = new Av1Coefficients(symbols, frame.baseQuantizer);
@@ -65,7 +65,7 @@ class Av1IntraPicture {
 				&& (subX == 0 || width4 != 1 || (x & 1) != 0) && (subY == 0 || height4 != 1 || (y & 1) != 0);
 			final width = width4 * 4;
 			final height = height4 * 4;
-			final block = blockReader.read(x, y, width, height, chroma);
+			final block = blockReader.read(x, y, width, height, chroma, cdef);
 			final chunksX = max(1, width >> 6);
 			final chunksY = max(1, height >> 6);
 			for (chunkY in 0...chunksY) for (chunkX in 0...chunksX) {
@@ -151,7 +151,7 @@ class Av1IntraPicture {
 private class IntraPlane {
 	public final width:Int;
 	public final height:Int;
-	final data:Bytes;
+	public final data:Bytes;
 	final transformWidths:Bytes;
 	final transformHeights:Bytes;
 
@@ -163,9 +163,9 @@ private class IntraPlane {
 		transformHeights = Bytes.alloc(transformWidths.length);
 	}
 
-	public function crop(width:Int, height:Int):Bytes {
+	public function crop(source:Bytes, width:Int, height:Int):Bytes {
 		final result = Bytes.alloc(width * height);
-		for (y in 0...height) result.blit(y * width, data, y * this.width, width);
+		for (y in 0...height) result.blit(y * width, source, y * this.width, width);
 		return result;
 	}
 
