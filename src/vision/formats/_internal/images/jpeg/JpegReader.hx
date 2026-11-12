@@ -59,7 +59,7 @@ private class HuffmanTable {
 	}
 }
 
-/** Decodes 8-bit sequential and progressive Huffman-coded grayscale and three-component JPEGs. **/
+/** Decodes 8-bit sequential and progressive Huffman-coded grayscale, RGB, YCbCr, CMYK, and YCCK JPEGs. **/
 @:noCompletion
 class JpegReader {
 	static final zigzag = [
@@ -137,7 +137,7 @@ class JpegReader {
 		height = word();
 		width = word();
 		final count = byte();
-		if (width == 0 || height == 0 || width * 1.0 * height > 32000000 || (count != 1 && count != 3))
+		if (width == 0 || height == 0 || width * 1.0 * height > 32000000 || (count != 1 && count != 3 && count != 4))
 			throw invalid("Unsupported JPEG dimensions or color components.");
 		for (_ in 0...count) {
 			final id = byte();
@@ -394,13 +394,34 @@ class JpegReader {
 				} else {
 					final second = sample(components[1], x, y);
 					final third = sample(components[2], x, y);
-					final cb = second - 128;
-					final cr = third - 128;
-					image.setUnsafePixel(x, y, rgb ? Color.fromRGBA(luma, second, third) :
-						Color.fromRGBA(clamp(luma + 1.402 * cr), clamp(luma - 0.344136 * cb - 0.714136 * cr), clamp(luma + 1.772 * cb)));
+					if (components.length == 4) {
+						final black = sample(components[3], x, y);
+						image.setUnsafePixel(x, y, fourComponentColor(luma, second, third, black));
+					} else {
+						image.setUnsafePixel(x, y, rgb ? Color.fromRGBA(luma, second, third) : ycbcr(luma, second, third));
+					}
 				}
 			}
 		return image;
+	}
+
+	function fourComponentColor(first:Int, second:Int, third:Int, black:Int):Color {
+		if (adobeTransform == 2) {
+			final cmy = ycbcr(first, second, third);
+			return multiplyInk(255 - cmy.red, 255 - cmy.green, 255 - cmy.blue, black);
+		}
+		if (adobeTransform == 0) return multiplyInk(first, second, third, black);
+		return multiplyInk(255 - first, 255 - second, 255 - third, 255 - black);
+	}
+
+	static inline function multiplyInk(red:Int, green:Int, blue:Int, black:Int):Color {
+		return Color.fromRGBA(Math.round(red * black / 255), Math.round(green * black / 255), Math.round(blue * black / 255));
+	}
+
+	static inline function ycbcr(y:Int, blue:Int, red:Int):Color {
+		final cb = blue - 128;
+		final cr = red - 128;
+		return Color.fromRGBA(clamp(y + 1.402 * cr), clamp(y - 0.344136 * cb - 0.714136 * cr), clamp(y + 1.772 * cb));
 	}
 
 	inline function sample(component:Component, x:Int, y:Int):Int {

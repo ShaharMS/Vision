@@ -54,6 +54,7 @@ import vision.ds.ByteArray;
 
     /**
         Decodes an 8-bit sequential or progressive JPEG image from bytes.
+        CMYK and Adobe YCCK are converted to RGB without applying ICC profiles.
 
         @param bytes The complete JPEG file
         @return An opaque image with the decoded pixels
