@@ -19,7 +19,7 @@ class ConvChain {
 
 		final palette:Array<Color> = [];
 		final indices = new IntMap<Int>();
-		final source = [];
+		final source:Array<Int> = [];
 		for (y in 0...sample.height)
 			for (x in 0...sample.width) {
 				final color = sample.getUnsafePixel(x, y);
@@ -44,13 +44,13 @@ class ConvChain {
 		for (key => count in frequencies) weights.set(key, Math.log(count));
 
 		final area = width * height;
-		final field = [for (_ in 0...area) Std.random(palette.length)];
+		final field:Array<Int> = [for (_ in 0...area) Std.random(palette.length)];
 		final scores = [
 			for (y in 0...height)
 				for (x in 0...width) score(weights, field, width, height, x, y, patternSize)
 		];
-		final changed = [];
-		final proposed = [];
+		final changed:Array<Int> = [];
+		final proposed:Array<Float> = [];
 		for (_ in 0...iterations)
 			for (_ in 0...area) {
 				final x = Std.random(width), y = Std.random(height);
