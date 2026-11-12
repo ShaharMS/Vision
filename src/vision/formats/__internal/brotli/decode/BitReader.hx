@@ -84,7 +84,7 @@ public static function BrotliReadBits(
    * The if statement gives 2-4% speed boost on Canterbury data set with
    * asm.js/firefox/x86-64.
    */
-  if ((32 - br.bit_pos_) < (n_bits)) {
+  if ((32 - (br.bit_pos_ : Int)) < n_bits) {
     BrotliFillBitWindow(br);
   }
   val = (br.val_ >> br.bit_pos_) & BitMask(n_bits);

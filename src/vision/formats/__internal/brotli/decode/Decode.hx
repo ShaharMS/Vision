@@ -1029,7 +1029,7 @@ static function CopyUncompressedBlockToOutput(output:BrotliOutput,
 
 			s.trivial_literal_context = 1;
 			for (i in 0...(s.num_block_types[0] << kLiteralContextBits)) {
-			  if (s.context_map[i] != i >> kLiteralContextBits) {
+			  if (s.context_map[i] != ((i >> kLiteralContextBits) : UInt)) {
 				s.trivial_literal_context = 0;
 				break;
 			  }
