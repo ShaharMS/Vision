@@ -6,11 +6,34 @@ import utest.Assert;
 import vision.exceptions.Av1BitstreamError;
 import vision.formats._internal.images.avif.av1.Av1ObuReader;
 import vision.formats._internal.images.avif.av1.Av1LosslessTransform;
+import vision.formats._internal.images.avif.av1.Av1SequenceHeader;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1SequenceHeader.new#stillPicture")
+	function test_new__readsStillPictureParameters():Void {
+		// Sequence Header OBU from libheif's examples/example.avif.
+		final bytes = Bytes.ofHex("1fe671f850b204040d28");
+		final header = new Av1SequenceHeader(bytes, 0, bytes.length);
+		Assert.equals(800, header.maxWidth);
+		Assert.equals(533, header.maxHeight);
+		Assert.equals(8, header.bitDepth);
+		Assert.equals(0, header.profile);
+		Assert.isTrue(header.stillPicture);
+		Assert.isTrue(header.reducedStillPictureHeader);
+		Assert.isTrue(header.subsamplingX);
+		Assert.isTrue(header.subsamplingY);
+		Assert.isFalse(header.monochrome);
+	}
+
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1SequenceHeader.new#truncated")
+	function test_new__rejectsTruncatedSequenceHeader():Void {
+		final bytes = Bytes.ofHex("1fe671f850b204040d");
+		ExceptionAssertions.throwsType(() -> new Av1SequenceHeader(bytes, 0, bytes.length), Av1BitstreamError);
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1SymbolDecoder.readSymbol#adaptive")
 	function test_readSymbol__adaptsThreeSymbolDistribution():Void {
 		final bytes = Bytes.ofHex("008c");
