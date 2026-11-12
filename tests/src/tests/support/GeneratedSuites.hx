@@ -14,6 +14,7 @@ class GeneratedSuites {
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest());
 		if (includeTest("Av1BitstreamTest")) runner.addCase(new Av1BitstreamTest());
 		if (includeTest("HevcCabacTest")) runner.addCase(new HevcCabacTest());
+		if (includeTest("HeifContainerTest")) runner.addCase(new HeifContainerTest());
 		if (includeTest("ArrayToolsTest")) runner.addCase(new ArrayToolsTest());
 		if (includeTest("BicubicInterpolationTest")) runner.addCase(new BicubicInterpolationTest());
 		if (includeTest("BilateralFilterTest")) runner.addCase(new BilateralFilterTest());
