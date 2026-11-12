@@ -7,12 +7,41 @@ import vision.exceptions.Av1BitstreamError;
 import vision.formats._internal.images.avif.av1.Av1ObuReader;
 import vision.formats._internal.images.avif.av1.Av1LosslessTransform;
 import vision.formats._internal.images.avif.av1.Av1SequenceHeader;
+import vision.formats._internal.images.avif.av1.Av1StillFrameHeader;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1StillFrameHeader.new#tiledStill")
+	function test_new__readsFrameHeaderAndTileRanges():Void {
+		// Headers extracted from libheif's examples/example.avif.
+		final sequenceBytes = Bytes.ofHex("1fe671f850b204040d28");
+		final sequence = new Av1SequenceHeader(sequenceBytes, 0, sequenceBytes.length);
+		final frameBytes = Bytes.ofHex("67605be3b03ebd1b2071c71c10411558");
+		final frame = new Av1StillFrameHeader(sequence, frameBytes, 0, frameBytes.length, false);
+		Assert.equals(111, frame.baseQuantizer);
+		Assert.equals("14,1,-11,-24,-39", frame.quantizerDeltas.join(","));
+		Assert.equals("7,7,7,7", frame.loopFilterLevels.join(","));
+		Assert.equals("1,0,1,0", frame.cdefStrengths[0].join(","));
+		Assert.equals(64, frame.restorationUnitSize);
+		Assert.equals(32, frame.chromaRestorationUnitSize);
+		Assert.equals("0,64,128,192,200", frame.tiles.columnStarts.join(","));
+		Assert.equals("0,48,96,134", frame.tiles.rowStarts.join(","));
+		Assert.equals(2, frame.tiles.sizeBytes);
+
+		// Explicit group with tiles 3 and 4, crossing a tile-row boundary.
+		final group = Bytes.ofHex("9a000100aabbcc");
+		final tiles = frame.tiles.readGroup(group, 0, group.length);
+		Assert.equals(2, tiles.length);
+		Assert.equals(4, tiles[0].offset);
+		Assert.equals(2, tiles[0].length);
+		Assert.equals(192, tiles[0].columnStart);
+		Assert.equals(48, tiles[1].rowStart);
+		ExceptionAssertions.throwsType(() -> frame.tiles.readGroup(group, 0, group.length - 1), Av1BitstreamError);
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1SymbolEncoder.finish#adaptive")
 	function test_finish__writesKnownAdaptiveStream():Void {
 		final encoder = new Av1SymbolEncoder();

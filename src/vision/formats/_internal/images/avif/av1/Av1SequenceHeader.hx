@@ -38,7 +38,7 @@ class Av1SequenceHeader {
 		@param length Byte length of the payload
 	**/
 	public function new(bytes:Bytes, offset:Int, length:Int) {
-		final bits = new SequenceBits(bytes, offset, length);
+		final bits = new Av1RawBits(bytes, offset, length);
 		profile = bits.read(3);
 		stillPicture = bits.flag();
 		reducedStillPictureHeader = bits.flag();
@@ -90,7 +90,7 @@ class Av1SequenceHeader {
 		bits.readTrailingBits();
 	}
 
-	static function skipOperatingPoints(bits:SequenceBits):Void {
+	static function skipOperatingPoints(bits:Av1RawBits):Void {
 		var bufferDelayBits = 0;
 		if (bits.flag()) {
 			bits.read(32);
@@ -116,57 +116,12 @@ class Av1SequenceHeader {
 		}
 	}
 
-	static function skipInterTools(bits:SequenceBits):Void {
+	static function skipInterTools(bits:Av1RawBits):Void {
 		bits.read(4);
 		final orderHint = bits.flag();
 		if (orderHint) bits.read(2);
 		final screenContentTools = bits.flag() || bits.flag();
 		if (screenContentTools && !bits.flag()) bits.read(1);
 		if (orderHint) bits.read(3);
-	}
-}
-
-private class SequenceBits {
-	final bytes:Bytes;
-	final end:Int;
-	var position:Int;
-	var bit:Int = 7;
-
-	public function new(bytes:Bytes, offset:Int, length:Int) {
-		if (offset < 0 || length < 0 || offset > bytes.length - length)
-			throw new Av1BitstreamError("Invalid AV1 sequence header range.");
-		this.bytes = bytes;
-		position = offset;
-		end = offset + length;
-	}
-
-	public inline function flag():Bool return read(1) != 0;
-
-	public function read(count:Int):Int {
-		var value = 0;
-		for (_ in 0...count) {
-			if (position == end) throw new Av1BitstreamError("Truncated AV1 sequence header.");
-			value = (value << 1) | ((bytes.get(position) >>> bit) & 1);
-			if (bit == 0) {
-				position++;
-				bit = 7;
-			} else bit--;
-		}
-		return value;
-	}
-
-	public function skipUvlc():Void {
-		var zeroes = 0;
-		while (!flag()) {
-			if (zeroes < 32) zeroes++;
-		}
-		if (zeroes < 32) read(zeroes);
-	}
-
-	public function readTrailingBits():Void {
-		if (!flag()) throw new Av1BitstreamError("Missing AV1 sequence header trailing bit.");
-		while (position < end) {
-			if (flag()) throw new Av1BitstreamError("Nonzero AV1 sequence header padding.");
-		}
 	}
 }
