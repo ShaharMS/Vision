@@ -10,6 +10,7 @@ import vision.exceptions.Av1BitstreamError;
 	padding defined by AV1 sections 8.2.2 through 8.2.6.
 **/
 @:noCompletion
+@:allow(vision.formats._internal.images.avif.av1.Av1SymbolEncoder)
 class Av1SymbolDecoder {
 	static inline var PROBABILITY_TOP = 32768;
 	static inline var MIN_PROBABILITY = 4;
@@ -53,23 +54,15 @@ class Av1SymbolDecoder {
 	**/
 	public function readSymbol(cdf:Array<Int>):Int {
 		checkOpen();
-		final count = cdf.length - 1;
-		if (count < 2 || count > 16 || cdf[count - 1] != PROBABILITY_TOP || cdf[count] < 0 || cdf[count] > 32)
-			throw new Av1BitstreamError("Invalid symbol distribution.");
-		var previous = 0;
-		for (i in 0...count) {
-			if (cdf[i] < previous || cdf[i] > PROBABILITY_TOP)
-				throw new Av1BitstreamError("Non-monotonic symbol distribution.");
-			previous = cdf[i];
-		}
+		final count = validateCdf(cdf);
 
 		var symbol = 0;
 		var upper = range;
-		var lower = boundary(cdf[0], count - 1);
+		var lower = boundary(range, cdf[0], count - 1);
 		while (value < lower) {
 			upper = lower;
 			symbol++;
-			lower = boundary(cdf[symbol], count - symbol - 1);
+			lower = boundary(range, cdf[symbol], count - symbol - 1);
 		}
 		normalize(upper, lower);
 		if (updateCdf) adapt(cdf, count, symbol);
@@ -82,7 +75,7 @@ class Av1SymbolDecoder {
 		if (count < 0 || count > 31) throw new Av1BitstreamError("Invalid literal length.");
 		var result = 0;
 		for (_ in 0...count) {
-			final split = boundary(PROBABILITY_TOP >> 1, 1);
+			final split = boundary(range, PROBABILITY_TOP >> 1, 1);
 			if (value >= split) {
 				normalize(range, split);
 				result <<= 1;
@@ -106,7 +99,20 @@ class Av1SymbolDecoder {
 		finished = true;
 	}
 
-	inline function boundary(cumulative:Int, symbolsAfter:Int):Int {
+	static function validateCdf(cdf:Array<Int>):Int {
+		final count = cdf.length - 1;
+		if (count < 2 || count > 16 || cdf[count - 1] != PROBABILITY_TOP || cdf[count] < 0 || cdf[count] > 32)
+			throw new Av1BitstreamError("Invalid symbol distribution.");
+		var previous = 0;
+		for (i in 0...count) {
+			if (cdf[i] < previous || cdf[i] > PROBABILITY_TOP)
+				throw new Av1BitstreamError("Non-monotonic symbol distribution.");
+			previous = cdf[i];
+		}
+		return count;
+	}
+
+	static inline function boundary(range:Int, cumulative:Int, symbolsAfter:Int):Int {
 		return (((range >> 8) * ((PROBABILITY_TOP - cumulative) >> 6)) >> 1) + MIN_PROBABILITY * symbolsAfter;
 	}
 

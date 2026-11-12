@@ -8,10 +8,37 @@ import vision.formats._internal.images.avif.av1.Av1ObuReader;
 import vision.formats._internal.images.avif.av1.Av1LosslessTransform;
 import vision.formats._internal.images.avif.av1.Av1SequenceHeader;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
+import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1SymbolEncoder.finish#adaptive")
+	function test_finish__writesKnownAdaptiveStream():Void {
+		final encoder = new Av1SymbolEncoder();
+		final cdf = [9000, 23000, 32768, 0];
+		for (symbol in [0, 0, 0, 0, 0, 0, 1, 2]) encoder.writeSymbol(symbol, cdf);
+		Assert.equals("008c", encoder.finish().toHex());
+	}
+
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1SymbolEncoder.finish#mixed")
+	function test_finish__roundTripsLiteralAndSymbolStreams():Void {
+		final encoder = new Av1SymbolEncoder(false);
+		final cdf = [1, 2500, 32767, 32768, 0];
+		for (i in 0...512) {
+			encoder.writeLiteral(i, 9);
+			encoder.writeSymbol(i & 3, cdf);
+		}
+		final bytes = encoder.finish();
+		final decoder = new Av1SymbolDecoder(bytes, 0, bytes.length, false);
+		for (i in 0...512) {
+			Assert.equals(i, decoder.readLiteral(9));
+			Assert.equals(i & 3, decoder.readSymbol(cdf));
+		}
+		decoder.finish();
+		Assert.equals(0, cdf[4]);
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1SequenceHeader.new#stillPicture")
 	function test_new__readsStillPictureParameters():Void {
 		// Sequence Header OBU from libheif's examples/example.avif.
