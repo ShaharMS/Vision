@@ -347,7 +347,7 @@ using vision.tools.MathTools;
 			cornerOptions.minimumDistance = 4;
 			cornerOptions.maxCorners = 4;
 			cornerOptions.borderMargin = 2;
-			var fixtureCorners = Vision.harrisCorners(cornerFixture.clone(), cornerOptions);
+			var fixtureCorners = Vision.harrisCornerDetection(cornerFixture.clone(), cornerOptions);
 			trace('Detected ${fixtureCorners.length} corners on synthetic fixture');
 			var cornerFixtureImage = cornerFixture.clone();
 			for (corner in fixtureCorners) {
@@ -359,7 +359,7 @@ using vision.tools.MathTools;
 			photoCornerOptions.minimumDistance = 8;
 			photoCornerOptions.maxCorners = 48;
 			photoCornerOptions.borderMargin = 4;
-			var photoCorners = Vision.harrisCorners(orgImage.clone(), photoCornerOptions);
+			var photoCorners = Vision.harrisCornerDetection(orgImage.clone(), photoCornerOptions);
 			trace('Detected ${photoCorners.length} corners on photo');
 			var photoCornerImage = orgImage.clone();
 			for (corner in photoCorners) {
@@ -629,7 +629,7 @@ using vision.tools.MathTools;
 		cornerOptions.minimumDistance = 4;
 		cornerOptions.maxCorners = 4;
 		cornerOptions.borderMargin = 2;
-		var corners = Vision.harrisCorners(cornerFixture.clone(), cornerOptions);
+		var corners = Vision.harrisCornerDetection(cornerFixture.clone(), cornerOptions);
 		trace('Detected ${corners.length} corners on synthetic fixture');
 		var cornerImage = cornerFixture.clone();
 		for (corner in corners) {

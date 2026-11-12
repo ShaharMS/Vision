@@ -51,7 +51,6 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.ImageStorage.ImageOperation;
 import vision.ds.specifics.HarrisCornerOptions;
-import vision.ds.specifics.HarrisResponseOptions;
 import vision.ds.specifics.HoughCircleOptions;
 import vision.tools.MathTools;
 import vision.tools.MathTools.*;
@@ -1405,39 +1404,17 @@ class Vision {
 	}
 
 	/**
-		Computes the raw Harris corner-response map for an image.
+		Finds corners where image brightness changes strongly in two directions.
 
-		This returns the raw score surface only. Use `harrisCorners(...)` when you want
-		thresholded, non-max-suppressed corner extraction on top of the same response map.
+		The detector scores each pixel, then returns strong local peaks that meet
+		the requested spacing and threshold. Use `Harris.computeResponse()` to
+		inspect the scores directly.
 
-		Use this wrapper when you want the raw `Matrix2D` response surface for custom
-		thresholding, visualization, or reusing the numeric map across multiple corner-selection
-		passes.
-
-		@param image The source image to analyze.
-		@param options Optional Harris response settings such as `blockSize`, `apertureSize`, `k`, and `useGaussianWindow`.
-
-		@return The raw Harris response map.
+		@param image The image in which to detect corners
+		@param options Optional settings for scoring and selecting corners
+		@return The corner positions, ordered from strongest to weakest
 	**/
-	public static function harrisCornerResponse(image:Image, ?options:HarrisResponseOptions):Matrix2D {
-		return Harris.computeResponse(image, options);
-	}
-
-	/**
-		Detects Harris corners in an image.
-
-		This is the extracted-corner layer on top of `harrisCornerResponse(...)`. Use the
-		raw response wrapper when you want to inspect, rank, or reuse the underlying score map.
-
-		Returned corners stay sorted from strongest to weakest response, then by image coordinates
-		to keep `maxCorners` truncation deterministic across runs.
-
-		@param image The source image to analyze.
-		@param options Optional corner-detection controls such as `relativeThreshold`, `minimumDistance`, `maxCorners`, and `borderMargin`.
-
-		@return The detected Harris corner positions.
-	**/
-	public static function harrisCorners(image:Image, ?options:HarrisCornerOptions):Array<IntPoint2D> {
+	public static function harrisCornerDetection(image:Image, ?options:HarrisCornerOptions):Array<IntPoint2D> {
 		return Harris.detectCorners(image, options);
 	}
 
