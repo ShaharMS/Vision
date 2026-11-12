@@ -15,29 +15,31 @@ package vision.native.windows;
 	import vision.native.windows.Win32.WinWindow;
 	#end
 import vision.ds.Color;
+import vision.native.cpu.CpuScreenBackend;
 import vision.ds.Image;
 import vision.ds.PixelFormat;
 import vision.exceptions.ScreenError;
 
 /** Desktop drawing through Windows system externs. **/
 @:noCompletion
-class WindowsRenderer {
+class WindowsScreenBackend extends CpuScreenBackend {
 	#if hl
 	static inline var WINDOW_OPEN = 1;
 	static inline var WINDOW_REPAINT = 2;
 	#else
 	static inline var WINDOW_STYLE = 0x00CA0000;
 	static inline var SHOW_WINDOW = 5;
+	static inline var KEEP_Z_ORDER = 0x0004;
+	static inline var KEEP_FOCUS = 0x0010;
 	static inline var REMOVE_MESSAGE = 1;
 	static inline var PAINT_MESSAGE = 0x000F;
 	static inline var COPY_SOURCE = 0x00CC0020;
 	#end
 
-	final frame:Image;
 	var window:#if hl HashLinkWindow #else Star<WinWindow> #end;
 
 	public function new(width:Int, height:Int, visible:Bool, x:Int, y:Int) {
-		frame = new Image(width, height, Color.BLACK);
+		super(width, height);
 		#if hl
 		window = HashLinkWindows.open(x, y, width, height, visible);
 		#else
@@ -50,9 +52,10 @@ class WindowsRenderer {
 		if (window != null && visible) Win32.showWindow(window, SHOW_WINDOW);
 		#end
 		if (window == null) throw new ScreenError("Windows could not open a drawing window");
+		present();
 	}
 
-	public function poll():Bool {
+	override public function processEvents():Bool {
 		if (window == null) return false;
 		#if hl
 		final state = HashLinkWindows.poll(window);
@@ -69,20 +72,33 @@ class WindowsRenderer {
 		#end
 	}
 
-	public function clear(color:Color):Void {
-		frame.fillRect(0, 0, frame.width, frame.height, color | 0xFF000000);
+	override public function setBounds(x:Int, y:Int, width:Int, height:Int):Void {
+		final replacement = resizedFrame(width, height);
+		#if hl
+		final moved = HashLinkWindows.setBounds(window, x, y, width, height);
+		#else
+		var bounds = WinRect.make();
+		bounds.right = width;
+		bounds.bottom = height;
+		final moved = Win32.adjustWindowRect(Native.addressOf(bounds), WINDOW_STYLE, false) != 0
+			&& Win32.setWindowPos(window, null, x, y, bounds.right - bounds.left, bounds.bottom - bounds.top, KEEP_Z_ORDER | KEEP_FOCUS) != 0;
+		#end
+		if (!moved) throw new ScreenError("Windows could not change the screen bounds");
+		frame = replacement;
+		present();
 	}
 
-	public function draw(image:Image, x:Int = 0, y:Int = 0):Void {
-		final left = Std.int(Math.max(0, -x));
-		final top = Std.int(Math.max(0, -y));
-		final right = Std.int(Math.min(image.width, frame.width - x));
-		final bottom = Std.int(Math.min(image.height, frame.height - y));
-		for (row in top...bottom) {
-			for (column in left...right)
-				frame.paintPixel(x + column, y + row, image.getPixel(column, row));
-		}
+	override public function clear(color:Color):Void {
+		super.clear(color);
+		present();
 	}
+
+	override public function draw(image:Image, x:Int, y:Int):Void {
+		super.draw(image, x, y);
+		present();
+	}
+
+	override public function hasWindow():Bool return window != null;
 
 	public function present():Bool {
 		if (window == null) return false;
@@ -109,7 +125,7 @@ class WindowsRenderer {
 		#end
 	}
 
-	public function dispose():Void {
+	override public function dispose():Void {
 		if (window != null) {
 			#if hl
 			HashLinkWindows.close(window);
@@ -118,6 +134,7 @@ class WindowsRenderer {
 			#end
 		}
 		window = null;
+		super.dispose();
 	}
 }
 #end

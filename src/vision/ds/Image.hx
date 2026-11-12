@@ -4,7 +4,7 @@ import vision.formats.ImageIO;
 #if (openfl || flash)
 import vision.formats._internal.images.FrameworkImageIO;
 #end
-import vision.ds.ImageStorage.ImageOperation;
+import vision.native.ImageBackend;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm
@@ -19,21 +19,16 @@ import vision.ds.Rectangle;
 import vision.ds.ImageView;
 import vision.ds.ImageResizeAlgorithm;
 import vision.ds.specifics.TextOptions;
-import vision.algorithms.TextDrawing;
-import vision.exceptions.TextDrawingError;
-#if js
-import vision.native.browser.BrowserText;
-#end
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
 using vision.tools.MathTools;
 using vision.tools.ArrayTools;
 
 /**
-	Represents a 2D image, as a matrix of Colors.
+	Represents a 2D image as a matrix of colors. Pixel storage and platform operations are handled by its backend.
 **/
 @:transitive
-abstract Image(ImageStorage) {
+abstract Image(ImageBackend) {
 	#if vision_higher_width_cap
 	/**
 		the first 4 bytes represent image width,  
@@ -49,8 +44,8 @@ abstract Image(ImageStorage) {
 		the last byte represents view shape
 	**/
 	#end
-	static inline final OFFSET = ImageStorage.PIXEL_OFFSET;
-	static inline final WIDTH_BYTES = ImageStorage.FIELD_BYTES;
+	static inline final OFFSET = ImageBackend.PIXEL_OFFSET;
+	static inline final WIDTH_BYTES = ImageBackend.FIELD_BYTES;
 	static inline final VIEW_XY_BYTES = WIDTH_BYTES * 2;
 	static inline final VIEW_WH_BYTES = WIDTH_BYTES * 2;
 	static inline final DATA_GAP = WIDTH_BYTES;
@@ -66,7 +61,7 @@ abstract Image(ImageStorage) {
 
 	#if vision_allow_resize
 	inline function set_underlying(bytes:ByteArray) {
-		this = new ImageStorage(bytes, true);
+		this = new ImageBackend(bytes, true);
 		return bytes;
 	}
 	#end
@@ -75,17 +70,12 @@ abstract Image(ImageStorage) {
 	public var isGpuBacked(get, never):Bool;
 
 	inline function get_isGpuBacked():Bool {
-		return this.surface != null && this.surface.isAvailable();
+		return this.isGpuBacked;
 	}
 
-	@:allow(vision.native.browser.CanvasRenderer)
-	@:allow(vision.native.browser.BrowserPixels)
-	inline function storage():ImageStorage return this;
+	@:allow(vision.native)
+	inline function backend():ImageBackend return this;
 
-	@:allow(vision.Vision)
-	inline function transformWithBackend(operation:ImageOperation, value:Int = 0):Bool {
-		return this.surface != null && !hasView() && this.transform(operation, value);
-	}
 
 	/**
 		The width of the image.
@@ -93,7 +83,7 @@ abstract Image(ImageStorage) {
 	public var width(get, #if vision_allow_resize set #else never #end):Int;
 
 	inline function get_width() {
-		return #if vision_higher_width_cap this.getInt32(0) #else this.getUInt16(0) #end;
+		return this.width;
 	}
 
 	#if vision_allow_resize
@@ -109,7 +99,7 @@ abstract Image(ImageStorage) {
 	public var height(get, #if vision_allow_resize set #else never #end):Int;
 
 	inline function get_height()
-		return Math.ceil((this.length - OFFSET) / (width * 4));
+		return this.height;
 
 	#if vision_allow_resize
 	inline function set_height(value:Int) {
@@ -143,39 +133,14 @@ abstract Image(ImageStorage) {
 		@param color The color to fill the image with. if unspecified, the image is transparent.
 	**/
 	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
-		this = ImageStorage.allocate(width, height);
-		var i = OFFSET;
-		while (i < this.length) {
-			this[i] = color.alpha;
-			this[i + 1] = color.red;
-			this[i + 2] = color.green;
-			this[i + 3] = color.blue;
-			i += 4;
-		}
+		this = ImageBackend.allocate(width, height, color);
 	}
 
-	inline function getColorFromStartingBytePos(position:Int):Color {
-		position += OFFSET;
-		final pixels = this.readPixels();
-		var value = pixels[position] << 24 | pixels[position + 1] << 16 | pixels[position + 2] << 8 | pixels[position + 3];
-		#if (python || php || lua)
-		var signedValue:haxe.Int32 = value;
-		signedValue = signedValue + 0;
-		value = signedValue;
-		#end
-		return new Color(value);
-	}
+	inline function getColorFromStartingBytePos(position:Int):Color
+		return this.readColor(position);
 
-	inline function setColorFromStartingBytePos(position:Int, c:Color) {
-		position += OFFSET;
-		final pixels = this.writePixels();
-		pixels[position] = c.alpha;
-		pixels[position + 1] = c.red;
-		pixels[position + 2] = c.green;
-		pixels[position + 3] = c.blue;
-
-		return c;
-	}
+	inline function setColorFromStartingBytePos(position:Int, color:Color):Color
+		return this.writeColor(position, color);
 
 	//--------------------------------------------------------------------------
 	// Pixels
@@ -561,7 +526,7 @@ abstract Image(ImageStorage) {
 	**/
 	public inline function copyImageFrom(image:Image):Image {
 		var currentView = getView();
-		this = image.storage().copy();
+		this = image.backend().copy();
 		setView(currentView);
 		return cast this;
 	}
@@ -854,19 +819,7 @@ abstract Image(ImageStorage) {
 	**/
 	public function drawText(x:Int, y:Int, text:String, ?options:TextOptions):Void {
 		if (text.length == 0 || width == 0 || height == 0) return;
-		final resolved:TextOptions = options == null ? {} : options;
-		TextDrawing.validateOptions(resolved);
-		if (resolved.font != null) {
-			TextDrawing.draw(cast this, x, y, text, resolved.font, resolved);
-			return;
-		}
-		#if js
-		if (js.Syntax.code("typeof document !== 'undefined'")) {
-			BrowserText.draw(cast this, x, y, text, resolved);
-			return;
-		}
-		#end
-		throw new TextDrawingError("Provide a Font in TextOptions.font for portable text drawing.");
+		ImageBackend.drawText(cast this, x, y, text, options == null ? {} : options);
 	}
 
 	#if js
@@ -882,7 +835,7 @@ abstract Image(ImageStorage) {
 	**/
 	public static function loadTextFont(family:String, bytes:haxe.io.Bytes, weight:Int = 400, italic:Bool = false,
 		?features:String):js.lib.Promise<String> {
-		return BrowserText.loadFont(family, bytes, weight, italic, features);
+		return ImageBackend.loadTextFont(family, bytes, weight, italic, features);
 	}
 	#end
 
@@ -1630,21 +1583,7 @@ abstract Image(ImageStorage) {
 		@return a new `Image`
 	**/
 	@:from public static inline function from2DArray(array:Array<Array<Color>>):Image {
-
-		var h = array.length;
-		var w = array[0].length;
-
-		final storage = ImageStorage.allocate(w, h);
-		var flat = array.flatten();
-		for (i in 0...flat.length) {
-			var color = flat[i];
-			storage[OFFSET + i * 4] 	  = color.alpha;
-			storage[OFFSET + i * 4 + 1] = color.red;
-			storage[OFFSET + i * 4 + 2] = color.green;
-			storage[OFFSET + i * 4 + 3] = color.blue;
-		}
-
-		return cast storage;
+		return cast ImageBackend.fromColors(array);
 	}
 
 	/**
@@ -1664,13 +1603,7 @@ abstract Image(ImageStorage) {
 	}
 
 	@:to public inline function toArray():Array<Color> {
-		var array:Array<Color> = [];
-		var i = OFFSET;
-		while (i < this.length) {
-			array.push(Color.fromRGBA(this[i + 1], this[i + 2], this[i + 3], this[i]));
-			i += 4;
-		}
-		return array;
+		return this.colors();
 	}
 	/**
 		Takes a `ByteArray`/`haxe.io.Bytes` instance and some stats, and returns a new image instance
@@ -1680,19 +1613,11 @@ abstract Image(ImageStorage) {
 		@param height Optional, the height of the returned image. determined automatically, can be overridden by setting this parameter
 	**/
 	public static inline function loadFromBytes(bytes:ByteArray, width:Int, ?height:Int):Image {
-		var h:Int;
-		if (height == null) {
-			h = (bytes.length / 4 / width).ceil();
-		} else {
-			h = height;
-		}
-		final storage = ImageStorage.allocate(width, h);
-		storage.writePixels().blit(OFFSET, bytes, 0, bytes.length);
-		return cast storage;
+		return cast ImageBackend.fromPixels(bytes, width, height);
 	}
 
 	static inline function fromStorageBytes(bytes:ByteArray):Image {
-		return cast new ImageStorage(bytes, true);
+		return cast new ImageBackend(bytes, true);
 	}
 
 	/**
@@ -1700,7 +1625,7 @@ abstract Image(ImageStorage) {
 		@return A new `ByteArray`
 	**/
 	@:to overload public extern inline function exportToBytes():ByteArray {
-		return this.readPixels().sub(OFFSET, this.length - OFFSET);
+		return this.exportPixels();
 	}
 
 	/**

@@ -11,9 +11,9 @@ import js.html.webgl.WebGL2RenderingContext;
 import js.lib.Uint8Array;
 import vision.ds.ByteArray;
 import vision.ds.Color;
-import vision.ds.ImageStorage;
-import vision.ds.ImageStorage.ImageOperation;
-import vision.ds.ImageStorage.ImageSurface;
+import vision.native.ImageBackend;
+import vision.native.ImageBackend.ImageOperation;
+import vision.native.ImageBackend.ImageSurface;
 import vision.exceptions.WebGlError;
 
 @:noCompletion
@@ -237,7 +237,7 @@ class WebGlSurface implements ImageSurface {
 		if (gl.getError() != GL.NO_ERROR) throw new WebGlError("Could not read image pixels from WebGL", "Image readback");
 		var index = 0;
 		while (index < rgba.length) {
-			final target = ImageStorage.PIXEL_OFFSET + index;
+			final target = ImageBackend.PIXEL_OFFSET + index;
 			packed[target] = rgba[index + 3];
 			packed[target + 1] = rgba[index];
 			packed[target + 2] = rgba[index + 1];

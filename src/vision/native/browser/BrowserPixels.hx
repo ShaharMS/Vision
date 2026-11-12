@@ -4,9 +4,9 @@ package vision.native.browser;
 import js.lib.Uint8Array;
 import vision.ds.ByteArray;
 import vision.ds.Image;
+import vision.native.ImageBackend;
 
 @:noCompletion
-@:access(vision.ds.Image)
 class BrowserPixels {
 	public var rgba:Uint8Array;
 
@@ -16,7 +16,7 @@ class BrowserPixels {
 	public function new() {}
 
 	public function update(image:Image, width:Int, height:Int):Bool {
-		return updatePacked(image.storage().readPixels(), width, height);
+		return updatePacked(image.backend().readPixels(), width, height);
 	}
 
 	public function updatePacked(argb:ByteArray, width:Int, height:Int):Bool {
@@ -29,7 +29,7 @@ class BrowserPixels {
 		// Image.underlying exposes writable bytes. Compare the actual data on each draw.
 		var index = 0;
 		while (index < length) {
-			final start = Image.OFFSET + index;
+			final start = ImageBackend.PIXEL_OFFSET + index;
 			final r = argb[start + 1];
 			final g = argb[start + 2];
 			final b = argb[start + 3];

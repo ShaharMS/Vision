@@ -27,9 +27,9 @@
             "status": "manual",
             "sourceFile": "src/vision/ds/Screen.hx",
             "testFile": "tests/src/tests/ScreenTest.hx",
-            "members": ["draw", "onFirstDraw", "poll", "attach"],
+            "members": ["draw", "onFirstDraw", "poll", "attach", "capture", "setBounds"],
             "deferredMembers": [],
-            "notes": "Platform-gated browser and desktop drawing coverage in the shared runner."
+            "notes": "Offscreen coverage on every target plus browser and Windows drawing and resizing."
         },
         "vision.native.browser.WebGpuInverter": {
             "status": "manual",

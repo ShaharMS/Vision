@@ -2,9 +2,11 @@ package tests;
 
 import haxe.Timer;
 import tests.support.ImageAssertions;
+import tests.support.ExceptionAssertions;
+import vision.exceptions.ScreenError;
 import utest.Assert;
-#if vision_browser_tests
 import utest.Async;
+#if vision_browser_tests
 import js.Browser;
 import js.html.CanvasElement;
 import js.html.webgl.GL;
@@ -22,9 +24,49 @@ import vision.ds.Screen;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
-@:access(vision.ds.Screen)
-@:access(vision.native.windows.WindowsRenderer)
 class ScreenTest extends utest.Test {
+	@:visionTestId("vision.ds.Screen.setBounds#offscreen")
+	function test_setBounds__preservesOffscreenDrawing():Void {
+		final screen = new Screen(3, 4, 6, 5, {offscreen: true});
+		Assert.isFalse(screen.hasDisplay);
+		screen.clear(0xff112233);
+		screen.draw(new Image(1, 1, 0xffabcdef), 3, 2);
+		screen.x = 8;
+		screen.y = 9;
+		screen.width = 9;
+		screen.height = 7;
+		Assert.equals(8, screen.x);
+		Assert.equals(9, screen.y);
+		Assert.equals(9, screen.width);
+		Assert.equals(7, screen.height);
+		ExceptionAssertions.throwsType(() -> screen.setBounds(0, 0, 0, 7), ScreenError);
+		Assert.equals(8, screen.x);
+		Assert.equals(9, screen.width);
+		final image = screen.capture();
+		Assert.equals(0xffabcdef, image.getPixel(3, 2));
+		Assert.equals(0xff112233, image.getPixel(0, 0));
+		Assert.equals(0xff000000, image.getPixel(8, 6));
+		image.setPixel(3, 2, 0xff000000);
+		Assert.equals(0xffabcdef, screen.capture().getPixel(3, 2));
+		screen.dispose();
+		Assert.equals(false, screen.poll().result);
+	}
+
+	@:visionTestId("vision.ds.Screen.poll#offscreen")
+	function test_poll__offscreenCompletesOnEveryTarget(async:Async):Void {
+		final screen = new Screen(0, 0, 4, 4, {offscreen: true, frameRate: 50});
+		screen.poll().then(ready -> {
+			Assert.isTrue(ready);
+			Assert.equals(0.0, screen.deltaTime);
+			screen.poll().then(next -> {
+				Assert.isTrue(next);
+				Assert.isTrue(screen.deltaTime >= 0.018, "Offscreen polling completed before the frame interval");
+				screen.dispose();
+				async.done();
+			});
+		});
+	}
+
 	#if vision_browser_tests
 	@:visionTestId("vision.ds.Screen.draw#canvas2d")
 	@:visionMaturity("semantic")
@@ -127,23 +169,44 @@ class ScreenTest extends utest.Test {
 		final canvas:CanvasElement = cast Browser.document.body.lastElementChild;
 		screen.draw(new Image(1, 1, 0xFF123456), 1, 2);
 		expectPixel(canvas, false, 1, 2, [18, 52, 86, 255]);
-		return screen.poll().then(ready -> {
-			Assert.isFalse(!ready || screen.deltaTime != 0, "First poll should report zero delta");
-			final started = Timer.stamp();
-			screen.frameRate = 25;
-			return screen.poll().then(next -> {
-				final elapsed = Timer.stamp() - started;
-				Assert.isFalse(!next || screen.deltaTime < 0.038 || Math.abs(screen.deltaTime - elapsed) > 0.010,
-					"Frame rate or elapsed seconds did not match the browser clock");
-				expectPixel(canvas, false, 1, 2, [18, 52, 86, 255]);
-				final pending = screen.poll();
-				screen.dispose();
-				return pending.then(closed -> {
-					Assert.isFalse(closed, "Disposed screen reported ready");
-					return true;
+		return new Promise((resolve, _) -> {
+			final first = screen.poll();
+			Assert.equals(first, screen.poll());
+			first.then(ready -> {
+				Assert.isFalse(!ready || screen.deltaTime != 0, "First poll should report zero delta");
+				final started = Timer.stamp();
+				screen.frameRate = 25;
+				screen.poll().then(next -> {
+					final elapsed = Timer.stamp() - started;
+					Assert.isFalse(!next || screen.deltaTime < 0.038 || Math.abs(screen.deltaTime - elapsed) > 0.010,
+						"Frame rate or elapsed seconds did not match the browser clock");
+					expectPixel(canvas, false, 1, 2, [18, 52, 86, 255]);
+					final pending = screen.poll();
+					screen.dispose();
+					pending.then(closed -> {
+						Assert.isFalse(closed, "Disposed screen reported ready");
+						resolve(true);
+					});
 				});
 			});
 		});
+	}
+
+	@:visionTestId("vision.ds.Screen.setBounds#browser")
+	function test_setBounds__preservesBrowserDrawing():Void {
+		for (preferGpu in [false, true]) {
+			final screen = new Screen(0, 0, 6, 5, {preferGpu: preferGpu});
+			final canvas:CanvasElement = cast Browser.document.body.lastElementChild;
+			screen.draw(new Image(1, 1, 0xffabcdef), 3, 2);
+			screen.setBounds(12, 17, 8, 7);
+			Assert.equals("12px", canvas.style.left);
+			Assert.equals("17px", canvas.style.top);
+			Assert.equals(8, canvas.width);
+			Assert.equals(7, canvas.height);
+			Assert.equals(0xffabcdef, screen.capture().getPixel(3, 2));
+			Assert.equals(0xff000000, screen.capture().getPixel(7, 6));
+			screen.dispose();
+		}
 	}
 
 	@:visionTestId("vision.ds.Screen.attach#preservesDevicePixels")
@@ -279,9 +342,15 @@ class ScreenTest extends utest.Test {
 		final screen = new Screen(0, 0, 16, 16, {visible: false});
 		screen.clear(0xFF102030);
 		screen.draw(new Image(2, 2, 0xFF00CC88), 4, 6);
-		Assert.equals(0xFF102030, screen.renderer.frame.getPixel(0, 0));
-		Assert.equals(0xFF00CC88, screen.renderer.frame.getPixel(4, 6));
-		Assert.isTrue(screen.renderer.present());
+		Assert.equals(0xFF102030, screen.capture().getPixel(0, 0));
+		Assert.equals(0xFF00CC88, screen.capture().getPixel(4, 6));
+		Assert.isTrue(screen.hasDisplay);
+		screen.setBounds(10, 20, 22, 18);
+		Assert.equals(10, screen.x);
+		Assert.equals(20, screen.y);
+		Assert.equals(22, screen.capture().width);
+		Assert.equals(18, screen.capture().height);
+		Assert.equals(0xFF00CC88, screen.capture().getPixel(4, 6));
 		screen.dispose();
 	}
 
@@ -299,14 +368,14 @@ class ScreenTest extends utest.Test {
 		Assert.equals(0, firstDraws);
 
 		var frames = 0;
-		while (frames < 2 && screen.processEvents() && screen.poll()) {
+		while (frames < 2 && screen.processEvents() && screen.poll().result == true) {
 			image.setPixel(1, 1, 0xFF00CC88);
 			if (frames == 0) screen.drawInverted(image, 4, 6);
 			else screen.draw(image, 4, 6);
 			frames++;
 		}
 		screen.dispose();
-		Assert.isFalse(frames != 2 || firstDraws != 1 || screen.poll(), "Screen lifecycle did not match the caller's loop");
+		Assert.isFalse(frames != 2 || firstDraws != 1 || screen.poll().result == true, "Screen lifecycle did not match the caller's loop");
 	}
 
 	@:visionTestId("vision.ds.Screen.poll#desktopFrameWait")
@@ -315,16 +384,16 @@ class ScreenTest extends utest.Test {
 	function test_poll__desktopFrameWait():Void {
 		final screen = new Screen(12, 18, 64, 48, {visible: false, frameRate: 20});
 		screen.draw(new Image(8, 8, 0xFF102030));
-		Assert.isTrue(screen.poll());
+		Assert.isTrue(screen.poll().result == true);
 		Assert.equals(0.0, screen.deltaTime);
 		final started = Timer.stamp();
 		Sys.sleep(0.020);
-		Assert.isTrue(screen.poll());
+		Assert.isTrue(screen.poll().result == true);
 		final elapsed = Timer.stamp() - started;
 		Assert.isFalse(screen.deltaTime < 0.045
 			|| Math.abs(screen.deltaTime - elapsed) > 0.015, "Frame rate or elapsed seconds did not match the frame clock");
 		screen.dispose();
-		Assert.isFalse(screen.poll() || screen.processEvents(), "Disposed screen reported ready");
+		Assert.isFalse(screen.poll().result == true || screen.processEvents(), "Disposed screen reported ready");
 	}
 	#end
 }

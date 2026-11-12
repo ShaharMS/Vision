@@ -7,6 +7,7 @@ typedef HashLinkWindow = hl.Abstract<"vision_screen_window">;
 @:hlNative("vision_screen")
 extern class HashLinkWindows {
 	static function open(x:Int, y:Int, width:Int, height:Int, visible:Bool):HashLinkWindow;
+	static function setBounds(window:HashLinkWindow, x:Int, y:Int, width:Int, height:Int):Bool;
 	static function poll(window:HashLinkWindow):Int;
 	static function present(window:HashLinkWindow, pixels:hl.Bytes, length:Int, width:Int, height:Int):Bool;
 	static function close(window:HashLinkWindow):Void;

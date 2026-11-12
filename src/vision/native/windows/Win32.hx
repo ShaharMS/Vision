@@ -19,6 +19,9 @@ extern class Win32 {
 	@:native("AdjustWindowRect")
 	static function adjustWindowRect(bounds:Star<WinRect>, style:Int, hasMenu:Bool):Int;
 
+	@:native("SetWindowPos")
+	static function setWindowPos(window:Star<WinWindow>, insertAfter:Star<WinWindow>, x:Int, y:Int, width:Int, height:Int, flags:Int):Int;
+
 	@:native("ShowWindow")
 	static function showWindow(window:Star<WinWindow>, command:Int):Int;
 

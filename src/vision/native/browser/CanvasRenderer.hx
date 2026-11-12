@@ -8,7 +8,7 @@ import js.html.ImageData;
 import vision.Vision;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.ds.ImageStorage;
+import vision.native.ImageBackend;
 import vision.native.browser.BrowserPixels;
 import vision.native.browser.WebGlRenderer;
 import vision.native.browser.WebGlRenderer.WebGlSurface;
@@ -21,7 +21,7 @@ class CanvasRenderer {
 	public var usesWebGl(get, never):Bool;
 
 	final pixels = new BrowserPixels();
-	final attached = new Array<ImageStorage>();
+	final attached = new Array<ImageBackend>();
 	final gpu:WebGlRenderer;
 	final context:CanvasRenderingContext2D;
 	final staging:CanvasElement;
@@ -55,7 +55,7 @@ class CanvasRenderer {
 	public function attach(image:Image):Bool {
 		checkOpen();
 		if (gpu == null) return false;
-		final storage = image.storage();
+		final storage = image.backend();
 		if (owns(storage)) return image.isGpuBacked;
 		if (storage.surface != null) return false;
 
@@ -74,11 +74,11 @@ class CanvasRenderer {
 
 	/** Materializes the image's pixels and releases this renderer's texture. **/
 	public function detach(image:Image):Void {
-		final storage = image.storage();
+		final storage = image.backend();
 		if (owns(storage)) storage.detach();
 	}
 
-	function owns(storage:ImageStorage):Bool {
+	function owns(storage:ImageBackend):Bool {
 		return storage.surface is WebGlSurface && (cast storage.surface : WebGlSurface).owner == gpu;
 	}
 
@@ -99,7 +99,7 @@ class CanvasRenderer {
 		final width = image.width;
 		final height = image.height;
 		if (width <= 0 || height <= 0 || canvas.width <= 0 || canvas.height <= 0) return;
-		final storage = image.storage();
+		final storage = image.backend();
 		if (gpu != null && owns(storage) && storage.prepareSurface()) {
 			final surface:WebGlSurface = cast storage.surface;
 			gpu.presentTexture(surface.texture, width, height, x, y, canvas.width, canvas.height, invert);

@@ -9,9 +9,7 @@ class GeneratedSuites {
 		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest());
 		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest());
 		#end
-		#if (vision_browser_tests || (windows && (cpp || (hl && vision_hashlink_screen))))
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest());
-		#end
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest());
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest());
 		if (includeTest("ArrayToolsTest")) runner.addCase(new ArrayToolsTest());

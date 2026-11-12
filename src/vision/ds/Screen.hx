@@ -1,213 +1,223 @@
 package vision.ds;
 
 import haxe.Timer;
-import vision.Vision;
 import vision.ds.specifics.ScreenOptions;
 import vision.exceptions.ScreenError;
-#if js
-import js.Browser;
-import js.lib.Promise;
-import js.Syntax;
-import vision.native.browser.CanvasRenderer;
-#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
-import vision.native.windows.WindowsRenderer;
-#end
+import vision.native.ScreenBackend;
 
-/** A drawing destination on a browser page or in a standalone desktop window. **/
+/**
+	A persistent surface for drawing images.
+
+	A screen presents its contents in a browser canvas or desktop window when
+	that backend is available. Other targets use an in-memory surface. Use
+	`capture()` to read the drawn pixels on any target.
+**/
 class Screen {
-	public final x:Int;
-	public final y:Int;
-	public final width:Int;
-	public final height:Int;
+	/** Horizontal position of the presentation surface, in pixels. **/
+	public var x(get, set):Int;
 
-	/** Runs once, immediately before the first nonempty image draw. **/
+	/** Vertical position of the presentation surface, in pixels. **/
+	public var y(get, set):Int;
+
+	/** Width of the drawing area in pixels. Resizing keeps pixels in the overlapping area. **/
+	public var width(get, set):Int;
+
+	/** Height of the drawing area in pixels. Resizing keeps pixels in the overlapping area. **/
+	public var height(get, set):Int;
+
+	/** Whether this screen has a browser or desktop presentation surface. **/
+	public var hasDisplay(get, never):Bool;
+
+	/** Runs once, immediately before the first draw with a nonempty image. **/
 	public var onFirstDraw:Null<Void->Void>;
 
-	/** Target frames per second when polling. Defaults to 60. **/
+	/** Target frames per second used by `poll()`. Must be positive. **/
 	public var frameRate(default, set):Int = 60;
 
-	var drewImage = false;
-	var disposed = false;
-
-	/** Elapsed seconds between completed polls. The first poll reports zero. **/
+	/** Seconds between completed frame waits. The first completed wait reports zero. **/
 	public var deltaTime(default, null):Float = 0;
 
+	var screenX:Int;
+	var screenY:Int;
+	var screenWidth:Int;
+	var screenHeight:Int;
+	final backend:ScreenBackend;
+	var drewImage = false;
+	var disposed = false;
 	var lastPoll:Null<Float>;
+	var pendingPoll:Null<ScreenPoll>;
 
-	#if js
-	final renderer:CanvasRenderer;
-	var animationFrame:Null<Int>;
-	var pendingPoll:Promise<Bool>;
-	var resolvePoll:Bool->Void;
-	#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
-	final renderer:WindowsRenderer;
-	#end
+	/**
+		Opens a screen with a black background.
 
-	/** Opens a screen. Positions and dimensions use pixels. **/
+		@param x Horizontal position in browser page or desktop coordinates
+		@param y Vertical position in browser page or desktop coordinates
+		@param width Drawing area width in pixels
+		@param height Drawing area height in pixels
+		@param options Optional frame rate and presentation settings
+		@throws ScreenError If the dimensions or frame rate are invalid
+	**/
 	public function new(x:Int, y:Int, width:Int, height:Int, ?options:ScreenOptions) {
-		if (width <= 0 || height <= 0) throw new ScreenError("Screen dimensions must be positive");
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		if (options == null) options = {};
-		frameRate = options.frameRate;
-
-		#if js
-		if (Syntax.code("typeof document === 'undefined'")
-			|| Browser.document.body == null) throw new ScreenError("Screen requires a browser page with a document body");
-		final canvas = Browser.document.createCanvasElement();
-		canvas.width = width;
-		canvas.height = height;
-		canvas.style.position = "absolute";
-		canvas.style.left = x + "px";
-		canvas.style.top = y + "px";
-		canvas.style.width = width + "px";
-		canvas.style.height = height + "px";
-		canvas.hidden = !options.visible;
-		renderer = new CanvasRenderer(canvas, options.preferGpu, true);
-		renderer.clear(Color.BLACK);
-		Browser.document.body.appendChild(canvas);
-		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
-		renderer = new WindowsRenderer(width, height, options.visible, x, y);
-		renderer.present();
-		#else
-		throw new ScreenError("Screen requires a browser or a Windows desktop build");
-		#end
-	}
-
-	/** Clears the screen to an opaque background color. **/
-	public function clear(color:Color = Color.BLACK):Void {
-		checkOpen();
-		#if (js || (windows && (cpp || (hl && vision_hashlink_screen))))
-		renderer.clear(color | 0xFF000000);
-		present();
-		#end
-	}
-
-	/** Draws an image at a position relative to the top-left corner of this screen. **/
-	public function draw(image:Image, x:Int = 0, y:Int = 0):Void {
-		if (!beginDraw(image)) return;
-		#if (js || (windows && (cpp || (hl && vision_hashlink_screen))))
-		renderer.draw(image, x, y);
-		present();
-		#end
-	}
-
-	/** Draws an inverted preview and preserves the original image. **/
-	public function drawInverted(image:Image, x:Int = 0, y:Int = 0):Void {
-		if (!beginDraw(image)) return;
-		#if js
-		renderer.drawInverted(image, x, y);
-		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
-		renderer.draw(Vision.invert(image.clone()), x, y);
-		present();
-		#end
-	}
-
-	/** Requests device storage for an image. Returns false if it will stay on the CPU. **/
-	public function attach(image:Image):Bool {
-		checkOpen();
-		#if js
-		return renderer.attach(image);
-		#else
-		return false;
-		#end
-	}
-
-	/** Releases device storage owned by this screen and preserves the image pixels. **/
-	public function detach(image:Image):Void {
-		#if js
-		if (!disposed) renderer.detach(image);
-		#end
-	}
-
-	/** Processes desktop events and reports whether the screen is still open. **/
-	public function processEvents():Bool {
-		if (disposed) return false;
-		#if (windows && (cpp || (hl && vision_hashlink_screen)))
-		if (!renderer.poll()) {
-			dispose();
-			return false;
-		}
-		#end
-		return true;
+		ScreenBackend.validateSize(width, height);
+		final resolved:ScreenOptions = options == null ? {} : options;
+		frameRate = resolved.frameRate;
+		backend = new ScreenBackend(x, y, width, height, resolved);
+		screenX = x;
+		screenY = y;
+		screenWidth = width;
+		screenHeight = height;
 	}
 
 	/**
-		Waits until the next frame can start, measured from the last completed poll.
-		Desktop builds wait on the calling thread. Browser builds return a promise.
-		A closed screen reports false. Drawing and window event handling are separate.
-	**/
-	#if js
-	public function poll():Promise<Bool> {
-		if (disposed) return Promise.resolve(false);
-		if (pendingPoll != null) return pendingPoll;
-		pendingPoll = new Promise<Bool>((resolve, _) -> {
-			resolvePoll = resolve;
-			function nextFrame(_:Float):Void {
-				final now = Timer.stamp();
-				// Allow small variations in browser refresh timing.
-				if (remainingTime(now) > 0.001) {
-					animationFrame = Browser.window.requestAnimationFrame(nextFrame);
-					return;
-				}
-				completePoll(now);
-				finishBrowserPoll(true);
-			}
-			animationFrame = Browser.window.requestAnimationFrame(nextFrame);
-		});
-		return pendingPoll;
-	}
-	#else
-	public function poll():Bool {
-		if (disposed) return false;
-		#if sys
-		final remaining = remainingTime(Timer.stamp());
-		if (remaining > 0) Sys.sleep(remaining);
-		#end
-		completePoll(Timer.stamp());
-		return true;
-	}
-	#end
+		Moves and resizes the screen in one operation. Pixels in the overlapping area
+		keep their coordinates. Newly exposed pixels start black.
 
-	/** Removes the screen or closes its window, and releases its drawing resources. **/
+		@param x New horizontal position
+		@param y New vertical position
+		@param width New drawing area width
+		@param height New drawing area height
+		@throws ScreenError If the screen is closed or the dimensions are invalid
+	**/
+	public function setBounds(x:Int, y:Int, width:Int, height:Int):Void {
+		checkOpen();
+		ScreenBackend.validateSize(width, height);
+		if (x == this.x && y == this.y && width == this.width && height == this.height) return;
+		backend.setBounds(x, y, width, height);
+		screenX = x;
+		screenY = y;
+		screenWidth = width;
+		screenHeight = height;
+	}
+
+	/**
+		Fills the entire screen with an opaque color.
+
+		@param color The background color
+	**/
+	public function clear(color:Color = Color.BLACK):Void {
+		checkOpen();
+		backend.clear(color | 0xff000000);
+	}
+
+	/**
+		Draws an image onto the current contents using its alpha channel.
+
+		@param image The image to draw
+		@param x Horizontal offset from the top-left of the drawing area
+		@param y Vertical offset from the top-left of the drawing area
+	**/
+	public function draw(image:Image, x:Int = 0, y:Int = 0):Void {
+		if (beginDraw(image)) backend.draw(image, x, y);
+	}
+
+	/**
+		Draws a color-inverted preview and leaves the source image intact.
+
+		@param image The image to preview
+		@param x Horizontal offset from the top-left of the drawing area
+		@param y Vertical offset from the top-left of the drawing area
+	**/
+	public function drawInverted(image:Image, x:Int = 0, y:Int = 0):Void {
+		if (beginDraw(image)) backend.drawInverted(image, x, y);
+	}
+
+	/**
+		Copies the pixels currently drawn to the screen.
+
+		@return An independent image in screen coordinates
+		@throws ScreenError If the screen has been disposed
+	**/
+	public function capture():Image {
+		checkOpen();
+		return backend.capture();
+	}
+
+	/**
+		Requests device storage for an image on this screen.
+
+		@param image The image to attach
+		@return True if the backend can store the image on the device
+	**/
+	public function attach(image:Image):Bool {
+		checkOpen();
+		return backend.attach(image);
+	}
+
+	/**
+		Releases this screen's device storage for an image and preserves its pixels.
+
+		@param image The image to detach
+	**/
+	public function detach(image:Image):Void {
+		if (!disposed) backend.detach(image);
+	}
+
+	/**
+		Processes pending presentation events.
+
+		@return False if the screen has closed
+	**/
+	public function processEvents():Bool {
+		if (disposed) return false;
+		if (backend.processEvents()) return true;
+		dispose();
+		return false;
+	}
+
+	/**
+		Waits until the next frame may start, measured from the last completed wait.
+
+		Callers manage their own drawing loop. Several calls while a wait is
+		pending share the same result. Use `ScreenPoll.then()` on any target.
+
+		@return A frame result that completes with false if the screen closes
+	**/
+	public function poll():ScreenPoll {
+		if (pendingPoll != null) return pendingPoll;
+		final poll = new ScreenPoll();
+		if (disposed) {
+			poll.complete(false);
+			return poll;
+		}
+		pendingPoll = poll;
+		backend.waitForFrame(remainingTime, () -> {
+			final now = Timer.stamp();
+			deltaTime = lastPoll == null ? 0 : Math.max(0, now - lastPoll);
+			lastPoll = now;
+			pendingPoll = null;
+			poll.complete(true);
+		});
+		return poll;
+	}
+
+	/** Closes the presentation surface and releases its drawing resources. **/
 	public function dispose():Void {
 		if (disposed) return;
-		#if js
-		if (animationFrame != null) Browser.window.cancelAnimationFrame(animationFrame);
-		finishBrowserPoll(false);
-		renderer.dispose();
-		renderer.canvas.remove();
-		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
-		renderer.dispose();
-		#end
 		disposed = true;
+		final poll = pendingPoll;
+		pendingPoll = null;
+		backend.dispose();
+		if (poll != null) poll.complete(false);
 	}
+
+	inline function get_hasDisplay():Bool return !disposed && backend.hasWindow();
+	inline function get_x():Int return screenX;
+	inline function set_x(value:Int):Int { setBounds(value, y, width, height); return x; }
+	inline function get_y():Int return screenY;
+	inline function set_y(value:Int):Int { setBounds(x, value, width, height); return y; }
+	inline function get_width():Int return screenWidth;
+	inline function set_width(value:Int):Int { setBounds(x, y, value, height); return width; }
+	inline function get_height():Int return screenHeight;
+	inline function set_height(value:Int):Int { setBounds(x, y, width, value); return height; }
 
 	inline function set_frameRate(value:Int):Int {
 		if (value <= 0) throw new ScreenError("Screen frame rate must be positive");
 		return frameRate = value;
 	}
 
-	inline function remainingTime(now:Float):Float {
-		return lastPoll == null ? 0 : lastPoll + 1 / frameRate - now;
+	inline function remainingTime():Float {
+		return lastPoll == null ? 0 : lastPoll + 1 / frameRate - Timer.stamp();
 	}
-
-	function completePoll(now:Float):Void {
-		deltaTime = lastPoll == null ? 0 : Math.max(0, now - lastPoll);
-		lastPoll = now;
-	}
-
-	#if js
-	function finishBrowserPoll(open:Bool):Void {
-		final resolve = resolvePoll;
-		animationFrame = null;
-		pendingPoll = null;
-		resolvePoll = null;
-		if (resolve != null) resolve(open);
-	}
-	#end
 
 	function beginDraw(image:Image):Bool {
 		checkOpen();
@@ -221,11 +231,6 @@ class Screen {
 		return !disposed;
 	}
 
-	inline function present():Void {
-		#if (windows && (cpp || (hl && vision_hashlink_screen)))
-		renderer.present();
-		#end
-	}
 
 	inline function checkOpen():Void {
 		if (disposed) throw new ScreenError("The screen has been disposed");

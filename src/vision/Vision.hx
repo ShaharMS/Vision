@@ -53,7 +53,8 @@ import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.ds.ImageStorage.ImageOperation;
+import vision.native.ImageBackend;
+import vision.native.ImageBackend.ImageOperation;
 import vision.ds.specifics.HarrisCornerOptions;
 import vision.ds.specifics.HoughCircleOptions;
 import vision.tools.MathTools;
@@ -182,12 +183,7 @@ class Vision {
 		@return The grayscaled image. The original image is modified.
 	**/
 	public static function grayscale(image:Image, simpleGrayscale:Bool = false):Image {
-		if (simpleGrayscale && image.transformWithBackend(ImageOperation.SimpleGrayscale))
-			return image;
-		image.forEachPixelInView((x, y, pixel) -> {
-			var gray = if (!simpleGrayscale) Std.int(0.2126 * pixel.red + 0.7152 * pixel.green + 0.0722 * pixel.blue) else Std.int((pixel.red + pixel.green + pixel.blue) / 3);
-			image.setUnsafePixel(x, y, Color.fromRGBA(gray, gray, gray));
-		});
+		ImageBackend.apply(image, simpleGrayscale ? ImageOperation.SimpleGrayscale : ImageOperation.Grayscale);
 		return image;
 	}
 
@@ -214,11 +210,7 @@ class Vision {
 		@return The inverted image. The original image is modified.
 	**/
 	public static function invert(image:Image):Image {
-		if (image.transformWithBackend(ImageOperation.Invert))
-			return image;
-		image.forEachPixelInView((x, y, pixel) -> {
-			image.setUnsafePixel(x, y, Color.fromRGBA(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue));
-		});
+		ImageBackend.apply(image, ImageOperation.Invert);
 		return image;
 	}
 
@@ -256,16 +248,7 @@ class Vision {
 		@return The converted image. The original image is modified.
 	**/
 	public static function blackAndWhite(image:Image, threshold:Int = 128):Image {
-		if (image.transformWithBackend(ImageOperation.BlackAndWhite, threshold))
-			return image;
-		image.forEachPixelInView((x, y, pixel) -> {
-			var colorValue:Int = MathTools.max(pixel.red, pixel.green, pixel.blue);
-			if (colorValue > threshold) {
-				image.setUnsafePixel(x, y, 0xFFFFFFFF);
-			} else {
-				image.setUnsafePixel(x, y, 0xFF000000);
-			}
-		});
+		ImageBackend.apply(image, ImageOperation.BlackAndWhite, threshold);
 		return image;
 	}
 

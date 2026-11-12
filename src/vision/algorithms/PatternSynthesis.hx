@@ -2,7 +2,7 @@ package vision.algorithms;
 
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.ds.ImageStorage;
+import vision.native.ImageBackend;
 import vision.exceptions.PatternSynthesisError;
 
 private typedef Pattern = {
@@ -20,7 +20,7 @@ class PatternSynthesis {
 			|| patternSize > width || patternSize > height)
 			throw new PatternSynthesisError("The sample and output must fit the pattern, and attempts must be positive.");
 
-		if (width * 1.0 * height * 4 > 0x7fffffff - ImageStorage.PIXEL_OFFSET #if !vision_higher_width_cap || width > 0xffff #end)
+		if (width * 1.0 * height * 4 > 0x7fffffff - ImageBackend.PIXEL_OFFSET #if !vision_higher_width_cap || width > 0xffff #end)
 			throw new PatternSynthesisError("The output image is too large.");
 
 		final patterns = learn(sample, patternSize);

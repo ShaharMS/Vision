@@ -3,7 +3,7 @@ package vision.algorithms;
 import haxe.ds.IntMap;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.ds.ImageStorage;
+import vision.native.ImageBackend;
 import vision.exceptions.ConvChainError;
 
 /** Samples textures from local pattern frequencies using the ConvChain model. **/
@@ -14,7 +14,7 @@ class ConvChain {
 		if (patternSize < 1 || patternSize > sample.width || patternSize > sample.height || patternSize > width || patternSize > height
 			|| iterations < 1 || !Math.isFinite(temperature) || temperature <= 0)
 			throw new ConvChainError("The images must fit the pattern, and iterations and temperature must be positive.");
-		if (width * 1.0 * height * 4 > 0x7fffffff - ImageStorage.PIXEL_OFFSET #if !vision_higher_width_cap || width > 0xffff #end)
+		if (width * 1.0 * height * 4 > 0x7fffffff - ImageBackend.PIXEL_OFFSET #if !vision_higher_width_cap || width > 0xffff #end)
 			throw new ConvChainError("The output image is too large.");
 
 		final palette:Array<Color> = [];

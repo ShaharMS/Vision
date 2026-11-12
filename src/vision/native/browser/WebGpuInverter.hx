@@ -8,6 +8,7 @@ import js.lib.Uint8Array;
 import js.Syntax;
 import vision.Vision;
 import vision.ds.Image;
+import vision.native.ImageBackend;
 import vision.exceptions.WebGpuError;
 
 /** Optional asynchronous browser implementation of inversion for whole images. **/
@@ -60,7 +61,7 @@ class WebGpuInverter {
 	/** Inverts a copy. Views and jobs outside device limits use the portable implementation. **/
 	public function invert(image:Image):Promise<Image> {
 		final result = image.clone();
-		final size = result.underlying.length - @:privateAccess Image.OFFSET;
+		final size = result.underlying.length - ImageBackend.PIXEL_OFFSET;
 		if (disposed || size == 0 || result.hasView() || size > device.limits.maxBufferSize ||
 			size > device.limits.maxStorageBufferBindingSize)
 			return Promise.resolve(Vision.invert(result));
@@ -96,7 +97,7 @@ class WebGpuInverter {
 			device.queue.submit([commands.finish()]);
 			return readback.mapAsync(MAP_READ).then(_ -> {
 				final bytes = Bytes.ofData(new Uint8Array(readback.getMappedRange()).slice().buffer);
-				result.underlying.blit(@:privateAccess Image.OFFSET, bytes, 0, size);
+				result.underlying.blit(ImageBackend.PIXEL_OFFSET, bytes, 0, size);
 				release();
 				return result;
 			}).catchError(error -> {

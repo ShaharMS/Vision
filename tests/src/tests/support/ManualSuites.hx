@@ -9,9 +9,7 @@ class ManualSuites {
 		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest(), "setup", "teardown", "test", casePattern);
 		#end
-		#if (vision_browser_tests || (windows && (cpp || (hl && vision_hashlink_screen))))
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest(), "setup", "teardown", "test", casePattern);
-		#end
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest(), "setup", "teardown", "test", casePattern);
