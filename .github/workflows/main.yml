@@ -326,7 +326,7 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           haxelib install utest 1.13.2 --always
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
+          haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64 -D vision_screen_tests -dce full
           exit $LASTEXITCODE
       - name: Run the Screen test
         shell: pwsh
@@ -350,13 +350,14 @@ jobs:
           if (-not $visualStudio) { throw 'Microsoft C++ toolchain unavailable' }
           "VISION_MSVC_DEV_CMD=$(Join-Path $visualStudio 'Common7/Tools/VsDevCmd.bat')" >> $env:GITHUB_ENV
       - name: Build and run the HashLink Screen suite
+        timeout-minutes: 4
         shell: pwsh
         run: |
           $sdk = $env:VISION_HASHLINK_ROOT
           $source = (Resolve-Path src/vision/native/hashlink/windows/screen.c).Path
           $env:VISION_TESTS = 'ScreenTest'
           New-Item -ItemType Directory -Path bin/native-drawing/hl -Force | Out-Null
-          haxe -cp src -cp tests/src -lib utest -main Main --hl bin/native-drawing/hl/tests.hl -D windows -D vision_hashlink_screen -D hl-ver=1.16.0
+          haxe -cp src -cp tests/src -lib utest -main Main --hl bin/native-drawing/hl/tests.hl -D windows -D vision_hashlink_screen -D hl-ver=1.16.0 -D vision_screen_tests -dce full
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           Push-Location bin/native-drawing/hl
           try {

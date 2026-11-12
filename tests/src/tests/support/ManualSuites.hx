@@ -10,6 +10,7 @@ class ManualSuites {
 		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest(), "setup", "teardown", "test", casePattern);
 		#end
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest(), "setup", "teardown", "test", casePattern);
+		#if !vision_screen_tests
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest(), "setup", "teardown", "test", casePattern);
@@ -145,6 +146,7 @@ class ManualSuites {
 		if (includeTest("VisionExceptionTest")) runner.addCase(new VisionExceptionTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("VisionThreadTest")) runner.addCase(new VisionThreadTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("WebResponseErrorTest")) runner.addCase(new WebResponseErrorTest(), "setup", "teardown", "test", casePattern);
+		#end
 		#end
 	}
 }
