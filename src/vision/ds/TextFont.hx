@@ -6,6 +6,7 @@ import haxe.io.BytesInput;
 import haxe.zip.InflateImpl;
 import vision.exceptions.FontLoadingError;
 import vision.formats.__internal.FontTable;
+import vision.formats.__internal.Woff2;
 import vision.formats.__internal.CffOutline;
 
 typedef FontPoint = {
@@ -36,7 +37,7 @@ class TextFont {
 	final kerning = new IntMap<Int>();
 
 	/**
-		Reads TrueType or CFF outlines from TTF, OpenType, or WOFF 1 bytes.
+		Reads TrueType or CFF outlines from TTF, OpenType, WOFF, or WOFF2 bytes.
 
 		@param bytes The font data
 		@param family The name to use in font-loading errors
@@ -89,7 +90,7 @@ class TextFont {
 		final source = new FontTable(bytes, 0, bytes.length);
 		final signature = source.u32(0);
 		final woff = signature == 0x774F4646;
-		if (signature == 0x774F4632) throw invalid("WOFF2 decoding is unavailable.");
+		if (signature == 0x774F4632) return Woff2.read(source);
 		final flavor = woff ? source.u32(4) : signature;
 		if (flavor != 0x00010000 && flavor != 0x74727565 && flavor != 0x4F54544F) throw invalid("Unknown font format.");
 		final count = source.u16(woff ? 12 : 4);

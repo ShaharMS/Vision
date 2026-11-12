@@ -27,6 +27,12 @@ class PortableTextTest extends utest.Test {
 		"ABCCAIoAAAAAAQAAAAIAAAPoAAAD6AAAAAAAAAAPAAAAAQBkAGQDhAOEAAIAAAEBAQBkAZABkABkAyD84AAAAHicY2BgYGRg" +
 		"BmIGBh4GFgYFIM0ChCC+4///EPL/ATCfAQBNkwZ9AAA=";
 
+	// WOFF2 version of the fixture, with transformed glyf, loca, and hmtx.
+	static final woff2 =
+		"d09GMgABAAAAAACUAAcAAAAAATwAAABTAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATYCJAQGQwgFCwYACh49ACwbzQD4H4lx" +
+		"LMqSenNKPH3d3t5+LPBIY2iSwODECrL8B4aEDTggDrxRBubpBOCARQhJ3aD1g/sSrHZ3gwUGQXECBpC+70PqZQEQFRzGhTGC" +
+		"+1ctAw==";
+
 	@:visionTestId("vision.ds.Image.drawText#portableOutline")
 	function test_drawText__portableOutline() {
 		final font = TextFont.fromBytes(Base64.decode(fixture));
@@ -45,6 +51,25 @@ class PortableTextTest extends utest.Test {
 		original.drawText(0, 0, "A", {font: TextFont.fromBytes(Base64.decode(fixture)), size: 40});
 		compressed.drawText(0, 0, "A", {font: TextFont.fromBytes(Base64.decode(wrapped)), size: 40});
 		Assert.equals(0, original.exportToBytes().compare(compressed.exportToBytes()));
+	}
+
+	@:visionTestId("vision.ds.TextFont.fromBytes#woff2")
+	function test_fromBytes__readsTransformedWoff2() {
+		final original = new Image(40, 40);
+		final compressed = new Image(40, 40);
+		original.drawText(0, 0, "A", {font: TextFont.fromBytes(Base64.decode(fixture)), size: 40});
+		compressed.drawText(0, 0, "A", {font: TextFont.fromBytes(Base64.decode(woff2)), size: 40});
+		Assert.equals(0, original.exportToBytes().compare(compressed.exportToBytes()));
+	}
+
+	@:visionTestId("vision.ds.TextFont.fromBytes#truncatedWoff2")
+	function test_fromBytes__rejectsTruncatedWoff2() {
+		final data = Base64.decode(woff2);
+		// Keep the container length consistent so decoding reaches the damaged Brotli stream.
+		final truncated = data.sub(0, data.length - 8);
+		truncated.set(11, truncated.length);
+		truncated.set(23, truncated.get(23) - 8);
+		ExceptionAssertions.throwsType(() -> TextFont.fromBytes(truncated), FontLoadingError);
 	}
 
 	@:visionTestId("vision.ds.TextFont.fromBytes#invalidFont")

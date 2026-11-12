@@ -20,6 +20,10 @@ class FontTable {
 		return new FontTable(bytes, start + offset, size);
 	}
 
+	public function toBytes():Bytes {
+		return bytes.sub(start, length);
+	}
+
 	public function tag(offset:Int):String {
 		check(offset, 4);
 		return bytes.getString(start + offset, 4);
