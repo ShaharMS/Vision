@@ -5,6 +5,8 @@ import vision.ds.Image;
 import vision.exceptions.LibraryRequired;
 import vision.formats._internal.images.Jpeg;
 import vision.formats._internal.images.Webp;
+import vision.formats._internal.images.webp.WebpAnimation;
+import vision.ds.ImageAnimation;
 
 /**
     A class for saving images to bytes
@@ -70,5 +72,15 @@ import vision.formats._internal.images.Webp;
     **/
     public function webp(image:Image):ByteArray {
         return Webp.write(image);
+    }
+    /**
+        Encodes full-canvas animation frames as lossless WebP.
+
+        @param animation The frames, durations, and loop count
+        @return The complete WebP file
+        @throws ImageSavingFailed If the frames or timing are invalid
+    **/
+    public function webpAnimation(animation:ImageAnimation):ByteArray {
+        return WebpAnimation.write(animation);
     }
 }

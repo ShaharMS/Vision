@@ -4,6 +4,8 @@ import vision.exceptions.LibraryRequired;
 import vision.ds.Image;
 import vision.formats._internal.images.Jpeg;
 import vision.formats._internal.images.Webp;
+import vision.formats._internal.images.webp.WebpAnimation;
+import vision.ds.ImageAnimation;
 import vision.ds.ByteArray;
 
 /**
@@ -73,5 +75,15 @@ import vision.ds.ByteArray;
     **/
     public function webp(bytes:ByteArray):Image {
         return Webp.read(bytes);
+    }
+    /**
+        Decodes animated WebP containing lossless frames.
+
+        @param bytes The complete animated WebP file
+        @return The animation composited on a transparent canvas
+        @throws ImageLoadingFailed If the container or any lossless frame is invalid
+    **/
+    public function webpAnimation(bytes:ByteArray):ImageAnimation {
+        return WebpAnimation.read(bytes);
     }
 }

@@ -103,7 +103,8 @@
                                                                                                                                             "png",
                                                                                                                                             "bmp",
                                                                                                                                             "jpeg",
-                                                                                                                                            "webp"
+                                                                                                                                            "webp",
+                                                                                                                                            "webpAnimation"
                                                                                                                                     ],
                                                                                                             "testFile":  "tests/src/tests/ToBytesTest.hx"
                                                                                                     },
@@ -1670,7 +1671,8 @@
                                                                                                                                                     "png",
                                                                                                                                                     "bmp",
                                                                                                                                                     "jpeg",
-                                                                                                                                                    "webp"
+                                                                                                                                                    "webp",
+                                                                                                                                                    "webpAnimation"
                                                                                                                                             ],
                                                                                                                     "testFile":  "tests/src/tests/FromBytesTest.hx"
                                                                                                             },

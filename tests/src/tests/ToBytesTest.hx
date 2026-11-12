@@ -6,6 +6,7 @@ import tests.support.FormatAssertions;
 import tests.support.ColorAssertions;
 import utest.Assert;
 import vision.ds.Image;
+import vision.ds.ImageAnimation;
 import vision.ds.Color;
 import vision.exceptions.ImageSavingFailed;
 import vision.formats.ImageIO;
@@ -81,5 +82,19 @@ class ToBytesTest extends utest.Test {
 		Assert.equals(2, actual.height);
 		for (y in 0...image.height)
 			for (x in 0...image.width) ColorAssertions.equalsColor(image.getPixel(x, y), actual.getPixel(x, y));
+	}
+	@:visionTestId("vision.formats.to.ToBytes.webpAnimation#roundTrip")
+	function test_webpAnimation__preservesPixelsAndTiming() {
+		final first = new Image(3, 2, Color.fromRGBA(20, 60, 80, 128));
+		final second = new Image(3, 2, Color.fromRGBA(180, 40, 120, 0));
+		final animation = new ImageAnimation([{image: first, duration: 45}, {image: second, duration: 80}], 3, Color.BLUE);
+		final result = ImageIO.from.bytes.webpAnimation(ImageIO.to.bytes.webpAnimation(animation));
+		Assert.equals(3, result.loopCount);
+		ColorAssertions.equalsColor(Color.BLUE, result.background);
+		Assert.equals(2, result.frames.length);
+		Assert.equals(45, result.frames[0].duration);
+		Assert.equals(80, result.frames[1].duration);
+		Assert.equals(0, first.exportToBytes().compare(result.frames[0].image.exportToBytes()));
+		Assert.equals(0, second.exportToBytes().compare(result.frames[1].image.exportToBytes()));
 	}
 }
