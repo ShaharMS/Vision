@@ -11,6 +11,7 @@ import vision.ds.specifics.SimilarityScoringMechanism;
 import vision.algorithms.KMeans;
 import vision.algorithms.EMeans;
 import vision.algorithms.PatternSynthesis;
+import vision.algorithms.Panorama;
 import vision.ds.specifics.ColorChannel;
 import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
@@ -1825,5 +1826,19 @@ class Vision {
 	**/
 	public static function synthesizePattern(sample:Image, width:Int, height:Int, patternSize:Int = 2, attempts:Int = 8):Image {
 		return PatternSynthesis.synthesize(sample, width, height, patternSize, attempts);
+	}
+	/**
+		Stitches a sequence of overlapping photos into a planar panorama.
+
+		Place the photos in capture order with textured overlap between each pair.
+		Photos should have similar scale and orientation. Overlapping pixels are
+		blended, and gaps in the resulting bounds are transparent.
+
+		@param images The ordered photos to stitch
+		@return A new image containing the panorama
+		@throws VisionException If adjacent images cannot be aligned
+	**/
+	public static function stitchPanorama(images:Array<Image>):Image {
+		return Panorama.stitch(images);
 	}
 }
