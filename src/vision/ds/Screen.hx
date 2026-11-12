@@ -9,7 +9,7 @@ import js.Browser;
 import js.lib.Promise;
 import js.Syntax;
 import vision.backend.CanvasRenderer;
-#elseif (cpp && windows)
+#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 import vision.backend.WindowsRenderer;
 #end
 
@@ -39,7 +39,7 @@ class Screen {
 	var animationFrame:Null<Int>;
 	var pendingPoll:Promise<Bool>;
 	var resolvePoll:Bool->Void;
-	#elseif (cpp && windows)
+	#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 	final renderer:WindowsRenderer;
 	#end
 
@@ -68,18 +68,18 @@ class Screen {
 		renderer = new CanvasRenderer(canvas, options.preferGpu, true);
 		renderer.clear(Color.BLACK);
 		Browser.document.body.appendChild(canvas);
-		#elseif (cpp && windows)
+		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 		renderer = new WindowsRenderer(width, height, options.visible, x, y);
 		renderer.present();
 		#else
-		throw new VisionException("Screen requires a browser or a Windows C++ build", "Screen");
+		throw new VisionException("Screen requires a browser or a Windows desktop build", "Screen");
 		#end
 	}
 
 	/** Clears the screen to an opaque background color. **/
 	public function clear(color:Color = Color.BLACK):Void {
 		checkOpen();
-		#if (js || (cpp && windows))
+		#if (js || (windows && (cpp || (hl && vision_hashlink_screen))))
 		renderer.clear(color | 0xFF000000);
 		present();
 		#end
@@ -88,7 +88,7 @@ class Screen {
 	/** Draws an image at a position relative to the top-left corner of this screen. **/
 	public function draw(image:Image, x:Int = 0, y:Int = 0):Void {
 		if (!beginDraw(image)) return;
-		#if (js || (cpp && windows))
+		#if (js || (windows && (cpp || (hl && vision_hashlink_screen))))
 		renderer.draw(image, x, y);
 		present();
 		#end
@@ -99,7 +99,7 @@ class Screen {
 		if (!beginDraw(image)) return;
 		#if js
 		renderer.drawInverted(image, x, y);
-		#elseif (cpp && windows)
+		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 		renderer.draw(Vision.invert(image.clone()), x, y);
 		present();
 		#end
@@ -125,7 +125,7 @@ class Screen {
 	/** Processes desktop events and reports whether the screen is still open. **/
 	public function processEvents():Bool {
 		if (disposed) return false;
-		#if (cpp && windows && !js)
+		#if (windows && (cpp || (hl && vision_hashlink_screen)))
 		if (!renderer.poll()) {
 			dispose();
 			return false;
@@ -179,7 +179,7 @@ class Screen {
 		finishBrowserPoll(false);
 		renderer.dispose();
 		renderer.canvas.remove();
-		#elseif (cpp && windows)
+		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 		renderer.dispose();
 		#end
 		disposed = true;
@@ -222,7 +222,7 @@ class Screen {
 	}
 
 	inline function present():Void {
-		#if (cpp && windows && !js)
+		#if (windows && (cpp || (hl && vision_hashlink_screen)))
 		renderer.present();
 		#end
 	}

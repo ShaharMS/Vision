@@ -13,7 +13,7 @@
 
 # Structure
 
-The library includes these main source directories and entry points.
+This Library is organized into 5 subfolders, and one important file:
 
  - [**`ds`**](https://github.com/ShaharMS/Vision/tree/main/src/vision/ds) - contains Vision's data structures & types. Some functions and
 Features require different return types which aren't basic - such as lines, rays or points.
@@ -58,20 +58,6 @@ ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/
     }
 );
 ```
-
-### Draw an image on a screen
-
-Create a `Screen(x, y, width, height)` to open a browser drawing area or a desktop window. Use `draw(image, x, y)` to draw immediately at coordinates inside the screen.
-
-Draws stay in place until you clear them or draw over them. In a render loop, call `poll()` to wait for the next frame at the target `frameRate`. Desktop builds block the calling thread. Browser builds return a promise you can wait on from your loop. Use `deltaTime` for the elapsed seconds between polls. Call `processEvents()` separately to keep a desktop window responsive.
-
-Assign `onFirstDraw` for one-time setup immediately before the first nonempty image draw. `dispose()` closes the window or removes the browser drawing area.
-
-Screen supports browser JavaScript and Windows hxcpp. [Windows build instructions](tests/ci/README.md#windows-drawing)
-
-### Rendering backends
-
-The `vision.backend` package holds Screen's rendering implementations. The browser uses Haxe's browser and WebGL externs. Windows hxcpp builds use Haxe externs for the Windows system APIs. Build with `-D windows` to enable the desktop backend. Image encoders and framework format conversions live in `vision.formats`. [Windows build and test commands](tests/ci/README.md#windows-drawing)
 
 ---
 ### Basic Image Manipulation
@@ -281,21 +267,6 @@ If you see some code that you think is not understandable, or some place that la
 ## Building a release candidate
 
 Run `haxe test.hxml` and the relevant targets in `tests/ci/local-ci.hxml` before packaging. Tests require `utest`; the library itself does not.
-
-From the repository root, run these PowerShell commands to stage a release in a fresh directory under the system temp directory and write a timestamped ZIP under `release/`.
-
-```powershell
-$version = (Get-Content haxelib.json -Raw | ConvertFrom-Json).version
-$name = "vision-$version-$(Get-Date -Format yyyyMMdd-HHmmss-fff)"
-$stage = Join-Path ([IO.Path]::GetTempPath()) $name
-New-Item -ItemType Directory -Path $stage -ErrorAction Stop | Out-Null
-New-Item -ItemType Directory -Path release -Force | Out-Null
-Copy-Item extraParams.hxml, CHANGELOG.md, LICENSE, README.md, haxelib.json, hxformat.json, src -Destination $stage -Recurse -ErrorAction Stop
-Copy-Item tests/ci/cppia -Destination (Join-Path $stage 'cppia') -Recurse -ErrorAction Stop
-Compress-Archive -Path (Join-Path $stage '*') -DestinationPath "release/$name.zip" -ErrorAction Stop
-```
-
-Review the archive before submitting it with `haxelib submit <zip-path>`.
 
 For Neko builds, use `-dce full` to discard unreachable image methods that can exceed the VM function-scope limit. Local and GitHub CI apply this flag to the Neko batches.
 

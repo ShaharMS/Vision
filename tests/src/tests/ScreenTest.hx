@@ -271,7 +271,7 @@ class ScreenTest extends utest.Test {
 			Assert.floatEquals(expected[index], pixel[index], 1);
 		}
 	}
-	#elseif (cpp && windows)
+	#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 	@:visionTestId("vision.ds.Screen.draw#desktopPixels")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")

@@ -8,7 +8,7 @@ class ManualSuites {
 		#if vision_browser_tests
 		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest(), "setup", "teardown", "test", casePattern);
 		#end
-		#if (vision_browser_tests || (cpp && windows))
+		#if (vision_browser_tests || (windows && (cpp || (hl && vision_hashlink_screen))))
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest(), "setup", "teardown", "test", casePattern);
 		#end
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
