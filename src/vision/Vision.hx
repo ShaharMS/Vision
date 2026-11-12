@@ -9,6 +9,7 @@ import haxe.crypto.Sha256;
 import vision.exceptions.Unimplemented;
 import vision.ds.specifics.SimilarityScoringMechanism;
 import vision.algorithms.KMeans;
+import vision.algorithms.EMeans;
 import vision.ds.specifics.ColorChannel;
 import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
@@ -1794,5 +1795,40 @@ class Vision {
 	**/
 	public static function kmeansGroupImageColors(image:Image, groupCount:Int = 16, considerTransparency:Bool = false):Array<ColorCluster> {
 		return KMeans.getImageColorClusters(image, groupCount);
+	}
+	/**
+		Reduces an image to a palette learned with e-means.
+
+		Each distinct RGBA color contributes equally when learning the palette.
+		The resulting image uses the mean color of each group.
+
+		@param image The image to posterize
+		@param maxColorCount The maximum number of palette colors
+		@param epochs The number of training passes over the distinct colors
+		@return A new image using the learned palette
+	**/
+	public static function emeansPosterize(image:Image, maxColorCount:Int = 16, epochs:Int = 5):Image {
+		final groups = EMeans.getImageColorClusters(image, maxColorCount, epochs);
+		final palette = new haxe.ds.IntMap<Color>();
+		for (group in groups)
+			for (color in group.items) palette.set(color, group.centroid);
+		final posterized = new Image(image.width, image.height);
+		image.forEachPixelInView((x, y, color) -> {
+			final replacement = palette.get(color);
+			posterized.setUnsafePixel(x, y, replacement == null ? color : replacement);
+		});
+		return posterized;
+	}
+
+	/**
+		Groups distinct RGBA colors with e-means, using mini-batch updates to learn a palette.
+
+		@param image The image whose colors to group
+		@param groupCount The maximum number of color groups
+		@param epochs The number of training passes over the distinct colors
+		@return The nonempty groups and the mean RGBA color of each group
+	**/
+	public static function emeansGroupImageColors(image:Image, groupCount:Int = 16, epochs:Int = 5):Array<ColorCluster> {
+		return EMeans.getImageColorClusters(image, groupCount, epochs);
 	}
 }

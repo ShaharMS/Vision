@@ -74,6 +74,7 @@ class ManualSuites {
 		if (includeTest("InvalidHeapsPixelFormatTest")) runner.addCase(new InvalidHeapsPixelFormatTest(), "setup", "teardown", "test", casePattern);
 		#if !neko
 		if (includeTest("KMeansTest")) runner.addCase(new KMeansTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("EMeansTest")) runner.addCase(new EMeansTest(), "setup", "teardown", "test", casePattern);
 		#end
 		#end
 

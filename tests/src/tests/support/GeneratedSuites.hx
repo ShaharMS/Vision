@@ -41,6 +41,7 @@ class GeneratedSuites {
 		if (includeTest("Int16Point2DTest")) runner.addCase(new Int16Point2DTest());
 		if (includeTest("IntPoint2DTest")) runner.addCase(new IntPoint2DTest());
 		if (includeTest("KMeansTest")) runner.addCase(new KMeansTest());
+		if (includeTest("EMeansTest")) runner.addCase(new EMeansTest());
 		if (includeTest("KernelResamplerTest")) runner.addCase(new KernelResamplerTest());
 		if (includeTest("LanczosInterpolationTest")) runner.addCase(new LanczosInterpolationTest());
 		if (includeTest("LaplaceTest")) runner.addCase(new LaplaceTest());
