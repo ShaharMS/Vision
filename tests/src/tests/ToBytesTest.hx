@@ -70,6 +70,17 @@ class ToBytesTest extends utest.Test {
 	function test_jpeg__rejectsInvalidQuality() {
 		ExceptionAssertions.throwsType(() -> new ToBytes().jpeg(new Image(1, 1), 0), ImageSavingFailed);
 	}
+	@:visionTestId("vision.formats.to.ToBytes.jpegCmyk#roundTrip")
+	function test_jpegCmyk__encodesFourInkChannels() {
+		final inks = haxe.io.Bytes.ofHex("33669933");
+		final bytes = ImageIO.to.bytes.jpegCmyk(inks, 1, 1, 98);
+		final result = ImageIO.from.bytes.jpeg(bytes);
+		final color = result.getPixel(0, 0);
+		Assert.floatEquals(163, color.red, 1);
+		Assert.floatEquals(122, color.green, 1);
+		Assert.floatEquals(82, color.blue, 1);
+	}
+
 	@:visionTestId("vision.formats.to.ToBytes.webp#lossless")
 	function test_webp__preservesPixelsIncludingHiddenRgb() {
 		final image = new Image(3, 2, Color.fromRGBA(26, 83, 172, 0));

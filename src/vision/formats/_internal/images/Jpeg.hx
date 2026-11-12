@@ -22,13 +22,20 @@ class Jpeg {
 	}
 
 	public static function write(image:Image, quality:Int):ByteArray {
-		if (quality < 1 || quality > 100 || image.width < 1 || image.height < 1 || image.width > 65535 || image.height > 65535)
-			throw new ImageSavingFailed(JPEG, "Invalid image dimensions or quality.");
+		return encode(image.exportToBytes(), image.width, image.height, quality, false);
+	}
+
+	public static function writeCmyk(inks:ByteArray, width:Int, height:Int, quality:Int):ByteArray {
+		return encode(inks, width, height, quality, true);
+	}
+
+	static function encode(pixels:ByteArray, width:Int, height:Int, quality:Int, cmyk:Bool):ByteArray {
+		if (quality < 1 || quality > 100 || width < 1 || height < 1 || width > 65535 || height > 65535
+			|| width * 1.0 * height * 4 != pixels.length)
+			throw new ImageSavingFailed(JPEG, "Invalid image dimensions, pixel data, or quality.");
 		try {
 			final output = new BytesOutput();
-			new JpegWriter(output).write({
-				width: image.width, height: image.height, quality: quality, pixels: image.exportToBytes()
-			});
+			new JpegWriter(output).write({width: width, height: height, quality: quality, pixels: pixels}, cmyk);
 			return output.getBytes();
 		} catch (error:Dynamic) {
 			throw new ImageSavingFailed(JPEG, Std.string(error));

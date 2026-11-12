@@ -413,24 +413,18 @@ class JpegWriter {
 		for( j in 0...64 )
 			b(UVTable[j]);
 	}
-	function writeSOF0(width: Int, height: Int) {
-		b(0xFF); b(0xC0);  //<- marker 0xFFC0
-		b(0);  b(17);    //<- length, truecolor YUV JPG
-		b(8);  // precision
-		b( (height>>8) & 0xFF );
-		b(  height & 0xFF );
-		b(  (width>>8) & 0xFF );
-		b(  width & 0xFF );
-		b(3);     // nrofcomponents
-		b(1);     // IdY
-		b(0x11);  // HVY
-		b(0);     // QTY
-		b(2);     // IdU
-		b(0x11);  // HVU
-		b(1);     // QTU
-		b(3);     // IdV
-		b(0x11);  // HVV
-		b(1);     // QTV
+	function writeSOF0(width:Int, height:Int, components:Array<Int>, cmyk:Bool) {
+		writeWord(0xffc0);
+		writeWord(8 + components.length * 3);
+		b(8);
+		writeWord(height);
+		writeWord(width);
+		b(components.length);
+		for (i in 0...components.length) {
+			b(components[i]);
+			b(0x11);
+			b(cmyk || i == 0 ? 0 : 1);
+		}
 	}
 
 	function writeDHT() {
@@ -457,20 +451,29 @@ class JpegWriter {
 		byteout.write(std_ac_chrominance_values);
 	}
 
-	function writeSOS() {
-		b(0xFF); b(0xDA);  //<- marker 0xFFDA
-		b(0); b(12);   //<- length
-		b(3);     // nrofcomponents
-		b(1);     // IdY
-		b(0);     // HTY
-		b(2);     // IdU
-		b(0x11);  // HTU
-		b(3);     // IdV
-		b(0x11);  // HTV
-		b(0);     // Ss
-		b(0x3F);  // Se
-		b(0);     // Bf
+	function writeSOS(components:Array<Int>, cmyk:Bool) {
+		writeWord(0xffda);
+		writeWord(6 + components.length * 2);
+		b(components.length);
+		for (i in 0...components.length) {
+			b(components[i]);
+			b(cmyk || i == 0 ? 0 : 0x11);
+		}
+		b(0);
+		b(63);
+		b(0);
 	}
+
+	function writeAdobe() {
+		writeWord(0xffee);
+		writeWord(14);
+		byteout.writeString("Adobe");
+		writeWord(100);
+		writeWord(0);
+		writeWord(0);
+		b(0); // Inverted CMYK, with no color transform.
+	}
+
 
 	// Core processing
 	var DU: Array<Float>;  //<- initialized in function new JPEGEncoder()
@@ -587,7 +590,18 @@ class JpegWriter {
 		initCategoryNumber();
 	}
 
-	public function write( image : JpegData ) {
+	function cmykBlock(image:JpegData, x:Int, y:Int, channel:Int):Void {
+		var position = 0;
+		for (dy in 0...8) {
+			final row = (y + dy < image.height ? y + dy : image.height - 1) * image.width;
+			for (dx in 0...8) {
+				final column = x + dx < image.width ? x + dx : image.width - 1;
+				YDU[position++] = 127 - image.pixels.get((row + column) * 4 + channel);
+			}
+		}
+	}
+
+	public function write(image:JpegData, cmyk:Bool = false) {
 		// init quality table
 		var quality = image.quality;
 		if( quality <= 0 ) quality = 1;
@@ -605,26 +619,35 @@ class JpegWriter {
 		var height = image.height;
 		// Add JPEG headers
 		writeWord(0xFFD8); // SOI
-		writeAPP0();
+		final components = cmyk ? ["C".code, "M".code, "Y".code, "K".code] : [1, 2, 3];
+		if (cmyk) writeAdobe(); else writeAPP0();
 		writeDQT();
-		writeSOF0( width, height );
+		writeSOF0(width, height, components, cmyk);
 		writeDHT();
-		writeSOS();
+		writeSOS(components, cmyk);
 
 		// Encode 8x8 macroblocks
 		var DCY = 0.0;
 		var DCU = 0.0;
 		var DCV = 0.0;
+		final inkPredictors = [0.0, 0.0, 0.0, 0.0];
 		bytenew = 0;
 		bytepos = 7;
 		var ypos = 0;
 		while( ypos < height ) {
 			var xpos = 0;
 			while( xpos < width ) {
-				RGB2YUV(image.pixels, width, height, xpos, ypos);
-				DCY = processDU(YDU, fdtbl_Y, DCY, YDC_HT, YAC_HT);
-				DCU = processDU(UDU, fdtbl_UV, DCU, UVDC_HT, UVAC_HT);
-				DCV = processDU(VDU, fdtbl_UV, DCV, UVDC_HT, UVAC_HT);
+				if (cmyk) {
+					for (channel in 0...4) {
+						cmykBlock(image, xpos, ypos, channel);
+						inkPredictors[channel] = processDU(YDU, fdtbl_Y, inkPredictors[channel], YDC_HT, YAC_HT);
+					}
+				} else {
+					RGB2YUV(image.pixels, width, height, xpos, ypos);
+					DCY = processDU(YDU, fdtbl_Y, DCY, YDC_HT, YAC_HT);
+					DCU = processDU(UDU, fdtbl_UV, DCU, UVDC_HT, UVAC_HT);
+					DCV = processDU(VDU, fdtbl_UV, DCV, UVDC_HT, UVAC_HT);
+				}
 				xpos += 8;
 			}
 			ypos += 8;

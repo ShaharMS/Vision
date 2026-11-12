@@ -64,6 +64,20 @@ import vision.ds.ImageAnimation;
     }
 
     /**
+        Encodes four-component Adobe CMYK JPEG from packed ink samples.
+
+        @param inks Interleaved C, M, Y, K bytes in row order, with zero meaning no ink
+        @param width The image width in pixels
+        @param height The image height in pixels
+        @param quality JPEG quality from 1 to 100
+        @return The complete sequential JPEG file
+        @throws ImageSavingFailed If the sample count, dimensions, or quality are invalid
+    **/
+    public function jpegCmyk(inks:ByteArray, width:Int, height:Int, quality:Int = 90):ByteArray {
+        return Jpeg.writeCmyk(inks, width, height, quality);
+    }
+
+    /**
         Encodes a still lossless WebP image.
 
         @param image The image to encode, including alpha
