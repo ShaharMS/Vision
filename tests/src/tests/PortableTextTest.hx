@@ -8,6 +8,8 @@ import utest.Assert;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.Font;
+import vision.formats._internal.fonts.FontTable;
+import vision.formats._internal.fonts.otf.GposKerning;
 import vision.exceptions.FontLoadingError;
 
 @:visionMaturity("semantic")
@@ -152,5 +154,12 @@ class PortableTextTest extends utest.Test {
 	@:visionTestId("vision.ds.Font.fromBytes#invalidFont")
 	function test_fromBytes__rejectsTruncatedFont() {
 		ExceptionAssertions.throwsType(() -> Font.fromBytes(Bytes.ofString("font")), FontLoadingError);
+	}
+	@:visionTestId("vision.formats._internal.fonts.otf.GposKerning.adjustment#pairAdvance")
+	function test_adjustment__readsGposPairAdvance() {
+		final bytes = Base64.decode("AAEAAAAAAAoAGAABa2VybgAIAAAAAQAAAAEABAACAAAAAQAIAAEADAAEAAAAAQASAAEAAQABAAEAAv/u");
+		final kerning = new GposKerning(new FontTable(bytes, 0, bytes.length));
+		Assert.equals(-18, kerning.adjustment(1, 2));
+		Assert.equals(0, kerning.adjustment(2, 1));
 	}
 }

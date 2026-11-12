@@ -78,6 +78,24 @@ class FromBytesTest extends utest.Test {
 		Assert.equals(5, actual.height);
 		FormatAssertions.imagesEqual(expected, actual);
 	}
+	@:visionTestId("vision.formats.from.FromBytes.jpeg#cmyk")
+	function test_jpeg__decodesAdobeCmyk() {
+		final bytes = Base64.decode(
+			"/9j/7gAOQWRvYmUAZAAAAAAA/9sAQwABAQEBAQEBAQEBAQEBAgIDAgICAgIEAwMCAwUEBQUFBAQEBQYHBgUFBwYEBAYJBgcI" +
+			"CAgICAUGCQoJCAoHCAgI/8AAFAgAAgADBEMRAE0RAFkRAEsRAP/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//E" +
+			"ALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2" +
+			"Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrC" +
+			"w8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/aAA4EQwBNAFkASwAAPwD+mCvsivi+v6YK/9k=");
+		final image = ImageIO.from.bytes.jpeg(bytes);
+		Assert.equals(3, image.width);
+		Assert.equals(2, image.height);
+		final color = image.getPixel(2, 1);
+		Assert.floatEquals(163, color.red, 1);
+		Assert.floatEquals(122, color.green, 1);
+		Assert.floatEquals(82, color.blue, 1);
+		Assert.equals(255, color.alpha);
+	}
+
 	@:visionTestId("vision.formats.from.FromBytes.webp#paletteAlpha")
 	function test_webp__decodesPaletteAndAlpha() {
 		final bytes = Base64.decode("UklGRkwAAABXRUJQVlA4TD8AAAAvEgAEEBegpm0DFl+h0SkQSBRiH24esWCiPrausAQCCVT+Cisd8swrmGUkqTuGbR9tZZb+ASL63wNJSJZ0TxgA");
