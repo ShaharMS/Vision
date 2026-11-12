@@ -7,6 +7,7 @@ import vision.ds.ByteArray;
 import haxe.io.Path;
 import js.Browser;
 import vision.ds.Image;
+import vision.tools.ImageTools;
 
 using vision.tools.ImageTools;
 using StringTools;
@@ -14,11 +15,13 @@ using StringTools;
 class JsImageExporter {
 
     public static function saveToFileAsync(image:Image, path:String, format:ImageFormat) {
-        var canvas = image.toJsCanvas();
         var streamType = imageFormatToStreamType(format);
-        var href = format != VISION ? 
-            canvas.toDataURL(streamType, 1.0).replace(streamType, "application/octet-stream") :
-            'data:application/octet-stream;base64,' + Base64.encode(saveToBytesSync(image, streamType));
+        var href = if (format == JPEG || format == WEBP)
+            'data:application/octet-stream;base64,' + Base64.encode(ImageTools.exportToBytes(image, format))
+        else if (format == VISION)
+            'data:application/octet-stream;base64,' + Base64.encode(saveToBytesSync(image, streamType))
+        else
+            image.toJsCanvas().toDataURL(streamType, 1.0).replace(streamType, "application/octet-stream");
   		var link = Browser.document.createAnchorElement();
   		link.download = Path.withoutDirectory(path);
   		link.href = href;
@@ -37,6 +40,7 @@ class JsImageExporter {
         return switch format {
             case PNG: "image/png";
             case JPEG: "image/jpeg";
+            case WEBP: "image/webp";
             case BMP: "image/bmp";
             case VISION: "application/octet-stream";
         }

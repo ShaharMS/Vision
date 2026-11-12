@@ -3,6 +3,7 @@ package tests;
 import tests.support.Factories;
 import tests.support.ExceptionAssertions;
 import tests.support.FormatAssertions;
+import tests.support.ColorAssertions;
 import utest.Assert;
 import vision.ds.Image;
 import vision.ds.Color;
@@ -67,5 +68,18 @@ class ToBytesTest extends utest.Test {
 	@:visionTestId("vision.formats.to.ToBytes.jpeg#invalidQuality")
 	function test_jpeg__rejectsInvalidQuality() {
 		ExceptionAssertions.throwsType(() -> new ToBytes().jpeg(new Image(1, 1), 0), ImageSavingFailed);
+	}
+	@:visionTestId("vision.formats.to.ToBytes.webp#lossless")
+	function test_webp__preservesPixelsIncludingHiddenRgb() {
+		final image = new Image(3, 2, Color.fromRGBA(26, 83, 172, 0));
+		image.setPixel(1, 0, Color.fromRGBA(201, 125, 8, 128));
+		image.setPixel(2, 1, Color.fromRGBA(41, 0, 73, 255));
+		final bytes = ImageIO.to.bytes.webp(image);
+		FormatAssertions.bytesStartWith(bytes, [82, 73, 70, 70]);
+		final actual = ImageIO.from.bytes.webp(bytes);
+		Assert.equals(3, actual.width);
+		Assert.equals(2, actual.height);
+		for (y in 0...image.height)
+			for (x in 0...image.width) ColorAssertions.equalsColor(image.getPixel(x, y), actual.getPixel(x, y));
 	}
 }

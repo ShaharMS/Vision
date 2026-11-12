@@ -3,6 +3,7 @@ package vision.formats.from;
 import vision.exceptions.LibraryRequired;
 import vision.ds.Image;
 import vision.formats._internal.images.Jpeg;
+import vision.formats._internal.images.Webp;
 import vision.ds.ByteArray;
 
 /**
@@ -60,5 +61,16 @@ import vision.ds.ByteArray;
     **/
     public function jpeg(bytes:ByteArray):Image {
         return Jpeg.read(bytes);
+    }
+
+    /**
+        Decodes a still lossless WebP image.
+
+        @param bytes The complete WebP file
+        @return The decoded image, including alpha
+        @throws ImageLoadingFailed If the file is invalid, lossy, or animated
+    **/
+    public function webp(bytes:ByteArray):Image {
+        return Webp.read(bytes);
     }
 }

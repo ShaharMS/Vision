@@ -3,6 +3,7 @@ package tests;
 import haxe.crypto.Base64;
 import tests.support.ExceptionAssertions;
 import tests.support.FormatAssertions;
+import tests.support.ColorAssertions;
 import utest.Assert;
 import vision.exceptions.ImageLoadingFailed;
 import vision.formats.ImageIO;
@@ -77,6 +78,22 @@ class FromBytesTest extends utest.Test {
 		Assert.equals(5, actual.height);
 		FormatAssertions.imagesEqual(expected, actual);
 	}
+	@:visionTestId("vision.formats.from.FromBytes.webp#paletteAlpha")
+	function test_webp__decodesPaletteAndAlpha() {
+		final bytes = Base64.decode("UklGRkwAAABXRUJQVlA4TD8AAAAvEgAEEBegpm0DFl+h0SkQSBRiH24esWCiPrausAQCCVT+Cisd8swrmGUkqTuGbR9tZZb+ASL63wNJSJZ0TxgA");
+		final image = ImageIO.from.bytes.webp(bytes);
+		Assert.equals(19, image.width);
+		Assert.equals(17, image.height);
+		ColorAssertions.equalsColor(0x32e62348, image.getPixel(0, 0));
+		ColorAssertions.equalsColor(0xff101ec8, image.getPixel(1, 0));
+		ColorAssertions.equalsColor(0x0078460a, image.getPixel(2, 0));
+	}
+
+	@:visionTestId("vision.formats.from.FromBytes.webp#invalidHeader")
+	function test_webp__rejectsInvalidContainer() {
+		ExceptionAssertions.throwsType(() -> ImageIO.from.bytes.webp(FormatAssertions.malformedBytes()), ImageLoadingFailed);
+	}
+
 	#if vision_quiet
 	@:visionTestId("vision.formats.from.FromBytes#quiet-invalid-images")
 	function test_quiet__invalidImagesReturnTransparentPlaceholder() {

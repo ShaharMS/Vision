@@ -102,7 +102,8 @@
                                                                                                                                             "new",
                                                                                                                                             "png",
                                                                                                                                             "bmp",
-                                                                                                                                            "jpeg"
+                                                                                                                                            "jpeg",
+                                                                                                                                            "webp"
                                                                                                                                     ],
                                                                                                             "testFile":  "tests/src/tests/ToBytesTest.hx"
                                                                                                     },
@@ -1668,7 +1669,8 @@
                                                                                                                                                     "new",
                                                                                                                                                     "png",
                                                                                                                                                     "bmp",
-                                                                                                                                                    "jpeg"
+                                                                                                                                                    "jpeg",
+                                                                                                                                                    "webp"
                                                                                                                                             ],
                                                                                                                     "testFile":  "tests/src/tests/FromBytesTest.hx"
                                                                                                             },

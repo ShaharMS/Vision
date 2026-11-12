@@ -4,6 +4,7 @@ import vision.ds.ByteArray;
 import vision.ds.Image;
 import vision.exceptions.LibraryRequired;
 import vision.formats._internal.images.Jpeg;
+import vision.formats._internal.images.Webp;
 
 /**
     A class for saving images to bytes
@@ -58,5 +59,16 @@ import vision.formats._internal.images.Jpeg;
     **/
     public function jpeg(image:Image, quality:Int = 90):ByteArray {
         return Jpeg.write(image, quality);
+    }
+
+    /**
+        Encodes a still lossless WebP image.
+
+        @param image The image to encode, including alpha
+        @return The complete WebP file
+        @throws ImageSavingFailed If the image cannot be encoded
+    **/
+    public function webp(image:Image):ByteArray {
+        return Webp.write(image);
     }
 }

@@ -75,8 +75,9 @@ class ImageTools {
 	**/
 	overload extern public static inline function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
 		#if (sys && !js)
-		if (ImageFormat.fromString(Path.extension(path.split("?")[0])) == JPEG) {
-			final result = path.contains("://") ? loadFromURL(image, path) : loadFromBytes(image, sys.io.File.getBytes(path), JPEG);
+		final format = ImageFormat.fromString(Path.extension(path.split("?")[0]));
+		if (format == JPEG || format == WEBP) {
+			final result = path.contains("://") ? loadFromURL(image, path) : loadFromBytes(image, sys.io.File.getBytes(path), format);
 			if (onComplete != null) onComplete(result);
 			return;
 		}
@@ -179,6 +180,7 @@ class ImageTools {
 				case PNG: ImageIO.from.bytes.png(bytes);
 				case BMP: ImageIO.from.bytes.bmp(bytes);
 				case JPEG: ImageIO.from.bytes.jpeg(bytes);
+				case WEBP: ImageIO.from.bytes.webp(bytes);
 				default: {
 					#if !vision_quiet
 					throw new Unimplemented('Using `ImageTools.fromBytes` with a file of type `${fileFormat}`');
@@ -366,6 +368,7 @@ class ImageTools {
 			case PNG: ImageIO.to.bytes.png(image);
 			case BMP: ImageIO.to.bytes.bmp(image);
 			case JPEG: ImageIO.to.bytes.jpeg(image);
+			case WEBP: ImageIO.to.bytes.webp(image);
 			default: {
 				#if !vision_quiet
 				throw new Unimplemented('Using `ImageTools.toBytes` with a file of type `${format}`');
