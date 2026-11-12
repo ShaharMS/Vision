@@ -3,6 +3,7 @@ package vision.formats._internal.fonts;
 import haxe.ds.IntMap;
 import vision.exceptions.FontLoadingError;
 import vision.formats._internal.fonts.otf.CffOutline;
+import vision.formats._internal.fonts.otf.GposKerning;
 import vision.formats._internal.fonts.ttf.TrueTypeOutline;
 
 typedef FontPoint = {
@@ -32,6 +33,7 @@ class FontData {
 	final cff:Null<CffOutline>;
 	final outlines = new IntMap<Array<Array<FontPoint>>>();
 	public final ligatures = new IntMap<Array<FontLigature>>();
+	final positioning:Null<GposKerning>;
 	final kerning = new IntMap<Int>();
 
 	public function new(tables:Map<String, FontTable>, family:String) {
@@ -62,6 +64,7 @@ class FontData {
 		}
 		cmap = readCharacterMap(table("cmap"));
 		if (tables.exists("GSUB")) readLigatures(table("GSUB"));
+		positioning = tables.exists("GPOS") ? new GposKerning(table("GPOS")) : null;
 		if (tables.exists("kern")) readKerning(table("kern"));
 	}
 
@@ -228,6 +231,8 @@ class FontData {
 	}
 
 	public function pairAdjustment(left:Int, right:Int):Int {
+		final adjustment = positioning == null ? null : positioning.adjustment(left, right);
+		if (adjustment != null) return adjustment;
 		final value = kerning.get((left << 16) | right);
 		return value == null ? 0 : value;
 	}
