@@ -13,7 +13,7 @@ import vision.algorithms.EMeans;
 import vision.algorithms.PatternSynthesis;
 import vision.algorithms.ConvChain;
 import vision.algorithms.Panorama;
-import vision.algorithms.Scale2x;
+import vision.algorithms.Rescale;
 import vision.ds.specifics.ColorChannel;
 import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
@@ -1896,6 +1896,6 @@ class Vision {
 		@return A new image with twice the width and height
 	**/
 	public static function rescale(image:Image, includeCorners:Bool = true):Image {
-		return Scale2x.rescale(image, includeCorners);
+		return Rescale.rescale(image, includeCorners);
 	}
 }

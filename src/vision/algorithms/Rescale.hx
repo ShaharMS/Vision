@@ -6,7 +6,7 @@ import vision.ds.ImageStorage;
 import vision.exceptions.VisionException;
 
 /** Doubles pixel art using Scale2x with optional corner support. **/
-class Scale2x {
+class Rescale {
 	public static function rescale(image:Image, includeCorners:Bool = true):Image {
 		if (image.width * 1.0 * image.height * 16 > 0x7fffffff - ImageStorage.PIXEL_OFFSET
 			|| image.width > 0x3fffffff || image.height > 0x3fffffff #if !vision_higher_width_cap || image.width > 0x7fff #end)
