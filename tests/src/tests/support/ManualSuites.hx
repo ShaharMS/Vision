@@ -5,6 +5,12 @@ import tests.*;
 
 class ManualSuites {
 	public static function addCases(runner:Runner, includeTest:String->Bool, ?casePattern:EReg):Void {
+		#if vision_browser_tests
+		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest(), "setup", "teardown", "test", casePattern);
+		#end
+		#if (vision_browser_tests || (lime && lime_cffi && (cpp || hl)))
+		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest(), "setup", "teardown", "test", casePattern);
+		#end
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest(), "setup", "teardown", "test", casePattern);

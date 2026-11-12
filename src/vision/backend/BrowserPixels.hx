@@ -1,4 +1,4 @@
-package vision.formats.__internal;
+package vision.backend;
 
 #if js
 import js.lib.Uint8Array;

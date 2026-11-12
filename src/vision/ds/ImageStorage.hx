@@ -1,9 +1,5 @@
 package vision.ds;
 
-#if (vision_native && (cpp || hl))
-import vision.formats.__internal.NativeImageIO;
-#end
-
 @:noCompletion
 abstract ImageStorage(ImageData) {
 	public static inline final FIELD_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
@@ -59,12 +55,7 @@ abstract ImageStorage(ImageData) {
 			this.cpuValid = false;
 			return true;
 		}
-		#if (vision_native && (cpp || hl))
-		final pixels = writePixels();
-		return NativeImageIO.transform(pixels.getData(), pixels.length, PIXEL_OFFSET, operation, value);
-		#else
 		return false;
-		#end
 	}
 
 	public function readPixels():ByteArray {

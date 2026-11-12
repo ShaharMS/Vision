@@ -1,6 +1,6 @@
 import js.Browser;
 import vision.Vision;
-import vision.formats.__internal.CanvasRenderer;
+import vision.backend.CanvasRenderer;
 import vision.ds.WebGpuInverter;
 import vision.ds.Image;
 

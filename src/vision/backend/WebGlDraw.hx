@@ -1,4 +1,4 @@
-package vision.formats.__internal;
+package vision.backend;
 
 #if js
 import js.html.webgl.Framebuffer;
@@ -122,7 +122,7 @@ class WebGlDraw {
 		return new WebGlSurface(this, gl, width, height);
 	}
 
-	@:allow(vision.formats.__internal.WebGlSurface)
+	@:allow(vision.backend.WebGlSurface)
 	function createTexture():Texture {
 		final result = gl.createTexture();
 		gl.bindTexture(GL.TEXTURE_2D, result);
@@ -140,7 +140,7 @@ class WebGlDraw {
 		render(source, invert ? (ImageOperation.Invert : Int) : 0, 0, true);
 	}
 
-	@:allow(vision.formats.__internal.WebGlSurface)
+	@:allow(vision.backend.WebGlSurface)
 	function transformTexture(source:Texture, width:Int, height:Int, operation:ImageOperation, value:Int):Void {
 		gl.viewport(0, 0, width, height);
 		gl.disable(GL.BLEND);

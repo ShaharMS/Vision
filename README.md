@@ -67,7 +67,11 @@ Draws stay in place until you clear them or draw over them. In a render loop, ca
 
 Assign `onFirstDraw` for one-time setup immediately before the first nonempty image draw. `dispose()` closes the window or removes the browser drawing area.
 
-The same Screen API builds for browser JavaScript and desktop hxcpp or HashLink. Desktop builds need Vision's native drawing library. [Image API guide](tools/docs/image-api.md) · [Native build instructions](tests/ci/README.md#standalone-native-drawing)
+The same Screen API builds for browser JavaScript and desktop hxcpp or HashLink. Desktop builds use Lime's Haxe bindings. [Native build instructions](tests/ci/README.md#standalone-native-drawing)
+
+### Rendering backends
+
+The `vision.backend` package holds Screen's rendering implementations. The browser uses Haxe's browser and WebGL externs. Desktop builds use Lime's native bindings for windowing, OpenGL presentation, and Cairo software rendering. Build with `-lib lime` and place the matching Lime runtime beside the executable or bytecode. Image encoders and framework format conversions live in `vision.formats`. [Desktop build and test commands](tests/ci/README.md#standalone-native-drawing)
 
 ---
 ### Basic Image Manipulation
@@ -278,7 +282,20 @@ If you see some code that you think is not understandable, or some place that la
 
 Run `haxe test.hxml` and the relevant targets in `tests/ci/local-ci.hxml` before packaging. Tests require `utest`; the library itself does not.
 
-On Windows, `powershell -NoProfile -File build-release.ps1` (or `release-to-haxelib.bat`) creates a timestamped ZIP under `release/` without deleting earlier candidates or publishing anything. After reviewing the candidate, submit that ZIP explicitly with `haxelib submit <zip-path>`.
+From the repository root, run these PowerShell commands to stage a release in a fresh directory under the system temp directory and write a timestamped ZIP under `release/`.
+
+```powershell
+$version = (Get-Content haxelib.json -Raw | ConvertFrom-Json).version
+$name = "vision-$version-$(Get-Date -Format yyyyMMdd-HHmmss-fff)"
+$stage = Join-Path ([IO.Path]::GetTempPath()) $name
+New-Item -ItemType Directory -Path $stage -ErrorAction Stop | Out-Null
+New-Item -ItemType Directory -Path release -Force | Out-Null
+Copy-Item extraParams.hxml, CHANGELOG.md, LICENSE, README.md, haxelib.json, hxformat.json, src -Destination $stage -Recurse -ErrorAction Stop
+Copy-Item tests/ci/cppia -Destination (Join-Path $stage 'cppia') -Recurse -ErrorAction Stop
+Compress-Archive -Path (Join-Path $stage '*') -DestinationPath "release/$name.zip" -ErrorAction Stop
+```
+
+Review the archive before submitting it with `haxelib submit <zip-path>`.
 
 For Neko builds, use `-dce full` to discard unreachable image methods that can exceed the VM function-scope limit. Local and GitHub CI apply this flag to the Neko batches.
 

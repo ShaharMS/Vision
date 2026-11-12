@@ -1,4 +1,4 @@
-package vision.formats.__internal;
+package vision.backend;
 
 #if js
 import js.Browser;
@@ -9,9 +9,9 @@ import vision.Vision;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.ImageStorage;
-import vision.formats.__internal.BrowserPixels;
-import vision.formats.__internal.WebGlDraw;
-import vision.formats.__internal.WebGlDraw.WebGlSurface;
+import vision.backend.BrowserPixels;
+import vision.backend.WebGlDraw;
+import vision.backend.WebGlDraw.WebGlSurface;
 import vision.exceptions.VisionException;
 
 /** Draws Vision images in caller order using a dedicated browser canvas. **/
