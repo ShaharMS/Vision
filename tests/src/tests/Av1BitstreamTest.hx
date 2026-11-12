@@ -14,12 +14,43 @@ import vision.formats._internal.images.avif.av1.Av1Palette;
 import vision.formats._internal.images.avif.av1.Av1Dequantization;
 import vision.formats._internal.images.avif.av1.Av1InverseTransform;
 import vision.formats._internal.images.avif.av1.Av1Coefficients;
+import vision.formats._internal.images.avif.av1.Av1IntraPrediction;
+import vision.formats._internal.images.avif.av1.Av1IntraPrediction.Av1IntraEdges;
 import vision.formats._internal.images.avif.av1.Av1SymbolDecoder;
 import vision.formats._internal.images.avif.av1.Av1SymbolEncoder;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class Av1BitstreamTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1IntraPrediction.predict#directional")
+	function test_predict__projectsReconstructedEdgesAndUpsamples():Void {
+		final edges:Av1IntraEdges = {above: [10, 20, 30, 40, 50, 60, 70, 80], left: [90, 100, 110, 120], corner: 5};
+		final diagonal = Av1IntraPrediction.predict(4, 4, 8, Diagonal45, edges);
+		Assert.equals("20,30,40,50", diagonal.slice(0, 4).join(","));
+		Assert.equals("50,60,70,80", diagonal.slice(12).join(","));
+		final crossing = Av1IntraPrediction.predict(4, 4, 8, Diagonal135, edges);
+		Assert.equals("5,10,20,30", crossing.slice(0, 4).join(","));
+		Assert.equals("90,5,10,20", crossing.slice(4, 8).join(","));
+		final slope:Av1IntraEdges = {above: [0, 64, 128, 192], left: [0, 0, 0, 0], corner: 0};
+		Assert.equals(3, Av1IntraPrediction.predict(4, 4, 8, Vertical, slope, -1, true)[0]);
+	}
+
+	@:visionTestId("vision.formats._internal.images.avif.av1.Av1IntraPrediction.predict#flatAndChroma")
+	function test_predict__preservesFlatReferencesAndAppliesSignedChroma():Void {
+		final edges:Av1IntraEdges = {above: [for (_ in 0...8) 713], left: [for (_ in 0...8) 713], corner: 713};
+		for (mode in 0...13) {
+			for (angle in -3...4) {
+				final values = Av1IntraPrediction.predict(8, 8, 10, mode, edges, angle, true, true);
+				Assert.isTrue(values.indexOf(713) == 0 && values.filter(value -> value != 713).length == 0);
+			}
+		}
+		for (filter in 0...5) {
+			final values = Av1IntraPrediction.predict(8, 8, 10, Dc, edges, 0, false, false, filter);
+			Assert.isTrue(values.filter(value -> value != 713).length == 0);
+		}
+		Assert.equals("145,128,111", Av1IntraPrediction.chromaFromLuma([128, 128, 128], [0, 136, 272], -8, 8).join(","));
+	}
+
 	@:visionTestId("vision.formats._internal.images.avif.av1.Av1Coefficients.read#signedSparseBlock")
 	function test_read__decodesSparseCoefficientsAndGolombExtension():Void {
 		final writer = new Av1SymbolEncoder();
