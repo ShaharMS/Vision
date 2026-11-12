@@ -19,12 +19,12 @@ class EMeans {
 
 		final seen = new IntMap<Bool>();
 		final colors = [];
-		for (color in image.toArray()) {
+		image.forEachPixel((_, _, color) -> {
 			if (!seen.exists(color)) {
 				seen.set(color, true);
 				colors.push(color);
 			}
-		}
+		});
 		final size = colors.length;
 		final count = Std.int(Math.min(clusterAmount, size));
 		if (count == size) return [for (color in colors) new ColorCluster(color, [color])];

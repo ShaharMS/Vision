@@ -33,7 +33,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 			&nbsp;  
 		**/
 		#end
-	public static inline var TRANSPARENT:Color = 0x00000000;
+	extern public static inline var TRANSPARENT:Color = 0x00000000;
 	#end
 
 	/**
