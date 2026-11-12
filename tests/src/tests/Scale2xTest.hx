@@ -22,6 +22,21 @@ class Scale2xTest extends utest.Test {
 		Assert.equals(Color.BLACK, result.getPixel(3, 3));
 	}
 
+	@:visionTestId("vision.Vision.rescale#cornerSupport")
+	function test_rescale__cornerSupport() {
+		final image = new Image(3, 3, Color.BLACK);
+		image.setPixel(0, 0, Color.WHITE);
+		image.setPixel(0, 1, Color.WHITE);
+		image.setPixel(1, 2, Color.RED);
+		image.setPixel(2, 0, Color.BLUE);
+
+		final extended = Vision.rescale(image);
+		final standard = Vision.rescale(image, false);
+		Assert.equals(Color.WHITE, extended.getPixel(2, 2));
+		Assert.equals(Color.BLACK, standard.getPixel(2, 2));
+		Assert.equals(Color.BLACK, extended.getPixel(3, 2));
+	}
+
 	@:visionTestId("vision.Vision.rescale#singlePixel")
 	function test_rescale__singlePixel() {
 		final color = Color.fromRGBA(10, 20, 30, 40);

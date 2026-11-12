@@ -1414,7 +1414,7 @@ class Vision {
 		the requested spacing and threshold. Use `Harris.computeResponse()` to
 		inspect the scores directly.
 
-		![Detected corners marked on the valve image](https://spacebubble.io/vision/docs/valve-harrisCornerDetection.png)
+		![Harris corners marked on the valve image](https://spacebubble.io/vision/docs/valve-harris-corners.png)
 
 		@param image The image in which to detect corners
 		@param options Optional settings for scoring and selecting corners
@@ -1785,7 +1785,9 @@ class Vision {
 		Each distinct RGBA color contributes equally when learning the palette.
 		The resulting image uses the mean color of each group.
 
-		![Original image and eight-color palettes from k-means and e-means](https://spacebubble.io/vision/docs/valve-emeans-comparison.png)
+		![Source image](https://spacebubble.io/vision/docs/valve-palette-source.png)
+		![K-means with eight colors](https://spacebubble.io/vision/docs/valve-kmeans-8-colors.png)
+		![E-means with eight colors](https://spacebubble.io/vision/docs/valve-emeans-8-colors.png)
 
 		@param image The image to posterize
 		@param maxColorCount The maximum number of palette colors
@@ -1822,7 +1824,8 @@ class Vision {
 		Every square patch in the output appears in the sample. Patterns that appear
 		more often in the sample are more likely to be chosen.
 
-		![Sample and outputs from the overlapping model and ConvChain](https://spacebubble.io/vision/docs/pattern-synthesis-comparison.png)
+		![Source pattern](https://spacebubble.io/vision/docs/pattern-source.png)
+		![Overlapping model output](https://spacebubble.io/vision/docs/pattern-overlapping.png)
 
 		@param sample The image to learn patterns from
 		@param width The output width in pixels
@@ -1841,7 +1844,8 @@ class Vision {
 		The sampler favors square patterns that occur often in the sample and can
 		produce patterns absent from it. Pattern matching wraps around image edges.
 
-		![Sample and outputs from the overlapping model and ConvChain](https://spacebubble.io/vision/docs/pattern-synthesis-comparison.png)
+		![Source pattern](https://spacebubble.io/vision/docs/pattern-source.png)
+		![ConvChain output](https://spacebubble.io/vision/docs/pattern-convchain.png)
 
 		@param sample The texture to learn from
 		@param width The output width in pixels
@@ -1862,7 +1866,13 @@ class Vision {
 		Photos should have similar scale and orientation. Overlapping pixels are
 		blended, and gaps in the resulting bounds are transparent.
 
-		![Three overlapping newspaper photos stitched into a single image](https://spacebubble.io/vision/docs/newspaper-stitchPanorama.png)
+		[Source photos from OpenCV](https://github.com/opencv/opencv_extra/tree/4.x/testdata/stitching)
+
+		![First input photo](https://spacebubble.io/vision/docs/panorama-input-1.png)
+		![Second input photo](https://spacebubble.io/vision/docs/panorama-input-2.png)
+		![Third input photo](https://spacebubble.io/vision/docs/panorama-input-3.png)
+
+		![Stitched panorama](https://spacebubble.io/vision/docs/panorama-result.png)
 
 		@param images The ordered photos to stitch
 		@return A new image containing the panorama
@@ -1874,15 +1884,19 @@ class Vision {
 	/**
 		Doubles the size of pixel art with the Scale2x algorithm.
 
-		Scale2x uses the four neighbors of each pixel to extend diagonal edges.
-		The result uses only colors already present in the source image.
+		The four nearest neighbors determine the edge. A diagonal neighbor can
+		back up one of the two adjacent neighbors when they disagree. The result
+		uses only colors already present in the source image.
 
-		![Pixel art enlarged using nearest-neighbor and Scale2x](https://spacebubble.io/vision/docs/pixel-art-rescale.png)
+		![Original pixel art](https://spacebubble.io/vision/docs/pixel-art-source.png)
+		![Standard Scale2x](https://spacebubble.io/vision/docs/pixel-art-scale2x-classic.png)
+		![Scale2x with corner support](https://spacebubble.io/vision/docs/pixel-art-scale2x-corners.png)
 
 		@param image The image to enlarge
+		@param includeCorners Whether diagonal neighbors can break a tie. Set to `false` for standard Scale2x
 		@return A new image with twice the width and height
 	**/
-	public static function rescale(image:Image):Image {
-		return Scale2x.rescale(image);
+	public static function rescale(image:Image, includeCorners:Bool = true):Image {
+		return Scale2x.rescale(image, includeCorners);
 	}
 }

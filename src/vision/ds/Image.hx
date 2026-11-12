@@ -839,7 +839,7 @@ abstract Image(ImageStorage) {
 	/**
 		Draws shaped text into this image, clipped to its bounds and active view.
 
-		![Latin ligatures, mixed Arabic and Hebrew, and bold italic text](https://spacebubble.io/vision/docs/mixed-script-drawText.png)
+		![Latin ligatures, mixed Arabic and Hebrew, and bold italic text](https://spacebubble.io/vision/docs/mixed-script-text.png)
 
 		@param x The left edge of each line, or the right edge for right-to-left text
 		@param y The top of the first line
