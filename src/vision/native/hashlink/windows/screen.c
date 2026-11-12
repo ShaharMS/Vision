@@ -20,7 +20,7 @@ HL_PRIM HWND HL_NAME(open)(int x, int y, int width, int height, bool visible) {
     return window;
 }
 
-HL_PRIM bool HL_NAME(setBounds)(HWND window, int x, int y, int width, int height) {
+HL_PRIM bool HL_NAME(set_bounds)(HWND window, int x, int y, int width, int height) {
     if (!IsWindow(window)) return false;
     RECT bounds = {0, 0, width, height};
     DWORD style = (DWORD)GetWindowLongPtrW(window, GWL_STYLE);
@@ -67,7 +67,7 @@ HL_PRIM void HL_NAME(close)(HWND window) {
 
 #define _WINDOW _ABSTRACT(vision_screen_window)
 DEFINE_PRIM(_WINDOW, open, _I32 _I32 _I32 _I32 _BOOL);
-DEFINE_PRIM(_BOOL, setBounds, _WINDOW _I32 _I32 _I32 _I32);
+DEFINE_PRIM(_BOOL, set_bounds, _WINDOW _I32 _I32 _I32 _I32);
 DEFINE_PRIM(_I32, poll, _WINDOW);
 DEFINE_PRIM(_BOOL, present, _WINDOW _BYTES _I32 _I32 _I32);
 DEFINE_PRIM(_VOID, close, _WINDOW);
