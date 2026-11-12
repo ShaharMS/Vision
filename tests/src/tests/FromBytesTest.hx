@@ -1,10 +1,10 @@
 package tests;
 
+import haxe.crypto.Base64;
 import tests.support.ExceptionAssertions;
 import tests.support.FormatAssertions;
 import utest.Assert;
 import vision.exceptions.ImageLoadingFailed;
-import vision.exceptions.Unimplemented;
 import vision.formats.ImageIO;
 import vision.formats.from.FromBytes;
 
@@ -51,11 +51,31 @@ class FromBytesTest extends utest.Test {
 		ExceptionAssertions.throwsType(() -> new FromBytes().bmp(FormatAssertions.malformedBytes()), ImageLoadingFailed);
 	}
 
-	@:visionTestId("vision.formats.from.FromBytes.jpeg#unimplementedOnInterp")
+	@:visionTestId("vision.formats.from.FromBytes.jpeg#invalidHeader")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
-	function test_jpeg__unimplementedOnInterp() {
-		ExceptionAssertions.throwsType(() -> new FromBytes().jpeg(FormatAssertions.malformedBytes()), Unimplemented);
+	function test_jpeg__invalidHeaderThrows() {
+		ExceptionAssertions.throwsType(() -> new FromBytes().jpeg(FormatAssertions.malformedBytes()), ImageLoadingFailed);
+	}
+	@:visionTestId("vision.formats.from.FromBytes.jpeg#progressive")
+	function test_jpeg__decodesProgressiveScans() {
+		final baseline = Base64.decode(
+			"/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQ" +
+			"ERMUFRUVDA8XGBYUGBIUFRT/wAALCAAFAAcBAREA/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgED" +
+			"AwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RF" +
+			"RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJ" +
+			"ytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/9oACAEBAAA/APP/ANk74e6b9hi4/wCWZ/h9q//Z");
+		final progressive = Base64.decode(
+			"/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQ" +
+			"ERMUFRUVDA8XGBYUGBIUFRT/wgALCAAFAAcBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAABv/aAAgBAQAAAAE//8QAFxAAAwEA" +
+			"AAAAAAAAAAAAAAAAAwUGEv/aAAgBAQABBQKTXjx//8QAFhAAAwAAAAAAAAAAAAAAAAAAAAFx/9oACAEBAAY/AlD/xAAVEAEB" +
+			"AAAAAAAAAAAAAAAAAAAA0f/aAAgBAQABPyGOP//aAAgBAQAAABB//8QAFxAAAwEAAAAAAAAAAAAAAAAAADFBof/aAAgBAQAB" +
+			"PxBRrB//2Q==");
+		final expected = ImageIO.from.bytes.jpeg(baseline);
+		final actual = ImageIO.from.bytes.jpeg(progressive);
+		Assert.equals(7, actual.width);
+		Assert.equals(5, actual.height);
+		FormatAssertions.imagesEqual(expected, actual);
 	}
 	#if vision_quiet
 	@:visionTestId("vision.formats.from.FromBytes#quiet-invalid-images")

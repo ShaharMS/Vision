@@ -11,8 +11,6 @@ import format.png.Tools as PngTools;
 import format.png.Data;
 import format.bmp.Writer as BmpWriter;
 import format.bmp.Tools as BmpTools;
-import format.jpg.Writer as JpegWriter;
-import format.jpg.Data as JpegData;
 
 @:access(vision.ds.Image)
 class FormatImageExporter {
@@ -118,7 +116,7 @@ class FormatImageExporter {
 	#end
 
     /**
-        Exports an image to `JPEG`    
+        Exports an image to `BMP`.
     
         @param image The image to export
         @return The bytes of the exported image
@@ -136,28 +134,5 @@ class FormatImageExporter {
         }
     }
 
-    /**
-        Exports an image to `JPEG`
-
-        @param image The image to export 
-        @return The bytes of the exported image
-        @throws ImageSavingFailed If something goes wrong (for example, the image is invalid or device is out of memory)    
-    **/
-    public static function jpeg(image:Image):ByteArray {
-        try {
-            var output = new BytesOutput();
-            var writer = new JpegWriter(output);
-            var rawPixelData = image.underlying.sub(Image.OFFSET, image.underlying.length - Image.OFFSET);
-            writer.write({
-                pixels: rawPixelData,
-                width: image.width,
-                height: image.height,
-                quality: 1.0
-            });
-            return output.getBytes();
-        } catch (e) {
-            throw new ImageSavingFailed(ImageFormat.JPEG, e.message);
-        }
-    }
 }
 #end

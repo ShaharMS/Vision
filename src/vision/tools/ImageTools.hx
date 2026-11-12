@@ -74,6 +74,13 @@ class ImageTools {
 		@throws Unimplemented Thrown when used with unsupported file types.
 	**/
 	overload extern public static inline function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
+		#if (sys && !js)
+		if (ImageFormat.fromString(Path.extension(path.split("?")[0])) == JPEG) {
+			final result = path.contains("://") ? loadFromURL(image, path) : loadFromBytes(image, sys.io.File.getBytes(path), JPEG);
+			if (onComplete != null) onComplete(result);
+			return;
+		}
+		#end
 		#if (!js)
 			#if format
 			var func:ByteArray -> Image;
@@ -207,7 +214,7 @@ class ImageTools {
 		var http = new Http(url);
 		var requestStatus = 2;
 		http.onBytes = (data) -> {
-			loadFromBytes(image, data, Path.extension(url));
+			image = loadFromBytes(image, data, Path.extension(url.split("?")[0]));
 			requestStatus = 1;
 		}
 		http.onError = (msg) -> {

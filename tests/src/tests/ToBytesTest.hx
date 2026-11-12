@@ -4,6 +4,8 @@ import tests.support.Factories;
 import tests.support.ExceptionAssertions;
 import tests.support.FormatAssertions;
 import utest.Assert;
+import vision.ds.Image;
+import vision.ds.Color;
 import vision.exceptions.ImageSavingFailed;
 import vision.formats.ImageIO;
 import vision.formats.to.ToBytes;
@@ -48,5 +50,22 @@ class ToBytesTest extends utest.Test {
 
 		Assert.isTrue(bytes.length > 4);
 		FormatAssertions.bytesStartWith(bytes, [0xFF, 0xD8]);
+	}
+	@:visionTestId("vision.formats.to.ToBytes.jpeg#partialBlocks")
+	function test_jpeg__roundTripsPartialBlocks() {
+		final bytes = ImageIO.to.bytes.jpeg(new Image(13, 9, Color.fromRGBA(36, 118, 200, 80)), 95);
+		final result = ImageIO.from.bytes.jpeg(bytes);
+		Assert.equals(13, result.width);
+		Assert.equals(9, result.height);
+		final last = result.getPixel(12, 8);
+		Assert.equals(255, last.alpha);
+		Assert.floatEquals(36, last.red, 2);
+		Assert.floatEquals(118, last.green, 2);
+		Assert.floatEquals(200, last.blue, 2);
+	}
+
+	@:visionTestId("vision.formats.to.ToBytes.jpeg#invalidQuality")
+	function test_jpeg__rejectsInvalidQuality() {
+		ExceptionAssertions.throwsType(() -> new ToBytes().jpeg(new Image(1, 1), 0), ImageSavingFailed);
 	}
 }

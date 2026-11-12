@@ -1710,8 +1710,7 @@
                                                                                                                                                     "sourceFile":  "src/vision/formats/_internal/images/FormatImageExporter.hx",
                                                                                                                                                     "members":  [
                                                                                                                                                                                     "png",
-                                                                                                                                                                                    "bmp",
-                                                                                                                                                                                    "jpeg"
+                                                                                                                                                                                    "bmp"
                                                                                                                                                                             ],
                                                                                                                                                     "testFile":  null
                                                                                                                                             },

@@ -2,7 +2,7 @@ package vision.formats.from;
 
 import vision.exceptions.LibraryRequired;
 import vision.ds.Image;
-import vision.exceptions.Unimplemented;
+import vision.formats._internal.images.Jpeg;
 import vision.ds.ByteArray;
 
 /**
@@ -51,11 +51,14 @@ import vision.ds.ByteArray;
         
     }
 
+    /**
+        Decodes an 8-bit sequential or progressive JPEG image from bytes.
+
+        @param bytes The complete JPEG file
+        @return An opaque image with the decoded pixels
+        @throws ImageLoadingFailed If the file is invalid or uses unsupported JPEG coding
+    **/
     public function jpeg(bytes:ByteArray):Image {
-        #if (js && !nodejs)
-        return vision.formats._internal.images.JsImageLoader.loadBytesSync(bytes, "image/jpeg");
-        #else
-        throw new Unimplemented('vision.formats.from.FromBytes.jpeg');
-        #end
+        return Jpeg.read(bytes);
     }
 }
