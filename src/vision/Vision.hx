@@ -1887,9 +1887,11 @@ class Vision {
 		Two side neighbors must agree before extending an edge. With corner support,
 		a third color at the diagonal keeps the center color in place.
 
-		![Original pixel art](https://spacebubble.io/vision/docs/pixel-art-source.png)
-		![Standard Scale2x](https://spacebubble.io/vision/docs/pixel-art-scale2x-classic.png)
-		![Scale2x with corner support](https://spacebubble.io/vision/docs/pixel-art-scale2x-corners.png)
+		[Pixel art by Kenney](https://opengameart.org/content/roguelike-caves-dungeons-pack)
+
+		![Original pixel art](https://spacebubble.io/vision/docs/dungeon-rescale-source.png)
+		![Standard Scale2x](https://spacebubble.io/vision/docs/dungeon-rescale-classic.png)
+		![Scale2x with corner support](https://spacebubble.io/vision/docs/dungeon-rescale-corners.png)
 
 		@param image The image to enlarge
 		@param includeCorners Whether diagonal neighbors protect three-color junctions. Set to `false` for standard Scale2x
