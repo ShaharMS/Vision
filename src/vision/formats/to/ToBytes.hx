@@ -21,9 +21,9 @@ import vision.exceptions.LibraryRequired;
     **/
     public function png(image:Image):ByteArray {
         #if format
-        return vision.formats.__internal.FormatImageExporter.png(image);
+        return vision.formats._internal.images.FormatImageExporter.png(image);
         #elseif js
-        return vision.formats.__internal.JsImageExporter.saveToBytesSync(image, "image/png");
+        return vision.formats._internal.images.JsImageExporter.saveToBytesSync(image, "image/png");
         #else
         throw new LibraryRequired("format", [], "vision.formats.to.ToBytes.png", "function");
         #end
@@ -39,9 +39,9 @@ import vision.exceptions.LibraryRequired;
     **/
     public function bmp(image:Image):ByteArray {
         #if format
-        return vision.formats.__internal.FormatImageExporter.bmp(image);
+        return vision.formats._internal.images.FormatImageExporter.bmp(image);
         #elseif js
-        return vision.formats.__internal.JsImageExporter.saveToBytesSync(image, "image/bmp");
+        return vision.formats._internal.images.JsImageExporter.saveToBytesSync(image, "image/bmp");
         #else
         throw new LibraryRequired("format", [], "vision.formats.to.ToBytes.bmp", "function");
         #end
@@ -57,9 +57,9 @@ import vision.exceptions.LibraryRequired;
     **/
     public function jpeg(image:Image):ByteArray {
         #if format
-        return vision.formats.__internal.FormatImageExporter.jpeg(image);        
+        return vision.formats._internal.images.FormatImageExporter.jpeg(image);
         #elseif js
-        return vision.formats.__internal.JsImageExporter.saveToBytesSync(image, "image/jpeg");
+        return vision.formats._internal.images.JsImageExporter.saveToBytesSync(image, "image/jpeg");
         #else
         throw new LibraryRequired("format", [], "vision.formats.to.ToBytes.jpeg", "function");
         #end

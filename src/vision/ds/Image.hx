@@ -2,7 +2,7 @@ package vision.ds;
 
 import vision.formats.ImageIO;
 #if (openfl || flash)
-import vision.formats.__internal.FrameworkImageIO;
+import vision.formats._internal.images.FrameworkImageIO;
 #end
 import vision.ds.ImageStorage.ImageOperation;
 import vision.ds.ByteArray;
@@ -840,7 +840,7 @@ abstract Image(ImageStorage) {
 	/**
 		Draws text into this image, clipped to its bounds and active view.
 
-		Pass a font from `TextFont.fromBytes()` in `options.font` to draw on any
+		Pass a font from `Font.fromBytes()` in `options.font` to draw on any
 		target. Load the desired weight and style as a separate face. On browser
 		pages, omitting the font uses the browser's text engine.
 
@@ -855,9 +855,7 @@ abstract Image(ImageStorage) {
 	public function drawText(x:Int, y:Int, text:String, ?options:TextOptions):Void {
 		if (text.length == 0 || width == 0 || height == 0) return;
 		final resolved:TextOptions = options == null ? {} : options;
-		if (!Math.isFinite(resolved.size) || resolved.size <= 0 || !Math.isFinite(resolved.lineHeight)
-			|| resolved.lineHeight < 0 || resolved.weight < 1 || resolved.weight > 1000)
-			throw new TextDrawingError("Text size, line height, or weight is invalid.");
+		TextDrawing.validateOptions(resolved);
 		if (resolved.font != null) {
 			TextDrawing.draw(cast this, x, y, text, resolved.font, resolved);
 			return;
@@ -868,7 +866,7 @@ abstract Image(ImageStorage) {
 			return;
 		}
 		#end
-		throw new TextDrawingError("Provide a TextFont in TextOptions.font for portable text drawing.");
+		throw new TextDrawingError("Provide a Font in TextOptions.font for portable text drawing.");
 	}
 
 	#if js

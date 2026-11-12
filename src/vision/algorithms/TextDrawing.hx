@@ -4,8 +4,13 @@ import haxe.iterators.StringIteratorUnicode;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.Point2D;
-import vision.ds.TextFont;
-import vision.ds.TextFont.FontPoint;
+import vision.ds.Rectangle;
+import vision.ds.Font;
+import vision.ds.Glyph;
+import vision.ds.ImageStorage;
+import vision.exceptions.TextDrawingError;
+import vision.formats._internal.fonts.FontData;
+import vision.formats._internal.fonts.FontData.FontPoint;
 import vision.ds.specifics.TextOptions;
 
 private typedef TextRun = {
@@ -13,7 +18,7 @@ private typedef TextRun = {
 	final level:Int;
 }
 
-/** Portable rasterization of TrueType outlines. **/
+/** Lays out and rasterizes decoded font outlines. **/
 @:noCompletion
 class TextDrawing {
 	static inline var SCANLINES = 4;
@@ -58,29 +63,91 @@ class TextDrawing {
 		0x064a => [0xfef1, 0xfef2, 0xfef3, 0xfef4],
 	];
 
-	public static function draw(image:Image, x:Int, y:Int, text:String, font:TextFont, options:TextOptions):Void {
+	public static function validateOptions(options:TextOptions):Void {
+		if (!Math.isFinite(options.size) || options.size <= 0 || !Math.isFinite(options.lineHeight)
+			|| options.lineHeight < 0 || options.weight < 1 || options.weight > 1000)
+			throw new TextDrawingError("Text size, line height, or weight is invalid.");
+	}
+
+	public static function draw(image:Image, x:Int, y:Int, text:String, font:Font, options:TextOptions):Void {
+		final scale = options.size / font.unitsPerEm;
+		layout(text, font.data, options, (id, left, baseline) -> {
+			rasterize(image, font.data.outline(id), x + left, y + baseline, scale, options.color);
+		});
+	}
+
+	public static function textImage(font:Font, text:String, options:TextOptions, padding:Int):Image {
+		validateOptions(options);
+		final bounds = new OutlineBounds();
+		bounds.include(0, 0);
+		if (text.length != 0) {
+			final scale = options.size / font.unitsPerEm;
+			final height = Math.max(options.size, (font.ascent - font.descent) * scale);
+			layout(text, font.data, options, (id, x, baseline) -> {
+				bounds.includeOutline(font.data.outline(id), x, baseline, scale);
+			}, (left, right, top) -> {
+				bounds.include(left, top);
+				bounds.include(right, top + height);
+			});
+		}
+		final result = bounds.image(padding);
+		if (text.length != 0) draw(result, padding - Math.floor(bounds.left), padding - Math.floor(bounds.top), text, font, options);
+		return result;
+	}
+
+	public static function glyphBounds(glyph:Glyph, size:Float):Rectangle {
+		final scale = glyphScale(glyph, size);
+		return outlineBounds(glyph.font.data.outline(glyph.id), scale).rectangle();
+	}
+
+	public static function glyphImage(glyph:Glyph, size:Float, color:Color, padding:Int):Image {
+		final scale = glyphScale(glyph, size);
+		final outline = glyph.font.data.outline(glyph.id);
+		final bounds = outlineBounds(outline, scale);
+		final result = bounds.image(padding);
+		rasterize(result, outline, padding - Math.floor(bounds.left), padding - Math.floor(bounds.top), scale, color);
+		return result;
+	}
+
+	static function glyphScale(glyph:Glyph, size:Float):Float {
+		if (!Math.isFinite(size) || size <= 0) throw new TextDrawingError("Glyph size must be finite and positive.");
+		return size / glyph.font.unitsPerEm;
+	}
+
+	static function outlineBounds(outline:Array<Array<FontPoint>>, scale:Float):OutlineBounds {
+		final bounds = new OutlineBounds();
+		bounds.includeOutline(outline, 0, 0, scale);
+		if (outline.length == 0) bounds.include(0, 0);
+		return bounds;
+	}
+
+	static function layout(text:String, font:FontData, options:TextOptions, place:(Int, Float, Float)->Void,
+		?lineBounds:(Float, Float, Float)->Void):Void {
 		final scale = options.size / font.unitsPerEm;
 		final lineHeight = options.lineHeight == 0 ? options.size * 1.25 : options.lineHeight;
 		final lines = ~/\r\n?|\n/g.split(text);
 		for (i in 0...lines.length) {
 			final glyphs = shape(lines[i], font, options.rightToLeft, options.ligatures);
-			var pen:Float = x;
+			var pen = 0.0;
 			if (options.rightToLeft)
 				for (j in 0...glyphs.length) {
 					pen -= font.advance(glyphs[j]) * scale;
 					if (j > 0) pen -= font.pairAdjustment(glyphs[j - 1], glyphs[j]) * scale;
 				}
-			final baseline = y + i * lineHeight + font.ascent * scale;
+			final left = pen;
+			final top = i * lineHeight;
+			final baseline = top + font.ascent * scale;
 			for (j in 0...glyphs.length) {
 				final id = glyphs[j];
 				if (j > 0) pen += font.pairAdjustment(glyphs[j - 1], id) * scale;
-				rasterize(image, font.outline(id), pen, baseline, scale, options.color);
+				place(id, pen, baseline);
 				pen += font.advance(id) * scale;
 			}
+			if (lineBounds != null) lineBounds(left, pen, top);
 		}
 	}
 
-	static function shape(line:String, font:TextFont, rightToLeft:Bool, useLigatures:Bool):Array<Int> {
+	static function shape(line:String, font:FontData, rightToLeft:Bool, useLigatures:Bool):Array<Int> {
 		final codes = [for (code in new StringIteratorUnicode(line)) code];
 		final directions = [for (code in codes) direction(code)];
 		final base = rightToLeft ? 1 : 0;
@@ -150,11 +217,11 @@ class TextDrawing {
 		return -1;
 	}
 
-	static inline function mapGlyph(code:Int, font:TextFont):Int {
+	static inline function mapGlyph(code:Int, font:FontData):Int {
 		return code == 0x200c || code == 0x200d ? -1 : font.glyph(code);
 	}
 
-	static function arabicGlyphs(codes:Array<Int>, font:TextFont):Array<Int> {
+	static function arabicGlyphs(codes:Array<Int>, font:FontData):Array<Int> {
 		final result = [];
 		var i = 0;
 		while (i < codes.length) {
@@ -201,7 +268,7 @@ class TextDrawing {
 		return null;
 	}
 
-	static function substitute(glyphs:Array<Int>, font:TextFont):Array<Int> {
+	static function substitute(glyphs:Array<Int>, font:FontData):Array<Int> {
 		final result = [];
 		var i = 0;
 		while (i < glyphs.length) {
@@ -318,5 +385,47 @@ class TextDrawing {
 					Math.round((ink.blue * alpha + background.blue * remainder) / opacity), Math.round(opacity * 255)));
 			}
 		}
+	}
+}
+
+private class OutlineBounds {
+	public var left(default, null) = Math.POSITIVE_INFINITY;
+	public var top(default, null) = Math.POSITIVE_INFINITY;
+	var right = Math.NEGATIVE_INFINITY;
+	var bottom = Math.NEGATIVE_INFINITY;
+
+	public function new() {}
+
+	public function include(x:Float, y:Float):Void {
+		left = Math.min(left, x);
+		top = Math.min(top, y);
+		right = Math.max(right, x);
+		bottom = Math.max(bottom, y);
+	}
+
+	public function includeOutline(contours:Array<Array<FontPoint>>, x:Float, baseline:Float, scale:Float):Void {
+		for (contour in contours)
+			for (point in contour) include(x + point.x * scale, baseline - point.y * scale);
+	}
+
+	public function rectangle():Rectangle {
+		if (!Math.isFinite(left) || !Math.isFinite(right) || !Math.isFinite(top) || !Math.isFinite(bottom)
+			|| left < -0x3fffffff || top < -0x3fffffff || right > 0x3fffffff || bottom > 0x3fffffff)
+			throw new TextDrawingError("Rendered text bounds are too large.");
+		final x = Math.floor(left);
+		final y = Math.floor(top);
+		return {x: x, y: y, width: Math.ceil(right) - x, height: Math.ceil(bottom) - y};
+	}
+
+	public function image(padding:Int):Image {
+		if (padding < 0) throw new TextDrawingError("Text padding cannot be negative.");
+		final bounds = rectangle();
+		final width = bounds.width + 2.0 * padding;
+		final height = bounds.height + 2.0 * padding;
+		if (!Math.isFinite(width) || !Math.isFinite(height) || width > 0x7fffffff || height > 0x7fffffff
+			|| Math.max(width, 1) * height * 4 > 0x7fffffff - ImageStorage.PIXEL_OFFSET
+			#if !vision_higher_width_cap || width > 0xffff #end)
+			throw new TextDrawingError("Rendered text image is too large.");
+		return new Image(Std.int(height > 0 ? Math.max(width, 1) : width), Std.int(height));
 	}
 }

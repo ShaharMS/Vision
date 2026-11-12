@@ -6,7 +6,7 @@ import sys.io.File;
 import haxe.Http;
 import vision.formats.ImageIO;
 #if format
-import vision.formats.__internal.FormatImageLoader;
+import vision.formats._internal.images.FormatImageLoader;
 #end
 import haxe.io.Path;
 import haxe.crypto.Base64;
@@ -23,8 +23,8 @@ import vision.ds.ImageResizeAlgorithm;
 #if js
 import js.Browser;
 import js.html.CanvasElement;
-import vision.formats.__internal.JsImageLoader;
-import vision.formats.__internal.JsImageExporter;
+import vision.formats._internal.images.JsImageLoader;
+import vision.formats._internal.images.JsImageExporter;
 import js.Syntax;
 import js.lib.Uint8Array;
 #end

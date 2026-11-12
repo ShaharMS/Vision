@@ -7,6 +7,22 @@
                                                   "excluded":  "Declaration surface intentionally excluded from direct manual test ownership; module notes explain whether the exclusion is due to metadata-only shape, target gating, or consumer-driven coverage."
                                           },
         "modules":  {
+        "vision.ds.Font": {
+            "status": "manual",
+            "sourceFile": "src/vision/ds/Font.hx",
+            "testFile": "tests/src/tests/PortableTextTest.hx",
+            "members": ["fromBytes", "getCharacters", "getGlyph", "getGlyphById", "toImage"],
+            "deferredMembers": [],
+            "notes": "Covers portable font loading, missing characters, and image dimensions."
+        },
+        "vision.ds.Glyph": {
+            "status": "manual",
+            "sourceFile": "src/vision/ds/Glyph.hx",
+            "testFile": "tests/src/tests/PortableTextTest.hx",
+            "members": ["getBounds", "toImage", "text", "advance"],
+            "deferredMembers": [],
+            "notes": "Covers glyph metrics, representations, bounds, and outline rendering."
+        },
         "vision.ds.Screen": {
             "status": "manual",
             "sourceFile": "src/vision/ds/Screen.hx",
@@ -811,13 +827,13 @@
                                                                                                                                   ],
                                                                                                           "testFile":  "tests/src/tests/KMeansTest.hx"
                                                                                                   },
-                                        "vision.formats.__internal.FrameworkImageIO":  {
+                                        "vision.formats._internal.images.FrameworkImageIO":  {
                                                                                                                                               "deferredMembers":  [
 
                                                                                                                                                                                       ],
                                                                                                                                               "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                               "status":  "excluded",
-                                                                                                                                              "sourceFile":  "src/vision/formats/__internal/FrameworkImageIO.hx",
+                                                                                                                                              "sourceFile":  "src/vision/formats/_internal/images/FrameworkImageIO.hx",
                                                                                                                                               "members":  [
                                                                                                                                                                               "fromFlxSprite",
                                                                                                                                                                               "toFlxSprite",
@@ -1444,13 +1460,13 @@
                                                                                                                                         ],
                                                                                                                 "testFile":  "tests/src/tests/VisionThreadTest.hx"
                                                                                                         },
-                                        "vision.formats.__internal.JsImageExporter":  {
+                                        "vision.formats._internal.images.JsImageExporter":  {
                                                                                                                                             "deferredMembers":  [
 
                                                                                                                                                                                     ],
                                                                                                                                             "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                             "status":  "excluded",
-                                                                                                                                            "sourceFile":  "src/vision/formats/__internal/JsImageExporter.js.hx",
+                                                                                                                                            "sourceFile":  "src/vision/formats/_internal/images/JsImageExporter.js.hx",
                                                                                                                                             "members":  [
                                                                                                                                                                             "saveToFileAsync",
                                                                                                                                                                             "saveToBytesSync",
@@ -1685,13 +1701,13 @@
                                                                                                                                     ],
                                                                                                             "testFile":  "tests/src/tests/LaplaceTest.hx"
                                                                                                     },
-                                        "vision.formats.__internal.FormatImageExporter":  {
+                                        "vision.formats._internal.images.FormatImageExporter":  {
                                                                                                                                                     "deferredMembers":  [
 
                                                                                                                                                                                             ],
                                                                                                                                                     "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                                     "status":  "excluded",
-                                                                                                                                                    "sourceFile":  "src/vision/formats/__internal/FormatImageExporter.hx",
+                                                                                                                                                    "sourceFile":  "src/vision/formats/_internal/images/FormatImageExporter.hx",
                                                                                                                                                     "members":  [
                                                                                                                                                                                     "png",
                                                                                                                                                                                     "bmp",
@@ -1965,13 +1981,13 @@
                                                                                                                                   ],
                                                                                                           "testFile":  null
                                                                                                   },
-                                        "vision.formats.__internal.JsImageLoader":  {
+                                        "vision.formats._internal.images.JsImageLoader":  {
                                                                                                                                         "deferredMembers":  [
 
                                                                                                                                                                                 ],
                                                                                                                                         "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                         "status":  "excluded",
-                                                                                                                                        "sourceFile":  "src/vision/formats/__internal/JsImageLoader.js.hx",
+                                                                                                                                        "sourceFile":  "src/vision/formats/_internal/images/JsImageLoader.js.hx",
                                                                                                                                         "members":  [
                                                                                                                                                                         "loadAsync",
                                                                                                                                                                         "loadURLSync",
@@ -1980,13 +1996,13 @@
                                                                                                                                                                 ],
                                                                                                                                         "testFile":  null
                                                                                                                                 },
-                                        "vision.formats.__internal.FormatImageLoader":  {
+                                        "vision.formats._internal.images.FormatImageLoader":  {
                                                                                                                                                 "deferredMembers":  [
 
                                                                                                                                                                                         ],
                                                                                                                                                 "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                                 "status":  "excluded",
-                                                                                                                                                "sourceFile":  "src/vision/formats/__internal/FormatImageLoader.hx",
+                                                                                                                                                "sourceFile":  "src/vision/formats/_internal/images/FormatImageLoader.hx",
                                                                                                                                                 "members":  [
                                                                                                                                                                                 "png",
                                                                                                                                                                                 "bmp"

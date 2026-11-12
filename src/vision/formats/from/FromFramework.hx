@@ -1,6 +1,6 @@
 package vision.formats.from;
 
-import vision.formats.__internal.FrameworkImageIO;
+import vision.formats._internal.images.FrameworkImageIO;
 
 /**
     A class for loading images from different frameworks

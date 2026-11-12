@@ -23,9 +23,9 @@ import vision.ds.ByteArray;
     **/
     public function png(bytes:ByteArray):Image {
         #if format
-        return vision.formats.__internal.FormatImageLoader.png(bytes);
+        return vision.formats._internal.images.FormatImageLoader.png(bytes);
         #elseif js
-        return vision.formats.__internal.JsImageLoader.loadBytesSync(bytes, "image/png");
+        return vision.formats._internal.images.JsImageLoader.loadBytesSync(bytes, "image/png");
         #else
         throw new LibraryRequired("format", [], "vision.formats.from.FromBytes.png", "function");    
         #end
@@ -42,9 +42,9 @@ import vision.ds.ByteArray;
     **/
     public function bmp(bytes:ByteArray):Image {
         #if format
-        return vision.formats.__internal.FormatImageLoader.bmp(bytes);
+        return vision.formats._internal.images.FormatImageLoader.bmp(bytes);
         #elseif js
-        return vision.formats.__internal.JsImageLoader.loadBytesSync(bytes, "image/bmp");
+        return vision.formats._internal.images.JsImageLoader.loadBytesSync(bytes, "image/bmp");
         #else
         throw new LibraryRequired("format", [], "vision.formats.from.FromBytes.bmp", "function");    
         #end
@@ -53,7 +53,7 @@ import vision.ds.ByteArray;
 
     public function jpeg(bytes:ByteArray):Image {
         #if (js && !nodejs)
-        return vision.formats.__internal.JsImageLoader.loadBytesSync(bytes, "image/jpeg");
+        return vision.formats._internal.images.JsImageLoader.loadBytesSync(bytes, "image/jpeg");
         #else
         throw new Unimplemented('vision.formats.from.FromBytes.jpeg');
         #end

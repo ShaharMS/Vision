@@ -1,12 +1,13 @@
 package vision.ds.specifics;
 
 import vision.ds.Color;
-import vision.ds.TextFont;
+import vision.ds.Font;
 
+/** Layout and paint settings used by image text drawing. **/
 @:structInit
 class TextOptions {
 	/** A font read by Vision. Selects the portable renderer on every target. **/
-	public var font:Null<TextFont> = null;
+	public var font:Null<Font> = null;
 	/** Uses standard ligatures from the portable font when available. **/
 	public var ligatures:Bool = true;
 	/** Browser font family or comma-separated fallback families. **/
@@ -17,6 +18,7 @@ class TextOptions {
 	public var weight:Int = 400;
 	/** Requests an italic browser face. **/
 	public var italic:Bool = false;
+	/** Fill color, including its opacity. **/
 	public var color:Color = Color.BLACK;
 	/** Uses a right-to-left paragraph direction and anchors each line at its right edge. **/
 	public var rightToLeft:Bool = false;
