@@ -127,6 +127,15 @@ class HevcCabacDecoder {
 		return false;
 	}
 
+	/** Returns the byte offset of raw PCM samples after a PCM termination bin. **/
+	public function alignForPcm():Int {
+		if (!terminated) throw new HevcBitstreamError("PCM samples require a terminated CABAC interval.");
+		while ((position & 7) != 0) {
+			if (bit() != 0) throw new HevcBitstreamError("Invalid PCM alignment bit.");
+		}
+		return start + (position >>> 3);
+	}
+
 	function normalize():Void {
 		while (range < 256) {
 			range <<= 1;

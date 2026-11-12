@@ -2,6 +2,7 @@ package vision.formats.from;
 
 import vision.exceptions.LibraryRequired;
 import vision.ds.Image;
+import vision.formats._internal.images.Heic;
 import vision.formats._internal.images.Jpeg;
 import vision.formats._internal.images.Webp;
 import vision.formats._internal.images.webp.WebpAnimation;
@@ -85,5 +86,17 @@ import vision.ds.ByteArray;
     **/
     public function webpAnimation(bytes:ByteArray):ImageAnimation {
         return WebpAnimation.read(bytes);
+    }
+
+    /**
+        Decodes a directly coded HEIC still image using HEVC PCM.
+
+        @param bytes The complete HEIC file
+        @return The decoded opaque image
+        @throws HeifContainerError If the file container is invalid
+        @throws HevcBitstreamError If the HEVC coding or color configuration is invalid or unsupported
+    **/
+    public function heic(bytes:ByteArray):Image {
+        return Heic.read(bytes);
     }
 }

@@ -1,17 +1,82 @@
 package vision.formats._internal.images;
 
 import haxe.io.Bytes;
+import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
 import vision.ds.ByteArray;
+import vision.ds.Color;
 import vision.ds.Image;
 import vision.exceptions.HevcBitstreamError;
+import vision.formats._internal.images.heic.hevc.HevcConfiguration;
+import vision.formats._internal.images.heic.hevc.HevcNalReader;
+import vision.formats._internal.images.heic.hevc.HevcPcmDecoder;
 import vision.formats._internal.images.heic.hevc.HevcPcmEncoder;
+import vision.formats._internal.images.heic.hevc.HevcSequenceGeometry;
 import vision.formats._internal.images.heif.HeifContainer;
 import vision.formats._internal.images.heif.HeifContainer.HeifProperty;
 
 /** Portable HEIC byte conversion. **/
 @:noCompletion
 class Heic {
+	static final colorProperty = Bytes.ofHex("6e636c780001000d000180");
+
+	/** Decodes a directly coded HEVC PCM still image. **/
+	public static function read(bytes:ByteArray):Image {
+		final item = HeifContainer.readPrimary(bytes);
+		if (item.type != "hvc1") throw new HevcBitstreamError("The primary image is not an HEVC item.");
+		var configuration:HevcConfiguration = null;
+		var crop = {x: 0, y: 0, width: item.width, height: item.height};
+		var hasColor = false;
+		for (property in item.properties) {
+			switch property.type {
+				case "hvcC": configuration = new HevcConfiguration(property.payload);
+				case "clap": crop = readAperture(property.payload, item.width, item.height);
+				case "colr": if (property.payload.compare(colorProperty) == 0) hasColor = true;
+				case "irot", "imir": throw new HevcBitstreamError("Unsupported HEVC image orientation.");
+				case "ispe", "pixi":
+				default:
+					if (property.essential) throw new HevcBitstreamError('Unsupported essential HEIC property "${property.type}".');
+			}
+		}
+		if (configuration == null || !hasColor) throw new HevcBitstreamError("Unsupported HEVC color configuration.");
+		var geometry:HevcSequenceGeometry = null;
+		var pps:Bytes = null;
+		for (unit in configuration.units) {
+			if (unit.type == 33 && unit.layerId == 0) {
+				if (geometry != null) throw new HevcBitstreamError("Multiple HEVC sequence parameter sets are unsupported.");
+				geometry = new HevcSequenceGeometry(unit.rbsp);
+			}
+			if (unit.type == 34 && unit.layerId == 0) {
+				if (pps != null) throw new HevcBitstreamError("Multiple HEVC picture parameter sets are unsupported.");
+				pps = unit.rbsp;
+			}
+		}
+		if (geometry == null || pps == null || geometry.width != item.width || geometry.height != item.height)
+			throw new HevcBitstreamError("HEVC parameter sets do not match the primary item.");
+		final reader = new HevcNalReader(item.data, 0, item.data.length, configuration.lengthSize);
+		final slice = reader.next();
+		if (slice == null || slice.layerId != 0 || (slice.type != 19 && slice.type != 20) || reader.next() != null)
+			throw new HevcBitstreamError("Expected one HEVC IDR slice.");
+		final planes = HevcPcmDecoder.decode(geometry, pps, slice.rbsp);
+		final image = new Image(crop.width, crop.height);
+		for (row in 0...crop.height) {
+			final y = row + geometry.cropTop + crop.y;
+			for (column in 0...crop.width) {
+				final x = column + geometry.cropLeft + crop.x;
+				final luma = planes[0].get(y * geometry.codedWidth + x);
+				final chroma = (y >> 1) * (geometry.codedWidth >> 1) + (x >> 1);
+				final cb = planes[1].get(chroma) - 128;
+				final cr = planes[2].get(chroma) - 128;
+				image.setPixel(column, row, Color.fromRGBA(
+					rgbSample(luma + 1.5748 * cr),
+					rgbSample(luma - 0.187324 * cb - 0.468124 * cr),
+					rgbSample(luma + 1.8556 * cb)
+				));
+			}
+		}
+		return image;
+	}
+
 	/** Encodes an opaque HEIC still image using HEVC PCM and 4:2:0 color. **/
 	public static function write(image:Image):ByteArray {
 		final width = image.width;
@@ -57,7 +122,7 @@ class Heic {
 			{type: "hvcC", essential: true, payload: configuration(units)},
 			{type: "ispe", essential: false, payload: dimensions.getBytes()},
 			{type: "pixi", essential: false, payload: Bytes.ofHex("0000000003080808")},
-			{type: "colr", essential: false, payload: Bytes.ofHex("6e636c780001000d000180")}
+			{type: "colr", essential: false, payload: colorProperty}
 		];
 		if (width != sampleWidth || height != sampleHeight)
 			properties.push({type: "clap", essential: true, payload: aperture(width, height, sampleWidth, sampleHeight)});
@@ -87,6 +152,31 @@ class Heic {
 		for (value in [width, 1, height, 1, width - sampleWidth, 2, height - sampleHeight, 2])
 			output.writeInt32(value);
 		return output.getBytes();
+	}
+
+	static function readAperture(bytes:Bytes, width:Int, height:Int):{x:Int, y:Int, width:Int, height:Int} {
+		if (bytes.length != 32) throw new HevcBitstreamError("Invalid HEIC clean aperture.");
+		final input = new BytesInput(bytes);
+		input.bigEndian = true;
+		final cropWidth = readFraction(input);
+		final cropHeight = readFraction(input);
+		final x = (width - cropWidth) / 2 + readFraction(input);
+		final y = (height - cropHeight) / 2 + readFraction(input);
+		if (cropWidth < 1 || cropHeight < 1 || x < 0 || y < 0 || x + cropWidth > width || y + cropHeight > height
+			|| x != Std.int(x) || y != Std.int(y) || cropWidth != Std.int(cropWidth) || cropHeight != Std.int(cropHeight))
+			throw new HevcBitstreamError("Invalid HEIC clean aperture bounds.");
+		return {x: Std.int(x), y: Std.int(y), width: Std.int(cropWidth), height: Std.int(cropHeight)};
+	}
+
+	static function readFraction(input:BytesInput):Float {
+		final numerator = input.readInt32();
+		final denominator = input.readInt32();
+		if (denominator <= 0) throw new HevcBitstreamError("Invalid HEIC clean aperture denominator.");
+		return numerator / denominator;
+	}
+
+	static inline function rgbSample(value:Float):Int {
+		return value < 0 ? 0 : value > 255 ? 255 : Math.round(value);
 	}
 
 	static inline function chromaSample(difference:Int, divisor:Int):Int {
