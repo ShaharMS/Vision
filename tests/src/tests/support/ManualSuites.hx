@@ -77,6 +77,7 @@ class ManualSuites {
 		if (includeTest("KMeansTest")) runner.addCase(new KMeansTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("EMeansTest")) runner.addCase(new EMeansTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("PatternSynthesisTest")) runner.addCase(new PatternSynthesisTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("ConvChainTest")) runner.addCase(new ConvChainTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("PanoramaTest")) runner.addCase(new PanoramaTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Scale2xTest")) runner.addCase(new Scale2xTest(), "setup", "teardown", "test", casePattern);
 		#end

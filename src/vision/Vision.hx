@@ -11,6 +11,7 @@ import vision.ds.specifics.SimilarityScoringMechanism;
 import vision.algorithms.KMeans;
 import vision.algorithms.EMeans;
 import vision.algorithms.PatternSynthesis;
+import vision.algorithms.ConvChain;
 import vision.algorithms.Panorama;
 import vision.algorithms.Scale2x;
 import vision.ds.specifics.ColorChannel;
@@ -1828,6 +1829,24 @@ class Vision {
 	public static function synthesizePattern(sample:Image, width:Int, height:Int, patternSize:Int = 2, attempts:Int = 8):Image {
 		return PatternSynthesis.synthesize(sample, width, height, patternSize, attempts);
 	}
+	/**
+		Generates a texture using the ConvChain algorithm.
+
+		The sampler favors square patterns that occur often in the sample and can
+		produce patterns absent from it. Pattern matching wraps around image edges.
+
+		@param sample The texture to learn from
+		@param width The output width in pixels
+		@param height The output height in pixels
+		@param patternSize The side length of the square patterns
+		@param iterations The number of passes, each proposing one change per output pixel on average
+		@param temperature A positive value controlling how readily rare patterns are accepted
+		@return A new texture using the sample's colors
+	**/
+	public static function synthesizeTexture(sample:Image, width:Int, height:Int, patternSize:Int = 3, iterations:Int = 20, temperature:Float = 1):Image {
+		return ConvChain.synthesize(sample, width, height, patternSize, iterations, temperature);
+	}
+
 	/**
 		Stitches a sequence of overlapping photos into a planar panorama.
 
