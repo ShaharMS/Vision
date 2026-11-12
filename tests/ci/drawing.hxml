@@ -1,4 +1,3 @@
---class-path .
 --class-path src
 --class-path tests/src
 --library utest

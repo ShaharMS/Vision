@@ -17,7 +17,7 @@
         },
         "native.browser.WebGpuInverter": {
             "status": "manual",
-            "sourceFile": "native/browser/WebGpuInverter.hx",
+            "sourceFile": "src/native/browser/WebGpuInverter.hx",
             "testFile": "tests/src/tests/WebGpuInverterTest.hx",
             "members": ["invert"],
             "deferredMembers": [],

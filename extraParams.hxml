@@ -1,4 +1,3 @@
---macro vision.helpers.NativeClassPath.add()
 # https://github.com/Laerdal/opentype.hx/issues/2
 # --resource assets/NotoSans-Regular.ttf
 --macro addGlobalMetadata('', '@:build(vision.helpers.Array2DMacro.build())')

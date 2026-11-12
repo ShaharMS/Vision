@@ -12,7 +12,7 @@ jobs:
         run: |
           $stage = Join-Path $env:RUNNER_TEMP 'vision-release'
           New-Item -ItemType Directory -Path $stage -ErrorAction Stop | Out-Null
-          Copy-Item extraParams.hxml, CHANGELOG.md, LICENSE, README.md, haxelib.json, hxformat.json, src, native -Destination $stage -Recurse -ErrorAction Stop
+          Copy-Item extraParams.hxml, CHANGELOG.md, LICENSE, README.md, haxelib.json, hxformat.json, src -Destination $stage -Recurse -ErrorAction Stop
           Copy-Item tests/ci/cppia -Destination (Join-Path $stage 'cppia') -Recurse -ErrorAction Stop
           Compress-Archive -Path (Join-Path $stage '*') -DestinationPath vision.zip -ErrorAction Stop
       - uses: actions/upload-artifact@v4
@@ -326,7 +326,7 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           haxelib install utest 1.13.2 --always
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          haxe -cp . -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
+          haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
           exit $LASTEXITCODE
       - name: Run the Screen test
         shell: pwsh
@@ -353,10 +353,10 @@ jobs:
         shell: pwsh
         run: |
           $sdk = $env:VISION_HASHLINK_ROOT
-          $source = (Resolve-Path native/hashlink/windows/screen.c).Path
+          $source = (Resolve-Path src/native/hashlink/windows/screen.c).Path
           $env:VISION_TESTS = 'ScreenTest'
           New-Item -ItemType Directory -Path bin/native-drawing/hl -Force | Out-Null
-          haxe -cp . -cp src -cp tests/src -lib utest -main Main --hl bin/native-drawing/hl/tests.hl -D windows -D vision_hashlink_screen -D hl-ver=1.16.0
+          haxe -cp src -cp tests/src -lib utest -main Main --hl bin/native-drawing/hl/tests.hl -D windows -D vision_hashlink_screen -D hl-ver=1.16.0
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           Push-Location bin/native-drawing/hl
           try {
