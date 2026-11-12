@@ -14,7 +14,7 @@ import vision.ds.Color;
 import vision.ds.ImageStorage;
 import vision.ds.ImageStorage.ImageOperation;
 import vision.ds.ImageStorage.ImageSurface;
-import vision.exceptions.VisionException;
+import vision.exceptions.WebGlError;
 
 @:noCompletion
 class WebGlRenderer {
@@ -69,7 +69,8 @@ class WebGlRenderer {
 			compile(GL.FRAGMENT_SHADER, FRAGMENT);
 		} catch (error:Dynamic) {
 			gl.deleteShader(vertex);
-			throw error;
+			if (Std.isOfType(error, WebGlError)) throw cast(error, WebGlError);
+			throw new WebGlError(Std.string(error), "WebGL shader");
 		};
 		program = gl.createProgram();
 		gl.attachShader(program, vertex);
@@ -80,7 +81,7 @@ class WebGlRenderer {
 		if (!gl.getProgramParameter(program, GL.LINK_STATUS)) {
 			final message = gl.getProgramInfoLog(program);
 			gl.deleteProgram(program);
-			throw new VisionException(message, "WebGL link");
+			throw new WebGlError(message, "WebGL link");
 		}
 		rectangle = gl.getUniformLocation(program, "rectangle");
 		operation = gl.getUniformLocation(program, "operation");
@@ -98,13 +99,13 @@ class WebGlRenderer {
 		if (!gl.getShaderParameter(shader, GL.COMPILE_STATUS)) {
 			final message = gl.getShaderInfoLog(shader);
 			gl.deleteShader(shader);
-			throw new VisionException(message, "WebGL shader");
+			throw new WebGlError(message, "WebGL shader");
 		}
 		return shader;
 	}
 
 	public function draw(rgba:Uint8Array, width:Int, height:Int, changed:Bool, x:Int, y:Int, canvasWidth:Int, canvasHeight:Int, invert:Bool):Void {
-		if (width > maxSize || height > maxSize) throw new VisionException("Image exceeds the WebGL texture size limit", "WebGL draw");
+		if (width > maxSize || height > maxSize) throw new WebGlError("Image exceeds the WebGL texture size limit", "WebGL draw");
 
 		gl.bindTexture(GL.TEXTURE_2D, texture);
 		if (width != this.width || height != this.height) {
@@ -229,11 +230,11 @@ class WebGlSurface implements ImageSurface {
 	}
 
 	public function download(packed:ByteArray):Void {
-		if (!isAvailable() || !bindTarget(texture)) throw new VisionException("Image pixels are unavailable from WebGL", "Image readback");
+		if (!isAvailable() || !bindTarget(texture)) throw new WebGlError("Image pixels are unavailable from WebGL", "Image readback");
 		final rgba = new Uint8Array(width * height * 4);
 		gl.readPixels(0, 0, width, height, GL.RGBA, GL.UNSIGNED_BYTE, rgba);
 		gl.bindFramebuffer(GL.FRAMEBUFFER, null);
-		if (gl.getError() != GL.NO_ERROR) throw new VisionException("Could not read image pixels from WebGL", "Image readback");
+		if (gl.getError() != GL.NO_ERROR) throw new WebGlError("Could not read image pixels from WebGL", "Image readback");
 		var index = 0;
 		while (index < rgba.length) {
 			final target = ImageStorage.PIXEL_OFFSET + index;

@@ -3,7 +3,7 @@ package vision.ds;
 import vision.algorithms.PerspectiveWarp;
 import vision.ds.specifics.PointTransformationPair;
 import vision.exceptions.MatrixOperationError;
-import vision.exceptions.VisionException;
+import vision.exceptions.MatrixShapeError;
 import vision.algorithms.GaussJordan;
 import vision.ds.Array2D;
 import vision.tools.MathTools.*;
@@ -143,7 +143,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             }
             return sum;
             #else
-            throw new VisionException("Trace requires a square matrix.", "Matrix Trace Error");
+            throw new MatrixShapeError("Trace requires a square matrix.", "Matrix Trace Error");
             #end
         }
 		var sum = 0.;
@@ -264,7 +264,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             for (y in 0...limit) this.set(x, y, arr[y]);
             return;
             #else
-            throw new VisionException("Column length must match matrix height.", "Matrix Set Column Error");
+            throw new MatrixShapeError("Column length must match matrix height.", "Matrix Set Column Error");
             #end
         }
         for (y in 0...this.height) this.set(x, y, arr[y]);
@@ -283,7 +283,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             for (x in 0...limit) this.set(x, y, arr[x]);
             return;
             #else
-            throw new VisionException("Row length must match matrix width.", "Matrix Set Row Error");
+            throw new MatrixShapeError("Row length must match matrix width.", "Matrix Set Row Error");
             #end
         }
         for (x in 0...this.width) this.set(x, y, arr[x]);

@@ -12,7 +12,7 @@ import vision.ds.ImageStorage;
 import vision.native.browser.BrowserPixels;
 import vision.native.browser.WebGlRenderer;
 import vision.native.browser.WebGlRenderer.WebGlSurface;
-import vision.exceptions.VisionException;
+import vision.exceptions.CanvasRenderingError;
 
 /** Draws Vision images in caller order using a dedicated browser canvas. **/
 @:noCompletion
@@ -37,7 +37,7 @@ class CanvasRenderer {
 			gpu = new WebGlRenderer(gl);
 		} else {
 			context = canvas.getContext2d();
-			if (context == null) throw new VisionException("The canvas has no compatible drawing context", "CanvasRenderer");
+			if (context == null) throw new CanvasRenderingError("The canvas has no compatible drawing context");
 			staging = Browser.document.createCanvasElement();
 			stagingContext = staging.getContext2d();
 		}
@@ -151,7 +151,7 @@ class CanvasRenderer {
 	}
 
 	inline function checkOpen():Void {
-		if (disposed) throw new VisionException("The canvas renderer has been disposed", "CanvasRenderer");
+		if (disposed) throw new CanvasRenderingError("The canvas renderer has been disposed");
 	}
 }
 #end

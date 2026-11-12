@@ -3,7 +3,7 @@ package vision.algorithms;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.ImageStorage;
-import vision.exceptions.VisionException;
+import vision.exceptions.PatternSynthesisError;
 
 private typedef Pattern = {
 	final pixels:Array<Color>;
@@ -18,16 +18,16 @@ class PatternSynthesis {
 	public static function synthesize(sample:Image, width:Int, height:Int, patternSize:Int = 2, attempts:Int = 8):Image {
 		if (patternSize < 1 || attempts < 1 || patternSize > sample.width || patternSize > sample.height
 			|| patternSize > width || patternSize > height)
-			throw new VisionException("The sample and output must fit the pattern, and attempts must be positive.", "Pattern Synthesis Error");
+			throw new PatternSynthesisError("The sample and output must fit the pattern, and attempts must be positive.");
 
 		if (width * 1.0 * height * 4 > 0x7fffffff - ImageStorage.PIXEL_OFFSET #if !vision_higher_width_cap || width > 0xffff #end)
-			throw new VisionException("The output image is too large.", "Pattern Synthesis Error");
+			throw new PatternSynthesisError("The output image is too large.");
 
 		final patterns = learn(sample, patternSize);
 		final columns = width - patternSize + 1;
 		final rows = height - patternSize + 1;
 		if (columns * 1.0 * rows * patterns.length > 8000000)
-			throw new VisionException("Too many pattern candidates for the output dimensions.", "Pattern Synthesis Error");
+			throw new PatternSynthesisError("Too many pattern candidates for the output dimensions.");
 
 		for (_ in 0...attempts) {
 			final domains = solve(patterns, columns, rows);
@@ -44,7 +44,7 @@ class PatternSynthesis {
 				}
 			return result;
 		}
-		throw new VisionException("Pattern constraints could not be satisfied in the requested attempts.", "Pattern Synthesis Error");
+		throw new PatternSynthesisError("Pattern constraints could not be satisfied in the requested attempts.");
 	}
 
 	static function learn(sample:Image, size:Int):Array<Pattern> {

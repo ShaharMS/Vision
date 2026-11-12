@@ -107,7 +107,7 @@ class Vision {
 		@param width Target width in pixels, between 1 and the source width (inclusive).
 		@param height Target height in pixels, between 1 and the source height (inclusive).
 		@return A new content-aware image with exactly the requested dimensions.
-		@throws VisionException If either target dimension is nonpositive or exceeds the source dimension, including with `vision_quiet` enabled.
+		@throws InvalidCarveSize If either target dimension is nonpositive or exceeds the source dimension, including with `vision_quiet` enabled.
 	**/
 	public static function carve(image:Image, width:Int, height:Int):Image {
 		return SeamCarving.compute(image, width, height);
@@ -1833,7 +1833,7 @@ class Vision {
 		@param patternSize The side length of each square patch
 		@param attempts The maximum number of generation attempts
 		@return A new image assembled from the learned patterns
-		@throws VisionException If the dimensions are invalid or no attempt succeeds
+		@throws PatternSynthesisError If the dimensions are invalid or no attempt succeeds
 	**/
 	public static function synthesizePattern(sample:Image, width:Int, height:Int, patternSize:Int = 2, attempts:Int = 8):Image {
 		return PatternSynthesis.synthesize(sample, width, height, patternSize, attempts);
@@ -1876,7 +1876,7 @@ class Vision {
 
 		@param images The ordered photos to stitch
 		@return A new image containing the panorama
-		@throws VisionException If adjacent images cannot be aligned
+		@throws PanoramaError If adjacent images cannot be aligned
 	**/
 	public static function stitchPanorama(images:Array<Image>):Image {
 		return Panorama.stitch(images);

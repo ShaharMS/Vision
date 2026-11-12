@@ -6,7 +6,7 @@ import vision.ds.IntPoint2D;
 import vision.ds.Matrix2D;
 import vision.ds.Point2D;
 import vision.ds.specifics.HarrisCornerOptions;
-import vision.exceptions.VisionException;
+import vision.exceptions.PanoramaError;
 
 private typedef Feature = {
 	final point:IntPoint2D;
@@ -23,10 +23,10 @@ class Panorama {
 	static inline var PATCH_RADIUS = 4;
 
 	public static function stitch(images:Array<Image>):Image {
-		if (images.length == 0) throw new VisionException("Provide at least one panorama image.", "Panorama Error");
+		if (images.length == 0) throw new PanoramaError("Provide at least one panorama image.");
 		for (image in images)
 			if (image.width == 0 || image.height == 0)
-				throw new VisionException("Panorama images must have positive dimensions.", "Panorama Error");
+				throw new PanoramaError("Panorama images must have positive dimensions.");
 		if (images.length == 1) return images[0].clone();
 
 		final transforms:Array<Matrix2D> = [Matrix2D.IDENTITY()];
@@ -35,7 +35,7 @@ class Panorama {
 			final current = describe(images[i]);
 			final transform = estimate(match(current, previous));
 			if (transform == null)
-				throw new VisionException('Could not align images ${i - 1} and ${i}.', "Panorama Error");
+				throw new PanoramaError('Could not align images ${i - 1} and ${i}.');
 			transforms.push(Matrix2D.multiplyMatrices(transforms[i - 1], transform));
 			previous = current;
 		}
@@ -198,7 +198,7 @@ class Panorama {
 			for (y in [0, image.height - 1])
 				for (x in [0, image.width - 1]) {
 					if (origin * depth(transform, x, y) <= 0)
-						throw new VisionException("A panorama image crosses the projection horizon.", "Panorama Error");
+						throw new PanoramaError("A panorama image crosses the projection horizon.");
 					final p = project(transform, x, y);
 					left = Math.min(left, p.x);
 					top = Math.min(top, p.y);
@@ -210,7 +210,7 @@ class Panorama {
 		final width = Math.ceil(right - 1e-6) - Math.floor(left + 1e-6) + 1;
 		final height = Math.ceil(bottom - 1e-6) - Math.floor(top + 1e-6) + 1;
 		if (width <= 0 || height <= 0 || width * 1.0 * height > 64000000 #if !vision_higher_width_cap || width > 0xffff #end)
-			throw new VisionException("The panorama bounds are too large.", "Panorama Error");
+			throw new PanoramaError("The panorama bounds are too large.");
 		final result = new Image(width, height);
 		final startX = Math.floor(left + 1e-6);
 		final startY = Math.floor(top + 1e-6);

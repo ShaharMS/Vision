@@ -3,7 +3,7 @@ package vision.ds;
 import haxe.Timer;
 import vision.Vision;
 import vision.ds.specifics.ScreenOptions;
-import vision.exceptions.VisionException;
+import vision.exceptions.ScreenError;
 #if js
 import js.Browser;
 import js.lib.Promise;
@@ -45,7 +45,7 @@ class Screen {
 
 	/** Opens a screen. Positions and dimensions use pixels. **/
 	public function new(x:Int, y:Int, width:Int, height:Int, ?options:ScreenOptions) {
-		if (width <= 0 || height <= 0) throw new VisionException("Screen dimensions must be positive", "Screen");
+		if (width <= 0 || height <= 0) throw new ScreenError("Screen dimensions must be positive");
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -55,7 +55,7 @@ class Screen {
 
 		#if js
 		if (Syntax.code("typeof document === 'undefined'")
-			|| Browser.document.body == null) throw new VisionException("Screen requires a browser page with a document body", "Screen");
+			|| Browser.document.body == null) throw new ScreenError("Screen requires a browser page with a document body");
 		final canvas = Browser.document.createCanvasElement();
 		canvas.width = width;
 		canvas.height = height;
@@ -72,7 +72,7 @@ class Screen {
 		renderer = new WindowsRenderer(width, height, options.visible, x, y);
 		renderer.present();
 		#else
-		throw new VisionException("Screen requires a browser or a Windows desktop build", "Screen");
+		throw new ScreenError("Screen requires a browser or a Windows desktop build");
 		#end
 	}
 
@@ -186,7 +186,7 @@ class Screen {
 	}
 
 	inline function set_frameRate(value:Int):Int {
-		if (value <= 0) throw new VisionException("Screen frame rate must be positive", "Screen");
+		if (value <= 0) throw new ScreenError("Screen frame rate must be positive");
 		return frameRate = value;
 	}
 
@@ -228,6 +228,6 @@ class Screen {
 	}
 
 	inline function checkOpen():Void {
-		if (disposed) throw new VisionException("The screen has been disposed", "Screen");
+		if (disposed) throw new ScreenError("The screen has been disposed");
 	}
 }

@@ -19,7 +19,7 @@ import vision.ds.Rectangle;
 import vision.ds.ImageView;
 import vision.ds.ImageResizeAlgorithm;
 import vision.ds.specifics.TextOptions;
-import vision.exceptions.VisionException;
+import vision.exceptions.TextDrawingError;
 #if js
 import vision.native.browser.BrowserText;
 #end
@@ -845,7 +845,7 @@ abstract Image(ImageStorage) {
 		@param y The top of the first line
 		@param text The text to draw, with optional line breaks
 		@param options Optional font, direction, color, and line spacing
-		@throws VisionException If text drawing is unavailable on this target
+		@throws TextDrawingError If text drawing is unavailable on this target
 	**/
 	public function drawText(x:Int, y:Int, text:String, ?options:TextOptions):Void {
 		if (text.length == 0 || width == 0 || height == 0) return;
@@ -853,10 +853,10 @@ abstract Image(ImageStorage) {
 		final resolved:TextOptions = options == null ? {} : options;
 		if (!Math.isFinite(resolved.size) || resolved.size <= 0 || !Math.isFinite(resolved.lineHeight)
 			|| resolved.lineHeight < 0 || resolved.weight < 1 || resolved.weight > 1000)
-			throw new VisionException("Text size, line height, or weight is invalid.", "Text Drawing Error");
+			throw new TextDrawingError("Text size, line height, or weight is invalid.");
 		BrowserText.draw(cast this, x, y, text, resolved);
 		#else
-		throw new VisionException("Text drawing requires the browser text backend.", "Text Drawing Error");
+		throw new TextDrawingError("Text drawing requires the browser text backend.");
 		#end
 	}
 

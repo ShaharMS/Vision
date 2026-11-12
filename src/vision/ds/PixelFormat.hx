@@ -1,6 +1,6 @@
 package vision.ds;
 
-import vision.exceptions.VisionException;
+import vision.exceptions.UnknownPixelFormat;
 
 enum abstract PixelFormat(Int) from Int to Int {
     /** 0xAARRGGBB **/ var ARGB;
@@ -27,14 +27,14 @@ enum abstract PixelFormat(Int) from Int to Int {
 
         var i = 0;
         while (i < bytes.length) {
-            var red   = if (from == RGBA || from == RGB) bytes[i] else if (from == ARGB) bytes[i + 1] else if (from == BGR || from == BGRA) bytes[i + 2] else if (from == ABGR) bytes[i + 3] else throw new VisionException("Unknown Pixel Format", "Pixel Conversion");
-            var green = if (from == BGR || from == BGRA || from == RGB || from == RGBA) bytes[i + 1] else if (from == ABGR || from == ARGB) bytes[i + 2] else throw new VisionException("Unknown Pixel Format", "Pixel Conversion");
-            var blue  = if (from == BGR || from == BGRA) bytes[i] else if (from == ABGR) bytes[i + 1] else if (from == RGB || from == RGBA) bytes[i + 2] else if (from == ARGB) bytes[i + 3] else throw new VisionException("Unknown Pixel Format", "Pixel Conversion");
+            var red   = if (from == RGBA || from == RGB) bytes[i] else if (from == ARGB) bytes[i + 1] else if (from == BGR || from == BGRA) bytes[i + 2] else if (from == ABGR) bytes[i + 3] else throw new UnknownPixelFormat();
+            var green = if (from == BGR || from == BGRA || from == RGB || from == RGBA) bytes[i + 1] else if (from == ABGR || from == ARGB) bytes[i + 2] else throw new UnknownPixelFormat();
+            var blue  = if (from == BGR || from == BGRA) bytes[i] else if (from == ABGR) bytes[i + 1] else if (from == RGB || from == RGBA) bytes[i + 2] else if (from == ARGB) bytes[i + 3] else throw new UnknownPixelFormat();
             var alpha = if (from == ARGB || from == ABGR) bytes[i] else if (from == RGBA || from == BGRA) bytes[i + 3] else -1;
             
-            var redIndex   = if (to == RGBA || to == RGB) i else if (to == ARGB) i + 1 else if (to == BGR || to == BGRA) i + 2 else if (to == ABGR) i + 3 else throw new VisionException("Unknown Pixel Format", "Pixel Conversion");
-            var greenIndex = if (to == BGR || to == BGRA || to == RGB || to == RGBA) i + 1 else if (to == ABGR || to == ARGB) i + 2 else throw new VisionException("Unknown Pixel Format", "Pixel Conversion");
-            var blueIndex  = if (to == BGR || to == BGRA) i else if (to == ABGR) i + 1 else if (to == RGB || to == RGBA) i + 2 else if (to == ARGB) i + 3 else throw new VisionException("Unknown Pixel Format", "Pixel Conversion");
+            var redIndex   = if (to == RGBA || to == RGB) i else if (to == ARGB) i + 1 else if (to == BGR || to == BGRA) i + 2 else if (to == ABGR) i + 3 else throw new UnknownPixelFormat();
+            var greenIndex = if (to == BGR || to == BGRA || to == RGB || to == RGBA) i + 1 else if (to == ABGR || to == ARGB) i + 2 else throw new UnknownPixelFormat();
+            var blueIndex  = if (to == BGR || to == BGRA) i else if (to == ABGR) i + 1 else if (to == RGB || to == RGBA) i + 2 else if (to == ARGB) i + 3 else throw new UnknownPixelFormat();
             var alphaIndex = if (to == ARGB || to == ABGR) i else if (to == RGBA || to == BGRA) i + 3 else -1;
 
             bytes[redIndex] = red;

@@ -4,7 +4,7 @@ import haxe.ds.IntMap;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.kmeans.ColorCluster;
-import vision.exceptions.VisionException;
+import vision.exceptions.ClusteringError;
 
 /** Mini-batch color clustering using exponential moving averages. **/
 class EMeans {
@@ -13,7 +13,7 @@ class EMeans {
 			#if vision_quiet
 			return [];
 			#else
-			throw new VisionException("Cluster amount and epochs must be positive.", "EMeans Error");
+			throw new ClusteringError("Cluster amount and epochs must be positive.", "EMeans Error");
 			#end
 		}
 

@@ -6,7 +6,7 @@ import utest.Assert;
 import vision.Vision;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.exceptions.VisionException;
+import vision.exceptions.ConvChainError;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
@@ -37,6 +37,6 @@ class ConvChainTest extends utest.Test {
 	function test_synthesizeTexture__requiresPositiveTemperature() {
 		ExceptionAssertions.throwsType(() -> {
 			Vision.synthesizeTexture(new Image(3, 3), 5, 4, 3, 1, 0);
-		}, VisionException);
+		}, ConvChainError);
 	}
 }

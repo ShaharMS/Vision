@@ -8,6 +8,7 @@ import js.lib.Uint8Array;
 import js.Syntax;
 import vision.Vision;
 import vision.ds.Image;
+import vision.exceptions.WebGpuError;
 
 /** Optional asynchronous browser implementation of inversion for whole images. **/
 class WebGpuInverter {
@@ -100,11 +101,11 @@ class WebGpuInverter {
 				return result;
 			}).catchError(error -> {
 				release();
-				return Promise.reject(error);
+				return Promise.reject(new WebGpuError(Std.string(error)));
 			});
 		} catch (error:Dynamic) {
 			release();
-			return Promise.reject(error);
+			return Promise.reject(new WebGpuError(Std.string(error)));
 		}
 	}
 

@@ -17,7 +17,7 @@ package vision.native.windows;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.PixelFormat;
-import vision.exceptions.VisionException;
+import vision.exceptions.ScreenError;
 
 /** Desktop drawing through Windows system externs. **/
 @:noCompletion
@@ -49,7 +49,7 @@ class WindowsRenderer {
 			Win32.moduleHandle(null), null);
 		if (window != null && visible) Win32.showWindow(window, SHOW_WINDOW);
 		#end
-		if (window == null) throw new VisionException("Windows could not open a drawing window", "Screen");
+		if (window == null) throw new ScreenError("Windows could not open a drawing window");
 	}
 
 	public function poll():Bool {

@@ -1,9 +1,15 @@
 package tests;
 
 #if vision_browser_tests
+import haxe.io.Bytes;
+import tests.support.ExceptionAssertions;
 import utest.Assert;
+import utest.Async;
 import vision.ds.Color;
 import vision.ds.Image;
+import vision.exceptions.FontLoadingError;
+import vision.exceptions.TextDrawingError;
+import vision.exceptions.VisionError;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
@@ -18,6 +24,26 @@ class TextDrawingTest extends utest.Test {
 		Assert.isTrue(ltr.toArray().filter(color -> color.alpha > 0).length > 100);
 		Assert.isTrue(rtl.toArray().filter(color -> color.alpha > 0).length > 100);
 		Assert.isFalse(ltr.exportToBytes().compare(rtl.exportToBytes()) == 0);
+	}
+
+	@:visionTestId("vision.ds.Image.drawText#invalidSize")
+	function test_drawText__throwsTypedError() {
+		final image = new Image(20, 20);
+		final error = ExceptionAssertions.capture(() -> image.drawText(0, 0, "Text", {size: 0}));
+		Assert.isTrue(Std.isOfType(error, TextDrawingError));
+		Assert.isTrue(Std.isOfType(error, VisionError));
+	}
+
+	@:visionTestId("vision.ds.Image.loadTextFont#invalidFont")
+	function test_loadTextFont__rejectsInvalidFont(async:Async) {
+		Image.loadTextFont("Invalid Example", Bytes.ofString("invalid font")).then(_ -> {
+			Assert.fail("Invalid font loaded.");
+			async.done();
+		}, error -> {
+			Assert.isTrue(Std.isOfType(error, FontLoadingError));
+			Assert.isTrue(Std.isOfType(error, VisionError));
+			async.done();
+		});
 	}
 
 	@:visionTestId("vision.ds.Image.drawText#clipping")

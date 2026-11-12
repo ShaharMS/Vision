@@ -10,7 +10,8 @@ import js.lib.Promise;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.specifics.TextOptions;
-import vision.exceptions.VisionException;
+import vision.exceptions.TextDrawingError;
+import vision.exceptions.FontLoadingError;
 
 private typedef TextBounds = {
 	final actualBoundingBoxLeft:Float;
@@ -23,22 +24,26 @@ private typedef TextBounds = {
 class BrowserText {
 	public static function loadFont(family:String, bytes:Bytes, weight:Int, italic:Bool, ?features:String):Promise<String> {
 		requireDocument();
-		final font = new FontFace(family, bytes.getData(), {
-			weight: Std.string(weight),
-			style: italic ? "italic" : "normal",
-			featureSettings: features == null ? "normal" : features
-		});
-		return font.load().then(loaded -> {
-			Browser.document.fonts.add(loaded);
-			return family;
-		});
+		try {
+			final font = new FontFace(family, bytes.getData(), {
+				weight: Std.string(weight),
+				style: italic ? "italic" : "normal",
+				featureSettings: features == null ? "normal" : features
+			});
+			return font.load().then(loaded -> {
+				Browser.document.fonts.add(loaded);
+				return family;
+			}).catchError(error -> Promise.reject(new FontLoadingError(family, Std.string(error))));
+		} catch (error:Dynamic) {
+			return Promise.reject(new FontLoadingError(family, Std.string(error)));
+		}
 	}
 
 	public static function draw(image:Image, x:Int, y:Int, text:String, options:TextOptions):Void {
 		requireDocument();
 		final canvas = Browser.document.createCanvasElement();
 		final context = canvas.getContext2d();
-		if (context == null) throw new VisionException("Canvas 2D is unavailable.", "Text Drawing Error");
+		if (context == null) throw new TextDrawingError("Canvas 2D is unavailable.");
 		final lines = ~/\r\n?|\n/g.split(text);
 		final lineHeight = options.lineHeight == 0 ? options.size * 1.25 : options.lineHeight;
 		configure(context, options);
@@ -89,7 +94,7 @@ class BrowserText {
 
 	static function requireDocument():Void {
 		if (Syntax.code("typeof document === 'undefined'"))
-			throw new VisionException("Text drawing requires a browser document.", "Text Drawing Error");
+			throw new TextDrawingError("Text drawing requires a browser document.");
 	}
 }
 #end

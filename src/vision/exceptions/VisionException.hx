@@ -1,26 +1,8 @@
 package vision.exceptions;
 
-#if (js && !nodejs)
-import js.Syntax;
-
-/**
-	A type of error, thrown by components of the `Vision` library
-**/
-class VisionException {
+/** Base exception used by Vision's existing exception classes. **/
+class VisionException extends VisionError {
 	public function new(message:String, type:String) {
-		Syntax.code("throw \"Exception - \" + {0} + \":\\n\\n\\t\" + {1} + \"\\n\"", type, message);
+		super(message, type);
 	}
 }
-
-#else
-import haxe.Exception;
-
-/**
-	A type of error, thrown by components of the `Vision` library
-**/
-class VisionException extends Exception {
-	public function new(message:String, type:String) {
-		super('$type: $message');
-	}
-}
-#end

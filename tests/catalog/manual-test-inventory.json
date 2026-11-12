@@ -1827,7 +1827,6 @@
                                                                                                                                         "drawRect",
                                                                                                                                         "drawQuadraticBezier",
                                                                                                                                         "drawCubicBezier",
-                                                                                                                                        "loadTextFont",
                                                                                                                                         "fillCircle",
                                                                                                                                         "drawCircle",
                                                                                                                                         "fillEllipse",
@@ -1860,7 +1859,7 @@
                                                                                                                                         "next",
                                                                                                                                         "hasNext"
                                                                                                                                 ],
-                                                                                        "notes":  "Manual semantic suite authored under tests/src and maintained by hand. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module. Browser text rendering is covered by TextDrawingTest. Font registration is exercised in a local browser probe.",
+                                                                                        "notes":  "Manual semantic suite authored under tests/src and maintained by hand. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module. Browser text rendering is covered by TextDrawingTest. TextDrawingTest also covers font loading errors.",
                                                                                         "status":  "manual",
                                                                                         "sourceFile":  "src/vision/ds/Image.hx",
                                                                                         "members":  [
@@ -1896,6 +1895,7 @@
                                                                                                                         "drawQuadraticBezier",
                                                                                                                         "drawCubicBezier",
                                                                                                                         "drawText",
+                                                                                                                        "loadTextFont",
                                                                                                                         "fillCircle",
                                                                                                                         "drawCircle",
                                                                                                                         "fillEllipse",

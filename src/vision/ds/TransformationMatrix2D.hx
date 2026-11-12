@@ -2,7 +2,7 @@ package vision.ds;
 
 import vision.ds.Matrix2D;
 import vision.ds.Point3D;
-import vision.exceptions.VisionException;
+import vision.exceptions.MatrixShapeError;
 
 @:forward.variance
 @:forward(getRow, getColumn, setRow, setColumn, map, clone, fill, toString)
@@ -180,7 +180,7 @@ abstract TransformationMatrix2D(Matrix2D) to Matrix2D {
 			#if vision_quiet
 			return new Point3D(point.x, point.y, point.z);
 			#else
-			throw new VisionException("TransformationMatrix2D must be 3x3.", "Transformation Matrix Error");
+			throw new MatrixShapeError("TransformationMatrix2D must be 3x3.", "Transformation Matrix Error");
 			#end
 		}
 		var x = point.x * this.get(0, 0) + point.y * this.get(1, 0) + point.z * this.get(2, 0);
@@ -202,7 +202,7 @@ abstract TransformationMatrix2D(Matrix2D) to Matrix2D {
 			#if vision_quiet
 			return new Point2D(point.x, point.y);
 			#else
-			throw new VisionException("TransformationMatrix2D must be 3x3.", "Transformation Matrix Error");
+			throw new MatrixShapeError("TransformationMatrix2D must be 3x3.", "Transformation Matrix Error");
 			#end
 		}
 
