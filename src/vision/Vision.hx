@@ -12,6 +12,7 @@ import vision.algorithms.KMeans;
 import vision.algorithms.EMeans;
 import vision.algorithms.PatternSynthesis;
 import vision.algorithms.Panorama;
+import vision.algorithms.Scale2x;
 import vision.ds.specifics.ColorChannel;
 import vision.ds.TransformationMatrix2D;
 import vision.ds.specifics.TransformationMatrixOrigination;
@@ -1840,5 +1841,17 @@ class Vision {
 	**/
 	public static function stitchPanorama(images:Array<Image>):Image {
 		return Panorama.stitch(images);
+	}
+	/**
+		Doubles the size of pixel art with the Scale2x algorithm.
+
+		Scale2x uses the four neighbors of each pixel to extend diagonal edges.
+		The result uses only colors already present in the source image.
+
+		@param image The image to enlarge
+		@return A new image with twice the width and height
+	**/
+	public static function rescale(image:Image):Image {
+		return Scale2x.rescale(image);
 	}
 }
