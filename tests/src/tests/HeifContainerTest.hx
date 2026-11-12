@@ -41,6 +41,11 @@ class HeifContainerTest extends utest.Test {
 		Assert.isTrue(frame.lossless);
 		Assert.isTrue(frame.tileGroupOffset < frameUnit.offset + frameUnit.length);
 		Assert.isNull(reader.next());
+		final decoded = new FromBytes().avif(bytes);
+		Assert.equals(17, decoded.width);
+		Assert.equals(15, decoded.height);
+		Assert.equals(image.getPixel(0, 0), decoded.getPixel(0, 0));
+		Assert.equals(image.getPixel(16, 14), decoded.getPixel(16, 14));
 	}
 
 	@:visionTestId("vision.formats.to.ToBytes.heic#oddDimensions")

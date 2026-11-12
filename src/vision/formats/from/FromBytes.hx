@@ -2,6 +2,7 @@ package vision.formats.from;
 
 import vision.exceptions.LibraryRequired;
 import vision.ds.Image;
+import vision.formats._internal.images.Avif;
 import vision.formats._internal.images.Heic;
 import vision.formats._internal.images.Jpeg;
 import vision.formats._internal.images.Webp;
@@ -98,5 +99,17 @@ import vision.ds.ByteArray;
     **/
     public function heic(bytes:ByteArray):Image {
         return Heic.read(bytes);
+    }
+
+    /**
+        Decodes an opaque AVIF still image using AV1 RGB palettes.
+
+        @param bytes The complete AVIF file
+        @return The decoded image
+        @throws HeifContainerError If the file container is invalid
+        @throws Av1BitstreamError If the AV1 coding or color configuration is invalid or unsupported
+    **/
+    public function avif(bytes:ByteArray):Image {
+        return Avif.read(bytes);
     }
 }
