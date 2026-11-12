@@ -284,55 +284,30 @@ jobs:
           fi
 
   native-screen:
-    name: Screen (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Screen (Windows)
+    runs-on: windows-latest
     timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Haxe on Linux
-        if: runner.os == 'Linux'
-        uses: krdlab/setup-haxe@v1
+      - uses: krdlab/setup-haxe@v1
         with:
           haxe-version: 4.3.7
-      - name: Install SDL and compiler tools
-        run: |
-          if [ "$RUNNER_OS" = Linux ]; then
-            sudo apt-get update
-            sudo apt-get install -y xvfb
-          else
-            brew install haxe
-          fi
       - name: Build the Screen test
+        shell: pwsh
         run: |
-          mkdir -p "$RUNNER_TEMP/screen-haxelib"
-          haxelib setup "$RUNNER_TEMP/screen-haxelib"
+          $repo = Join-Path $env:RUNNER_TEMP 'screen-haxelib'
+          New-Item -ItemType Directory -Path $repo | Out-Null
+          haxelib setup $repo
           haxelib install hxcpp 4.3.2 --always
-          haxelib install lime 8.3.2 --always
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           haxelib install utest 1.13.2 --always
-          architecture=HXCPP_M64
-          platform=Linux64
-          if [ "$RUNNER_OS" = macOS ]; then
-            platform=Mac64
-            if [ "$(uname -m)" = arm64 ]; then
-              architecture=HXCPP_ARM64
-              platform=MacArm64
-            fi
-          fi
-          haxe -cp src -cp tests/src -lib utest -lib lime -main Main --cpp bin/native-drawing/cpp -D "$architecture"
-          cp "$(haxelib libpath lime)/ndll/$platform/lime.ndll" bin/native-drawing/cpp/
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
+          exit $LASTEXITCODE
       - name: Run the Screen test
+        shell: pwsh
         working-directory: bin/native-drawing/cpp
         run: |
-          set -o pipefail
-          export VISION_TESTS=ScreenTest
-          export SDL_AUDIODRIVER=dummy
-          if [ "$RUNNER_OS" = Linux ]; then
-            xvfb-run -a ./Main
-          else
-            SDL_VIDEODRIVER=dummy ./Main
-            SDL_VIDEODRIVER=cocoa ./Main
-          fi
+          $env:VISION_TESTS = 'ScreenTest'
+          & ./Main.exe
+          exit $LASTEXITCODE

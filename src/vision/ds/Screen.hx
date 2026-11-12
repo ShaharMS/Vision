@@ -9,8 +9,8 @@ import js.Browser;
 import js.lib.Promise;
 import js.Syntax;
 import vision.backend.CanvasRenderer;
-#elseif (lime && lime_cffi && (cpp || hl))
-import vision.backend.NativeImageRenderer;
+#elseif (cpp && windows)
+import vision.backend.WindowsRenderer;
 #end
 
 /** A drawing destination on a browser page or in a standalone desktop window. **/
@@ -39,8 +39,8 @@ class Screen {
 	var animationFrame:Null<Int>;
 	var pendingPoll:Promise<Bool>;
 	var resolvePoll:Bool->Void;
-	#elseif (lime && lime_cffi && (cpp || hl))
-	final renderer:NativeImageRenderer;
+	#elseif (cpp && windows)
+	final renderer:WindowsRenderer;
 	#end
 
 	/** Opens a screen. Positions and dimensions use pixels. **/
@@ -68,18 +68,18 @@ class Screen {
 		renderer = new CanvasRenderer(canvas, options.preferGpu, true);
 		renderer.clear(Color.BLACK);
 		Browser.document.body.appendChild(canvas);
-		#elseif (lime && lime_cffi && (cpp || hl))
-		renderer = new NativeImageRenderer(width, height, options.preferGpu, options.visible, x, y);
+		#elseif (cpp && windows)
+		renderer = new WindowsRenderer(width, height, options.visible, x, y);
 		renderer.present();
 		#else
-		throw new VisionException("Screen requires a browser or a desktop build with Lime", "Screen");
+		throw new VisionException("Screen requires a browser or a Windows C++ build", "Screen");
 		#end
 	}
 
 	/** Clears the screen to an opaque background color. **/
 	public function clear(color:Color = Color.BLACK):Void {
 		checkOpen();
-		#if (js || (lime && lime_cffi && (cpp || hl)))
+		#if (js || (cpp && windows))
 		renderer.clear(color | 0xFF000000);
 		present();
 		#end
@@ -88,7 +88,7 @@ class Screen {
 	/** Draws an image at a position relative to the top-left corner of this screen. **/
 	public function draw(image:Image, x:Int = 0, y:Int = 0):Void {
 		if (!beginDraw(image)) return;
-		#if (js || (lime && lime_cffi && (cpp || hl)))
+		#if (js || (cpp && windows))
 		renderer.draw(image, x, y);
 		present();
 		#end
@@ -99,7 +99,7 @@ class Screen {
 		if (!beginDraw(image)) return;
 		#if js
 		renderer.drawInverted(image, x, y);
-		#elseif (lime && lime_cffi && (cpp || hl))
+		#elseif (cpp && windows)
 		renderer.draw(Vision.invert(image.clone()), x, y);
 		present();
 		#end
@@ -125,7 +125,7 @@ class Screen {
 	/** Processes desktop events and reports whether the screen is still open. **/
 	public function processEvents():Bool {
 		if (disposed) return false;
-		#if (lime && lime_cffi && (cpp || hl) && !js)
+		#if (cpp && windows && !js)
 		if (!renderer.poll()) {
 			dispose();
 			return false;
@@ -179,7 +179,7 @@ class Screen {
 		finishBrowserPoll(false);
 		renderer.dispose();
 		renderer.canvas.remove();
-		#elseif (lime && lime_cffi && (cpp || hl))
+		#elseif (cpp && windows)
 		renderer.dispose();
 		#end
 		disposed = true;
@@ -222,7 +222,7 @@ class Screen {
 	}
 
 	inline function present():Void {
-		#if (lime && lime_cffi && (cpp || hl) && !js)
+		#if (cpp && windows && !js)
 		renderer.present();
 		#end
 	}

@@ -10,8 +10,8 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.ImageStorage;
 import vision.backend.BrowserPixels;
-import vision.backend.WebGlDraw;
-import vision.backend.WebGlDraw.WebGlSurface;
+import vision.backend.WebGlRenderer;
+import vision.backend.WebGlRenderer.WebGlSurface;
 import vision.exceptions.VisionException;
 
 /** Draws Vision images in caller order using a dedicated browser canvas. **/
@@ -22,7 +22,7 @@ class CanvasRenderer {
 
 	final pixels = new BrowserPixels();
 	final attached = new Array<ImageStorage>();
-	final gpu:WebGlDraw;
+	final gpu:WebGlRenderer;
 	final context:CanvasRenderingContext2D;
 	final staging:CanvasElement;
 	final stagingContext:CanvasRenderingContext2D;
@@ -34,7 +34,7 @@ class CanvasRenderer {
 		this.canvas = canvas;
 		final gl = preferWebGl ? canvas.getContextWebGL2({preserveDrawingBuffer: preserve}) : null;
 		if (gl != null) {
-			gpu = new WebGlDraw(gl);
+			gpu = new WebGlRenderer(gl);
 		} else {
 			context = canvas.getContext2d();
 			if (context == null) throw new VisionException("The canvas has no compatible drawing context", "CanvasRenderer");

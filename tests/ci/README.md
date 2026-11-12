@@ -51,13 +51,14 @@ Use the pinned, patched interpreter host described in [cppia/README.md](cppia/RE
 
 Run `haxe tests/ci/drawing.hxml` and open [drawing.html](drawing.html) in a browser with WebGL 2. The page reports `data-result="pass"` after the Canvas 2D, WebGL 2, attachment, readback, and compatibility checks. The separate `data-webgpu` result reports whether the compute path ran.
 
-## Standalone native drawing
+## Windows drawing
 
-Install Lime and utest in the active haxelib repository. For C++ also install hxcpp. Build from the repository root.
+Install hxcpp and utest in the active haxelib repository. Build from the repository root with the Microsoft C++ toolchain available.
 
-```text
-haxe -cp src -cp tests/src -lib lime -lib utest -main Main --cpp bin/native-drawing/cpp
-haxe -cp src -cp tests/src -lib lime -lib utest -main Main --hl bin/native-drawing/test.hl
+```powershell
+haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
+$env:VISION_TESTS = 'ScreenTest'
+./bin/native-drawing/cpp/Main.exe
 ```
 
-For Windows x64 add `-D HXCPP_M64` to the C++ command. For arm64 macOS add `-D HXCPP_ARM64`. Use the matching Lime binary from its `ndll` directory. Copy `lime.ndll` beside the C++ executable or `lime.hdll` beside the HashLink bytecode. Set `VISION_TESTS=ScreenTest` before running the test from that directory.
+The test uses a hidden window and checks composited pixels, presentation, and frame timing.

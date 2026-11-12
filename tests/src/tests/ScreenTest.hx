@@ -23,7 +23,7 @@ import vision.ds.Screen;
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 @:access(vision.ds.Screen)
-@:access(vision.backend.NativeImageRenderer)
+@:access(vision.backend.WindowsRenderer)
 class ScreenTest extends utest.Test {
 	#if vision_browser_tests
 	@:visionTestId("vision.ds.Screen.draw#canvas2d")
@@ -271,20 +271,18 @@ class ScreenTest extends utest.Test {
 			Assert.floatEquals(expected[index], pixel[index], 1);
 		}
 	}
-	#elseif (lime && lime_cffi && (cpp || hl))
+	#elseif (cpp && windows)
 	@:visionTestId("vision.ds.Screen.draw#desktopPixels")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_draw__desktopPixels():Void {
-		for (preferGpu in [false, true]) {
-			final screen = new Screen(0, 0, 16, 16, {visible: false, preferGpu: preferGpu});
-			screen.clear(0xFF102030);
-			screen.draw(new Image(2, 2, 0xFF00CC88), 4, 6);
-			Assert.equals(0xFF102030, screen.renderer.frame.getPixel32(0, 0, ARGB32));
-			Assert.equals(0xFF00CC88, screen.renderer.frame.getPixel32(4, 6, ARGB32));
-			Assert.isTrue(screen.renderer.present());
-			screen.dispose();
-		}
+		final screen = new Screen(0, 0, 16, 16, {visible: false});
+		screen.clear(0xFF102030);
+		screen.draw(new Image(2, 2, 0xFF00CC88), 4, 6);
+		Assert.equals(0xFF102030, screen.renderer.frame.getPixel(0, 0));
+		Assert.equals(0xFF00CC88, screen.renderer.frame.getPixel(4, 6));
+		Assert.isTrue(screen.renderer.present());
+		screen.dispose();
 	}
 
 	@:visionTestId("vision.ds.Screen.onFirstDraw#desktop")

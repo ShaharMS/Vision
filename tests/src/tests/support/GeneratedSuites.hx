@@ -8,7 +8,7 @@ class GeneratedSuites {
 		#if vision_browser_tests
 		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest());
 		#end
-		#if (vision_browser_tests || (lime && lime_cffi && (cpp || hl)))
+		#if (vision_browser_tests || (cpp && windows))
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest());
 		#end
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest());

@@ -17,7 +17,7 @@ import vision.ds.ImageStorage.ImageSurface;
 import vision.exceptions.VisionException;
 
 @:noCompletion
-class WebGlDraw {
+class WebGlRenderer {
 	static final VERTEX = '#version 300 es
 		uniform vec4 rectangle;
 		out vec2 uv;
@@ -172,7 +172,7 @@ class WebGlDraw {
 
 @:noCompletion
 class WebGlSurface implements ImageSurface {
-	public final owner:WebGlDraw;
+	public final owner:WebGlRenderer;
 	public var texture(default, null):Texture;
 	public var onDispose:Void->Void;
 
@@ -183,7 +183,7 @@ class WebGlSurface implements ImageSurface {
 	var output:Texture;
 	var framebuffer:Framebuffer;
 
-	public function new(owner:WebGlDraw, gl:WebGL2RenderingContext, width:Int, height:Int) {
+	public function new(owner:WebGlRenderer, gl:WebGL2RenderingContext, width:Int, height:Int) {
 		this.owner = owner;
 		this.gl = gl;
 		this.width = width;

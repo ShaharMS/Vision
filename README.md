@@ -67,11 +67,11 @@ Draws stay in place until you clear them or draw over them. In a render loop, ca
 
 Assign `onFirstDraw` for one-time setup immediately before the first nonempty image draw. `dispose()` closes the window or removes the browser drawing area.
 
-The same Screen API builds for browser JavaScript and desktop hxcpp or HashLink. Desktop builds use Lime's Haxe bindings. [Native build instructions](tests/ci/README.md#standalone-native-drawing)
+Screen supports browser JavaScript and Windows hxcpp. [Windows build instructions](tests/ci/README.md#windows-drawing)
 
 ### Rendering backends
 
-The `vision.backend` package holds Screen's rendering implementations. The browser uses Haxe's browser and WebGL externs. Desktop builds use Lime's native bindings for windowing, OpenGL presentation, and Cairo software rendering. Build with `-lib lime` and place the matching Lime runtime beside the executable or bytecode. Image encoders and framework format conversions live in `vision.formats`. [Desktop build and test commands](tests/ci/README.md#standalone-native-drawing)
+The `vision.backend` package holds Screen's rendering implementations. The browser uses Haxe's browser and WebGL externs. Windows hxcpp builds use Haxe externs for the Windows system APIs. Build with `-D windows` to enable the desktop backend. Image encoders and framework format conversions live in `vision.formats`. [Windows build and test commands](tests/ci/README.md#windows-drawing)
 
 ---
 ### Basic Image Manipulation
