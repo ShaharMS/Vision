@@ -28,19 +28,23 @@ class MetalBatchBenchmark {
    t=Timer.stamp();
    final result=batch(image);
    if(!result.isGpuBacked) throw "Metal did not execute the batch";
-   final bytes=result.exportToBytes();
-   if(i>0) gpu+=Timer.stamp()-t;
+   final processing=Timer.stamp()-t;
    #if mac
-   t=Timer.stamp();
+   final reads=vision.native.apple.MetalDevice.readbackCount();
+   final drawStarted=Timer.stamp();
    screen.draw(result);
-   if (i > 0) presentation += Timer.stamp()-t;
-   t=Timer.stamp();
+   if(i>0) presentation+=processing + Timer.stamp()-drawStarted;
    final frame=screen.capture();
-   if (!frame.isGpuBacked) throw "Metal frame left device storage";
+   if (!frame.isGpuBacked || reads != vision.native.apple.MetalDevice.readbackCount())
+    throw "Metal drawing or capture downloaded pixels";
+   #end
+   final exportStarted=Timer.stamp();
+   final bytes=result.exportToBytes();
+   if(i>0) gpu+=processing + Timer.stamp()-exportStarted;
+   #if mac
    final rendered=frame.exportToBytes();
-
    for(j in 0...bytes.length)
-    if (j % 4 != 0 && Math.abs(bytes[j]-rendered[j]) > 1) throw "Screen output differs";
+    if(Math.abs(bytes[j]-rendered[j]) > 1) throw "Screen output differs";
    #end
    for(j in 0...bytes.length) max=Std.int(Math.max(max,Math.abs(bytes[j]-expected[j])));
   }
