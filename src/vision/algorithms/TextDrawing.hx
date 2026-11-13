@@ -1,6 +1,5 @@
 package vision.algorithms;
 
-import haxe.iterators.StringIteratorUnicode;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.Point2D;
@@ -10,62 +9,25 @@ import vision.ds.Glyph;
 import vision.native.ImageBackend;
 import vision.exceptions.TextDrawingError;
 import vision.formats._internal.fonts.FontData;
+import vision.formats._internal.fonts.TextShaper;
 import vision.formats._internal.fonts.FontData.FontPoint;
 import vision.ds.specifics.TextOptions;
-
-private typedef TextRun = {
-	final codes:Array<Int>;
-	final level:Int;
-}
 
 /** Lays out and rasterizes decoded font outlines. **/
 @:noCompletion
 class TextDrawing {
-	static inline var SCANLINES = 4;
-
-	// Isolated, final, initial, and medial Unicode presentation forms.
-	static final arabicForms = [
-		0x0621 => [0xfe80, 0, 0, 0],
-		0x0622 => [0xfe81, 0xfe82, 0, 0],
-		0x0623 => [0xfe83, 0xfe84, 0, 0],
-		0x0624 => [0xfe85, 0xfe86, 0, 0],
-		0x0625 => [0xfe87, 0xfe88, 0, 0],
-		0x0626 => [0xfe89, 0xfe8a, 0xfe8b, 0xfe8c],
-		0x0627 => [0xfe8d, 0xfe8e, 0, 0],
-		0x0628 => [0xfe8f, 0xfe90, 0xfe91, 0xfe92],
-		0x0629 => [0xfe93, 0xfe94, 0, 0],
-		0x062a => [0xfe95, 0xfe96, 0xfe97, 0xfe98],
-		0x062b => [0xfe99, 0xfe9a, 0xfe9b, 0xfe9c],
-		0x062c => [0xfe9d, 0xfe9e, 0xfe9f, 0xfea0],
-		0x062d => [0xfea1, 0xfea2, 0xfea3, 0xfea4],
-		0x062e => [0xfea5, 0xfea6, 0xfea7, 0xfea8],
-		0x062f => [0xfea9, 0xfeaa, 0, 0],
-		0x0630 => [0xfeab, 0xfeac, 0, 0],
-		0x0631 => [0xfead, 0xfeae, 0, 0],
-		0x0632 => [0xfeaf, 0xfeb0, 0, 0],
-		0x0633 => [0xfeb1, 0xfeb2, 0xfeb3, 0xfeb4],
-		0x0634 => [0xfeb5, 0xfeb6, 0xfeb7, 0xfeb8],
-		0x0635 => [0xfeb9, 0xfeba, 0xfebb, 0xfebc],
-		0x0636 => [0xfebd, 0xfebe, 0xfebf, 0xfec0],
-		0x0637 => [0xfec1, 0xfec2, 0xfec3, 0xfec4],
-		0x0638 => [0xfec5, 0xfec6, 0xfec7, 0xfec8],
-		0x0639 => [0xfec9, 0xfeca, 0xfecb, 0xfecc],
-		0x063a => [0xfecd, 0xfece, 0xfecf, 0xfed0],
-		0x0641 => [0xfed1, 0xfed2, 0xfed3, 0xfed4],
-		0x0642 => [0xfed5, 0xfed6, 0xfed7, 0xfed8],
-		0x0643 => [0xfed9, 0xfeda, 0xfedb, 0xfedc],
-		0x0644 => [0xfedd, 0xfede, 0xfedf, 0xfee0],
-		0x0645 => [0xfee1, 0xfee2, 0xfee3, 0xfee4],
-		0x0646 => [0xfee5, 0xfee6, 0xfee7, 0xfee8],
-		0x0647 => [0xfee9, 0xfeea, 0xfeeb, 0xfeec],
-		0x0648 => [0xfeed, 0xfeee, 0, 0],
-		0x0649 => [0xfeef, 0xfef0, 0xfbe8, 0xfbe9],
-		0x064a => [0xfef1, 0xfef2, 0xfef3, 0xfef4],
-	];
+	// Rasterization quality settings and OpenType weight-class limits.
+	static inline var SCANLINES_PER_PIXEL = 4;
+	static inline var MIN_CURVE_STEPS = 2;
+	static inline var MAX_CURVE_STEPS = 64;
+	static inline var DEFAULT_LINE_HEIGHT_SCALE = 1.25;
+	static inline var MIN_FONT_WEIGHT = 1;
+	static inline var MAX_FONT_WEIGHT = 1000;
+	static inline var MAX_CHANNEL_VALUE = 255;
 
 	public static function validateOptions(options:TextOptions):Void {
 		if (!Math.isFinite(options.size) || options.size <= 0 || !Math.isFinite(options.lineHeight)
-			|| options.lineHeight < 0 || options.weight < 1 || options.weight > 1000)
+			|| options.lineHeight < 0 || options.weight < MIN_FONT_WEIGHT || options.weight > MAX_FONT_WEIGHT)
 			throw new TextDrawingError("Text size, line height, or weight is invalid.");
 	}
 
@@ -124,10 +86,10 @@ class TextDrawing {
 	static function layout(text:String, font:FontData, options:TextOptions, place:(Int, Float, Float)->Void,
 		?lineBounds:(Float, Float, Float)->Void):Void {
 		final scale = options.size / font.unitsPerEm;
-		final lineHeight = options.lineHeight == 0 ? options.size * 1.25 : options.lineHeight;
+		final lineHeight = options.lineHeight == 0 ? options.size * DEFAULT_LINE_HEIGHT_SCALE : options.lineHeight;
 		final lines = ~/\r\n?|\n/g.split(text);
 		for (i in 0...lines.length) {
-			final glyphs = shape(lines[i], font, options.rightToLeft, options.ligatures);
+			final glyphs = TextShaper.shape(lines[i], font, options.rightToLeft, options.ligatures);
 			var pen = 0.0;
 			if (options.rightToLeft)
 				for (j in 0...glyphs.length) {
@@ -147,152 +109,6 @@ class TextDrawing {
 		}
 	}
 
-	static function shape(line:String, font:FontData, rightToLeft:Bool, useLigatures:Bool):Array<Int> {
-		final codes = [for (code in new StringIteratorUnicode(line)) code];
-		final directions = [for (code in codes) direction(code)];
-		final base = rightToLeft ? 1 : 0;
-		var strong = base;
-		final context = [for (dir in directions) {
-			if (dir == 0 || dir == 1) strong = dir;
-			dir == 2 ? strong : dir;
-		}];
-		var previous = base;
-		var i = 0;
-		while (i < context.length) {
-			if (context[i] != -1) {
-				previous = context[i++];
-				continue;
-			}
-			final start = i;
-			while (i < context.length && context[i] == -1) i++;
-			final next = i < context.length ? context[i] : base;
-			for (j in start...i) context[j] = previous == next ? previous : base;
-		}
-
-		final runs:Array<TextRun> = [];
-		var run:TextRun = null;
-		for (i in 0...codes.length) {
-			final level = directions[i] == 2 && context[i] == 1 ? 2 : context[i] == 1 ? 1 : rightToLeft ? 2 : 0;
-			if (run == null || run.level != level) {
-				run = {codes: [], level: level};
-				runs.push(run);
-			}
-			run.codes.push(codes[i]);
-		}
-		var start = 0;
-		while (start < runs.length) {
-			if (runs[start].level == 0) {
-				start++;
-				continue;
-			}
-			var end = start + 1;
-			while (end < runs.length && runs[end].level > 0) end++;
-			var left = start, right = end - 1;
-			while (left < right) {
-				final first = runs[left];
-				runs[left++] = runs[right];
-				runs[right--] = first;
-			}
-			start = end;
-		}
-
-		final result:Array<Int> = [];
-		for (part in runs) {
-			final rtl = part.level == 1;
-			final mapped = rtl ? arabicGlyphs(part.codes, font) : [for (code in part.codes) mapGlyph(code, font)];
-			final glyphs = useLigatures ? substitute(mapped, font) : mapped;
-			if (rtl) glyphs.reverse();
-			for (id in glyphs) if (id != -1) result.push(id);
-		}
-		return result;
-	}
-
-	static function direction(code:Int):Int {
-		if ((code >= 0x30 && code <= 0x39) || (code >= 0x0660 && code <= 0x0669) || (code >= 0x06f0 && code <= 0x06f9))
-			return 2;
-		if ((code >= 0x05d0 && code <= 0x05ea) || (code >= 0x0620 && code <= 0x06ff) || (code >= 0xfb1d && code <= 0xfefc))
-			return 1;
-		if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a) || (code >= 0xc0 && code < 0x0590))
-			return 0;
-		return -1;
-	}
-
-	static inline function mapGlyph(code:Int, font:FontData):Int {
-		return code == 0x200c || code == 0x200d ? -1 : font.glyph(code);
-	}
-
-	static function arabicGlyphs(codes:Array<Int>, font:FontData):Array<Int> {
-		final result = [];
-		var i = 0;
-		while (i < codes.length) {
-			final code = codes[i];
-			final forms = arabicForms.get(code);
-			var shaped = 0;
-			if (forms != null) {
-				final previous = joiningNeighbor(codes, i, -1);
-				final next = joiningNeighbor(codes, i, 1);
-				final joinsPrevious = forms[1] != 0 && previous != null && previous[2] != 0;
-				final joinsNext = forms[2] != 0 && next != null && next[1] != 0;
-				if (code == 0x0644 && i + 1 < codes.length) {
-					final pair = switch codes[i + 1] {
-						case 0x0622: 0xfef5;
-						case 0x0623: 0xfef7;
-						case 0x0625: 0xfef9;
-						case 0x0627: 0xfefb;
-						default: 0;
-					};
-					if (pair != 0) {
-						shaped = font.glyph(pair + (joinsPrevious ? 1 : 0));
-						if (shaped != 0) i++;
-					}
-				}
-				if (shaped == 0) {
-					final form = forms[(joinsPrevious ? 1 : 0) + (joinsNext ? 2 : 0)];
-					if (form != 0) shaped = font.glyph(form);
-				}
-			}
-			result.push(shaped == 0 ? mapGlyph(code, font) : shaped);
-			i++;
-		}
-		return result;
-	}
-
-	static function joiningNeighbor(codes:Array<Int>, index:Int, step:Int):Null<Array<Int>> {
-		var i = index + step;
-		while (i >= 0 && i < codes.length) {
-			final code = codes[i];
-			if (!(code >= 0x064b && code <= 0x065f) && code != 0x0670)
-				return arabicForms.get(code);
-			i += step;
-		}
-		return null;
-	}
-
-	static function substitute(glyphs:Array<Int>, font:FontData):Array<Int> {
-		final result = [];
-		var i = 0;
-		while (i < glyphs.length) {
-			var id = glyphs[i++];
-			final rules = font.ligatures.get(id);
-			if (rules != null)
-				for (rule in rules) {
-					if (i + rule.following.length > glyphs.length) continue;
-					var matches = true;
-					for (j in 0...rule.following.length)
-						if (glyphs[i + j] != rule.following[j]) {
-							matches = false;
-							break;
-						}
-					if (!matches) continue;
-					id = rule.replacement;
-					i += rule.following.length;
-					break;
-				}
-			result.push(id);
-		}
-		return result;
-	}
-
 	static function flatten(points:Array<FontPoint>, x:Float, baseline:Float, scale:Float):Array<Point2D> {
 		final last = points[points.length - 1];
 		final first = points[0];
@@ -310,7 +126,7 @@ class TextDrawing {
 				final end = next.onCurve ? next : midpoint(point, next);
 				if (i < points.length && next.onCurve) i++;
 				final bend = Math.abs(previous.x - 2 * point.x + end.x) + Math.abs(previous.y - 2 * point.y + end.y);
-				final steps = Std.int(Math.min(64, Math.max(2, Math.ceil(Math.sqrt(bend * scale)))));
+				final steps = Std.int(Math.min(MAX_CURVE_STEPS, Math.max(MIN_CURVE_STEPS, Math.ceil(Math.sqrt(bend * scale)))));
 				for (j in 1...steps + 1) {
 					final t = j / steps;
 					final u = 1 - t;
@@ -348,8 +164,8 @@ class TextDrawing {
 		final coverage = [for (_ in minX...maxX) 0.0];
 		for (py in minY...maxY) {
 			for (i in 0...coverage.length) coverage[i] = 0;
-			for (sample in 0...SCANLINES) {
-				final line = py + (sample + 0.5) / SCANLINES;
+			for (sample in 0...SCANLINES_PER_PIXEL) {
+				final line = py + (sample + 0.5) / SCANLINES_PER_PIXEL;
 				final crossings:Array<{x:Float, direction:Int}> = [];
 				for (path in paths) {
 					var a = path[path.length - 1];
@@ -376,19 +192,25 @@ class TextDrawing {
 			for (i in 0...coverage.length) {
 				if (coverage[i] <= 0) continue;
 				final px = i + minX;
-				final alpha = Math.min(1, coverage[i] / SCANLINES) * ink.alphaFloat;
+				final alpha = Math.min(1, coverage[i] / SCANLINES_PER_PIXEL) * ink.alphaFloat;
 				final background = image.getPixel(px, py);
 				final remainder = background.alphaFloat * (1 - alpha);
 				final opacity = alpha + remainder;
 				image.setPixel(px, py, Color.fromRGBA(Math.round((ink.red * alpha + background.red * remainder) / opacity),
 					Math.round((ink.green * alpha + background.green * remainder) / opacity),
-					Math.round((ink.blue * alpha + background.blue * remainder) / opacity), Math.round(opacity * 255)));
+					Math.round((ink.blue * alpha + background.blue * remainder) / opacity), Math.round(opacity * MAX_CHANNEL_VALUE)));
 			}
 		}
 	}
 }
 
 private class OutlineBounds {
+	// Limit either coordinate to half the signed Int range so extents fit in Int.
+	static inline var MAX_COORDINATE = MAX_INT >> 1;
+	static inline var MAX_INT = 0x7fffffff;
+	static inline var RGBA_BYTES_PER_PIXEL = 4;
+	static inline var MAX_PACKED_IMAGE_WIDTH = 0xffff;
+
 	public var left(default, null) = Math.POSITIVE_INFINITY;
 	public var top(default, null) = Math.POSITIVE_INFINITY;
 	var right = Math.NEGATIVE_INFINITY;
@@ -410,7 +232,7 @@ private class OutlineBounds {
 
 	public function rectangle():Rectangle {
 		if (!Math.isFinite(left) || !Math.isFinite(right) || !Math.isFinite(top) || !Math.isFinite(bottom)
-			|| left < -0x3fffffff || top < -0x3fffffff || right > 0x3fffffff || bottom > 0x3fffffff)
+			|| left < -MAX_COORDINATE || top < -MAX_COORDINATE || right > MAX_COORDINATE || bottom > MAX_COORDINATE)
 			throw new TextDrawingError("Rendered text bounds are too large.");
 		final x = Math.floor(left);
 		final y = Math.floor(top);
@@ -422,9 +244,9 @@ private class OutlineBounds {
 		final bounds = rectangle();
 		final width = bounds.width + 2.0 * padding;
 		final height = bounds.height + 2.0 * padding;
-		if (!Math.isFinite(width) || !Math.isFinite(height) || width > 0x7fffffff || height > 0x7fffffff
-			|| Math.max(width, 1) * height * 4 > 0x7fffffff - ImageBackend.PIXEL_OFFSET
-			#if !vision_higher_width_cap || width > 0xffff #end)
+		if (!Math.isFinite(width) || !Math.isFinite(height) || width > MAX_INT || height > MAX_INT
+			|| Math.max(width, 1) * height * RGBA_BYTES_PER_PIXEL > MAX_INT - ImageBackend.PIXEL_OFFSET
+			#if !vision_higher_width_cap || width > MAX_PACKED_IMAGE_WIDTH #end)
 			throw new TextDrawingError("Rendered text image is too large.");
 		return new Image(Std.int(height > 0 ? Math.max(width, 1) : width), Std.int(height));
 	}

@@ -12,6 +12,7 @@ import vision.formats._internal.Woff;
 import vision.formats._internal.Woff2;
 import vision.formats._internal.fonts.FontData;
 import vision.formats._internal.fonts.FontTable;
+import vision.formats._internal.fonts.FontData.FontNameId;
 
 /**
 	A reusable font face loaded from font bytes.
@@ -32,7 +33,10 @@ import vision.formats._internal.fonts.FontTable;
 @:allow(vision.algorithms.TextDrawing)
 @:allow(vision.ds.Glyph)
 class Font {
-	static final latinLigatures = ["ff", "fi", "fl", "ffi", "ffl", "\u017ft", "st"];
+	static inline var SFNT_SIGNATURE_OFFSET = 0;
+	static inline var TRUETYPE_SIGNATURE = "\x00\x01\x00\x00";
+	static inline var MISSING_GLYPH_ID = 0;
+
 	/** Family name from the font, or the supplied name when the font has no family name. **/
 	public final family:String;
 
@@ -61,9 +65,9 @@ class Font {
 
 	function new(data:FontData, name:String) {
 		this.data = data;
-		final declaredFamily = data.name(16, 1);
+		final declaredFamily = data.name(TYPOGRAPHIC_FAMILY, FAMILY);
 		family = declaredFamily == null ? name : declaredFamily;
-		style = data.name(17, 2);
+		style = data.name(TYPOGRAPHIC_SUBFAMILY, SUBFAMILY);
 	}
 
 	/**
@@ -80,11 +84,11 @@ class Font {
 	public static function fromBytes(bytes:Bytes, name:String = "Font"):Font {
 		try {
 			final source = new FontTable(bytes.sub(0, bytes.length), 0, bytes.length);
-			final data = switch source.u32(0) {
-				case 0x00010000, 0x74727565: Ttf.read(source, name);
-				case 0x4f54544f: Otf.read(source, name);
-				case 0x774f4646: Woff.read(source, name);
-				case 0x774f4632: Woff2.read(source, name);
+			final data = switch source.tag(SFNT_SIGNATURE_OFFSET) {
+				case TRUETYPE_SIGNATURE, "true": Ttf.read(source, name);
+				case "OTTO": Otf.read(source, name);
+				case "wOFF": Woff.read(source, name);
+				case "wOF2": Woff2.read(source, name);
 				default: throw new FontLoadingError(name, "Unknown font format.");
 			};
 			return new Font(data, name);
@@ -110,8 +114,8 @@ class Font {
 	/**
 		Looks up a character or a ligature supported by this face.
 
-		Multi-character lookup checks standard font substitutions and encoded
-		Latin ligature characters. It does not perform contextual shaping.
+		Multi-character lookup uses the standard ligature substitutions declared
+		by the font.
 
 		@param text A single Unicode character or a ligature sequence such as `fi`
 		@return The mapped glyph, or `null` if this font has no exact mapping
@@ -122,7 +126,7 @@ class Font {
 		final code = codes.next();
 		if (!codes.hasNext()) {
 			final id = data.glyph(code);
-			return id == 0 ? null : getGlyphById(id);
+			return id == MISSING_GLYPH_ID ? null : getGlyphById(id);
 		}
 		final rules = data.ligatures.get(data.glyph(code));
 		if (rules != null) {
@@ -131,15 +135,14 @@ class Font {
 				if (following.length != rule.following.length) continue;
 				var matches = true;
 				for (i in 0...following.length)
-					if (following[i] == 0 || following[i] != rule.following[i]) {
+					if (following[i] == MISSING_GLYPH_ID || following[i] != rule.following[i]) {
 						matches = false;
 						break;
 					}
 				if (matches) return getGlyphById(rule.replacement);
 			}
 		}
-		final index = latinLigatures.indexOf(text);
-		return index == -1 ? null : getGlyph(FontData.character(0xfb00 + index));
+		return null;
 	}
 
 	/**
@@ -219,11 +222,6 @@ class Font {
 				}
 				if (!values.contains(text)) values.unshift(text);
 			}
-		}
-		for (i in 0...latinLigatures.length) {
-			final values = byGlyph.get(data.glyph(0xfb00 + i));
-			final text = latinLigatures[i];
-			if (values != null && !values.contains(text)) values.unshift(text);
 		}
 		representations = byGlyph;
 	}

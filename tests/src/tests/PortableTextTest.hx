@@ -93,6 +93,23 @@ class PortableTextTest extends utest.Test {
 
 	@:visionTestId("vision.ds.Font.getCharacters#supplementary")
 	function test_getCharacters__listsSupplementaryCodePoints() {
+		final character = String.fromCharCode(0x1f600);
+		final font = fontWithSingleCharacter(0x1f600);
+		Assert.equals(character, font.getCharacters()[0]);
+		Assert.equals(1, font.getGlyph(character).id);
+	}
+
+	@:visionTestId("vision.ds.Font.getGlyph#encodedLigatureRequiresExactCharacter")
+	function test_getGlyph__encodedLigatureRequiresExactCharacter() {
+		final character = String.fromCharCode(0xfb01);
+		final font = fontWithSingleCharacter(0xfb01);
+		Assert.isNull(font.getGlyph("fi"));
+		final glyph = font.getGlyph(character);
+		Assert.equals(1, glyph.id);
+		Assert.same([character], glyph.getRepresentations());
+	}
+
+	function fontWithSingleCharacter(code:Int):Font {
 		final data = Base64.decode(fixture);
 		final cmap = new BytesOutput();
 		cmap.bigEndian = true;
@@ -106,16 +123,13 @@ class PortableTextTest extends utest.Test {
 		cmap.writeInt32(28);
 		cmap.writeInt32(0);
 		cmap.writeInt32(1);
-		cmap.writeInt32(0x1f600);
-		cmap.writeInt32(0x1f600);
+		cmap.writeInt32(code);
+		cmap.writeInt32(code);
 		cmap.writeInt32(1);
 		final mapping = cmap.getBytes();
 		data.blit(data.length - 44, mapping, 0, mapping.length);
 
-		final font = Font.fromBytes(data);
-		final character = String.fromCharCode(0x1f600);
-		Assert.equals(character, font.getCharacters()[0]);
-		Assert.equals(1, font.getGlyph(character).id);
+		return Font.fromBytes(data);
 	}
 
 	@:visionTestId("vision.ds.Glyph.toImage#singleOutline")

@@ -12,6 +12,14 @@ typedef FontPoint = {
 	final onCurve:Bool;
 }
 
+/** OpenType name-table identifiers used to label a font face. **/
+enum abstract FontNameId(Int) to Int {
+	var FAMILY = 1;
+	var SUBFAMILY = 2;
+	var TYPOGRAPHIC_FAMILY = 16;
+	var TYPOGRAPHIC_SUBFAMILY = 17;
+}
+
 typedef FontLigature = {
 	final following:Array<Int>;
 	final replacement:Int;
