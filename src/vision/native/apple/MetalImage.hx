@@ -46,6 +46,13 @@ class MetalImage extends CpuImage {
 		return buffer;
 	}
 
+	/** Composites into this image on the Metal device. **/
+	public function composite(source:MetalImage, x:Int, y:Int, invert:Bool):Bool {
+		if (!MetalDevice.composite(deviceBuffer(), source.deviceBuffer(), x, y, invert)) return false;
+		cpuValid = false;
+		return true;
+	}
+
 	public function detach():Void {
 		readPixels();
 		releaseBuffer();

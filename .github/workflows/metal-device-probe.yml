@@ -1,0 +1,21 @@
+name: Metal device probe
+on:
+  push:
+    branches: [feature/vision-metal-device-probe]
+jobs:
+  benchmark:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Haxe
+        run: |
+          brew install haxe
+          mkdir -p ~/haxelib
+          haxelib setup ~/haxelib
+          haxelib install hxcpp 4.3.2 --quiet
+          haxelib install format 3.8.0 --quiet
+      - name: Build and benchmark Metal
+        run: |
+          swift -e 'import Metal; guard let device = MTLCreateSystemDefaultDevice(), device.makeCommandQueue() != nil else { fatalError("No Metal device") }; print(device.name)'
+          haxe -cp src -cp tests/ci -lib format -main MetalBatchBenchmark -D mac -D vision_metal -D HXCPP_ARM64 -dce full -cpp /tmp/vision-metal
+          /tmp/vision-metal/MetalBatchBenchmark

@@ -10,6 +10,8 @@ extern class MetalDevice {
 	static function available():Bool;
 	static function adapterName():cpp.ConstCharStar;
 	static function hardware():Bool;
+	static function readbackCount():Int;
+	static function composite(target:Star<MetalBuffer>, source:Star<MetalBuffer>, x:Int, y:Int, invert:Bool):Bool;
 	static function release(texture:Star<MetalBuffer>):Void;
 	static function upload(width:Int, height:Int, bytes:cpp.RawConstPointer<UInt8>):Star<MetalBuffer>;
 	static function download(texture:Star<MetalBuffer>, bytes:cpp.RawPointer<UInt8>):Bool;

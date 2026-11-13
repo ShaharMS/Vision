@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdint>
 #include <cstring>
+#include <atomic>
 #include <mutex>
 
 extern "C" id MTLCreateSystemDefaultDevice(void);
@@ -28,6 +29,7 @@ struct Buffer {
 struct Device {
     id hardware = nullptr, queue = nullptr, pipeline = nullptr;
     std::mutex mutex;
+    std::atomic<int> readbacks{0};
     Device() {
         Pool pool;
         hardware = MTLCreateSystemDefaultDevice();
@@ -58,6 +60,19 @@ struct Device {
                     uint2 id [[thread_position_in_grid]]) {
                 int2 pos = int2(id);
                 if (pos.x >= p.width || pos.y >= p.height) return;
+                if (p.mode == 10) {
+                    int2 at = pos - int2(p.x,p.y);
+                    if (any(at < 0) || at.x >= p.sourceWidth || at.y >= p.sourceHeight) return;
+                    float4 incoming = samplePixel(source,p,at);
+                    if (p.value) incoming = float4(255-incoming.rgb,255);
+                    if (incoming.a == 0) return;
+                    int index = pos.y*p.width+pos.x;
+                    float4 prior = unpack(target[index]);
+                    float a = incoming.a / 255;
+                    target[index] = pack(prior.a == 0 ? incoming :
+                        float4(mix(prior.rgb,incoming.rgb,a), incoming.a+prior.a*(1-a)));
+                    return;
+                }
                 float4 c = samplePixel(source, p, pos);
                 float2 q = float2(pos) * float2(p.stepX, p.stepY);
                 switch (p.mode) {
@@ -106,6 +121,7 @@ struct Device {
 
 inline Device& device() { static auto instance = new Device(); return *instance; }
 inline bool available() { return device().queue && device().pipeline; }
+inline int readbackCount() { return device().readbacks.load(); }
 inline bool hardware() { return available(); }
 inline const char* adapterName() {
     static const auto name = [] {
@@ -135,13 +151,12 @@ inline Buffer* upload(int width, int height, const unsigned char* bytes) {
 inline bool download(Buffer* buffer, unsigned char* bytes) {
     if (!buffer) return false;
     std::memcpy(bytes, send<void*>(buffer->object, "contents"), size_t(buffer->width)*buffer->height*4);
+    ++device().readbacks;
     return true;
 }
-inline Buffer* filter(Buffer* source, int width, int height, int mode, int value, double stepX, double stepY,
+inline bool dispatch(Buffer* source, Buffer* result, int width, int height, int mode, int value, double stepX, double stepY,
         int kernelWidth, int kernelHeight, int x, int y, int w, int h, const unsigned char* weights) {
-    if (!source || kernelWidth * kernelHeight > 81) return nullptr;
-    auto result = allocate(width, height);
-    if (!result) return nullptr;
+    if (!source || !result || source == result || kernelWidth * kernelHeight > 81) return false;
     struct Parameters {
         int sourceWidth, sourceHeight, width, height, mode;
         uint32_t value;
@@ -159,7 +174,7 @@ inline Buffer* filter(Buffer* source, int width, int height, int mode, int value
     Pool pool;
     auto commands = send<id>(gpu.queue, "commandBuffer");
     auto encoder = send<id>(commands, "computeCommandEncoder");
-    if (!encoder) { release(result); return nullptr; }
+    if (!encoder) return false;
     send(encoder, "setComputePipelineState:", gpu.pipeline);
     send(encoder, "setBuffer:offset:atIndex:", source->object, size_t(0), size_t(0));
     send(encoder, "setBuffer:offset:atIndex:", result->object, size_t(0), size_t(1));
@@ -169,8 +184,18 @@ inline Buffer* filter(Buffer* source, int width, int height, int mode, int value
     send(encoder, "endEncoding");
     send(commands, "commit");
     send(commands, "waitUntilCompleted");
-    if (send<size_t>(commands, "status") == 4) return result;
+    return send<size_t>(commands, "status") == 4;
+}
+inline Buffer* filter(Buffer* source, int width, int height, int mode, int value, double stepX, double stepY,
+        int kernelWidth, int kernelHeight, int x, int y, int w, int h, const unsigned char* weights) {
+    auto result = allocate(width, height);
+    if (dispatch(source, result, width, height, mode, value, stepX, stepY,
+            kernelWidth, kernelHeight, x, y, w, h, weights)) return result;
     release(result);
     return nullptr;
+}
+inline bool composite(Buffer* target, Buffer* source, int x, int y, bool invert) {
+    return target && dispatch(source, target, target->width, target->height, 10,
+        invert ? 1 : 0, 0, 0, 0, 0, x, y, 0, 0, nullptr);
 }
 }
