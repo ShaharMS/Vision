@@ -68,6 +68,11 @@ class PortableTextTest extends utest.Test {
 			return;
 		}
 		final font = Font.fromBytes(sys.io.File.getBytes(path));
+		final hebrew = TextShaper.shapeGlyphs("שָׁ", font.data, true, true);
+		Assert.same([661, 711], [for (glyph in hebrew) glyph.id]);
+		Assert.same([[0, 489, 0], [1422, 0, 0]], [
+			for (glyph in TextShaper.positionGlyphs(hebrew, font.data)) [glyph.advance, glyph.x, glyph.y]
+		]);
 		final cases = [
 			{text: "سَلَام", ids: [993, 756, 1020, 756, 947],
 				positions: [[692, 0, 0], [0, 650, 140], [1230, 0, 0], [0, 50, -239], [1087, 0, 0]]},
@@ -81,7 +86,7 @@ class PortableTextTest extends utest.Test {
 			final glyphs = TextShaper.shapeGlyphs(sample.text, font.data, true, true);
 			Assert.same(sample.ids, [for (glyph in glyphs) glyph.id]);
 			if (sample.positions != null) {
-				final positions = font.data.arabicPositioning.position(glyphs, font.data);
+				final positions = TextShaper.positionGlyphs(glyphs, font.data);
 				Assert.same(sample.positions, [for (glyph in positions) [glyph.advance, glyph.x, glyph.y]]);
 			}
 		}
@@ -198,6 +203,14 @@ class PortableTextTest extends utest.Test {
 
 		return Font.fromBytes(data);
 	}
+
+	@:visionTestId("vision.formats._internal.fonts.TextShaper.shape#hangulComposition")
+	function test_shape__hangulComposition() {
+		final font = fontWithSingleCharacter(0xd55c);
+		Assert.same([1], TextShaper.shape("한", font.data, false, true));
+		Assert.same([1], TextShaper.shape("한", font.data, false, true));
+	}
+
 
 	@:visionTestId("vision.ds.Glyph.toImage#singleOutline")
 	function test_toImage__rendersGlyphOutline() {

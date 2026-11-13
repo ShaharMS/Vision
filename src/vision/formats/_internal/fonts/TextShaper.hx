@@ -6,13 +6,15 @@ import vision.formats._internal.fonts.FontData.FontLigature;
 
 typedef ShapedGlyph = {
 	final id:Int;
-	final arabic:Bool;
+	final script:String;
+	final rtl:Bool;
 	final component:Int;
 }
 
 private typedef TextRun = {
 	final codes:Array<Int>;
 	final level:Int;
+	final script:String;
 }
 
 /**
@@ -89,13 +91,23 @@ class TextShaper {
 
 		final runs:Array<TextRun> = [];
 		var run:TextRun = null;
+		var previousScript = "";
 		for (i in 0...codes.length) {
 			final level = directions[i] == 2 && context[i] == 1 ? 2 : context[i] == 1 ? 1 : rightToLeft ? 2 : 0;
-			if (run == null || run.level != level) {
-				run = {codes: [], level: level};
+			var script = scriptFor(codes[i]);
+			if (script == "") script = previousScript;
+			if (script == "") {
+				for (j in i + 1...codes.length) {
+					script = scriptFor(codes[j]);
+					if (script != "") break;
+				}
+			}
+			if (run == null || run.level != level || run.script != script) {
+				run = {codes: [], level: level, script: script};
 				runs.push(run);
 			}
 			run.codes.push(codes[i]);
+			previousScript = script;
 		}
 		var start = 0;
 		while (start < runs.length) {
@@ -117,22 +129,58 @@ class TextShaper {
 		final result:Array<ShapedGlyph> = [];
 		for (part in runs) {
 			final rtl = part.level == 1;
-			if (rtl) {
-				final arabic = Lambda.exists(part.codes, isArabic);
-				final mapped = arabic ? null : [for (code in part.codes) mapGlyph(code, font)];
-				final glyphs = arabic ? arabicGlyphs(part.codes, font, useLigatures) : [
-					for (id in (useLigatures ? substitute(mapped, font.ligatures) : mapped))
-						if (id >= 0) {id: id, arabic: false, component: -1}
-				];
-				glyphs.reverse();
-				for (glyph in glyphs) result.push(glyph);
-			} else {
-				final mapped = [for (code in part.codes) mapGlyph(code, font)];
-				for (id in (useLigatures ? substitute(mapped, font.ligatures) : mapped))
-					if (id >= 0) result.push({id: id, arabic: false, component: -1});
-			}
+			final glyphs = switch part.script {
+				case "arab", "syrc": joiningGlyphs(part.codes, font, useLigatures, part.script);
+				default: defaultGlyphs(part, font, useLigatures, rtl);
+			};
+			if (rtl) glyphs.reverse();
+			for (glyph in glyphs) result.push(glyph);
 		}
 		return result;
+	}
+
+	public static function positionGlyphs(glyphs:Array<ShapedGlyph>, font:FontData):Array<OpenTypePositioning.GlyphPlacement> {
+		final result = [];
+		var start = 0;
+		while (start < glyphs.length) {
+			final first = glyphs[start];
+			var end = start + 1;
+			while (end < glyphs.length && glyphs[end].script == first.script && glyphs[end].rtl == first.rtl) end++;
+			final run = glyphs.slice(start, end);
+			final engine = font.positioningFor(first.script);
+			final placements = engine == null ? [for (glyph in run) {id: glyph.id, advance: font.advance(glyph.id), x: 0, y: 0}]
+				: engine.position(run, font);
+			for (glyph in placements) result.push(glyph);
+			start = end;
+		}
+		return result;
+	}
+
+	static function scriptFor(code:Int):String {
+		if (isArabic(code)) return "arab";
+		if ((code >= 0x0700 && code <= 0x074f) || (code >= 0x0860 && code <= 0x086f)) return "syrc";
+		if ((code >= 0x0590 && code <= 0x05ff) || (code >= 0xfb1d && code <= 0xfb4f)) return "hebr";
+		if ((code >= 0x0900 && code <= 0x097f) || (code >= 0xa8e0 && code <= 0xa8ff)) return "dev2";
+		if ((code >= 0x1100 && code <= 0x11ff) || (code >= 0xac00 && code <= 0xd7ff)) return "hang";
+		if (code >= 0x3040 && code <= 0x30ff) return "kana";
+		if ((code >= 0x3400 && code <= 0x9fff) || (code >= 0x20000 && code <= 0x323af)) return "hani";
+		if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a) || (code >= 0xc0 && code < 0x0590)) return "latn";
+		return "";
+	}
+
+	static function defaultGlyphs(run:TextRun, font:FontData, useLigatures:Bool, rtl:Bool):Array<ShapedGlyph> {
+		final codes = run.script == "hang" ? ScriptComposition.hangul(run.codes, font) : run.codes;
+		if (run.script == "hebr") ArabicJoining.reorderHebrewMarks(codes);
+		final glyphs = [for (code in codes) mapGlyph(code, font)];
+		final engine = font.substitutionsFor(run.script);
+		if (engine != null) {
+			engine.apply("ccmp", glyphs);
+			if (run.script == "dev2") Devanagari.shape(codes, glyphs, engine);
+			engine.apply("rlig", glyphs);
+			if (useLigatures) engine.apply("liga", glyphs);
+		}
+		final mapped = run.script == "latn" && useLigatures && engine == null ? substitute(glyphs, font.ligatures) : glyphs;
+		return [for (id in mapped) if (id >= 0) {id: id, script: run.script, rtl: rtl, component: -1}];
 	}
 
 	static inline function isArabic(code:Int):Bool {
@@ -144,10 +192,9 @@ class TextShaper {
 	static function direction(code:Int):Int {
 		if ((code >= 0x30 && code <= 0x39) || (code >= 0x0660 && code <= 0x0669) || (code >= 0x06f0 && code <= 0x06f9))
 			return 2;
-		if (isArabic(code) || (code >= 0x05d0 && code <= 0x05ea) || (code >= 0xfb1d && code <= 0xfb4f))
-			return 1;
-		if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a) || (code >= 0xc0 && code < 0x0590))
-			return 0;
+		final script = scriptFor(code);
+		if (script == "arab" || script == "hebr" || script == "syrc") return 1;
+		if (script != "") return 0;
 		return -1;
 	}
 
@@ -155,9 +202,9 @@ class TextShaper {
 		return code == 0x200c || code == 0x200d ? -1 : font.glyph(code);
 	}
 
-	static function arabicGlyphs(codes:Array<Int>, font:FontData, useLigatures:Bool):Array<ShapedGlyph> {
-		ArabicJoining.reorderMarks(codes);
-		final substitutions = font.arabicSubstitutions;
+	static function joiningGlyphs(codes:Array<Int>, font:FontData, useLigatures:Bool, script:String):Array<ShapedGlyph> {
+		if (script == "arab") ArabicJoining.reorderMarks(codes);
+		final substitutions = font.substitutionsFor(script);
 		// Join controls affect joining and block GSUB matches, but draw no glyph.
 		final glyphs = [for (code in codes) mapGlyph(code, font) < 0 ? -2 : font.glyph(code)];
 		final joining = [for (code in codes) ArabicJoining.type(code)];
@@ -204,7 +251,7 @@ class TextShaper {
 			substitutions.applyContext(glyphs);
 			if (useLigatures) substitutions.apply("liga", glyphs, null, null, components);
 		}
-		return [for (i in 0...glyphs.length) if (glyphs[i] >= 0) {id: glyphs[i], arabic: true, component: components[i]}];
+		return [for (i in 0...glyphs.length) if (glyphs[i] >= 0) {id: glyphs[i], script: script, rtl: true, component: components[i]}];
 	}
 
 	static function lamAlef(font:FontData, alef:Int, joinsPrevious:Bool):Int {

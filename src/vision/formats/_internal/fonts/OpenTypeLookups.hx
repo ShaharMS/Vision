@@ -7,7 +7,7 @@ class OpenTypeLookups {
 	final features = new Map<String, Array<Int>>();
 	final glyphClasses:Null<FontTable>;
 
-	public function new(table:FontTable, gdef:Null<FontTable>) {
+	public function new(table:FontTable, gdef:Null<FontTable>, scriptTag:String) {
 		this.table = table;
 		final classOffset = gdef == null ? 0 : gdef.u16(4);
 		glyphClasses = classOffset == 0 ? null : gdef.slice(classOffset, gdef.length - classOffset);
@@ -18,7 +18,7 @@ class OpenTypeLookups {
 		for (i in 0...table.u16(scripts)) {
 			final record = scripts + 2 + i * 6;
 			final tag = table.tag(record);
-			if (tag == "arab" || (tag == "DFLT" && script == 0)) script = scripts + table.u16(record + 4);
+			if (tag == scriptTag || (tag == "DFLT" && script == 0)) script = scripts + table.u16(record + 4);
 		}
 		if (script == 0 || table.u16(script) == 0) return;
 		final language = script + table.u16(script);
@@ -48,15 +48,20 @@ class OpenTypeLookups {
 	public function lookup(id:Int):Int return id >= table.u16(list) ? 0 : list + table.u16(list + 2 + id * 2);
 
 	public function glyphClass(glyph:Int):Int {
-		final data = glyphClasses;
-		if (data == null || glyph < 0) return 0;
-		switch data.u16(0) {
+		return glyphClasses == null ? 0 : readClass(glyphClasses, 0, glyph);
+	}
+
+	public function classAt(offset:Int, glyph:Int):Int return readClass(table, offset, glyph);
+
+	static function readClass(data:FontTable, offset:Int, glyph:Int):Int {
+		if (glyph < 0) return 0;
+		switch data.u16(offset) {
 			case 1:
-				final index = glyph - data.u16(2);
-				if (index >= 0 && index < data.u16(4)) return data.u16(6 + index * 2);
+				final index = glyph - data.u16(offset + 2);
+				if (index >= 0 && index < data.u16(offset + 4)) return data.u16(offset + 6 + index * 2);
 			case 2:
-				for (i in 0...data.u16(2)) {
-					final row = 4 + i * 6;
+				for (i in 0...data.u16(offset + 2)) {
+					final row = offset + 4 + i * 6;
 					if (glyph < data.u16(row)) break;
 					if (glyph <= data.u16(row + 2)) return data.u16(row + 4);
 				}

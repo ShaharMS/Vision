@@ -4,46 +4,49 @@ import vision.formats._internal.fonts.TextShaper.ShapedGlyph;
 
 typedef GlyphPlacement = {
 	final id:Int;
-	final advance:Int;
+	var advance:Int;
 	var x:Int;
 	var y:Int;
 }
 
-/** Applies Arabic mark attachments in font units. */
+/** Applies OpenType mark attachments in font units. */
 @:noCompletion
-class ArabicPositioning {
+class OpenTypePositioning {
 	final layout:OpenTypeLookups;
 	static inline var MARK_CLASS = 3;
 
-	public function new(gpos:FontTable, gdef:Null<FontTable>) {
-		layout = new OpenTypeLookups(gpos, gdef);
+	public function new(gpos:FontTable, gdef:Null<FontTable>, script:String) {
+		layout = new OpenTypeLookups(gpos, gdef, script);
 	}
 
 	public function position(glyphs:Array<ShapedGlyph>, font:FontData):Array<GlyphPlacement> {
 		final placements:Array<GlyphPlacement> = [for (glyph in glyphs) {
 			id: glyph.id,
-			advance: glyph.arabic && layout.glyphClass(glyph.id) == MARK_CLASS ? 0 : font.advance(glyph.id),
+			advance: layout.glyphClass(glyph.id) == MARK_CLASS ? 0 : font.advance(glyph.id),
 			x: 0, y: 0
 		}];
+		final ids = [for (glyph in glyphs) glyph.id];
+		final parents = [for (_ in glyphs) -1];
 		final origins = [];
+		for (lookup in layout.feature("kern"))
+			for (i in 0...glyphs.length)
+				attach(lookup, glyphs, ids, placements, origins, parents, i, 0, true);
 		var pen = 0;
 		for (i in 0...glyphs.length) {
 			if (i > 0) pen += font.pairAdjustment(glyphs[i - 1].id, glyphs[i].id);
 			origins.push(pen);
 			pen += placements[i].advance;
 		}
-		final ids = [for (glyph in glyphs) glyph.id];
-		final parents = [for (_ in glyphs) -1];
-		final order = [for (tag in ["mark", "mkmk"]) for (lookup in layout.feature(tag)) lookup];
+		final order = [for (tag in ["mark", "abvm", "blwm", "mkmk"]) for (lookup in layout.feature(tag)) lookup];
 		for (lookup in order) {
-			var i = glyphs.length;
-			while (i-- > 0)
-				if (glyphs[i].arabic)
-					attach(lookup, glyphs, ids, placements, origins, parents, i, 0);
+			for (j in 0...glyphs.length) {
+				final i = glyphs[0].rtl ? glyphs.length - 1 - j : j;
+				attach(lookup, glyphs, ids, placements, origins, parents, i, 0);
+			}
 		}
-		// Attachments point to a glyph later in visual order.
-		var i = glyphs.length;
-		while (i-- > 0) {
+		// Resolve attachments in logical order.
+		for (j in 0...glyphs.length) {
+			final i = glyphs[j].rtl ? glyphs.length - 1 - j : j;
 			final parent = parents[i];
 			if (parent < 0) continue;
 			placements[i].x += placements[parent].x;
@@ -53,7 +56,7 @@ class ArabicPositioning {
 	}
 
 	function attach(id:Int, glyphs:Array<ShapedGlyph>, ids:Array<Int>, placements:Array<GlyphPlacement>,
-		origins:Array<Int>, parents:Array<Int>, index:Int, depth:Int):Bool {
+		origins:Array<Int>, parents:Array<Int>, index:Int, depth:Int, single:Bool = false):Bool {
 		if (depth >= 8) return false;
 		final table = layout.table;
 		final lookup = layout.lookup(id);
@@ -62,10 +65,11 @@ class ArabicPositioning {
 		if ((flags & 0xfff0) != 0 || layout.ignored(ids[index], flags)) return false;
 		// The run is stored in visual order, so forward logical traversal walks left.
 		function next(from:Int, step:Int, flags:Int):Int {
-			var i = from - step;
-			while (i >= 0 && i < ids.length && glyphs[i].arabic) {
+			final delta = glyphs[index].rtl ? -step : step;
+			var i = from + delta;
+			while (i >= 0 && i < ids.length && glyphs[i].script == glyphs[index].script) {
 				if (!layout.ignored(ids[i], flags)) return i;
-				i -= step;
+				i += delta;
 			}
 			return -1;
 		}
@@ -83,10 +87,56 @@ class ArabicPositioning {
 					final record = match.records + 2 + j * 4;
 					final input = table.u16(record);
 					if (input < match.inputs.length)
-						attach(table.u16(record + 2), glyphs, ids, placements, origins, parents, match.inputs[input], depth + 1);
+						attach(table.u16(record + 2), glyphs, ids, placements, origins, parents, match.inputs[input], depth + 1, single);
 				}
 				return true;
 			}
+			if (single && type == 1) {
+				final covered = layout.coverage(sub + table.u16(sub + 2), ids[index]);
+				if (covered < 0) continue;
+				final format = table.u16(sub);
+				final fields = table.u16(sub + 4);
+				var value = sub + 6;
+				if (format == 2) {
+					if (covered >= table.u16(value)) continue;
+					value += 2 + covered * valueSize(fields);
+				} else if (format != 1) continue;
+				applyValue(placements[index], value, fields);
+				return true;
+			}
+			if (single && type == 2 && glyphs[index].rtl) {
+				final following = next(index, 1, flags);
+				if (following < 0) continue;
+				final covered = layout.coverage(sub + table.u16(sub + 2), ids[index]);
+				if (covered < 0) continue;
+				final first = table.u16(sub + 4);
+				final second = table.u16(sub + 6);
+				final width = valueSize(first) + valueSize(second);
+				var value = -1;
+				switch table.u16(sub) {
+					case 1:
+						if (covered >= table.u16(sub + 8)) continue;
+						final set = sub + table.u16(sub + 10 + covered * 2);
+						for (j in 0...table.u16(set)) {
+							final record = set + 2 + j * (2 + width);
+							if (table.u16(record) == ids[following]) {
+								value = record + 2;
+								break;
+							}
+						}
+					case 2:
+						final a = layout.classAt(sub + table.u16(sub + 8), ids[index]);
+						final b = layout.classAt(sub + table.u16(sub + 10), ids[following]);
+						final columns = table.u16(sub + 14);
+						if (a < table.u16(sub + 12) && b < columns) value = sub + 16 + (a * columns + b) * width;
+					default:
+				}
+				if (value < 0) continue;
+				applyValue(placements[index], value, first);
+				applyValue(placements[following], value + valueSize(first), second);
+				return true;
+			}
+			if (single) continue;
 			if ((type < 4 || type > 6) || table.u16(sub) != 1) continue;
 			final markIndex = layout.coverage(sub + table.u16(sub + 2), ids[index]);
 			if (markIndex < 0) continue;
@@ -124,5 +174,25 @@ class ArabicPositioning {
 			return true;
 		}
 		return false;
+	}
+
+	static function valueSize(fields:Int):Int {
+		var width = 0;
+		for (bit in 0...8) if ((fields & (1 << bit)) != 0) width += 2;
+		return width;
+	}
+
+	function applyValue(placement:GlyphPlacement, offset:Int, fields:Int):Void {
+		final table = layout.table;
+		var value = offset;
+		if ((fields & 1) != 0) {
+			placement.x += table.i16(value);
+			value += 2;
+		}
+		if ((fields & 2) != 0) {
+			placement.y += table.i16(value);
+			value += 2;
+		}
+		if ((fields & 4) != 0) placement.advance += table.i16(value);
 	}
 }

@@ -1,5 +1,8 @@
 # 3.0.0 (unreleased)
 
+- Portable text uses shared OpenType substitution and positioning for horizontal
+  script runs, with Hebrew marks, Syriac joining, Hangul composition, and basic
+  Devanagari conjunct and matra shaping.
 - Portable Arabic shaping uses supported OpenType positional substitutions
   and required ligatures from the font's default Arabic language system.
   Unicode presentation forms provide a fallback.

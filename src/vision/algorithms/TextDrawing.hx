@@ -90,9 +90,7 @@ class TextDrawing {
 		final lines = ~/\r\n?|\n/g.split(text);
 		for (i in 0...lines.length) {
 			final shaped = TextShaper.shapeGlyphs(lines[i], font, options.rightToLeft, options.ligatures);
-			final glyphs = font.arabicPositioning != null && Lambda.exists(shaped, glyph -> glyph.arabic)
-				? font.arabicPositioning.position(shaped, font)
-				: [for (glyph in shaped) {id: glyph.id, advance: font.advance(glyph.id), x: 0, y: 0}];
+			final glyphs = TextShaper.positionGlyphs(shaped, font);
 			var pen = 0.0;
 			if (options.rightToLeft)
 				for (j in 0...glyphs.length) {

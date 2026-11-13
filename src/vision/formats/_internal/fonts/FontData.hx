@@ -41,8 +41,8 @@ class FontData {
 	final cff:Null<CffOutline>;
 	final outlines = new IntMap<Array<Array<FontPoint>>>();
 	public final ligatures = new IntMap<Array<FontLigature>>();
-	public final arabicSubstitutions:Null<ArabicSubstitutions>;
-	public final arabicPositioning:Null<ArabicPositioning>;
+	final substitutionsByScript = new Map<String, OpenTypeSubstitutions>();
+	final positioningByScript = new Map<String, OpenTypePositioning>();
 	final positioning:Null<GposKerning>;
 	final kerning = new IntMap<Int>();
 
@@ -73,11 +73,29 @@ class FontData {
 			trueType = new TrueTypeOutline(family, table("glyf"), table("loca"), glyphCount, indexFormat);
 		}
 		cmap = readCharacterMap(table("cmap"));
-		arabicSubstitutions = tables.exists("GSUB") ? new ArabicSubstitutions(table("GSUB"), tables.get("GDEF"), this) : null;
 		if (tables.exists("GSUB")) readLigatures(table("GSUB"));
-		arabicPositioning = tables.exists("GPOS") ? new ArabicPositioning(table("GPOS"), tables.get("GDEF")) : null;
 		positioning = tables.exists("GPOS") ? new GposKerning(table("GPOS")) : null;
 		if (tables.exists("kern")) readKerning(table("kern"));
+	}
+
+	public function substitutionsFor(script:String):Null<OpenTypeSubstitutions> {
+		if (!tables.exists("GSUB")) return null;
+		var engine = substitutionsByScript.get(script);
+		if (engine == null) {
+			engine = new OpenTypeSubstitutions(table("GSUB"), tables.get("GDEF"), script, this);
+			substitutionsByScript.set(script, engine);
+		}
+		return engine;
+	}
+
+	public function positioningFor(script:String):Null<OpenTypePositioning> {
+		if (!tables.exists("GPOS")) return null;
+		var engine = positioningByScript.get(script);
+		if (engine == null) {
+			engine = new OpenTypePositioning(table("GPOS"), tables.get("GDEF"), script);
+			positioningByScript.set(script, engine);
+		}
+		return engine;
 	}
 
 	function readCharacterMap(map:FontTable):FontTable {
@@ -274,7 +292,7 @@ class FontData {
 		for (set in ligatures) set.sort((a, b) -> b.following.length - a.following.length);
 	}
 
-	@:allow(vision.formats._internal.fonts.ArabicSubstitutions)
+	@:allow(vision.formats._internal.fonts.OpenTypeSubstitutions)
 	function coverageGlyphs(data:FontTable, coverage:Int):Array<Int> {
 		final glyphs:Array<Int> = [];
 		switch data.u16(coverage) {
@@ -295,7 +313,7 @@ class FontData {
 		return glyphs;
 	}
 
-	@:allow(vision.formats._internal.fonts.ArabicSubstitutions)
+	@:allow(vision.formats._internal.fonts.OpenTypeSubstitutions)
 	function readLigatureSet(data:FontTable, sub:Int, target:IntMap<Array<FontLigature>>):Void {
 		if (data.u16(sub) != 1) return;
 		final glyphs = coverageGlyphs(data, sub + data.u16(sub + 2));

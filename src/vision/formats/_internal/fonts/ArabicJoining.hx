@@ -204,18 +204,84 @@ class ArabicJoining {
 	public static function type(code:Int):Int return findRange(code, ranges);
 
 	/** Stable ordering of Arabic marks before GSUB, with shadda nearest its base. **/
-	public static function reorderMarks(codes:Array<Int>):Void {
+	public static function reorderMarks(codes:Array<Int>):Void reorder(codes, markRank);
+
+	static function reorder(codes:Array<Int>, rankFor:Int->Int):Void {
 		for (i in 1...codes.length) {
 			final code = codes[i];
-			final rank = markRank(code);
+			final rank = rankFor(code);
 			if (rank == 0) continue;
 			var j = i;
-			while (j > 0 && markRank(codes[j - 1]) > rank) {
+			while (j > 0 && rankFor(codes[j - 1]) > rank) {
 				codes[j] = codes[j - 1];
 				j--;
 			}
 			codes[j] = code;
 		}
+	}
+
+	// Unicode 17.0 canonical combining classes for Hebrew marks.
+	static final hebrewClasses = [
+		0x591, 0x591, 220,
+		0x592, 0x592, 230,
+		0x593, 0x593, 230,
+		0x594, 0x594, 230,
+		0x595, 0x595, 230,
+		0x596, 0x596, 220,
+		0x597, 0x597, 230,
+		0x598, 0x598, 230,
+		0x599, 0x599, 230,
+		0x59a, 0x59a, 222,
+		0x59b, 0x59b, 220,
+		0x59c, 0x59c, 230,
+		0x59d, 0x59d, 230,
+		0x59e, 0x59e, 230,
+		0x59f, 0x59f, 230,
+		0x5a0, 0x5a0, 230,
+		0x5a1, 0x5a1, 230,
+		0x5a2, 0x5a2, 220,
+		0x5a3, 0x5a3, 220,
+		0x5a4, 0x5a4, 220,
+		0x5a5, 0x5a5, 220,
+		0x5a6, 0x5a6, 220,
+		0x5a7, 0x5a7, 220,
+		0x5a8, 0x5a8, 230,
+		0x5a9, 0x5a9, 230,
+		0x5aa, 0x5aa, 220,
+		0x5ab, 0x5ab, 230,
+		0x5ac, 0x5ac, 230,
+		0x5ad, 0x5ad, 222,
+		0x5ae, 0x5ae, 228,
+		0x5af, 0x5af, 230,
+		0x5b0, 0x5b0, 10,
+		0x5b1, 0x5b1, 11,
+		0x5b2, 0x5b2, 12,
+		0x5b3, 0x5b3, 13,
+		0x5b4, 0x5b4, 14,
+		0x5b5, 0x5b5, 15,
+		0x5b6, 0x5b6, 16,
+		0x5b7, 0x5b7, 17,
+		0x5b8, 0x5b8, 18,
+		0x5b9, 0x5b9, 19,
+		0x5ba, 0x5ba, 19,
+		0x5bb, 0x5bb, 20,
+		0x5bc, 0x5bc, 21,
+		0x5bd, 0x5bd, 22,
+		0x5bf, 0x5bf, 23,
+		0x5c1, 0x5c1, 24,
+		0x5c2, 0x5c2, 25,
+		0x5c4, 0x5c4, 230,
+		0x5c5, 0x5c5, 220,
+		0x5c7, 0x5c7, 18,
+		0xfb1e, 0xfb1e, 26,
+	];
+
+	public static function reorderHebrewMarks(codes:Array<Int>):Void {
+		reorder(codes, code -> {
+			final rank = findRange(code, hebrewClasses);
+			// Shin and sin dots are shaped before vowel marks.
+			return rank == 24 || rank == 25 ? 1 : rank;
+		});
 	}
 
 	static function markRank(code:Int):Int {

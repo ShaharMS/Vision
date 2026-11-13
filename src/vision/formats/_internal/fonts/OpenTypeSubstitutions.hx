@@ -3,16 +3,16 @@ package vision.formats._internal.fonts;
 import haxe.ds.IntMap;
 import vision.formats._internal.fonts.FontData.FontLigature;
 
-/** Applies supported Arabic GSUB features in logical order. **/
+/** Applies supported OpenType GSUB features in logical order. **/
 @:noCompletion
-class ArabicSubstitutions {
+class OpenTypeSubstitutions {
 	final layout:OpenTypeLookups;
 	final font:FontData;
 	final ligatures = new IntMap<IntMap<Array<FontLigature>>>();
 	static inline var MAX_CONTEXT_DEPTH = 8;
 
-	public function new(gsub:FontTable, gdef:Null<FontTable>, font:FontData) {
-		layout = new OpenTypeLookups(gsub, gdef);
+	public function new(gsub:FontTable, gdef:Null<FontTable>, script:String, font:FontData) {
+		layout = new OpenTypeLookups(gsub, gdef, script);
 		this.font = font;
 	}
 
