@@ -105,6 +105,14 @@ abstract Image(PlatformImage) {
 	**/
 	public inline function accelerate():PlatformBatch return new PlatformBatch(cast this);
 
+	#if (js && !nodejs)
+	/**
+		Makes a WebGPU image available to synchronous CPU pixel access and export.
+		The image retains its GPU buffer for subsequent drawing and batches.
+	**/
+	public function readbackWebGpu():js.lib.Promise<Image> return this.readbackWebGpu();
+	#end
+
 
 	/**
 		The width of the image.

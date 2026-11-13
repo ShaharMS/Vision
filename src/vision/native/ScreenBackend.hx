@@ -21,6 +21,10 @@ abstract ScreenBackend(ScreenDriver) {
 		}
 		#if (js && !nodejs)
 		if (BrowserScreenBackend.isAvailable()) {
+			if (options.webGpu != null) {
+				this = new vision.native.browser.WebGpuScreenDriver(x, y, width, height, options);
+				return;
+			}
 			this = new BrowserScreenBackend(x, y, width, height, options);
 			return;
 		}

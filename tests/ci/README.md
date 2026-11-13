@@ -129,3 +129,11 @@ seven measured runs per path.
 On the Windows Edge test host, CPU execution took 56.0 ms and WebGPU
 execution took 9.8 ms. The maximum channel difference was 1. Adapter and
 pipeline setup took 1066.3 ms and was measured separately.
+
+The resident WebGPU variant attaches the source to a WebGPU `Screen`,
+calls `commit()`, draws the result, and waits for queue completion before
+stopping the timer. It then downloads and checks the output separately.
+On the Windows Edge test host, CPU processing and export took 44.0 ms,
+and WebGPU processing and presentation took 6.0 ms. These measure distinct
+output boundaries. The downloaded result differed by at most one channel
+value, and the device reported no validation error.

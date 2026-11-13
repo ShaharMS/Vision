@@ -2,6 +2,9 @@ package vision.native.browser;
 
 #if (js && !nodejs)
 import vision.ds.ByteArray;
+import vision.ds.accelerate.PixelStorage;
+import vision.exceptions.WebGpuError;
+import vision.native.browser.WebGpuBatchDevice.WebGpuPixels;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.accelerate.ImageCommand;
@@ -16,6 +19,8 @@ class BrowserImage extends CpuImage {
 	var cpuValid = true;
 	var surfaceValid = false;
 	var exposed:Bool;
+	var webGpu:WebGpuBatchDevice;
+	var resident:WebGpuPixels;
 
 	public function new(bytes:ByteArray, exposed:Bool = false) {
 		super(bytes, exposed);
@@ -26,10 +31,10 @@ class BrowserImage extends CpuImage {
 		return new BrowserImage(CpuImage.allocate(width, height, color).writePixels());
 	}
 
-	override function get_isGpuBacked():Bool return surface != null && surface.isAvailable();
+	override function get_isGpuBacked():Bool return resident != null || (surface != null && surface.isAvailable());
 
 	public function attach(surface:WebGlSurface):Bool {
-		if (exposed || this.surface != null) return false;
+		if (exposed || webGpu != null || this.surface != null) return false;
 		this.surface = surface;
 		return true;
 	}
@@ -54,6 +59,10 @@ class BrowserImage extends CpuImage {
 	**/
 	public function executeBatch(commands:Array<ImageCommand>, mode:ImageCommitMode):Null<Image> {
 		final image:Image = cast this;
+		if (webGpu != null && commands.length != 0) {
+			final result = webGpu.commit(image, commands, mode);
+			if (result != null) return result;
+		}
 		if (commands.length == 0 || image.hasView() || surface == null) return null;
 		if (mode == InPlace && commands.length == 1) switch commands[0] {
 			case Transform(operation, value) if (operation != Grayscale && transform(operation, value)): return image;
@@ -124,9 +133,51 @@ class BrowserImage extends CpuImage {
 		return true;
 	}
 
+	@:allow(vision.native.browser.WebGpuBatchDevice)
+	function attachWebGpu(device:WebGpuBatchDevice):Bool {
+		if (exposed || surface != null || (webGpu != null && webGpu != device)) return false;
+		webGpu = device;
+		return true;
+	}
+
+	@:allow(vision.native.browser.WebGpuBatchDevice)
+	function adoptWebGpu(device:WebGpuBatchDevice, pixels:WebGpuPixels):Void {
+		releaseWebGpu();
+		webGpu = device;
+		resident = pixels;
+		cpuValid = false;
+	}
+
+	@:allow(vision.native.browser.WebGpuBatchDevice)
+	function webGpuPixels(device:WebGpuBatchDevice):Null<WebGpuPixels> return webGpu == device ? resident : null;
+
+	public function readbackWebGpu():js.lib.Promise<Image> {
+		final pixels = resident;
+		if (pixels == null || cpuValid) return js.lib.Promise.resolve(cast this);
+		final packed = super.readPixels();
+		return webGpu.download(pixels).then(bytes -> {
+			if (resident != pixels) throw new WebGpuError("The image changed during readback.");
+			packed.blit(PixelStorage.PIXEL_OFFSET, bytes, 0, bytes.length);
+			cpuValid = true;
+			return (cast this : Image);
+		});
+	}
+
+	public function detachWebGpu():Void {
+		readPixels();
+		releaseWebGpu();
+		webGpu = null;
+	}
+
+	function releaseWebGpu():Void {
+		if (resident != null) resident.buffer.destroy();
+		resident = null;
+	}
+
 	override public function readPixels():ByteArray {
 		final bytes = super.readPixels();
 		if (!cpuValid) {
+			if (resident != null) throw new WebGpuError("Call readbackWebGpu() before accessing WebGPU pixels on the CPU.");
 			surface.download(bytes);
 			cpuValid = true;
 		}
@@ -135,11 +186,15 @@ class BrowserImage extends CpuImage {
 
 	override public function writePixels():ByteArray {
 		final bytes = readPixels();
+		releaseWebGpu();
 		surfaceValid = false;
 		return bytes;
 	}
 
 	override public function bytes():ByteArray {
+		readPixels();
+		releaseWebGpu();
+		webGpu = null;
 		detach();
 		exposed = true;
 		return super.bytes();

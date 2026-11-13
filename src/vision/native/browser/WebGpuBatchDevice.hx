@@ -92,10 +92,13 @@ class WebGpuBatchDevice {
 	final device:Dynamic;
 	final pipeline:Dynamic;
 	var disposed = false;
+	var presentation:Dynamic;
+	final canvasFormat:String;
 
-	function new(device:Dynamic, pipeline:Dynamic) {
+	function new(device:Dynamic, pipeline:Dynamic, canvasFormat:String) {
 		this.device = device;
 		this.pipeline = pipeline;
+		this.canvasFormat = canvasFormat;
 	}
 
 	/** Requests an adapter and compiles the compute pipeline. Returns null when unavailable. **/
@@ -111,7 +114,7 @@ class WebGpuBatchDevice {
 				final compile:Promise<Dynamic> = device.createComputePipelineAsync({
 					layout: "auto", compute: {module: shader, entryPoint: "main"}
 				});
-				return compile.then(pipeline -> new WebGpuBatchDevice(device, pipeline), _ -> {
+				return compile.then(pipeline -> new WebGpuBatchDevice(device, pipeline, gpu.getPreferredCanvasFormat()), _ -> {
 					device.destroy();
 					return null;
 				});
@@ -123,23 +126,68 @@ class WebGpuBatchDevice {
 	function execute(source:Image, commands:Array<ImageCommand>, mode:ImageCommitMode):Promise<Image> {
 		try {
 			if (disposed) throw new WebGpuError("This WebGPU device is disposed.");
-			var width = source.width;
-			var height = source.height;
-			final passes:Array<WebGpuPass> = [];
-			if (!source.hasView() && fits(width, height))
-				for (command in commands) {
-					final pass = describe(command, width, height);
-					if (pass == null || !fits(pass.width, pass.height)) break;
-					passes.push(pass);
-					width = pass.width;
-					height = pass.height;
-				}
-			if (commands.length == 0 || passes.length != commands.length)
-				return Promise.resolve(CpuBatchExecutor.execute(source, commands, mode));
-			if (mode == InPlace && (width != source.width || height != source.height))
-				throw new WebGpuError("An in-place batch must retain its original dimensions.");
-			return submit(source, passes, mode);
+			final passes = plan(source, commands);
+			if (passes == null) return Promise.resolve(CpuBatchExecutor.execute(source, commands, mode));
+			final result = submit(source, passes);
+			return download(result).then(bytes -> {
+				final image = mode == InPlace ? source : new Image(result.width, result.height);
+				if (image.width != result.width || image.height != result.height)
+					throw new WebGpuError("An in-place batch must retain its original dimensions.");
+				image.backend().writePixels().blit(PixelStorage.PIXEL_OFFSET, bytes, 0, bytes.length);
+				return image;
+			}).finally(() -> result.buffer.destroy());
 		} catch (error:Dynamic) {
+			return Promise.reject(error);
+		}
+	}
+
+	/** Associates CPU-backed images with this device for subsequent synchronous commits. **/
+	public function attach(image:Image):Bool {
+		return !disposed && fits(image.width, image.height) && image.backend().attachWebGpu(this);
+	}
+
+	@:allow(vision.native.browser.BrowserImage)
+	function commit(source:Image, commands:Array<ImageCommand>, mode:ImageCommitMode):Null<Image> {
+		if (disposed) throw new WebGpuError("This WebGPU device is disposed.");
+		final passes = plan(source, commands);
+		if (passes == null) return null;
+		final last = passes[passes.length - 1];
+		if (mode == InPlace && (last.width != source.width || last.height != source.height))
+			throw new WebGpuError("An in-place batch must retain its original dimensions.");
+		final result = submit(source, passes);
+		final image = mode == InPlace ? source : new Image(result.width, result.height);
+		image.backend().adoptWebGpu(this, result);
+		return image;
+	}
+
+	function plan(source:Image, commands:Array<ImageCommand>):Null<Array<WebGpuPass>> {
+		var width = source.width;
+		var height = source.height;
+		if (commands.length == 0 || source.hasView() || !fits(width, height)) return null;
+		final passes = [];
+		for (command in commands) {
+			final pass = describe(command, width, height);
+			if (pass == null || !fits(pass.width, pass.height)) return null;
+			passes.push(pass);
+			width = pass.width;
+			height = pass.height;
+		}
+		return passes;
+	}
+
+	@:allow(vision.native.browser.BrowserImage)
+	function download(surface:WebGpuPixels):Promise<Bytes> {
+		final size = surface.width * surface.height * 4;
+		final staging = device.createBuffer({size: size, usage: 1 | 8});
+		try {
+			final encoder = device.createCommandEncoder();
+			encoder.copyBufferToBuffer(surface.buffer, 0, staging, 0, size);
+			device.queue.submit([encoder.finish()]);
+			final mapping:Promise<Dynamic> = staging.mapAsync(1);
+			return mapping.then(_ -> Bytes.ofData(new Uint8Array(staging.getMappedRange()).slice().buffer))
+				.finally(() -> staging.destroy());
+		} catch (error:Dynamic) {
+			staging.destroy();
 			return Promise.reject(error);
 		}
 	}
@@ -198,7 +246,7 @@ class WebGpuBatchDevice {
 		return c.alpha | (c.red << 8) | (c.green << 16) | (c.blue << 24);
 	}
 
-	function submit(source:Image, passes:Array<WebGpuPass>, mode:ImageCommitMode):Promise<Image> {
+	function submit(source:Image, passes:Array<WebGpuPass>):WebGpuPixels {
 		final buffers:Array<Dynamic> = [];
 		function allocate(size:Int, usage:Int):Dynamic {
 			final buffer = device.createBuffer({size: size, usage: usage});
@@ -211,9 +259,14 @@ class WebGpuBatchDevice {
 		try {
 			var width = source.width;
 			var height = source.height;
-			var input = allocate(width * height * 4, 128 | 8);
-			final bytes = source.exportToBytes();
-			device.queue.writeBuffer(input, 0, new Uint8Array(bytes.getData()));
+			final resident = source.backend().webGpuPixels(this);
+			var input:Dynamic;
+			if (resident != null) input = resident.buffer;
+			else {
+				input = allocate(width * height * 4, 128 | 8);
+				final bytes = source.exportToBytes();
+				device.queue.writeBuffer(input, 0, new Uint8Array(bytes.getData()));
+			}
 			final encoder = device.createCommandEncoder();
 			for (operation in passes) {
 				final output = allocate(operation.width * operation.height * 4, 128 | 4);
@@ -256,26 +309,87 @@ class WebGpuBatchDevice {
 				width = operation.width;
 				height = operation.height;
 			}
-			final size = width * height * 4;
-			final readback = allocate(size, 1 | 8);
-			encoder.copyBufferToBuffer(input, 0, readback, 0, size);
 			device.queue.submit([encoder.finish()]);
-			final mapping:Promise<Dynamic> = readback.mapAsync(1);
-			return mapping.then(_ -> {
-				final pixels = Bytes.ofData(new Uint8Array(readback.getMappedRange()).slice().buffer);
-				final result = mode == InPlace ? source : new Image(width, height);
-				result.backend().writePixels().blit(PixelStorage.PIXEL_OFFSET, pixels, 0, size);
-				release();
-				return result;
-			}).catchError(error -> {
-				release();
-				return Promise.reject(new WebGpuError(Std.string(error)));
-			});
+			buffers.remove(input);
+			release();
+			return {buffer: input, width: width, height: height};
 		} catch (error:Dynamic) {
 			release();
-			return Promise.reject(new WebGpuError(Std.string(error)));
+			throw new WebGpuError(Std.string(error));
 		}
 	}
+
+	@:allow(vision.native.browser.WebGpuScreen)
+	function configure(canvas:js.html.CanvasElement):Dynamic {
+		final context:Dynamic = Syntax.code("{0}.getContext('webgpu')", canvas);
+		if (disposed || context == null) throw new WebGpuError("WebGPU canvas is unavailable.");
+		context.configure({device: device, format: canvasFormat, alphaMode: "opaque"});
+		return context;
+	}
+
+	@:allow(vision.native.browser.WebGpuScreen)
+	function draw(context:Dynamic, image:Image, x:Int, y:Int):Void {
+		if (disposed) throw new WebGpuError("This WebGPU device is disposed.");
+		if (!fits(image.width, image.height)) return;
+		if (presentation == null) {
+			final shader = device.createShaderModule({code: '
+				struct Bounds { x: i32, y: i32, width: i32, height: i32 }
+				@group(0) @binding(0) var<storage, read> pixels: array<u32>;
+				@group(0) @binding(1) var<uniform> bounds: Bounds;
+				@vertex fn vertex(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {
+					return vec4f(f32((i << 1u) & 2u) * 2 - 1, 1 - f32(i & 2u) * 2, 0, 1);
+				}
+				@fragment fn fragment(@builtin(position) p: vec4f) -> @location(0) vec4f {
+					let x = i32(p.x) - bounds.x;
+					let y = i32(p.y) - bounds.y;
+					if (x < 0 || y < 0 || x >= bounds.width || y >= bounds.height) { return vec4f(0,0,0,1); }
+					let c = pixels[y * bounds.width + x];
+					return vec4f(f32((c >> 8u) & 255u), f32((c >> 16u) & 255u), f32(c >> 24u), 255) / 255;
+				}
+			'});
+			presentation = device.createRenderPipeline({
+				layout: "auto", vertex: {module: shader, entryPoint: "vertex"},
+				fragment: {module: shader, entryPoint: "fragment", targets: [{format: canvasFormat}]}
+			});
+		}
+		final resident = image.backend().webGpuPixels(this);
+		final size = image.width * image.height * 4;
+		final source = resident == null ? device.createBuffer({size: size, usage: 128 | 8}) : resident.buffer;
+		final params = device.createBuffer({size: 16, usage: 64 | 8});
+		try {
+			if (resident == null) device.queue.writeBuffer(source, 0, new Uint8Array(image.exportToBytes().getData()));
+			final bounds = new Int32Array([x, y, image.width, image.height]);
+			device.queue.writeBuffer(params, 0, bounds);
+			final bindings = device.createBindGroup({layout: presentation.getBindGroupLayout(0), entries: [
+				{binding: 0, resource: {buffer: source}}, {binding: 1, resource: {buffer: params}}
+			]});
+			final encoder = device.createCommandEncoder();
+			final pass = encoder.beginRenderPass({colorAttachments: [{
+				view: context.getCurrentTexture().createView(), clearValue: {r: 0, g: 0, b: 0, a: 1},
+				loadOp: "clear", storeOp: "store"
+			}]});
+			pass.setPipeline(presentation);
+			pass.setBindGroup(0, bindings);
+			pass.draw(3);
+			pass.end();
+			device.queue.submit([encoder.finish()]);
+		} catch (error:Dynamic) {
+			if (resident == null) source.destroy();
+			params.destroy();
+			throw error;
+		}
+		if (resident == null) source.destroy();
+		params.destroy();
+	}
+
+	/** Waits for the device queue to finish previously submitted work. **/
+	public function synchronize():Promise<Dynamic> return device.queue.onSubmittedWorkDone();
+
+	/** Collects validation errors during a sequence of submitted commands. **/
+	public function beginValidation():Void device.pushErrorScope("validation");
+
+	/** Resolves with the first WebGPU validation error, if any. **/
+	public function endValidation():Promise<Dynamic> return device.popErrorScope();
 
 	/** Releases the device. Subsequent commits reject. **/
 	public function dispose():Void {
@@ -283,6 +397,13 @@ class WebGpuBatchDevice {
 		disposed = true;
 		device.destroy();
 	}
+}
+
+@:noCompletion
+typedef WebGpuPixels = {
+	final buffer:Dynamic;
+	final width:Int;
+	final height:Int;
 }
 
 private typedef WebGpuPass = {

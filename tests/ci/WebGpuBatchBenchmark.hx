@@ -32,22 +32,34 @@ class WebGpuBatchBenchmark {
 				reference = batch().commit().exportToBytes();
 				cpuTimes.push(clock.now() - start);
 			}
+			device.beginValidation();
+			final screen = new vision.ds.Screen(0, 0, 480, 360, {webGpu: device});
+			if (!screen.attach(source)) throw "WebGPU attachment failed";
 			final gpuTimes = [];
 			var maxDifference = 0;
 			function measure(i:Int):Promise<Bool> {
 				if (i == 8) return Promise.resolve(true);
 				final start = clock.now();
-				return batch().commitWebGpu(device).then(result -> {
-					final bytes = result.exportToBytes();
+				final result = batch().commit();
+				if (!result.isGpuBacked) throw "Batch fell back to CPU";
+				screen.draw(result);
+				return device.synchronize().then(_ -> {
 					if (i > 0) gpuTimes.push(clock.now() - start);
+					return result.readbackWebGpu();
+				}).then(result -> {
+					final bytes = result.exportToBytes();
+
 					if (bytes.length != reference.length) throw "Incorrect output dimensions";
 					for (j in 0...bytes.length)
 						maxDifference = Std.int(Math.max(maxDifference, Math.abs(bytes[j] - reference[j])));
 					if (maxDifference > 1) throw 'Channel difference $maxDifference';
+					screen.detach(result);
 					return measure(i + 1);
 				});
 			}
-			return measure(0).then(_ -> {
+			return measure(0).then(_ -> device.endValidation()).then(error -> {
+				if (error != null) throw error.message;
+				screen.dispose();
 				device.dispose();
 				cpuTimes.sort(compare);
 				gpuTimes.sort(compare);
@@ -58,7 +70,7 @@ class WebGpuBatchBenchmark {
 				return true;
 			});
 		}).catchError(error -> {
-			Browser.document.body.innerText = "FAIL: " + Std.string(error);
+			Browser.document.body.innerText = "FAIL: " + Std.string(error) + "\n" + js.Syntax.code("{0}.stack", error);
 			return false;
 		});
 	}

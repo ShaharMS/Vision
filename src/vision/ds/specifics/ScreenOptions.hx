@@ -5,6 +5,10 @@ package vision.ds.specifics;
 class ScreenOptions {
 	/** Prefer GPU presentation when the backend offers it. **/
 	public var preferGpu:Bool = true;
+	#if (js && !nodejs)
+	/** An initialized WebGPU device. Draws replace the canvas frame. **/
+	public var webGpu:Null<vision.native.browser.WebGpuBatchDevice> = null;
+	#end
 	/** Shows the presentation surface when it opens. **/
 	public var visible:Bool = true;
 	/** Uses an in-memory surface without opening a window or adding a canvas. **/

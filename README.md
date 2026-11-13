@@ -341,16 +341,19 @@ arithmetic, so results near rounding boundaries can differ from CPU results.
 
 ### Browser WebGPU compute
 
-Initialize a `WebGpuBatchDevice` once and use it for multiple batches.
+Initialize a `WebGpuBatchDevice` once, pass it to `Screen`, and attach the
+source image before submitting a batch.
 
 ```haxe
 WebGpuBatchDevice.create().then(device -> {
     if (device == null) return;
-    image.accelerate()
+    final screen = new Screen(0, 0, 640, 360, {webGpu: device});
+    if (!screen.attach(image)) return;
+    final result = image.accelerate()
         .resize(640, 360, BilinearInterpolation)
         .convolve(Kernels.gaussian(5, 1))
-        .commitWebGpu(device)
-        .then(result -> screen.draw(result));
+        .commit();
+    screen.draw(result);
 });
 ```
 
@@ -363,13 +366,15 @@ interpolated channels. General convolution rounds RGB and preserves alpha.
 The one-dimensional passes truncate RGB and write opaque alpha. WebGPU uses
 shader floats and can differ from CPU results near a rounding boundary.
 
-`commitWebGpu()` uploads source pixels and downloads the completed result
-asynchronously. A subsequent `Screen.draw()` can upload the result to WebGL.
-Regular `commit()` continues to use the synchronous WebGL or CPU path.
-Unsupported commands, active image views, and jobs outside device limits
-execute as a single packed-pixel batch. For `InPlace` mode, wait for the
-promise before writing to the source or submitting another in-place batch
-against it. Dispose the device after its outstanding batches finish.
+`commit()` returns an image immediately after submitting GPU work. The WebGPU
+screen reads the result buffer directly in its fragment shader. On this screen,
+each draw replaces the frame, and the shader presents RGB with opaque alpha.
+Use `result.readbackWebGpu()` and wait for the promise before synchronous CPU
+pixel access, export, or detach. Synchronous screen capture is unavailable on
+the WebGPU screen. `commitWebGpu(device)` remains available as a convenience
+that submits a batch and waits for its CPU pixels. An unsupported command or
+active view uses the packed-pixel executor and requires the source pixels to
+be available first. Dispose the screen before its device.
 
 ### Native and headless
 
