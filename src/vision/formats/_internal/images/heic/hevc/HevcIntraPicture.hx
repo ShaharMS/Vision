@@ -21,6 +21,7 @@ class HevcIntraPicture {
 	final planes:Array<HevcIntraPlane>;
 	final modes:HevcIntraModes;
 	final sao:HevcSao;
+	final deblock:Null<HevcDeblocking>;
 	final depths:Bytes;
 	final depthStride:Int;
 	final ctb:Int;
@@ -35,7 +36,7 @@ class HevcIntraPicture {
 	public static function decode(sequence:HevcSequenceGeometry, picture:HevcPictureParameters, slice:HevcIdrSlice, rbsp:Bytes):Array<Bytes> {
 		if (sequence.chromaFormat != 1 || sequence.lumaDepth != 8 || sequence.chromaDepth != 8
 			|| sequence.scalingListsEnabled || sequence.pcm != null || picture.tiles
-			|| picture.transquantBypass || !slice.deblockDisabled
+			|| picture.transquantBypass
 			|| sequence.codedWidth * 1.0 * sequence.codedHeight > 8912896)
 			throw new HevcBitstreamError("Unsupported HEVC intra picture configuration.");
 		return new HevcIntraPicture(sequence, picture, slice).read(rbsp);
@@ -51,6 +52,7 @@ class HevcIntraPicture {
 		planes = [new HevcIntraPlane(width, height), new HevcIntraPlane(width >> 1, height >> 1), new HevcIntraPlane(width >> 1, height >> 1)];
 		modes = new HevcIntraModes(width, height, sequence.ctbLog2);
 		sao = new HevcSao(width, height, ctb, slice.saoLuma, slice.saoChroma);
+		deblock = slice.deblockDisabled ? null : new HevcDeblocking(width, height);
 		depthStride = width >> sequence.minCodingBlockLog2;
 		depths = Bytes.alloc(depthStride * (height >> sequence.minCodingBlockLog2));
 		quantizers = Bytes.alloc(depths.length);
@@ -86,6 +88,7 @@ class HevcIntraPicture {
 			if (picture.wavefront && row + 1 < rows && !cabac.readTermination())
 				throw new HevcBitstreamError("Missing HEVC wavefront substream termination.");
 		}
+		if (deblock != null) deblock.apply([for (plane in planes) plane.samples], quantizers, sequence.minCodingBlockLog2, picture, slice);
 		return [for (i in 0...planes.length) {
 			final plane = planes[i];
 			final sub = i == 0 ? 0 : 1;
@@ -109,6 +112,7 @@ class HevcIntraPicture {
 				final py = y + row * half;
 				if (px < sequence.codedWidth && py < sequence.codedHeight) codingTree(px, py, log - 1, depth + 1);
 			}
+			finishQuantizationGroup(x, y, size);
 			return;
 		}
 		if (!available) throw new HevcBitstreamError("HEVC picture dimensions do not align to the minimum coding block.");
@@ -120,8 +124,7 @@ class HevcIntraPicture {
 		transformTree(x, y, log, 0, partitioned, luma, chroma, true, true, 0, 0);
 		if (!deltaCoded) currentQp = predictQp(x, y);
 		for (row in 0...cells) quantizers.fill(cell + row * depthStride, cells, currentQp);
-		final mask = (1 << groupLog) - 1;
-		if ((((x + size) | (y + size)) & mask) == 0) previousQp = currentQp;
+		finishQuantizationGroup(x, y, size);
 	}
 
 	function transformTree(x:Int, y:Int, log:Int, depth:Int, partitioned:Bool, luma:Array<Int>, chroma:Int,
@@ -145,6 +148,7 @@ class HevcIntraPicture {
 			return;
 		}
 		final hasLuma = cabac.readBin(contexts.lumaCbf[depth == 0 ? 1 : 0]) != 0;
+		if (deblock != null) deblock.mark(x, y, 1 << log);
 		if (!deltaCoded && (hasLuma || cb || cr) && picture.qpDeltaDepth != null) {
 			currentQp = (predictQp(baseX, baseY) + readQpDelta() + 52) % 52;
 			deltaCoded = true;
@@ -167,6 +171,11 @@ class HevcIntraPicture {
 		final a = (qx & (ctb - 1)) == 0 ? previousQp : quantizers.get(cell - 1);
 		final b = (qy & (ctb - 1)) == 0 ? previousQp : quantizers.get(cell - depthStride);
 		return (a + b + 1) >> 1;
+	}
+
+	inline function finishQuantizationGroup(x:Int, y:Int, size:Int):Void {
+		final mask = (1 << groupLog) - 1;
+		if ((((x + size) | (y + size)) & mask) == 0) previousQp = currentQp;
 	}
 
 	function readQpDelta():Int {
