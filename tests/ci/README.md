@@ -90,3 +90,27 @@ float validation needed for the hxcpp build.
 
 All eight paired CPU workloads produced identical digests on each target.
 These are local measurements from synthetic inputs.
+
+## Windows D3D11 benchmark and live demo
+
+From an x64 Visual Studio Developer Command Prompt:
+
+```powershell
+haxe -cp src -cp tests/ci -lib format -main WindowsD3D11Benchmark -D windows -D HXCPP_M64 -dce full -cpp bin/d3d11
+./bin/d3d11/WindowsD3D11Benchmark.exe
+./bin/d3d11/WindowsD3D11Benchmark.exe --demo
+```
+
+The demo opens a visible `Screen`, animates two shapes, and submits rectangle
+fills, bilinear resize, and Gaussian convolution on the same device every
+frame. Close the window to exit. The benchmark runs the same workload against
+the optimized packed-pixel reference, checks screen capture and GPU residency,
+and reports median milliseconds over ten measured frames after a warm-up.
+An event query synchronizes timings with the GPU. Processing, presentation,
+and processing with export are timed separately.
+
+On this Windows machine, the 320 × 192 input and 800 × 480 output took
+65.29 ms for CPU processing, 2.90 ms for D3D11 processing, 3.01 ms for D3D11
+processing and presentation, and 4.45 ms for D3D11 processing and export.
+The exported result matched the CPU reference exactly. The benchmark
+observed zero readbacks through draw and one readback per exported image.

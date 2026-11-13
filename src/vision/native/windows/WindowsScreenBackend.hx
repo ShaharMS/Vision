@@ -36,9 +36,14 @@ class WindowsScreenBackend extends CpuScreenBackend {
 	static inline var COPY_SOURCE = 0x00CC0020;
 	#end
 
+	#if (cpp && !cppia)
+	var gpuWindow:Star<vision.native.windows.D3D11Device.D3D11Window>;
+	final preferGpu:Bool;
+	#end
+
 	var window:#if hl HashLinkWindow #else Star<WinWindow> #end;
 
-	public function new(width:Int, height:Int, visible:Bool, x:Int, y:Int) {
+	public function new(width:Int, height:Int, visible:Bool, x:Int, y:Int, preferGpu:Bool = true) {
 		super(width, height);
 		#if hl
 		window = HashLinkWindows.open(x, y, width, height, visible);
@@ -52,6 +57,10 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		if (window != null && visible) Win32.showWindow(window, SHOW_WINDOW);
 		#end
 		if (window == null) throw new ScreenError("Windows could not open a drawing window");
+		#if (cpp && !cppia)
+		this.preferGpu = preferGpu;
+		if (preferGpu) gpuWindow = D3D11Device.openWindow(window, width, height);
+		#end
 		present();
 	}
 
@@ -84,6 +93,10 @@ class WindowsScreenBackend extends CpuScreenBackend {
 			&& Win32.setWindowPos(window, null, x, y, bounds.right - bounds.left, bounds.bottom - bounds.top, KEEP_Z_ORDER | KEEP_FOCUS) != 0;
 		#end
 		if (!moved) throw new ScreenError("Windows could not change the screen bounds");
+		#if (cpp && !cppia)
+		if (gpuWindow != null) D3D11Device.closeWindow(gpuWindow);
+		gpuWindow = preferGpu ? D3D11Device.openWindow(window, width, height) : null;
+		#end
 		frame = replacement;
 		present();
 	}
@@ -94,9 +107,28 @@ class WindowsScreenBackend extends CpuScreenBackend {
 	}
 
 	override public function draw(image:Image, x:Int, y:Int):Void {
+		#if (cpp && !cppia)
+		if (gpuWindow != null && frame.backend().drawDevice(image.backend(), x, y, false)) {
+			present();
+			return;
+		}
+		#end
 		super.draw(image, x, y);
 		present();
 	}
+
+	#if (cpp && !cppia)
+	override public function drawInverted(image:Image, x:Int, y:Int):Void {
+		if (gpuWindow != null && !image.hasView() && frame.backend().drawDevice(image.backend(), x, y, true)) {
+			present();
+			return;
+		}
+		super.drawInverted(image, x, y);
+	}
+
+	override public function attach(image:Image):Bool return gpuWindow != null && image.backend().deviceTexture() != null;
+	override public function detach(image:Image):Void image.backend().detach();
+	#end
 
 	override public function hasWindow():Bool return window != null;
 
@@ -107,6 +139,9 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		return HashLinkWindows.present(window, bytes.getData(), bytes.length, frame.width, frame.height);
 		#else
 		if (Win32.isWindow(window) == 0) return false;
+		#if !cppia
+		if (gpuWindow != null && D3D11Device.present(gpuWindow, frame.backend().deviceTexture())) return true;
+		#end
 		final dc = Win32.getDC(window);
 		if (dc == null) return false;
 
@@ -126,6 +161,10 @@ class WindowsScreenBackend extends CpuScreenBackend {
 	}
 
 	override public function dispose():Void {
+		#if (cpp && !cppia)
+		if (gpuWindow != null) D3D11Device.closeWindow(gpuWindow);
+		gpuWindow = null;
+		#end
 		if (window != null) {
 			#if hl
 			HashLinkWindows.close(window);

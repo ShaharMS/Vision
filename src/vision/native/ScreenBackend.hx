@@ -25,7 +25,7 @@ abstract ScreenBackend(ScreenDriver) {
 			return;
 		}
 		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
-		this = new WindowsScreenBackend(width, height, options.visible, x, y);
+		this = new WindowsScreenBackend(width, height, options.visible, x, y, options.preferGpu);
 		return;
 		#end
 		this = new CpuScreenBackend(width, height);

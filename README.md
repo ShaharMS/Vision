@@ -342,6 +342,30 @@ arithmetic, so results near rounding boundaries can differ from CPU results.
 ### Native and headless
 
 The concrete `CpuImageBatch` executes queued operations against packed
-pixels and produces ordinary images. Windows currently uses CPU image
-processing with GDI presentation. The D3D11, Metal, Vulkan, and WebGPU batch
-executors are pending. The existing WebGPU inverter is a separate operation.
+pixels and produces ordinary images. Metal, Vulkan, and WebGPU batch executors are pending. The existing WebGPU inverter is a separate operation.
+
+### Windows D3D11
+
+Windows hxcpp builds with `-D windows` select `D3D11Image` and
+`D3D11ImageBatch`. A hardware device is opened on first use. An image uploads
+its packed ARGB bytes lazily on the first supported commit or `Screen.attach`.
+Subsequent supported commits can use its texture directly, including when no
+screen is open. `commit()` returns a new image, and `commit(InPlace)` publishes
+the completed command sequence into the source storage.
+
+D3D11 compute shaders execute nearest and bilinear resize, RGB inversion,
+grayscale, thresholding, rectangle fills, and convolution with up to 81
+coefficients. General convolution clamps coordinates at borders, rounds RGB,
+and preserves alpha. The separable passes truncate RGB and write opaque alpha
+to match the existing fast Gaussian algorithm. Each pass writes to an
+independent texture. Active views, exposed writable bytes, unsupported
+commands, and unavailable devices use packed pixels. CPU reads use a staging
+texture and wait for pending GPU commands. GPU filtering can differ by one
+channel value at a quantization boundary.
+
+A default visible `Screen` on this target uses a DXGI swap chain when device
+initialization succeeds. Drawing a device image composites it into the screen
+texture and presents without downloading the image. The existing GDI path
+handles unavailable swap chains and `preferGpu: false`. `Screen.capture()`
+returns an independent image. Pixel reads and export materialize its CPU
+copy. Close the window or call `dispose()` to release the swap chain.
