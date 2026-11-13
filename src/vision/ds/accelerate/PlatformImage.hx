@@ -4,6 +4,9 @@ package vision.ds.accelerate;
 #if (js && !nodejs)
 typedef PlatformImage = vision.native.browser.BrowserImage;
 typedef PlatformBatch = vision.native.browser.BrowserImageBatch;
+#elseif (cpp && !cppia && vision_vulkan)
+typedef PlatformImage = vision.native.vulkan.VulkanImage;
+typedef PlatformBatch = vision.native.vulkan.VulkanImageBatch;
 #elseif (windows && cpp && !cppia)
 typedef PlatformImage = vision.native.windows.D3D11Image;
 typedef PlatformBatch = vision.native.windows.D3D11ImageBatch;

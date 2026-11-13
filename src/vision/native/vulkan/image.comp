@@ -1,0 +1,59 @@
+#version 450
+layout(local_size_x=16, local_size_y=16) in;
+layout(set=0,binding=0,std430) readonly buffer Source { uint pixels[]; } src;
+layout(set=0,binding=1,std430) writeonly buffer Target { uint pixels[]; } dst;
+layout(set=0,binding=2,std430) readonly buffer Parameters {
+    int sourceWidth, sourceHeight, width, height;
+    int mode; uint value; int kernelWidth, kernelHeight;
+    ivec4 rectangle;
+    float stepX, stepY;
+    float weights[81];
+} p;
+
+vec4 unpackPixel(uint c) {
+    return vec4((c >> 8) & 255u, (c >> 16) & 255u, c >> 24, c & 255u);
+}
+uint packPixel(vec4 c) {
+    uvec4 b = uvec4(clamp(c, 0.0, 255.0));
+    return b.a | (b.r << 8) | (b.g << 16) | (b.b << 24);
+}
+vec4 samplePixel(ivec2 pos) {
+    ivec2 q = clamp(pos, ivec2(0), ivec2(p.sourceWidth - 1, p.sourceHeight - 1));
+    return unpackPixel(src.pixels[q.y * p.sourceWidth + q.x]);
+}
+
+void main() {
+    ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
+    if (pos.x >= p.width || pos.y >= p.height) return;
+    vec4 color = samplePixel(pos);
+    vec2 samplePos = vec2(pos) * vec2(p.stepX, p.stepY);
+    switch (p.mode) {
+        case 0: {
+            ivec2 a = ivec2(samplePos);
+            vec2 f = fract(samplePos);
+            vec4 top = mix(samplePixel(a), samplePixel(a + ivec2(1,0)), f.x);
+            vec4 bottom = mix(samplePixel(a + ivec2(0,1)), samplePixel(a + 1), f.x);
+            color = floor(mix(top, bottom, f.y) + 0.00001);
+            break;
+        }
+        case 1: color = samplePixel(ivec2(samplePos)); break;
+        case 2: case 3: {
+            vec3 sum = vec3(0);
+            int tap = 0;
+            for (int y = -p.kernelHeight / 2; y <= p.kernelHeight / 2; ++y)
+                for (int x = -p.kernelWidth / 2; x <= p.kernelWidth / 2; ++x)
+                    sum += samplePixel(pos + ivec2(x,y)).rgb * p.weights[tap++];
+            color = p.mode == 2 ? vec4(floor(sum + 0.5), color.a) : vec4(floor(sum + 0.00001), 255);
+            break;
+        }
+        case 4: color = vec4(255 - color.rgb, 255); break;
+        case 5: color = vec4(vec3(floor((color.r + color.g + color.b) / 3)), 255); break;
+        case 6: color = vec4(vec3(max(max(color.r, color.g), color.b) > int(p.value) ? 255 : 0), 255); break;
+        case 7:
+            if (all(greaterThanEqual(pos, p.rectangle.xy)) && all(lessThan(pos, p.rectangle.xy + p.rectangle.zw)))
+                color = unpackPixel(p.value);
+            break;
+        case 8: color = vec4(vec3(floor(dot(color.rgb, vec3(0.2126,0.7152,0.0722)))), 255); break;
+    }
+    dst.pixels[pos.y * p.width + pos.x] = packPixel(color);
+}

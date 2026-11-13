@@ -36,7 +36,7 @@ class WindowsScreenBackend extends CpuScreenBackend {
 	static inline var COPY_SOURCE = 0x00CC0020;
 	#end
 
-	#if (cpp && !cppia)
+	#if (cpp && !cppia && !vision_vulkan)
 	var gpuWindow:Star<vision.native.windows.D3D11Device.D3D11Window>;
 	final preferGpu:Bool;
 	#end
@@ -57,7 +57,7 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		if (window != null && visible) Win32.showWindow(window, SHOW_WINDOW);
 		#end
 		if (window == null) throw new ScreenError("Windows could not open a drawing window");
-		#if (cpp && !cppia)
+		#if (cpp && !cppia && !vision_vulkan)
 		this.preferGpu = preferGpu;
 		if (preferGpu) gpuWindow = D3D11Device.openWindow(window, width, height);
 		#end
@@ -93,7 +93,7 @@ class WindowsScreenBackend extends CpuScreenBackend {
 			&& Win32.setWindowPos(window, null, x, y, bounds.right - bounds.left, bounds.bottom - bounds.top, KEEP_Z_ORDER | KEEP_FOCUS) != 0;
 		#end
 		if (!moved) throw new ScreenError("Windows could not change the screen bounds");
-		#if (cpp && !cppia)
+		#if (cpp && !cppia && !vision_vulkan)
 		if (gpuWindow != null) D3D11Device.closeWindow(gpuWindow);
 		gpuWindow = preferGpu ? D3D11Device.openWindow(window, width, height) : null;
 		#end
@@ -107,7 +107,7 @@ class WindowsScreenBackend extends CpuScreenBackend {
 	}
 
 	override public function draw(image:Image, x:Int, y:Int):Void {
-		#if (cpp && !cppia)
+		#if (cpp && !cppia && !vision_vulkan)
 		if (gpuWindow != null && frame.backend().drawDevice(image.backend(), x, y, false)) {
 			present();
 			return;
@@ -117,7 +117,7 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		present();
 	}
 
-	#if (cpp && !cppia)
+	#if (cpp && !cppia && !vision_vulkan)
 	override public function drawInverted(image:Image, x:Int, y:Int):Void {
 		if (gpuWindow != null && !image.hasView() && frame.backend().drawDevice(image.backend(), x, y, true)) {
 			present();
@@ -139,7 +139,7 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		return HashLinkWindows.present(window, bytes.getData(), bytes.length, frame.width, frame.height);
 		#else
 		if (Win32.isWindow(window) == 0) return false;
-		#if !cppia
+		#if (!cppia && !vision_vulkan)
 		if (gpuWindow != null && D3D11Device.present(gpuWindow, frame.backend().deviceTexture())) return true;
 		#end
 		final dc = Win32.getDC(window);
@@ -161,7 +161,7 @@ class WindowsScreenBackend extends CpuScreenBackend {
 	}
 
 	override public function dispose():Void {
-		#if (cpp && !cppia)
+		#if (cpp && !cppia && !vision_vulkan)
 		if (gpuWindow != null) D3D11Device.closeWindow(gpuWindow);
 		gpuWindow = null;
 		#end

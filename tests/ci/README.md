@@ -137,3 +137,33 @@ On the Windows Edge test host, CPU processing and export took 44.0 ms,
 and WebGPU processing and presentation took 6.0 ms. These measure distinct
 output boundaries. The downloaded result differed by at most one channel
 value, and the device reported no validation error.
+
+## Vulkan compute benchmark
+
+Install the Vulkan loader and headers, glslang, and hxcpp. Generate the
+shader header into a build directory outside the source tree, then compile
+the benchmark with the same settings on each target:
+
+```bash
+mkdir -p /tmp/vision-vulkan
+glslangValidator -V --vn visionVulkanShader -o /tmp/vision-vulkan/VulkanShader.hpp src/vision/native/vulkan/image.comp
+export VISION_VULKAN_SHADER_DIR=/tmp/vision-vulkan
+haxe -cp src -cp tests/ci -lib format -main VulkanBatchBenchmark -D vision_vulkan -dce full -cpp /tmp/vision-vulkan/cpp
+/tmp/vision-vulkan/cpp/VulkanBatchBenchmark
+```
+
+On Windows use an x64 MSVC prompt, set `VULKAN_SDK`, and add
+`-D windows -D HXCPP_M64`. The benchmark compares eight measured batches,
+including export in both paths. It rejects a nonhardware adapter by default
+and checks every output byte with a tolerance of one. For a Linux software
+correctness check set `VISION_VULKAN_ALLOW_SOFTWARE=1` and pass
+`--allow-software` to the benchmark. Label such timings as software Vulkan.
+
+Windows Intel Arc hardware measured 8.83 ms for Vulkan and 31.64 ms for
+the packed-pixel reference, including export. Maximum channel difference
+was one. The input is 640 × 480 and the batch resizes to 480 × 360,
+convolves with a 5 × 5 kernel, and fills a rectangle.
+
+The Ubuntu WSL runner also passed the same byte comparison using llvmpipe
+with a maximum difference of one. It measured 8.54 ms using software
+Vulkan and 31.15 ms for the packed-pixel reference.

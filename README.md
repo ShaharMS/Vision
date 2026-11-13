@@ -406,3 +406,17 @@ texture and presents without downloading the image. The existing GDI path
 handles unavailable swap chains and `preferGpu: false`. `Screen.capture()`
 returns an independent image. Pixel reads and export materialize its CPU
 copy. Close the window or call `dispose()` to release the swap chain.
+
+### Native Vulkan compute
+
+Build with `-D vision_vulkan` on hxcpp to select `VulkanImage` and
+`VulkanImageBatch`. Windows normally selects D3D11, and the flag selects
+Vulkan there for compute qualification. Vulkan currently uses the existing
+CPU screen presentation path.
+
+Nearest and bilinear resize, clear, rectangle fill, color transforms, and
+convolution up to 81 taps run on a Vulkan compute queue. The backend keeps
+packed ARGB buffers between commands. Each dispatch waits for completion
+before the next command. CPU reads copy from a host-visible buffer. Views,
+unsupported commands, and unavailable hardware use packed CPU pixels.
+Software Vulkan is opt-in through `VISION_VULKAN_ALLOW_SOFTWARE`.
