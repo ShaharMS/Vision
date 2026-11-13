@@ -8,7 +8,10 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.exceptions.HevcBitstreamError;
 import vision.formats._internal.images.heic.hevc.HevcConfiguration;
+import vision.formats._internal.images.heic.hevc.HevcIdrSlice;
+import vision.formats._internal.images.heic.hevc.HevcIntraPicture;
 import vision.formats._internal.images.heic.hevc.HevcNalReader;
+import vision.formats._internal.images.heic.hevc.HevcPictureParameters;
 import vision.formats._internal.images.heic.hevc.HevcPcmDecoder;
 import vision.formats._internal.images.heic.hevc.HevcPcmEncoder;
 import vision.formats._internal.images.heic.hevc.HevcSequenceGeometry;
@@ -20,25 +23,31 @@ import vision.formats._internal.images.heif.HeifContainer.HeifProperty;
 class Heic {
 	static final colorProperty = Bytes.ofHex("6e636c780001000d000180");
 
-	/** Decodes a directly coded HEVC PCM still image. **/
+	/** Decodes a directly coded HEVC still image. **/
 	public static function read(bytes:ByteArray):Image {
 		final item = HeifContainer.readPrimary(bytes);
 		if (item.type != "hvc1") throw new HevcBitstreamError("The primary image is not an HEVC item.");
 		var configuration:HevcConfiguration = null;
 		var crop = {x: 0, y: 0, width: item.width, height: item.height};
-		var hasColor = false;
+		var matrix = 2;
+		var fullRange = false;
 		for (property in item.properties) {
 			switch property.type {
 				case "hvcC": configuration = new HevcConfiguration(property.payload);
 				case "clap": crop = readAperture(property.payload, item.width, item.height);
-				case "colr": if (property.payload.compare(colorProperty) == 0) hasColor = true;
+				case "colr":
+					final color = property.payload;
+					if (color.length == 11 && color.getString(0, 4) == "nclx") {
+						matrix = (color.get(8) << 8) | color.get(9);
+						fullRange = (color.get(10) & 128) != 0;
+					} else if (property.essential) throw new HevcBitstreamError("Unsupported essential HEIC color profile.");
 				case "irot", "imir": throw new HevcBitstreamError("Unsupported HEVC image orientation.");
 				case "ispe", "pixi":
 				default:
 					if (property.essential) throw new HevcBitstreamError('Unsupported essential HEIC property "${property.type}".');
 			}
 		}
-		if (configuration == null || !hasColor) throw new HevcBitstreamError("Unsupported HEVC color configuration.");
+		if (configuration == null) throw new HevcBitstreamError("Missing HEVC decoder configuration.");
 		var geometry:HevcSequenceGeometry = null;
 		var pps:Bytes = null;
 		for (unit in configuration.units) {
@@ -54,23 +63,46 @@ class Heic {
 		if (geometry == null || pps == null || geometry.width != item.width || geometry.height != item.height)
 			throw new HevcBitstreamError("HEVC parameter sets do not match the primary item.");
 		final reader = new HevcNalReader(item.data, 0, item.data.length, configuration.lengthSize);
-		final slice = reader.next();
-		if (slice == null || slice.layerId != 0 || (slice.type != 19 && slice.type != 20) || reader.next() != null)
-			throw new HevcBitstreamError("Expected one HEVC IDR slice.");
-		final planes = HevcPcmDecoder.decode(geometry, pps, slice.rbsp);
+		var slice = null;
+		var unit = reader.next();
+		while (unit != null) {
+			if (unit.type < 32) {
+				if (slice != null || unit.layerId != 0 || (unit.type != 19 && unit.type != 20))
+					throw new HevcBitstreamError("Expected one HEVC IDR slice.");
+				slice = unit;
+			}
+			unit = reader.next();
+		}
+		if (slice == null) throw new HevcBitstreamError("Missing HEVC IDR slice.");
+		final planes = if (geometry.pcm != null) HevcPcmDecoder.decode(geometry, pps, slice.rbsp) else {
+			final picture = new HevcPictureParameters(pps);
+			final header = new HevcIdrSlice(slice.rbsp, geometry, picture, slice.escaped);
+			HevcIntraPicture.decode(geometry, picture, header, slice.rbsp);
+		};
+		final factors = switch matrix {
+			case 1: [0.2126, 0.0722];
+			case 2, 5, 6: [0.299, 0.114];
+			case 9: [0.2627, 0.0593];
+			default: throw new HevcBitstreamError("Unsupported HEVC color matrix.");
+		};
+		final kr = factors[0];
+		final kb = factors[1];
+		final kg = 1 - kr - kb;
+		final lumaScale = fullRange ? 1.0 : 255.0 / 219;
+		final chromaScale = fullRange ? 1.0 : 255.0 / 224;
 		final image = new Image(crop.width, crop.height);
 		for (row in 0...crop.height) {
 			final y = row + geometry.cropTop + crop.y;
 			for (column in 0...crop.width) {
 				final x = column + geometry.cropLeft + crop.x;
-				final luma = planes[0].get(y * geometry.codedWidth + x);
+				final luma = (planes[0].get(y * geometry.codedWidth + x) - (fullRange ? 0 : 16)) * lumaScale;
 				final chroma = (y >> 1) * (geometry.codedWidth >> 1) + (x >> 1);
-				final cb = planes[1].get(chroma) - 128;
-				final cr = planes[2].get(chroma) - 128;
+				final cb = (planes[1].get(chroma) - 128) * chromaScale;
+				final cr = (planes[2].get(chroma) - 128) * chromaScale;
+				final r = luma + 2 * (1 - kr) * cr;
+				final b = luma + 2 * (1 - kb) * cb;
 				image.setPixel(column, row, Color.fromRGBA(
-					rgbSample(luma + 1.5748 * cr),
-					rgbSample(luma - 0.187324 * cb - 0.468124 * cr),
-					rgbSample(luma + 1.8556 * cb)
+					rgbSample(r), rgbSample((luma - kr * r - kb * b) / kg), rgbSample(b)
 				));
 			}
 		}

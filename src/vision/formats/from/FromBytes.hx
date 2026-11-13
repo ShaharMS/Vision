@@ -90,7 +90,7 @@ import vision.ds.ByteArray;
     }
 
     /**
-        Decodes a directly coded HEIC still image using HEVC PCM.
+        Decodes an 8-bit, directly coded HEIC still image using HEVC intra coding or PCM.
 
         @param bytes The complete HEIC file
         @return The decoded opaque image

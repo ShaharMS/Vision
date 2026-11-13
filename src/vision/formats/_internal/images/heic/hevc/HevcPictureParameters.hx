@@ -15,6 +15,7 @@ class HevcPictureParameters {
 	public final initialQp:Int;
 	public final constrainedIntra:Bool;
 	public final transformSkip:Bool;
+	public final transquantBypass:Bool;
 	public final qpDeltaDepth:Null<Int>;
 	public final cbQpOffset:Int;
 	public final crQpOffset:Int;
@@ -47,7 +48,8 @@ class HevcPictureParameters {
 		cbQpOffset = bits.se(12);
 		crQpOffset = bits.se(12);
 		sliceChromaOffsets = bits.flag();
-		bits.read(3); // Weighted prediction and transquant bypass.
+		bits.read(2); // Weighted prediction.
+		transquantBypass = bits.flag();
 		tiles = bits.flag();
 		wavefront = bits.flag();
 		if (tiles) {

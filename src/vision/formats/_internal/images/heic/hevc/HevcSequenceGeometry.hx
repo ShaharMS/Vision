@@ -32,6 +32,7 @@ class HevcSequenceGeometry {
 	public final asymmetricMotionPartitions:Bool;
 	public final sampleAdaptiveOffset:Bool;
 	public final pcm:Null<HevcPcmParameters>;
+	public final strongIntraSmoothing:Bool;
 
 	/** Reads the geometry from an unescaped SPS payload following its NAL header. **/
 	public function new(rbsp:Bytes) {
@@ -80,6 +81,36 @@ class HevcSequenceGeometry {
 		asymmetricMotionPartitions = bits.read(1) != 0;
 		sampleAdaptiveOffset = bits.read(1) != 0;
 		pcm = bits.read(1) != 0 ? readPcm(bits) : null;
+		strongIntraSmoothing = readSmoothing(bits);
+	}
+
+	function readSmoothing(bits:SequenceGeometryBits):Bool {
+		final counts = [];
+		final sets = bits.unsignedGolomb(64);
+		for (i in 0...sets) {
+			var count = 0;
+			if (i > 0 && bits.read(1) != 0) {
+				bits.read(1);
+				bits.skipUnsignedGolomb();
+				for (_ in 0...counts[i - 1] + 1) {
+					if (bits.read(1) != 0 || bits.read(1) != 0) count++;
+				}
+			} else {
+				count = bits.unsignedGolomb(64) + bits.unsignedGolomb(64);
+				for (_ in 0...count) {
+					bits.skipUnsignedGolomb();
+					bits.read(1);
+				}
+			}
+			if (count > 64) throw new HevcBitstreamError("Invalid HEVC reference picture count.");
+			counts.push(count);
+		}
+		if (bits.read(1) != 0) {
+			final longTerm = bits.unsignedGolomb(32);
+			for (_ in 0...longTerm) bits.skip(pictureOrderCountBits + 1);
+		}
+		bits.read(1); // Temporal motion vector prediction.
+		return bits.read(1) != 0;
 	}
 
 	function readPcm(bits:SequenceGeometryBits):HevcPcmParameters {

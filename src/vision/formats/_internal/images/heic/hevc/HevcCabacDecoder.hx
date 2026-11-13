@@ -22,6 +22,14 @@ class HevcCabacContext {
 		mostProbable = clipped >= 64 ? 1 : 0;
 		state = mostProbable == 1 ? clipped - 64 : 63 - clipped;
 	}
+
+	/** Copies the adaptive probability state at a wavefront synchronization point. **/
+	public function copy():HevcCabacContext {
+		final result = new HevcCabacContext(0, 154);
+		result.state = state;
+		result.mostProbable = mostProbable;
+		return result;
+	}
 }
 
 /** Binary arithmetic decoding for one byte-aligned HEVC CABAC substream. **/

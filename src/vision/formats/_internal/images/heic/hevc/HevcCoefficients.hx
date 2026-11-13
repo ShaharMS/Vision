@@ -23,12 +23,12 @@ class HevcCoefficients {
 		140,92,137,138,140,152,138,139,153,74,149,92,139,107,122,152,140,179,166,182,140,227,122,197
 	];
 	static final smallContexts = [0,1,4,5,2,3,4,5,6,6,8,8,7,7,8,8];
-	final lastX:Array<HevcCabacContext>;
-	final lastY:Array<HevcCabacContext>;
-	final group:Array<HevcCabacContext>;
-	final significance:Array<HevcCabacContext>;
-	final greaterOne:Array<HevcCabacContext>;
-	final greaterTwo:Array<HevcCabacContext>;
+	var lastX:Array<HevcCabacContext>;
+	var lastY:Array<HevcCabacContext>;
+	var group:Array<HevcCabacContext>;
+	var significance:Array<HevcCabacContext>;
+	var greaterOne:Array<HevcCabacContext>;
+	var greaterTwo:Array<HevcCabacContext>;
 
 	/** Initializes coefficient probabilities using the slice QP. **/
 	public function new(qp:Int) {
@@ -38,6 +38,18 @@ class HevcCoefficients {
 		significance = init(qp, significanceInit);
 		greaterOne = init(qp, greaterInit);
 		greaterTwo = init(qp, [138,153,136,167,152,152]);
+	}
+
+	/** Captures the adaptive coefficient state for the following CTB row. **/
+	public function copy():HevcCoefficients {
+		final result = new HevcCoefficients(0);
+		result.lastX = [for (value in lastX) value.copy()];
+		result.lastY = [for (value in lastY) value.copy()];
+		result.group = [for (value in group) value.copy()];
+		result.significance = [for (value in significance) value.copy()];
+		result.greaterOne = [for (value in greaterOne) value.copy()];
+		result.greaterTwo = [for (value in greaterTwo) value.copy()];
+		return result;
 	}
 
 	/** Reads signed coefficient levels in raster order for a nonempty transform block. **/
