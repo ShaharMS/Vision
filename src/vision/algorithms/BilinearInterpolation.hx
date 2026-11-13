@@ -2,19 +2,56 @@ package vision.algorithms;
 
 import vision.ds.Color;
 import vision.ds.Image;
+import vision.ds.accelerate.PixelStorage;
 import vision.tools.MathTools.*;
 
 class BilinearInterpolation {
 	public static function interpolate(image:Image, width:Int, height:Int):Image {
 		final resized = new Image(width, height);
-		final xMultiplier = image.width / width - 1 / width;
-		final yMultiplier = image.height / height - 1 / height;
-		resized.forEachPixel((x, y, c) -> {
-			final color = image.getFloatingPixel(x * xMultiplier, y * yMultiplier);
-			resized.setPixel(x, y, color);			
-		});
+		if (width == 0 || height == 0) return resized;
+		final sourceWidth = image.width;
+		final sourceHeight = image.height;
+		// Preserve the existing checked sampling behavior for an empty source.
+		if (sourceWidth == 0 || sourceHeight == 0) {
+			resized.setPixel(0, 0, image.getFloatingPixel(0, 0));
+			return resized;
+		}
+		final source = image.backend().readPixels();
+		final target = resized.backend().writePixels();
+		final offset = PixelStorage.PIXEL_OFFSET;
+		final stride = sourceWidth * 4;
+		final xMultiplier = sourceWidth / width - 1 / width;
+		final yMultiplier = sourceHeight / height - 1 / height;
+		final columns = [for (x in 0...width) Std.int(x * xMultiplier)];
+		final horizontalWeights = [for (x in 0...width) x * xMultiplier - columns[x]];
 
+		var destination = offset;
+		for (y in 0...height) {
+			final sourceY = y * yMultiplier;
+			final topRow = Std.int(sourceY);
+			final top = offset + topRow * stride;
+			final bottom = topRow + 1 < sourceHeight ? top + stride : top;
+			final verticalWeight = sourceY - topRow;
+
+			for (x in 0...width) {
+				final column = columns[x];
+				final left = column * 4;
+				final right = column + 1 < sourceWidth ? left + 4 : left;
+				final horizontalWeight = horizontalWeights[x];
+				for (channel in 0...4)
+					target[destination++] = interpolateChannel(
+						source[top + left + channel], source[top + right + channel],
+						source[bottom + left + channel], source[bottom + right + channel],
+						horizontalWeight, verticalWeight);
+			}
+		}
 		return resized;
+	}
+
+	static inline function interpolateChannel(topLeft:Int, topRight:Int, bottomLeft:Int, bottomRight:Int, x:Float, y:Float):Int {
+		final top = (1 - x) * topLeft + x * topRight;
+		final bottom = (1 - x) * bottomLeft + x * bottomRight;
+		return Std.int((1 - y) * top + y * bottom);
 	}
 
 	public static function interpolateMissingPixels(image:Image, kernelRadiusX:Int, kernelRadiusY:Int, minX:Int, minY:Int):Image {

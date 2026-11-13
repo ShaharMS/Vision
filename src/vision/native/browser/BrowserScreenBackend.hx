@@ -1,6 +1,6 @@
 package vision.native.browser;
 
-#if js
+#if (js && !nodejs)
 import js.Browser;
 import js.Syntax;
 import vision.ds.Color;

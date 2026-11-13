@@ -3,35 +3,30 @@ package vision.native.cpu;
 import vision.ds.ByteArray;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.native.ImageBackend;
-import vision.native.ImageBackend.ImageOperation;
+import vision.ds.accelerate.PixelStorage;
+import vision.ds.accelerate.ImageOperation;
 import vision.tools.MathTools;
-import vision.native.ImageBackend.ImageSurface;
 
-/** Packed CPU pixels and synchronization state for an optional drawing surface. **/
+
+/** Packed image pixels for headless targets and the browser CPU cache. **/
 @:noCompletion
 class CpuImage {
 	final packed:ByteArray;
 	public var length(get, never):Int;
-	var exposed:Bool;
-	public var surface(default, null):ImageSurface;
-	var cpuValid = true;
-	var surfaceValid = false;
 
 	public function new(packed:ByteArray, exposed:Bool) {
 		this.packed = packed;
-		this.exposed = exposed;
 	}
 
 	public function exportPixels():ByteArray {
 		final pixels = readPixels();
-		return pixels.sub(ImageBackend.PIXEL_OFFSET, pixels.length - ImageBackend.PIXEL_OFFSET);
+		return pixels.sub(PixelStorage.PIXEL_OFFSET, pixels.length - PixelStorage.PIXEL_OFFSET);
 	}
 
 	public function colors():Array<Color> {
 		final pixels = readPixels();
 		final result:Array<Color> = [];
-		var offset = ImageBackend.PIXEL_OFFSET;
+		var offset = PixelStorage.PIXEL_OFFSET;
 		while (offset < pixels.length) {
 			result.push(Color.fromRGBA(pixels[offset + 1], pixels[offset + 2], pixels[offset + 3], pixels[offset]));
 			offset += 4;
@@ -48,14 +43,13 @@ class CpuImage {
 
 	inline function get_height():Int {
 		final width = get_width();
-		return width == 0 ? 0 : Math.ceil((this.packed.length - ImageBackend.PIXEL_OFFSET) / (width * 4.0));
+		return width == 0 ? 0 : Math.ceil((this.packed.length - PixelStorage.PIXEL_OFFSET) / (width * 4.0));
 	}
 
-	inline function get_isGpuBacked():Bool
-		return this.surface != null && this.surface.isAvailable();
+	function get_isGpuBacked():Bool return false;
 
 	public inline function readColor(position:Int):Color {
-		position += ImageBackend.PIXEL_OFFSET;
+		position += PixelStorage.PIXEL_OFFSET;
 		final pixels = readPixels();
 		var value = pixels[position] << 24 | pixels[position + 1] << 16 | pixels[position + 2] << 8 | pixels[position + 3];
 		#if (python || php || lua)
@@ -67,7 +61,7 @@ class CpuImage {
 	}
 
 	public inline function writeColor(position:Int, color:Color):Color {
-		position += ImageBackend.PIXEL_OFFSET;
+		position += PixelStorage.PIXEL_OFFSET;
 		final pixels = writePixels();
 		pixels[position] = color.alpha;
 		pixels[position + 1] = color.red;
@@ -79,55 +73,9 @@ class CpuImage {
 	inline function get_length():Int
 		return this.packed.length;
 
-	public function attach(surface:ImageSurface):Bool {
-		if (this.exposed || this.surface != null) return false;
-		this.surface = surface;
-		return true;
-	}
-
-	public function detach():Void {
-		if (this.surface != null) {
-			readPixels();
-			this.surface.dispose();
-			this.surface = null;
-			this.surfaceValid = false;
-		}
-	}
-
-	public function prepareSurface():Bool {
-		final surface = this.surface;
-		if (surface == null || !surface.isAvailable()) return false;
-		if (!this.surfaceValid) this.surfaceValid = surface.upload(this.packed);
-		return this.surfaceValid;
-	}
-
-	public function transform(operation:ImageOperation, value:Int):Bool {
-		if (prepareSurface() && this.surface.transform(operation, value)) {
-			this.cpuValid = false;
-			return true;
-		}
-		return false;
-	}
-
-	public function readPixels():ByteArray {
-		if (!this.cpuValid) {
-			this.surface.download(this.packed);
-			this.cpuValid = true;
-		}
-		return this.packed;
-	}
-
-	public function writePixels():ByteArray {
-		final pixels = readPixels();
-		this.surfaceValid = false;
-		return pixels;
-	}
-
-	public function bytes():ByteArray {
-		detach();
-		this.exposed = true;
-		return this.packed;
-	}
+	public function readPixels():ByteArray return packed;
+	public function writePixels():ByteArray return packed;
+	public function bytes():ByteArray return packed;
 
 	public function copy():CpuImage {
 		final pixels = readPixels();
@@ -154,15 +102,15 @@ class CpuImage {
 	public inline function setUInt16(index:Int, value:Int):Void
 		this.packed.setUInt16(index, value);
 
-	public static function allocate(width:Int, height:Int, color:Color):CpuImage {
-		final bytes = new ByteArray(width * height * 4 + ImageBackend.PIXEL_OFFSET);
+	public static function allocate(width:Int, height:Int, color:Color = 0):CpuImage {
+		final bytes = new ByteArray(width * height * 4 + PixelStorage.PIXEL_OFFSET);
 		#if vision_higher_width_cap
 		bytes.setInt32(0, width);
 		#else
 		bytes.setUInt16(0, width);
 		#end
 		if (color != 0) {
-			var offset = ImageBackend.PIXEL_OFFSET;
+			var offset = PixelStorage.PIXEL_OFFSET;
 			while (offset < bytes.length) {
 				bytes[offset] = color.alpha;
 				bytes[offset + 1] = color.red;

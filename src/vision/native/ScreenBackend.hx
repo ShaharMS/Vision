@@ -5,7 +5,7 @@ import vision.ds.Image;
 import vision.ds.specifics.ScreenOptions;
 import vision.exceptions.ScreenError;
 import vision.native.cpu.CpuScreenBackend;
-#if js
+#if (js && !nodejs)
 import vision.native.browser.BrowserScreenBackend;
 #elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 import vision.native.windows.WindowsScreenBackend;
@@ -19,7 +19,7 @@ abstract ScreenBackend(ScreenDriver) {
 			this = new CpuScreenBackend(width, height);
 			return;
 		}
-		#if js
+		#if (js && !nodejs)
 		if (BrowserScreenBackend.isAvailable()) {
 			this = new BrowserScreenBackend(x, y, width, height, options);
 			return;
@@ -32,7 +32,7 @@ abstract ScreenBackend(ScreenDriver) {
 	}
 	/** Validates the drawable size before a backend allocates its frame. **/
 	public static function validateSize(width:Int, height:Int):Void {
-		if (width <= 0 || height <= 0 || width * 1.0 * height * 4 > 0x7fffffff - ImageBackend.PIXEL_OFFSET
+		if (width <= 0 || height <= 0 || width * 1.0 * height * 4 > 0x7fffffff - vision.ds.accelerate.PixelStorage.PIXEL_OFFSET
 			#if !vision_higher_width_cap || width > 0xffff #end)
 			throw new ScreenError("Invalid screen dimensions");
 	}

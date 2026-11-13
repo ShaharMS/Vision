@@ -1,11 +1,13 @@
 package vision.ds;
 
-import vision.algorithms.PolygonDrawing;
 import vision.formats.ImageIO;
 #if (openfl || flash)
 import vision.formats._internal.images.FrameworkImageIO;
 #end
-import vision.native.ImageBackend;
+import vision.ds.accelerate.PlatformImage;
+import vision.ds.accelerate.PlatformImage.PlatformBatch;
+import vision.ds.accelerate.PixelStorage;
+import vision.algorithms.ImageText;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm
@@ -29,7 +31,7 @@ using vision.tools.ArrayTools;
 	Represents a 2D image as a matrix of colors. Pixel storage and platform operations are handled by its backend.
 **/
 @:transitive
-abstract Image(ImageBackend) {
+abstract Image(PlatformImage) {
 	#if vision_higher_width_cap
 	/**
 		the first 4 bytes represent image width,  
@@ -45,8 +47,25 @@ abstract Image(ImageBackend) {
 		the last byte represents view shape
 	**/
 	#end
-	static inline final OFFSET = ImageBackend.PIXEL_OFFSET;
-	static inline final WIDTH_BYTES = ImageBackend.FIELD_BYTES;
+	static function fromColorRows(rows:Array<Array<Color>>):PlatformImage {
+		final storage = PlatformImage.allocate(rows.length == 0 ? 0 : rows[0].length, rows.length);
+		var position = 0;
+		for (row in rows) for (color in row) {
+			storage.writeColor(position, color);
+			position += 4;
+		}
+		return storage;
+	}
+
+	static function fromPackedPixels(bytes:ByteArray, width:Int, height:Null<Int>):PlatformImage {
+		final rows = height == null ? (width == 0 ? 0 : Math.ceil(bytes.length / (4.0 * width))) : height;
+		final storage = PlatformImage.allocate(width, rows);
+		storage.writePixels().blit(OFFSET, bytes, 0, bytes.length);
+		return storage;
+	}
+
+	static inline final OFFSET = PixelStorage.PIXEL_OFFSET;
+	static inline final WIDTH_BYTES = PixelStorage.FIELD_BYTES;
 	static inline final VIEW_XY_BYTES = WIDTH_BYTES * 2;
 	static inline final VIEW_WH_BYTES = WIDTH_BYTES * 2;
 	static inline final DATA_GAP = WIDTH_BYTES;
@@ -62,7 +81,7 @@ abstract Image(ImageBackend) {
 
 	#if vision_allow_resize
 	inline function set_underlying(bytes:ByteArray) {
-		this = new ImageBackend(bytes, true);
+		this = new PlatformImage(bytes, true);
 		return bytes;
 	}
 	#end
@@ -75,7 +94,16 @@ abstract Image(ImageBackend) {
 	}
 
 	@:allow(vision.native)
-	inline function backend():ImageBackend return this;
+	@:allow(vision.algorithms)
+	inline function backend():PlatformImage return this;
+
+	/**
+		Records an ordered batch against this image.
+
+		Call `commit()` to produce an image or `commit(InPlace)` to update the
+		original storage. See the selected platform batch for execution details.
+	**/
+	public inline function accelerate():PlatformBatch return new PlatformBatch(cast this);
 
 
 	/**
@@ -134,7 +162,7 @@ abstract Image(ImageBackend) {
 		@param color The color to fill the image with. if unspecified, the image is transparent.
 	**/
 	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
-		this = ImageBackend.allocate(width, height, color);
+		this = PlatformImage.allocate(width, height, color);
 	}
 
 	inline function getColorFromStartingBytePos(position:Int):Color
@@ -587,7 +615,7 @@ abstract Image(ImageBackend) {
 		@see fillPolygon
 	**/
 	public function drawPolygon(polygon:Polygon, color:Color) {
-		PolygonDrawing.draw(cast this, polygon, color);
+		accelerate().drawPolygon(polygon, color).commit(InPlace);
 	}
 
 	/**
@@ -603,7 +631,7 @@ abstract Image(ImageBackend) {
 		@see drawPolygon
 	**/
 	public function fillPolygon(polygon:Polygon, color:Color) {
-		PolygonDrawing.fill(cast this, polygon, color);
+		accelerate().fillPolygon(polygon, color).commit(InPlace);
 	}
 
 	/**
@@ -616,7 +644,7 @@ abstract Image(ImageBackend) {
 		@see drawPolygon
 	**/
 	public function drawMultiPolygon(multiPolygon:MultiPolygon, color:Color) {
-		for (polygon in multiPolygon.polygons) drawPolygon(polygon, color);
+		accelerate().drawMultiPolygon(multiPolygon, color).commit(InPlace);
 	}
 
 	/**
@@ -631,7 +659,7 @@ abstract Image(ImageBackend) {
 		@see fillPolygon
 	**/
 	public function fillMultiPolygon(multiPolygon:MultiPolygon, color:Color) {
-		for (polygon in multiPolygon.polygons) fillPolygon(polygon, color);
+		accelerate().fillMultiPolygon(multiPolygon, color).commit(InPlace);
 	}
 
 	/**
@@ -754,7 +782,12 @@ abstract Image(ImageBackend) {
 		@param rect The rectangle to fill: The fill starts at (x, y) and extends to (x + width, y + height), not including the endpoints.
 		@param color The color to fill that rectangular portion with.
 	**/
-	public inline function fillRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
+	public function fillRect(x:Int, y:Int, width:Int, height:Int, color:Color) {
+		accelerate().fillRect({x: x, y: y, width: width, height: height}, color).commit(InPlace);
+	}
+
+	@:allow(vision.native.cpu.CpuBatchExecutor)
+	function fillRectPixels(x:Int, y:Int, width:Int, height:Int, color:Color) {
 		for (X in x...x + width) {
 			for (Y in y...y + height) {
 				setPixel(X, Y, color);
@@ -880,7 +913,7 @@ abstract Image(ImageBackend) {
 	**/
 	public function drawText(x:Int, y:Int, text:String, ?options:TextOptions):Void {
 		if (text.length == 0 || width == 0 || height == 0) return;
-		ImageBackend.drawText(cast this, x, y, text, options == null ? {} : options);
+		ImageText.drawText(cast this, x, y, text, options == null ? {} : options);
 	}
 
 	#if js
@@ -896,7 +929,7 @@ abstract Image(ImageBackend) {
 	**/
 	public static function loadTextFont(family:String, bytes:haxe.io.Bytes, weight:Int = 400, italic:Bool = false,
 		?features:String):js.lib.Promise<String> {
-		return ImageBackend.loadTextFont(family, bytes, weight, italic, features);
+		return ImageText.loadTextFont(family, bytes, weight, italic, features);
 	}
 	#end
 
@@ -1202,13 +1235,15 @@ abstract Image(ImageBackend) {
 	**/
 	public inline function resize(newWidth:Int = -1, newHeight:Int = -1, ?algorithm:ImageResizeAlgorithm):Image {
 		if (newWidth == -1 && newHeight == -1) return cast this;
-		if (newWidth == -1) {
-			newWidth = Std.int(((newHeight / height) * width));
-		} else if (newHeight == -1) {
-			newHeight = Std.int(((newWidth / width) * height));
-		} 
-		if (algorithm == null)
-			algorithm = ImageTools.defaultResizeAlgorithm;
+		if (newWidth == -1) newWidth = Std.int(newHeight / height * width);
+		else if (newHeight == -1) newHeight = Std.int(newWidth / width * height);
+		final sampling = algorithm == null ? ImageTools.defaultResizeAlgorithm : algorithm;
+		this = cast accelerate().resize(newWidth, newHeight, sampling).commit();
+		return cast this;
+	}
+
+	@:allow(vision.native.cpu.CpuBatchExecutor)
+	inline function resizePixels(newWidth:Int, newHeight:Int, algorithm:ImageResizeAlgorithm):Image {
 		switch algorithm {
 			case BilinearInterpolation:
 				this = cast Bilinear.interpolate(cast this, newWidth, newHeight);
@@ -1644,7 +1679,7 @@ abstract Image(ImageBackend) {
 		@return a new `Image`
 	**/
 	@:from public static inline function from2DArray(array:Array<Array<Color>>):Image {
-		return cast ImageBackend.fromColors(array);
+		return cast fromColorRows(array);
 	}
 
 	/**
@@ -1674,11 +1709,11 @@ abstract Image(ImageBackend) {
 		@param height Optional, the height of the returned image. determined automatically, can be overridden by setting this parameter
 	**/
 	public static inline function loadFromBytes(bytes:ByteArray, width:Int, ?height:Int):Image {
-		return cast ImageBackend.fromPixels(bytes, width, height);
+		return cast fromPackedPixels(bytes, width, height);
 	}
 
 	static inline function fromStorageBytes(bytes:ByteArray):Image {
-		return cast new ImageBackend(bytes, true);
+		return cast new PlatformImage(bytes, true);
 	}
 
 	/**

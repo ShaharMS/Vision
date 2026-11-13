@@ -263,6 +263,36 @@ class ScreenTest extends utest.Test {
 		Assert.isFalse(retained.isGpuBacked || retained.getPixel(0, 0) != 0xFF000000, "Disposing the renderer did not preserve a pending image");
 	}
 
+	@:visionTestId("vision.ds.Screen.attach#resizeAndBlur")
+	function test_attach__resizeAndBlur():Void {
+		final canvas = Browser.document.createCanvasElement();
+		canvas.width = canvas.height = 12;
+		final renderer = new CanvasRenderer(canvas);
+		var image = new Image(5, 4, 0x90416181);
+		image.setPixel(2, 1, 0xff5a9020);
+		image.setPixel(4, 3, 0x20604021);
+		final source = image;
+		var cpu = image.clone();
+		cpu.resize(11, 7, BilinearInterpolation);
+		final expected = Vision.gaussianBlur(cpu);
+		Assert.isTrue(renderer.attach(image));
+		image.resize(11, 7, BilinearInterpolation);
+		Assert.isTrue(image.isGpuBacked);
+		final blurred = Vision.gaussianBlur(image);
+		Assert.isTrue(blurred.isGpuBacked);
+		renderer.draw(blurred);
+		renderer.dispose();
+		Assert.isFalse(blurred.isGpuBacked);
+		Assert.equals(5, source.width);
+		for (y in 0...expected.height)
+			for (x in 0...expected.width) {
+				final a = expected.getPixel(x, y);
+				final b = blurred.getPixel(x, y);
+				Assert.isTrue(Math.abs(a.red - b.red) <= 1 && Math.abs(a.green - b.green) <= 1
+					&& Math.abs(a.blue - b.blue) <= 1 && Math.abs(a.alpha - b.alpha) <= 1);
+			}
+	}
+
 	function drawing(webGl:Bool) {
 		final canvas = Browser.document.createCanvasElement();
 		canvas.width = 3;

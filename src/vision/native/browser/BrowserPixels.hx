@@ -4,7 +4,7 @@ package vision.native.browser;
 import js.lib.Uint8Array;
 import vision.ds.ByteArray;
 import vision.ds.Image;
-import vision.native.ImageBackend;
+import vision.ds.accelerate.PixelStorage;
 
 @:noCompletion
 class BrowserPixels {
@@ -29,7 +29,7 @@ class BrowserPixels {
 		// Image.underlying exposes writable bytes. Compare the actual data on each draw.
 		var index = 0;
 		while (index < length) {
-			final start = ImageBackend.PIXEL_OFFSET + index;
+			final start = PixelStorage.PIXEL_OFFSET + index;
 			final r = argb[start + 1];
 			final g = argb[start + 2];
 			final b = argb[start + 3];

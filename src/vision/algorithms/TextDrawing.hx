@@ -6,7 +6,7 @@ import vision.ds.Point2D;
 import vision.ds.Rectangle;
 import vision.ds.Font;
 import vision.ds.Glyph;
-import vision.native.ImageBackend;
+import vision.ds.accelerate.PixelStorage;
 import vision.exceptions.TextDrawingError;
 import vision.formats._internal.fonts.FontData;
 import vision.formats._internal.fonts.TextShaper;
@@ -246,7 +246,7 @@ private class OutlineBounds {
 		final width = bounds.width + 2.0 * padding;
 		final height = bounds.height + 2.0 * padding;
 		if (!Math.isFinite(width) || !Math.isFinite(height) || width > MAX_INT || height > MAX_INT
-			|| Math.max(width, 1) * height * RGBA_BYTES_PER_PIXEL > MAX_INT - ImageBackend.PIXEL_OFFSET
+			|| Math.max(width, 1) * height * RGBA_BYTES_PER_PIXEL > MAX_INT - PixelStorage.PIXEL_OFFSET
 			#if !vision_higher_width_cap || width > MAX_PACKED_IMAGE_WIDTH #end)
 			throw new TextDrawingError("Rendered text image is too large.");
 		return new Image(Std.int(height > 0 ? Math.max(width, 1) : width), Std.int(height));

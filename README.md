@@ -303,3 +303,45 @@ For Neko builds, use `-dce full` to discard unreachable image methods that can e
 ### cppia runtime requirement
 
 The cppia interpreter needs the pinned hxcpp array-compatibility fixes in [the host build instructions](tests/ci/cppia/README.md). In a source checkout run `bash tests/ci/cppia/build-host.sh`; release ZIPs include the same helper and patch under `cppia/`. The helper selects the documented hxcpp version in the active haxelib repository, so use an isolated repository if another project needs a different version. JIT mode is not qualified. Other targets do not use this patch.
+
+## Image acceleration
+
+`Image.accelerate()` records image commands in order. Call `commit()` to
+receive a new `Image`, or `commit(InPlace)` to update the existing image
+when the batch retains its original dimensions. Rectangle and geometry
+arguments and filter weights are copied when queued. Image operands are read
+at commit. A batch can be committed once.
+
+```haxe
+screen.attach(image);
+final result = image.accelerate()
+    .resize(640, 360, BilinearInterpolation)
+    .convolve(Kernels.gaussian(5, 1))
+    .fillRect({x: 12, y: 12, width: 60, height: 20}, Color.CYAN)
+    .commit();
+screen.draw(result);
+```
+
+### Browser WebGL 2
+
+Attach the source to the screen before committing. Supported commands run in
+the screen's WebGL context and return a texture that the screen can draw
+directly. Bilinear and nearest resize fetch source texels explicitly.
+Convolution accepts up to 81 taps and clamps samples at the image edges.
+A two-pass Gaussian uses an RGBA8 intermediate between the vertical and
+horizontal passes. Rectangle fills use scissored clears and write the
+supplied RGBA values. A pixel read or export downloads the committed result.
+Disposing the screen synchronizes its remaining attached images.
+
+Unattached images, images with an active view, and batches with unsupported
+commands use the packed-pixel implementation. A batch that falls back can
+download its input. The concrete `BrowserImageBatch` docs identify which
+commands use the CPU executor. WebGL filtering uses floating-point shader
+arithmetic, so results near rounding boundaries can differ from CPU results.
+
+### Native and headless
+
+The concrete `CpuImageBatch` executes queued operations against packed
+pixels and produces ordinary images. Windows currently uses CPU image
+processing with GDI presentation. The D3D11, Metal, Vulkan, and WebGPU batch
+executors are pending. The existing WebGPU inverter is a separate operation.

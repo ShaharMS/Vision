@@ -3,7 +3,7 @@ package vision.algorithms;
 import haxe.ds.IntMap;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.native.ImageBackend;
+import vision.ds.accelerate.PixelStorage;
 import vision.exceptions.TextureSynthesisError;
 
 /** Synthesizes textures from local pattern frequencies using Metropolis sampling. **/
@@ -14,7 +14,7 @@ class TextureSynthesis {
 		if (patternSize < 1 || patternSize > sample.width || patternSize > sample.height || patternSize > width || patternSize > height
 			|| iterations < 1 || !Math.isFinite(temperature) || temperature <= 0)
 			throw new TextureSynthesisError("The images must fit the pattern, and iterations and temperature must be positive.");
-		if (width * 1.0 * height * 4 > 0x7fffffff - ImageBackend.PIXEL_OFFSET #if !vision_higher_width_cap || width > 0xffff #end)
+		if (width * 1.0 * height * 4 > 0x7fffffff - PixelStorage.PIXEL_OFFSET #if !vision_higher_width_cap || width > 0xffff #end)
 			throw new TextureSynthesisError("The output image is too large.");
 
 		final palette:Array<Color> = [];

@@ -62,3 +62,31 @@ $env:VISION_TESTS = 'ScreenTest'
 ```
 
 The test uses a hidden window and checks composited pixels, presentation, and frame timing.
+
+## Image operation benchmarks
+
+Compile `ImageOperationBenchmark` with `-cp src -cp tests/ci -lib format
+-main ImageOperationBenchmark -dce full` and use either `-cpp <directory>` or
+`-js <file>`. Load the JavaScript output from a local browser page. Both
+targets report median and maximum of five timed runs and a SHA-256 digest
+of the output. The resize timings include cloning. Compare matching output
+digests on each target before interpreting timing differences.
+
+Compile `BrowserImageBatchBenchmark` using the same options, with
+`-main BrowserImageBatchBenchmark` and the JavaScript target. It compares
+processing on the CPU followed by WebGL drawing against processing and
+drawing on the GPU. A separate measurement includes a GPU readback. The
+benchmark waits for GL completion and checks residency, readback count,
+and per-channel differences.
+
+On Windows hxcpp and Edge on Intel Arc, the 384 × 384 synthetic fixture
+produced these median results. The baseline contains the two changes to
+float validation needed for the hxcpp build.
+
+- Bilinear upscale to 576 × 576 took 2451.13 → 12.20 ms on hxcpp and 3730.80 → 11.80 ms in Edge CPU.
+- 5 × 5 Gaussian convolution took 1794.33 → 20.45 ms on hxcpp and 3265.10 → 31.60 ms in Edge CPU.
+- Non-local means with search radius 2 took 2911.82 → 1363.32 ms on hxcpp and 6821.30 → 1876.70 ms in Edge CPU.
+- Resize to 256 × 256, convolve, fill, and draw took 23.4 ms using CPU processing and 4.0 ms using the GPU batch. Including a GPU export took 8.0 ms. Exported pixels matched exactly on this fixture.
+
+All eight paired CPU workloads produced identical digests on each target.
+These are local measurements from synthetic inputs.

@@ -3,7 +3,7 @@ package vision.formats._internal.images;
 import vision.ds.Image;
 import vision.ds.ByteArray;
 import vision.exceptions.InvalidHeapsPixelFormat;
-#if js
+#if (js && !nodejs)
 import vision.native.browser.CanvasRenderer;
 #end
 
@@ -170,10 +170,14 @@ class FrameworkImageIO {
 		final canvas = js.Browser.document.createCanvasElement();
 		canvas.width = image.width;
 		canvas.height = image.height;
+		#if nodejs
+		throw new vision.exceptions.Unimplemented("Canvas export requires a browser document.");
+		#else
 		final renderer = new CanvasRenderer(canvas, false);
 		renderer.draw(image);
 		renderer.dispose();
 		return canvas;
+		#end
 	}
 
 	public static function fromJsImage(image:js.html.ImageElement):Image {

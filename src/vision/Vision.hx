@@ -62,8 +62,7 @@ import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.native.ImageBackend;
-import vision.native.ImageBackend.ImageOperation;
+
 import vision.ds.specifics.HarrisCornerOptions;
 import vision.ds.specifics.HoughCircleOptions;
 import vision.tools.MathTools;
@@ -192,7 +191,7 @@ class Vision {
 		@return The grayscaled image. The original image is modified.
 	**/
 	public static function grayscale(image:Image, simpleGrayscale:Bool = false):Image {
-		ImageBackend.apply(image, simpleGrayscale ? ImageOperation.SimpleGrayscale : ImageOperation.Grayscale);
+		image.accelerate().grayscale(simpleGrayscale).commit(InPlace);
 		return image;
 	}
 
@@ -217,7 +216,7 @@ class Vision {
 		@return The inverted image. The original image is modified.
 	**/
 	public static function invert(image:Image):Image {
-		ImageBackend.apply(image, ImageOperation.Invert);
+		image.accelerate().invert().commit(InPlace);
 		return image;
 	}
 
@@ -255,7 +254,7 @@ class Vision {
 		@return The converted image. The original image is modified.
 	**/
 	public static function blackAndWhite(image:Image, threshold:Int = 128):Image {
-		ImageBackend.apply(image, ImageOperation.BlackAndWhite, threshold);
+		image.accelerate().threshold(threshold).commit(InPlace);
 		return image;
 	}
 
@@ -991,35 +990,7 @@ class Vision {
 		@throws VisionException If any weight is nonfinite.
 	**/
 	public static function convolve(image:Image, ?kernel:Matrix2D):Image {
-		if (kernel == null) kernel = Kernels.identity();
-		var width = kernel.width;
-		var height = kernel.height;
-		if (width <= 0 || height <= 0 || width % 2 == 0 || height % 2 == 0 || kernel.underlying.length != width * height)
-			throw new MatrixShapeError("Kernel dimensions must be positive and odd.", "Kernel Error");
-		for (weight in kernel.underlying.inner) {
-			if (weight == null || !Math.isFinite(weight))
-				throw new VisionException("Kernel weights must be finite numbers.", "Kernel Error");
-		}
-
-		var result = image.clone();
-		var anchorX = width >> 1;
-		var anchorY = height >> 1;
-		image.forEachPixelInView((x, y, pixel) -> {
-			var red = 0., green = 0., blue = 0.;
-			for (ky in 0...height) {
-				for (kx in 0...width) {
-					var sample = image.getSafePixel(x + kx - anchorX, y + ky - anchorY);
-					var weight = kernel.get(kx, ky);
-					red += sample.red * weight;
-					green += sample.green * weight;
-					blue += sample.blue * weight;
-				}
-			}
-			result.setUnsafePixel(x, y, Color.fromRGBA(
-				Math.round(boundFloat(red, 0, 255)), Math.round(boundFloat(green, 0, 255)), Math.round(boundFloat(blue, 0, 255)), pixel.alpha
-			));
-		});
-		return result;
+		return image.accelerate().convolve(kernel == null ? Kernels.identity() : kernel).commit();
 	}
 
 	/**
@@ -1199,7 +1170,10 @@ class Vision {
 		@return A new blurred image.
 	**/
 	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = GaussianKernelSize.X5, ?fast:Bool = false):Image {
-		if (fast) return Gauss.fastBlur(image, kernelSize, sigma);
+		if (fast) {
+			final weights = Gauss.create1DKernelOfSize(kernelSize, sigma);
+			return image.accelerate().convolveVertical(weights).convolveHorizontal(weights).commit();
+		}
 		return convolve(image, Kernels.gaussian(kernelSize, sigma));
 	}
 

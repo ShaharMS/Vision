@@ -71,7 +71,7 @@ abstract Transform2D(Matrix2D) {
 		if (matrix == null || matrix.width != 3 || matrix.height != 3 || matrix.underlying.length != 9)
 			throw new MatrixShapeError("Transform2D requires a 3x3 matrix.", "Transform Error");
 		for (value in matrix.underlying.inner) {
-			if (value == null || !Math.isFinite(value))
+			if (#if !static value == null || #end !Math.isFinite(value))
 				throw new VisionException("Transform coefficients must be finite numbers.", "Transform Error");
 		}
 		return new Transform2D(matrix.clone());

@@ -1,6 +1,6 @@
 package vision.native.browser;
 
-#if js
+#if (js && !nodejs)
 import js.Browser;
 import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
@@ -8,7 +8,7 @@ import js.html.ImageData;
 import vision.Vision;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.native.ImageBackend;
+
 import vision.native.browser.BrowserPixels;
 import vision.native.browser.WebGlRenderer;
 import vision.native.browser.WebGlRenderer.WebGlSurface;
@@ -21,7 +21,7 @@ class CanvasRenderer {
 	public var usesWebGl(get, never):Bool;
 
 	final pixels = new BrowserPixels();
-	final attached = new Array<ImageBackend>();
+	final attached = new Array<BrowserImage>();
 	final gpu:WebGlRenderer;
 	final context:CanvasRenderingContext2D;
 	final staging:CanvasElement;
@@ -35,6 +35,7 @@ class CanvasRenderer {
 		final gl = preferWebGl ? canvas.getContextWebGL2({preserveDrawingBuffer: preserve}) : null;
 		if (gl != null) {
 			gpu = new WebGlRenderer(gl);
+			gpu.onImageAttached = trackImage;
 		} else {
 			context = canvas.getContext2d();
 			if (context == null) throw new CanvasRenderingError("The canvas has no compatible drawing context");
@@ -65,11 +66,15 @@ class CanvasRenderer {
 			surface.dispose();
 			return false;
 		}
+		trackImage(storage, surface);
+		return true;
+	}
+
+	function trackImage(storage:BrowserImage, surface:WebGlSurface):Void {
 		attached.push(storage);
 		surface.onDispose = () -> {
 			attached.remove(storage);
 		};
-		return true;
 	}
 
 	/** Materializes the image's pixels and releases this renderer's texture. **/
@@ -78,7 +83,7 @@ class CanvasRenderer {
 		if (owns(storage)) storage.detach();
 	}
 
-	function owns(storage:ImageBackend):Bool {
+	function owns(storage:BrowserImage):Bool {
 		return storage.surface is WebGlSurface && (cast storage.surface : WebGlSurface).owner == gpu;
 	}
 
