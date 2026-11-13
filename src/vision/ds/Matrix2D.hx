@@ -1,42 +1,17 @@
 package vision.ds;
 
-import vision.algorithms.PerspectiveWarp;
-import vision.ds.specifics.PointTransformationPair;
 import vision.exceptions.MatrixOperationError;
-import vision.exceptions.VisionException;
+import vision.exceptions.MatrixShapeError;
 import vision.algorithms.GaussJordan;
 import vision.ds.Array2D;
 import vision.tools.MathTools.*;
 using vision.tools.MathTools;
 using vision.tools.ArrayTools;
 /**
-	Represents a transformation matrix, used for warping images in one way or another.  
-	A matrix warps an image by multiplying each pixel's coordinates by the matrix, as follows:
-	```txt
-	┌             ┐   
-	│ a₀₀ a₀₁ a₀₂ │   ┌       ┐
-	│ a₁₀ a₁₁ a₁₂ │ ● │ x y 1 │
-	│ a₂₀ a₂₁ a₂₂ │   └       ┘
-	└             ┘   
-	```
-	where `x` and `y` are the coordinates of the pixel, `1` is, well, `1`, and `aₙ ₙ` represents a value in the matrix.
+	A mutable rectangular matrix of floating-point values. Index using `get(x, y)`
+	and `set(x, y, value)`, where x is the column and y is the row.
 
-	multiplication is done by multiplying each row in one matrix by its corresponding column in the other (nₜₕ row to nₜₕ column):
-	```txt
-	┌             ┐   
-	│ a₀₀ a₀₁ a₀₂ │   ┌       ┐    ┌                                                          ┐
-	│ a₁₀ a₁₁ a₁₂ │ ● │ x y 1 │ ⟹ │ x(a₀₀ + a₀₁ + a₀₂) y(a₁₀ + a₁₁ + a₁₂) 1(a₂₀ + a₂₁ + a₂₂) │
-	│ a₂₀ a₂₁ a₂₂ │   └       ┘    └                                                          ┘
-	└             ┘   
-	```
-
-	---
-
-	For your comfort, some simple transformation matrices are already provided, and accessible as a static property of `Matrix2D`.
-
-
-	@see For a general purpose, not-necessarily-mathematic matrix - `Array2D`
-	@see For provided convolution matrices - `Kernel2D`
+	See `Kernels` for convolution coefficients and `Transform2D` for coordinate maps.
 **/
 @:forward(get, set, fill, width, height)
 abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
@@ -143,7 +118,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             }
             return sum;
             #else
-            throw new VisionException("Trace requires a square matrix.", "Matrix Trace Error");
+            throw new MatrixShapeError("Trace requires a square matrix.", "Matrix Trace Error");
             #end
         }
 		var sum = 0.;
@@ -264,7 +239,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             for (y in 0...limit) this.set(x, y, arr[y]);
             return;
             #else
-            throw new VisionException("Column length must match matrix height.", "Matrix Set Column Error");
+            throw new MatrixShapeError("Column length must match matrix height.", "Matrix Set Column Error");
             #end
         }
         for (y in 0...this.height) this.set(x, y, arr[y]);
@@ -283,7 +258,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
             for (x in 0...limit) this.set(x, y, arr[x]);
             return;
             #else
-            throw new VisionException("Row length must match matrix width.", "Matrix Set Row Error");
+            throw new MatrixShapeError("Row length must match matrix width.", "Matrix Set Row Error");
             #end
         }
         for (x in 0...this.width) this.set(x, y, arr[x]);
@@ -460,161 +435,31 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 	//-----------------------------------------------------------------------------------------
 
 
-    /**
-        Generates an identity matrix.
-    **/
-    public static inline function IDENTITY():TransformationMatrix2D {
-        return Matrix2D.createTransformation(
-            [1, 0, 0],
-            [0, 1, 0],
-            [0, 0, 1]
-        );
-    }
+	/** Creates a square identity matrix of the given size. **/
+	public static function identity(size:Int):Matrix2D {
+		if (size <= 0) throw new MatrixShapeError("Identity matrix size must be positive.", "Matrix Error");
+		var matrix = new Matrix2D(size, size, 0);
+		for (i in 0...size) matrix.set(i, i, 1);
+		return matrix;
+	}
 
-    /**
-        Generates a rotation matrix of `angle` degrees/radians.
-
-        @param angle The angle at which to rotate. goes counter-clockwise.
-        @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
-		@param origin The point around which to rotate. Defaults to `(0, 0)`, which means the top-left corner.
-    **/
-    public static inline function ROTATION(angle:Float, ?degrees:Bool = true, ?origin:Point2D = null):TransformationMatrix2D {
-        return Matrix2D.createTransformation(
-            [if (degrees) cosd(angle) else cos(angle), if (degrees) -sind(angle) else -sin(angle), origin != null ? origin.x : 0],
-            [if (degrees) sind(angle) else sin(angle), if (degrees) cosd(angle) else cos(angle), origin != null ? origin.y : 0],
-            [0, 0, 1]
-        );
-    }
-
-    /**
-        Generates a translation matrix that displaces the graphic 
-        inside the image `x` pixels to the right and `y` pixels to the bottom.
-
-        @param x Displacement in pixels to the right. Default value is 0.
-        @param y Displacement in pixels to the bottom. Default value is 0.
-    **/
-    public static inline function TRANSLATION(x:Float = 0, y:Float = 0):TransformationMatrix2D {
-        return Matrix2D.createTransformation(
-            [1, 0, x],
-            [0, 1, y],
-            [0, 0, 1]
-        );
-    }
-
-    /**
-        Generates a scaling matrix that "stretches" the width to the new width of `scaleX` * `width`,
-        and the height to the new height of `scaleY` * `height`.
-        @param scaleX Scaling along the X axis. Default value is 1.
-        @param scaleY Scealing along the Y axis. Default value is 1.
-    **/
-    public static inline function SCALE(scaleX:Float = 1, scaleY:Float = 1):TransformationMatrix2D {
-        return Matrix2D.createTransformation(
-            [scaleX, 0,      0],
-            [0,      scaleY, 0],
-            [0,      0,      1]
-        );
-    }
-
-    /**
-        Generates a shearing matrix that "skews" the slope of the image's edges in the x, y and z axis by `-1/shear`.
-        For example, if `shearX` is `0.5`, the image is skewed horizontally, such that the slope of the two vertical edges becomes `-2`.
-
-        @param shearX The amount of shearing done on the x-axis, or in other words, when dividing `-1` by `shearX`, determines the slope of the image on the vertical edges.
-        @param shearY The amount of shearing done on the y-axis, or in other words, when dividing `-1` by `shearY`, determines the slope of the image on the horizontal edges.
-    **/
-    public static inline function SHEAR(shearX:Float = 0, shearY:Float = 0):TransformationMatrix2D {
-        return Matrix2D.createTransformation(
-            [1,      shearX, 0],
-            [shearY, 1,      0],
-            [0,      0,      1]
-        );
-    }
-
-    /**
-    	Generates a reflection matrix that "mirrors" an image along the axis which is `angle` degrees/radians form the `x` axis.
-    	@param angle The angle at which to reflect. goes counter-clockwise.
-        @param degrees Whether `angle` is given in degrees or radians. Defaults to degrees.
-		@param origin The point around which to reflect. Defaults to `(0, 0)`, which means the top-left corner.
-    **/
-    public static inline function REFLECTION(angle:Float, ?degrees:Bool = true, ?origin:Point2D = null):TransformationMatrix2D {
-        angle *= 2;
-        return Matrix2D.createTransformation(
-            [if (degrees) cosd(angle) else cos(angle), if (degrees) sind(angle) else sin(angle), origin != null ? origin.x : 0],
-            [if (degrees) sind(angle) else sin(angle), if (degrees) -cosd(angle) else -cos(angle), origin != null ? origin.y : 0],
-            [0, 0, 1]
-        );
-    }
-
-    /**
-        Generates a perspective warp matrix, that tweaks the perspective of an image, such
-        that points at `pointPairs[n].from` will end up in the position `pointPairs[n].to`.
-
-        @param pointPairs 4 pairs of points to "pin-point" the transform on. 
-    **/
-    public static inline function PERSPECTIVE(pointPairs:Array<PointTransformationPair>):TransformationMatrix2D {
-        var src = [], dst = [];
-		for (pair in pointPairs) {
-			src.push(pair.from);
-			dst.push(pair.to);
+	/** Creates a matrix by copying a rectangular array of rows. An empty array gives a 0x0 matrix. **/
+	public static function fromRows(rows:Array<Array<Float>>):Matrix2D {
+		if (rows.length == 0) return new Matrix2D(0, 0);
+		var width = rows[0].length;
+		var array = new Array2D<Float>(width, rows.length);
+		for (y in 0...rows.length) {
+			var row = rows[y];
+			if (row.length != width) throw new MatrixShapeError("Matrix rows must have equal lengths.", "Matrix Error");
+			for (x in 0...width) array.set(x, y, row[x]);
 		}
-		return PerspectiveWarp.generateMatrix(src, dst);
-    }
+		return array;
+	}
 
-    /**
-        Generates a translation matrix, that displaces the graphic in only the `z` axis.
-        a positive `z` moves the graphic backwards, 
-        while a value that approaches 0 moves the graphic forward.
-
-        @param z  Displacement in pixels to the back.
-		@param towards The point the graphic goes towards, as in, when `z` approaches positive infinity, the graphic goes towards that point. Defaults to `(0, 0)`.
-    **/
-    public static inline function DEPTH(z:Float, ?towards:Point2D):TransformationMatrix2D {
-        return Matrix2D.createTransformation(
-            [1, 0, towards != null ? towards.x * (z - 1) : 0],
-            [0, 1, towards != null ? towards.y * (z - 1) : 0],
-            [0, 0, z]
-        );
-    }
-
-	/**
-	    Creates a new `Matrix2D` filled with `rows`, and of `rows.length` height.
-
-	    @param rows multiple parameters of type `Array<Float>`, or a single, `Array<Array<Float>>` preceded by a `...` 
-	    @return A `Matrix2D` instance.
-	**/
+	/** Creates a matrix from a variable number of rows. **/
 	public static inline function createFilled(...rows:Array<Float>):Matrix2D {
-		var arr = new Array2D(rows[0].length, rows.length);
-		arr.inner = [];
-		for (r in rows) arr.inner = arr.inner.concat(r); // WOAH that was a miss! need to report that. was previously just `arr.inner.concat(r)`
-		return arr;
+		return fromRows(rows.toArray());
 	}
-
-	/**
-        Helper function to generate a transformation matrix, 
-        exists as sort of a guide for the creation of such matrix.
-
-        @param xRow The first row of the matrix. Will be the row deciding the transformed `x` position of a point.
-        @param yRow The second row of the matrix. Will be the row deciding the transformed `y` position of a point.
-        @param homogeneousRow The third row of the matrix. On affine transformations (or, ones that are entirely 2D)
-        This should be set to `[0, 0, 1]`. On perspective transformations, used to decide the `z` coordinate of a given point.
-        When casted back into a 2D point, the point's `z` coordinate is used as a denominator for the other `x` and `y` coordinates.
-        @return The newly created `Matrix2D`
-	**/
-	public static inline function createTransformation(xRow:Array<Float>, yRow:Array<Float>, ?homogeneousRow:Array<Float>):Matrix2D {
-		if (homogeneousRow == null) homogeneousRow = [0, 0, 1];
-		var arr = new Array2D(3 , 3, null);
-		arr.inner = xRow.concat(yRow).concat(homogeneousRow);
-		return arr;
-	}
-
-
-
-
-
-
-
-
-
 
     //-----------------------------------------------------------------------------------------
 	// Matrix math
@@ -775,26 +620,10 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
     }
 
     @:from static function from_array_array_float(array:Array<Array<Float>>):Matrix2D {
-        var arr2d = new Array2D(array[0].length, array.length);
-        var flat:Array<Float> = [];
-        for (row in array) {
-            for (value in row) {
-                flat.push(value);
-            }
-        }
-        arr2d.inner = flat;
-        return cast arr2d;
+        return fromRows(array);
     }
 
     @:from static function from_array_array_int(array:Array<Array<Int>>):Matrix2D {
-        var arr2d = new Array2D(array[0].length, array.length);
-        var flat:Array<Int> = [];
-        for (row in array) {
-            for (value in row) {
-                flat.push(value);
-            }
-        }
-        arr2d.inner = flat;
-        return cast arr2d;
+        return fromRows([for (row in array) [for (value in row) (value : Float)]]);
     }
 }

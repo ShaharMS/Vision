@@ -1,6 +1,10 @@
 package vision.ds;
 
 import vision.formats.ImageIO;
+#if (openfl || flash)
+import vision.formats._internal.images.FrameworkImageIO;
+#end
+import vision.native.ImageBackend;
 import vision.ds.ByteArray;
 import vision.exceptions.Unimplemented;
 import vision.algorithms.BilinearInterpolation as Bilinear; // Avoid naming collisions with ImageResizeAlgorithm
@@ -14,16 +18,17 @@ import vision.ds.Color;
 import vision.ds.Rectangle;
 import vision.ds.ImageView;
 import vision.ds.ImageResizeAlgorithm;
+import vision.ds.specifics.TextOptions;
 import vision.exceptions.OutOfBounds;
 import vision.tools.ImageTools;
 using vision.tools.MathTools;
 using vision.tools.ArrayTools;
 
 /**
-	Represents a 2D image, as a matrix of Colors.
+	Represents a 2D image as a matrix of colors. Pixel storage and platform operations are handled by its backend.
 **/
 @:transitive
-abstract Image(ByteArray) {
+abstract Image(ImageBackend) {
 	#if vision_higher_width_cap
 	/**
 		the first 4 bytes represent image width,  
@@ -39,28 +44,38 @@ abstract Image(ByteArray) {
 		the last byte represents view shape
 	**/
 	#end
-	static var OFFSET = #if vision_higher_width_cap 21 #else 11 #end;
-
-	static var WIDTH_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
-	static var VIEW_XY_BYTES = #if vision_higher_width_cap 8 #else 4 #end;
-	static var VIEW_WH_BYTES = #if vision_higher_width_cap 8 #else 4 #end;
-	static var VIEW_SHAPE_BYTES = 1;
-	static var DATA_GAP = #if vision_higher_width_cap 4 #else 2 #end;
+	static inline final OFFSET = ImageBackend.PIXEL_OFFSET;
+	static inline final WIDTH_BYTES = ImageBackend.FIELD_BYTES;
+	static inline final VIEW_XY_BYTES = WIDTH_BYTES * 2;
+	static inline final VIEW_WH_BYTES = WIDTH_BYTES * 2;
+	static inline final DATA_GAP = WIDTH_BYTES;
 
 	/**
-		Returns the underlying type of this abstract.
+		Returns the mutable packed bytes. Exposing them materializes and releases any graphics backing.
 	**/
 	public var underlying(get, #if vision_allow_resize set #else never #end):ByteArray;
 
 	inline function get_underlying() {
-		return this;
+		return this.bytes();
 	}
 
 	#if vision_allow_resize
 	inline function set_underlying(bytes:ByteArray) {
-		return this = bytes;
+		this = new ImageBackend(bytes, true);
+		return bytes;
 	}
 	#end
+
+	/** Whether this image has an available graphics backing. **/
+	public var isGpuBacked(get, never):Bool;
+
+	inline function get_isGpuBacked():Bool {
+		return this.isGpuBacked;
+	}
+
+	@:allow(vision.native)
+	inline function backend():ImageBackend return this;
+
 
 	/**
 		The width of the image.
@@ -68,12 +83,13 @@ abstract Image(ByteArray) {
 	public var width(get, #if vision_allow_resize set #else never #end):Int;
 
 	inline function get_width() {
-		return #if vision_higher_width_cap this.getInt32(0) #else this.getUInt16(0) #end;
+		return this.width;
 	}
 
 	#if vision_allow_resize
 	inline function set_width(value:Int) {
 		resize(value, height);
+		return width;
 	}
 	#end
 
@@ -83,11 +99,12 @@ abstract Image(ByteArray) {
 	public var height(get, #if vision_allow_resize set #else never #end):Int;
 
 	inline function get_height()
-		return Math.ceil((this.length - OFFSET) / (width * 4));
+		return this.height;
 
 	#if vision_allow_resize
 	inline function set_height(value:Int) {
 		resize(width, value);
+		return height;
 	}
 	#end
 
@@ -116,43 +133,14 @@ abstract Image(ByteArray) {
 		@param color The color to fill the image with. if unspecified, the image is transparent.
 	**/
 	public inline function new(width:Int, height:Int, color:Color = 0x00000000) {
-		this = new ByteArray(width * height * 4 + OFFSET);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (0, width);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES, 0);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
-		#if vision_higher_width_cap this.setInt32 #else this.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
-		this.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-		var i = OFFSET;
-		while (i < this.length) {
-			this[i] = color.alpha;
-			this[i + 1] = color.red;
-			this[i + 2] = color.green;
-			this[i + 3] = color.blue;
-			i += 4;
-		}
+		this = ImageBackend.allocate(width, height, color);
 	}
 
-	inline function getColorFromStartingBytePos(position:Int):Color {
-		position += OFFSET;
-		var value = this[position] << 24 | this[position + 1] << 16 | this[position + 2] << 8 | this[position + 3];
-		#if (python || php || lua)
-		var signedValue:haxe.Int32 = value;
-		signedValue = signedValue + 0;
-		value = signedValue;
-		#end
-		return new Color(value);
-	}
+	inline function getColorFromStartingBytePos(position:Int):Color
+		return this.readColor(position);
 
-	inline function setColorFromStartingBytePos(position:Int, c:Color) {
-		position += OFFSET;
-		this[position] = c.alpha;
-		this[position + 1] = c.red;
-		this[position + 2] = c.green;
-		this[position + 3] = c.blue;
-
-		return c;
-	}
+	inline function setColorFromStartingBytePos(position:Int, color:Color):Color
+		return this.writeColor(position, color);
 
 	//--------------------------------------------------------------------------
 	// Pixels
@@ -538,8 +526,7 @@ abstract Image(ByteArray) {
 	**/
 	public inline function copyImageFrom(image:Image):Image {
 		var currentView = getView();
-		this = new ByteArray(image.underlying.length);
-		this.blit(0, image.underlying, 0, image.underlying.length);
+		this = image.backend().copy();
 		setView(currentView);
 		return cast this;
 	}
@@ -795,7 +782,7 @@ abstract Image(ByteArray) {
 			var x = (aX * Math.pow(t, 3)) + (bX * Math.pow(t, 2)) + (cX * t) + p0.x;
 			var y = (aY * Math.pow(t, 3)) + (bY * Math.pow(t, 2)) + (cY * t) + p0.y;
 
-			return {x: x, y: y};
+			return new IntPoint2D(Std.int(x), Std.int(y));
 		}
 
 		var p0 = IntPoint2D.fromPoint2D(line.start);
@@ -815,20 +802,42 @@ abstract Image(ByteArray) {
 		if (hasPixel(p3.x, p3.y)) setPixel(p3.x, p3.y, color);
 	}
 
-	// https://github.com/Laerdal/opentype.hx/issues/2
-	// /**
-	// 	Draws a string at position `(x, y)` with font-size `size`.
+	/**
+		Draws text into this image, clipped to its bounds and active view.
 
-	// 	Text drawing starts from the top-left corner of the text.
+		Pass a font from `Font.fromBytes()` in `options.font` to draw on any
+		target. Load the desired weight and style as a separate face. On browser
+		pages, omitting the font uses the browser's text engine.
 
-	// 	@param x The x coordinate of the top-left corner of the text
-	// 	@param y The y coordinate of the top-left corner of the text
-	// 	@param text The text to draw
-	// 	@param size The font-size to use
-	// **/
-	// public function drawText(x:Int, y:Int, text:String, size:Int) {
-	// 	if (TextDrawer.reportDependencies()) TextDrawer.drawTextOnImage(cast this, x, y, size, text, Resource.getBytes("NotoSans-Regular.ttf"))
-	// }
+		![Portable rendering of Latin ligatures, Arabic and Hebrew, and a bold italic face](https://spacebubble.io/vision/docs/portable-drawText.png)
+
+		@param x The left edge of each line, or the right edge for right-to-left text
+		@param y The top of the first line
+		@param text The text to draw, with optional line breaks
+		@param options Optional font, direction, color, and line spacing
+		@throws TextDrawingError If the options are invalid or a portable font is required
+	**/
+	public function drawText(x:Int, y:Int, text:String, ?options:TextOptions):Void {
+		if (text.length == 0 || width == 0 || height == 0) return;
+		ImageBackend.drawText(cast this, x, y, text, options == null ? {} : options);
+	}
+
+	#if js
+	/**
+		Registers a font from bytes for subsequent calls to `drawText()`.
+
+		@param family The name to use in `TextOptions.fontFamily`
+		@param bytes The font data, such as TTF, OTF, or WOFF2
+		@param weight The weight of this face
+		@param italic Whether this face is italic
+		@param features Optional CSS OpenType feature settings, such as `"liga" 1`
+		@return The font family name after the font is loaded
+	**/
+	public static function loadTextFont(family:String, bytes:haxe.io.Bytes, weight:Int = 400, italic:Bool = false,
+		?features:String):js.lib.Promise<String> {
+		return ImageBackend.loadTextFont(family, bytes, weight, italic, features);
+	}
+	#end
 
 	/**
 	 	Fills a circle with the given color:
@@ -846,10 +855,10 @@ abstract Image(ByteArray) {
 		var points:Array<IntPoint2D> = [];
 		var x = -r, y = 0, err = 2 - 2 * r;
 		do {
-			points.push({x: X + x, y: Y - y});
-			points.push({x: X - x, y: Y + y});
-			points.push({x: X - y, y: Y - x});
-			points.push({x: X + y, y: Y + x});
+			points.push(new IntPoint2D(X + x, Y - y));
+			points.push(new IntPoint2D(X - x, Y + y));
+			points.push(new IntPoint2D(X - y, Y - x));
+			points.push(new IntPoint2D(X + y, Y + x));
 			r = err;
 			if (r <= y) {
 				err += ++y * 2 + 1;
@@ -997,7 +1006,7 @@ abstract Image(ByteArray) {
 	**/
 	public function fillColor(position:IntPoint2D, color:Color) {
 		var queue = new List<IntPoint2D>();
-		queue.push({x: position.x, y: position.y});
+		queue.push(new IntPoint2D(position.x, position.y));
 		var explored:Array<Int64> = [];
 		var originalColor = getPixel(position.x, position.y);
 		var pc = 0;
@@ -1009,7 +1018,7 @@ abstract Image(ByteArray) {
 			}
 			if (hasPixel(point.x, point.y) && getPixel(point.x, point.y) == originalColor && !explored.contains(Int64.make(point.x, point.y))) {
 				pc++;
-				queue.push({x: point.x, y: point.y});
+				queue.push(new IntPoint2D(point.x, point.y));
 				setPixel(point.x, point.y, color);
 			}
 		}
@@ -1019,10 +1028,10 @@ abstract Image(ByteArray) {
 				setPixel(v.x, v.y, color);
 			}
 			explored.push(Int64.make(v.x, v.y));
-			fill({x: v.x + 1, y: v.y});
-			fill({x: v.x, y: v.y + 1});
-			fill({x: v.x - 1, y: v.y});
-			fill({x: v.x, y: v.y - 1});
+			fill(new IntPoint2D(v.x + 1, v.y));
+			fill(new IntPoint2D(v.x, v.y + 1));
+			fill(new IntPoint2D(v.x - 1, v.y));
+			fill(new IntPoint2D(v.x, v.y - 1));
 		}
 	}
 
@@ -1037,7 +1046,7 @@ abstract Image(ByteArray) {
 	**/
 	public function fillUntilColor(position:IntPoint2D, color:Color, borderColor:Color) {
 		var queue = new List<IntPoint2D>();
-		queue.push({x: position.x, y: position.y});
+		queue.push(new IntPoint2D(position.x, position.y));
 		var explored:Array<Int64> = [];
 		var pc = 0;
 		inline function fill(point:IntPoint2D) {
@@ -1054,17 +1063,17 @@ abstract Image(ByteArray) {
 				return;
 			if (getPixel(point.x, point.y) != borderColor) {
 				pc++;
-				queue.push({x: point.x, y: point.y});
+				queue.push(new IntPoint2D(point.x, point.y));
 				setPixel(point.x, point.y, color);
 			}
 		}
 		while (queue.length > 0) {
 			var v = queue.pop();
 			explored.push(Int64.make(v.x, v.y));
-			fill({x: v.x + 1, y: v.y});
-			fill({x: v.x, y: v.y + 1});
-			fill({x: v.x - 1, y: v.y});
-			fill({x: v.x, y: v.y - 1});
+			fill(new IntPoint2D(v.x + 1, v.y));
+			fill(new IntPoint2D(v.x, v.y + 1));
+			fill(new IntPoint2D(v.x - 1, v.y));
+			fill(new IntPoint2D(v.x, v.y - 1));
 		}
 	}
 
@@ -1079,7 +1088,7 @@ abstract Image(ByteArray) {
 		if (this == null) {
 			trace("Warning: Cloning a null image");
 		}
-		return cast this.sub(0, this.length);
+		return cast this.copy();
 	}
 
 	//--------------------------------------------------------------------------
@@ -1159,7 +1168,7 @@ abstract Image(ByteArray) {
 						var color = getPixel(MathTools.floor(x * xMultiplier), MathTools.floor(y * yMultiplier));
 						image.setPixel(x, y, color);
 					});
-					this = image.underlying;
+					this = cast image;
 				}
 		}
 
@@ -1211,7 +1220,7 @@ abstract Image(ByteArray) {
             }
         }
 
-		this = rotatedImage.underlying;
+		this = cast rotatedImage;
 		return cast this;
 	}
 
@@ -1228,7 +1237,7 @@ abstract Image(ByteArray) {
 	**/
 	public function toString(special:Bool = true):String {
 		if (!special) {
-			return Std.string(this);
+			return Std.string(this.readPixels());
 		}
 		var s = "\n";
 		var prevY = 0;
@@ -1479,27 +1488,27 @@ abstract Image(ByteArray) {
 
 	#if (openfl || flash)
 	@:to public function toBitmapData():flash.display.BitmapData {
-		return ImageIO.to.framework.flash.bitmapdata(cast this);
+		return FrameworkImageIO.toBitmapData(cast this);
 	}
 
 	@:from public static function fromBitmapData(bitmapData:flash.display.BitmapData):Image {
-		return ImageIO.from.framework.flash.bitmapdata(bitmapData);
+		return FrameworkImageIO.fromBitmapData(bitmapData);
 	}
 
 	@:to public function toShape():flash.display.Shape {
-		return ImageIO.to.framework.flash.shape(cast this);
+		return FrameworkImageIO.toShape(cast this);
 	}
 
 	@:from public static function fromShape(shape:flash.display.Shape):Image {
-		return ImageIO.from.framework.flash.shape(shape);
+		return FrameworkImageIO.fromShape(shape);
 	}
 
 	@:to public function toSprite():flash.display.Sprite {
-		return ImageIO.to.framework.flash.sprite(cast this);
+		return FrameworkImageIO.toSprite(cast this);
 	}
 
 	@:from public static function fromSprite(sprite:flash.display.Sprite):Image {
-		return ImageIO.from.framework.flash.sprite(sprite);
+		return FrameworkImageIO.fromSprite(sprite);
 	}
 	#end
 
@@ -1574,28 +1583,7 @@ abstract Image(ByteArray) {
 		@return a new `Image`
 	**/
 	@:from public static inline function from2DArray(array:Array<Array<Color>>):Image {
-
-		var h = array.length;
-		var w = array[0].length;
-
-		var byteArray:ByteArray = new ByteArray(w * h * 4 + OFFSET);
-		var flat = array.flatten();
-		for (i in 0...flat.length) {
-			var color = flat[i];
-			byteArray[OFFSET + i * 4] 	  = color.alpha;
-			byteArray[OFFSET + i * 4 + 1] = color.red;
-			byteArray[OFFSET + i * 4 + 2] = color.green;
-			byteArray[OFFSET + i * 4 + 3] = color.blue;
-		}
-
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (0, w);
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES, 0);
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
-		#if vision_higher_width_cap byteArray.setInt32 #else byteArray.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
-		byteArray.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
-
-		return cast byteArray;
+		return cast ImageBackend.fromColors(array);
 	}
 
 	/**
@@ -1615,13 +1603,7 @@ abstract Image(ByteArray) {
 	}
 
 	@:to public inline function toArray():Array<Color> {
-		var array:Array<Color> = [];
-		var i = OFFSET;
-		while (i < this.length) {
-			array.push(Color.fromRGBA(this[i + 1], this[i + 2], this[i + 3], this[i]));
-			i += 4;
-		}
-		return array;
+		return this.colors();
 	}
 	/**
 		Takes a `ByteArray`/`haxe.io.Bytes` instance and some stats, and returns a new image instance
@@ -1631,24 +1613,11 @@ abstract Image(ByteArray) {
 		@param height Optional, the height of the returned image. determined automatically, can be overridden by setting this parameter
 	**/
 	public static inline function loadFromBytes(bytes:ByteArray, width:Int, ?height:Int):Image {
-		var h:Int;
-		if (height == null) {
-			h = (bytes.length / 4 / width).ceil();
-		} else {
-			h = height;
-		}
-		var array = new ByteArray(width * h * 4 + OFFSET);
-		array.fill(0, array.length, 0);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (0, width);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES, 0);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES + DATA_GAP, 0);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES, 0);
-		#if vision_higher_width_cap array.setInt32 #else array.setUInt16 #end (WIDTH_BYTES + VIEW_XY_BYTES + DATA_GAP, 0);
-		array.set(WIDTH_BYTES + VIEW_XY_BYTES + VIEW_WH_BYTES, 0);
+		return cast ImageBackend.fromPixels(bytes, width, height);
+	}
 
-		array.blit(OFFSET, bytes, 0, bytes.length);
-
-		return cast array;
+	static inline function fromStorageBytes(bytes:ByteArray):Image {
+		return cast new ImageBackend(bytes, true);
 	}
 
 	/**
@@ -1656,7 +1625,7 @@ abstract Image(ByteArray) {
 		@return A new `ByteArray`
 	**/
 	@:to overload public extern inline function exportToBytes():ByteArray {
-		return underlying.sub(OFFSET, underlying.length - OFFSET);
+		return this.exportPixels();
 	}
 
 	/**
@@ -1665,7 +1634,7 @@ abstract Image(ByteArray) {
 		@return A new `ByteArray`
 	**/
 	overload public extern inline function exportToBytes(?colorFormat:PixelFormat = ARGB):ByteArray {
-		return inline PixelFormat.convertPixelFormat(underlying.sub(OFFSET, underlying.length - OFFSET), ARGB, colorFormat);
+		return inline PixelFormat.convertPixelFormat(this.readPixels().sub(OFFSET, this.length - OFFSET), ARGB, colorFormat);
 	}
 
 	//--------------------------------------------------------------------------

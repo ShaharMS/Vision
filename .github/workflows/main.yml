@@ -1,7 +1,25 @@
 name: CI
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
+  package:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package Haxelib source
+        shell: pwsh
+        run: |
+          $stage = Join-Path $env:RUNNER_TEMP 'vision-release'
+          New-Item -ItemType Directory -Path $stage -ErrorAction Stop | Out-Null
+          Copy-Item extraParams.hxml, CHANGELOG.md, LICENSE, README.md, haxelib.json, hxformat.json, src -Destination $stage -Recurse -ErrorAction Stop
+          Copy-Item tests/ci/cppia -Destination (Join-Path $stage 'cppia') -Recurse -ErrorAction Stop
+          Compress-Archive -Path (Join-Path $stage '*') -DestinationPath vision.zip -ErrorAction Stop
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vision-haxelib
+          path: vision.zip
+
   tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -282,3 +300,88 @@ jobs:
           if [ "${{ matrix.target }}" = "interp" ]; then
             echo "Interp already executed in compile step."
           fi
+
+      - name: Compile the Flash image smoke test
+        if: matrix.target == 'interp'
+        run: |
+          mkdir -p bin/swf
+          haxe -cp src -cp tests/ci -main TargetSmoke --swf bin/swf/target.swf -D swf-header=64:64:30:000000
+
+  native-screen:
+    name: Screen (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: krdlab/setup-haxe@v1
+        with:
+          haxe-version: 4.3.7
+      - name: Build the Screen test
+        shell: pwsh
+        run: |
+          $repo = Join-Path $env:RUNNER_TEMP 'screen-haxelib'
+          New-Item -ItemType Directory -Path $repo | Out-Null
+          haxelib setup $repo
+          haxelib install hxcpp 4.3.2 --always
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          haxelib install utest 1.13.2 --always
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64 -D vision_screen_tests -dce full
+          exit $LASTEXITCODE
+      - name: Run the Screen test
+        shell: pwsh
+        working-directory: bin/native-drawing/cpp
+        run: |
+          $env:VISION_TESTS = 'ScreenTest'
+          & ./Main.exe
+          exit $LASTEXITCODE
+      - name: Locate the Windows toolchain and install HashLink
+        shell: pwsh
+        run: |
+          $archive = Join-Path $env:RUNNER_TEMP 'hashlink.zip'
+          $destination = Join-Path $env:RUNNER_TEMP 'hashlink-sdk'
+          Invoke-WebRequest https://github.com/HaxeFoundation/hashlink/releases/download/1.16/hashlink-1.16.0-win.zip -OutFile $archive
+          Expand-Archive -LiteralPath $archive -DestinationPath $destination
+          $runtime = Get-ChildItem -LiteralPath $destination -Recurse -File -Filter hl.exe | Select-Object -First 1
+          if (-not $runtime) { throw 'HashLink runtime missing from SDK' }
+          "VISION_HASHLINK_ROOT=$($runtime.DirectoryName)" >> $env:GITHUB_ENV
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $visualStudio = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (-not $visualStudio) { throw 'Microsoft C++ toolchain unavailable' }
+          "VISION_MSVC_DEV_CMD=$(Join-Path $visualStudio 'Common7/Tools/VsDevCmd.bat')" >> $env:GITHUB_ENV
+      - name: Build and run the HashLink Screen suite
+        timeout-minutes: 4
+        shell: pwsh
+        run: |
+          $sdk = $env:VISION_HASHLINK_ROOT
+          $source = (Resolve-Path src/vision/native/hashlink/windows/screen.c).Path
+          $env:VISION_TESTS = 'ScreenTest'
+          New-Item -ItemType Directory -Path bin/native-drawing/hl -Force | Out-Null
+          haxe -cp src -cp tests/src -lib utest -main Main --hl bin/native-drawing/hl/tests.hl -D windows -D vision_hashlink_screen -D hl-ver=1.16.0 -D vision_screen_tests -dce full
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Push-Location bin/native-drawing/hl
+          try {
+            cmd /c ('call "{0}" -arch=amd64 >nul && cl /nologo /O2 /std:c11 /LD /I"{1}\include" "{2}" user32.lib gdi32.lib /link /out:vision_screen.hdll' -f $env:VISION_MSVC_DEV_CMD,$sdk,$source)
+            if ($LASTEXITCODE) { exit $LASTEXITCODE }
+            & (Join-Path $sdk 'hl.exe') tests.hl
+            if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          } finally {
+            Pop-Location
+          }
+      - name: Compile and run the HashLink C image smoke test
+        shell: pwsh
+        run: |
+          $sdk = $env:VISION_HASHLINK_ROOT
+          New-Item -ItemType Directory -Path bin/native-drawing/hlc -Force | Out-Null
+          haxe -cp src -cp tests/ci -main TargetSmoke --hl bin/native-drawing/hlc/main.c -D no-compilation -D hl-ver=1.16.0
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $env:PATH = "$sdk;$env:PATH"
+          Push-Location bin/native-drawing/hlc
+          try {
+            cmd /c ('call "{0}" -arch=amd64 >nul && cl /nologo /Od /I"{1}\include" /I. main.c "{1}\libhl.lib" "{1}\ssl.lib" /Fe:TargetSmoke.exe' -f $env:VISION_MSVC_DEV_CMD,$sdk)
+            if ($LASTEXITCODE) { exit $LASTEXITCODE }
+            & ./TargetSmoke.exe
+            if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          } finally {
+            Pop-Location
+          }

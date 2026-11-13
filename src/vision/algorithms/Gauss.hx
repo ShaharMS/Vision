@@ -10,115 +10,6 @@ import vision.exceptions.InvalidGaussianKernelSize;
  */
 class Gauss {
 
-	@:deprecated("Gaussian.create1x1Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create1x1Kernel(sigma:Float):Array<Array<Float>> {
-		return [[1]];
-	}
-
-	@:deprecated("Gaussian.create3x3Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create3x3Kernel(sigma:Float):Array<Array<Float>> {
-		var r, s = 2.0 * sigma * sigma;
-		var kernel:Array<Array<Float>> = [[], [], []];
-		// sum is for normalization
-		var sum = 0.0;
-
-		// generating 3x3 kernel
-		for (x in -1...2) {
-			for (y in -1...2) {
-				r = Math.sqrt(x * x + y * y);
-				kernel[x + 1][y + 1] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
-				sum += kernel[x + 1][y + 1];
-			}
-		}
-
-		// normalizing the kernel
-		for (i in 0...3) {
-			for (j in 0...3) {
-				kernel[i][j] /= sum;
-			}
-		}
-		return kernel;
-	}
-
-	@:deprecated("Gaussian.create5x5Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create5x5Kernel(sigma:Float):Array<Array<Float>> {
-		var r, s = 2.0 * sigma * sigma;
-		var kernel:Array<Array<Float>> = [[], [], [], [], []];
-		// sum is for normalization
-		var sum = 0.0;
-
-		// generating 5x5 kernel
-		for (x in -2...3) {
-			for (y in -2...3) {
-				r = Math.sqrt(x * x + y * y);
-				kernel[x + 2][y + 2] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
-				sum += kernel[x + 2][y + 2];
-			}
-		}
-
-		// normalizing the Kernel
-		for (i in 0...5) {
-			for (j in 0...5) {
-				kernel[i][j] /= sum;
-			}
-		}
-		return kernel;
-	}
-
-	@:deprecated("Gaussian.create7x7Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create7x7Kernel(sigma:Float):Array<Array<Float>> {
-		var r, s = 2.0 * sigma * sigma;
-		var kernel:Array<Array<Float>> = [[], [], [], [], [], [], []];
-		// sum is for normalization
-		var sum = 0.0;
-
-		// generating 7x7 kernel
-		for (x in -3...4) {
-			for (y in -3...4) {
-				r = Math.sqrt(x * x + y * y);
-				kernel[x + 3][y + 3] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
-				sum += kernel[x + 3][y + 3];
-			}
-		}
-
-		// normalizing the Kernel
-		for (i in 0...7) {
-			for (j in 0...7) {
-				kernel[i][j] /= sum;
-			}
-		}
-		return kernel;
-	}
-
-	@:deprecated("Gaussian.create9x9Kernel() is deprecated, use Gaussian.create2DKernelOfSize() instead") 
-	public static function create9x9Kernel(sigma:Float):Array<Array<Float>> {
-		var r, s = 2.0 * sigma * sigma;
-		var kernel:Array<Array<Float>> = [[], [], [], [], [], [], [], [], []];
-		// sum is for normalization
-		var sum = 0.0;
-
-		// generating 9x9 kernel
-		for (x in -4...5) {
-			for (y in -4...5) {
-				r = Math.sqrt(x * x + y * y);
-				kernel[x + 4][y + 4] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
-				sum += kernel[x + 4][y + 4];
-			}
-		}
-
-		// normalizing the Kernel
-		for (i in 0...9) {
-			for (j in 0...9) {
-				kernel[i][j] /= sum;
-			}
-		}
-		return kernel;
-	}
-	@:deprecated("Gaussian.createKernelOfSize() is deprecated. use Gaussian.create2DKernelOfSize() instead")
-	public static function createKernelOfSize(size:Int, sigma:Int):Array2D<Float> {
-		return create2DKernelOfSize(size, sigma);
-	}
-	
 	public static function create2DKernelOfSize(size:Int, sigma:Float):Array2D<Float> {
 		#if vision_quiet
 		if (size < 0) size = -size;
@@ -126,17 +17,17 @@ class Gauss {
 		#else
 		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernelSize(size);
 		#end
-		var r, s = 2.0 * sigma * sigma, sum = 0.;
-		var kernel:Array2D<Float> = new Array2D<Float>(size, size);
-		// get the average of the parameter size, rounded down
-		var avg = Std.int((size - 1) / 2);
+		var sum = 0.;
+		var kernel = new Array2D<Float>(size, size);
+		var radius = (size - 1) >> 1;
 
-		// generate the kernel
-		for (x in -avg...avg + 1) {
-			for (y in -avg...avg + 1) {
-				r = Math.sqrt(x * x + y * y);
-				kernel.set(x + avg, y + avg, (Math.exp(-(r * r) / s)) / (Math.PI * s));
-				sum += kernel.get(x + avg, y + avg);
+		// The common Gaussian prefactor cancels during normalization.
+		for (x in -radius...radius + 1) {
+			for (y in -radius...radius + 1) {
+				var distance = Math.sqrt(x * 1.0 * x + y * 1.0 * y) / sigma;
+				var weight = Math.exp(-0.5 * distance * distance);
+				kernel.set(x + radius, y + radius, weight);
+				sum += weight;
 			}
 		}
 

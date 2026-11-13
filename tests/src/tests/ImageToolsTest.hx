@@ -99,23 +99,6 @@ class ImageToolsTest extends utest.Test {
 		#end
 	}
 
-	@:visionTestId("vision.tools.ImageTools.saveToFile#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_saveToFile__default() {
-		#if sys
-		withTempVisionPath("save-to-file", function(path) {
-			var source = Factories.checkerboardImage(4, 4, 1);
-			var expected = ImageTools.exportToBytes(source, ImageFormat.VISION);
-			Reflect.callMethod(ImageTools, Reflect.field(ImageTools, "saveToFile"), [source, path, ImageFormat.VISION]);
-			Assert.isTrue(FileSystem.exists(path));
-			CollectionAssertions.bytes(expected.toArray(), File.getBytes(path));
-		});
-		#else
-		Assert.pass();
-		#end
-	}
-
 	@:visionTestId("vision.tools.ImageTools.loadFromURL#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
@@ -205,36 +188,6 @@ class ImageToolsTest extends utest.Test {
 	function test_exportToBytes__checkerboard() {
 		var result = ImageTools.exportToBytes(Factories.checkerboardImage(4, 4, 1), ImageFormat.BMP);
 		CollectionAssertions.bytes([66, 77], result.getBytes(0, 2));
-	}
-
-	@:visionTestId("vision.tools.ImageTools.addToScreen#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_addToScreen__default() {
-		var image = Factories.gradientImage(3, 3);
-		var result = ImageTools.addToScreen(image, 1, 1, null);
-		Assert.equals(cast image, cast result);
-		ImageAssertions.hasDimensions(result, 3, 3);
-	}
-
-	@:visionTestId("vision.tools.ImageTools.addToScreen#tiny")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_addToScreen__tiny() {
-		var image = Factories.checkerboardImage(2, 2, 1);
-		var result = ImageTools.addToScreen(image, 2, 3, null);
-		Assert.equals(cast image, cast result);
-		ImageAssertions.pixelEquals(result, 1, 1, 0xFFFFFFFF);
-	}
-
-	@:visionTestId("vision.tools.ImageTools.addToScreen#checkerboard")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_addToScreen__checkerboard() {
-		var image = labeledImage();
-		var result = ImageTools.addToScreen(image, 0, 0, {xUnits: "px", yUnits: "px", zIndex: "5"});
-		Assert.equals(cast image, cast result);
-		ImageAssertions.pixelEquals(result, 2, 0, 0xFF000033);
 	}
 
 	@:visionTestId("vision.tools.ImageTools.getNeighborsOfPixel#default")

@@ -5,6 +5,11 @@ import tests.*;
 
 class GeneratedSuites {
 	public static function addCases(runner:Runner, includeTest:String->Bool):Void {
+		#if vision_browser_tests
+		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest());
+		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest());
+		#end
+		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest());
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest());
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest());
 		if (includeTest("ArrayToolsTest")) runner.addCase(new ArrayToolsTest());
@@ -35,6 +40,12 @@ class GeneratedSuites {
 		if (includeTest("Int16Point2DTest")) runner.addCase(new Int16Point2DTest());
 		if (includeTest("IntPoint2DTest")) runner.addCase(new IntPoint2DTest());
 		if (includeTest("KMeansTest")) runner.addCase(new KMeansTest());
+		if (includeTest("EMeansTest")) runner.addCase(new EMeansTest());
+		if (includeTest("PatternSynthesisTest")) runner.addCase(new PatternSynthesisTest());
+		if (includeTest("TextureSynthesisTest")) runner.addCase(new TextureSynthesisTest());
+		if (includeTest("PanoramaTest")) runner.addCase(new PanoramaTest());
+		if (includeTest("Scale2xTest")) runner.addCase(new Scale2xTest());
+		if (includeTest("PortableTextTest")) runner.addCase(new PortableTextTest());
 		if (includeTest("KernelResamplerTest")) runner.addCase(new KernelResamplerTest());
 		if (includeTest("LanczosInterpolationTest")) runner.addCase(new LanczosInterpolationTest());
 		if (includeTest("LaplaceTest")) runner.addCase(new LaplaceTest());
@@ -60,7 +71,7 @@ class GeneratedSuites {
 		if (includeTest("SobelTest")) runner.addCase(new SobelTest());
 		if (includeTest("ToBytesTest")) runner.addCase(new ToBytesTest());
 		if (includeTest("ToTest")) runner.addCase(new ToTest());
-		if (includeTest("TransformationMatrix2DTest")) runner.addCase(new TransformationMatrix2DTest());
+		if (includeTest("Transform2DTest")) runner.addCase(new Transform2DTest());
 		if (includeTest("UInt16Point2DTest")) runner.addCase(new UInt16Point2DTest());
 		if (includeTest("VisionTest")) runner.addCase(new VisionTest());
 		if (includeTest("VisionThreadTest")) runner.addCase(new VisionThreadTest());

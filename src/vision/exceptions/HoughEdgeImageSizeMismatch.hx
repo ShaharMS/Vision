@@ -8,9 +8,10 @@ import vision.ds.Image;
 **/
 class HoughEdgeImageSizeMismatch extends VisionException {
 	public function new(source:Image, edgeImage:Image) {
-		super(
-			'Custom edgeImage must match the source image dimensions. Expected ${source.width}x${source.height} but got ${edgeImage.width}x${edgeImage.height}.',
-			'Hough Feature Extraction Error'
-		);
+		super(buildMessage(source, edgeImage), 'Hough Feature Extraction Error');
+	}
+
+	static function buildMessage(source:Image, edgeImage:Image):String {
+		return 'Custom edgeImage must match the source image dimensions. Expected ${source.width}x${source.height} but got ${edgeImage.width}x${edgeImage.height}.';
 	}
 }

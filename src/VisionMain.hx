@@ -3,12 +3,12 @@ package;
 import vision.formats.ImageIO;
 import vision.algorithms.Hough;
 import vision.algorithms.SimpleHough;
-import vision.ds.Matrix2D;
+import vision.ds.Transform2D;
 import vision.ds.Color;
 import vision.ds.Point2D;
 import vision.ds.Line2D;
 import vision.ds.Ray2D;
-import vision.ds.Kernel2D;
+import vision.ds.Kernels;
 import vision.ds.specifics.HarrisCornerOptions;
 import vision.ds.specifics.HoughCircleOptions;
 import vision.ds.specifics.HoughLineOptions;
@@ -125,7 +125,6 @@ using vision.tools.MathTools;
 			start = haxe.Timer.stamp();
 			var i = image.clone();
 			i.forEachPixel((x, y, color) -> i.setPixel(x, y, color & 0x88FFFFFF));
-			//i.saveToFile("test.png");
 			printImage(i);
 			end = haxe.Timer.stamp();
 			trace("Lightening took: " + MathTools.truncate(end - start, 4) + " seconds");
@@ -150,17 +149,17 @@ using vision.tools.MathTools;
 			#if matrix_tests
 			printSectionDivider("Matrix application tests");
 			start = haxe.Timer.stamp();
-			printImage({var i = image.clone(); i.affineTransform(Matrix2D.ROTATION(40));});
-			printImage({var i = image.clone(); i.affineTransform(Matrix2D.ROTATION(40), RESIZE);});
-			printImage({var i = image.clone(); i.affineTransform(Matrix2D.SHEAR(0.5, 0.3));});
-			printImage({var i = image.clone(); i.affineTransform(Matrix2D.TRANSLATION(60, 55));});
-			printImage({var i = image.clone(); i.affineTransform(Matrix2D.REFLECTION(30));});
-			printImage({var i = image.clone(); i.affineTransform(Matrix2D.SCALE(5, 1.5));});
+			printImage({var i = image.clone(); i.affineTransform(Transform2D.rotationDegrees(40));});
+			printImage({var i = image.clone(); i.affineTransform(Transform2D.rotationDegrees(40), RESIZE);});
+			printImage({var i = image.clone(); i.affineTransform(Transform2D.shear(0.5, 0.3));});
+			printImage({var i = image.clone(); i.affineTransform(Transform2D.translation(60, 55));});
+			printImage({var i = image.clone(); i.affineTransform(Transform2D.reflection(30));});
+			printImage({var i = image.clone(); i.affineTransform(Transform2D.scale(5, 1.5));});
 			end = haxe.Timer.stamp();
 			trace("Simple Matrix Applications took: " + MathTools.truncate(end - start, 4) + " seconds");
 
 			start = haxe.Timer.stamp();
-			printImage(image.clone().projectiveTransform(Matrix2D.PERSPECTIVE([
+			printImage(image.clone().projectiveTransform(Transform2D.perspective([
 				{from: {x: 0, y: 0}, to: {x: 30, y: 24}},
 				{from: {x: image.width, y: 0}, to: {x: image.width, y: 55}},
 				{from: {x: 0, y: image.height}, to: {x: 15, y: image.height - 10}},
@@ -347,7 +346,7 @@ using vision.tools.MathTools;
 			cornerOptions.minimumDistance = 4;
 			cornerOptions.maxCorners = 4;
 			cornerOptions.borderMargin = 2;
-			var fixtureCorners = Vision.harrisCorners(cornerFixture.clone(), cornerOptions);
+			var fixtureCorners = Vision.harrisCornerDetection(cornerFixture.clone(), cornerOptions);
 			trace('Detected ${fixtureCorners.length} corners on synthetic fixture');
 			var cornerFixtureImage = cornerFixture.clone();
 			for (corner in fixtureCorners) {
@@ -359,7 +358,7 @@ using vision.tools.MathTools;
 			photoCornerOptions.minimumDistance = 8;
 			photoCornerOptions.maxCorners = 48;
 			photoCornerOptions.borderMargin = 4;
-			var photoCorners = Vision.harrisCorners(orgImage.clone(), photoCornerOptions);
+			var photoCorners = Vision.harrisCornerDetection(orgImage.clone(), photoCornerOptions);
 			trace('Detected ${photoCorners.length} corners on photo');
 			var photoCornerImage = orgImage.clone();
 			for (corner in photoCorners) {
@@ -406,27 +405,27 @@ using vision.tools.MathTools;
 			#if convolve_tests
 			printSectionDivider("Convolution tests");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().convolve(Identity));
+			printImage(image.clone().convolve(Kernels.identity()));
 			end = haxe.Timer.stamp();
 			trace("Identity Convolution took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().convolve(BoxBlur));
+			printImage(image.clone().convolve(Kernels.boxBlur()));
 			end = haxe.Timer.stamp();
 			trace("BoxBlur Convolution took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().convolve(RidgeDetection));
+			printImage(image.clone().convolve(Kernels.ridgeDetection()));
 			end = haxe.Timer.stamp();
 			trace("Ridge Detection Convolution took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().convolve(RidgeDetectionAggressive));
+			printImage(image.clone().convolve(Kernels.ridgeDetectionAggressive()));
 			end = haxe.Timer.stamp();
 			trace("Aggressive Ridge Detection Convolution took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().convolve(Sharpen));
+			printImage(image.clone().convolve(Kernels.sharpen()));
 			end = haxe.Timer.stamp();
 			trace("Sharpening Convolution took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
-			printImage(image.clone().convolve(UnsharpMasking));
+			printImage(image.clone().convolve(Kernels.unsharpMasking()));
 			end = haxe.Timer.stamp();
 			trace("Unsharp Masking Convolution took: " + MathTools.truncate(end - start, 4) + " seconds");
 			start = haxe.Timer.stamp();
@@ -629,7 +628,7 @@ using vision.tools.MathTools;
 		cornerOptions.minimumDistance = 4;
 		cornerOptions.maxCorners = 4;
 		cornerOptions.borderMargin = 2;
-		var corners = Vision.harrisCorners(cornerFixture.clone(), cornerOptions);
+		var corners = Vision.harrisCornerDetection(cornerFixture.clone(), cornerOptions);
 		trace('Detected ${corners.length} corners on synthetic fixture');
 		var cornerImage = cornerFixture.clone();
 		for (corner in corners) {

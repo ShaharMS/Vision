@@ -1,0 +1,6 @@
+--class-path src
+--class-path tests/src
+--library utest
+--main Main
+--define vision_browser_tests
+--js bin/browser/drawing.js

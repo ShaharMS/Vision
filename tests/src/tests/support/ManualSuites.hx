@@ -5,6 +5,12 @@ import tests.*;
 
 class ManualSuites {
 	public static function addCases(runner:Runner, includeTest:String->Bool, ?casePattern:EReg):Void {
+		#if vision_browser_tests
+		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest(), "setup", "teardown", "test", casePattern);
+		#end
+		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest(), "setup", "teardown", "test", casePattern);
+		#if !vision_screen_tests
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest(), "setup", "teardown", "test", casePattern);
@@ -68,6 +74,12 @@ class ManualSuites {
 		if (includeTest("InvalidHeapsPixelFormatTest")) runner.addCase(new InvalidHeapsPixelFormatTest(), "setup", "teardown", "test", casePattern);
 		#if !neko
 		if (includeTest("KMeansTest")) runner.addCase(new KMeansTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("EMeansTest")) runner.addCase(new EMeansTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("PatternSynthesisTest")) runner.addCase(new PatternSynthesisTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("TextureSynthesisTest")) runner.addCase(new TextureSynthesisTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("PanoramaTest")) runner.addCase(new PanoramaTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("Scale2xTest")) runner.addCase(new Scale2xTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("PortableTextTest")) runner.addCase(new PortableTextTest(), "setup", "teardown", "test", casePattern);
 		#end
 		#end
 
@@ -125,7 +137,7 @@ class ManualSuites {
 		if (includeTest("ToBytesTest")) runner.addCase(new ToBytesTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ToTest")) runner.addCase(new ToTest(), "setup", "teardown", "test", casePattern);
 		#end
-		if (includeTest("TransformationMatrix2DTest")) runner.addCase(new TransformationMatrix2DTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("Transform2DTest")) runner.addCase(new Transform2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("UInt16Point2DTest")) runner.addCase(new UInt16Point2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("UnimplementedTest")) runner.addCase(new UnimplementedTest(), "setup", "teardown", "test", casePattern);
 		#if !neko
@@ -134,6 +146,7 @@ class ManualSuites {
 		if (includeTest("VisionExceptionTest")) runner.addCase(new VisionExceptionTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("VisionThreadTest")) runner.addCase(new VisionThreadTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("WebResponseErrorTest")) runner.addCase(new WebResponseErrorTest(), "setup", "teardown", "test", casePattern);
+		#end
 		#end
 	}
 }

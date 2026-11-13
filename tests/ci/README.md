@@ -46,3 +46,19 @@ From repo root:
 ## cppia host configuration
 
 Use the pinned, patched interpreter host described in [cppia/README.md](cppia/README.md). The unpatched released host fails generic-array and matrix tests. GitHub CI builds the patched host; the local runner prefers the active haxelib checkout's host (including Linux64/Cppia) over an unrelated PATH executable. JIT mode is not qualified.
+
+## Browser drawing
+
+Run `haxe tests/ci/drawing.hxml` and open [drawing.html](drawing.html) in a browser with WebGL 2. The page reports `data-result="pass"` after the Canvas 2D, WebGL 2, attachment, readback, and compatibility checks. The separate `data-webgpu` result reports whether the compute path ran.
+
+## Windows drawing
+
+Install hxcpp and utest in the active haxelib repository. Build from the repository root with the Microsoft C++ toolchain available.
+
+```powershell
+haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
+$env:VISION_TESTS = 'ScreenTest'
+./bin/native-drawing/cpp/Main.exe
+```
+
+The test uses a hidden window and checks composited pixels, presentation, and frame timing.

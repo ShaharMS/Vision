@@ -18,7 +18,7 @@ class GaussJordan {
 		}
 
 		// Create the identity matrix
-		var identity = createIdentityMatrix(n);
+		var identity = Matrix2D.identity(n);
 
 		// Augment the original matrix with the identity matrix
 		var augmentedMatrix = augmentMatrix(matrix, identity);
@@ -64,22 +64,6 @@ class GaussJordan {
 		var invertedMatrix = extractMatrix(augmentedMatrix, n, [for (l in n...(2 * n)) l]);
 
 		return invertedMatrix;
-	}
-
-	static function createIdentityMatrix(size:Int):Matrix2D {
-		var matrix = new Matrix2D(size, size);
-
-		for (i in 0...size) {
-			for (j in 0...size) {
-				if (i == j) {
-					matrix.set(i, j, 1.0);
-				} else {
-					matrix.set(i, j, 0.0);
-				}
-			}
-		}
-
-		return matrix;
 	}
 
 	static function augmentMatrix(matrix:Matrix2D, augmentation:Matrix2D):Matrix2D {

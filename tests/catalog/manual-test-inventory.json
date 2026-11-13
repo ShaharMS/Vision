@@ -7,6 +7,38 @@
                                                   "excluded":  "Declaration surface intentionally excluded from direct manual test ownership; module notes explain whether the exclusion is due to metadata-only shape, target gating, or consumer-driven coverage."
                                           },
         "modules":  {
+        "vision.ds.Font": {
+            "status": "manual",
+            "sourceFile": "src/vision/ds/Font.hx",
+            "testFile": "tests/src/tests/PortableTextTest.hx",
+            "members": ["fromBytes", "getCharacters", "getGlyph", "getGlyphById", "toImage"],
+            "deferredMembers": [],
+            "notes": "Covers portable font loading, missing characters, and image dimensions."
+        },
+        "vision.ds.Glyph": {
+            "status": "manual",
+            "sourceFile": "src/vision/ds/Glyph.hx",
+            "testFile": "tests/src/tests/PortableTextTest.hx",
+            "members": ["getBounds", "toImage", "text", "advance"],
+            "deferredMembers": [],
+            "notes": "Covers glyph metrics, representations, bounds, and outline rendering."
+        },
+        "vision.ds.Screen": {
+            "status": "manual",
+            "sourceFile": "src/vision/ds/Screen.hx",
+            "testFile": "tests/src/tests/ScreenTest.hx",
+            "members": ["draw", "onFirstDraw", "poll", "attach", "capture", "setBounds"],
+            "deferredMembers": [],
+            "notes": "Offscreen coverage on every target plus browser and Windows drawing and resizing."
+        },
+        "vision.native.browser.WebGpuInverter": {
+            "status": "manual",
+            "sourceFile": "src/vision/native/browser/WebGpuInverter.hx",
+            "testFile": "tests/src/tests/WebGpuInverterTest.hx",
+            "members": ["invert"],
+            "deferredMembers": [],
+            "notes": "Browser comparison with the CPU result when WebGPU is available."
+        },
         "vision.algorithms.SeamCarving": {
             "status": "manual",
             "sourceFile": "src/vision/algorithms/SeamCarving.hx",
@@ -47,12 +79,6 @@
                                                                                                         "status":  "manual",
                                                                                                         "sourceFile":  "src/vision/algorithms/Gauss.hx",
                                                                                                         "members":  [
-                                                                                                                                        "create1x1Kernel",
-                                                                                                                                        "create3x3Kernel",
-                                                                                                                                        "create5x5Kernel",
-                                                                                                                                        "create7x7Kernel",
-                                                                                                                                        "create9x9Kernel",
-                                                                                                                                        "createKernelOfSize",
                                                                                                                                         "create2DKernelOfSize",
                                                                                                                                         "create1DKernelOfSize",
                                                                                                                                         "fastBlur"
@@ -70,7 +96,10 @@
                                                                                                                                             "new",
                                                                                                                                             "png",
                                                                                                                                             "bmp",
-                                                                                                                                            "jpeg"
+                                                                                                                                            "jpeg",
+                                                                                                                                            "jpegCmyk",
+                                                                                                                                            "webp",
+                                                                                                                                            "webpAnimation"
                                                                                                                                     ],
                                                                                                             "testFile":  "tests/src/tests/ToBytesTest.hx"
                                                                                                     },
@@ -219,16 +248,9 @@
                                                                                                                               "removeColumn",
                                                                                                                               "removeRow",
                                                                                                                               "toString",
-                                                                                                                              "IDENTITY",
-                                                                                                                              "ROTATION",
-                                                                                                                              "TRANSLATION",
-                                                                                                                              "SCALE",
-                                                                                                                              "SHEAR",
-                                                                                                                              "REFLECTION",
-                                                                                                                              "PERSPECTIVE",
-                                                                                                                              "DEPTH",
+                                                                                                                              "identity",
+                                                                                                                              "fromRows",
                                                                                                                               "createFilled",
-                                                                                                                              "createTransformation",
                                                                                                                               "multiplyMatrices",
                                                                                                                               "addMatrices",
                                                                                                                               "subtractMatrices",
@@ -336,15 +358,15 @@
                                                                                                                                                               ],
                                                                                                                                       "testFile":  "tests/src/tests/LanczosInterpolationTest.hx"
                                                                                                                               },
-                                        "vision.ds.TransformationMatrix2D":  {
+                                        "vision.ds.Transform2D":  {
                                                                                                                           "deferredMembers":  [
 
                                                                                                                                                                   ],
                                                                                                                           "notes":  "Manual semantic suite authored under tests/src and maintained by hand.",
                                                                                                                           "status":  "manual",
-                                                                                                                          "sourceFile":  "src/vision/ds/TransformationMatrix2D.hx",
+                                                                                                                          "sourceFile":  "src/vision/ds/Transform2D.hx",
                                                                                                                           "members":  [
-                                                                                                                                                          "underlying",
+                                                                                                                                                          "toMatrix",
                                                                                                                                                           "a",
                                                                                                                                                           "b",
                                                                                                                                                           "c",
@@ -353,9 +375,24 @@
                                                                                                                                                           "f",
                                                                                                                                                           "tx",
                                                                                                                                                           "ty",
-                                                                                                                                                          "transformPoint"
+                                                                                                                                                          "apply",
+                                                                                                                                                          "applyHomogeneous",
+                                                                                                                                                          "isAffine",
+                                                                                                                                                          "fromMatrix",
+                                                                                                                                                          "fromRows",
+                                                                                                                                                          "then",
+                                                                                                                                                          "inverse",
+                                                                                                                                                          "identity",
+                                                                                                                                                          "rotationDegrees",
+                                                                                                                                                          "rotationRadians",
+                                                                                                                                                          "translation",
+                                                                                                                                                          "scale",
+                                                                                                                                                          "shear",
+                                                                                                                                                          "reflection",
+                                                                                                                                                          "perspective",
+                                                                                                                                                          "depth"
                                                                                                                                                   ],
-                                                                                                                          "testFile":  "tests/src/tests/TransformationMatrix2DTest.hx"
+                                                                                                                          "testFile":  "tests/src/tests/Transform2DTest.hx"
                                                                                                                   },
                                         "vision.formats.to.To":  {
                                                                                                   "deferredMembers":  [
@@ -795,13 +832,13 @@
                                                                                                                                   ],
                                                                                                           "testFile":  "tests/src/tests/KMeansTest.hx"
                                                                                                   },
-                                        "vision.formats.__internal.FrameworkImageIO":  {
+                                        "vision.formats._internal.images.FrameworkImageIO":  {
                                                                                                                                               "deferredMembers":  [
 
                                                                                                                                                                                       ],
                                                                                                                                               "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                               "status":  "excluded",
-                                                                                                                                              "sourceFile":  "src/vision/formats/__internal/FrameworkImageIO.hx",
+                                                                                                                                              "sourceFile":  "src/vision/formats/_internal/images/FrameworkImageIO.hx",
                                                                                                                                               "members":  [
                                                                                                                                                                               "fromFlxSprite",
                                                                                                                                                                               "toFlxSprite",
@@ -891,9 +928,6 @@
                                                                                                                                     "limitColorRanges",
                                                                                                                                     "replaceColorRanges",
                                                                                                                                     "filterForColorChannel",
-                                                                                                                                    "convolve",
-                                                                                                                                    "affineTransform",
-                                                                                                                                    "projectiveTransform",
                                                                                                                                     "nearestNeighborBlur",
                                                                                                                                     "medianBlur",
                                                                                                                                     "simpleLine2DDetection",
@@ -907,7 +941,13 @@
                                                                                                                                     "laplacianOfGaussianEdgeDetection",
                                                                                                                                     "convolutionRidgeDetection",
                                                                                                                                     "kmeansPosterize",
-                                                                                                                                    "kmeansGroupImageColors"
+                                                                                                                                    "kmeansGroupImageColors",
+                                                                                                                                    "emeansPosterize",
+                                                                                                                                    "emeansGroupImageColors",
+                                                                                                                                    "synthesizePattern",
+                                                                                                                                    "synthesizeTexture",
+                                                                                                                                    "stitchPanorama",
+                                                                                                                                    "rescale"
                                                                                                                             ],
                                                                                     "notes":  "Manual semantic facade suite covers representative public compatibility and delegation invariants while the deeper algorithm expectations remain in the algorithm-specific suites. Hough and Harris wrapper ownership is split across VisionTest, HoughProbabilisticTest, HoughCircleTest, and HarrisTest. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module.",
                                                                                     "status":  "manual",
@@ -948,8 +988,7 @@
                                                                                                                     "simpleLine2DDetection",
                                                                                                                     "houghLineSegmentDetection",
                                                                                                                     "houghCircleDetection",
-                                                                                                                    "harrisCornerResponse",
-                                                                                                                    "harrisCorners",
+                                                                                                                    "harrisCornerDetection",
                                                                                                                     "sobelEdgeDiffOperator",
                                                                                                                     "perwittEdgeDiffOperator",
                                                                                                                     "robertEdgeDiffOperator",
@@ -1285,13 +1324,13 @@
                                                                                                                 ],
                                                                                         "testFile":  "tests/src/tests/ColorTest.hx"
                                                                                 },
-                                        "vision.ds.Kernel2D":  {
+                                        "vision.ds.Kernels":  {
                                                                                               "deferredMembers":  [
 
                                                                                                                                       ],
-                                                                                              "notes":  "Enum-only kernel catalog intentionally excluded from manual utest migration; behavior is exercised through consuming convolution APIs rather than this declaration surface.",
+                                                                                              "notes":  "Preset behavior is exercised through the Vision.convolve semantic tests.",
                                                                                               "status":  "excluded",
-                                                                                              "sourceFile":  "src/vision/ds/Kernel2D.hx",
+                                                                                              "sourceFile":  "src/vision/ds/Kernels.hx",
                                                                                               "members":  [
 
                                                                                                                       ],
@@ -1309,12 +1348,10 @@
                                                                                                         "members":  [
                                                                                                                                         "defaultResizeAlgorithm",
                                                                                                                                         "loadFromFile",
-                                                                                                                                        "saveToFile",
                                                                                                                                         "loadFromBytes",
                                                                                                                                         "loadFromURL",
                                                                                                                                         "exportToBytes",
                                                                                                                                         "exportToFile",
-                                                                                                                                        "addToScreen",
                                                                                                                                         "getNeighborsOfPixel",
                                                                                                                                         "getNeighborsOfPixelIter",
                                                                                                                                         "grayscalePixel",
@@ -1424,13 +1461,13 @@
                                                                                                                                         ],
                                                                                                                 "testFile":  "tests/src/tests/VisionThreadTest.hx"
                                                                                                         },
-                                        "vision.formats.__internal.JsImageExporter":  {
+                                        "vision.formats._internal.images.JsImageExporter":  {
                                                                                                                                             "deferredMembers":  [
 
                                                                                                                                                                                     ],
                                                                                                                                             "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                             "status":  "excluded",
-                                                                                                                                            "sourceFile":  "src/vision/formats/__internal/JsImageExporter.js.hx",
+                                                                                                                                            "sourceFile":  "src/vision/formats/_internal/images/JsImageExporter.js.hx",
                                                                                                                                             "members":  [
                                                                                                                                                                             "saveToFileAsync",
                                                                                                                                                                             "saveToBytesSync",
@@ -1632,7 +1669,9 @@
                                                                                                                                                     "new",
                                                                                                                                                     "png",
                                                                                                                                                     "bmp",
-                                                                                                                                                    "jpeg"
+                                                                                                                                                    "jpeg",
+                                                                                                                                                    "webp",
+                                                                                                                                                    "webpAnimation"
                                                                                                                                             ],
                                                                                                                     "testFile":  "tests/src/tests/FromBytesTest.hx"
                                                                                                             },
@@ -1665,17 +1704,16 @@
                                                                                                                                     ],
                                                                                                             "testFile":  "tests/src/tests/LaplaceTest.hx"
                                                                                                     },
-                                        "vision.formats.__internal.FormatImageExporter":  {
+                                        "vision.formats._internal.images.FormatImageExporter":  {
                                                                                                                                                     "deferredMembers":  [
 
                                                                                                                                                                                             ],
                                                                                                                                                     "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                                     "status":  "excluded",
-                                                                                                                                                    "sourceFile":  "src/vision/formats/__internal/FormatImageExporter.hx",
+                                                                                                                                                    "sourceFile":  "src/vision/formats/_internal/images/FormatImageExporter.hx",
                                                                                                                                                     "members":  [
                                                                                                                                                                                     "png",
-                                                                                                                                                                                    "bmp",
-                                                                                                                                                                                    "jpeg"
+                                                                                                                                                                                    "bmp"
                                                                                                                                                                             ],
                                                                                                                                                     "testFile":  null
                                                                                                                                             },
@@ -1839,7 +1877,7 @@
                                                                                                                                         "next",
                                                                                                                                         "hasNext"
                                                                                                                                 ],
-                                                                                        "notes":  "Manual semantic suite authored under tests/src and maintained by hand. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module.",
+                                                                                        "notes":  "Manual semantic suite authored under tests/src and maintained by hand. Remaining deferredMembers are intentionally excluded from direct member-level ownership in the final manual inventory; the authored suite covers the primary semantic behavior for this module. Browser text drawing and font errors are covered by TextDrawingTest. Portable outlines are covered by PortableTextTest.",
                                                                                         "status":  "manual",
                                                                                         "sourceFile":  "src/vision/ds/Image.hx",
                                                                                         "members":  [
@@ -1874,6 +1912,8 @@
                                                                                                                         "drawRect",
                                                                                                                         "drawQuadraticBezier",
                                                                                                                         "drawCubicBezier",
+                                                                                                                        "drawText",
+                                                                                                                        "loadTextFont",
                                                                                                                         "fillCircle",
                                                                                                                         "drawCircle",
                                                                                                                         "fillEllipse",
@@ -1943,13 +1983,13 @@
                                                                                                                                   ],
                                                                                                           "testFile":  null
                                                                                                   },
-                                        "vision.formats.__internal.JsImageLoader":  {
+                                        "vision.formats._internal.images.JsImageLoader":  {
                                                                                                                                         "deferredMembers":  [
 
                                                                                                                                                                                 ],
                                                                                                                                         "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                         "status":  "excluded",
-                                                                                                                                        "sourceFile":  "src/vision/formats/__internal/JsImageLoader.js.hx",
+                                                                                                                                        "sourceFile":  "src/vision/formats/_internal/images/JsImageLoader.js.hx",
                                                                                                                                         "members":  [
                                                                                                                                                                         "loadAsync",
                                                                                                                                                                         "loadURLSync",
@@ -1958,13 +1998,13 @@
                                                                                                                                                                 ],
                                                                                                                                         "testFile":  null
                                                                                                                                 },
-                                        "vision.formats.__internal.FormatImageLoader":  {
+                                        "vision.formats._internal.images.FormatImageLoader":  {
                                                                                                                                                 "deferredMembers":  [
 
                                                                                                                                                                                         ],
                                                                                                                                                 "notes":  "Internal, macro-only, or target-specific support module intentionally kept out of the manual utest migration scope.",
                                                                                                                                                 "status":  "excluded",
-                                                                                                                                                "sourceFile":  "src/vision/formats/__internal/FormatImageLoader.hx",
+                                                                                                                                                "sourceFile":  "src/vision/formats/_internal/images/FormatImageLoader.hx",
                                                                                                                                                 "members":  [
                                                                                                                                                                                 "png",
                                                                                                                                                                                 "bmp"

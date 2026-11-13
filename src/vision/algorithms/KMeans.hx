@@ -4,7 +4,7 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.kmeans.ColorCluster;
 import vision.exceptions.Unimplemented;
-import vision.exceptions.VisionException;
+import vision.exceptions.ClusteringError;
 
 using vision.tools.MathTools;
 using vision.tools.ArrayTools;
@@ -17,14 +17,14 @@ class KMeans {
 			#if vision_quiet
 			return [];
 			#else
-			throw new VisionException("Cannot cluster empty array.", "KMeans Error");
+			throw new ClusteringError("Cannot cluster empty array.", "KMeans Error");
 			#end
 		}
 		if (clusterAmount <= 0) {
 			#if vision_quiet
 			return [];
 			#else
-			throw new VisionException("Cluster amount must be positive.", "KMeans Error");
+			throw new ClusteringError("Cluster amount must be positive.", "KMeans Error");
 			#end
 		}
 
@@ -42,7 +42,7 @@ class KMeans {
 				#if vision_quiet
 				return clusters;
 				#else
-				throw new VisionException("KMeans failed to converge after " + MAX_ITERATIONS + " iterations.", "KMeans Error");
+				throw new ClusteringError("KMeans failed to converge after " + MAX_ITERATIONS + " iterations.", "KMeans Error");
 				#end
 			}
 
@@ -88,7 +88,7 @@ class KMeans {
 			#if vision_quiet
 			return [];
 			#else
-			throw new VisionException("Cannot cluster image with no colors.", "KMeans Error");
+			throw new ClusteringError("Cannot cluster image with no colors.", "KMeans Error");
 			#end
 		}
 
@@ -106,7 +106,7 @@ class KMeans {
 				#if vision_quiet
 				return clusters;
 				#else
-				throw new VisionException("KMeans failed to converge after " + MAX_ITERATIONS + " iterations.", "KMeans Error");
+				throw new ClusteringError("KMeans failed to converge after " + MAX_ITERATIONS + " iterations.", "KMeans Error");
 				#end
 			}
 
