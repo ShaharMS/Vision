@@ -89,21 +89,24 @@ class TextDrawing {
 		final lineHeight = options.lineHeight == 0 ? options.size * DEFAULT_LINE_HEIGHT_SCALE : options.lineHeight;
 		final lines = ~/\r\n?|\n/g.split(text);
 		for (i in 0...lines.length) {
-			final glyphs = TextShaper.shape(lines[i], font, options.rightToLeft, options.ligatures);
+			final shaped = TextShaper.shapeGlyphs(lines[i], font, options.rightToLeft, options.ligatures);
+			final glyphs = font.arabicPositioning != null && Lambda.exists(shaped, glyph -> glyph.arabic)
+				? font.arabicPositioning.position(shaped, font)
+				: [for (glyph in shaped) {id: glyph.id, advance: font.advance(glyph.id), x: 0, y: 0}];
 			var pen = 0.0;
 			if (options.rightToLeft)
 				for (j in 0...glyphs.length) {
-					pen -= font.advance(glyphs[j]) * scale;
-					if (j > 0) pen -= font.pairAdjustment(glyphs[j - 1], glyphs[j]) * scale;
+					pen -= glyphs[j].advance * scale;
+					if (j > 0) pen -= font.pairAdjustment(glyphs[j - 1].id, glyphs[j].id) * scale;
 				}
 			final left = pen;
 			final top = i * lineHeight;
 			final baseline = top + font.ascent * scale;
 			for (j in 0...glyphs.length) {
-				final id = glyphs[j];
-				if (j > 0) pen += font.pairAdjustment(glyphs[j - 1], id) * scale;
-				place(id, pen, baseline);
-				pen += font.advance(id) * scale;
+				final glyph = glyphs[j];
+				if (j > 0) pen += font.pairAdjustment(glyphs[j - 1].id, glyph.id) * scale;
+				place(glyph.id, pen + glyph.x * scale, baseline - glyph.y * scale);
+				pen += glyph.advance * scale;
 			}
 			if (lineBounds != null) lineBounds(left, pen, top);
 		}

@@ -57,6 +57,37 @@ class PortableTextTest extends utest.Test {
 		"LMqSenNKPH3d3t5+LPBIY2iSwODECrL8B4aEDTggDrxRBubpBOCARQhJ3aD1g/sSrHZ3gwUGQXECBpC+70PqZQEQFRzGhTGC" +
 		"+1ctAw==";
 
+	#if sys
+	@:visionTestId("vision.formats._internal.fonts.TextShaper.shape#arialHarfBuzz")
+	function test_shape__arialHarfBuzz() {
+		// Optional Windows Arial fixture. Expected IDs and positions are
+		// HarfBuzz output with RTL, Arabic script and default ignorables removed.
+		final path = Sys.getEnv("VISION_ARIAL_TEST_FONT");
+		if (path == null || path == "") {
+			Assert.pass();
+			return;
+		}
+		final font = Font.fromBytes(sys.io.File.getBytes(path));
+		final cases = [
+			{text: "سَلَام", ids: [993, 756, 1020, 756, 947],
+				positions: [[692, 0, 0], [0, 650, 140], [1230, 0, 0], [0, 50, -239], [1087, 0, 0]]},
+			{text: "بِّ", ids: [758, 759, 911],
+				positions: [[0, 58, -190], [0, 283, -60], [1461, 0, 0]]},
+			{text: "بَْ", ids: [760, 756, 911],
+				positions: [[0, 353, 160], [0, 288, -220], [1461, 0, 0]]},
+			{text: "الله", ids: [3020], positions: [[1624, 0, 0]]}
+		];
+		for (sample in cases) {
+			final glyphs = TextShaper.shapeGlyphs(sample.text, font.data, true, true);
+			Assert.same(sample.ids, [for (glyph in glyphs) glyph.id]);
+			if (sample.positions != null) {
+				final positions = font.data.arabicPositioning.position(glyphs, font.data);
+				Assert.same(sample.positions, [for (glyph in positions) [glyph.advance, glyph.x, glyph.y]]);
+			}
+		}
+	}
+	#end
+
 	@:visionTestId("vision.formats._internal.fonts.TextShaper.shape#arabicGsub")
 	function test_shape__arabicGsub() {
 		final font = Font.fromBytes(Base64.decode(arabicFont));

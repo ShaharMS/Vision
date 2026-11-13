@@ -147,7 +147,86 @@ class ArabicJoining {
 		0xE0020, 0xE007F, 4, 0xE0100, 0xE01EF, 4,
 	];
 
-	public static function type(code:Int):Int {
+	// Canonical combining classes for Arabic marks from UnicodeData.txt (Unicode 17.0).
+	static final combiningClasses = [
+		0x610, 0x617, 230,
+		0x618, 0x618, 30,
+		0x619, 0x619, 31,
+		0x61a, 0x61a, 32,
+		0x64b, 0x64b, 27,
+		0x64c, 0x64c, 28,
+		0x64d, 0x64d, 29,
+		0x64e, 0x64e, 30,
+		0x64f, 0x64f, 31,
+		0x650, 0x650, 32,
+		0x651, 0x651, 33,
+		0x652, 0x652, 34,
+		0x653, 0x654, 230,
+		0x655, 0x656, 220,
+		0x657, 0x65b, 230,
+		0x65c, 0x65c, 220,
+		0x65d, 0x65e, 230,
+		0x65f, 0x65f, 220,
+		0x670, 0x670, 35,
+		0x6d6, 0x6dc, 230,
+		0x6df, 0x6e2, 230,
+		0x6e3, 0x6e3, 220,
+		0x6e4, 0x6e4, 230,
+		0x6e7, 0x6e8, 230,
+		0x6ea, 0x6ea, 220,
+		0x6eb, 0x6ec, 230,
+		0x6ed, 0x6ed, 220,
+		0x897, 0x898, 230,
+		0x899, 0x89b, 220,
+		0x89c, 0x89f, 230,
+		0x8ca, 0x8ce, 230,
+		0x8cf, 0x8d3, 220,
+		0x8d4, 0x8e1, 230,
+		0x8e3, 0x8e3, 220,
+		0x8e4, 0x8e5, 230,
+		0x8e6, 0x8e6, 220,
+		0x8e7, 0x8e8, 230,
+		0x8e9, 0x8e9, 220,
+		0x8ea, 0x8ec, 230,
+		0x8ed, 0x8ef, 220,
+		0x8f0, 0x8f0, 27,
+		0x8f1, 0x8f1, 28,
+		0x8f2, 0x8f2, 29,
+		0x8f3, 0x8f5, 230,
+		0x8f6, 0x8f6, 220,
+		0x8f7, 0x8f8, 230,
+		0x8f9, 0x8fa, 220,
+		0x8fb, 0x8ff, 230,
+		0x10efa, 0x10efb, 220,
+		0x10efd, 0x10eff, 220,
+	];
+
+	public static function type(code:Int):Int return findRange(code, ranges);
+
+	/** Stable ordering of Arabic marks before GSUB, with shadda nearest its base. **/
+	public static function reorderMarks(codes:Array<Int>):Void {
+		for (i in 1...codes.length) {
+			final code = codes[i];
+			final rank = markRank(code);
+			if (rank == 0) continue;
+			var j = i;
+			while (j > 0 && markRank(codes[j - 1]) > rank) {
+				codes[j] = codes[j - 1];
+				j--;
+			}
+			codes[j] = code;
+		}
+	}
+
+	static function markRank(code:Int):Int {
+		final rank = findRange(code, combiningClasses);
+		final firstVowelClass = 27;
+		final shaddaClass = 33;
+		if (rank == shaddaClass) return firstVowelClass;
+		return rank >= firstVowelClass && rank < shaddaClass ? rank + 1 : rank;
+	}
+
+	static function findRange(code:Int, ranges:Array<Int>):Int {
 		var low = 0;
 		var high = Std.int(ranges.length / RANGE_STRIDE);
 		while (low < high) {

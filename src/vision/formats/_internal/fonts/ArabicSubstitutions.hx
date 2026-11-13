@@ -3,105 +3,125 @@ package vision.formats._internal.fonts;
 import haxe.ds.IntMap;
 import vision.formats._internal.fonts.FontData.FontLigature;
 
-/** Supported GSUB lookups from the Arabic script's default language system. **/
+/** Applies supported Arabic GSUB features in logical order. **/
 @:noCompletion
 class ArabicSubstitutions {
-	final forms = new Map<String, Array<IntMap<Int>>>();
-	public final requiredLigatures:Array<IntMap<Array<FontLigature>>> = [];
+	final layout:OpenTypeLookups;
+	final font:FontData;
+	final ligatures = new IntMap<IntMap<Array<FontLigature>>>();
+	static inline var MAX_CONTEXT_DEPTH = 8;
 
-	public function new(gsub:FontTable, font:FontData) {
-		final scriptList = gsub.u16(4);
-		final featureList = gsub.u16(6);
-		final lookupList = gsub.u16(8);
-		var arabicScript = 0;
-		var defaultScript = 0;
-		for (i in 0...gsub.u16(scriptList)) {
-			final record = scriptList + 2 + i * 6;
-			switch gsub.tag(record) {
-				case "arab": arabicScript = scriptList + gsub.u16(record + 4);
-				case "DFLT": defaultScript = scriptList + gsub.u16(record + 4);
+	public function new(gsub:FontTable, gdef:Null<FontTable>, font:FontData) {
+		layout = new OpenTypeLookups(gsub, gdef);
+		this.font = font;
+	}
+
+	public function apply(tag:String, glyphs:Array<Int>, ?forms:Array<String>, ?substituted:Array<Bool>, ?components:Array<Int>):Void {
+		applyLookups(layout.feature(tag), glyphs, tag, forms, substituted, components);
+	}
+
+	public function applyContext(glyphs:Array<Int>):Void {
+		final required = layout.feature("rclt");
+		final lookups = required.concat(layout.feature("calt").filter(id -> !required.contains(id)));
+		lookups.sort((a, b) -> a - b);
+		applyLookups(lookups, glyphs, "");
+	}
+
+	function applyLookups(lookups:Array<Int>, glyphs:Array<Int>, tag:String, ?forms:Array<String>, ?substituted:Array<Bool>, ?components:Array<Int>):Void {
+		for (id in lookups) {
+			var i = 0;
+			while (i < glyphs.length) {
+				if (forms == null || forms[i] == tag) {
+					if (applyAt(id, glyphs, i, 0, components) && substituted != null) substituted[i] = true;
+				}
+				i++;
+			}
+		}
+	}
+
+	function applyAt(id:Int, glyphs:Array<Int>, index:Int, depth:Int, components:Null<Array<Int>>):Bool {
+		if (depth >= MAX_CONTEXT_DEPTH) return false;
+		final table = layout.table;
+		final lookup = layout.lookup(id);
+		if (lookup == 0) return false;
+		final flags = table.u16(lookup + 2);
+		if (glyphs[index] < 0 || (flags & 0xfff0) != 0 || layout.ignored(glyphs[index], flags)) return false;
+		function next(from:Int, step:Int, flags:Int):Int {
+			var i = from + step;
+			while (i >= 0 && i < glyphs.length) {
+				if (!layout.ignored(glyphs[i], flags)) return i;
+				i += step;
+			}
+			return -1;
+		}
+		for (i in 0...table.u16(lookup + 4)) {
+			var sub = lookup + table.u16(lookup + 6 + i * 2);
+			var type = table.u16(lookup);
+			if (type == 7 && table.u16(sub) == 1) {
+				type = table.u16(sub + 2);
+				sub += table.u32(sub + 4);
+			}
+			switch type {
+				case 1:
+					final covered = layout.coverage(sub + table.u16(sub + 2), glyphs[index]);
+					if (covered < 0) continue;
+					final replacement = switch table.u16(sub) {
+						case 1: (glyphs[index] + table.i16(sub + 4)) & 0xffff;
+						case 2: covered < table.u16(sub + 4) ? table.u16(sub + 6 + covered * 2) : -1;
+						default: -1;
+					};
+					if (replacement < 0 || replacement >= font.glyphCount) continue;
+					glyphs[index] = replacement;
+					return true;
+				case 4:
+					var rules = ligatures.get(sub);
+					if (rules == null) {
+						rules = new IntMap();
+						font.readLigatureSet(table, sub, rules);
+						ligatures.set(sub, rules);
+					}
+					final candidates = rules.get(glyphs[index]);
+					if (candidates == null) continue;
+					for (rule in candidates) {
+						final matched = [];
+						var position = index;
+						for (expected in rule.following) {
+							position = next(position, 1, flags);
+							if (position < 0 || glyphs[position] != expected) break;
+							matched.push(position);
+						}
+						if (matched.length != rule.following.length) continue;
+						glyphs[index] = rule.replacement;
+						// Keep logical indices stable for later contextual rules and fallback.
+						var previous = index;
+						for (part in 0...matched.length) {
+							final position = matched[part];
+							if (components != null)
+								for (mark in previous + 1...position) components[mark] = part;
+							glyphs[position] = -1;
+							previous = position;
+						}
+						if (components != null) {
+							var mark = previous + 1;
+							while (mark < glyphs.length && layout.glyphClass(glyphs[mark]) == 3)
+								components[mark++] = matched.length;
+						}
+						return true;
+					}
+				case 6:
+					if (table.u16(sub) != 3) continue;
+					final match = layout.context(sub, glyphs, index, flags, next);
+					if (match == null) continue;
+					for (j in 0...table.u16(match.records)) {
+						final record = match.records + 2 + j * 4;
+						final position = table.u16(record);
+						if (position < match.inputs.length && glyphs[match.inputs[position]] >= 0)
+							applyAt(table.u16(record + 2), glyphs, match.inputs[position], depth + 1, components);
+					}
+					return true;
 				default:
 			}
 		}
-		final script = arabicScript != 0 ? arabicScript : defaultScript;
-		if (script == 0) return;
-		final defaultLanguage = gsub.u16(script);
-		if (defaultLanguage == 0) return;
-
-		final language = script + defaultLanguage;
-		final requiredFeature = gsub.u16(language + 2);
-		final featureIndices = [for (i in 0...gsub.u16(language + 4)) gsub.u16(language + 6 + i * 2)];
-		if (requiredFeature != 0xffff) featureIndices.push(requiredFeature);
-		final indicesByTag = new Map<String, Array<Int>>();
-		for (index in featureIndices) {
-			if (index >= gsub.u16(featureList)) continue;
-			final record = featureList + 2 + index * 6;
-			final tag = gsub.tag(record);
-			if (tag != "isol" && tag != "init" && tag != "medi" && tag != "fina" && tag != "rlig") continue;
-			var indices = indicesByTag.get(tag);
-			if (indices == null) {
-				indices = [];
-				indicesByTag.set(tag, indices);
-			}
-			final feature = featureList + gsub.u16(record + 4);
-			for (i in 0...gsub.u16(feature + 2)) {
-				final lookupIndex = gsub.u16(feature + 4 + i * 2);
-				if (lookupIndex < gsub.u16(lookupList) && !indices.contains(lookupIndex)) indices.push(lookupIndex);
-			}
-		}
-		for (tag => indices in indicesByTag) {
-			indices.sort((a, b) -> a - b);
-			final formLookups = [];
-			for (index in indices) {
-				final lookup = lookupList + gsub.u16(lookupList + 2 + index * 2);
-				final lookupType = gsub.u16(lookup);
-				// Filtering flags require GDEF classes. Skip lookups that depend on them.
-				if ((gsub.u16(lookup + 2) & 0xfffe) != 0) continue;
-				final singles = new IntMap<Int>();
-				final ligatures = new IntMap<Array<FontLigature>>();
-				for (i in 0...gsub.u16(lookup + 4)) {
-					var sub = lookup + gsub.u16(lookup + 6 + i * 2);
-					var type = lookupType;
-					if (type == 7 && gsub.u16(sub) == 1) {
-						type = gsub.u16(sub + 2);
-						sub += gsub.u32(sub + 4);
-					}
-					if (tag == "rlig" && type == 4) font.readLigatureSet(gsub, sub, ligatures);
-					else if (tag != "rlig" && type == 1) readSingleSubstitutions(gsub, sub, font, singles);
-				}
-				if (ligatures.keys().hasNext()) requiredLigatures.push(ligatures);
-				if (singles.keys().hasNext()) formLookups.push(singles);
-			}
-			forms.set(tag, formLookups);
-		}
-	}
-
-	static function readSingleSubstitutions(gsub:FontTable, sub:Int, font:FontData, result:IntMap<Int>):Void {
-		final format = gsub.u16(sub);
-		if (format != 1 && format != 2) return;
-		final coverage = font.coverageGlyphs(gsub, sub + gsub.u16(sub + 2));
-		final count = format == 1 ? coverage.length : gsub.u16(sub + 4);
-		final delta = format == 1 ? gsub.i16(sub + 4) : 0;
-		for (i in 0...Std.int(Math.min(coverage.length, count))) {
-			final source = coverage[i];
-			final replacement = format == 1 ? (source + delta) & 0xffff : gsub.u16(sub + 6 + i * 2);
-			if (source < font.glyphCount && replacement < font.glyphCount && !result.exists(source))
-				result.set(source, replacement);
-		}
-	}
-
-	/** Returns null when the font has no applicable supported substitution. **/
-	public function form(tag:String, glyph:Int):Null<Int> {
-		final lookups = forms.get(tag);
-		if (lookups == null) return null;
-		var matched = false;
-		for (lookup in lookups) {
-			final replacement = lookup.get(glyph);
-			if (replacement != null) {
-				glyph = replacement;
-				matched = true;
-			}
-		}
-		return matched ? glyph : null;
+		return false;
 	}
 }

@@ -42,6 +42,7 @@ class FontData {
 	final outlines = new IntMap<Array<Array<FontPoint>>>();
 	public final ligatures = new IntMap<Array<FontLigature>>();
 	public final arabicSubstitutions:Null<ArabicSubstitutions>;
+	public final arabicPositioning:Null<ArabicPositioning>;
 	final positioning:Null<GposKerning>;
 	final kerning = new IntMap<Int>();
 
@@ -72,8 +73,9 @@ class FontData {
 			trueType = new TrueTypeOutline(family, table("glyf"), table("loca"), glyphCount, indexFormat);
 		}
 		cmap = readCharacterMap(table("cmap"));
-		arabicSubstitutions = tables.exists("GSUB") ? new ArabicSubstitutions(table("GSUB"), this) : null;
+		arabicSubstitutions = tables.exists("GSUB") ? new ArabicSubstitutions(table("GSUB"), tables.get("GDEF"), this) : null;
 		if (tables.exists("GSUB")) readLigatures(table("GSUB"));
+		arabicPositioning = tables.exists("GPOS") ? new ArabicPositioning(table("GPOS"), tables.get("GDEF")) : null;
 		positioning = tables.exists("GPOS") ? new GposKerning(table("GPOS")) : null;
 		if (tables.exists("kern")) readKerning(table("kern"));
 	}
