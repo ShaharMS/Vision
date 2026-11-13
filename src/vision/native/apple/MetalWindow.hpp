@@ -6,7 +6,7 @@
 
 namespace vision_metal {
 #if TARGET_OS_IOS
-// The host owns the UIView and binds it on the main thread.
+// Bind and clear the host view on the main thread. The host retains it.
 inline id& hostView() { static id view = nullptr; return view; }
 inline void bindHostView(id view) { hostView() = view; }
 #endif
