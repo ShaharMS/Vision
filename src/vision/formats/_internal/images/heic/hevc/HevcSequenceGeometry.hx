@@ -33,6 +33,8 @@ class HevcSequenceGeometry {
 	public final sampleAdaptiveOffset:Bool;
 	public final pcm:Null<HevcPcmParameters>;
 	public final strongIntraSmoothing:Bool;
+	public final fullRange:Bool;
+	public final matrixCoefficients:Int;
 
 	/** Reads the geometry from an unescaped SPS payload following its NAL header. **/
 	public function new(rbsp:Bytes) {
@@ -82,6 +84,22 @@ class HevcSequenceGeometry {
 		sampleAdaptiveOffset = bits.read(1) != 0;
 		pcm = bits.read(1) != 0 ? readPcm(bits) : null;
 		strongIntraSmoothing = readSmoothing(bits);
+		var range = false;
+		var matrix = 2;
+		if (bits.read(1) != 0) {
+			if (bits.read(1) != 0 && bits.read(8) == 255) bits.skip(32);
+			if (bits.read(1) != 0) bits.skip(1);
+			if (bits.read(1) != 0) {
+				bits.skip(3);
+				range = bits.read(1) != 0;
+				if (bits.read(1) != 0) {
+					bits.skip(16);
+					matrix = bits.read(8);
+				}
+			}
+		}
+		fullRange = range;
+		matrixCoefficients = matrix;
 	}
 
 	function readSmoothing(bits:SequenceGeometryBits):Bool {

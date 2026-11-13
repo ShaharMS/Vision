@@ -29,8 +29,8 @@ class Heic {
 		if (item.type != "hvc1") throw new HevcBitstreamError("The primary image is not an HEVC item.");
 		var configuration:HevcConfiguration = null;
 		var crop = {x: 0, y: 0, width: item.width, height: item.height};
-		var matrix = 2;
-		var fullRange = false;
+		var matrix:Null<Int> = null;
+		var range:Null<Bool> = null;
 		for (property in item.properties) {
 			switch property.type {
 				case "hvcC": configuration = new HevcConfiguration(property.payload);
@@ -39,7 +39,7 @@ class Heic {
 					final color = property.payload;
 					if (color.length == 11 && color.getString(0, 4) == "nclx") {
 						matrix = (color.get(8) << 8) | color.get(9);
-						fullRange = (color.get(10) & 128) != 0;
+						range = (color.get(10) & 128) != 0;
 					} else if (property.essential) throw new HevcBitstreamError("Unsupported essential HEIC color profile.");
 				case "irot", "imir": throw new HevcBitstreamError("Unsupported HEVC image orientation.");
 				case "ispe", "pixi":
@@ -79,9 +79,12 @@ class Heic {
 			final header = new HevcIdrSlice(slice.rbsp, geometry, picture, slice.escaped);
 			HevcIntraPicture.decode(geometry, picture, header, slice.rbsp);
 		};
-		final factors = switch matrix {
+		final fullRange = range == null ? geometry.fullRange : range;
+		final factors = switch (matrix == null ? geometry.matrixCoefficients : matrix) {
 			case 1: [0.2126, 0.0722];
+			case 4: [0.30, 0.11];
 			case 2, 5, 6: [0.299, 0.114];
+			case 7: [0.212, 0.087];
 			case 9: [0.2627, 0.0593];
 			default: throw new HevcBitstreamError("Unsupported HEVC color matrix.");
 		};
