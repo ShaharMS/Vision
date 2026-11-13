@@ -1,3 +1,11 @@
+/*
+ * SPDX-License-Identifier: LGPL-2.1-or-later
+ * Portions based on FFmpeg n4.4 libavcodec/hevcdsp.c and hevc_cabac.c
+ * Copyright (C) 2012-2013 Guillaume Martres; 2013-2014 Pierre-Edouard Lepere; 2012-2013 Gildas Cocherel
+ * Adapted to Haxe for Vision. See COPYING.LGPLv2.1 in this directory.
+ * This code is distributed without any warranty.
+ */
+
 package vision.formats._internal.images.heic.hevc;
 
 import vision.exceptions.HevcBitstreamError;
