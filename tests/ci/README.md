@@ -167,3 +167,23 @@ convolves with a 5 × 5 kernel, and fills a rectangle.
 The Ubuntu WSL runner also passed the same byte comparison using llvmpipe
 with a maximum difference of one. It measured 8.54 ms using software
 Vulkan and 31.15 ms for the packed-pixel reference.
+
+## Metal hardware qualification
+
+On an Apple GPU runner with Xcode Command Line Tools, Haxe, hxcpp and format:
+
+```bash
+haxe -cp src -cp tests/ci -lib format -main MetalBatchBenchmark -D mac -D vision_metal -dce full -cpp /tmp/vision-metal
+/tmp/vision-metal/MetalBatchBenchmark
+```
+
+The benchmark requires a working Metal device and verifies that the result
+is GPU-backed before export. It compares all output channels against the
+packed-pixel reference. Both timings include export and report the mean
+of eight measured runs after one warm-up run. The adapter name is included
+in the result.
+
+On the macOS 15 hosted runner, the Apple Paravirtual Metal device took
+10.81 ms including export. The CPU reference took 24.83 ms. The maximum
+difference was one channel value. See
+[the qualification run](https://github.com/ShaharMS/Vision/actions/runs/43496972416).

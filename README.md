@@ -379,7 +379,7 @@ be available first. Dispose the screen before its device.
 ### Native and headless
 
 The concrete `CpuImageBatch` executes queued operations against packed
-pixels and produces ordinary images. Metal and Vulkan batch executors are pending.
+pixels and produces ordinary images. Metal and Vulkan compute are available through target defines.
 
 ### Windows D3D11
 
@@ -420,3 +420,14 @@ packed ARGB buffers between commands. Each dispatch waits for completion
 before the next command. CPU reads copy from a host-visible buffer. Views,
 unsupported commands, and unavailable hardware use packed CPU pixels.
 Software Vulkan is opt-in through `VISION_VULKAN_ALLOW_SOFTWARE`.
+
+### Native Metal compute
+
+The experimental `vision_metal` define selects the concrete Metal image and
+batch on Apple hxcpp targets. The same `accelerate()…commit()` chain queues
+nearest or bilinear resize, convolution with up to 81 taps, rectangle fills,
+clears, and color transforms. The backend encodes a compute pass for each
+command and waits for completion. Results remain in Metal shared buffers
+until pixel access copies them into the packed image cache. Views and
+unsupported commands use the packed-pixel executor. Screen presentation
+uses the CPU path. The compute batch was verified on the Apple Paravirtual Metal device on GitHub Actions.
