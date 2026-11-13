@@ -1,7 +1,7 @@
 #version 450
 layout(local_size_x=16, local_size_y=16) in;
 layout(set=0,binding=0,std430) readonly buffer Source { uint pixels[]; } src;
-layout(set=0,binding=1,std430) writeonly buffer Target { uint pixels[]; } dst;
+layout(set=0,binding=1,std430) buffer Target { uint pixels[]; } dst;
 layout(set=0,binding=2,std430) readonly buffer Parameters {
     int sourceWidth, sourceHeight, width, height;
     int mode; uint value; int kernelWidth, kernelHeight;
@@ -25,6 +25,19 @@ vec4 samplePixel(ivec2 pos) {
 void main() {
     ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
     if (pos.x >= p.width || pos.y >= p.height) return;
+    if (p.mode == 10) {
+        ivec2 at = pos - p.rectangle.xy;
+        if (any(lessThan(at, ivec2(0))) || at.x >= p.sourceWidth || at.y >= p.sourceHeight) return;
+        vec4 incoming = samplePixel(at);
+        if (p.value != 0u) incoming = vec4(255 - incoming.rgb, 255);
+        int index = pos.y * p.width + pos.x;
+        vec4 previous = unpackPixel(dst.pixels[index]);
+        if (incoming.a == 0) return;
+        float opacity = incoming.a / 255;
+        dst.pixels[index] = packPixel(previous.a == 0 ? incoming :
+            vec4(mix(previous.rgb, incoming.rgb, opacity), incoming.a + previous.a * (1 - opacity)));
+        return;
+    }
     vec4 color = samplePixel(pos);
     vec2 samplePos = vec2(pos) * vec2(p.stepX, p.stepY);
     switch (p.mode) {
@@ -55,5 +68,9 @@ void main() {
             break;
         case 8: color = vec4(vec3(floor(dot(color.rgb, vec3(0.2126,0.7152,0.0722)))), 255); break;
     }
-    dst.pixels[pos.y * p.width + pos.x] = packPixel(color);
+    if (p.mode == 9) {
+        uvec4 c = uvec4(color);
+        dst.pixels[pos.y * p.width + pos.x] = (p.value == 0u ? c.r | (c.g << 8) | (c.b << 16)
+            : c.b | (c.g << 8) | (c.r << 16)) | 0xff000000u;
+    } else dst.pixels[pos.y * p.width + pos.x] = packPixel(color);
 }

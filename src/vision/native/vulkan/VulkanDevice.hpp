@@ -1,17 +1,25 @@
 #pragma once
 #include <vulkan/vulkan.h>
 #include <algorithm>
+#include <atomic>
 #include <cstring>
 #include <cstdlib>
 #include <memory>
 #include <mutex>
 #include <vector>
 #include "VulkanShader.hpp"
+#ifdef VISION_VULKAN_SCREEN
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_vulkan.h>
+#endif
 
 namespace vision_vulkan {
 struct Device {
     VkInstance instance = VK_NULL_HANDLE;
     VkDevice logical = VK_NULL_HANDLE;
+    VkPhysicalDevice physical = VK_NULL_HANDLE;
+    uint32_t family = 0;
+    bool presentation = false;
     VkQueue queue = VK_NULL_HANDLE;
     VkDescriptorSetLayout layout = VK_NULL_HANDLE;
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
@@ -21,19 +29,36 @@ struct Device {
     VkPhysicalDeviceMemoryProperties memory{};
     VkPhysicalDeviceProperties properties{};
     std::mutex mutex;
+    std::atomic<int> readbacks{0};
 
     Device() {
         VkApplicationInfo app{VK_STRUCTURE_TYPE_APPLICATION_INFO};
         app.apiVersion = VK_API_VERSION_1_0;
         VkInstanceCreateInfo info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
         info.pApplicationInfo = &app;
+#ifdef VISION_VULKAN_SCREEN
+        std::vector<const char*> extensions;
+        if (SDL_InitSubSystem(SDL_INIT_VIDEO) == 0) {
+            auto probe = SDL_CreateWindow("Vision Vulkan", 0, 0, 1, 1, SDL_WINDOW_VULKAN | SDL_WINDOW_HIDDEN);
+            if (probe) {
+                unsigned count = 0;
+                if (SDL_Vulkan_GetInstanceExtensions(probe, &count, nullptr)) {
+                    extensions.resize(count);
+                    if (SDL_Vulkan_GetInstanceExtensions(probe, &count, extensions.data())) {
+                        info.enabledExtensionCount = count;
+                        info.ppEnabledExtensionNames = extensions.data();
+                        presentation = true;
+                    }
+                }
+                SDL_DestroyWindow(probe);
+            }
+        }
+#endif
         if (vkCreateInstance(&info, nullptr, &instance) != VK_SUCCESS) return;
         uint32_t count = 0;
         if (vkEnumeratePhysicalDevices(instance, &count, nullptr) != VK_SUCCESS || !count) return;
         std::vector<VkPhysicalDevice> devices(count);
         if (vkEnumeratePhysicalDevices(instance, &count, devices.data()) != VK_SUCCESS) return;
-        VkPhysicalDevice physical = VK_NULL_HANDLE;
-        uint32_t family = 0;
         for (auto candidate : devices) {
             VkPhysicalDeviceProperties candidateProperties;
             vkGetPhysicalDeviceProperties(candidate, &candidateProperties);
@@ -61,6 +86,20 @@ struct Device {
         VkDeviceCreateInfo deviceInfo{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
         deviceInfo.queueCreateInfoCount = 1;
         deviceInfo.pQueueCreateInfos = &queueInfo;
+        const char* swapchain = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+        if (presentation) {
+            uint32_t count = 0;
+            vkEnumerateDeviceExtensionProperties(physical, nullptr, &count, nullptr);
+            std::vector<VkExtensionProperties> extensions(count);
+            vkEnumerateDeviceExtensionProperties(physical, nullptr, &count, extensions.data());
+            presentation = std::any_of(extensions.begin(), extensions.end(), [swapchain](const VkExtensionProperties& property) {
+                return std::strcmp(property.extensionName, swapchain) == 0;
+            });
+            if (presentation) {
+                deviceInfo.enabledExtensionCount = 1;
+                deviceInfo.ppEnabledExtensionNames = &swapchain;
+            }
+        }
         if (vkCreateDevice(physical, &deviceInfo, nullptr, &logical) != VK_SUCCESS) return;
         vkGetDeviceQueue(logical, family, 0, &queue);
         VkDescriptorSetLayoutBinding bindings[3]{};
@@ -116,6 +155,7 @@ struct Device {
 inline Device& device() { static auto instance = new Device(); return *instance; }
 inline bool available() { return device().descriptors != VK_NULL_HANDLE; }
 inline const char* adapterName() { return device().properties.deviceName; }
+inline int readbackCount() { return device().readbacks.load(); }
 inline bool hardware() { return available() && device().properties.deviceType != VK_PHYSICAL_DEVICE_TYPE_CPU; }
 
 struct Buffer {
@@ -137,7 +177,7 @@ struct Buffer {
         auto& gpu = device();
         VkBufferCreateInfo info{VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
         info.size = size;
-        info.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+        info.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
         if (vkCreateBuffer(gpu.logical, &info, nullptr, &handle) != VK_SUCCESS) return false;
         VkMemoryRequirements requirements;
         vkGetBufferMemoryRequirements(gpu.logical, handle, &requirements);
@@ -174,16 +214,15 @@ inline void release(Buffer* buffer) { delete buffer; }
 inline bool download(Buffer* buffer, unsigned char* bytes) {
     if (!buffer) return false;
     std::memcpy(bytes, buffer->mapped, buffer->size);
+    ++device().readbacks;
     return true;
 }
 
-inline Buffer* filter(Buffer* source, int width, int height, int mode, int value, double stepX, double stepY,
+inline bool dispatch(Buffer* source, Buffer* result, int width, int height, int mode, int value, double stepX, double stepY,
         int kernelWidth, int kernelHeight, int x, int y, int w, int h, const unsigned char* weights) {
-    if (!source || kernelWidth * kernelHeight > 81) return nullptr;
+    if (!source || !result || kernelWidth * kernelHeight > 81) return false;
     auto& gpu = device();
     std::lock_guard<std::mutex> lock(gpu.mutex);
-    std::unique_ptr<Buffer> result(allocate(width, height));
-    if (!result) return nullptr;
     struct Parameters {
         int sourceWidth, sourceHeight, width, height, mode;
         uint32_t value;
@@ -198,15 +237,15 @@ inline Buffer* filter(Buffer* source, int width, int height, int mode, int value
         data.weights[i] = float(weight);
     }
     Buffer parameters(sizeof(data));
-    if (!parameters.initialize(&data)) return nullptr;
+    if (!parameters.initialize(&data)) return false;
     if (vkResetDescriptorPool(gpu.logical, gpu.descriptors, 0) != VK_SUCCESS ||
-        vkResetCommandPool(gpu.logical, gpu.commands, 0) != VK_SUCCESS) return nullptr;
+        vkResetCommandPool(gpu.logical, gpu.commands, 0) != VK_SUCCESS) return false;
     VkDescriptorSetAllocateInfo descriptorInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
     descriptorInfo.descriptorPool = gpu.descriptors;
     descriptorInfo.descriptorSetCount = 1;
     descriptorInfo.pSetLayouts = &gpu.layout;
     VkDescriptorSet descriptor;
-    if (vkAllocateDescriptorSets(gpu.logical, &descriptorInfo, &descriptor) != VK_SUCCESS) return nullptr;
+    if (vkAllocateDescriptorSets(gpu.logical, &descriptorInfo, &descriptor) != VK_SUCCESS) return false;
     VkDescriptorBufferInfo buffers[] = {{source->handle, 0, source->size},
         {result->handle, 0, result->size}, {parameters.handle, 0, parameters.size}};
     VkWriteDescriptorSet writes[3]{};
@@ -224,13 +263,13 @@ inline Buffer* filter(Buffer* source, int width, int height, int mode, int value
     commandInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     commandInfo.commandBufferCount = 1;
     VkCommandBuffer command;
-    if (vkAllocateCommandBuffers(gpu.logical, &commandInfo, &command) != VK_SUCCESS) return nullptr;
+    if (vkAllocateCommandBuffers(gpu.logical, &commandInfo, &command) != VK_SUCCESS) return false;
     VkCommandBufferBeginInfo begin{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
     begin.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-    if (vkBeginCommandBuffer(command, &begin) != VK_SUCCESS) return nullptr;
+    if (vkBeginCommandBuffer(command, &begin) != VK_SUCCESS) return false;
     VkMemoryBarrier inputBarrier{VK_STRUCTURE_TYPE_MEMORY_BARRIER};
     inputBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-    inputBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+    inputBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
     vkCmdPipelineBarrier(command, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
         VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 1, &inputBarrier, 0, nullptr, 0, nullptr);
     vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_COMPUTE, gpu.pipeline);
@@ -250,6 +289,12 @@ inline Buffer* filter(Buffer* source, int width, int height, int mode, int value
         if (status == VK_SUCCESS) status = vkQueueWaitIdle(gpu.queue);
     }
     vkFreeCommandBuffers(gpu.logical, gpu.commands, 1, &command);
-    return status == VK_SUCCESS ? result.release() : nullptr;
+    return status == VK_SUCCESS;
+}
+inline Buffer* filter(Buffer* source, int width, int height, int mode, int value, double stepX, double stepY,
+        int kernelWidth, int kernelHeight, int x, int y, int w, int h, const unsigned char* weights) {
+    std::unique_ptr<Buffer> result(allocate(width, height));
+    return dispatch(source, result.get(), width, height, mode, value, stepX, stepY,
+        kernelWidth, kernelHeight, x, y, w, h, weights) ? result.release() : nullptr;
 }
 }

@@ -411,8 +411,7 @@ copy. Close the window or call `dispose()` to release the swap chain.
 
 Build with `-D vision_vulkan` on hxcpp to select `VulkanImage` and
 `VulkanImageBatch`. Windows normally selects D3D11, and the flag selects
-Vulkan there for compute qualification. Vulkan currently uses the existing
-CPU screen presentation path.
+Vulkan there for compute qualification. On Linux, add `-D vision_vulkan_screen` and install SDL2 development headers to enable Vulkan presentation.
 
 Nearest and bilinear resize, clear, rectangle fill, color transforms, and
 convolution up to 81 taps run on a Vulkan compute queue. The backend keeps
@@ -420,6 +419,12 @@ packed ARGB buffers between commands. Each dispatch waits for completion
 before the next command. CPU reads copy from a host-visible buffer. Views,
 unsupported commands, and unavailable hardware use packed CPU pixels.
 Software Vulkan is opt-in through `VISION_VULKAN_ALLOW_SOFTWARE`.
+
+The Vulkan screen composites into a persistent ARGB buffer. A compute pass
+converts it to the swapchain format, then Vulkan copies it into the acquired
+image and presents it. Drawing and capture keep pixels on the device until
+CPU pixel access or export. Presentation requires an SDL display and a
+compute queue that also supports the display surface.
 
 ### Native Metal compute
 

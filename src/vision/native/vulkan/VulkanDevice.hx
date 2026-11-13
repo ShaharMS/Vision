@@ -10,6 +10,7 @@ extern class VulkanDevice {
 	static function available():Bool;
 	static function adapterName():cpp.ConstCharStar;
 	static function hardware():Bool;
+	static function readbackCount():Int;
 	static function release(texture:Star<VulkanBuffer>):Void;
 	static function upload(width:Int, height:Int, bytes:cpp.RawConstPointer<UInt8>):Star<VulkanBuffer>;
 	static function download(texture:Star<VulkanBuffer>, bytes:cpp.RawPointer<UInt8>):Bool;

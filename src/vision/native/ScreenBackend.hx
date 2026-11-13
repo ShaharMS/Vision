@@ -28,6 +28,11 @@ abstract ScreenBackend(ScreenDriver) {
 			this = new BrowserScreenBackend(x, y, width, height, options);
 			return;
 		}
+		#elseif (cpp && !cppia && vision_vulkan && vision_vulkan_screen)
+		if (options.preferGpu) {
+			this = new vision.native.vulkan.VulkanScreenBackend(x, y, width, height, options.visible);
+			return;
+		}
 		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 		this = new WindowsScreenBackend(width, height, options.visible, x, y, options.preferGpu);
 		return;

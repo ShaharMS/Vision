@@ -46,6 +46,18 @@ class VulkanImage extends CpuImage {
 		return buffer;
 	}
 
+	#if vision_vulkan_screen
+	/** Composites an image into this buffer without materializing packed pixels. **/
+	public function composite(source:VulkanImage, x:Int, y:Int, invert:Bool):Bool {
+		final destination = deviceBuffer();
+		final input = source.deviceBuffer();
+		if (destination == null || input == null ||
+			!vision.native.vulkan.VulkanScreenBackend.VulkanWindowApi.composite(destination, input, x, y, invert)) return false;
+		cpuValid = false;
+		return true;
+	}
+	#end
+
 	public function detach():Void {
 		readPixels();
 		releaseBuffer();

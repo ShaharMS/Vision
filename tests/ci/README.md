@@ -187,3 +187,16 @@ On the macOS 15 hosted runner, the Apple Paravirtual Metal device took
 10.81 ms including export. The CPU reference took 24.83 ms. The maximum
 difference was one channel value. See
 [the qualification run](https://github.com/ShaharMS/Vision/actions/runs/43496972416).
+
+### Vulkan Screen on Linux
+
+Install SDL2 development headers and add `-D vision_vulkan_screen` to the
+Vulkan benchmark build. Run from a graphical session. The benchmark opens a
+window, checks that drawing and capture perform zero CPU readbacks, and
+compares the captured frame with the committed image. Set
+`VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation` for a validation run.
+
+On Ubuntu under WSLg, Mesa Dozen exposed the NVIDIA RTX 4060 through
+Direct3D 12. The batch took 14.46 ms through presentation and 26.37 ms
+through export, including computation in both measurements. CPU processing
+and export took 31.50 ms. The maximum channel difference was one.
