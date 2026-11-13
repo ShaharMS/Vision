@@ -6,11 +6,11 @@ import utest.Assert;
 import vision.Vision;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.exceptions.ConvChainError;
+import vision.exceptions.TextureSynthesisError;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
-class ConvChainTest extends utest.Test {
+class TextureSynthesisTest extends utest.Test {
 	@:visionTestId("vision.Vision.synthesizeTexture#frequency")
 	function test_synthesizeTexture__favorsFrequentColors() {
 		final sample = new Image(8, 8, Color.BLUE);
@@ -37,6 +37,6 @@ class ConvChainTest extends utest.Test {
 	function test_synthesizeTexture__requiresPositiveTemperature() {
 		ExceptionAssertions.throwsType(() -> {
 			Vision.synthesizeTexture(new Image(3, 3), 5, 4, 3, 1, 0);
-		}, ConvChainError);
+		}, TextureSynthesisError);
 	}
 }

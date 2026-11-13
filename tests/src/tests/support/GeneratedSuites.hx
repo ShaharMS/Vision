@@ -42,7 +42,7 @@ class GeneratedSuites {
 		if (includeTest("KMeansTest")) runner.addCase(new KMeansTest());
 		if (includeTest("EMeansTest")) runner.addCase(new EMeansTest());
 		if (includeTest("PatternSynthesisTest")) runner.addCase(new PatternSynthesisTest());
-		if (includeTest("ConvChainTest")) runner.addCase(new ConvChainTest());
+		if (includeTest("TextureSynthesisTest")) runner.addCase(new TextureSynthesisTest());
 		if (includeTest("PanoramaTest")) runner.addCase(new PanoramaTest());
 		if (includeTest("Scale2xTest")) runner.addCase(new Scale2xTest());
 		if (includeTest("PortableTextTest")) runner.addCase(new PortableTextTest());

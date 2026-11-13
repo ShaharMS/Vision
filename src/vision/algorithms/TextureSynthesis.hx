@@ -4,18 +4,18 @@ import haxe.ds.IntMap;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.native.ImageBackend;
-import vision.exceptions.ConvChainError;
+import vision.exceptions.TextureSynthesisError;
 
-/** Samples textures from local pattern frequencies using the ConvChain model. **/
-class ConvChain {
+/** Synthesizes textures from local pattern frequencies using Metropolis sampling. **/
+class TextureSynthesis {
 	static final unseenLogWeight = Math.log(0.1);
 
 	public static function synthesize(sample:Image, width:Int, height:Int, patternSize:Int = 3, iterations:Int = 20, temperature:Float = 1):Image {
 		if (patternSize < 1 || patternSize > sample.width || patternSize > sample.height || patternSize > width || patternSize > height
 			|| iterations < 1 || !Math.isFinite(temperature) || temperature <= 0)
-			throw new ConvChainError("The images must fit the pattern, and iterations and temperature must be positive.");
+			throw new TextureSynthesisError("The images must fit the pattern, and iterations and temperature must be positive.");
 		if (width * 1.0 * height * 4 > 0x7fffffff - ImageBackend.PIXEL_OFFSET #if !vision_higher_width_cap || width > 0xffff #end)
-			throw new ConvChainError("The output image is too large.");
+			throw new TextureSynthesisError("The output image is too large.");
 
 		final palette:Array<Color> = [];
 		final indices = new IntMap<Int>();

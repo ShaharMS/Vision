@@ -11,7 +11,7 @@ import vision.ds.specifics.SimilarityScoringMechanism;
 import vision.algorithms.KMeans;
 import vision.algorithms.EMeans;
 import vision.algorithms.PatternSynthesis;
-import vision.algorithms.ConvChain;
+import vision.algorithms.TextureSynthesis;
 import vision.algorithms.Panorama;
 import vision.algorithms.Rescale;
 import vision.ds.specifics.ColorChannel;
@@ -1822,13 +1822,13 @@ class Vision {
 		return PatternSynthesis.synthesize(sample, width, height, patternSize, attempts);
 	}
 	/**
-		Generates a texture using the ConvChain algorithm.
+		Generates a texture from a sample using Metropolis sampling.
 
 		The sampler favors square patterns that occur often in the sample and can
 		produce patterns absent from it. Pattern matching wraps around image edges.
 
 		![Source pattern](https://spacebubble.io/vision/docs/pattern-source.png)
-		![ConvChain output](https://spacebubble.io/vision/docs/pattern-convchain.png)
+		![Synthesized texture](https://spacebubble.io/vision/docs/pattern-convchain.png)
 
 		@param sample The texture to learn from
 		@param width The output width in pixels
@@ -1839,7 +1839,7 @@ class Vision {
 		@return A new texture using the sample's colors
 	**/
 	public static function synthesizeTexture(sample:Image, width:Int, height:Int, patternSize:Int = 3, iterations:Int = 20, temperature:Float = 1):Image {
-		return ConvChain.synthesize(sample, width, height, patternSize, iterations, temperature);
+		return TextureSynthesis.synthesize(sample, width, height, patternSize, iterations, temperature);
 	}
 
 	/**
