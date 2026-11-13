@@ -2,12 +2,23 @@
 #include "MetalDevice.hpp"
 #include <CoreGraphics/CGGeometry.h>
 #include <pthread.h>
+#include <TargetConditionals.h>
 
 namespace vision_metal {
+#if TARGET_OS_IOS
+// The host owns the UIView and binds it on the main thread.
+inline id& hostView() { static id view = nullptr; return view; }
+inline void bindHostView(id view) { hostView() = view; }
+#endif
+
 struct Window {
     id window = nullptr, layer = nullptr, pipeline = nullptr;
     ~Window() {
+#if TARGET_OS_IOS
+        if (window) send(window, "removeFromSuperview");
+#else
         if (window) send(window, "close");
+#endif
         if (layer) send(layer, "release");
         if (window) send(window, "release");
         if (pipeline) send(pipeline, "release");
@@ -17,6 +28,15 @@ struct Window {
 inline Window* openWindow(int x, int y, int width, int height, bool visible) {
     if (!available() || !pthread_main_np()) return nullptr;
     Pool pool;
+#if TARGET_OS_IOS
+    if (!hostView()) return nullptr;
+    auto result = new Window();
+    result->window = send<id>(send<id>((id)objc_getClass("UIView"), "alloc"), "initWithFrame:", CGRectMake(x,y,width,height));
+    result->layer = send<id>((id)objc_getClass("CAMetalLayer"), "new");
+    if (!result->window || !result->layer) { delete result; return nullptr; }
+    send(result->window, "setHidden:", !visible);
+    send(hostView(), "addSubview:", result->window);
+#else
     auto app = send<id>((id)objc_getClass("NSApplication"), "sharedApplication");
     if (!app) return nullptr;
     send<bool>(app, "setActivationPolicy:", long(0));
@@ -29,13 +49,20 @@ inline Window* openWindow(int x, int y, int width, int height, bool visible) {
     send(result->window, "setReleasedWhenClosed:", false);
     auto title = send<id>((id)objc_getClass("NSString"), "stringWithUTF8String:", "Vision Metal");
     send(result->window, "setTitle:", title);
+#endif
     send(result->layer, "setDevice:", device().hardware);
     send(result->layer, "setPixelFormat:", size_t(80)); // MTLPixelFormatBGRA8Unorm
     send(result->layer, "setFramebufferOnly:", false);
     send(result->layer, "setDrawableSize:", CGSizeMake(width,height));
+#if TARGET_OS_IOS
+    auto view = send<id>(result->window, "layer");
+    send(result->layer, "setFrame:", CGRectMake(0,0,width,height));
+    send(view, "addSublayer:", result->layer);
+#else
     auto view = send<id>(result->window, "contentView");
     send(view, "setWantsLayer:", true);
     send(view, "setLayer:", result->layer);
+#endif
 
     static const char shader[] = R"(
         #include <metal_stdlib>
@@ -60,7 +87,9 @@ inline Window* openWindow(int x, int y, int width, int height, bool visible) {
         send(library, "release");
     }
     if (!result->pipeline) { delete result; return nullptr; }
+#if !TARGET_OS_IOS
     if (visible) send(result->window, "makeKeyAndOrderFront:", (id)nullptr);
+#endif
     return result;
 }
 
@@ -69,18 +98,27 @@ inline void closeWindow(Window* window) { delete window; }
 inline bool pollWindow(Window* window) {
     if (!window || !pthread_main_np()) return false;
     Pool pool;
+#if TARGET_OS_IOS
+    return send<id>(window->window, "window") != nullptr;
+#else
     auto app = send<id>((id)objc_getClass("NSApplication"), "sharedApplication");
     auto date = send<id>((id)objc_getClass("NSDate"), "distantPast");
     auto mode = send<id>((id)objc_getClass("NSString"), "stringWithUTF8String:", "kCFRunLoopDefaultMode");
     while (auto event = send<id>(app, "nextEventMatchingMask:untilDate:inMode:dequeue:", ~size_t(0), date, mode, true))
         send(app, "sendEvent:", event);
     return send<bool>(window->window, "isVisible");
+#endif
 }
 
 inline void setBounds(Window* window, int x, int y, int width, int height) {
     Pool pool;
+#if TARGET_OS_IOS
+    send(window->window, "setFrame:", CGRectMake(x,y,width,height));
+    send(window->layer, "setFrame:", CGRectMake(0,0,width,height));
+#else
     send(window->window, "setContentSize:", CGSizeMake(width,height));
     send(window->window, "setFrameOrigin:", CGPointMake(x,y));
+#endif
     send(window->layer, "setDrawableSize:", CGSizeMake(width,height));
 }
 

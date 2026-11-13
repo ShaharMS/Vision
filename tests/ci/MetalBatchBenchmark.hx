@@ -15,7 +15,7 @@ class MetalBatchBenchmark {
   final kernel = Kernels.gaussian(5,1);
   function batch(source:Image) return source.accelerate().resize(480,360,BilinearInterpolation).convolve(kernel)
    .fillRect({x:20,y:30,width:60,height:70},Color.CYAN).commit();
-  #if mac
+  #if (mac || ios)
   final screen = new vision.ds.Screen(40, 40, 480, 360);
   if (!screen.attach(image)) throw "Metal screen attachment failed";
   var presentation = 0.0;
@@ -29,7 +29,7 @@ class MetalBatchBenchmark {
    final result=batch(image);
    if(!result.isGpuBacked) throw "Metal did not execute the batch";
    final processing=Timer.stamp()-t;
-   #if mac
+   #if (mac || ios)
    final reads=vision.native.apple.MetalDevice.readbackCount();
    final drawStarted=Timer.stamp();
    screen.draw(result);
@@ -41,18 +41,18 @@ class MetalBatchBenchmark {
    final exportStarted=Timer.stamp();
    final bytes=result.exportToBytes();
    if(i>0) gpu+=processing + Timer.stamp()-exportStarted;
-   #if mac
+   #if (mac || ios)
    final rendered=frame.exportToBytes();
    for(j in 0...bytes.length)
     if(Math.abs(bytes[j]-rendered[j]) > 1) throw "Screen output differs";
    #end
    for(j in 0...bytes.length) max=Std.int(Math.max(max,Math.abs(bytes[j]-expected[j])));
   }
-  #if mac
+  #if (mac || ios)
   screen.dispose();
   Sys.println("Metal processing and present mean ms: " + presentation * 125);
   #end
   if(max>1) throw "Maximum channel difference "+max;
-  Sys.println(haxe.Json.stringify({adapter:Std.string(vision.native.apple.MetalDevice.adapterName()),hardware:hardware,cpuMs:cpu*125,gpuMs:gpu*125,maxChannelDifference:max}));
+  Sys.println("VISION_METAL_RESULT " + haxe.Json.stringify({adapter:Std.string(vision.native.apple.MetalDevice.adapterName()),hardware:hardware,cpuMs:cpu*125,gpuMs:gpu*125,maxChannelDifference:max}));
  }
 }

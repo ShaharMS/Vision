@@ -1,0 +1,40 @@
+name: iOS Metal qualification
+on:
+  push:
+    branches: [feature/vision-ios-metal-test]
+jobs:
+  simulator:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          brew install haxe
+          mkdir -p ~/haxelib
+          haxelib setup ~/haxelib
+          haxelib install hxcpp 4.3.2 --quiet
+          haxelib install format 3.8.0 --quiet
+      - name: Build iOS simulator app
+        run: |
+          haxe -cp src -cp tests/ci -lib format -main MetalBatchBenchmark -D ios -D iphonesim -D HXCPP_ARM64 -D HXCPP_CPP11 -D vision_metal -dce full -cpp /tmp/vision-ios
+          find /tmp/vision-ios -name '*.a'
+          mkdir -p /tmp/VisionMetal.app
+          cp tests/ci/ios-metal/Info.plist /tmp/VisionMetal.app
+          archive=$(find /tmp/vision-ios -name 'libMetalBatchBenchmark*.a' -print -quit)
+          test -n "$archive"
+          xcrun --sdk iphonesimulator clang++ -std=c++17 -target arm64-apple-ios17.0-simulator             -I src/vision/native/apple tests/ci/ios-metal/main.mm "$archive"             -framework UIKit -framework QuartzCore -framework Metal -framework Foundation             -framework CoreGraphics -framework Security -lz -o /tmp/VisionMetal.app/VisionMetal
+          codesign --force --sign - /tmp/VisionMetal.app
+      - name: Present and verify
+        run: |
+          udid=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; print(next(d["udid"] for runtime, ds in json.load(sys.stdin)["devices"].items() if "iOS" in runtime for d in ds if d["name"].startswith("iPhone")))')
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid" -b
+          xcrun simctl install "$udid" /tmp/VisionMetal.app
+          xcrun simctl launch --stdout=/tmp/vision-ios-out --stderr=/tmp/vision-ios-err "$udid" org.vision.metalbenchmark
+          for i in {1..35}; do
+            if grep -q VISION_METAL_RESULT /tmp/vision-ios-out; then cat /tmp/vision-ios-out; exit 0; fi
+            if grep -q VISION_METAL_FAIL /tmp/vision-ios-err; then cat /tmp/vision-ios-err; exit 1; fi
+            sleep 1
+          done
+          cat /tmp/vision-ios-out /tmp/vision-ios-err
+          exit 1

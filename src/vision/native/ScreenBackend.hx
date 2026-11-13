@@ -28,7 +28,7 @@ abstract ScreenBackend(ScreenDriver) {
 			this = new BrowserScreenBackend(x, y, width, height, options);
 			return;
 		}
-		#elseif (cpp && !cppia && mac && vision_metal)
+		#elseif (cpp && !cppia && (mac || ios) && vision_metal)
 		if (options.preferGpu) {
 			this = new vision.native.apple.MetalScreenBackend(x, y, width, height, options.visible);
 			return;

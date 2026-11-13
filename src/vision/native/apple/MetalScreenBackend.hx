@@ -1,6 +1,6 @@
 package vision.native.apple;
 
-#if (cpp && !cppia && mac && vision_metal)
+#if (cpp && !cppia && (mac || ios) && vision_metal)
 import cpp.Star;
 import vision.ds.Color;
 import vision.ds.Image;
@@ -8,7 +8,7 @@ import vision.exceptions.ScreenError;
 import vision.native.cpu.CpuScreenBackend;
 import vision.native.apple.MetalDevice.MetalBuffer;
 
-/** Presents Metal buffers through an AppKit window and CAMetalLayer. **/
+/** Presents Metal buffers through a CAMetalLayer hosted by AppKit or UIKit. **/
 @:noCompletion
 class MetalScreenBackend extends CpuScreenBackend {
 	var window:Star<MetalWindow>;
