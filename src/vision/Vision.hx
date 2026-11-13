@@ -15,7 +15,9 @@ import vision.algorithms.TextureSynthesis;
 import vision.algorithms.Panorama;
 import vision.algorithms.Rescale;
 import vision.ds.specifics.ColorChannel;
-import vision.ds.TransformationMatrix2D;
+import vision.ds.Transform2D;
+import vision.exceptions.VisionException;
+import vision.exceptions.MatrixShapeError;
 import vision.ds.specifics.TransformationMatrixOrigination;
 import vision.ds.Point3D;
 import vision.ds.specifics.ImageExpansionMode;
@@ -32,14 +34,13 @@ import vision.ds.specifics.ColorImportanceOrder;
 import vision.algorithms.BilateralFilter;
 import vision.algorithms.RobertsCross;
 import vision.ds.IntPoint2D;
-import haxe.extern.EitherType;
 import vision.algorithms.Radix;
 import haxe.ds.ArraySort;
 import vision.ds.Histogram;
 import vision.ds.specifics.AlgorithmSettings;
 import vision.algorithms.Perwitt;
 import vision.algorithms.Sobel;
-import vision.ds.Kernel2D;
+import vision.ds.Kernels;
 import vision.ds.canny.CannyObject;
 import vision.algorithms.Harris;
 import vision.algorithms.Hough;
@@ -264,7 +265,7 @@ class Vision {
 		@return The contrasted image. The original image is modified.
 	**/
 	public static function contrast(image:Image):Image {
-		return convolve(image, UnsharpMasking);
+		return convolve(image, Kernels.unsharpMasking());
 	}
 
 	/**
@@ -404,7 +405,7 @@ class Vision {
 		@return The sharpened image. The original copy is modified.
 	**/
 	public static function sharpen(image:Image):Image {
-		return convolve(image, Sharpen);
+		return convolve(image, Kernels.sharpen());
 	}
 
 	/**
@@ -946,139 +947,65 @@ class Vision {
 	}
 
 	/**
-		manipulates the image's pixel data by passing the pixels' value through a kernel.
+		Applies kernel weights to the RGB channels and returns a new image. The
+		source and its alpha channel are preserved. The default kernel is identity.
 
-		This is useful for many things, such as simple blurring, sharpening, noise maps, and more that comes to mind :).
-
-		There are a couple of preexisting matrices you can use, and also a custom tool to let you create your own kernels from scratch using enums.
-
-		### How does this work?
-
-		simply put, it takes each pixel, and multiples its surrounding pixels by the values you give the matrix.
-
-		In the following demo, you can see how convolution works for the `Sharpen` matrix:
-
-		![Sharpen Convolution](https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/2D_Convolution_Animation.gif/220px-2D_Convolution_Animation.gif)
-
-		1. multiply the current pixel's value by the value of the center of the matrix
-		1. multiply the current pixel's immediate neighbors (vertical/horizontal) by the matching value on the matrix 
-		(the pixel to the right of the current pixel will be multiplied by the value to the right of the center of the matrix)
-		1. do the same thing with the other neighbors
-		1. enjoy your convolved image :)
-
-		@param image the image to be manipulated
-		@param kernel the type/value of the kernel. can be: **`Identity`**, **`BoxBlur`**, **`RidgeDetection`**, **`Sharpen`**, **`UnsharpMasking`**, **`Assemble3x3`**, **`Assemble5x5`**,
-		or just a matrix: both `convolve(image, BoxBlur)` and `convolve(image, [[1,1,1],[1,1,1],[1,1,1]])` are valid ways to represent a box blur.
-		@return A convolved version of the image. The original image is modified.
+		The kernel must have positive odd width and height. Its center is the anchor,
+		and weights are applied in row order without flipping or normalization.
+		Samples beyond the image bounds repeat the nearest border pixel. Output
+		channels are clamped to [0, 255] and rounded to the nearest integer.
 	**/
-	public static function convolve(image:Image, kernel:EitherType<Kernel2D, Array<Array<Float>>> = Identity):Image {
-		var matrix:Array<Array<Float>>;
-		if (kernel is Array) {
-			matrix = cast kernel;
-		} else {
-			matrix = switch cast(kernel, Kernel2D) {
-				case Identity: [[0, 0, 0], [0, 1, 0], [0, 0, 0]];
-				case BoxBlur: [[1, 1, 1], [1, 1, 1], [1, 1, 1]];
-				case RidgeDetection: [[-1, -1, -1], [-1, 4, -1], [-1, -1, -1]];
-				case RidgeDetectionAggressive: [[-1, -1, -1], [-1, 7.75, -1], [-1, -1, -1]];
-				case Sharpen: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]];
-				case UnsharpMasking: [
-						[1, 4, 6, 4, 1],
-						[4, 16, 24, 16, 4],
-						[6, 24, -476, 24, 6],
-						[4, 16, 24, 16, 4],
-						[1, 4, 6, 4, 1]
-					];
-				case Assemble3x3(corner, edge, center): [[corner, edge, corner], [edge, center, edge], [corner, edge, corner]];
-				case Assemble5x5(farCorner, farEdge, edge, midCorner, midEdge, center): [
-						[farCorner, farEdge, edge, farEdge, farCorner],
-						[farEdge, midCorner, midEdge, midCorner, farEdge],
-						[edge, midEdge, center, midEdge, edge],
-						[farEdge, midCorner, midEdge, midCorner, farEdge],
-						[farCorner, farEdge, edge, farEdge, farCorner]
-					];
-				case Custom(kernel): kernel;
-				case GaussianBlur(size, sigma): Gauss.create2DKernelOfSize(size, sigma).inner.raise(size);
-				case LaplacianPositive: [[0, 1, 0], [1, -4, 1], [0, 1, 0]];
-				case LaplacianNegative: [[0, -1, 0], [-1, 4, -1], [0, -1, 0]];
-			}
+	public static function convolve(image:Image, ?kernel:Matrix2D):Image {
+		if (kernel == null) kernel = Kernels.identity();
+		var width = kernel.width;
+		var height = kernel.height;
+		if (width <= 0 || height <= 0 || width % 2 == 0 || height % 2 == 0 || kernel.underlying.length != width * height)
+			throw new MatrixShapeError("Kernel dimensions must be positive and odd.", "Kernel Error");
+		for (weight in kernel.underlying.inner) {
+			if (weight == null || !Math.isFinite(weight))
+				throw new VisionException("Kernel weights must be finite numbers.", "Kernel Error");
 		}
 
-		var convolved = image.clone();
-		var maxLength = -1;
-		for (array in matrix) {
-			if (array.length > maxLength)
-				maxLength = array.length;
-		};
-		var flatMatrix = matrix.flatten();
-		var denominator = 0.;
-		for (number in flatMatrix)
-			denominator += number;
-		image.forEachPixelInView((x, y, _) -> {
-			var i = 0;
+		var result = image.clone();
+		var anchorX = width >> 1;
+		var anchorY = height >> 1;
+		image.forEachPixelInView((x, y, pixel) -> {
 			var red = 0., green = 0., blue = 0.;
-			for (color in image.getNeighborsOfPixel(x, y, maxLength).inner) {
-				red += flatMatrix[i] * color.red;
-				blue += flatMatrix[i] * color.blue;
-				green += flatMatrix[i] * color.green;
-				i++;
+			for (ky in 0...height) {
+				for (kx in 0...width) {
+					var sample = image.getSafePixel(x + kx - anchorX, y + ky - anchorY);
+					var weight = kernel.get(kx, ky);
+					red += sample.red * weight;
+					green += sample.green * weight;
+					blue += sample.blue * weight;
+				}
 			}
-			red /= denominator;
-			green /= denominator;
-			blue /= denominator;
-			convolved.setUnsafePixel(x, y, Color.fromRGBA(Std.int(red), Std.int(green), Std.int(blue)));
+			result.setUnsafePixel(x, y, Color.fromRGBA(
+				Math.round(boundFloat(red, 0, 255)), Math.round(boundFloat(green, 0, 255)), Math.round(boundFloat(blue, 0, 255)), pixel.alpha
+			));
 		});
-		return image = convolved;
+		return result;
 	}
 
 	/**
-		Manipulates the image's pixel data by applying the given transformation matrix - 
-		a 3x3 "grid" used to Move the image's pixels from one position to another. 
+		Applies an affine `Transform2D` and returns a new image. Defaults to the
+		identity transform and `RESIZE` expansion.
 
-		The given transformation matrix must be one that maps one parallel line to another. 
-		The clearest indicator of this is an empty last row, aside from a `1` at the end.
-
-		Differs from `Vision.convolve` in that it doesn't change the pixels color (like a `BoxBlur`, for example), but instead modifies the position of pixels within the image.  
-		This makes it easy to rotate, scale or translate an image.
-
-		A matrix can be a literal 2D array: `[[1, 0, 0], [0, 1, 0], [0, 0, 1]]`, an instance of `Array2D`, 
-		an instance of `Matrix2D`, or one of our home-made matrices using the static properties on `Matrix2D` :).
-
-		**Some things to note:**
-		 - The matrix's size must be 3x3. If the matrix is not 3x3, an error will be thrown.
-		 - Some transformations can move pixels outside of the image's original bounds 
-		   (for example, rotation, translation)), so, depending on the value of `expandImageBounds`, the image may resize.
-		 - If you want to know how the pixel position-manipulation is done, see `Matrix2D`'s documentation.
-
-		Examples for some of the pre-made matrices:
-
-		| Original | Shearing | Rotation | Rotation (`!expandImageBounds`) |
-		|---|---|---|---| 
-		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![Sheared](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
-
-		@param image The image to manipulate.
-		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
-		@param expansionMode how to expand the image if the matrix moves the image outside of its original bounds, or never reaches the original bounds. Default is `ImageExpansionMode.SAME_SIZE`.
-		@param originPoint **OPTION 1**: the point in the image to use as the origin of the transformation matrix. Before a point is passed to the matrix, it's coordinates are incremented by this point, and after the matrix is applied, it's coordinates are decremented by this point. Useful for rotation transformations. Default is `(0, 0)`.
-		@param originMode **OPTION 2**: To avoid code-bloat, you can provide a pre-made representation of the origin point, via `TransformationMatrixOrigination` enum. Default is `TransformationMatrixOrigination.TOP_LEFT`.
-		@return A new, manipulated image. The provided image remains unchanged.
-		@throws MatrixMultiplicationError if the size of the given matrix is not 3x3.
-
-		@see `Vision.convolve()` for color-manipulation matrices (or, kernels).
-		@see `Vision.perspectiveWarp()` for "3d" manipulations.
+		`originPoint` overrides `originMode`, which defaults to `CENTER`.
+		Throws if the transform has a nonconstant or zero homogeneous denominator.
+		Use `Transform2D.fromMatrix` to supply custom coefficients.
 	**/
-	public static function affineTransform(image:Image, ?matrix:TransformationMatrix2D, expansionMode:ImageExpansionMode = RESIZE, ?originPoint:Point2D, ?originMode:TransformationMatrixOrigination = CENTER):Image {
-		if (matrix == null) matrix = Matrix2D.IDENTITY();
+	public static function affineTransform(image:Image, ?matrix:Transform2D, expansionMode:ImageExpansionMode = RESIZE, ?originPoint:Point2D, ?originMode:TransformationMatrixOrigination = CENTER):Image {
+		if (matrix == null) matrix = Transform2D.identity();
+		if (!matrix.isAffine()) throw new VisionException("An affine transform requires a constant nonzero homogeneous denominator.", "Transform Error");
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY;
 		for (corner in [new Point2D(0, 0), new Point2D(0, image.height - 1), new Point2D(image.width - 1, 0), new Point2D(image.width - 1, image.height - 1)]) {
-			var coords:Array<Array<Float>> = [[corner.x], [corner.y], [1]];
-			coords = matrix.underlying * coords;
-			var c = coords.flatten();
-			if (c[0] > max) max = c[0];
-			if (c[0] < mix) mix = c[0];
-			if (c[1] > may) may = c[1];
-			if (c[1] < miy) miy = c[1];
+			var c = matrix.apply(corner);
+			if (c.x > max) max = c.x;
+			if (c.x < mix) mix = c.x;
+			if (c.y > may) may = c.y;
+			if (c.y < miy) miy = c.y;
 		}
 		
 		var img = switch expansionMode {
@@ -1105,7 +1032,7 @@ class Vision {
 		while (x < image.width) {
 			while(y < image.height) {
 				// Center x & y so matrix positions make sense
-				var coords = matrix.transformPoint(new Point2D(x - offset.x, y - offset.y));
+				var coords = matrix.apply(new Point2D(x - offset.x, y - offset.y));
 				coords.x += offset.x * (1 / ratioX);
 				coords.y += offset.y * (1 / ratioY);
 				// Translate coordinates back to their original position
@@ -1120,59 +1047,40 @@ class Vision {
 	}
 
 	/**
-	    Manipulates the image's pixel data by applying the given transformation matrix - 
-		a 3x3 "grid" used to Move the image's pixels from one position to another. 
-
-		Differs from `affineTransform()` in one, major way: while`affineTransform()` only supports two-dimensional, parallel-to-parallel transformations.
-		`perspectiveWarp` supports transformations in all three dimensions.
-
-		It also differs from `Vision.convolve` in that it doesn't change the pixels color (like a `BoxBlur`, for example), 
-		but instead modifies the position of pixels within the image.
-
-		A matrix can be a literal 2D array: `[[1, 0, 0], [0, 1, 0], [0, 0, 1]]`, an instance of `Array2D`, 
-		an instance of `Matrix2D`, or one of our home-made matrices using the static properties on `Matrix2D` :).
-
-		Examples for some of the pre-made matrices:
-
-		| Original | Depth | Perspective | Rotation (`!expandImageBounds`) |
-		|---|---|---|---| 
-		|![Before](https://spacebubble-io.pages.dev/vision/docs/valve-original.png)|![Sheared](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpShear.png)|![Rotated, expanded](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20true%29.png)|![Rotated, original size](https://spacebubble-io.pages.dev/vision/docs/valve-affineWarpRotate%28expandImageBounds%20=%20false%29.png)|
-
-		@param image The image to manipulate.
-		@param matrix a transformation matrix to use when manipulating the image. expects a 3x3 matrix. any other size may throw an error.
-		@param expansionMode How to expand the image's bounds when the resulting image after transformation changes dimensions. Default is `RESIZE`.
+		Applies a projective `Transform2D` and returns a new image. Defaults to
+		the identity transform and `RESIZE` expansion. The source image must
+		map to finite coordinates without crossing the projective horizon.
 	**/
-	public static function projectiveTransform(image:Image, ?matrix:TransformationMatrix2D, expansionMode:ImageExpansionMode = RESIZE):Image {
+	public static function projectiveTransform(image:Image, ?matrix:Transform2D, expansionMode:ImageExpansionMode = RESIZE):Image {
 
-		if (matrix == null) matrix = Matrix2D.IDENTITY();
+		if (matrix == null) matrix = Transform2D.identity();
 		// Get the max values for bounds expansion
 		var mix = MathTools.POSITIVE_INFINITY, max = MathTools.NEGATIVE_INFINITY, miy = MathTools.POSITIVE_INFINITY, may = MathTools.NEGATIVE_INFINITY,
 			miz = MathTools.POSITIVE_INFINITY, maz = MathTools.NEGATIVE_INFINITY;
 		for (corner in [new Point3D(0, 0, 1), new Point3D(0, image.height - 1, 1), new Point3D(image.width - 1, 0, 1), new Point3D(image.width - 1, image.height - 1, 1)]) {
-			var c = matrix.transformPoint(corner);
-			c.x /= c.z;
-			c.y /= c.z;
+			var homogeneous = matrix.applyHomogeneous(corner);
+			var c = Transform2D.project(homogeneous);
 			if (c.x > max) max = c.x;
 			if (c.x < mix) mix = c.x;
 			if (c.y > may) may = c.y;
 			if (c.y < miy) miy = c.y;
-			if (c.z > maz) maz = c.z;
-			if (c.z < miz) miz = c.z;
+			if (homogeneous.z > maz) maz = homogeneous.z;
+			if (homogeneous.z < miz) miz = homogeneous.z;
 		}
+		if (miz < 0 && maz > 0)
+			throw new VisionException("The image crosses the projective horizon.", "Transform Error");
 		var img = switch expansionMode {
 			case SAME_SIZE: new Image(image.width, image.height);
 			case EXPAND: new Image(Math.max(image.width, max - mix.min(0) + 1).floor(), Math.max(image.height, may - miy.min(0) + 1).floor());
 			case SHRINK: new Image(Math.min(image.width, max - mix + 1).floor(), Math.min(image.height, may - miy + 1).floor());
 			case RESIZE: new Image((max - mix.min(0) + 1).floor(), (may - miy.min(0) + 1).floor());
 		}
-		var ratioX = image.width / (max - mix.min(0) + 1) / maz.max(1), ratioY = image.height / (may - miy.min(0) + 1) / maz.max(1);
+		var ratioX = image.width / (max - mix.min(0) + 1), ratioY = image.height / (may - miy.min(0) + 1);
 		var x = 0., y = 0.;
 		while (x < image.width) {
 			while(y < image.height) {
 				// Center x & y so matrix positions make sense
-				var coords = matrix.transformPoint(new Point3D(x, y, 1));
-				coords.x /= coords.z;
-				coords.y /= coords.z;
+				var coords = matrix.apply(new Point2D(x, y));
 				// Translate coordinates back to their original position
 				img.setSafePixel(coords.x.round(), coords.y.round(), image.getFloatingPixel(x, y));
 				y += ratioY;
@@ -1204,7 +1112,7 @@ class Vision {
 		@return A blurred version of the image. The original image is modified.
 	**/
 	public static function nearestNeighborBlur(image:Image, iterations:Int = 1):Image {
-		for (i in 0...iterations) image = convolve(image, BoxBlur);
+		for (i in 0...iterations) image = convolve(image, Kernels.boxBlur());
 		return image;
 	}
 
@@ -1232,7 +1140,7 @@ class Vision {
 	**/
 	public static function gaussianBlur(image:Image, ?sigma:Float = 1, ?kernelSize:GaussianKernelSize = GaussianKernelSize.X5, ?fast:Bool = false):Image {
 		if (fast) return Gauss.fastBlur(image, kernelSize, sigma);
-		return convolve(image, GaussianBlur(kernelSize, sigma));
+		return convolve(image, Kernels.gaussian(kernelSize, sigma));
 	}
 
 	/**
@@ -1625,7 +1533,7 @@ class Vision {
 		var clone = image.clone().removeView();
 		Vision.grayscale(clone);
 		Vision.normalize(clone, normalizationRangeStart, normalizationRangeEnd);
-		clone = Vision.convolve(clone, RidgeDetectionAggressive);
+		clone = Vision.convolve(clone, Kernels.ridgeDetectionAggressive());
 		clone = Vision.replaceColorRanges(clone, [{rangeStart: 0xFF000000, rangeEnd: 0xFFAAAAAA, replacement: 0xFF000000}]);
 		if (!refine) return clone;
 		blackAndWhite(clone);

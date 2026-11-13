@@ -17,17 +17,17 @@ class Gauss {
 		#else
 		if (size % 2 == 0 || size <= 0) throw new InvalidGaussianKernelSize(size);
 		#end
-		var r, s = 2.0 * sigma * sigma, sum = 0.;
-		var kernel:Array2D<Float> = new Array2D<Float>(size, size);
-		// get the average of the parameter size, rounded down
-		var avg = Std.int((size - 1) / 2);
+		var sum = 0.;
+		var kernel = new Array2D<Float>(size, size);
+		var radius = (size - 1) >> 1;
 
-		// generate the kernel
-		for (x in -avg...avg + 1) {
-			for (y in -avg...avg + 1) {
-				r = Math.sqrt(x * x + y * y);
-				kernel.set(x + avg, y + avg, (Math.exp(-(r * r) / s)) / (Math.PI * s));
-				sum += kernel.get(x + avg, y + avg);
+		// The common Gaussian prefactor cancels during normalization.
+		for (x in -radius...radius + 1) {
+			for (y in -radius...radius + 1) {
+				var distance = Math.sqrt(x * 1.0 * x + y * 1.0 * y) / sigma;
+				var weight = Math.exp(-0.5 * distance * distance);
+				kernel.set(x + radius, y + radius, weight);
+				sum += weight;
 			}
 		}
 

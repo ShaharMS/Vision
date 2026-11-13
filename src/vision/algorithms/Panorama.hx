@@ -29,7 +29,7 @@ class Panorama {
 				throw new PanoramaError("Panorama images must have positive dimensions.");
 		if (images.length == 1) return images[0].clone();
 
-		final transforms:Array<Matrix2D> = [Matrix2D.IDENTITY()];
+		final transforms:Array<Matrix2D> = [Matrix2D.identity(3)];
 		var previous = describe(images[0]);
 		for (i in 1...images.length) {
 			final current = describe(images[i]);

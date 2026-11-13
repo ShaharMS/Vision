@@ -248,16 +248,9 @@
                                                                                                                               "removeColumn",
                                                                                                                               "removeRow",
                                                                                                                               "toString",
-                                                                                                                              "IDENTITY",
-                                                                                                                              "ROTATION",
-                                                                                                                              "TRANSLATION",
-                                                                                                                              "SCALE",
-                                                                                                                              "SHEAR",
-                                                                                                                              "REFLECTION",
-                                                                                                                              "PERSPECTIVE",
-                                                                                                                              "DEPTH",
+                                                                                                                              "identity",
+                                                                                                                              "fromRows",
                                                                                                                               "createFilled",
-                                                                                                                              "createTransformation",
                                                                                                                               "multiplyMatrices",
                                                                                                                               "addMatrices",
                                                                                                                               "subtractMatrices",
@@ -365,15 +358,15 @@
                                                                                                                                                               ],
                                                                                                                                       "testFile":  "tests/src/tests/LanczosInterpolationTest.hx"
                                                                                                                               },
-                                        "vision.ds.TransformationMatrix2D":  {
+                                        "vision.ds.Transform2D":  {
                                                                                                                           "deferredMembers":  [
 
                                                                                                                                                                   ],
                                                                                                                           "notes":  "Manual semantic suite authored under tests/src and maintained by hand.",
                                                                                                                           "status":  "manual",
-                                                                                                                          "sourceFile":  "src/vision/ds/TransformationMatrix2D.hx",
+                                                                                                                          "sourceFile":  "src/vision/ds/Transform2D.hx",
                                                                                                                           "members":  [
-                                                                                                                                                          "underlying",
+                                                                                                                                                          "toMatrix",
                                                                                                                                                           "a",
                                                                                                                                                           "b",
                                                                                                                                                           "c",
@@ -382,9 +375,24 @@
                                                                                                                                                           "f",
                                                                                                                                                           "tx",
                                                                                                                                                           "ty",
-                                                                                                                                                          "transformPoint"
+                                                                                                                                                          "apply",
+                                                                                                                                                          "applyHomogeneous",
+                                                                                                                                                          "isAffine",
+                                                                                                                                                          "fromMatrix",
+                                                                                                                                                          "fromRows",
+                                                                                                                                                          "then",
+                                                                                                                                                          "inverse",
+                                                                                                                                                          "identity",
+                                                                                                                                                          "rotationDegrees",
+                                                                                                                                                          "rotationRadians",
+                                                                                                                                                          "translation",
+                                                                                                                                                          "scale",
+                                                                                                                                                          "shear",
+                                                                                                                                                          "reflection",
+                                                                                                                                                          "perspective",
+                                                                                                                                                          "depth"
                                                                                                                                                   ],
-                                                                                                                          "testFile":  "tests/src/tests/TransformationMatrix2DTest.hx"
+                                                                                                                          "testFile":  "tests/src/tests/Transform2DTest.hx"
                                                                                                                   },
                                         "vision.formats.to.To":  {
                                                                                                   "deferredMembers":  [
@@ -920,9 +928,6 @@
                                                                                                                                     "limitColorRanges",
                                                                                                                                     "replaceColorRanges",
                                                                                                                                     "filterForColorChannel",
-                                                                                                                                    "convolve",
-                                                                                                                                    "affineTransform",
-                                                                                                                                    "projectiveTransform",
                                                                                                                                     "nearestNeighborBlur",
                                                                                                                                     "medianBlur",
                                                                                                                                     "simpleLine2DDetection",
@@ -1319,13 +1324,13 @@
                                                                                                                 ],
                                                                                         "testFile":  "tests/src/tests/ColorTest.hx"
                                                                                 },
-                                        "vision.ds.Kernel2D":  {
+                                        "vision.ds.Kernels":  {
                                                                                               "deferredMembers":  [
 
                                                                                                                                       ],
-                                                                                              "notes":  "Enum-only kernel catalog intentionally excluded from manual utest migration; behavior is exercised through consuming convolution APIs rather than this declaration surface.",
+                                                                                              "notes":  "Preset behavior is exercised through the Vision.convolve semantic tests.",
                                                                                               "status":  "excluded",
-                                                                                              "sourceFile":  "src/vision/ds/Kernel2D.hx",
+                                                                                              "sourceFile":  "src/vision/ds/Kernels.hx",
                                                                                               "members":  [
 
                                                                                                                       ],

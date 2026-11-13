@@ -11,14 +11,14 @@ class PerspectiveWarp {
 	public static function generateMatrix(destinationPoints:Array<Point2D>, sourcePoints:Array<Point2D>):Matrix2D {
 		if (destinationPoints == null || sourcePoints == null) {
 			#if vision_quiet
-			return Matrix2D.IDENTITY();
+			return Matrix2D.identity(3);
 			#else
 			throw new InvalidWarpPoints();
 			#end
 		}
 		if (sourcePoints.length != 4 || destinationPoints.length != 4) {
 			#if vision_quiet
-			return Matrix2D.IDENTITY();
+			return Matrix2D.identity(3);
 			#else
 			throw new InvalidWarpPoints();
 			#end

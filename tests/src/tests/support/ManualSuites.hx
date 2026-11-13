@@ -137,7 +137,7 @@ class ManualSuites {
 		if (includeTest("ToBytesTest")) runner.addCase(new ToBytesTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ToTest")) runner.addCase(new ToTest(), "setup", "teardown", "test", casePattern);
 		#end
-		if (includeTest("TransformationMatrix2DTest")) runner.addCase(new TransformationMatrix2DTest(), "setup", "teardown", "test", casePattern);
+		if (includeTest("Transform2DTest")) runner.addCase(new Transform2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("UInt16Point2DTest")) runner.addCase(new UInt16Point2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("UnimplementedTest")) runner.addCase(new UnimplementedTest(), "setup", "teardown", "test", casePattern);
 		#if !neko

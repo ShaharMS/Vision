@@ -1,6 +1,5 @@
 package vision.exceptions;
 
-import vision.ds.TransformationMatrix2D;
 import vision.ds.Matrix2D;
 
 class InvalidCramerCoefficientsMatrix extends VisionException {

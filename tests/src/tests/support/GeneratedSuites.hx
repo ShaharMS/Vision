@@ -71,7 +71,7 @@ class GeneratedSuites {
 		if (includeTest("SobelTest")) runner.addCase(new SobelTest());
 		if (includeTest("ToBytesTest")) runner.addCase(new ToBytesTest());
 		if (includeTest("ToTest")) runner.addCase(new ToTest());
-		if (includeTest("TransformationMatrix2DTest")) runner.addCase(new TransformationMatrix2DTest());
+		if (includeTest("Transform2DTest")) runner.addCase(new Transform2DTest());
 		if (includeTest("UInt16Point2DTest")) runner.addCase(new UInt16Point2DTest());
 		if (includeTest("VisionTest")) runner.addCase(new VisionTest());
 		if (includeTest("VisionThreadTest")) runner.addCase(new VisionThreadTest());

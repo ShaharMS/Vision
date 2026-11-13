@@ -63,19 +63,49 @@ ImageTools.loadFromFile("https://upload.wikimedia.org/wikipedia/commons/thumb/f/
 ### Basic Image Manipulation
 
 ```haxe
+import vision.ds.Kernels;
+
 Vision.grayscale(image);
 Vision.sharpen(image);
-Vision.convolve(image, BoxBlur);
+var blurred = Vision.convolve(image, Kernels.boxBlur());
 ```
 OR
 ```haxe
+import vision.ds.Kernels;
 using vision.Vision;
 
 image.grayscale();
 image.sharpen();
-image.convolve(BoxBlur);
+var blurred = image.convolve(Kernels.boxBlur());
 ```
 ---
+
+### Kernels, matrices, and transforms in Vision 3
+
+Use `Matrix2D.fromRows` for custom coefficients, or a factory such as
+`Kernels.boxBlur()` or `Kernels.gaussian(5, 1)`. `Vision.convolve` applies
+the weights as supplied and returns a new image. Kernel dimensions must be
+positive and odd. The center is the anchor, row and column orientation is
+preserved, and samples outside the image repeat the nearest border pixel.
+The source alpha is preserved. Blur presets have unit total weight.
+
+Build coordinate maps with `Transform2D` and apply them to points or images.
+
+```haxe
+import vision.Vision;
+import vision.ds.Matrix2D;
+import vision.ds.Transform2D;
+
+var transform = Transform2D.rotationDegrees(30).then(Transform2D.translation(10, 5));
+var warped = Vision.affineTransform(image, transform);
+var coefficients:Matrix2D = transform; // Independent mutable copy.
+var custom = Transform2D.fromMatrix(coefficients); // Checks and copies the 3x3 matrix.
+```
+
+`Transform2D.apply(point)` handles affine and projective coordinates and
+throws for points that map to infinity. Use `Vision.projectiveTransform`
+when the homogeneous denominator varies with position. For linear algebra,
+`Matrix2D.identity(size)` creates an identity matrix of the requested size.
 
 ### Implicit Conversions From/To Framework Specific Graphical Types
 
