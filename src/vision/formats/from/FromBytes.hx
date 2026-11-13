@@ -2,8 +2,6 @@ package vision.formats.from;
 
 import vision.exceptions.LibraryRequired;
 import vision.ds.Image;
-import vision.formats._internal.images.Avif;
-import vision.formats._internal.images.Heic;
 import vision.formats._internal.images.Jpeg;
 import vision.formats._internal.images.Webp;
 import vision.formats._internal.images.webp.WebpAnimation;
@@ -89,27 +87,4 @@ import vision.ds.ByteArray;
         return WebpAnimation.read(bytes);
     }
 
-    /**
-        Decodes an 8-bit, directly coded HEIC still image using HEVC intra coding or PCM.
-
-        @param bytes The complete HEIC file
-        @return The decoded opaque image
-        @throws HeifContainerError If the file container is invalid
-        @throws HevcBitstreamError If the HEVC coding or color configuration is invalid or unsupported
-    **/
-    public function heic(bytes:ByteArray):Image {
-        return Heic.read(bytes);
-    }
-
-    /**
-        Decodes an opaque AVIF still image with AV1 intra prediction.
-
-        @param bytes The complete AVIF file
-        @return The decoded image
-        @throws HeifContainerError If the file container is invalid
-        @throws Av1BitstreamError If the AV1 coding or color configuration is invalid or unsupported
-    **/
-    public function avif(bytes:ByteArray):Image {
-        return Avif.read(bytes);
-    }
 }
