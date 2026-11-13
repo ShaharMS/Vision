@@ -1,5 +1,6 @@
 package vision.ds;
 
+import vision.algorithms.PolygonDrawing;
 import vision.formats.ImageIO;
 #if (openfl || flash)
 import vision.formats._internal.images.FrameworkImageIO;
@@ -572,6 +573,66 @@ abstract Image(ImageBackend) {
 	//--------------------------------------------------------------------------
 
 
+
+	/**
+		Draws the closed outline of a polygon and each of its holes.
+
+		![Polygon and hole outlines](https://spacebubble.io/vision/docs/vision3-drawPolygon.png)
+
+		Edges are rounded to the pixel grid and clipped to the image and its view.
+		The color replaces the pixels on the outline, including their alpha.
+
+		@param polygon The polygon in image coordinates.
+		@param color The color to write on the outline.
+		@see fillPolygon
+	**/
+	public function drawPolygon(polygon:Polygon, color:Color) {
+		PolygonDrawing.draw(cast this, polygon, color);
+	}
+
+	/**
+		Fills the interior of a polygon, leaving its holes untouched.
+
+		![Filled concave polygon with a hole](https://spacebubble.io/vision/docs/vision3-fillPolygon.png)
+
+		Tests pixel centers at `(x + 0.5, y + 0.5)` using the even–odd rule.
+		The color replaces pixels inside the polygon, clipped to the image and its view.
+
+		@param polygon The polygon in image coordinates.
+		@param color The color to write inside the polygon.
+		@see drawPolygon
+	**/
+	public function fillPolygon(polygon:Polygon, color:Color) {
+		PolygonDrawing.fill(cast this, polygon, color);
+	}
+
+	/**
+		Draws the exterior and hole outlines of each member of a multipolygon.
+
+		![Outlines of two polygons](https://spacebubble.io/vision/docs/vision3-drawMultiPolygon.png)
+
+		@param multiPolygon The polygons in image coordinates.
+		@param color The color to write on each outline.
+		@see drawPolygon
+	**/
+	public function drawMultiPolygon(multiPolygon:MultiPolygon, color:Color) {
+		for (polygon in multiPolygon.polygons) drawPolygon(polygon, color);
+	}
+
+	/**
+		Fills the union of the members of a multipolygon.
+
+		![Two filled polygons](https://spacebubble.io/vision/docs/vision3-fillMultiPolygon.png)
+
+		A pixel covered by any member is filled, even when it is inside another member's hole.
+
+		@param multiPolygon The polygons in image coordinates.
+		@param color The color to write inside the polygons.
+		@see fillPolygon
+	**/
+	public function fillMultiPolygon(multiPolygon:MultiPolygon, color:Color) {
+		for (polygon in multiPolygon.polygons) fillPolygon(polygon, color);
+	}
 
 	/**
 		Draws a line from (x1, y1) to (x2, y2) using the given color.

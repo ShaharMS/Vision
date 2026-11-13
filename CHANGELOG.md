@@ -1,5 +1,15 @@
 # 3.0.0 (unreleased)
 
+- Removed `Vision.mapHoughCircles`. Draw the returned circles with `Image.drawCircle`.
+- Fixed transparent gaps inside projective warps by sampling from the output grid.
+- Fixed median blurring with even kernel sizes by rounding up to the next odd size.
+- Made Laplacian-of-Gaussian edge masks opaque black and white.
+
+- Added `Vision.dither` with Floyd–Steinberg and Bayer palette dithering.
+- Added `Vision.gaussianNoise` and `Vision.nonLocalMeansDenoise`.
+- Added `Vision.find` for exact, color-difference, and normalized-correlation template matching.
+- Added editable `Polygon` and `MultiPolygon` geometry and outline and fill methods on `Image`.
+
 - Portable text uses shared OpenType substitution and positioning for horizontal
   script runs, with Hebrew marks, Syriac joining, Hangul composition, and basic
   Devanagari conjunct and matra shaping.

@@ -131,6 +131,26 @@ Assert.isTrue(forward < 1);
 		ExceptionAssertions.throwsType(() -> Vision.affineTransform(image, projective), VisionException);
 	}
 
+	@:visionTestId("vision.Vision.projectiveTransform#opaqueInterior")
+	function test_projectiveTransform__opaqueInterior() {
+		final image = new Image(6, 6, Color.WHITE);
+		final transform = Transform2D.fromRows([2, 0, 0], [0, 2, 0], [-0.04, 0, 1]);
+		final result = Vision.projectiveTransform(image, transform);
+		for (y in 1...10)
+			for (x in 1...10)
+				Assert.equals(255, result.getPixel(x, y).alpha);
+	}
+
+	@:visionTestId("vision.Vision.medianBlur#evenSize")
+	function test_medianBlur__evenSize() {
+		final image = new Image(5, 5, Color.BLACK);
+		image.setPixel(2, 2, Color.WHITE);
+		final result = Vision.medianBlur(image, 4);
+		Assert.equals((Color.BLACK : Int), (result.getPixel(2, 2) : Int));
+		Assert.equals((Color.WHITE : Int), (image.getPixel(2, 2) : Int));
+		ImageAssertions.imagesEqual(Vision.medianBlur(image, 5), result);
+	}
+
 	@:visionTestId("vision.Vision.projectiveTransform#homogeneousScale")
 	function test_projectiveTransform__homogeneousScale() {
 		var image = Factories.gradientImage(3, 3);

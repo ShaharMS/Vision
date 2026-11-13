@@ -325,7 +325,7 @@ using vision.tools.MathTools;
 			circleOptions.centerThreshold = 8;
 			var circles = Vision.houghCircleDetection(circleFixture.clone(), circleOptions);
 			trace('Detected ${circles.length} circles on synthetic fixture');
-			printImage(Vision.mapHoughCircles(circleFixture.clone(), circles));
+			printImage(drawCircleOverlay(circleFixture.clone(), circles));
 			var photoCircleOptions = new HoughCircleOptions();
 			photoCircleOptions.minimumRadius = 8;
 			photoCircleOptions.maximumRadius = 40;
@@ -333,7 +333,7 @@ using vision.tools.MathTools;
 			photoCircleOptions.blurRadius = 1;
 			var photoCircles = Vision.houghCircleDetection(orgImage.clone(), photoCircleOptions);
 			trace('Detected ${photoCircles.length} circles on photo');
-			printImage(Vision.mapHoughCircles(orgImage.clone(), photoCircles));
+			printImage(drawCircleOverlay(orgImage.clone(), photoCircles));
 			end = haxe.Timer.stamp();
 			trace("Hough circle detection took: " + MathTools.truncate(end - start, 4) + " seconds");
 
@@ -618,7 +618,7 @@ using vision.tools.MathTools;
 		circleOptions.centerThreshold = 8;
 		var circles = Vision.houghCircleDetection(circleFixture.clone(), circleOptions);
 		trace('Detected ${circles.length} circles on synthetic fixture');
-		printImage(Vision.mapHoughCircles(circleFixture.clone(), circles));
+		printImage(drawCircleOverlay(circleFixture.clone(), circles));
 
 		printSectionDivider("Offline Harris corner detection (synthetic)");
 		var cornerFixture = new Image(40, 40, Color.BLACK);
@@ -637,6 +637,16 @@ using vision.tools.MathTools;
 		printImage(cornerImage);
 	}
 	#end
+
+	static function drawCircleOverlay(image:Image, circles:Array<vision.ds.Circle2D>):Image {
+		for (circle in circles) {
+			final x = Math.round(circle.center.x);
+			final y = Math.round(circle.center.y);
+			image.drawCircle(x, y, Math.round(circle.radius), Color.CYAN);
+			image.setPixel(x, y, Color.RED);
+		}
+		return image;
+	}
 
 	public static function printImage(image:Image) {
 	#if js

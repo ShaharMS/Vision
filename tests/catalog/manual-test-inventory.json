@@ -931,7 +931,6 @@
                                                                                                                                     "nearestNeighborBlur",
                                                                                                                                     "medianBlur",
                                                                                                                                     "simpleLine2DDetection",
-                                                                                                                                    "mapHoughCircles",
                                                                                                                                     "sobelEdgeDiffOperator",
                                                                                                                                     "perwittEdgeDiffOperator",
                                                                                                                                     "robertEdgeDiffOperator",

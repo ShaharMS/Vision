@@ -12,6 +12,7 @@ class ManualSuites {
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest(), "setup", "teardown", "test", casePattern);
 		#if !vision_screen_tests
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
+		if (includeTest("Vision3FunctionsTest")) runner.addCase(new Vision3FunctionsTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("Array2DTest")) runner.addCase(new Array2DTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("ArrayToolsTest")) runner.addCase(new ArrayToolsTest(), "setup", "teardown", "test", casePattern);

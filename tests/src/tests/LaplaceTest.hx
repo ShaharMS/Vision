@@ -52,6 +52,12 @@ class LaplaceTest extends utest.Test {
 		Assert.isTrue(AlgorithmFixtures.nonBlackPixelCount(result) > 0);
 	}
 
+	@:visionTestId("vision.algorithms.Laplace.laplacianOfGaussian#opaqueMask")
+	function test_laplacianOfGaussian__opaqueMask() {
+		final result = Laplace.laplacianOfGaussian(new Image(3, 3, Color.BLACK), GaussianKernelSize.X3, 1, 1, true);
+		Assert.equals((Color.BLACK : Int), (result.getPixel(1, 1) : Int));
+	}
+
 	@:visionTestId("vision.algorithms.Laplace.laplacianOfGaussian#tiny")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")

@@ -29,7 +29,7 @@ class Laplace {
 	}
 
     public static function laplacianOfGaussian(image:Image, kernelSize:GaussianKernelSize, sigma:Float, threshold:Float, positive:Bool):Image {
-        var returned = new Image(image.width, image.height);
+        var returned = new Image(image.width, image.height, Color.BLACK);
         var blurred = Vision.gaussianBlur(image.clone().removeView(), sigma, kernelSize);
         var imageToProcess:Image;
         imageToProcess = convolveWithLaplacianOperator(blurred, positive);
