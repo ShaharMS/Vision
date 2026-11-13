@@ -29,13 +29,13 @@ jobs:
           xcrun --sdk iphonesimulator clang++ -std=c++17 -target arm64-apple-ios17.0-simulator             -I src/vision/native/apple tests/ci/ios-metal/main.mm "$archive"             -framework UIKit -framework QuartzCore -framework Metal -framework Foundation             -framework CoreGraphics -framework Security -lz -o /tmp/VisionMetal.app/VisionMetal
           codesign --force --sign - /tmp/VisionMetal.app
       - name: Present and verify
-        timeout-minutes: 4
+        timeout-minutes: 8
         run: |
           udid=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; print(next(d["udid"] for runtime, ds in json.load(sys.stdin)["devices"].items() if "iOS" in runtime for d in ds if d["name"].startswith("iPhone")))')
           xcrun simctl boot "$udid"
           xcrun simctl bootstatus "$udid" -b &
           boot_pid=$!
-          for i in {1..90}; do
+          for i in {1..300}; do
             if ! kill -0 "$boot_pid" 2>/dev/null; then break; fi
             sleep 1
           done
@@ -46,11 +46,12 @@ jobs:
           fi
           wait "$boot_pid"
           xcrun simctl install "$udid" /tmp/VisionMetal.app
-          xcrun simctl launch --stdout=/tmp/vision-ios-out --stderr=/tmp/vision-ios-err "$udid" org.vision.metalbenchmark
+          xcrun simctl launch --console-pty "$udid" org.vision.metalbenchmark >/tmp/vision-ios-out 2>&1 &
+          launch_pid=$!
           for i in {1..35}; do
-            if grep -q VISION_METAL_RESULT /tmp/vision-ios-out; then cat /tmp/vision-ios-out; exit 0; fi
-            if grep -q VISION_METAL_FAIL /tmp/vision-ios-err; then cat /tmp/vision-ios-err; exit 1; fi
+            if grep -q VISION_METAL_RESULT /tmp/vision-ios-out; then cat /tmp/vision-ios-out; kill "$launch_pid" 2>/dev/null || true; exit 0; fi
+            if grep -q VISION_METAL_FAIL /tmp/vision-ios-out; then cat /tmp/vision-ios-out; exit 1; fi
             sleep 1
           done
-          cat /tmp/vision-ios-out /tmp/vision-ios-err
+          cat /tmp/vision-ios-out
           exit 1
