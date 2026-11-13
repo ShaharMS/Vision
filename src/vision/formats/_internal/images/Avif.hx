@@ -13,6 +13,7 @@ import vision.formats._internal.images.avif.av1.Av1SequenceHeader;
 import vision.formats._internal.images.avif.av1.Av1StillFrameHeader;
 import vision.formats._internal.images.avif.av1.Av1TileLayout.Av1Tile;
 import vision.formats._internal.images.heif.HeifContainer;
+import vision.formats._internal.images.heif.HeifTransforms;
 
 /** Portable AVIF byte conversion. **/
 @:noCompletion
@@ -41,9 +42,9 @@ class Avif {
 						matrix = (color.get(8) << 8) | color.get(9);
 						fullRange = (color.get(10) & 128) != 0;
 					} else if (property.essential) throw new Av1BitstreamError("Unsupported essential AVIF color profile.");
-				case "ispe", "pixi":
+				case "ispe", "pixi", "clap", "irot", "imir":
 				default:
-					if (property.essential || property.type == "irot" || property.type == "imir" || property.type == "clap")
+					if (property.essential)
 						throw new Av1BitstreamError('Unsupported AVIF property "${property.type}".');
 			}
 		}
@@ -77,8 +78,9 @@ class Avif {
 		final planes = frame.screenContent && frame.lossless && sequence.matrixCoefficients == 0
 			? Av1PalettePicture.decode(item.data, sequence, frame, tiles)
 			: Av1IntraPicture.decode(item.data, sequence, frame, tiles);
-		return pixels(item.width, item.height, sequence, planes,
+		final image = pixels(item.width, item.height, sequence, planes,
 			matrix == null ? sequence.matrixCoefficients : matrix, fullRange == null ? sequence.fullRange : fullRange);
+		return HeifTransforms.apply(image, item.properties);
 	}
 
 	static function pixels(width:Int, height:Int, sequence:Av1SequenceHeader, planes:Array<Bytes>, matrix:Int, fullRange:Bool):Image {

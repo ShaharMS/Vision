@@ -1,7 +1,7 @@
 package vision.formats._internal.images;
 
 import haxe.io.Bytes;
-import haxe.io.BytesInput;
+import vision.formats._internal.images.heif.HeifTransforms;
 import haxe.io.BytesOutput;
 import vision.ds.ByteArray;
 import vision.ds.Color;
@@ -28,21 +28,20 @@ class Heic {
 		final item = HeifContainer.readPrimary(bytes);
 		if (item.type != "hvc1") throw new HevcBitstreamError("The primary image is not an HEVC item.");
 		var configuration:HevcConfiguration = null;
-		var crop = {x: 0, y: 0, width: item.width, height: item.height};
+
 		var matrix:Null<Int> = null;
 		var range:Null<Bool> = null;
 		for (property in item.properties) {
 			switch property.type {
 				case "hvcC": configuration = new HevcConfiguration(property.payload);
-				case "clap": crop = readAperture(property.payload, item.width, item.height);
+
 				case "colr":
 					final color = property.payload;
 					if (color.length == 11 && color.getString(0, 4) == "nclx") {
 						matrix = (color.get(8) << 8) | color.get(9);
 						range = (color.get(10) & 128) != 0;
 					} else if (property.essential) throw new HevcBitstreamError("Unsupported essential HEIC color profile.");
-				case "irot", "imir": throw new HevcBitstreamError("Unsupported HEVC image orientation.");
-				case "ispe", "pixi":
+				case "ispe", "pixi", "clap", "irot", "imir":
 				default:
 					if (property.essential) throw new HevcBitstreamError('Unsupported essential HEIC property "${property.type}".');
 			}
@@ -93,11 +92,11 @@ class Heic {
 		final kg = 1 - kr - kb;
 		final lumaScale = fullRange ? 1.0 : 255.0 / 219;
 		final chromaScale = fullRange ? 1.0 : 255.0 / 224;
-		final image = new Image(crop.width, crop.height);
-		for (row in 0...crop.height) {
-			final y = row + geometry.cropTop + crop.y;
-			for (column in 0...crop.width) {
-				final x = column + geometry.cropLeft + crop.x;
+		final image = new Image(item.width, item.height);
+		for (row in 0...item.height) {
+			final y = row + geometry.cropTop;
+			for (column in 0...item.width) {
+				final x = column + geometry.cropLeft;
 				final luma = (planes[0].get(y * geometry.codedWidth + x) - (fullRange ? 0 : 16)) * lumaScale;
 				final chroma = (y >> 1) * (geometry.codedWidth >> 1) + (x >> 1);
 				final cb = (planes[1].get(chroma) - 128) * chromaScale;
@@ -109,7 +108,7 @@ class Heic {
 				));
 			}
 		}
-		return image;
+		return HeifTransforms.apply(image, item.properties);
 	}
 
 	/** Encodes an opaque HEIC still image using HEVC PCM and 4:2:0 color. **/
@@ -187,27 +186,6 @@ class Heic {
 		for (value in [width, 1, height, 1, width - sampleWidth, 2, height - sampleHeight, 2])
 			output.writeInt32(value);
 		return output.getBytes();
-	}
-
-	static function readAperture(bytes:Bytes, width:Int, height:Int):{x:Int, y:Int, width:Int, height:Int} {
-		if (bytes.length != 32) throw new HevcBitstreamError("Invalid HEIC clean aperture.");
-		final input = new BytesInput(bytes);
-		input.bigEndian = true;
-		final cropWidth = readFraction(input);
-		final cropHeight = readFraction(input);
-		final x = (width - cropWidth) / 2 + readFraction(input);
-		final y = (height - cropHeight) / 2 + readFraction(input);
-		if (cropWidth < 1 || cropHeight < 1 || x < 0 || y < 0 || x + cropWidth > width || y + cropHeight > height
-			|| x != Std.int(x) || y != Std.int(y) || cropWidth != Std.int(cropWidth) || cropHeight != Std.int(cropHeight))
-			throw new HevcBitstreamError("Invalid HEIC clean aperture bounds.");
-		return {x: Std.int(x), y: Std.int(y), width: Std.int(cropWidth), height: Std.int(cropHeight)};
-	}
-
-	static function readFraction(input:BytesInput):Float {
-		final numerator = input.readInt32();
-		final denominator = input.readInt32();
-		if (denominator <= 0) throw new HevcBitstreamError("Invalid HEIC clean aperture denominator.");
-		return numerator / denominator;
 	}
 
 	static inline function rgbSample(value:Float):Int {

@@ -18,6 +18,25 @@ import vision.formats._internal.images.heif.HeifContainer.HeifCodedImage;
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class HeifContainerTest extends utest.Test {
+	@:visionTestId("vision.formats.from.FromBytes#heifOrientation")
+	function test_fromBytes__appliesRotationAndMirroringInOrder():Void {
+		final image = new Image(8, 4, 0xff000000);
+		image.setPixel(0, 0, 0xffffffff);
+		final writer = new ToBytes();
+		final reader = new FromBytes();
+		for (avif in [true, false]) {
+			final item = HeifContainer.readPrimary(avif ? writer.avif(image) : writer.heic(image));
+			item.properties.push({type: "irot", essential: true, payload: Bytes.ofHex("01")});
+			item.properties.push({type: "imir", essential: true, payload: Bytes.ofHex("01")});
+			final bytes = HeifContainer.writePrimary(item);
+			final decoded = avif ? reader.avif(bytes) : reader.heic(bytes);
+			Assert.equals(4, decoded.width);
+			Assert.equals(8, decoded.height);
+			Assert.equals(0xffffffff, decoded.getPixel(3, 7));
+			Assert.equals(0xff000000, decoded.getPixel(0, 0));
+		}
+	}
+
 	@:visionTestId("vision.formats.to.ToBytes.avif#palettePicture")
 	function test_avif__writesAnRgbPaletteStillPicture():Void {
 		final image = new Image(17, 15, 0xff45b378);
