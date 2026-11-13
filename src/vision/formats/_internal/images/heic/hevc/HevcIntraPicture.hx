@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: LGPL-2.1-or-later
  * HEVC intra coding and transform tree syntax adapted from FFmpeg n4.4
- * libavcodec/hevcdec.c and hevc_cabac.c.
+ * libavcodec/hevcdec.c, hevc_cabac.c and hevc_filter.c.
  * Copyright (C) 2012-2013 Guillaume Martres, Mickael Raulet,
  * Gildas Cocherel, and Wassim Hamidouche.
  * See COPYING.LGPLv2.1 in this directory.
@@ -24,13 +24,18 @@ class HevcIntraPicture {
 	final depths:Bytes;
 	final depthStride:Int;
 	final ctb:Int;
+	final quantizers:Bytes;
+	final groupLog:Int;
+	var previousQp:Int;
+	var currentQp:Int;
+	var deltaCoded = false;
 	var cabac:HevcCabacDecoder;
 	var contexts:IntraContexts;
 
 	public static function decode(sequence:HevcSequenceGeometry, picture:HevcPictureParameters, slice:HevcIdrSlice, rbsp:Bytes):Array<Bytes> {
 		if (sequence.chromaFormat != 1 || sequence.lumaDepth != 8 || sequence.chromaDepth != 8
 			|| sequence.scalingListsEnabled || sequence.pcm != null || picture.tiles
-			|| picture.qpDeltaDepth != null || picture.transquantBypass || !slice.deblockDisabled
+			|| picture.transquantBypass || !slice.deblockDisabled
 			|| sequence.codedWidth * 1.0 * sequence.codedHeight > 8912896)
 			throw new HevcBitstreamError("Unsupported HEVC intra picture configuration.");
 		return new HevcIntraPicture(sequence, picture, slice).read(rbsp);
@@ -48,6 +53,10 @@ class HevcIntraPicture {
 		sao = new HevcSao(width, height, ctb, slice.saoLuma, slice.saoChroma);
 		depthStride = width >> sequence.minCodingBlockLog2;
 		depths = Bytes.alloc(depthStride * (height >> sequence.minCodingBlockLog2));
+		quantizers = Bytes.alloc(depths.length);
+		groupLog = picture.qpDeltaDepth == null ? sequence.ctbLog2 : sequence.ctbLog2 - picture.qpDeltaDepth;
+		if (groupLog < sequence.minCodingBlockLog2) throw new HevcBitstreamError("Invalid HEVC quantization group size.");
+		previousQp = currentQp = slice.qp;
 		contexts = new IntraContexts(slice.qp);
 	}
 
@@ -65,6 +74,7 @@ class HevcIntraPicture {
 				final end = index + 1 < offsets.length ? offsets[index + 1] : rbsp.length;
 				cabac = new HevcCabacDecoder(rbsp, start, end - start);
 				if (row > 0) contexts = next == null ? new IntraContexts(slice.qp) : next;
+				previousQp = slice.qp;
 			}
 			for (column in 0...columns) {
 				sao.read(cabac, contexts.saoMerge, contexts.saoType, column, row);
@@ -91,6 +101,7 @@ class HevcIntraPicture {
 		final top = y != 0 && depths.get(cell - depthStride) > depth;
 		final split = log > sequence.minCodingBlockLog2
 			&& (!available || cabac.readBin(contexts.splitCoding[(left ? 1 : 0) + (top ? 1 : 0)]) != 0);
+		if (log >= groupLog) deltaCoded = false;
 		if (split) {
 			final half = size >> 1;
 			for (row in 0...2) for (column in 0...2) {
@@ -107,10 +118,18 @@ class HevcIntraPicture {
 		final luma = modes.readLuma(cabac, contexts.prediction, x, y, size, partitioned);
 		final chroma = HevcIntraModes.readChroma(cabac, contexts.chromaMode, luma[0]);
 		transformTree(x, y, log, 0, partitioned, luma, chroma, true, true, 0, 0);
+		if (!deltaCoded) currentQp = predictQp(x, y);
+		for (row in 0...cells) quantizers.fill(cell + row * depthStride, cells, currentQp);
+		final mask = (1 << groupLog) - 1;
+		if ((((x + size) | (y + size)) & mask) == 0) previousQp = currentQp;
 	}
 
 	function transformTree(x:Int, y:Int, log:Int, depth:Int, partitioned:Bool, luma:Array<Int>, chroma:Int,
-		cb:Bool, cr:Bool, predictionUnit:Int, quadrant:Int):Void {
+		cb:Bool, cr:Bool, predictionUnit:Int, quadrant:Int, baseX:Int = -1, baseY:Int = -1):Void {
+		if (depth == 0) {
+			baseX = x;
+			baseY = y;
+		}
 		final forced = log > sequence.maxTransformBlockLog2 || (partitioned && depth == 0);
 		final canSplit = log > sequence.minTransformBlockLog2 && depth < sequence.intraTransformDepth + (partitioned ? 1 : 0);
 		final split = forced || (canSplit && cabac.readBin(contexts.splitTransform[5 - log]) != 0);
@@ -122,18 +141,47 @@ class HevcIntraPicture {
 			final half = 1 << (log - 1);
 			for (i in 0...4)
 				transformTree(x + (i & 1) * half, y + (i >> 1) * half, log - 1, depth + 1, partitioned,
-					luma, chroma, cb, cr, partitioned && depth == 0 ? i : predictionUnit, i);
+					luma, chroma, cb, cr, partitioned && depth == 0 ? i : predictionUnit, i, baseX, baseY);
 			return;
 		}
 		final hasLuma = cabac.readBin(contexts.lumaCbf[depth == 0 ? 1 : 0]) != 0;
-		reconstruct(0, x, y, log, luma[predictionUnit], hasLuma, slice.qp);
+		if (!deltaCoded && (hasLuma || cb || cr) && picture.qpDeltaDepth != null) {
+			currentQp = (predictQp(baseX, baseY) + readQpDelta() + 52) % 52;
+			deltaCoded = true;
+		}
+		reconstruct(0, x, y, log, luma[predictionUnit], hasLuma, currentQp);
 		if (log > 2 || quadrant == 3) {
 			final px = log == 2 ? (x - 4) >> 1 : x >> 1;
 			final py = log == 2 ? (y - 4) >> 1 : y >> 1;
 			final chromaLog = log == 2 ? 2 : log - 1;
-			reconstruct(1, px, py, chromaLog, chroma, cb, HevcResidual.chromaQp(slice.qp, slice.cbQpOffset));
-			reconstruct(2, px, py, chromaLog, chroma, cr, HevcResidual.chromaQp(slice.qp, slice.crQpOffset));
+			reconstruct(1, px, py, chromaLog, chroma, cb, HevcResidual.chromaQp(currentQp, slice.cbQpOffset));
+			reconstruct(2, px, py, chromaLog, chroma, cr, HevcResidual.chromaQp(currentQp, slice.crQpOffset));
 		}
+	}
+
+	function predictQp(x:Int, y:Int):Int {
+		if (picture.qpDeltaDepth == null) return slice.qp;
+		final qx = (x >> groupLog) << groupLog;
+		final qy = (y >> groupLog) << groupLog;
+		final cell = (qy >> sequence.minCodingBlockLog2) * depthStride + (qx >> sequence.minCodingBlockLog2);
+		final a = (qx & (ctb - 1)) == 0 ? previousQp : quantizers.get(cell - 1);
+		final b = (qy & (ctb - 1)) == 0 ? previousQp : quantizers.get(cell - depthStride);
+		return (a + b + 1) >> 1;
+	}
+
+	function readQpDelta():Int {
+		var magnitude = 0;
+		while (magnitude < 5 && cabac.readBin(contexts.qpDelta[magnitude == 0 ? 0 : 1]) != 0) magnitude++;
+		if (magnitude == 5) {
+			var bits = 0;
+			while (cabac.readBypass() != 0) {
+				if (++bits >= 7) throw new HevcBitstreamError("Invalid HEVC quantizer delta prefix.");
+			}
+			magnitude += (1 << bits) - 1;
+			while (bits > 0) magnitude += cabac.readBypass() << --bits;
+		}
+		if (magnitude > 26) throw new HevcBitstreamError("Invalid HEVC quantizer delta.");
+		return magnitude != 0 && cabac.readBypass() != 0 ? -magnitude : magnitude;
 	}
 
 	function reconstruct(plane:Int, x:Int, y:Int, log:Int, mode:Int, hasResidual:Bool, qp:Int):Void {
@@ -244,6 +292,7 @@ private class IntraContexts {
 	public var chromaCbf:Array<HevcCabacContext>;
 	public var transformSkip:Array<HevcCabacContext>;
 	public var coefficients:HevcCoefficients;
+	public var qpDelta:Array<HevcCabacContext>;
 
 	public function new(qp:Int) {
 		saoMerge = new HevcCabacContext(qp, 153);
@@ -257,6 +306,7 @@ private class IntraContexts {
 		chromaCbf = init(qp, [94, 138, 182, 154, 154]);
 		transformSkip = init(qp, [139, 139]);
 		coefficients = new HevcCoefficients(qp);
+		qpDelta = init(qp, [154, 154]);
 	}
 
 	public function copy():IntraContexts {
@@ -272,6 +322,7 @@ private class IntraContexts {
 		result.chromaCbf = copyBins(chromaCbf);
 		result.transformSkip = copyBins(transformSkip);
 		result.coefficients = coefficients.copy();
+		result.qpDelta = copyBins(qpDelta);
 		return result;
 	}
 
