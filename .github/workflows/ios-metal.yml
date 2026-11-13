@@ -19,6 +19,7 @@ jobs:
           # hxcpp 4.3.2 hardcodes x86_64 for its simulator compiler.
           hxcpp=$(haxelib libpath hxcpp)
           sed -i '' 's/value="x86_64" if="HXCPP_M64"/value="arm64" if="HXCPP_M64"/' "$hxcpp/toolchain/iphonesim-toolchain.xml"
+          sed -i '' 's/-miphoneos-version-min=/-mios-simulator-version-min=/g' "$hxcpp/toolchain/iphonesim-toolchain.xml"
           haxe -cp src -cp tests/ci -lib format -main MetalBatchBenchmark -D ios -D iphonesim -D HXCPP_ARM64 -D HXCPP_M64 -D HXCPP_CPP11 -D HXCPP_IOS_MIN_VERSION=17.0 -D vision_metal -dce full -cpp /tmp/vision-ios
           find /tmp/vision-ios -name '*.a'
           mkdir -p /tmp/VisionMetal.app
