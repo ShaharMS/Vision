@@ -16,7 +16,10 @@ jobs:
           haxelib install format 3.8.0 --quiet
       - name: Build iOS simulator app
         run: |
-          haxe -cp src -cp tests/ci -lib format -main MetalBatchBenchmark -D ios -D iphonesim -D HXCPP_ARM64 -D HXCPP_CPP11 -D vision_metal -dce full -cpp /tmp/vision-ios
+          # hxcpp 4.3.2 hardcodes x86_64 for its simulator compiler.
+          hxcpp=$(haxelib libpath hxcpp)
+          sed -i '' 's/value="x86_64" if="HXCPP_M64"/value="arm64" if="HXCPP_M64"/' "$hxcpp/toolchain/iphonesim-toolchain.xml"
+          haxe -cp src -cp tests/ci -lib format -main MetalBatchBenchmark -D ios -D iphonesim -D HXCPP_ARM64 -D HXCPP_M64 -D HXCPP_CPP11 -D HXCPP_IOS_MIN_VERSION=17.0 -D vision_metal -dce full -cpp /tmp/vision-ios
           find /tmp/vision-ios -name '*.a'
           mkdir -p /tmp/VisionMetal.app
           cp tests/ci/ios-metal/Info.plist /tmp/VisionMetal.app
