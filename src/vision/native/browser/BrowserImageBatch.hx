@@ -161,6 +161,22 @@ class BrowserImageBatch implements ImageBatch<BrowserImageBatch> {
 		return CpuBatchExecutor.execute(source, commands, mode);
 	}
 
+	/**
+		Submits this batch on an initialized WebGPU device and returns its pixels asynchronously.
+
+		Supported operations share one queue submission with intermediate buffers on
+		the device. The result is downloaded once before the promise resolves.
+		Unsupported commands and image views run the whole batch on packed pixels.
+		@param device The WebGPU device to use.
+		@param mode Whether to return a new image or replace the source pixels.
+		@return A promise for the committed image.
+	**/
+	public function commitWebGpu(device:WebGpuBatchDevice, mode:ImageCommitMode = NewImage):js.lib.Promise<Image> {
+		checkOpen();
+		closed = true;
+		return device.execute(source, commands, mode);
+	}
+
 	function axis(weights:Array<Float>, vertical:Bool):BrowserImageBatch {
 		if (weights.length == 0 || weights.length % 2 == 0)
 			throw new VisionError("Filter weights must have positive odd length.", "Image batch");

@@ -339,10 +339,42 @@ download its input. The concrete `BrowserImageBatch` docs identify which
 commands use the CPU executor. WebGL filtering uses floating-point shader
 arithmetic, so results near rounding boundaries can differ from CPU results.
 
+### Browser WebGPU compute
+
+Initialize a `WebGpuBatchDevice` once and use it for multiple batches.
+
+```haxe
+WebGpuBatchDevice.create().then(device -> {
+    if (device == null) return;
+    image.accelerate()
+        .resize(640, 360, BilinearInterpolation)
+        .convolve(Kernels.gaussian(5, 1))
+        .commitWebGpu(device)
+        .then(result -> screen.draw(result));
+});
+```
+
+The browser batch records the same commands for WebGL and WebGPU. WebGPU
+supports nearest and bilinear resize, clear and rectangle fills, inversion,
+both grayscale modes, thresholding, and horizontal, vertical, or rectangular
+convolution with up to 81 weights. Passes share one queue submission and
+keep intermediate packed ARGB buffers on the device. Resize truncates the
+interpolated channels. General convolution rounds RGB and preserves alpha.
+The one-dimensional passes truncate RGB and write opaque alpha. WebGPU uses
+shader floats and can differ from CPU results near a rounding boundary.
+
+`commitWebGpu()` uploads source pixels and downloads the completed result
+asynchronously. A subsequent `Screen.draw()` can upload the result to WebGL.
+Regular `commit()` continues to use the synchronous WebGL or CPU path.
+Unsupported commands, active image views, and jobs outside device limits
+execute as a single packed-pixel batch. For `InPlace` mode, wait for the
+promise before writing to the source or submitting another in-place batch
+against it. Dispose the device after its outstanding batches finish.
+
 ### Native and headless
 
 The concrete `CpuImageBatch` executes queued operations against packed
-pixels and produces ordinary images. Metal, Vulkan, and WebGPU batch executors are pending. The existing WebGPU inverter is a separate operation.
+pixels and produces ordinary images. Metal and Vulkan batch executors are pending.
 
 ### Windows D3D11
 

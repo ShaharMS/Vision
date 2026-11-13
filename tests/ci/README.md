@@ -114,3 +114,18 @@ On this Windows machine, the 320 × 192 input and 800 × 480 output took
 processing and presentation, and 4.45 ms for D3D11 processing and export.
 The exported result matched the CPU reference exactly. The benchmark
 observed zero readbacks through draw and one readback per exported image.
+
+## Browser WebGPU batch benchmark
+
+Compile `WebGpuBatchBenchmark` with `-cp src -cp tests/ci -lib format
+-main WebGpuBatchBenchmark -dce full -js <file>`. Serve a page loading the
+compiled script over localhost or HTTPS. The page reports JSON after testing
+a 640 × 480 image resized to 480 × 360, convolved with a 5 × 5 kernel, and
+marked with a rectangle. CPU and WebGPU timings include export, and the
+WebGPU timing includes one upload and one readback. The benchmark checks
+all output channels against the CPU reference and reports the median of
+seven measured runs per path.
+
+On the Windows Edge test host, CPU execution took 56.0 ms and WebGPU
+execution took 9.8 ms. The maximum channel difference was 1. Adapter and
+pipeline setup took 1066.3 ms and was measured separately.
