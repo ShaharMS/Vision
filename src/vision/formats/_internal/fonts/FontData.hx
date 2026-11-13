@@ -41,6 +41,7 @@ class FontData {
 	final cff:Null<CffOutline>;
 	final outlines = new IntMap<Array<Array<FontPoint>>>();
 	public final ligatures = new IntMap<Array<FontLigature>>();
+	public final arabicSubstitutions:Null<ArabicSubstitutions>;
 	final positioning:Null<GposKerning>;
 	final kerning = new IntMap<Int>();
 
@@ -71,6 +72,7 @@ class FontData {
 			trueType = new TrueTypeOutline(family, table("glyf"), table("loca"), glyphCount, indexFormat);
 		}
 		cmap = readCharacterMap(table("cmap"));
+		arabicSubstitutions = tables.exists("GSUB") ? new ArabicSubstitutions(table("GSUB"), this) : null;
 		if (tables.exists("GSUB")) readLigatures(table("GSUB"));
 		positioning = tables.exists("GPOS") ? new GposKerning(table("GPOS")) : null;
 		if (tables.exists("kern")) readKerning(table("kern"));
@@ -261,18 +263,17 @@ class FontData {
 				final type = gsub.u16(lookup);
 				for (k in 0...gsub.u16(lookup + 4)) {
 					final sub = lookup + gsub.u16(lookup + 6 + k * 2);
-					if (type == 4) readLigatureSet(gsub, sub);
+					if (type == 4) readLigatureSet(gsub, sub, ligatures);
 					else if (type == 7 && gsub.u16(sub) == 1 && gsub.u16(sub + 2) == 4)
-						readLigatureSet(gsub, sub + gsub.u32(sub + 4));
+						readLigatureSet(gsub, sub + gsub.u32(sub + 4), ligatures);
 				}
 			}
 		}
 		for (set in ligatures) set.sort((a, b) -> b.following.length - a.following.length);
 	}
 
-	function readLigatureSet(data:FontTable, sub:Int):Void {
-		if (data.u16(sub) != 1) return;
-		final coverage = sub + data.u16(sub + 2);
+	@:allow(vision.formats._internal.fonts.ArabicSubstitutions)
+	function coverageGlyphs(data:FontTable, coverage:Int):Array<Int> {
 		final glyphs:Array<Int> = [];
 		switch data.u16(coverage) {
 			case 1:
@@ -284,19 +285,26 @@ class FontData {
 					final end = data.u16(row + 2);
 					final first = data.u16(row + 4);
 					if (first != glyphs.length || end < start || glyphs.length + end - start >= glyphCount)
-						throw invalid("Invalid ligature coverage.");
+						throw invalid("Invalid glyph coverage.");
 					for (id in start...end + 1) glyphs.push(id);
 				}
-			default: return;
+			default: return [];
 		}
+		return glyphs;
+	}
+
+	@:allow(vision.formats._internal.fonts.ArabicSubstitutions)
+	function readLigatureSet(data:FontTable, sub:Int, target:IntMap<Array<FontLigature>>):Void {
+		if (data.u16(sub) != 1) return;
+		final glyphs = coverageGlyphs(data, sub + data.u16(sub + 2));
 		for (i in 0...data.u16(sub + 4)) {
 			if (i >= glyphs.length) throw invalid("Invalid ligature set.");
 			final set = sub + data.u16(sub + 6 + i * 2);
 			final first = glyphs[i];
-			var rules = ligatures.get(first);
+			var rules = target.get(first);
 			if (rules == null) {
 				rules = [];
-				ligatures.set(first, rules);
+				target.set(first, rules);
 			}
 			for (j in 0...data.u16(set)) {
 				final row = set + data.u16(set + 2 + j * 2);

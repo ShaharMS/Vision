@@ -8,12 +8,14 @@ import utest.Assert;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.Font;
+import vision.formats._internal.fonts.TextShaper;
 import vision.formats._internal.fonts.FontTable;
 import vision.formats._internal.fonts.otf.GposKerning;
 import vision.exceptions.FontLoadingError;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
+@:access(vision.ds.Font)
 class PortableTextTest extends utest.Test {
 	// A minimal TrueType fixture with one triangular glyph mapped to A.
 	static final fixture =
@@ -22,6 +24,25 @@ class PortableTextTest extends utest.Test {
 		"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAB" +
 		"AAAAAgPoAAAD6AAAAAAAAAAPAAEAZABkA4QDhAACAAABAQEAZAGQAZAAZAMg/OAAAAAAAQADAAEAAAAMAAQAIAAAAAQABAAB" +
 		"AAAAQf//AAAAQf///8AAAQAAAAA=";
+
+	// Synthetic TrueType faces with Arabic cmap entries and optional GSUB.
+	static final arabicFont =
+		"AAEAAAAIAAAAAAAAaGVhZAAAAAAAAACMAAAANmhoZWEAAAAAAAAAwgAAACRtYXhwAAAAAAAAAOYAAAAGaG10eAAAAAAAAADs" +
+		"AAAACGxvY2EAAAAAAAAA9AAAABZnbHlmAAAAAAAAAQoAAAAeY21hcAAAAAAAAAEoAAAAZEdTVUIAAAAAAAABjAAAAMgAAAAA" +
+		"AAAAAAAAAAAAAAAAAAAD6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4QAAAAAAAAAAAAAAAAAAAAA" +
+		"AAAAAAAAAAAAAAAAAAIAAQAAAAoD6AAAA+gAAAAAAAAADwAPAA8ADwAPAA8ADwAPAA8AAQBkAGQDhAOEAAIAAAEBAQBkAZAB" +
+		"kABkAyD84AAAAAABAAMACgAAAAwADAAAAAAAWAAAAAAAAAAGAAAGJwAABicAAAABAAAGKAAABigAAAACAAAGRAAABkQAAAAD" +
+		"AAD+kAAA/pAAAAAIAAD+kQAA/pEAAAAIAAD++wAA/vsAAAAJAAEAAAAKACQAVgABYXJhYgAIAAQAAAAA//8ABAAAAAEAAgAD" +
+		"AARmaW5hABppbml0ACBtZWRpACZybGlnACwAAAABAAAAAAABAAEAAAABAAIAAAABAAMABAAKAB4APABSAAEAAAABAAgAAQAG" +
+		"AAIAAQABAAIABwAAAAEACAABAAEAAAAIAAIACAABAAUAAQABAAIAAQAAAAEACAACAAgAAQAGAAEAAQACAAQAAAABAAgAAQAS" +
+		"AAEACAABAAQABwACAAEAAQABAAM=";
+	static final arabicFallbackFont =
+		"AAEAAAAHAAAAAAAAaGVhZAAAAAAAAAB8AAAANmhoZWEAAAAAAAAAsgAAACRtYXhwAAAAAAAAANYAAAAGaG10eAAAAAAAAADc" +
+		"AAAACGxvY2EAAAAAAAAA5AAAABZnbHlmAAAAAAAAAPoAAAAeY21hcAAAAAAAAAEYAAAAZAAAAAAAAAAAAAAAAAAAAAAAAAPo" +
+		"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAB" +
+		"AAAACgPoAAAD6AAAAAAAAAAPAA8ADwAPAA8ADwAPAA8ADwABAGQAZAOEA4QAAgAAAQEBAGQBkAGQAGQDIPzgAAAAAAEAAwAK" +
+		"AAAADAAMAAAAAABYAAAAAAAAAAYAAAYnAAAGJwAAAAEAAAYoAAAGKAAAAAIAAAZEAAAGRAAAAAMAAP6QAAD+kAAAAAgAAP6R" +
+		"AAD+kQAAAAgAAP77AAD++wAAAAk=";
 
 	static final wrapped =
 		"d09GRgABAAAAAAFAAAcAAAAAATQAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABoZWFkAAAAuAAAABEAAAA2AAAAAGhoZWEAAADM" +
@@ -35,6 +56,21 @@ class PortableTextTest extends utest.Test {
 		"d09GMgABAAAAAACUAAcAAAAAATwAAABTAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATYCJAQGQwgFCwYACh49ACwbzQD4H4lx" +
 		"LMqSenNKPH3d3t5+LPBIY2iSwODECrL8B4aEDTggDrxRBubpBOCARQhJ3aD1g/sSrHZ3gwUGQXECBpC+70PqZQEQFRzGhTGC" +
 		"+1ctAw==";
+
+	@:visionTestId("vision.formats._internal.fonts.TextShaper.shape#arabicGsub")
+	function test_shape__arabicGsub() {
+		final font = Font.fromBytes(Base64.decode(arabicFont));
+		Assert.same([4, 6, 5], TextShaper.shape("ببب", font.data, true, false));
+		Assert.same([7], TextShaper.shape("لا", font.data, true, false));
+		Assert.same([2, 2], TextShaper.shape("ب\u200cب", font.data, true, false));
+	}
+
+	@:visionTestId("vision.formats._internal.fonts.TextShaper.shape#arabicPresentationFallback")
+	function test_shape__arabicPresentationFallback() {
+		final font = Font.fromBytes(Base64.decode(arabicFallbackFont));
+		Assert.same([8, 8], TextShaper.shape("بب", font.data, true, false));
+		Assert.same([9], TextShaper.shape("لا", font.data, true, false));
+	}
 
 	@:visionTestId("vision.ds.Image.drawText#portableOutline")
 	function test_drawText__portableOutline() {
