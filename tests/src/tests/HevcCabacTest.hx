@@ -9,6 +9,8 @@ import vision.exceptions.HevcBitstreamError;
 import vision.formats._internal.images.heic.hevc.HevcCabacDecoder;
 import vision.formats._internal.images.heic.hevc.HevcCabacDecoder.HevcCabacContext;
 import vision.formats._internal.images.heic.hevc.HevcCabacEncoder;
+import vision.formats._internal.images.heic.hevc.HevcCoefficients;
+import vision.formats._internal.images.heic.hevc.HevcResidual;
 import vision.formats._internal.images.heic.hevc.HevcConfiguration;
 import vision.formats._internal.images.heic.hevc.HevcIdrSlice;
 import vision.formats._internal.images.heic.hevc.HevcPictureParameters;
@@ -21,6 +23,25 @@ import vision.formats._internal.images.heic.hevc.HevcTransform4;
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class HevcCabacTest extends utest.Test {
+	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcCoefficients.read#negativeDc")
+	function test_read__reconstructsAnIntraDcCoefficient():Void {
+		final encoder = new HevcCabacEncoder();
+		encoder.writeBin(0, new HevcCabacContext(17, 110));
+		encoder.writeBin(0, new HevcCabacContext(17, 110));
+		encoder.writeBin(0, new HevcCabacContext(17, 92));
+		encoder.writeBypass(1);
+		encoder.writeTermination(true);
+		final bytes = encoder.finish();
+		final decoder = new HevcCabacDecoder(bytes, 0, bytes.length);
+		final levels = new HevcCoefficients(17).read(decoder, 2, false, 1, true);
+		Assert.equals("-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0", levels.join(","));
+		Assert.isTrue(decoder.readTermination());
+		for (size in [4, 8, 16, 32]) {
+			final input = [for (i in 0...size * size) i == 0 ? size : 0];
+			Assert.isTrue(HevcResidual.inverse(input, size, 0, false).filter(sample -> sample != 1).length == 0);
+		}
+	}
+
 	@:visionTestId("vision.formats._internal.images.heic.hevc.HevcPcmEncoder.encode#croppedMultiBlock")
 	function test_encode__writesDecodablePcmPicture():Void {
 		final y = Bytes.alloc(34 * 18);
