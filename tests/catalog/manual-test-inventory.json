@@ -79,12 +79,6 @@
                                                                                                         "status":  "manual",
                                                                                                         "sourceFile":  "src/vision/algorithms/Gauss.hx",
                                                                                                         "members":  [
-                                                                                                                                        "create1x1Kernel",
-                                                                                                                                        "create3x3Kernel",
-                                                                                                                                        "create5x5Kernel",
-                                                                                                                                        "create7x7Kernel",
-                                                                                                                                        "create9x9Kernel",
-                                                                                                                                        "createKernelOfSize",
                                                                                                                                         "create2DKernelOfSize",
                                                                                                                                         "create1DKernelOfSize",
                                                                                                                                         "fastBlur"
@@ -1349,7 +1343,6 @@
                                                                                                         "members":  [
                                                                                                                                         "defaultResizeAlgorithm",
                                                                                                                                         "loadFromFile",
-                                                                                                                                        "saveToFile",
                                                                                                                                         "loadFromBytes",
                                                                                                                                         "loadFromURL",
                                                                                                                                         "exportToBytes",

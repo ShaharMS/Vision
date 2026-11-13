@@ -125,7 +125,6 @@ using vision.tools.MathTools;
 			start = haxe.Timer.stamp();
 			var i = image.clone();
 			i.forEachPixel((x, y, color) -> i.setPixel(x, y, color & 0x88FFFFFF));
-			//i.saveToFile("test.png");
 			printImage(i);
 			end = haxe.Timer.stamp();
 			trace("Lightening took: " + MathTools.truncate(end - start, 4) + " seconds");

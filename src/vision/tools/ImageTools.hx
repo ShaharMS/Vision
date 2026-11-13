@@ -150,28 +150,6 @@ class ImageTools {
 		#end
 	}
 	
-	/**
-	    Saves an image to a path.
-
-		**Note: this function requires the `format` library, and only supports PNG.**
-
-		To install:
-
-		`haxelib install format`
-
-
-		@param image The image to save
-		@param pathWithFileName The path to save to
-		@param saveFormat An image format.
-		@throws LibraryRequired Thrown when used without installing & including `format`
-		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
-	**/
-	@:deprecated("ImageTools.saveToFile() is deprecated. use ImageTools.exportToFile() instead")
-	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
-		return exportToFile(image, pathWithFileName, saveFormat);
-	}
-
-	
 	public static function loadFromBytes(?image:Image, bytes:ByteArray, fileFormat:ImageFormat):Image {
 		image = image == null ? new Image(0, 0) : image;
 		image.copyImageFrom(

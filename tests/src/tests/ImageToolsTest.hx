@@ -99,23 +99,6 @@ class ImageToolsTest extends utest.Test {
 		#end
 	}
 
-	@:visionTestId("vision.tools.ImageTools.saveToFile#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_saveToFile__default() {
-		#if sys
-		withTempVisionPath("save-to-file", function(path) {
-			var source = Factories.checkerboardImage(4, 4, 1);
-			var expected = ImageTools.exportToBytes(source, ImageFormat.VISION);
-			Reflect.callMethod(ImageTools, Reflect.field(ImageTools, "saveToFile"), [source, path, ImageFormat.VISION]);
-			Assert.isTrue(FileSystem.exists(path));
-			CollectionAssertions.bytes(expected.toArray(), File.getBytes(path));
-		});
-		#else
-		Assert.pass();
-		#end
-	}
-
 	@:visionTestId("vision.tools.ImageTools.loadFromURL#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
