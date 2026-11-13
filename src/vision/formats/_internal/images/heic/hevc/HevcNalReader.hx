@@ -10,6 +10,7 @@ typedef HevcNal = {
 	final layerId:Int;
 	final temporalId:Int;
 	final rbsp:Bytes;
+	final escaped:Bytes;
 }
 
 /** Reads length-prefixed HEVC NAL units as stored in a HEIF image item. **/
@@ -49,6 +50,7 @@ class HevcNalReader {
 		if ((first & 128) != 0 || temporal == 0) throw new HevcBitstreamError("Invalid NAL header.");
 
 		final payload = new BytesBuffer();
+		final start = position;
 		var zeroes = 0;
 		while (position < limit) {
 			final value = bytes.get(position++);
@@ -65,7 +67,8 @@ class HevcNalReader {
 			type: (first >>> 1) & 63,
 			layerId: ((first & 1) << 5) | (second >>> 3),
 			temporalId: temporal - 1,
-			rbsp: payload.getBytes()
+			rbsp: payload.getBytes(),
+			escaped: bytes.sub(start, limit - start)
 		};
 	}
 }
