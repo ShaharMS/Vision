@@ -74,6 +74,7 @@ class PortableTextTest extends utest.Test {
 			for (glyph in TextShaper.positionGlyphs(hebrew, font.data)) [glyph.advance, glyph.x, glyph.y]
 		]);
 		final cases = [
+			{text: "חּ", ids: [664, 679], positions: [[0, 270, -50], [1226, 0, 0]]},
 			{text: "سَلَام", ids: [993, 756, 1020, 756, 947],
 				positions: [[692, 0, 0], [0, 650, 140], [1230, 0, 0], [0, 50, -239], [1087, 0, 0]]},
 			{text: "بِّ", ids: [758, 759, 911],
