@@ -1,3 +1,28 @@
+# 3.0.0 (unreleased)
+
+- Portable Arabic shaping uses supported OpenType positional substitutions
+  and required ligatures from the font's default Arabic language system.
+  Unicode presentation forms provide a fallback.
+- Font ligature sequence lookup now uses the loaded font's substitution rules.
+  Encoded ligature characters remain directly addressable by their Unicode code point.
+- Renamed the texture sampler to `TextureSynthesis` and its exception
+  to `TextureSynthesisError`. The public entry point is
+  `Vision.synthesizeTexture`.
+- Removed `ImageTools.saveToFile`. Use `ImageTools.exportToFile` with the same arguments.
+- Removed the fixed-size Gaussian builders and `Gauss.createKernelOfSize`.
+  Use `Gauss.create2DKernelOfSize(size, sigma)` for an `Array2D<Float>`,
+  or `Kernels.gaussian(size, sigma)` for a convolution-ready `Matrix2D`.
+  For a nested array, convert the resulting `Matrix2D` to `Array<Array<Float>>`.
+- Replaced `Kernel2D` presets with `Kernels` factories returning `Matrix2D`.
+  Replace `convolve(image, BoxBlur)` with `convolve(image, Kernels.boxBlur())`
+  and use `Matrix2D.fromRows` for custom weights. Convolution applies weights
+  directly and clamps and rounds RGB output. Blur presets provide normalized weights.
+- Renamed `TransformationMatrix2D` to `Transform2D` and moved geometric
+  factories from `Matrix2D` to `Transform2D`. For example, use
+  `Transform2D.rotationDegrees(30)` in place of `Matrix2D.ROTATION(30)`.
+  `Transform2D` converts to a copy of its `Matrix2D`. Use `Transform2D.fromMatrix`
+  for the checked conversion back, and `apply` or `applyHomogeneous` for point mapping.
+
 # 2.2.0
 
 ### `Vision.hx`
