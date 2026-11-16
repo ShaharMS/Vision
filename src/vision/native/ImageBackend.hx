@@ -51,7 +51,7 @@ abstract ImageBackend(CpuImage) {
 			#if js
 			if (backend.deviceStorage == null && image.width * 1.0 * image.height >= 65536)
 				WebGLImageBackend.prepare(image);
-			#elseif (cpp && !cppia && (windows || mac || vision_vulkan))
+			#elseif ((cpp && !cppia && (windows || mac || vision_vulkan)) || (windows && hl && vision_hashlink_screen))
 			if (backend.deviceStorage == null && image.width * 1.0 * image.height >= 65536)
 				DesktopImageStorage.prepare(image);
 			#end

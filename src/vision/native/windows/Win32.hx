@@ -2,12 +2,10 @@ package vision.native.windows;
 
 #if (cpp && windows)
 import cpp.ConstCharStar;
-import cpp.RawConstPointer;
 import cpp.Star;
-import cpp.UInt8;
 
 @:include("windows.h")
-@:buildXml('<target id="haxe"><lib name="user32.lib" /><lib name="gdi32.lib" /></target>')
+@:buildXml('<target id="haxe"><lib name="user32.lib" /></target>')
 extern class Win32 {
 	@:native("CreateWindowExA")
 	static function createWindow(exStyle:Int, className:ConstCharStar, title:ConstCharStar, style:Int, x:Int, y:Int, width:Int, height:Int,
@@ -34,9 +32,6 @@ extern class Win32 {
 	@:native("GetMonitorInfoW")
 	static function getMonitorInfo(monitor:Star<WinMonitor>, info:Star<WinMonitorInfo>):Int;
 
-	@:native("GetClientRect")
-	static function getClientRect(window:Star<WinWindow>, bounds:Star<WinRect>):Int;
-
 	@:native("DestroyWindow")
 	static function destroyWindow(window:Star<WinWindow>):Int;
 
@@ -52,15 +47,6 @@ extern class Win32 {
 	@:native("DispatchMessageA")
 	static function dispatchMessage(message:Star<WinMessage>):cpp.Int64;
 
-	@:native("GetDC")
-	static function getDC(window:Star<WinWindow>):Star<WinDC>;
-
-	@:native("ReleaseDC")
-	static function releaseDC(window:Star<WinWindow>, dc:Star<WinDC>):Int;
-
-	@:native("StretchDIBits")
-	static function stretchBits(dc:Star<WinDC>, x:Int, y:Int, width:Int, height:Int, sourceX:Int, sourceY:Int, sourceWidth:Int, sourceHeight:Int,
-		data:RawConstPointer<UInt8>, info:Star<WinBitmapInfo>, usage:Int, operation:Int):Int;
 }
 
 @:include("windows.h")
@@ -74,10 +60,6 @@ extern class WinMenu {}
 @:include("windows.h")
 @:native("HINSTANCE__")
 extern class WinInstance {}
-
-@:include("windows.h")
-@:native("HDC__")
-extern class WinDC {}
 
 @:include("windows.h")
 @:native("HMONITOR__")
@@ -112,23 +94,4 @@ extern class WinMessage {
 	var message:Int;
 }
 
-@:include("windows.h")
-@:native("BITMAPINFOHEADER")
-@:structAccess
-extern class WinBitmapHeader {
-	var biSize:Int;
-	var biWidth:Int;
-	var biHeight:Int;
-	var biPlanes:Int;
-	var biBitCount:Int;
-	var biCompression:Int;
-}
-
-@:include("windows.h")
-@:native("BITMAPINFO")
-@:structAccess
-extern class WinBitmapInfo {
-	@:native("BITMAPINFO") static function make():WinBitmapInfo;
-	var bmiHeader:WinBitmapHeader;
-}
 #end

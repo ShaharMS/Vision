@@ -1,10 +1,12 @@
 package vision.native;
 
-#if (cpp && !cppia && (windows || mac || vision_vulkan))
+#if ((cpp && !cppia && (windows || mac || vision_vulkan)) || (hl && windows && vision_hashlink_screen))
+#if cpp
 import cpp.NativeArray;
-using Lambda;
 import cpp.Star;
 import cpp.vm.Gc;
+#end
+using Lambda;
 import vision.ds.ByteArray;
 import vision.ds.Color;
 import vision.ds.Image;
@@ -13,7 +15,10 @@ import vision.ds.accelerate.ImageCommitMode;
 import vision.exceptions.VisionError;
 import vision.native.ImageBackend.DeviceImageStorage;
 import vision.native.ImageBackend.ImageOperation;
-#if windows
+#if hl
+import vision.native.windows.HashLinkWindows as Device;
+import vision.native.windows.HashLinkWindows.HashLinkTexture as Resource;
+#elseif windows
 import vision.native.windows.D3D11Device as Device;
 import vision.native.windows.D3D11Device.D3D11Texture as Resource;
 #elseif mac
@@ -24,8 +29,11 @@ import vision.native.linux.VulkanDevice as Device;
 import vision.native.linux.VulkanDevice.VulkanBuffer as Resource;
 #end
 
+private typedef DesktopResource = #if hl Resource #else Star<Resource> #end;
+
 /** Keeps ARGB pixels on the desktop GPU until CPU pixel access requires a download. **/
-#if windows
+#if hl
+#elseif windows
 @:build(vision.native.windows.D3D11Build.configure())
 #elseif mac
 @:build(vision.native.apple.MetalBuild.configure())
@@ -36,12 +44,14 @@ import vision.native.linux.VulkanDevice.VulkanBuffer as Resource;
 class DesktopImageStorage implements DeviceImageStorage {
 	final width:Int;
 	final height:Int;
-	var resource:Star<Resource>;
+	var resource:DesktopResource;
 
 	function new(width:Int, height:Int) {
 		this.width = width;
 		this.height = height;
+		#if cpp
 		Gc.setFinalizer(this, cpp.Callable.fromStaticFunction(finalize));
+		#end
 	}
 
 	static function finalize(storage:DesktopImageStorage):Void storage.dispose();
@@ -53,7 +63,7 @@ class DesktopImageStorage implements DeviceImageStorage {
 		return backend.prepareDeviceStorage() ? cast backend.deviceStorage : null;
 	}
 
-	public static function pixels(image:Image):Star<Resource> {
+	public static function pixels(image:Image):DesktopResource {
 		final storage = prepare(image);
 		return storage == null ? null : storage.resource;
 	}
@@ -70,20 +80,29 @@ class DesktopImageStorage implements DeviceImageStorage {
 	public function isAvailable():Bool return Device.available();
 
 	public function upload(packed:ByteArray):Bool {
-		final next = Device.upload(width, height, NativeArray.address(packed.getData(), ImageBackend.PIXEL_OFFSET).constRaw);
+		final next = #if hl
+			Device.upload(width, height, packed.getData(), ImageBackend.PIXEL_OFFSET);
+		#else
+			Device.upload(width, height, NativeArray.address(packed.getData(), ImageBackend.PIXEL_OFFSET).constRaw);
+		#end
 		if (next == null) return false;
 		replace(next);
 		return true;
 	}
 
 	public function download(packed:ByteArray):Void {
-		if (!Device.download(resource, NativeArray.address(packed.getData(), ImageBackend.PIXEL_OFFSET).raw))
+		final ok = #if hl
+			Device.download(resource, packed.getData(), ImageBackend.PIXEL_OFFSET);
+		#else
+			Device.download(resource, NativeArray.address(packed.getData(), ImageBackend.PIXEL_OFFSET).raw);
+		#end
+		if (!ok)
 			throw new VisionError("Could not download GPU image pixels.", "Image");
 	}
 
 	public function dispose():Void replace(null);
 
-	function replace(next:Star<Resource>):Void {
+	function replace(next:DesktopResource):Void {
 		if (resource != null) Device.release(resource);
 		resource = next;
 	}
@@ -123,7 +142,7 @@ class DesktopImageStorage implements DeviceImageStorage {
 		width = source.width;
 		height = source.height;
 		for (command in commands) {
-			final next:Star<Resource> = switch command {
+			final next:DesktopResource = switch command {
 				case Resize(w, h, algorithm):
 					final bilinear = algorithm == BilinearInterpolation;
 					final output = pass(current, w, h, bilinear ? 0 : 1, 0,
@@ -176,14 +195,14 @@ class DesktopImageStorage implements DeviceImageStorage {
 		#end
 	}
 
-	static inline function pass(input:Star<Resource>, width:Int, height:Int, mode:Int, value:Int, stepX:Float = 0, stepY:Float = 0,
-			kernelWidth:Int = 0, kernelHeight:Int = 0, ?weights:Array<Float>, x:Int = 0, y:Int = 0, w:Int = 0, h:Int = 0):Star<Resource> {
+	static inline function pass(input:DesktopResource, width:Int, height:Int, mode:Int, value:Int, stepX:Float = 0, stepY:Float = 0,
+			kernelWidth:Int = 0, kernelHeight:Int = 0, ?weights:Array<Float>, x:Int = 0, y:Int = 0, w:Int = 0, h:Int = 0):DesktopResource {
 		if (weights == null)
 			return Device.filter(input, width, height, mode, value, stepX, stepY, kernelWidth, kernelHeight, x, y, w, h, null);
 		final bytes = new ByteArray(weights.length * 8);
 		for (i in 0...weights.length) bytes.setDouble(i * 8, weights[i]);
 		return Device.filter(input, width, height, mode, value, stepX, stepY, kernelWidth, kernelHeight, x, y, w, h,
-			NativeArray.address(bytes.getData(), 0).constRaw);
+			#if hl bytes.getData() #else NativeArray.address(bytes.getData(), 0).constRaw #end);
 	}
 }
 #end

@@ -1,6 +1,6 @@
 package vision.native;
 
-#if (cpp && !cppia && (windows || mac || vision_vulkan))
+#if ((cpp && !cppia && (windows || mac || vision_vulkan)) || (windows && hl && vision_hashlink_screen))
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.exceptions.ScreenError;

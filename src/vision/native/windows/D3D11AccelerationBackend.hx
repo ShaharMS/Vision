@@ -1,6 +1,6 @@
 package vision.native.windows;
 
-#if (cpp && !cppia && windows)
+#if (windows && ((cpp && !cppia) || (hl && vision_hashlink_screen)))
 import vision.ds.Image;
 import vision.ds.accelerate.ImageCommitMode;
 import vision.native.portable.CpuAccelerationBackend;

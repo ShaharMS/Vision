@@ -1,6 +1,6 @@
 package vision.native.windows;
 
-#if (windows && (cpp || (hl && vision_hashlink_screen)))
+#if (windows && ((cpp && !cppia) || (hl && vision_hashlink_screen)))
 	#if hl
 	import vision.native.windows.HashLinkWindows;
 	import vision.native.windows.HashLinkWindows.HashLinkWindow;
@@ -9,24 +9,18 @@ package vision.native.windows;
 	import cpp.Star;
 	import vision.native.windows.Win32.WinMessage;
 	import vision.native.windows.D3D11Device.D3D11Window;
-	import vision.native.DesktopImageStorage;
-	import vision.native.DesktopScreenBackend;
 	import vision.native.windows.Win32.WinMonitorInfo;
 	import vision.native.windows.Win32.WinRect;
 	import vision.native.windows.Win32.WinWindow;
 	#end
-import vision.ds.Color;
+import vision.native.DesktopImageStorage;
+import vision.native.DesktopScreenBackend;
 import vision.native.ScreenBackend.ScreenWindowMode;
-import vision.native.portable.CpuScreenBackend;
-import vision.ds.Image;
-#if hl
-import vision.ds.PixelFormat;
-#end
 import vision.exceptions.ScreenError;
 
-/** Desktop drawing through Windows system externs. **/
+/** Presents Direct3D 11 textures through a Win32 window and DXGI swapchain. **/
 @:noCompletion
-class WindowsScreenBackend extends #if hl CpuScreenBackend #else DesktopScreenBackend #end {
+class WindowsScreenBackend extends DesktopScreenBackend {
 	#if hl
 	static inline var WINDOW_OPEN = 1;
 	static inline var WINDOW_REPAINT = 2;
@@ -61,15 +55,13 @@ class WindowsScreenBackend extends #if hl CpuScreenBackend #else DesktopScreenBa
 		if (window != null && visible) Win32.showWindow(window, SHOW_WINDOW);
 		#end
 		if (window == null) throw new ScreenError("Windows could not open a drawing window");
-		#if hl
-		present();
-		#else
+		#if !hl
 		gpuWindow = D3D11Device.openWindow(window, width, height);
-		if (gpuWindow == null || !present()) {
+		#end
+		if (!present()) {
 			dispose();
 			throw new ScreenError("Could not open a Direct3D 11 swapchain");
 		}
-		#end
 	}
 
 	override public function setWindowMode(mode:ScreenWindowMode):Bool {
@@ -145,26 +137,13 @@ class WindowsScreenBackend extends #if hl CpuScreenBackend #else DesktopScreenBa
 		present();
 	}
 
-	#if hl
-	override public function clear(color:Color):Void {
-		super.clear(color);
-		present();
-	}
-
-	override public function draw(image:Image, x:Int, y:Int):Void {
-		super.draw(image, x, y);
-		present();
-	}
-
-	#end
 
 	override public function hasWindow():Bool return window != null;
 
-	#if !hl override #end public function present():Bool {
+	override public function present():Bool {
 		if (window == null) return false;
 		#if hl
-		final bytes = frame.exportToBytes(PixelFormat.BGRA);
-		return HashLinkWindows.present(window, bytes.getData(), bytes.length, frame.width, frame.height);
+		return HashLinkWindows.present(window, DesktopImageStorage.pixels(frame));
 		#else
 		return Win32.isWindow(window) != 0 && D3D11Device.present(gpuWindow, DesktopImageStorage.pixels(frame));
 		#end

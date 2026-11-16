@@ -38,7 +38,10 @@ void main() {
             vec4(mix(previous.rgb, incoming.rgb, opacity), incoming.a + previous.a * (1 - opacity)));
         return;
     }
-    vec4 color = samplePixel(pos);
+    ivec2 sourcePos = p.mode == 9
+        ? ivec2(vec2(pos) * vec2(p.sourceWidth, p.sourceHeight) / vec2(p.width, p.height))
+        : pos;
+    vec4 color = samplePixel(sourcePos);
     vec2 samplePos = vec2(pos) * vec2(p.stepX, p.stepY);
     switch (p.mode) {
         case 0: {

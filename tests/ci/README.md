@@ -76,9 +76,15 @@ and closes the native window.
 Install hxcpp and utest in the active haxelib repository. Build from the repository root with the Microsoft C++ toolchain available.
 
 ```powershell
-haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64
+haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64 -D vision_screen_tests
 $env:VISION_TESTS = 'ScreenTest'
 ./bin/native-drawing/cpp/Main.exe
 ```
 
-The test uses a hidden window and checks composited pixels, presentation, and frame timing.
+Windows uses Direct3D 11 hardware when available and falls back to its WARP
+implementation on hosts without a usable hardware adapter. The HashLink job
+builds the same Direct3D backend into `vision_screen.hdll` and tests it with
+`-D vision_hashlink_screen`.
+
+The suite exercises visible and hidden windows, compositing, presentation,
+resize, and frame timing.

@@ -345,7 +345,7 @@ class ScreenTest extends utest.Test {
 			Assert.floatEquals(expected[index], pixel[index], 1);
 		}
 	}
-	#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
+	#elseif (windows && ((cpp && !cppia) || (hl && vision_hashlink_screen)))
 	@:visionTestId("vision.ds.Screen.draw#desktopPixels")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
@@ -373,7 +373,7 @@ class ScreenTest extends utest.Test {
 		Assert.isTrue(screen.show());
 		Assert.isTrue(screen.processEvents());
 		Assert.equals(0xFF00CC88, screen.capture().getPixel(4, 6));
-		#if (cpp && !cppia && vision_screen_tests)
+		#if vision_screen_tests
 		exerciseNativePixels(screen, native);
 		#end
 		screen.dispose();
@@ -436,6 +436,11 @@ class ScreenTest extends utest.Test {
 		final backend:vision.native.linux.VulkanScreenBackend = cast screen.backend;
 		#end
 		Assert.isTrue(screen.hasDisplay);
+		#if mac
+		Sys.println("Metal adapter: " + vision.native.apple.MetalDevice.adapterName().toString());
+		#else
+		Sys.println("Vulkan adapter: " + vision.native.linux.VulkanDevice.adapterName().toString());
+		#end
 		Assert.isTrue(screen.poll());
 		Assert.isTrue(screen.poll());
 		Assert.isTrue(screen.deltaTime >= 0.015);
@@ -457,9 +462,11 @@ class ScreenTest extends utest.Test {
 	}
 	#end
 
-	#if (cpp && !cppia && (windows || mac || vision_vulkan) && vision_screen_tests)
+	#if (vision_screen_tests && ((cpp && !cppia && (windows || mac || vision_vulkan)) || (hl && windows && vision_hashlink_screen)))
 	static function deviceReadbacks():Int {
-		#if windows
+		#if hl
+		return vision.native.windows.HashLinkWindows.readbackCount();
+		#elseif windows
 		return vision.native.windows.D3D11Device.readbackCount();
 		#elseif mac
 		return vision.native.apple.MetalDevice.readbackCount();
@@ -490,6 +497,19 @@ class ScreenTest extends utest.Test {
 		Assert.equals(50, resized.height);
 		Assert.equals(0xffabcdef, resized.getPixel(3, 2));
 		Assert.equals(0xff000000, resized.getPixel(63, 49));
+
+		final filtered = source.accelerate()
+			.fillRect({x: 0, y: 0, width: 2, height: 2}, 0x80112233)
+			.resize(8, 8, NearestNeighbor)
+			.convolveHorizontal([0, 1, 0])
+			.convolveVertical([0, 1, 0]).commit();
+		Assert.isTrue(filtered.isGpuBacked);
+		Assert.equals(0x80112233, filtered.getPixel(3, 3));
+		Assert.equals(0xff543210, filtered.getPixel(4, 4));
+		Assert.equals(0xff543210, source.getPixel(0, 0));
+		final fallback = source.accelerate().setPixel(1, 0, 0xff123456).invert().commit();
+		Assert.isFalse(fallback.isGpuBacked);
+		Assert.equals(0xffedcba9, fallback.getPixel(1, 0));
 	}
 	#end
 }

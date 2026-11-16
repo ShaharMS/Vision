@@ -34,7 +34,11 @@ class VulkanScreenBackend extends DesktopScreenBackend {
 	override public function present():Bool return VulkanWindowApi.present(window, DesktopImageStorage.pixels(frame));
 
 	override public function setWindowMode(mode:ScreenWindowMode):Bool return VulkanWindowApi.setWindowMode(window, mode);
-	override public function processEvents():Bool return window != null && VulkanWindowApi.pollWindow(window);
+	override public function processEvents():Bool {
+		if (window == null || !VulkanWindowApi.pollWindow(window)) return false;
+		if (VulkanWindowApi.needsRepaint(window)) presentFrame();
+		return true;
+	}
 	override public function hasWindow():Bool return window != null;
 
 	override public function dispose():Void {
@@ -51,6 +55,7 @@ extern class VulkanWindowApi {
 	static function closeWindow(window:Star<VulkanWindow>):Void;
 	static function setBounds(window:Star<VulkanWindow>, x:Int, y:Int, width:Int, height:Int):Bool;
 	static function pollWindow(window:Star<VulkanWindow>):Bool;
+	static function needsRepaint(window:Star<VulkanWindow>):Bool;
 	static function setWindowMode(window:Star<VulkanWindow>, mode:Int):Bool;
 	static function requestClose(window:Star<VulkanWindow>):Void;
 	static function present(window:Star<VulkanWindow>, frame:Star<VulkanBuffer>):Bool;

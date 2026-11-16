@@ -7,7 +7,7 @@ import vision.exceptions.ScreenError;
 import vision.native.portable.CpuScreenBackend;
 #if js
 import vision.native.browser.BrowserScreenBackend;
-#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
+#elseif (windows && ((cpp && !cppia) || (hl && vision_hashlink_screen)))
 import vision.native.windows.WindowsScreenBackend;
 #elseif (cpp && !cppia && mac)
 import vision.native.apple.MetalScreenBackend;
@@ -32,7 +32,7 @@ abstract ScreenBackend(ScreenDriver) {
 			this = new BrowserScreenBackend(x, y, width, height, options);
 			return;
 		}
-		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
+		#elseif (windows && ((cpp && !cppia) || (hl && vision_hashlink_screen)))
 		this = new WindowsScreenBackend(width, height, options.visible, x, y);
 		return;
 		#elseif (cpp && !cppia && mac)

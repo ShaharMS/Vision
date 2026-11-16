@@ -420,14 +420,14 @@ jobs:
         shell: pwsh
         run: |
           $sdk = $env:VISION_HASHLINK_ROOT
-          $source = (Resolve-Path src/vision/native/windows/hashlink_screen.c).Path
+          $source = (Resolve-Path src/vision/native/windows/hashlink_screen.cpp).Path
           $env:VISION_TESTS = 'ScreenTest'
           New-Item -ItemType Directory -Path bin/native-drawing/hl -Force | Out-Null
           haxe -cp src -cp tests/src -lib utest -main Main --hl bin/native-drawing/hl/tests.hl -D windows -D vision_hashlink_screen -D hl-ver=1.16.0 -D vision_screen_tests -dce full
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           Push-Location bin/native-drawing/hl
           try {
-            cmd /c ('call "{0}" -arch=amd64 >nul && cl /nologo /O2 /std:c11 /LD /I"{1}\include" "{2}" user32.lib gdi32.lib /link /out:vision_screen.hdll' -f $env:VISION_MSVC_DEV_CMD,$sdk,$source)
+            cmd /c ('call "{0}" -arch=amd64 >nul && cl /nologo /O2 /EHsc /std:c++17 /LD /I"{1}\include" "{2}" "{1}\libhl.lib" user32.lib d3d11.lib d3dcompiler.lib /link /out:vision_screen.hdll' -f $env:VISION_MSVC_DEV_CMD,$sdk,$source)
             if ($LASTEXITCODE) { exit $LASTEXITCODE }
             & (Join-Path $sdk 'hl.exe') tests.hl
             if ($LASTEXITCODE) { exit $LASTEXITCODE }

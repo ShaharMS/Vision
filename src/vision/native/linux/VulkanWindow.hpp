@@ -6,8 +6,7 @@ struct Window {
     Display* display = nullptr;
     ::Window window = 0;
     Atom wmProtocols = 0, wmDelete = 0;
-    bool mapped = false, closed = false;
-    int x = 0, y = 0, width = 0, height = 0;
+    bool mapped = false, closed = false, repaint = false;
     VkSurfaceKHR surface = VK_NULL_HANDLE;
     VkSwapchainKHR swapchain = VK_NULL_HANDLE;
     VkSemaphore acquired = VK_NULL_HANDLE, rendered = VK_NULL_HANDLE;
@@ -83,10 +82,6 @@ inline Window* openWindow(int x, int y, int width, int height, bool visible) {
     window->display = XOpenDisplay(nullptr);
     if (!window->display) return nullptr;
     auto display = window->display;
-    window->x = x;
-    window->y = y;
-    window->width = width;
-    window->height = height;
     window->window = XCreateSimpleWindow(display, DefaultRootWindow(display), x, y, width, height, 0, 0, 0);
     XStoreName(display, window->window, "Vision Vulkan");
     window->wmProtocols = XInternAtom(display, "WM_PROTOCOLS", False);
@@ -135,19 +130,24 @@ inline bool pollWindow(Window* window) {
             window->closed = true;
         } else if (event.type == MapNotify || event.type == UnmapNotify) {
             window->mapped = event.type == MapNotify;
+            window->repaint = window->mapped;
+        } else if (event.type == Expose || event.type == ConfigureNotify) {
+            window->repaint = true;
         }
     }
     return !window->closed;
 }
 
+inline bool needsRepaint(Window* window) {
+    const bool repaint = window->repaint;
+    window->repaint = false;
+    return repaint && window->mapped;
+}
+
 inline bool setBounds(Window* window, int x, int y, int width, int height) {
-    window->x = x;
-    window->y = y;
-    window->width = width;
-    window->height = height;
-    XMoveResizeWindow(window->display, window->window, x, y, width, height);
+    if (!XMoveResizeWindow(window->display, window->window, x, y, width, height)) return false;
     XSync(window->display, False);
-    return window->resize();
+    return true;
 }
 
 inline void changeState(Window* window, long action, const char* first, const char* second = nullptr) {
@@ -209,6 +209,10 @@ inline bool present(Window* window, Buffer* frame) {
     if (vkBeginCommandBuffer(command, &begin) != VK_SUCCESS) return false;
     uint32_t index;
     auto status = vkAcquireNextImageKHR(gpu.logical, window->swapchain, UINT64_MAX, window->acquired, VK_NULL_HANDLE, &index);
+    if (status == VK_ERROR_OUT_OF_DATE_KHR) {
+        window->repaint = true;
+        return window->resize();
+    }
     if (status != VK_SUCCESS && status != VK_SUBOPTIMAL_KHR) return false;
     VkMemoryBarrier memory{VK_STRUCTURE_TYPE_MEMORY_BARRIER};
     memory.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
@@ -249,6 +253,11 @@ inline bool present(Window* window, Buffer* frame) {
     status = vkQueuePresentKHR(gpu.queue, &present);
     auto completed = vkQueueWaitIdle(gpu.queue);
     window->presented[index] = true;
-    return completed == VK_SUCCESS && (status == VK_SUCCESS || status == VK_SUBOPTIMAL_KHR);
+    if (completed != VK_SUCCESS) return false;
+    if (status == VK_ERROR_OUT_OF_DATE_KHR || status == VK_SUBOPTIMAL_KHR) {
+        window->repaint = true;
+        return window->resize();
+    }
+    return status == VK_SUCCESS;
 }
 }
