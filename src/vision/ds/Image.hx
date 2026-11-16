@@ -66,7 +66,7 @@ abstract Image(ImageBackend) {
 	}
 	#end
 
-	/** Whether this image has an available graphics backing. **/
+	/** Whether this source image has available device storage from Screen.attach(). **/
 	public var isGpuBacked(get, never):Bool;
 
 	inline function get_isGpuBacked():Bool {

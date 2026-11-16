@@ -100,7 +100,8 @@ class Screen {
 	}
 
 	/**
-		Draws an image onto the current contents using its alpha channel.
+		Composites the image's current pixels onto the screen using its alpha
+		channel. Call draw again to show later edits. Attachment is optional.
 
 		@param image The image to draw
 		@param x Horizontal offset from the top-left of the drawing area
@@ -133,10 +134,14 @@ class Screen {
 	}
 
 	/**
-		Requests device storage for an image on this screen.
+		Lets this screen's WebGL renderer keep a device copy of the source
+		image. The renderer uploads the pixels on first use. Supported Vision
+		operations can update that copy, and later draws can reuse it.
+		Call draw separately to composite the image onto the screen.
 
 		@param image The image to attach
-		@return True if the backend can store the image on the device
+		@return True if the image has device storage on this screen. Canvas 2D,
+			desktop, and offscreen backends return false.
 	**/
 	public function attach(image:Image):Bool {
 		checkOpen();
@@ -144,7 +149,9 @@ class Screen {
 	}
 
 	/**
-		Releases this screen's device storage for an image and preserves its pixels.
+		Copies any pending device edits back to the image's CPU buffer and
+		releases the device storage owned by this screen. The image remains
+		usable for pixel access and future draws.
 
 		@param image The image to detach
 	**/

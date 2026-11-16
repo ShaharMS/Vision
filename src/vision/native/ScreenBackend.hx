@@ -4,16 +4,20 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.specifics.ScreenOptions;
 import vision.exceptions.ScreenError;
-import vision.native.cpu.CpuScreenBackend;
+import vision.native.portable.CpuScreenBackend;
 #if js
 import vision.native.browser.BrowserScreenBackend;
 #elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 import vision.native.windows.WindowsScreenBackend;
 #elseif (cpp && !cppia && VISION_SDL_PREFIX)
-import vision.native.sdl.SdlScreenBackend;
+import vision.native.unix.SdlScreenBackend;
 #end
 
-/** Selects and delegates to the screen implementation available on this target. **/
+/**
+	Selects a presentation backend by platform. The browser, Windows, and
+	Unix desktop packages contain their own bindings. Windows selects its
+	hxcpp or HashLink binding inside the Windows package.
+**/
 @:forward(setBounds, clear, draw, drawInverted, capture, attach, detach, processEvents, waitForFrame, dispose, hasWindow)
 abstract ScreenBackend(ScreenDriver) {
 	public function new(x:Int, y:Int, width:Int, height:Int, options:ScreenOptions) {

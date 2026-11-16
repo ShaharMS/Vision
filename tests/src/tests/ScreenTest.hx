@@ -407,14 +407,14 @@ class ScreenTest extends utest.Test {
 	#elseif (cpp && !cppia && VISION_SDL_PREFIX && vision_screen_tests)
 	@:visionTestId("vision.ds.Screen.draw#sdlWindow")
 	@:access(vision.ds.Screen)
-	@:access(vision.native.sdl.SdlScreenBackend)
+	@:access(vision.native.unix.SdlScreenBackend)
 	function test_draw__sdlWindow():Void {
 		final screen = new Screen(20, 20, 48, 36);
-		final backend:vision.native.sdl.SdlScreenBackend = cast screen.backend;
+		final backend:vision.native.unix.SdlScreenBackend = cast screen.backend;
 		final window = backend.window;
-		final id = vision.native.sdl.SdlScreen.id(window);
-		final driver = vision.native.sdl.SdlScreen.videoDriver().toString();
-		final renderer = vision.native.sdl.SdlScreen.rendererName(window).toString();
+		final id = vision.native.unix.SdlScreen.id(window);
+		final driver = vision.native.unix.SdlScreen.videoDriver().toString();
+		final renderer = vision.native.unix.SdlScreen.rendererName(window).toString();
 		if (Sys.systemName() == "Mac") {
 			Assert.equals("cocoa", driver);
 			Assert.equals("metal", renderer);
@@ -422,31 +422,31 @@ class ScreenTest extends utest.Test {
 			Assert.isTrue(driver == "x11" || driver == "wayland", driver);
 			Assert.isTrue(StringTools.startsWith(renderer, "opengl"), renderer);
 		}
-		Assert.isTrue(vision.native.sdl.SdlScreen.accelerated(window));
+		Assert.isTrue(vision.native.unix.SdlScreen.accelerated(window));
 		Assert.isTrue(screen.hasDisplay);
-		Assert.isTrue(vision.native.sdl.SdlScreen.isShown(window));
+		Assert.isTrue(vision.native.unix.SdlScreen.isShown(window));
 		Assert.isTrue(screen.processEvents());
 		screen.clear(0xff112233);
 		screen.draw(new Image(4, 4, 0xffabcdef), 3, 2);
 		screen.drawInverted(new Image(1, 1, 0xff0055bb), 8, 9);
-		Assert.equals(0xff112233, vision.native.sdl.SdlScreen.pixel(window, 0, 0));
-		Assert.equals(0xffabcdef, vision.native.sdl.SdlScreen.pixel(window, 3, 2));
-		Assert.equals(0xffffaa44, vision.native.sdl.SdlScreen.pixel(window, 8, 9));
+		Assert.equals(0xff112233, vision.native.unix.SdlScreen.pixel(window, 0, 0));
+		Assert.equals(0xffabcdef, vision.native.unix.SdlScreen.pixel(window, 3, 2));
+		Assert.equals(0xffffaa44, vision.native.unix.SdlScreen.pixel(window, 8, 9));
 		screen.setBounds(30, 30, 64, 50);
 		Assert.isTrue(screen.processEvents());
-		Assert.isTrue(vision.native.sdl.SdlScreen.matchesSize(window, 64, 50));
-		Assert.equals(0xffabcdef, vision.native.sdl.SdlScreen.pixel(window, 3, 2));
-		Assert.equals(0xff000000, vision.native.sdl.SdlScreen.pixel(window, 63, 49));
+		Assert.isTrue(vision.native.unix.SdlScreen.matchesSize(window, 64, 50));
+		Assert.equals(0xffabcdef, vision.native.unix.SdlScreen.pixel(window, 3, 2));
+		Assert.equals(0xff000000, vision.native.unix.SdlScreen.pixel(window, 63, 49));
 		final capture = screen.capture();
 		Assert.equals(64, capture.width);
 		Assert.equals(50, capture.height);
 		Assert.equals(0xffabcdef, capture.getPixel(3, 2));
 
 		final other = new Screen(100, 100, 32, 32);
-		Assert.isTrue(vision.native.sdl.SdlScreen.requestClose(window));
+		Assert.isTrue(vision.native.unix.SdlScreen.requestClose(window));
 		Assert.isTrue(other.processEvents());
 		Assert.isFalse(screen.processEvents());
-		Assert.isFalse(vision.native.sdl.SdlScreen.exists(id));
+		Assert.isFalse(vision.native.unix.SdlScreen.exists(id));
 		Assert.isFalse(screen.hasDisplay);
 		Assert.isTrue(other.processEvents());
 		other.dispose();

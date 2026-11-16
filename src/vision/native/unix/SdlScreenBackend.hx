@@ -1,4 +1,4 @@
-package vision.native.sdl;
+package vision.native.unix;
 
 #if (cpp && !cppia && VISION_SDL_PREFIX)
 import cpp.NativeArray;
@@ -9,7 +9,7 @@ import vision.ds.Color;
 import vision.ds.Image;
 import vision.exceptions.ScreenError;
 import vision.native.ScreenBackend.ScreenDriver;
-import vision.native.sdl.SdlScreen.SdlWindow;
+import vision.native.unix.SdlScreen.SdlWindow;
 
 /** Composites and presents in an SDL render target and reads pixels back on capture. **/
 @:noCompletion

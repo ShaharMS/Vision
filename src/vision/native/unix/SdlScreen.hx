@@ -1,4 +1,4 @@
-package vision.native.sdl;
+package vision.native.unix;
 
 #if (cpp && !cppia && VISION_SDL_PREFIX)
 import cpp.ConstCharStar;
@@ -7,7 +7,7 @@ import cpp.RawConstPointer;
 import cpp.Star;
 import cpp.UInt8;
 
-@:include("vision/native/sdl/screen.h")
+@:include("vision/native/unix/screen.h")
 @:buildXml('
 	<files id="haxe">
 		<compilerflag value="-I${haxelib:vision}/src" />
@@ -42,7 +42,7 @@ extern class SdlScreen {
 	#end
 }
 
-@:include("vision/native/sdl/screen.h")
+@:include("vision/native/unix/screen.h")
 @:native("VisionSdlWindow")
 extern class SdlWindow {}
 #end

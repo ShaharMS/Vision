@@ -6,13 +6,13 @@ import vision.ds.Image;
 import vision.ds.specifics.TextOptions;
 import vision.algorithms.TextDrawing;
 import vision.exceptions.TextDrawingError;
-import vision.native.cpu.CpuImage;
+import vision.native.portable.CpuImage;
 #if js
 import vision.native.browser.BrowserText;
 #end
 
-/** Storage and platform operations used by Image. **/
-@:forward(length, surface, width, height, isGpuBacked, attach, detach, prepareSurface, transform, readPixels, writePixels, bytes,
+/** Common Image API over a CPU buffer with optional platform-specific device storage. **/
+@:forward(length, deviceStorage, width, height, isGpuBacked, bindDeviceStorage, releaseDeviceStorage, prepareDeviceStorage, transform, readPixels, writePixels, bytes,
 	readColor, writeColor, exportPixels, colors, get, set, getInt32, setInt32, getUInt16, setUInt16)
 abstract ImageBackend(CpuImage) {
 	public static inline final FIELD_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
@@ -83,8 +83,9 @@ abstract ImageBackend(CpuImage) {
 	}
 }
 
+/** Stores and transforms one image's pixels in a graphics context. **/
 @:noCompletion
-interface ImageSurface {
+interface DeviceImageStorage {
 	function isAvailable():Bool;
 	function upload(packed:ByteArray):Bool;
 	function download(packed:ByteArray):Void;

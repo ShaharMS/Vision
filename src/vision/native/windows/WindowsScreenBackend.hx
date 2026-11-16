@@ -2,8 +2,8 @@ package vision.native.windows;
 
 #if (windows && (cpp || (hl && vision_hashlink_screen)))
 	#if hl
-	import vision.native.hashlink.windows.HashLinkWindows;
-	import vision.native.hashlink.windows.HashLinkWindows.HashLinkWindow;
+	import vision.native.windows.HashLinkWindows;
+	import vision.native.windows.HashLinkWindows.HashLinkWindow;
 	#else
 	import cpp.Native;
 	import cpp.NativeArray;
@@ -15,7 +15,7 @@ package vision.native.windows;
 	import vision.native.windows.Win32.WinWindow;
 	#end
 import vision.ds.Color;
-import vision.native.cpu.CpuScreenBackend;
+import vision.native.portable.CpuScreenBackend;
 import vision.ds.Image;
 import vision.ds.PixelFormat;
 import vision.exceptions.ScreenError;

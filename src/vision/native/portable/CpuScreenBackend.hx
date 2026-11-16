@@ -1,4 +1,4 @@
-package vision.native.cpu;
+package vision.native.portable;
 
 import haxe.Timer;
 import vision.Vision;

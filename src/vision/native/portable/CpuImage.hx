@@ -1,4 +1,4 @@
-package vision.native.cpu;
+package vision.native.portable;
 
 import vision.ds.ByteArray;
 import vision.ds.Color;
@@ -6,17 +6,21 @@ import vision.ds.Image;
 import vision.native.ImageBackend;
 import vision.native.ImageBackend.ImageOperation;
 import vision.tools.MathTools;
-import vision.native.ImageBackend.ImageSurface;
+import vision.native.ImageBackend.DeviceImageStorage;
 
-/** Packed CPU pixels and synchronization state for an optional drawing surface. **/
+/** Owns the packed CPU buffer that every Image uses for metadata and CPU pixel access. **/
 @:noCompletion
 class CpuImage {
 	final packed:ByteArray;
 	public var length(get, never):Int;
+	// Callers with a mutable byte reference can write without going through writePixels().
 	var exposed:Bool;
-	public var surface(default, null):ImageSurface;
+	/** Optional pixel storage supplied by a graphics backend, currently WebGL. **/
+	public var deviceStorage(default, null):DeviceImageStorage;
+	// CPU writes invalidate the device copy. Device transforms invalidate the CPU pixels.
+	// The next access to a stale copy synchronizes it with the current one.
 	var cpuValid = true;
-	var surfaceValid = false;
+	var deviceValid = false;
 
 	public function new(packed:ByteArray, exposed:Bool) {
 		this.packed = packed;
@@ -52,7 +56,7 @@ class CpuImage {
 	}
 
 	inline function get_isGpuBacked():Bool
-		return this.surface != null && this.surface.isAvailable();
+		return this.deviceStorage != null && this.deviceStorage.isAvailable();
 
 	public inline function readColor(position:Int):Color {
 		position += ImageBackend.PIXEL_OFFSET;
@@ -79,39 +83,41 @@ class CpuImage {
 	inline function get_length():Int
 		return this.packed.length;
 
-	public function attach(surface:ImageSurface):Bool {
-		if (this.exposed || this.surface != null) return false;
-		this.surface = surface;
+	public function bindDeviceStorage(deviceStorage:DeviceImageStorage):Bool {
+		if (this.exposed || this.deviceStorage != null) return false;
+		this.deviceStorage = deviceStorage;
 		return true;
 	}
 
-	public function detach():Void {
-		if (this.surface != null) {
+	public function releaseDeviceStorage():Void {
+		if (this.deviceStorage != null) {
 			readPixels();
-			this.surface.dispose();
-			this.surface = null;
-			this.surfaceValid = false;
+			this.deviceStorage.dispose();
+			this.deviceStorage = null;
+			this.deviceValid = false;
 		}
 	}
 
-	public function prepareSurface():Bool {
-		final surface = this.surface;
-		if (surface == null || !surface.isAvailable()) return false;
-		if (!this.surfaceValid) this.surfaceValid = surface.upload(this.packed);
-		return this.surfaceValid;
+	/** Uploads the CPU pixels before the first device use or after a CPU write. **/
+	public function prepareDeviceStorage():Bool {
+		final deviceStorage = this.deviceStorage;
+		if (deviceStorage == null || !deviceStorage.isAvailable()) return false;
+		if (!this.deviceValid) this.deviceValid = deviceStorage.upload(this.packed);
+		return this.deviceValid;
 	}
 
 	public function transform(operation:ImageOperation, value:Int):Bool {
-		if (prepareSurface() && this.surface.transform(operation, value)) {
+		if (prepareDeviceStorage() && this.deviceStorage.transform(operation, value)) {
 			this.cpuValid = false;
 			return true;
 		}
 		return false;
 	}
 
+	/** Reads back device pixels only when a device transform made the CPU copy stale. **/
 	public function readPixels():ByteArray {
 		if (!this.cpuValid) {
-			this.surface.download(this.packed);
+			this.deviceStorage.download(this.packed);
 			this.cpuValid = true;
 		}
 		return this.packed;
@@ -119,12 +125,12 @@ class CpuImage {
 
 	public function writePixels():ByteArray {
 		final pixels = readPixels();
-		this.surfaceValid = false;
+		this.deviceValid = false;
 		return pixels;
 	}
 
 	public function bytes():ByteArray {
-		detach();
+		releaseDeviceStorage();
 		this.exposed = true;
 		return this.packed;
 	}
