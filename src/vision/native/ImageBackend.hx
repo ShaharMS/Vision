@@ -13,7 +13,7 @@ import vision.native.browser.WebGLImageBackend;
 #end
 
 /** Common Image API over a CPU buffer with optional platform-specific device storage. **/
-@:forward(length, deviceStorage, width, height, isGpuBacked, bindDeviceStorage, releaseDeviceStorage, prepareDeviceStorage, transform, readPixels, writePixels, bytes,
+@:forward(length, deviceStorage, width, height, isGpuBacked, bindDeviceStorage, markDeviceWritten, releaseDeviceStorage, prepareDeviceStorage, transform, readPixels, writePixels, bytes,
 	readColor, writeColor, exportPixels, colors, get, set, getInt32, setInt32, getUInt16, setUInt16)
 abstract ImageBackend(CpuImage) {
 	public static inline final FIELD_BYTES = #if vision_higher_width_cap 4 #else 2 #end;
@@ -51,6 +51,9 @@ abstract ImageBackend(CpuImage) {
 			#if js
 			if (backend.deviceStorage == null && image.width * 1.0 * image.height >= 65536)
 				WebGLImageBackend.prepare(image);
+			#elseif (cpp && !cppia && (windows || mac || vision_vulkan))
+			if (backend.deviceStorage == null && image.width * 1.0 * image.height >= 65536)
+				DesktopImageStorage.prepare(image);
 			#end
 			if (backend.transform(operation, value)) return;
 		}

@@ -53,21 +53,23 @@ Run `haxe tests/ci/drawing.hxml` and open [drawing.html](drawing.html) in a brow
 
 ## Linux and macOS drawing
 
-Install pkg-config, SDL2 development files, hxcpp, and utest. Build and run from the repository root.
-On macOS, install SDL2 with Homebrew and add its `lib/pkgconfig` directory to `PKG_CONFIG_PATH` if needed.
-Apple Silicon builds also use `-D HXCPP_ARM64`.
+Linux builds use pkg-config to discover Vulkan and X11 development libraries.
+The window uses X11, including XWayland in a Wayland session. A working Vulkan
+driver is required for a native window. Without the Linux development libraries,
+Vision builds with in-memory Screen and CPU Image acceleration.
+
+macOS builds use the system Metal and AppKit frameworks. Create and operate
+windows on the main thread. Apple Silicon builds also use `-D HXCPP_ARM64`.
 
 ```sh
-haxe -lib vision -lib utest -cp tests/src -main Main --cpp bin/sdl-screen \
+haxe -lib vision -lib utest -cp tests/src -main Main --cpp bin/unix-screen \
   -D vision_screen_tests -dce full
-VISION_TESTS=ScreenTest bin/sdl-screen/Main
+VISION_TESTS=ScreenTest bin/unix-screen/Main
 ```
 
-Vision detects SDL2 through pkg-config when loaded with `-lib vision`. Without an SDL2 SDK, Screen uses the in-memory backend.
-Run window creation, drawing, event processing, and disposal on the main thread.
-The desktop suite requires an accelerated SDL renderer and a real windowing driver.
-Linux CI runs OpenGL through Mesa under Xvfb. macOS CI requires Cocoa and Metal.
-The default Screen keeps the composited frame in the render target; `capture()` reads it back.
+Linux CI uses Mesa Vulkan under Xvfb. The desktop suite presents a window, draws
+a device-resident image without CPU readback, checks captured pixels and resize,
+and closes the native window.
 
 ## Windows drawing
 

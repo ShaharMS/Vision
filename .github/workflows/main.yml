@@ -328,7 +328,7 @@ jobs:
           node "$RUNNER_TEMP/vision-browser/node_modules/playwright-core/cli.js" install --with-deps --no-shell chromium
           NODE_PATH="$RUNNER_TEMP/vision-browser/node_modules" node tests/ci/check-browser.cjs
 
-  sdl-screen:
+  unix-screen:
     name: Screen (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
@@ -346,9 +346,9 @@ jobs:
         run: |
           if [ "$RUNNER_OS" = Linux ]; then
             sudo apt-get update
-            sudo apt-get install -y pkg-config libsdl2-dev libgl1-mesa-dri xvfb xauth
+            sudo apt-get install -y pkg-config libvulkan-dev libx11-dev mesa-vulkan-drivers xvfb xauth
           else
-            brew install haxe pkgconf sdl2
+            brew install haxe
           fi
       - name: Build the Screen suite
         run: |
@@ -359,19 +359,18 @@ jobs:
           haxelib install utest 1.13.2 --always
           flags=()
           if [ "$RUNNER_OS" = macOS ]; then
-            export PKG_CONFIG_PATH="$(brew --prefix sdl2)/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
             if [ "$(uname -m)" = arm64 ]; then flags+=(-D HXCPP_ARM64); fi
           fi
-          haxe -lib vision -lib utest -cp tests/src -main Main --cpp bin/sdl-screen \
+          haxe -lib vision -lib utest -cp tests/src -main Main --cpp bin/unix-screen \
             -D vision_screen_tests -dce full "${flags[@]}"
       - name: Open, draw, resize and close a native window
         env:
           VISION_TESTS: ScreenTest
         run: |
           if [ "$RUNNER_OS" = Linux ]; then
-            SDL_VIDEODRIVER=x11 SDL_RENDER_DRIVER=opengl LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a bin/sdl-screen/Main
+            xvfb-run -a bin/unix-screen/Main
           else
-            SDL_VIDEODRIVER=cocoa bin/sdl-screen/Main
+            bin/unix-screen/Main
           fi
 
   native-screen:

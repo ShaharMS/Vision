@@ -6,11 +6,11 @@ package vision.native.windows;
 	import vision.native.windows.HashLinkWindows.HashLinkWindow;
 	#else
 	import cpp.Native;
-	import cpp.NativeArray;
 	import cpp.Star;
-	import vision.native.windows.Win32.WinBitmapHeader;
-	import vision.native.windows.Win32.WinBitmapInfo;
 	import vision.native.windows.Win32.WinMessage;
+	import vision.native.windows.D3D11Device.D3D11Window;
+	import vision.native.DesktopImageStorage;
+	import vision.native.DesktopScreenBackend;
 	import vision.native.windows.Win32.WinMonitorInfo;
 	import vision.native.windows.Win32.WinRect;
 	import vision.native.windows.Win32.WinWindow;
@@ -19,12 +19,14 @@ import vision.ds.Color;
 import vision.native.ScreenBackend.ScreenWindowMode;
 import vision.native.portable.CpuScreenBackend;
 import vision.ds.Image;
+#if hl
 import vision.ds.PixelFormat;
+#end
 import vision.exceptions.ScreenError;
 
 /** Desktop drawing through Windows system externs. **/
 @:noCompletion
-class WindowsScreenBackend extends CpuScreenBackend {
+class WindowsScreenBackend extends #if hl CpuScreenBackend #else DesktopScreenBackend #end {
 	#if hl
 	static inline var WINDOW_OPEN = 1;
 	static inline var WINDOW_REPAINT = 2;
@@ -35,7 +37,7 @@ class WindowsScreenBackend extends CpuScreenBackend {
 	static inline var KEEP_FOCUS = 0x0010;
 	static inline var REMOVE_MESSAGE = 1;
 	static inline var PAINT_MESSAGE = 0x000F;
-	static inline var COPY_SOURCE = 0x00CC0020;
+	var gpuWindow:Star<D3D11Window>;
 	#end
 
 	var normalX:Int;
@@ -59,7 +61,15 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		if (window != null && visible) Win32.showWindow(window, SHOW_WINDOW);
 		#end
 		if (window == null) throw new ScreenError("Windows could not open a drawing window");
+		#if hl
 		present();
+		#else
+		gpuWindow = D3D11Device.openWindow(window, width, height);
+		if (gpuWindow == null || !present()) {
+			dispose();
+			throw new ScreenError("Could not open a Direct3D 11 swapchain");
+		}
+		#end
 	}
 
 	override public function setWindowMode(mode:ScreenWindowMode):Bool {
@@ -127,10 +137,15 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		if (!moved) throw new ScreenError("Windows could not change the screen bounds");
 		normalX = x;
 		normalY = y;
+		#if !hl
+		if ((width != frame.width || height != frame.height) && !D3D11Device.resizeWindow(gpuWindow, width, height))
+			throw new ScreenError("Could not resize the Direct3D 11 swapchain");
+		#end
 		frame = replacement;
 		present();
 	}
 
+	#if hl
 	override public function clear(color:Color):Void {
 		super.clear(color);
 		present();
@@ -141,36 +156,25 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		present();
 	}
 
+	#end
+
 	override public function hasWindow():Bool return window != null;
 
-	public function present():Bool {
+	#if !hl override #end public function present():Bool {
 		if (window == null) return false;
 		#if hl
 		final bytes = frame.exportToBytes(PixelFormat.BGRA);
 		return HashLinkWindows.present(window, bytes.getData(), bytes.length, frame.width, frame.height);
 		#else
-		if (Win32.isWindow(window) == 0) return false;
-		final dc = Win32.getDC(window);
-		if (dc == null) return false;
-
-		var info = WinBitmapInfo.make();
-		info.bmiHeader.biSize = Native.sizeof(WinBitmapHeader);
-		info.bmiHeader.biWidth = frame.width;
-		info.bmiHeader.biHeight = -frame.height;
-		info.bmiHeader.biPlanes = 1;
-		info.bmiHeader.biBitCount = 32;
-		final bytes = frame.exportToBytes(PixelFormat.BGRA);
-		final pixels = NativeArray.address(bytes.getData(), 0);
-		var client = WinRect.make();
-		Win32.getClientRect(window, Native.addressOf(client));
-		final rows = Win32.stretchBits(dc, 0, 0, client.right, client.bottom, 0, 0, frame.width, frame.height, pixels.constRaw, Native.addressOf(info), 0,
-			COPY_SOURCE);
-		Win32.releaseDC(window, dc);
-		return rows != 0 && rows != -1;
+		return Win32.isWindow(window) != 0 && D3D11Device.present(gpuWindow, DesktopImageStorage.pixels(frame));
 		#end
 	}
 
 	override public function dispose():Void {
+		#if !hl
+		if (gpuWindow != null) D3D11Device.closeWindow(gpuWindow);
+		gpuWindow = null;
+		#end
 		if (window != null) {
 			#if hl
 			HashLinkWindows.close(window);

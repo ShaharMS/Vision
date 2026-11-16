@@ -9,8 +9,10 @@ import vision.native.portable.CpuScreenBackend;
 import vision.native.browser.BrowserScreenBackend;
 #elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 import vision.native.windows.WindowsScreenBackend;
-#elseif (cpp && !cppia && VISION_SDL_PREFIX)
-import vision.native.unix.SdlScreenBackend;
+#elseif (cpp && !cppia && mac)
+import vision.native.apple.MetalScreenBackend;
+#elseif (cpp && !cppia && vision_vulkan)
+import vision.native.linux.VulkanScreenBackend;
 #end
 
 /**
@@ -33,8 +35,11 @@ abstract ScreenBackend(ScreenDriver) {
 		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 		this = new WindowsScreenBackend(width, height, options.visible, x, y);
 		return;
-		#elseif (cpp && !cppia && VISION_SDL_PREFIX)
-		this = new SdlScreenBackend(x, y, width, height, options.visible, options.preferGpu);
+		#elseif (cpp && !cppia && mac)
+		this = new MetalScreenBackend(x, y, width, height, options.visible);
+		return;
+		#elseif (cpp && !cppia && vision_vulkan)
+		this = new VulkanScreenBackend(x, y, width, height, options.visible);
 		return;
 		#end
 		this = new CpuScreenBackend(width, height);

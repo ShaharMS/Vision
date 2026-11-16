@@ -15,7 +15,7 @@ class CpuImage {
 	public var length(get, never):Int;
 	// Callers with a mutable byte reference can write without going through writePixels().
 	var exposed:Bool;
-	/** Optional pixel storage supplied by a graphics backend, currently WebGL. **/
+	/** Optional pixel storage supplied by a graphics backend, when available. **/
 	public var deviceStorage(default, null):DeviceImageStorage;
 	// CPU writes invalidate the device copy. Device transforms invalidate the CPU pixels.
 	// The next access to a stale copy synchronizes it with the current one.
@@ -104,6 +104,11 @@ class CpuImage {
 		if (deviceStorage == null || !deviceStorage.isAvailable()) return false;
 		if (!this.deviceValid) this.deviceValid = deviceStorage.upload(this.packed);
 		return this.deviceValid;
+	}
+
+	public function markDeviceWritten():Void {
+		cpuValid = false;
+		deviceValid = true;
 	}
 
 	public function transform(operation:ImageOperation, value:Int):Bool {

@@ -1,8 +1,7 @@
 # 3.0.0 (unreleased)
 
 - Added portable CFF2 outlines at the font’s default variation settings.
-- Added Linux and macOS desktop Screen windows for hxcpp when pkg-config finds SDL2.
-  SDL uses an accelerated render target when available, with Metal preferred on macOS.
+- Added native hxcpp Screen presentation and Image acceleration with Vulkan on Linux, Metal on macOS, and Direct3D 11 on Windows.
 - Added portable lossy WebP decoding for stills and animated frames, including alpha. WebP encoding uses lossless compression.
 - Added `Color` conversions for linear sRGB, OKLab, and OKLCH, including alpha.
 - Portable text uses shared OpenType substitution and positioning for horizontal

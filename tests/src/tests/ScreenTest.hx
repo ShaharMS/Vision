@@ -1,7 +1,7 @@
 package tests;
 
-#if (vision_screen_tests && cpp && !windows && !VISION_SDL_PREFIX)
-#error "The desktop Screen test requires SDL2 development files discoverable by pkg-config."
+#if (vision_screen_tests && cpp && !windows && !mac && !vision_vulkan)
+#error "The Linux Screen test requires Vulkan and X11 development files discoverable by pkg-config."
 #end
 
 import haxe.Timer;
@@ -373,6 +373,9 @@ class ScreenTest extends utest.Test {
 		Assert.isTrue(screen.show());
 		Assert.isTrue(screen.processEvents());
 		Assert.equals(0xFF00CC88, screen.capture().getPixel(4, 6));
+		#if (cpp && !cppia && vision_screen_tests)
+		exerciseNativePixels(screen, native);
+		#end
 		screen.dispose();
 	}
 
@@ -417,55 +420,76 @@ class ScreenTest extends utest.Test {
 		screen.dispose();
 		Assert.isFalse(screen.poll() || screen.processEvents(), "Disposed screen reported ready");
 	}
-	#elseif (cpp && !cppia && VISION_SDL_PREFIX && vision_screen_tests)
-	@:visionTestId("vision.ds.Screen.draw#sdlWindow")
+	#elseif (cpp && !cppia && (mac || vision_vulkan) && vision_screen_tests)
+	@:visionTestId("vision.ds.Screen.draw#nativeSwapchain")
 	@:access(vision.ds.Screen)
-	@:access(vision.native.unix.SdlScreenBackend)
-	function test_draw__sdlWindow():Void {
-		final screen = new Screen(20, 20, 48, 36);
-		final backend:vision.native.unix.SdlScreenBackend = cast screen.backend;
-		final window = backend.window;
-		final id = vision.native.unix.SdlScreen.id(window);
-		final driver = vision.native.unix.SdlScreen.videoDriver().toString();
-		final renderer = vision.native.unix.SdlScreen.rendererName(window).toString();
-		if (Sys.systemName() == "Mac") {
-			Assert.equals("cocoa", driver);
-			Assert.equals("metal", renderer);
-		} else {
-			Assert.isTrue(driver == "x11" || driver == "wayland", driver);
-			Assert.isTrue(StringTools.startsWith(renderer, "opengl"), renderer);
-		}
-		Assert.isTrue(vision.native.unix.SdlScreen.accelerated(window));
+	#if mac
+	@:access(vision.native.apple.MetalScreenBackend)
+	#else
+	@:access(vision.native.linux.VulkanScreenBackend)
+	#end
+	function test_draw__nativeSwapchain():Void {
+		final screen = Screen.open(20, 20, 48, 36);
+		#if mac
+		final backend:vision.native.apple.MetalScreenBackend = cast screen.backend;
+		#else
+		final backend:vision.native.linux.VulkanScreenBackend = cast screen.backend;
+		#end
 		Assert.isTrue(screen.hasDisplay);
-		Assert.isTrue(vision.native.unix.SdlScreen.isShown(window));
 		Assert.isTrue(screen.poll());
 		Assert.isTrue(screen.poll());
 		Assert.isTrue(screen.deltaTime >= 0.015);
-		screen.clear(0xff112233);
-		screen.draw(new Image(4, 4, 0xffabcdef), 3, 2);
-		screen.drawInverted(new Image(1, 1, 0xff0055bb), 8, 9);
-		Assert.equals(0xff112233, vision.native.unix.SdlScreen.pixel(window, 0, 0));
-		Assert.equals(0xffabcdef, vision.native.unix.SdlScreen.pixel(window, 3, 2));
-		Assert.equals(0xffffaa44, vision.native.unix.SdlScreen.pixel(window, 8, 9));
-		screen.setBounds(30, 30, 64, 50);
-		Assert.isTrue(screen.processEvents());
-		Assert.isTrue(vision.native.unix.SdlScreen.matchesSize(window, 64, 50));
-		Assert.equals(0xffabcdef, vision.native.unix.SdlScreen.pixel(window, 3, 2));
-		Assert.equals(0xff000000, vision.native.unix.SdlScreen.pixel(window, 63, 49));
-		final capture = screen.capture();
-		Assert.equals(64, capture.width);
-		Assert.equals(50, capture.height);
-		Assert.equals(0xffabcdef, capture.getPixel(3, 2));
+		exerciseNativePixels(screen, backend);
 
-		final other = new Screen(100, 100, 32, 32);
-		Assert.isTrue(vision.native.unix.SdlScreen.requestClose(window));
+		final other = Screen.open(100, 100, 32, 32, {visible: false});
+		var closed = false;
+		screen.onClose = () -> closed = true;
+		#if mac
+		vision.native.apple.MetalScreenBackend.MetalWindowApi.requestClose(backend.window);
+		#else
+		vision.native.linux.VulkanScreenBackend.VulkanWindowApi.requestClose(backend.window);
+		#end
 		Assert.isTrue(other.processEvents());
 		Assert.isFalse(screen.processEvents());
-		Assert.isFalse(vision.native.unix.SdlScreen.exists(id));
+		Assert.isTrue(closed);
 		Assert.isFalse(screen.hasDisplay);
-		Assert.isTrue(other.processEvents());
-		other.dispose();
-		Assert.isFalse(other.processEvents());
+		other.close();
+	}
+	#end
+
+	#if (cpp && !cppia && (windows || mac || vision_vulkan) && vision_screen_tests)
+	static function deviceReadbacks():Int {
+		#if windows
+		return vision.native.windows.D3D11Device.readbackCount();
+		#elseif mac
+		return vision.native.apple.MetalDevice.readbackCount();
+		#else
+		return vision.native.linux.VulkanDevice.readbackCount();
+		#end
+	}
+
+	static function exerciseNativePixels(screen:Screen, backend:vision.native.DesktopScreenBackend):Void {
+		final source = new Image(4, 4, 0xff543210);
+		final readbacks = deviceReadbacks();
+		final sprite = source.accelerate().invert().commit();
+		Assert.isTrue(sprite.isGpuBacked);
+		screen.clear(0xff112233);
+		screen.draw(sprite, 3, 2);
+		screen.drawInverted(new Image(1, 1, 0xff0055bb), 8, 9);
+		Assert.isTrue(backend.present());
+		Assert.equals(readbacks, deviceReadbacks());
+		final rendered = screen.capture();
+		Assert.equals(0xff112233, rendered.getPixel(0, 0));
+		Assert.equals(0xffabcdef, rendered.getPixel(3, 2));
+		Assert.equals(0xffffaa44, rendered.getPixel(8, 9));
+		Assert.isTrue(deviceReadbacks() > readbacks);
+		screen.setBounds(30, 30, 64, 50);
+		Assert.isTrue(backend.present());
+		final resized = screen.capture();
+		Assert.equals(64, resized.width);
+		Assert.equals(50, resized.height);
+		Assert.equals(0xffabcdef, resized.getPixel(3, 2));
+		Assert.equals(0xff000000, resized.getPixel(63, 49));
 	}
 	#end
 }
