@@ -444,9 +444,8 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 	}
 
 	/** Creates a matrix by copying a rectangular array of rows. An empty array gives a 0x0 matrix. **/
-	public static function fromRows(rows:Array<Array<Float>>):Matrix2D {
-		if (rows.length == 0) return new Matrix2D(0, 0);
-		var width = rows[0].length;
+	public static inline function fromRows(rows:Array<Array<Float>>):Matrix2D {
+		var width = rows.length == 0 ? 0 : rows[0].length;
 		var array = new Array2D<Float>(width, rows.length);
 		for (y in 0...rows.length) {
 			var row = rows[y];
