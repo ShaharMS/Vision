@@ -962,7 +962,7 @@ class Vision {
 		if (width <= 0 || height <= 0 || width % 2 == 0 || height % 2 == 0 || kernel.underlying.length != width * height)
 			throw new MatrixShapeError("Kernel dimensions must be positive and odd.", "Kernel Error");
 		for (weight in kernel.underlying.inner) {
-			if (weight == null || !Math.isFinite(weight))
+			if ((weight : Null<Float>) == null || !Math.isFinite(weight))
 				throw new VisionException("Kernel weights must be finite numbers.", "Kernel Error");
 		}
 

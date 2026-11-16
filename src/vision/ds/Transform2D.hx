@@ -71,7 +71,7 @@ abstract Transform2D(Matrix2D) {
 		if (matrix == null || matrix.width != 3 || matrix.height != 3 || matrix.underlying.length != 9)
 			throw new MatrixShapeError("Transform2D requires a 3x3 matrix.", "Transform Error");
 		for (value in matrix.underlying.inner) {
-			if (value == null || !Math.isFinite(value))
+			if ((value : Null<Float>) == null || !Math.isFinite(value))
 				throw new VisionException("Transform coefficients must be finite numbers.", "Transform Error");
 		}
 		return new Transform2D(matrix.clone());
@@ -108,9 +108,11 @@ abstract Transform2D(Matrix2D) {
 
 	@:allow(vision.Vision)
 	private static inline function project(point:Point3D):Point2D {
+		if (point.z == 0 || !Math.isFinite(point.z))
+			throw new VisionException("Point has no finite image under this transform.", "Transform Error");
 		var x = point.x / point.z;
 		var y = point.y / point.z;
-		if (point.z == 0 || !Math.isFinite(point.z) || !Math.isFinite(x) || !Math.isFinite(y))
+		if (!Math.isFinite(x) || !Math.isFinite(y))
 			throw new VisionException("Point has no finite image under this transform.", "Transform Error");
 		return new Point2D(x, y);
 	}

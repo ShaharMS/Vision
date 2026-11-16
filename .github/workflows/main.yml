@@ -230,8 +230,8 @@ jobs:
       - name: Verify quiet mode and large image headers
         if: ${{ matrix.target == 'interp' }}
         env:
-          VISION_TESTS: SeamCarvingTest,FromBytesTest,TransformationMatrix2DTest
-          VISION_TEST_CASES: (quiet|carve|compute)
+          VISION_TESTS: SeamCarvingTest,FromBytesTest,Transform2DTest
+          VISION_TEST_CASES: (quiet|carve|projectiveDivision)
         run: haxe test.hxml -D vision_quiet -D vision_higher_width_cap
 
       - name: Run (${{ matrix.target }})
@@ -306,6 +306,27 @@ jobs:
         run: |
           mkdir -p bin/swf
           haxe -cp src -cp tests/ci -main TargetSmoke --swf bin/swf/target.swf -D swf-header=64:64:30:000000
+
+  browser-screen:
+    name: Screen (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: krdlab/setup-haxe@v1
+        with:
+          haxe-version: 4.3.7
+      - name: Build browser tests
+        run: |
+          mkdir -p "$RUNNER_TEMP/browser-haxelib"
+          haxelib setup "$RUNNER_TEMP/browser-haxelib"
+          haxelib install utest 1.13.2 --always
+          haxe tests/ci/drawing.hxml
+      - name: Run Canvas 2D and WebGL tests
+        run: |
+          npm install --prefix "$RUNNER_TEMP/vision-browser" playwright-core@1.65.1
+          node "$RUNNER_TEMP/vision-browser/node_modules/playwright-core/cli.js" install --with-deps --no-shell chromium
+          NODE_PATH="$RUNNER_TEMP/vision-browser/node_modules" node tests/ci/check-browser.cjs
 
   native-screen:
     name: Screen (Windows)

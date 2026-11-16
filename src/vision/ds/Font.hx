@@ -34,7 +34,6 @@ import vision.formats._internal.fonts.FontData.FontNameId;
 @:allow(vision.ds.Glyph)
 class Font {
 	static inline var SFNT_SIGNATURE_OFFSET = 0;
-	static inline var TRUETYPE_SIGNATURE = "\x00\x01\x00\x00";
 	static inline var MISSING_GLYPH_ID = 0;
 
 	/** Family name from the font, or the supplied name when the font has no family name. **/
@@ -84,8 +83,9 @@ class Font {
 	public static function fromBytes(bytes:Bytes, name:String = "Font"):Font {
 		try {
 			final source = new FontTable(bytes.sub(0, bytes.length), 0, bytes.length);
-			final data = switch source.tag(SFNT_SIGNATURE_OFFSET) {
-				case TRUETYPE_SIGNATURE, "true": Ttf.read(source, name);
+			final data = if (source.u16(SFNT_SIGNATURE_OFFSET) == 1 && source.u16(SFNT_SIGNATURE_OFFSET + 2) == 0) Ttf.read(source, name)
+			else switch source.tag(SFNT_SIGNATURE_OFFSET) {
+				case "true": Ttf.read(source, name);
 				case "OTTO": Otf.read(source, name);
 				case "wOFF": Woff.read(source, name);
 				case "wOF2": Woff2.read(source, name);

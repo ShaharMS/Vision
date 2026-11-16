@@ -338,12 +338,15 @@ class ScreenTest extends utest.Test {
 	@:visionTestId("vision.ds.Screen.draw#desktopPixels")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
+	@:access(vision.ds.Screen)
 	function test_draw__desktopPixels():Void {
-		final screen = new Screen(0, 0, 16, 16, {visible: false});
+		final screen = new Screen(0, 0, 16, 16);
 		screen.clear(0xFF102030);
 		screen.draw(new Image(2, 2, 0xFF00CC88), 4, 6);
+		screen.drawInverted(new Image(1, 1, 0xFF0055BB), 8, 9);
 		Assert.equals(0xFF102030, screen.capture().getPixel(0, 0));
 		Assert.equals(0xFF00CC88, screen.capture().getPixel(4, 6));
+		Assert.equals(0xFFFFAA44, screen.capture().getPixel(8, 9));
 		Assert.isTrue(screen.hasDisplay);
 		screen.setBounds(10, 20, 22, 18);
 		Assert.equals(10, screen.x);
@@ -351,6 +354,8 @@ class ScreenTest extends utest.Test {
 		Assert.equals(22, screen.capture().width);
 		Assert.equals(18, screen.capture().height);
 		Assert.equals(0xFF00CC88, screen.capture().getPixel(4, 6));
+		final native:vision.native.windows.WindowsScreenBackend = cast screen.backend;
+		Assert.isTrue(native.present(), "Windows could not present the resized frame");
 		screen.dispose();
 	}
 
