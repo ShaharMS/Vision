@@ -328,6 +328,52 @@ jobs:
           node "$RUNNER_TEMP/vision-browser/node_modules/playwright-core/cli.js" install --with-deps --no-shell chromium
           NODE_PATH="$RUNNER_TEMP/vision-browser/node_modules" node tests/ci/check-browser.cjs
 
+  sdl-screen:
+    name: Screen (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: krdlab/setup-haxe@v1
+        if: runner.os == 'Linux'
+        with:
+          haxe-version: 4.3.7
+      - name: Install desktop dependencies
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then
+            sudo apt-get update
+            sudo apt-get install -y libsdl2-dev xvfb xauth
+          else
+            brew install haxe sdl2
+          fi
+      - name: Build the Screen suite
+        run: |
+          mkdir -p "$RUNNER_TEMP/screen-haxelib"
+          haxelib setup "$RUNNER_TEMP/screen-haxelib"
+          haxelib dev vision "$GITHUB_WORKSPACE"
+          haxelib install hxcpp 4.3.2 --always
+          haxelib install utest 1.13.2 --always
+          flags=()
+          if [ "$RUNNER_OS" = macOS ]; then
+            flags+=(-D "VISION_SDL_PREFIX=$(brew --prefix sdl2)")
+            if [ "$(uname -m)" = arm64 ]; then flags+=(-D HXCPP_ARM64); fi
+          fi
+          haxe -lib vision -lib utest -cp tests/src -main Main --cpp bin/sdl-screen \
+            -D vision_sdl_screen -D vision_screen_tests -dce full "${flags[@]}"
+      - name: Open, draw, resize and close a native window
+        env:
+          VISION_TESTS: ScreenTest
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then
+            SDL_VIDEODRIVER=x11 xvfb-run -a bin/sdl-screen/Main
+          else
+            SDL_VIDEODRIVER=cocoa bin/sdl-screen/Main
+          fi
+
   native-screen:
     name: Screen (Windows)
     runs-on: windows-latest
