@@ -1,7 +1,7 @@
 import js.Browser;
-import vision.Vision;
-import vision.native.browser.CanvasRenderer;
 import vision.ds.Image;
+import vision.native.browser.CanvasRenderer;
+import vision.native.portable.CpuImage;
 
 class BrowserInversionBenchmark {
 	static function main() {
@@ -13,9 +13,14 @@ class BrowserInversionBenchmark {
 		final info = gl.getExtension("WEBGL_debug_renderer_info");
 		final source = new Image(1024, 1024, 0x80305593);
 		source.setPixel(40, 54, 0xFFABCDEF);
-		final cached = Vision.invert(source.clone());
+		function invertOnCpu():Image {
+			final image = source.clone();
+			CpuImage.apply(image, Invert, 0);
+			return image;
+		}
+		final cached = invertOnCpu();
 		final gpu = () -> renderer.drawInverted(source);
-		final cpu = () -> renderer.draw(Vision.invert(source.clone()));
+		final cpu = () -> renderer.draw(invertOnCpu());
 		final cpuCached = () -> renderer.draw(cached);
 		function measure(draw:Void->Void, frames:Int) {
 			gl.finish();
