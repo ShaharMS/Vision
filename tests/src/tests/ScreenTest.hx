@@ -1,5 +1,9 @@
 package tests;
 
+#if (vision_screen_tests && cpp && !windows && !VISION_SDL_PREFIX)
+#error "The desktop Screen test requires SDL2 development files discoverable by pkg-config."
+#end
+
 import haxe.Timer;
 import tests.support.ImageAssertions;
 import tests.support.ExceptionAssertions;
@@ -400,7 +404,7 @@ class ScreenTest extends utest.Test {
 		screen.dispose();
 		Assert.isFalse(screen.poll().result == true || screen.processEvents(), "Disposed screen reported ready");
 	}
-	#elseif (cpp && !cppia && vision_sdl_screen && vision_screen_tests)
+	#elseif (cpp && !cppia && VISION_SDL_PREFIX && vision_screen_tests)
 	@:visionTestId("vision.ds.Screen.draw#sdlWindow")
 	@:access(vision.ds.Screen)
 	@:access(vision.native.sdl.SdlScreenBackend)

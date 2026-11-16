@@ -10,9 +10,6 @@ class ManualSuites {
 		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest(), "setup", "teardown", "test", casePattern);
 		#end
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest(), "setup", "teardown", "test", casePattern);
-		#if (cpp && !cppia && vision_webp)
-		if (includeTest("LossyWebpTest")) runner.addCase(new LossyWebpTest(), "setup", "teardown", "test", casePattern);
-		#end
 		#if !vision_screen_tests
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);
@@ -39,6 +36,7 @@ class ManualSuites {
 		if (includeTest("ColorTest")) runner.addCase(new ColorTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("CramerTest")) runner.addCase(new CramerTest(), "setup", "teardown", "test", casePattern);
 		#if !neko
+		if (includeTest("LossyWebpTest")) runner.addCase(new LossyWebpTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("FromBytesTest")) runner.addCase(new FromBytesTest(), "setup", "teardown", "test", casePattern);
 		if (includeTest("FromTest")) runner.addCase(new FromTest(), "setup", "teardown", "test", casePattern);
 		#end

@@ -53,24 +53,21 @@ Run `haxe tests/ci/drawing.hxml` and open [drawing.html](drawing.html) in a brow
 
 ## Linux and macOS drawing
 
-Install SDL2 development files, hxcpp, and utest. Build and run from the repository root.
-On macOS, install SDL2 with Homebrew and add `-D "VISION_SDL_PREFIX=$(brew --prefix sdl2)"`.
+Install pkg-config, SDL2 development files, hxcpp, and utest. Build and run from the repository root.
+On macOS, install SDL2 with Homebrew and add its `lib/pkgconfig` directory to `PKG_CONFIG_PATH` if needed.
 Apple Silicon builds also use `-D HXCPP_ARM64`.
 
 ```sh
 haxe -lib vision -lib utest -cp tests/src -main Main --cpp bin/sdl-screen \
-  -D vision_sdl_screen -D vision_screen_tests -dce full
+  -D vision_screen_tests -dce full
 VISION_TESTS=ScreenTest bin/sdl-screen/Main
 ```
 
+Vision detects SDL2 through pkg-config when loaded with `-lib vision`. Without an SDL2 SDK, Screen uses the in-memory backend.
 Run window creation, drawing, event processing, and disposal on the main thread.
 The desktop suite requires an accelerated SDL renderer and a real windowing driver.
 Linux CI runs OpenGL through Mesa under Xvfb. macOS CI requires Cocoa and Metal.
 The default Screen keeps the composited frame in the render target; `capture()` reads it back.
-
-Add `-D vision_webp` and install libwebp development files to enable lossy WebP.
-For Homebrew, also pass `-D "VISION_WEBP_PREFIX=$(brew --prefix webp)"`.
-Run the same binary with `VISION_TESTS=LossyWebpTest` to exercise the codec.
 
 ## Windows drawing
 

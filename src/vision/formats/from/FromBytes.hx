@@ -2,8 +2,8 @@ package vision.formats.from;
 
 import vision.exceptions.LibraryRequired;
 import vision.ds.Image;
-import vision.formats._internal.images.Jpeg;
-import vision.formats._internal.images.Webp;
+import vision.formats._internal.Jpeg;
+import vision.formats._internal.Webp;
 import vision.formats._internal.images.webp.WebpAnimation;
 import vision.ds.ImageAnimation;
 import vision.ds.ByteArray;
@@ -67,7 +67,7 @@ import vision.ds.ByteArray;
     }
 
     /**
-        Decodes a still WebP image. Lossy files require hxcpp with `-D vision_webp` and libwebp.
+        Decodes a lossless or lossy still WebP image.
 
         @param bytes The complete WebP file
         @return The decoded image, including alpha
@@ -77,7 +77,7 @@ import vision.ds.ByteArray;
         return Webp.read(bytes);
     }
     /**
-        Decodes animated WebP. Lossy frames require hxcpp with `-D vision_webp` and libwebp.
+        Decodes animated WebP with lossless or lossy frames.
 
         @param bytes The complete animated WebP file
         @return The animation composited on a transparent canvas

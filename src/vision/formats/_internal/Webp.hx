@@ -1,4 +1,4 @@
-package vision.formats._internal.images;
+package vision.formats._internal;
 
 import haxe.io.BytesOutput;
 import vision.ds.ByteArray;
@@ -17,20 +17,24 @@ class Webp {
 	public static function read(bytes:ByteArray):Image {
 		try {
 			var lossless:WebpBits = null;
-			var lossy = false;
+			var lossy:ByteArray = null;
+			var alpha:ByteArray = null;
 			WebpContainer.read(bytes, (tag, offset, length) -> {
 				switch tag {
 					case "VP8L":
-						if (lossless != null || lossy) throw WebpContainer.invalid("Multiple WebP image chunks.");
+						if (lossless != null || lossy != null || alpha != null) throw WebpContainer.invalid("Multiple WebP image chunks.");
 						lossless = new WebpBits(bytes, offset, offset + length);
 					case "VP8 ":
-						if (lossless != null || lossy) throw WebpContainer.invalid("Multiple WebP image chunks.");
-						lossy = true;
+						if (lossless != null || lossy != null) throw WebpContainer.invalid("Multiple WebP image chunks.");
+						lossy = bytes.sub(offset, length);
+					case "ALPH":
+						if (alpha != null || lossless != null || lossy != null) throw WebpContainer.invalid("Invalid WebP alpha chunk.");
+						alpha = bytes.sub(offset, length);
 					case "ANIM", "ANMF": throw WebpContainer.invalid("Use webpAnimation() for animated WebP.");
 					default:
 				}
 			});
-			if (lossy) return WebpLossy.read(bytes);
+			if (lossy != null) return WebpLossy.read(lossy, alpha);
 			if (lossless == null) throw WebpContainer.invalid("Missing WebP image chunk.");
 			return new WebpLossless(lossless).read();
 		} catch (error:ImageLoadingFailed) {
@@ -40,8 +44,7 @@ class Webp {
 		}
 	}
 
-	public static function write(image:Image, ?quality:Float):ByteArray {
-		if (quality != null) return WebpLossy.write(image, quality);
+	public static function write(image:Image):ByteArray {
 		if (image.width < 1 || image.height < 1 || image.width > 16384 || image.height > 16384 || image.width * image.height > 32000000)
 			throw new ImageSavingFailed(WEBP, "Invalid lossless WebP dimensions.");
 		try {

@@ -25,6 +25,27 @@ class PortableTextTest extends utest.Test {
 		"AAAAAgPoAAAD6AAAAAAAAAAPAAEAZABkA4QDhAACAAABAQEAZAGQAZAAZAMg/OAAAAAAAQADAAEAAAAMAAQAIAAAAAQABAAB" +
 		"AAAAQf//AAAAQf///8AAAQAAAAA=";
 
+	// A CFF2 glyph whose horizontal line has a delta in a positive-axis region.
+	static final cff2 =
+		"T1RUTwAHAAAAAAAAaGVhZAAAAAAAAAB8AAAANmhoZWEAAAAAAAAAsgAAACRtYXhwAAAAAAAAANYAAAAGaG10eAAAAAAAAADcAAAA" +
+		"CGxvY2EAAAAAAAAA5AAAAAZDRkYyAAAAAAAAATQAAABoY21hcAAAAAAAAAEIAAAALAAAAAAAAAAAAAAAAAAAAAAAAAPoAAAAAAAA" +
+		"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgABAAAAAgPoAAAD" +
+		"6AAAAAAAAAAPAAEAZABkA4QDhAACAAABAQEAZAGQAZAAZAMg/OAAAAAAAQADAAEAAAAMAAQAIAAAAAQABAABAAAAQf//AAAAQf//" +
+		"/8AAAQAAAAACAAUAEx0AAAAcER0AAABBDCQdAAAASBgAAAAAAAAAAgEBAR7v7xUcAyCLHAEsHADIjRAFHP5wHAMgHP5wHPzgBQAA" +
+		"AAEBAQEAHgABAAAADAABAAAAFgABAAEAAEAAQAAAAAAAAAEAAA==";
+
+	@:visionTestId("vision.ds.Font.fromBytes#cff2DefaultInstance")
+	function test_fromBytes__rendersCff2DefaultInstance() {
+		final font = Font.fromBytes(Base64.decode(cff2));
+		final glyph = font.getGlyph("A");
+		Assert.equals(800, glyph.getBounds(1000).width);
+		Assert.equals(800, glyph.getBounds(1000).height);
+		final image = glyph.toImage(40);
+		Assert.equals(32, image.width);
+		Assert.equals(32, image.height);
+		Assert.equals(255, image.getPixel(16, 20).alpha);
+	}
+
 	// Synthetic TrueType faces with Arabic cmap entries and optional GSUB.
 	static final arabicFont =
 		"AAEAAAAIAAAAAAAAaGVhZAAAAAAAAACMAAAANmhoZWEAAAAAAAAAwgAAACRtYXhwAAAAAAAAAOYAAAAGaG10eAAAAAAAAADs" +

@@ -11,7 +11,7 @@ private typedef CffIndex = {
 	final end:Int;
 }
 
-/** Reads CFF version 1 Type 2 charstrings. **/
+/** Reads CFF Type 2 and default-instance CFF2 charstrings. **/
 @:noCompletion
 class CffOutline {
 	final family:String;
@@ -19,42 +19,67 @@ class CffOutline {
 	final global:Array<FontTable>;
 	final local:Array<Array<FontTable>>;
 	final selection:Array<Int>;
+	final cff2:Bool;
+	final regions:Array<Array<Bool>>;
+	final variationIndices:Array<Int>;
 
 	public function new(data:FontTable, family:String, glyphCount:Int) {
 		this.family = family;
-		if (data.u8(0) != 1) throw invalid("Unsupported CFF version.");
-		final names = index(data, data.u8(2));
-		final top = index(data, names.end);
-		if (top.entries.length != 1) throw invalid("Expected one CFF font.");
-		final strings = index(data, top.end);
-		global = index(data, strings.end).entries;
-		final dict = dictionary(top.entries[0]);
+		final version = data.u8(0);
+		cff2 = version == 2;
+		final header = data.u8(2);
+		var dict:IntMap<Array<Float>>;
+		if (cff2) {
+			if (data.u8(1) != 0 || header < 5) throw invalid("Invalid CFF2 header.");
+			final length = data.u16(3);
+			dict = dictionary(data.slice(header, length));
+			global = index(data, header + length).entries;
+		} else {
+			if (version != 1) throw invalid("Unsupported CFF version.");
+			final names = index(data, header);
+			final top = index(data, names.end);
+			if (top.entries.length != 1) throw invalid("Expected one CFF font.");
+			final strings = index(data, top.end);
+			global = index(data, strings.end).entries;
+			dict = dictionary(top.entries[0]);
+		}
+		final variation = cff2 ? dict.get(24) : null;
+		regions = variation == null ? [] : readRegions(data, Std.int(variation[0]));
+		variationIndices = [];
 		final location = dict.get(17);
 		if (location == null) throw invalid("Missing CFF charstrings.");
 		charStrings = index(data, Std.int(location[0])).entries;
 		if (charStrings.length != glyphCount) throw invalid("CFF glyph count does not match maxp.");
 		final fdArray = dict.get(1236);
 		final fdSelect = dict.get(1237);
-		if (fdArray == null && fdSelect == null) {
+		if (!cff2 && fdArray == null && fdSelect == null) {
 			local = [subroutines(data, dict)];
 			selection = [];
 		} else {
-			if (fdArray == null || fdSelect == null) throw invalid("Incomplete CFF font dictionary selection.");
+			if (fdArray == null) throw invalid("Incomplete CFF font dictionary selection.");
 			local = [for (entry in index(data, Std.int(fdArray[0])).entries) subroutines(data, dictionary(entry))];
-			final offset = Std.int(fdSelect[0]);
 			selection = [];
+			if (fdSelect == null) {
+				if (!cff2 || local.length != 1) throw invalid("Missing CFF font dictionary selection.");
+				return;
+			}
+			final offset = Std.int(fdSelect[0]);
 			switch data.u8(offset) {
 				case 0:
 					for (i in 0...glyphCount) selection.push(data.u8(offset + 1 + i));
-				case 3:
-					final count = data.u16(offset + 1);
+				case 3, 4:
+					final wide = data.u8(offset) == 4;
+					if (wide && !cff2) throw invalid("Invalid CFF1 font dictionary format.");
+					final count = wide ? data.u32(offset + 1) : data.u16(offset + 1);
+					if (count > glyphCount) throw invalid("Too many CFF dictionary ranges.");
+					final stride = wide ? 6 : 3;
 					for (i in 0...count) {
-						final row = offset + 3 + i * 3;
-						final first = data.u16(row);
-						final end = data.u16(row + 3);
+						final row = offset + (wide ? 5 : 3) + i * stride;
+						final first = wide ? data.u32(row) : data.u16(row);
+						final end = wide ? data.u32(row + stride) : data.u16(row + stride);
 						if (first != selection.length || end < first || end > glyphCount)
 							throw invalid("Invalid CFF font dictionary range.");
-						final fd = data.u8(row + 2);
+						final fd = wide ? data.u16(row + 4) : data.u8(row + 2);
 						for (_ in first...end) selection.push(fd);
 					}
 				default: throw invalid("Unsupported CFF font dictionary selection.");
@@ -65,26 +90,34 @@ class CffOutline {
 	}
 
 	public function outline(id:Int):Array<Array<FontPoint>> {
-		final reader = new CharString(family, global, local[selection.length == 0 ? 0 : selection[id]]);
+		final fd = selection.length == 0 ? 0 : selection[id];
+		final reader = new CharString(family, global, local[fd], cff2, regions, variationIndices[fd]);
 		reader.read(charStrings[id], 0);
 		return reader.contours;
 	}
 
 	function subroutines(data:FontTable, dict:IntMap<Array<Float>>):Array<FontTable> {
 		final field = dict.get(18);
-		if (field == null) return [];
+		if (field == null) {
+			variationIndices.push(0);
+			return [];
+		}
 		final offset = Std.int(field[1]);
-		final priv = dictionary(data.slice(offset, Std.int(field[0])));
+		final priv = dictionary(data.slice(offset, Std.int(field[0])), cff2);
+		final variation = cff2 ? priv.get(22) : null;
+		variationIndices.push(variation == null ? 0 : Std.int(variation[0]));
 		final subrs = priv.get(19);
 		return subrs == null ? [] : index(data, offset + Std.int(subrs[0])).entries;
 	}
 
 	function index(data:FontTable, start:Int):CffIndex {
-		final count = data.u16(start);
-		if (count == 0) return {entries: [], end: start + 2};
-		final size = data.u8(start + 2);
+		final countSize = cff2 ? 4 : 2;
+		final count = cff2 ? data.u32(start) : data.u16(start);
+		if (count == 0) return {entries: [], end: start + countSize};
+		final size = data.u8(start + countSize);
 		if (size < 1 || size > 4) throw invalid("Invalid CFF index offset size.");
-		final offsets = start + 3;
+		final offsets = start + countSize + 1;
+		if (count >= Std.int((data.length - offsets) / size)) throw invalid("Truncated CFF index.");
 		final base = offsets + (count + 1) * size - 1;
 		final entries = [];
 		var last = 1;
@@ -101,9 +134,10 @@ class CffOutline {
 		return {entries: entries, end: base + last};
 	}
 
-	function dictionary(data:FontTable):IntMap<Array<Float>> {
+	function dictionary(data:FontTable, privateDict:Bool = false):IntMap<Array<Float>> {
 		final dict = new IntMap<Array<Float>>();
 		var values:Array<Float> = [];
+		var variation = 0;
 		var pos = 0;
 		while (pos < data.length) {
 			final op = data.u8(pos++);
@@ -128,11 +162,66 @@ class CffOutline {
 				else throw invalid("Invalid CFF dictionary operand.");
 			} else {
 				final key = op == 12 ? 1200 + data.u8(pos++) : op;
+				if (privateDict && key == 23) {
+					applyBlend(values, regions, variation, family);
+					continue;
+				}
+				if (privateDict && key == 22) {
+					if (values.length != 1) throw invalid("Invalid CFF2 variation index.");
+					variation = Std.int(values[0]);
+				}
 				dict.set(key, values);
 				values = [];
 			}
 		}
 		return dict;
+	}
+
+	function readRegions(data:FontTable, offset:Int):Array<Array<Bool>> {
+		final size = data.u16(offset);
+		final store = data.slice(offset + 2, size == 65535 ? data.length - offset - 2 : size);
+		if (store.u16(0) != 1) throw invalid("Invalid CFF2 variation store format.");
+		final list = store.u32(2);
+		final axes = store.u16(list);
+		final count = store.u16(list + 2);
+		if (axes == 0 || count > Std.int((store.length - list - 4) / (axes * 6))) throw invalid("Invalid CFF2 variation regions.");
+		final active = [for (region in 0...count) {
+			var neutral = true;
+			for (axis in 0...axes) {
+				final axisRecord = list + 4 + (region * axes + axis) * 6;
+				final start = store.i16(axisRecord);
+				final peak = store.i16(axisRecord + 2);
+				final end = store.i16(axisRecord + 4);
+				if (start > peak || peak > end || (start < 0 && end > 0 && peak != 0))
+					throw invalid("Invalid CFF2 variation axis range.");
+				if (peak != 0) neutral = false;
+			}
+			neutral;
+		}];
+		return [for (i in 0...store.u16(6)) {
+			final entry = store.u32(8 + i * 4);
+			if (store.u16(entry) != 0 || store.u16(entry + 2) != 0) throw invalid("Invalid CFF2 variation data.");
+			[for (j in 0...store.u16(entry + 4)) {
+				final region = store.u16(entry + 6 + j * 2);
+				if (region >= active.length) throw invalid("Invalid CFF2 variation region index.");
+				active[region];
+			}];
+		}];
+	}
+
+	@:allow(vision.formats._internal.fonts.otf.CharString)
+	static function applyBlend(stack:Array<Float>, regions:Array<Array<Bool>>, index:Int, family:String):Void {
+		if (index < 0 || index >= regions.length || stack.length == 0) throw new FontLoadingError(family, "Invalid CFF2 blend.");
+		final operand = stack.pop();
+		final count = Std.int(operand);
+		final active = regions[index];
+		if (count <= 0 || count != operand || count > Std.int(stack.length / (1 + active.length)))
+			throw new FontLoadingError(family, "Invalid CFF2 blend operand count.");
+		final start = stack.length - count * (1 + active.length);
+		for (i in 0...count)
+			for (j in 0...active.length)
+				if (active[j]) stack[start + i] += stack[start + count + i * active.length + j];
+		stack.resize(start + count);
 	}
 
 	inline function invalid(reason:String):FontLoadingError {
@@ -145,6 +234,9 @@ private class CharString {
 	final family:String;
 	final global:Array<FontTable>;
 	final local:Array<FontTable>;
+	final cff2:Bool;
+	final regions:Array<Array<Bool>>;
+	var variation:Int;
 	var stack:Array<Float> = [];
 	var contour:Array<FontPoint> = null;
 	var x = 0.0;
@@ -154,10 +246,13 @@ private class CharString {
 	var pointCount = 0;
 	var ended = false;
 
-	public function new(family:String, global:Array<FontTable>, local:Array<FontTable>) {
+	public function new(family:String, global:Array<FontTable>, local:Array<FontTable>, cff2:Bool, regions:Array<Array<Bool>>, variation:Int) {
 		this.family = family;
 		this.global = global;
 		this.local = local;
+		this.cff2 = cff2;
+		this.regions = regions;
+		this.variation = variation;
 	}
 
 	public function read(data:FontTable, depth:Int):Void {
@@ -167,7 +262,7 @@ private class CharString {
 			if (++steps > 100000) throw invalid("CFF glyph exceeds its instruction budget.");
 			final op = data.u8(pos++);
 			if (op == 28 || op >= 32) {
-				if (stack.length >= 48) throw invalid("CFF operand stack is full.");
+				if (stack.length >= (cff2 ? 513 : 48)) throw invalid("CFF operand stack is full.");
 				if (op == 28) {
 					stack.push(data.i16(pos));
 					pos += 2;
@@ -188,6 +283,16 @@ private class CharString {
 				if (index < 0 || index >= subrs.length) throw invalid("Invalid CFF subroutine index.");
 				read(subrs[index], depth + 1);
 				if (ended) return;
+				continue;
+			}
+			if (cff2 && op == 15) {
+				if (stack.length != 1) throw invalid("Invalid CFF2 variation index.");
+				variation = Std.int(stack.pop());
+				if (variation < 0 || variation >= regions.length) throw invalid("Unknown CFF2 variation index.");
+				continue;
+			}
+			if (cff2 && op == 16) {
+				CffOutline.applyBlend(stack, regions, variation, family);
 				continue;
 			}
 			final values = stack;

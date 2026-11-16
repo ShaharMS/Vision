@@ -72,35 +72,30 @@ class WebpAnimation {
 
 	static function decodeFrame(bytes:ByteArray, start:Int, end:Int, width:Int, height:Int):Image {
 		var image:Image = null;
-		var lossy = false;
-		var alpha = false;
+		var lossy:ByteArray = null;
+		var alpha:ByteArray = null;
 		WebpContainer.chunks(bytes, start, end, (tag, offset, length) -> {
 			switch tag {
 				case "VP8L":
-					if (image != null || lossy || alpha) throw WebpContainer.invalid("Invalid WebP frame chunks.");
+					if (image != null || lossy != null || alpha != null) throw WebpContainer.invalid("Invalid WebP frame chunks.");
 					image = new WebpLossless(new WebpBits(bytes, offset, offset + length)).read();
 				case "VP8 ":
-					if (image != null || lossy) throw WebpContainer.invalid("Invalid WebP frame chunks.");
-					lossy = true;
+					if (image != null || lossy != null) throw WebpContainer.invalid("Invalid WebP frame chunks.");
+					lossy = bytes.sub(offset, length);
 				case "ALPH":
-					if (image != null || lossy || alpha) throw WebpContainer.invalid("Invalid WebP frame alpha.");
-					alpha = true;
+					if (image != null || lossy != null || alpha != null) throw WebpContainer.invalid("Invalid WebP frame alpha.");
+					alpha = bytes.sub(offset, length);
 				default:
 			}
 		});
-		if (lossy) {
-			final payload = new BytesOutput();
-			if (alpha) writeExtendedHeader(payload, width, height, 0x10);
-			payload.writeBytes(bytes, start, end - start);
-			image = WebpLossy.read(WebpContainer.write(payload.getBytes()));
-		}
+		if (lossy != null) image = WebpLossy.read(lossy, alpha);
 		if (image == null || image.width != width || image.height != height) throw WebpContainer.invalid("Invalid WebP animation frame size.");
 		return image;
 	}
 
-	public static function write(animation:ImageAnimation, ?quality:Float):ByteArray {
+	public static function write(animation:ImageAnimation):ByteArray {
 		try {
-			return encode(animation, quality);
+			return encode(animation);
 		} catch (error:ImageSavingFailed) {
 			throw error;
 		} catch (error:Dynamic) {
@@ -108,7 +103,7 @@ class WebpAnimation {
 		}
 	}
 
-	static function encode(animation:ImageAnimation, quality:Null<Float>):ByteArray {
+	static function encode(animation:ImageAnimation):ByteArray {
 		if (animation.frames.length == 0 || animation.loopCount < 0 || animation.loopCount > 65535)
 			throw new ImageSavingFailed(WEBP, "Invalid animation frame count or loop count.");
 		final first = animation.frames[0].image;
@@ -131,14 +126,7 @@ class WebpAnimation {
 			write24(data, height - 1);
 			write24(data, frame.duration);
 			data.writeByte(2); // full-canvas replacement
-			if (quality == null) {
-				WebpContainer.chunk(data, "VP8L", WebpLosslessWriter.write(frame.image));
-			} else {
-				final still = WebpLossy.write(frame.image, quality);
-				WebpContainer.read(still, (tag, offset, length) -> {
-					if (tag == "VP8 " || tag == "ALPH") WebpContainer.chunk(data, tag, still.sub(offset, length));
-				});
-			}
+			WebpContainer.chunk(data, "VP8L", WebpLosslessWriter.write(frame.image));
 			WebpContainer.chunk(payload, "ANMF", data.getBytes());
 		}
 		return WebpContainer.write(payload.getBytes());

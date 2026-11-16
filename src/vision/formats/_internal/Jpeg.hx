@@ -1,4 +1,4 @@
-package vision.formats._internal.images;
+package vision.formats._internal;
 
 import haxe.io.BytesOutput;
 import vision.ds.ByteArray;

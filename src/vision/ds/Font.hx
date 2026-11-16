@@ -72,7 +72,7 @@ class Font {
 	/**
 		Loads one font face from TTF, OTF, WOFF, or WOFF2 bytes.
 
-		The format is detected from the bytes. TrueType and CFF version 1
+		The format is detected from the bytes. TrueType, CFF, and default-instance CFF2
 		outlines are supported. The font retains its own copy of the data.
 
 		@param bytes The complete font file

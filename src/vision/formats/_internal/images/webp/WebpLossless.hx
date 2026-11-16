@@ -38,6 +38,15 @@ class WebpLossless {
 		final height = bits.read(14) + 1;
 		bits.read(1);
 		if (bits.read(3) != 0 || width * height > remainingPixels) throw invalid("Invalid VP8L version or dimensions.");
+		final pixels = readBody(width, height);
+		final image = new Image(width, height);
+		for (y in 0...height)
+			for (x in 0...width) image.setUnsafePixel(x, y, new Color(pixels[y * width + x]));
+		return image;
+	}
+
+	@:allow(vision.formats._internal.images.webp.WebpLossy)
+	function readBody(width:Int, height:Int):Vector<Int> {
 		var encodedWidth = width;
 		var used = 0;
 		final transforms:Array<Transform> = [];
@@ -88,10 +97,7 @@ class WebpLossless {
 					encodedWidth = transform.width;
 			}
 		}
-		final image = new Image(width, height);
-		for (y in 0...height)
-			for (x in 0...width) image.setUnsafePixel(x, y, new Color(pixels[y * width + x]));
-		return image;
+		return pixels;
 	}
 
 	function readPixels(width:Int, height:Int, top:Bool):Vector<Int> {

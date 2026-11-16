@@ -2,3 +2,4 @@
 # --resource assets/NotoSans-Regular.ttf
 --macro addGlobalMetadata('', '@:build(vision.helpers.Array2DMacro.build())')
 --macro addGlobalMetadata('', '@:build(vision.helpers.InlineProtectionMacro.build())')
+--macro vision.helpers.NativeScreenConfig.configure()

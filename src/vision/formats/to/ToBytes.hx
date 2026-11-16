@@ -3,8 +3,8 @@ package vision.formats.to;
 import vision.ds.ByteArray;
 import vision.ds.Image;
 import vision.exceptions.LibraryRequired;
-import vision.formats._internal.images.Jpeg;
-import vision.formats._internal.images.Webp;
+import vision.formats._internal.Jpeg;
+import vision.formats._internal.Webp;
 import vision.formats._internal.images.webp.WebpAnimation;
 import vision.ds.ImageAnimation;
 
@@ -78,26 +78,24 @@ import vision.ds.ImageAnimation;
     }
 
     /**
-        Encodes a still WebP image. Encoding is lossless when quality is omitted.
+        Encodes a still lossless WebP image.
 
         @param image The image to encode, including alpha
-        @param quality Lossy quality from 0 to 100. Requires hxcpp with `-D vision_webp` and libwebp.
         @return The complete WebP file
         @throws ImageSavingFailed If the image cannot be encoded
     **/
-    public function webp(image:Image, ?quality:Float):ByteArray {
-        return Webp.write(image, quality);
+    public function webp(image:Image):ByteArray {
+        return Webp.write(image);
     }
     /**
-        Encodes full-canvas WebP animation frames. Encoding is lossless when quality is omitted.
+        Encodes full-canvas animation frames as lossless WebP.
 
         @param animation The frames, durations, and loop count
-        @param quality Lossy quality from 0 to 100. Requires hxcpp with `-D vision_webp` and libwebp.
         @return The complete WebP file
         @throws ImageSavingFailed If the frames or timing are invalid
     **/
-    public function webpAnimation(animation:ImageAnimation, ?quality:Float):ByteArray {
-        return WebpAnimation.write(animation, quality);
+    public function webpAnimation(animation:ImageAnimation):ByteArray {
+        return WebpAnimation.write(animation);
     }
 
 }

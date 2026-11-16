@@ -9,7 +9,7 @@ import vision.native.cpu.CpuScreenBackend;
 import vision.native.browser.BrowserScreenBackend;
 #elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 import vision.native.windows.WindowsScreenBackend;
-#elseif (cpp && !cppia && vision_sdl_screen)
+#elseif (cpp && !cppia && VISION_SDL_PREFIX)
 import vision.native.sdl.SdlScreenBackend;
 #end
 
@@ -29,7 +29,7 @@ abstract ScreenBackend(ScreenDriver) {
 		#elseif (windows && (cpp || (hl && vision_hashlink_screen)))
 		this = new WindowsScreenBackend(width, height, options.visible, x, y);
 		return;
-		#elseif (cpp && !cppia && vision_sdl_screen)
+		#elseif (cpp && !cppia && VISION_SDL_PREFIX)
 		this = new SdlScreenBackend(x, y, width, height, options.visible, options.preferGpu);
 		return;
 		#end

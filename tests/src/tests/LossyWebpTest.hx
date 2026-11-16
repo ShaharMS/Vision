@@ -1,14 +1,10 @@
 package tests;
 
-#if (cpp && !cppia && vision_webp)
 import haxe.crypto.Base64;
 import tests.support.ExceptionAssertions;
 import utest.Assert;
-import vision.ds.Image;
-import vision.ds.ImageAnimation;
-import vision.exceptions.ImageSavingFailed;
+import vision.exceptions.ImageLoadingFailed;
 import vision.formats.ImageIO;
-import vision.formats._internal.images.webp.WebpContainer;
 
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
@@ -24,41 +20,38 @@ class LossyWebpTest extends utest.Test {
 		Assert.equals(255, pixel.alpha);
 	}
 
-	@:visionTestId("vision.formats.to.ToBytes.webp#lossy")
-	function test_webp__encodesVp8WithAlpha() {
-		final image = new Image(16, 16, 0x8044aacc);
-		final bytes = ImageIO.to.bytes.webp(image, 90);
-		final chunks = [];
-		WebpContainer.read(bytes, (tag, _, _) -> chunks.push(tag));
-		Assert.same(["VP8X", "ALPH", "VP8 "], chunks);
-		final decoded = ImageIO.from.bytes.webp(bytes);
-		Assert.equals(16, decoded.width);
-		Assert.equals(16, decoded.height);
-		final pixel = decoded.getPixel(8, 8);
-		Assert.equals(128, pixel.alpha);
-		Assert.floatEquals(0x44, pixel.red, 6);
-		Assert.floatEquals(0xaa, pixel.green, 6);
-		Assert.floatEquals(0xcc, pixel.blue, 6);
-		ExceptionAssertions.throwsType(() -> ImageIO.to.bytes.webp(image, -1), ImageSavingFailed);
+	@:visionTestId("vision.formats.from.FromBytes.webp#lossyAlpha")
+	function test_webp__decodesLossyWithCompressedAlpha() {
+		final bytes = Base64.decode("UklGRsgAAABXRUJQVlA4WAoAAAAQAAAAEQAAEwAAQUxQSBkAAAABuQpE9D+gppEU6F5U4d8aLWXEBOQetz0VAFZQOCCIAAAA8AQAnQEqEgAUAD4tEIZCoaEN+gAMAWJZizAAvnZ3Zj+AbyyMAAeyZdgBD1AnRcsAAP7/vVdbNn9D61FWptKRDB8/ZWP+I+Kb99206prv2gVCu/KXYJ41Nd8RfBMD+gw3PrwR+4/iC/6i5kdiEw5BNRk8FNW2Jh9AvLPXaELlPCX4wASIACSAAA==");
+		final image = ImageIO.from.bytes.webp(bytes);
+		Assert.equals(18, image.width);
+		Assert.equals(20, image.height);
+		for (y in 0...20)
+			for (x in 0...18) Assert.equals(60 + x * 6 + y * 3, image.getPixel(x, y).alpha);
+		final pixel = image.getPixel(11, 8);
+		Assert.floatEquals(132, pixel.red, 12);
+		Assert.floatEquals(88, pixel.green, 12);
+		Assert.floatEquals(60, pixel.blue, 12);
+		// Leave the RIFF lengths consistent while truncating the VP8 tokens.
+		final truncated = bytes.sub(0, bytes.length - 32);
+		truncated.setInt32(4, truncated.length - 8);
+		truncated.setInt32(68, truncated.length - 72);
+		ExceptionAssertions.throwsType(() -> ImageIO.from.bytes.webp(truncated), ImageLoadingFailed);
 	}
 
-	@:visionTestId("vision.formats.to.ToBytes.webpAnimation#lossy")
-	function test_webpAnimation__preservesTimingAndAlpha() {
-		final animation = new ImageAnimation([
-			{image: new Image(12, 12, 0xffcc8422), duration: 60},
-			{image: new Image(12, 12, 0x8044aacc), duration: 140}
-		], 3, 0xff001122);
-		final bytes = ImageIO.to.bytes.webpAnimation(animation, 90);
+	@:visionTestId("vision.formats.from.FromBytes.webpAnimation#lossy")
+	function test_webpAnimation__decodesLossyAnimation() {
+		final bytes = Base64.decode("UklGRrgBAABXRUJQVlA4WAoAAAASAAAAEQAAEwAAQU5JTQYAAAD/////AwBBTk1GwgAAAAAAAAAAABEAABMAAMgAAAJBTFBIGQAAAAG5CkT0P6CmkRToXlTh3xotZcQE5B63PRUAVlA4IIgAAADwBACdASoSABQAPi0QhkKhoQ36AAwBYlmLMAC+dndmP4BvLIwAB7Jl2AEPUCdFywAA/v+9V1s2f0PrUVam0pEMHz9lY/4j4pv33bTqmu/aBUK78pdgnjU13xF8EwP6DDc+vBH7j+IL/qLmR2ITDkE1GTwU1bYmH0C8s9doQuU8JfjABIgAJIAAQU5NRsIAAAAAAAAAAAARAAATAADIAAACQUxQSBkAAAABuQpE9D+gppEU6F5U4d8aLWXEBOQetz0VAFZQOCCIAAAAMAUAnQEqEgAUAD4tEIZCoaEN+gAMAWJZgCxHxx8P4x+QHDNjAAHsmXYAQ7UMod7cckYA/v7+WXTxPDicbkkHuDp0LHD/8wsO4pDsi+v7+vf9/3LTerOdK7tBLACY+3zQQ9ghXOJkNoQHa2PO+vqre7IWClIIliFzvhSg6gD9/AAcmAElABgAAA==");
 		final decoded = ImageIO.from.bytes.webpAnimation(bytes);
 		Assert.equals(2, decoded.frames.length);
 		Assert.equals(3, decoded.loopCount);
-		Assert.equals(animation.background.toInt(), decoded.background.toInt());
-		Assert.equals(60, decoded.frames[0].duration);
-		Assert.equals(140, decoded.frames[1].duration);
-		Assert.floatEquals(0xcc, decoded.frames[0].image.getPixel(6, 6).red, 6);
-		final pixel = decoded.frames[1].image.getPixel(6, 6);
-		Assert.equals(128, pixel.alpha);
-		Assert.floatEquals(0xaa, pixel.green, 6);
+		Assert.equals(200, decoded.frames[0].duration);
+		Assert.equals(200, decoded.frames[1].duration);
+		final first = decoded.frames[0].image.getPixel(11, 8);
+		final second = decoded.frames[1].image.getPixel(11, 8);
+		Assert.equals(150, first.alpha);
+		Assert.equals(150, second.alpha);
+		Assert.floatEquals(132, first.red, 12);
+		Assert.floatEquals(172, second.red, 12);
 	}
 }
-#end

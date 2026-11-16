@@ -1,6 +1,6 @@
 package vision.native.sdl;
 
-#if (cpp && !cppia && vision_sdl_screen)
+#if (cpp && !cppia && VISION_SDL_PREFIX)
 import cpp.NativeArray;
 import cpp.Star;
 import haxe.io.Bytes;

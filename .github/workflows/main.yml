@@ -346,9 +346,9 @@ jobs:
         run: |
           if [ "$RUNNER_OS" = Linux ]; then
             sudo apt-get update
-            sudo apt-get install -y libsdl2-dev libgl1-mesa-dri libwebp-dev xvfb xauth
+            sudo apt-get install -y pkg-config libsdl2-dev libgl1-mesa-dri xvfb xauth
           else
-            brew install haxe sdl2 webp
+            brew install haxe pkgconf sdl2
           fi
       - name: Build the Screen suite
         run: |
@@ -359,12 +359,11 @@ jobs:
           haxelib install utest 1.13.2 --always
           flags=()
           if [ "$RUNNER_OS" = macOS ]; then
-            flags+=(-D "VISION_SDL_PREFIX=$(brew --prefix sdl2)")
-            flags+=(-D "VISION_WEBP_PREFIX=$(brew --prefix webp)")
+            export PKG_CONFIG_PATH="$(brew --prefix sdl2)/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
             if [ "$(uname -m)" = arm64 ]; then flags+=(-D HXCPP_ARM64); fi
           fi
           haxe -lib vision -lib utest -cp tests/src -main Main --cpp bin/sdl-screen \
-            -D vision_sdl_screen -D vision_screen_tests -D vision_webp -dce full "${flags[@]}"
+            -D vision_screen_tests -dce full "${flags[@]}"
       - name: Open, draw, resize and close a native window
         env:
           VISION_TESTS: ScreenTest
@@ -374,10 +373,6 @@ jobs:
           else
             SDL_VIDEODRIVER=cocoa bin/sdl-screen/Main
           fi
-      - name: Test lossy WebP stills and animation
-        env:
-          VISION_TESTS: LossyWebpTest
-        run: bin/sdl-screen/Main
 
   native-screen:
     name: Screen (Windows)

@@ -1,6 +1,6 @@
 package vision.native.sdl;
 
-#if (cpp && !cppia && vision_sdl_screen)
+#if (cpp && !cppia && VISION_SDL_PREFIX)
 import cpp.ConstCharStar;
 import cpp.RawPointer;
 import cpp.RawConstPointer;

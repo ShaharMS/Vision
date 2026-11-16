@@ -64,11 +64,10 @@ class FontData {
 			|| (indexFormat != 0 && indexFormat != 1))
 			throw invalid("Invalid font metrics.");
 		advances = [for (i in 0...metricCount) hmtx.u16(i * 4)];
-		if (tables.exists("CFF ")) {
-			cff = new CffOutline(table("CFF "), family, glyphCount);
+		if (tables.exists("CFF ") || tables.exists("CFF2")) {
+			cff = new CffOutline(table(tables.exists("CFF2") ? "CFF2" : "CFF "), family, glyphCount);
 			trueType = null;
 		} else {
-			if (tables.exists("CFF2")) throw invalid("CFF2 outlines are unavailable.");
 			cff = null;
 			trueType = new TrueTypeOutline(family, table("glyf"), table("loca"), glyphCount, indexFormat);
 		}
