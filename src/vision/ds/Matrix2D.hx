@@ -457,7 +457,7 @@ abstract Matrix2D(Array2D<Float>) to Array2D<Float> from Array2D<Float> {
 
 	/** Creates a matrix from a variable number of rows. **/
 	public static inline function createFilled(...rows:Array<Float>):Matrix2D {
-		return fromRows(rows.toArray());
+		return fromRows([for (row in rows) row]);
 	}
 
     //-----------------------------------------------------------------------------------------
