@@ -9,7 +9,7 @@ import vision.ds.ImageAnimation.AnimationFrame;
 import vision.exceptions.ImageLoadingFailed;
 import vision.exceptions.ImageSavingFailed;
 
-/** Decodes and encodes animated WebP containers with lossless VP8L frames. **/
+/** Decodes and encodes animated WebP containers. **/
 @:noCompletion
 class WebpAnimation {
 	static inline var MAX_PIXELS = 32000000;
@@ -72,22 +72,35 @@ class WebpAnimation {
 
 	static function decodeFrame(bytes:ByteArray, start:Int, end:Int, width:Int, height:Int):Image {
 		var image:Image = null;
+		var lossy = false;
+		var alpha = false;
 		WebpContainer.chunks(bytes, start, end, (tag, offset, length) -> {
 			switch tag {
 				case "VP8L":
-					if (image != null) throw WebpContainer.invalid("Multiple bitstreams in one WebP frame.");
+					if (image != null || lossy || alpha) throw WebpContainer.invalid("Invalid WebP frame chunks.");
 					image = new WebpLossless(new WebpBits(bytes, offset, offset + length)).read();
-				case "VP8 ", "ALPH": throw WebpContainer.invalid("Lossy WebP animation frames are unsupported.");
+				case "VP8 ":
+					if (image != null || lossy) throw WebpContainer.invalid("Invalid WebP frame chunks.");
+					lossy = true;
+				case "ALPH":
+					if (image != null || lossy || alpha) throw WebpContainer.invalid("Invalid WebP frame alpha.");
+					alpha = true;
 				default:
 			}
 		});
+		if (lossy) {
+			final payload = new BytesOutput();
+			if (alpha) writeExtendedHeader(payload, width, height, 0x10);
+			payload.writeBytes(bytes, start, end - start);
+			image = WebpLossy.read(WebpContainer.write(payload.getBytes()));
+		}
 		if (image == null || image.width != width || image.height != height) throw WebpContainer.invalid("Invalid WebP animation frame size.");
 		return image;
 	}
 
-	public static function write(animation:ImageAnimation):ByteArray {
+	public static function write(animation:ImageAnimation, ?quality:Float):ByteArray {
 		try {
-			return encode(animation);
+			return encode(animation, quality);
 		} catch (error:ImageSavingFailed) {
 			throw error;
 		} catch (error:Dynamic) {
@@ -95,7 +108,7 @@ class WebpAnimation {
 		}
 	}
 
-	static function encode(animation:ImageAnimation):ByteArray {
+	static function encode(animation:ImageAnimation, quality:Null<Float>):ByteArray {
 		if (animation.frames.length == 0 || animation.loopCount < 0 || animation.loopCount > 65535)
 			throw new ImageSavingFailed(WEBP, "Invalid animation frame count or loop count.");
 		final first = animation.frames[0].image;
@@ -103,11 +116,7 @@ class WebpAnimation {
 		if (width < 1 || height < 1 || width > 16384 || height > 16384 || width * 1.0 * height * animation.frames.length > MAX_PIXELS)
 			throw new ImageSavingFailed(WEBP, "Invalid WebP animation dimensions.");
 		final payload = new BytesOutput();
-		final header = new BytesOutput();
-		header.writeInt32(0x12); // animation and alpha
-		write24(header, width - 1);
-		write24(header, height - 1);
-		WebpContainer.chunk(payload, "VP8X", header.getBytes());
+		writeExtendedHeader(payload, width, height, 0x12); // animation and alpha
 		final metadata = new BytesOutput();
 		metadata.writeInt32(animation.background.toInt());
 		metadata.writeUInt16(animation.loopCount);
@@ -122,10 +131,25 @@ class WebpAnimation {
 			write24(data, height - 1);
 			write24(data, frame.duration);
 			data.writeByte(2); // full-canvas replacement
-			WebpContainer.chunk(data, "VP8L", WebpLosslessWriter.write(frame.image));
+			if (quality == null) {
+				WebpContainer.chunk(data, "VP8L", WebpLosslessWriter.write(frame.image));
+			} else {
+				final still = WebpLossy.write(frame.image, quality);
+				WebpContainer.read(still, (tag, offset, length) -> {
+					if (tag == "VP8 " || tag == "ALPH") WebpContainer.chunk(data, tag, still.sub(offset, length));
+				});
+			}
 			WebpContainer.chunk(payload, "ANMF", data.getBytes());
 		}
 		return WebpContainer.write(payload.getBytes());
+	}
+
+	static function writeExtendedHeader(output:BytesOutput, width:Int, height:Int, flags:Int):Void {
+		final header = new BytesOutput();
+		header.writeInt32(flags);
+		write24(header, width - 1);
+		write24(header, height - 1);
+		WebpContainer.chunk(output, "VP8X", header.getBytes());
 	}
 
 	static function over(source:Color, destination:Color):Color {

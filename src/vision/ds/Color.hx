@@ -637,6 +637,80 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return color.setRGBAFloat(Red, Green, Blue, Alpha);
 	}
 
+	/** Creates a color from linear-light sRGB and straight alpha, each in [0, 1]. **/
+	public static function fromLinearRGBA(red:Float, green:Float, blue:Float, alpha:Float = 1):Color {
+		return fromRGBA(quantize(linearToSrgb(red)), quantize(linearToSrgb(green)), quantize(linearToSrgb(blue)), quantize(alpha));
+	}
+
+	/** Extracts linear-light sRGB and straight alpha as unit floats. **/
+	public function toLinearRGBA():{red:Float, green:Float, blue:Float, alpha:Float} {
+		return {red: srgbToLinear(redFloat), green: srgbToLinear(greenFloat), blue: srgbToLinear(blueFloat), alpha: alphaFloat};
+	}
+
+	/**
+		Creates an sRGB color from OKLab lightness in [0, 1], signed a and b axes, and alpha in [0, 1].
+		Channels outside the sRGB gamut are clipped before quantization.
+	**/
+	public static function fromOKLab(lightness:Float, a:Float, b:Float, alpha:Float = 1):Color {
+		final l = cube(lightness + 0.3963377774 * a + 0.2158037573 * b);
+		final m = cube(lightness - 0.1055613458 * a - 0.0638541728 * b);
+		final s = cube(lightness - 0.0894841775 * a - 1.2914855480 * b);
+		return fromLinearRGBA(
+			4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+			-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+			-0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s,
+			alpha
+		);
+	}
+
+	/** Extracts perceptual lightness, signed OKLab axes, and unit alpha. **/
+	public function toOKLab():{lightness:Float, a:Float, b:Float, alpha:Float} {
+		final rgb = toLinearRGBA();
+		// Björn Ottosson's linear sRGB to OKLab matrices.
+		final l = Math.pow(0.4122214708 * rgb.red + 0.5363325363 * rgb.green + 0.0514459929 * rgb.blue, 1.0 / 3);
+		final m = Math.pow(0.2119034982 * rgb.red + 0.6806995451 * rgb.green + 0.1073969566 * rgb.blue, 1.0 / 3);
+		final s = Math.pow(0.0883024619 * rgb.red + 0.2817188376 * rgb.green + 0.6299787005 * rgb.blue, 1.0 / 3);
+		return {
+			lightness: 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+			a: 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+			b: 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s,
+			alpha: rgb.alpha
+		};
+	}
+
+	/**
+		Creates an sRGB color from OKLCH lightness in [0, 1], nonnegative chroma, hue in degrees, and unit alpha.
+		Hue wraps around 360 degrees. Channels outside the sRGB gamut are clipped.
+	**/
+	public static function fromOKLCH(lightness:Float, chroma:Float, hue:Float, alpha:Float = 1):Color {
+		if (chroma <= 0) return fromOKLab(lightness, 0, 0, alpha);
+		final radians = (hue % 360) * Math.PI / 180;
+		return fromOKLab(lightness, chroma * Math.cos(radians), chroma * Math.sin(radians), alpha);
+	}
+
+	/** Extracts OKLCH with hue in [0, 360). Achromatic colors have zero chroma and hue. **/
+	public function toOKLCH():{lightness:Float, chroma:Float, hue:Float, alpha:Float} {
+		final lab = toOKLab();
+		final chroma = Math.sqrt(lab.a * lab.a + lab.b * lab.b);
+		if (chroma < 0.000004) return {lightness: lab.lightness, chroma: 0, hue: 0, alpha: lab.alpha};
+		final hue = Math.atan2(lab.b, lab.a) * 180 / Math.PI;
+		return {lightness: lab.lightness, chroma: chroma, hue: hue < 0 ? hue + 360 : hue, alpha: lab.alpha};
+	}
+
+	static inline function srgbToLinear(channel:Float):Float {
+		return channel <= 0.04045 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4);
+	}
+
+	static inline function linearToSrgb(channel:Float):Float {
+		return channel <= 0.0031308 ? channel * 12.92 : 1.055 * Math.pow(channel, 1 / 2.4) - 0.055;
+	}
+
+	static inline function quantize(channel:Float):Int {
+		return Math.isNaN(channel) ? 0 : Math.round(Math.max(0, Math.min(1, channel)) * 255);
+	}
+
+	static inline function cube(value:Float):Float return value * value * value;
+
 	/**
 		Generate a color from CMYK values (0 to 1)
 

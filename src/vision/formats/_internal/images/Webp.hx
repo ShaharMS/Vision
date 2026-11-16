@@ -9,25 +9,30 @@ import vision.formats._internal.images.webp.WebpBits;
 import vision.formats._internal.images.webp.WebpContainer;
 import vision.formats._internal.images.webp.WebpLossless;
 import vision.formats._internal.images.webp.WebpLosslessWriter;
+import vision.formats._internal.images.webp.WebpLossy;
 
-/** RIFF container for still lossless WebP images. **/
+/** RIFF container for still WebP images. **/
 @:noCompletion
 class Webp {
 	public static function read(bytes:ByteArray):Image {
 		try {
-			var payload:WebpBits = null;
+			var lossless:WebpBits = null;
+			var lossy = false;
 			WebpContainer.read(bytes, (tag, offset, length) -> {
 				switch tag {
 					case "VP8L":
-						if (payload != null) throw WebpContainer.invalid("Multiple VP8L chunks.");
-						payload = new WebpBits(bytes, offset, offset + length);
-					case "VP8 ": throw WebpContainer.invalid("Lossy WebP is unsupported.");
+						if (lossless != null || lossy) throw WebpContainer.invalid("Multiple WebP image chunks.");
+						lossless = new WebpBits(bytes, offset, offset + length);
+					case "VP8 ":
+						if (lossless != null || lossy) throw WebpContainer.invalid("Multiple WebP image chunks.");
+						lossy = true;
 					case "ANIM", "ANMF": throw WebpContainer.invalid("Use webpAnimation() for animated WebP.");
 					default:
 				}
 			});
-			if (payload == null) throw new ImageLoadingFailed(WEBP, "Missing VP8L image chunk.");
-			return new WebpLossless(payload).read();
+			if (lossy) return WebpLossy.read(bytes);
+			if (lossless == null) throw WebpContainer.invalid("Missing WebP image chunk.");
+			return new WebpLossless(lossless).read();
 		} catch (error:ImageLoadingFailed) {
 			throw error;
 		} catch (error:Dynamic) {
@@ -35,7 +40,8 @@ class Webp {
 		}
 	}
 
-	public static function write(image:Image):ByteArray {
+	public static function write(image:Image, ?quality:Float):ByteArray {
+		if (quality != null) return WebpLossy.write(image, quality);
 		if (image.width < 1 || image.height < 1 || image.width > 16384 || image.height > 16384 || image.width * image.height > 32000000)
 			throw new ImageSavingFailed(WEBP, "Invalid lossless WebP dimensions.");
 		try {

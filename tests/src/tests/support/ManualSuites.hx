@@ -10,6 +10,9 @@ class ManualSuites {
 		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest(), "setup", "teardown", "test", casePattern);
 		#end
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest(), "setup", "teardown", "test", casePattern);
+		#if (cpp && !cppia && vision_webp)
+		if (includeTest("LossyWebpTest")) runner.addCase(new LossyWebpTest(), "setup", "teardown", "test", casePattern);
+		#end
 		#if !vision_screen_tests
 		#if (!neko || !vision_neko_batched || vision_neko_batch_1)
 		if (includeTest("SeamCarvingTest")) runner.addCase(new SeamCarvingTest(), "setup", "teardown", "test", casePattern);

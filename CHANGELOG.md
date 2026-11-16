@@ -1,5 +1,10 @@
 # 3.0.0 (unreleased)
 
+- Added Linux and macOS desktop Screen windows for hxcpp with `-D vision_sdl_screen`.
+  SDL uses an accelerated render target when available, with Metal preferred on macOS.
+- Added lossy WebP for stills and animation on hxcpp builds with `-D vision_webp`
+  and libwebp. Pass a quality from 0 to 100 when encoding. Omitting quality uses lossless WebP.
+- Added `Color` conversions for linear sRGB, OKLab, and OKLCH, including alpha.
 - Portable text uses shared OpenType substitution and positioning for horizontal
   script runs, with Hebrew marks, Syriac joining, Hangul composition, and basic
   Devanagari conjunct and matra shaping.

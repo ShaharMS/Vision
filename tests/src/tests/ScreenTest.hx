@@ -410,8 +410,15 @@ class ScreenTest extends utest.Test {
 		final window = backend.window;
 		final id = vision.native.sdl.SdlScreen.id(window);
 		final driver = vision.native.sdl.SdlScreen.videoDriver().toString();
-		if (Sys.systemName() == "Mac") Assert.equals("cocoa", driver);
-		else Assert.isTrue(driver == "x11" || driver == "wayland", driver);
+		final renderer = vision.native.sdl.SdlScreen.rendererName(window).toString();
+		if (Sys.systemName() == "Mac") {
+			Assert.equals("cocoa", driver);
+			Assert.equals("metal", renderer);
+		} else {
+			Assert.isTrue(driver == "x11" || driver == "wayland", driver);
+			Assert.isTrue(StringTools.startsWith(renderer, "opengl"), renderer);
+		}
+		Assert.isTrue(vision.native.sdl.SdlScreen.accelerated(window));
 		Assert.isTrue(screen.hasDisplay);
 		Assert.isTrue(vision.native.sdl.SdlScreen.isShown(window));
 		Assert.isTrue(screen.processEvents());
@@ -426,6 +433,10 @@ class ScreenTest extends utest.Test {
 		Assert.isTrue(vision.native.sdl.SdlScreen.matchesSize(window, 64, 50));
 		Assert.equals(0xffabcdef, vision.native.sdl.SdlScreen.pixel(window, 3, 2));
 		Assert.equals(0xff000000, vision.native.sdl.SdlScreen.pixel(window, 63, 49));
+		final capture = screen.capture();
+		Assert.equals(64, capture.width);
+		Assert.equals(50, capture.height);
+		Assert.equals(0xffabcdef, capture.getPixel(3, 2));
 
 		final other = new Screen(100, 100, 32, 32);
 		Assert.isTrue(vision.native.sdl.SdlScreen.requestClose(window));

@@ -9,6 +9,45 @@ import vision.ds.Color;
 @:visionMaturity("semantic")
 @:visionLifecycle("active")
 class ColorTest extends utest.Test {
+	@:visionTestId("vision.ds.Color.toOKLab#redReference")
+	@:visionTestId("vision.ds.Color.toOKLCH#redReference")
+	function test_okLab__redReference() {
+		final red = Color.fromRGBA(255, 0, 0, 128);
+		final lab = red.toOKLab();
+		ApproxAssertions.equalsFloat(0.627955, lab.lightness);
+		ApproxAssertions.equalsFloat(0.224863, lab.a);
+		ApproxAssertions.equalsFloat(0.125846, lab.b);
+		assertColor(red, Color.fromOKLab(lab.lightness, lab.a, lab.b, lab.alpha));
+
+		final lch = red.toOKLCH();
+		ApproxAssertions.equalsFloat(0.257683, lch.chroma);
+		ApproxAssertions.equalsFloat(29.2339, lch.hue);
+		assertColor(red, Color.fromOKLCH(lch.lightness, lch.chroma, lch.hue - 360, lch.alpha));
+	}
+
+	@:visionTestId("vision.ds.Color.toOKLCH#neutralAndRoundTrip")
+	function test_okLch__neutralAndRoundTrip() {
+		final gray = Color.GRAY.toOKLCH();
+		Assert.equals(0.0, gray.chroma);
+		Assert.equals(0.0, gray.hue);
+		assertColor(Color.GRAY, Color.fromOKLCH(gray.lightness, 0, 120));
+
+		final color = sample();
+		final lch = color.toOKLCH();
+		Assert.isTrue(lch.hue >= 0 && lch.hue < 360);
+		assertColor(color, Color.fromOKLCH(lch.lightness, lch.chroma, lch.hue, lch.alpha));
+	}
+
+	@:visionTestId("vision.ds.Color.toLinearRGBA#referenceAndClamping")
+	function test_linearRgba__referenceAndClamping() {
+		final rgb = Color.GRAY.toLinearRGBA();
+		ApproxAssertions.equalsFloat(0.2158605, rgb.red);
+		ApproxAssertions.equalsFloat(rgb.red, rgb.green);
+		ApproxAssertions.equalsFloat(rgb.red, rgb.blue);
+		assertColor(Color.GRAY, Color.fromLinearRGBA(rgb.red, rgb.green, rgb.blue, rgb.alpha));
+		assertColor(Color.fromRGBA(0, 255, 0, 128), Color.fromLinearRGBA(-0.5, 1.5, 0, 0.5));
+	}
+
 	function sample():Color {
 		return cast 0x80336699;
 	}

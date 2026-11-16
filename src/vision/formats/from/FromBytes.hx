@@ -67,21 +67,21 @@ import vision.ds.ByteArray;
     }
 
     /**
-        Decodes a still lossless WebP image.
+        Decodes a still WebP image. Lossy files require hxcpp with `-D vision_webp` and libwebp.
 
         @param bytes The complete WebP file
         @return The decoded image, including alpha
-        @throws ImageLoadingFailed If the file is invalid, lossy, or animated
+        @throws ImageLoadingFailed If the file is invalid, unsupported on this build, or animated
     **/
     public function webp(bytes:ByteArray):Image {
         return Webp.read(bytes);
     }
     /**
-        Decodes animated WebP containing lossless frames.
+        Decodes animated WebP. Lossy frames require hxcpp with `-D vision_webp` and libwebp.
 
         @param bytes The complete animated WebP file
         @return The animation composited on a transparent canvas
-        @throws ImageLoadingFailed If the container or any lossless frame is invalid
+        @throws ImageLoadingFailed If the container or any frame is invalid or unsupported
     **/
     public function webpAnimation(bytes:ByteArray):ImageAnimation {
         return WebpAnimation.read(bytes);

@@ -30,7 +30,7 @@ abstract ScreenBackend(ScreenDriver) {
 		this = new WindowsScreenBackend(width, height, options.visible, x, y);
 		return;
 		#elseif (cpp && !cppia && vision_sdl_screen)
-		this = new SdlScreenBackend(x, y, width, height, options.visible);
+		this = new SdlScreenBackend(x, y, width, height, options.visible, options.preferGpu);
 		return;
 		#end
 		this = new CpuScreenBackend(width, height);
