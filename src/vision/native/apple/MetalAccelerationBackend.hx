@@ -3,6 +3,7 @@ package vision.native.apple;
 #if (cpp && !cppia && mac)
 import vision.ds.Image;
 import vision.ds.accelerate.ImageCommitMode;
+import vision.native.desktop.DesktopImageStorage;
 import vision.native.portable.CpuAccelerationBackend;
 
 /**

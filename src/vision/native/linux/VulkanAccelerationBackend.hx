@@ -3,6 +3,7 @@ package vision.native.linux;
 #if (cpp && !cppia && vision_vulkan)
 import vision.ds.Image;
 import vision.ds.accelerate.ImageCommitMode;
+import vision.native.desktop.DesktopImageStorage;
 import vision.native.portable.CpuAccelerationBackend;
 
 /**

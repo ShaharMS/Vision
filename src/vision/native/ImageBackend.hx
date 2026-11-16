@@ -10,6 +10,8 @@ import vision.native.portable.CpuImage;
 #if js
 import vision.native.browser.BrowserText;
 import vision.native.browser.WebGLImageBackend;
+#elseif ((cpp && !cppia && (windows || mac || vision_vulkan)) || (windows && hl && vision_hashlink_screen))
+import vision.native.desktop.DesktopImageStorage;
 #end
 
 /** Common Image API over a CPU buffer with optional platform-specific device storage. **/

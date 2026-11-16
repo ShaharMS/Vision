@@ -489,7 +489,7 @@ class ScreenTest extends utest.Test {
 		#end
 	}
 
-	static function exerciseNativePixels(screen:Screen, backend:vision.native.DesktopScreenBackend):Void {
+	static function exerciseNativePixels(screen:Screen, backend:vision.native.desktop.DesktopScreenBackend):Void {
 		final source = new Image(4, 4, 0xff543210);
 		final readbacks = deviceReadbacks();
 		final sprite = source.accelerate().invert().commit();

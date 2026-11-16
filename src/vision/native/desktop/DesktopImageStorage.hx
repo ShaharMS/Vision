@@ -1,4 +1,4 @@
-package vision.native;
+package vision.native.desktop;
 
 #if ((cpp && !cppia && (windows || mac || vision_vulkan)) || (hl && windows && vision_hashlink_screen))
 #if cpp
@@ -13,6 +13,7 @@ import vision.ds.Image;
 import vision.ds.accelerate.ImageCommand;
 import vision.ds.accelerate.ImageCommitMode;
 import vision.exceptions.VisionError;
+import vision.native.ImageBackend;
 import vision.native.ImageBackend.DeviceImageStorage;
 import vision.native.ImageBackend.ImageOperation;
 #if hl

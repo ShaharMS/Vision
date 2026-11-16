@@ -1,4 +1,4 @@
-package vision.native;
+package vision.native.desktop;
 
 #if ((cpp && !cppia && (windows || mac || vision_vulkan)) || (windows && hl && vision_hashlink_screen))
 import vision.ds.Color;

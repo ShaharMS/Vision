@@ -13,8 +13,8 @@ package vision.native.windows;
 	import vision.native.windows.Win32.WinRect;
 	import vision.native.windows.Win32.WinWindow;
 	#end
-import vision.native.DesktopImageStorage;
-import vision.native.DesktopScreenBackend;
+import vision.native.desktop.DesktopImageStorage;
+import vision.native.desktop.DesktopScreenBackend;
 import vision.native.ScreenBackend.ScreenWindowMode;
 import vision.exceptions.ScreenError;
 

@@ -16,9 +16,9 @@ import vision.native.linux.VulkanScreenBackend;
 #end
 
 /**
-	Selects a presentation backend by platform. The browser, Windows, and
-	Unix desktop packages contain their own bindings. Windows selects its
-	hxcpp or HashLink binding inside the Windows package.
+	Selects a presentation backend by platform. Platform packages own their
+	bindings. The desktop package shares GPU image storage and window drawing
+	code across Linux, macOS, and Windows.
 **/
 @:forward(setBounds, clear, draw, drawInverted, capture, setWindowMode, processEvents, dispose, hasWindow)
 abstract ScreenBackend(ScreenDriver) {

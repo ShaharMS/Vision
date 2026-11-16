@@ -3,8 +3,8 @@ package vision.native.linux;
 #if (cpp && !cppia && vision_vulkan)
 import cpp.Star;
 import vision.exceptions.ScreenError;
-import vision.native.DesktopImageStorage;
-import vision.native.DesktopScreenBackend;
+import vision.native.desktop.DesktopImageStorage;
+import vision.native.desktop.DesktopScreenBackend;
 import vision.native.ScreenBackend.ScreenWindowMode;
 import vision.native.linux.VulkanDevice.VulkanBuffer;
 

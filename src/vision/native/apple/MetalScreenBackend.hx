@@ -3,8 +3,8 @@ package vision.native.apple;
 #if (cpp && !cppia && mac)
 import cpp.Star;
 import vision.exceptions.ScreenError;
-import vision.native.DesktopImageStorage;
-import vision.native.DesktopScreenBackend;
+import vision.native.desktop.DesktopImageStorage;
+import vision.native.desktop.DesktopScreenBackend;
 import vision.native.ScreenBackend.ScreenWindowMode;
 import vision.native.apple.MetalDevice.MetalBuffer;
 
