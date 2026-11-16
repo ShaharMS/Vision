@@ -12,6 +12,7 @@ class ImageSavingFailed extends VisionException {
             case PNG: "PNG";
             case BMP: "BMP";
             case JPEG: "JPEG";
+            case WEBP: "WebP";
             case VISION: "VISION";
         };
     }

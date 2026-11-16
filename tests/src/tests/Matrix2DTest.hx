@@ -5,9 +5,6 @@ import tests.support.CollectionAssertions;
 import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.ds.Matrix2D;
-import vision.ds.Point2D;
-import vision.ds.Point3D;
-import vision.ds.specifics.PointTransformationPair;
 
 @:access(vision.ds.Matrix2D)
 @:visionMaturity("semantic")
@@ -225,93 +222,11 @@ class Matrix2DTest extends utest.Test {
 		Assert.equals('\n[[1, 2],\n [3, 4]]', createMatrix().toString(1, false));
 	}
 
-	@:visionTestId("vision.ds.Matrix2D.IDENTITY#default")
+	@:visionTestId("vision.ds.Matrix2D.identity#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
-	function test_IDENTITY__default() {
-		assertMatrix([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], Matrix2D.IDENTITY());
-	}
-
-	@:visionTestId("vision.ds.Matrix2D.ROTATION#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_ROTATION__default() {
-		var result = Matrix2D.ROTATION(90, true, new Point2D(0, 0)).transformPoint(new Point2D(1, 0));
-		ApproxAssertions.equalsFloat(0, result.x);
-		ApproxAssertions.equalsFloat(1, result.y);
-	}
-
-	@:visionTestId("vision.ds.Matrix2D.TRANSLATION#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_TRANSLATION__default() {
-		var result = Matrix2D.TRANSLATION(3, 4);
-		assertMatrix([[1.0, 0.0, 3.0], [0.0, 1.0, 4.0], [0.0, 0.0, 1.0]], result);
-	}
-
-	@:visionTestId("vision.ds.Matrix2D.SCALE#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_SCALE__default() {
-		assertMatrix([[2.0, 0.0, 0.0], [0.0, 3.0, 0.0], [0.0, 0.0, 1.0]], Matrix2D.SCALE(2, 3));
-	}
-
-	@:visionTestId("vision.ds.Matrix2D.SHEAR#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_SHEAR__default() {
-		assertMatrix([[1.0, 2.0, 0.0], [3.0, 1.0, 0.0], [0.0, 0.0, 1.0]], Matrix2D.SHEAR(2, 3));
-	}
-
-	@:visionTestId("vision.ds.Matrix2D.REFLECTION#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_REFLECTION__default() {
-		var result = Matrix2D.REFLECTION(0, true, new Point2D(0, 0));
-		ApproxAssertions.equalsFloat(1, result.a);
-		ApproxAssertions.equalsFloat(0, result.b);
-		ApproxAssertions.equalsFloat(0, result.c);
-		ApproxAssertions.equalsFloat(-1, result.d);
-	}
-
-	@:visionTestId("vision.ds.Matrix2D.PERSPECTIVE#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_PERSPECTIVE__default() {
-		var pointPairs = [
-			new PointTransformationPair(new Point2D(0, 0), new Point2D(0, 0)),
-			new PointTransformationPair(new Point2D(1, 0), new Point2D(1, 0)),
-			new PointTransformationPair(new Point2D(0, 1), new Point2D(0, 1)),
-			new PointTransformationPair(new Point2D(1, 1), new Point2D(1, 1)),
-		];
-		var result = Matrix2D.PERSPECTIVE(pointPairs).transformPoint(new Point2D(0.5, 0.25));
-		ApproxAssertions.equalsFloat(0.5, result.x, 0.01);
-		ApproxAssertions.equalsFloat(0.25, result.y, 0.01);
-	}
-
-	@:visionTestId("vision.ds.Matrix2D.PERSPECTIVE#duplicates")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_PERSPECTIVE__duplicates() {
-		var pointPairs = [
-			new PointTransformationPair(new Point2D(0, 0), new Point2D(1, 1)),
-			new PointTransformationPair(new Point2D(0, 0), new Point2D(1, 1)),
-			new PointTransformationPair(new Point2D(0, 1), new Point2D(1, 3)),
-			new PointTransformationPair(new Point2D(1, 1), new Point2D(3, 2)),
-		];
-		ExceptionAssertions.throwsType(() -> {
-			Matrix2D.PERSPECTIVE(pointPairs);
-		}, vision.exceptions.SingularMatrixError);
-	}
-
-	@:visionTestId("vision.ds.Matrix2D.DEPTH#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_DEPTH__default() {
-		var result = Matrix2D.DEPTH(2, new Point2D(5, 6)).transformPoint(new Point3D(0, 0, 1));
-		ApproxAssertions.equalsFloat(5, result.x);
-		ApproxAssertions.equalsFloat(6, result.y);
-		ApproxAssertions.equalsFloat(2, result.z);
+	function test_identity__default() {
+		assertMatrix([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], Matrix2D.identity(3));
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.createFilled#default")
@@ -321,18 +236,9 @@ class Matrix2DTest extends utest.Test {
 		assertMatrix([[1.0, 2.0], [3.0, 4.0]], Matrix2D.createFilled([1, 2], [3, 4]));
 	}
 
-	@:visionTestId("vision.ds.Matrix2D.createTransformation#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_createTransformation__default() {
-		assertMatrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [0.0, 0.0, 1.0]], Matrix2D.createTransformation([1, 2, 3], [4, 5, 6]));
-	}
-
-	@:visionTestId("vision.ds.Matrix2D.createTransformation#duplicates")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_createTransformation__duplicates() {
-		assertMatrix([[2.0, 2.0, 2.0], [3.0, 3.0, 3.0], [0.0, 0.0, 1.0]], Matrix2D.createTransformation([2, 2, 2], [3, 3, 3]));
+	@:visionTestId("vision.ds.Matrix2D.fromRows#rejectsRaggedRows")
+	function test_fromRows__rejectsRaggedRows() {
+		ExceptionAssertions.throwsType(() -> Matrix2D.fromRows([[1, 2], [3]]), vision.exceptions.MatrixShapeError);
 	}
 
 	@:visionTestId("vision.ds.Matrix2D.multiplyMatrices#default")

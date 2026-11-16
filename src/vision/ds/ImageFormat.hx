@@ -25,11 +25,15 @@ enum abstract ImageFormat(Int) {
     **/
     var VISION;
 
+    /** WebP image encoding. **/
+    var WEBP;
+
     @:from public static function fromString(type:String):ImageFormat {
         return switch type.toLowerCase() {
             case "png": PNG;
             case "bmp": BMP;
             case "jpeg" | "jpg": JPEG;
+            case "webp": WEBP;
             default: VISION;
         }
     }

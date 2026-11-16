@@ -62,7 +62,7 @@ class ArrayTools {
 
 	overload extern public static inline function min<T:EitherType<Int ,Float>>(values:Array<T>):T {
 		if (values.length == 0) {
-			#if (hl || cppia || cpp || java || jvm || cs)
+			#if (hl || cppia || cpp || java || jvm || cs || flash)
 			return cast 0;
 			#else
 			return null;
@@ -77,7 +77,7 @@ class ArrayTools {
 
 	overload extern public static inline function min(values:Array<Int64>):Int64 {
 		if (values.length == 0) {
-			#if (hl || cppia || cpp || java || jvm || cs)
+			#if (hl || cppia || cpp || java || jvm || cs || flash)
 			return Int64.make(0, 0);
 			#else
 			return null;

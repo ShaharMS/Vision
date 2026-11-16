@@ -55,6 +55,8 @@ class PrettyReporter {
 	function exit(exitCode:Int) {
 		#if nodejs
 		js.Node.process.exitCode = exitCode;
+		#elseif vision_browser_tests
+		js.Browser.document.body.setAttribute("data-result", exitCode == 0 ? "pass" : "fail");
 		#elseif sys
 		Sys.exit(exitCode);
 		#else

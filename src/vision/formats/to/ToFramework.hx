@@ -1,7 +1,7 @@
 package vision.formats.to;
 
 import vision.ds.Image;
-import vision.formats.__internal.FrameworkImageIO;
+import vision.formats._internal.images.FrameworkImageIO;
 
 /**
     A class for saving images to different frameworks

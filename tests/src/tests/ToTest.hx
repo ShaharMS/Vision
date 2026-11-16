@@ -12,16 +12,12 @@ class ToTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_bytes__stableAccessorAndDelegation() {
-		#if (python || cs)
-		Assert.pass();
-		#else
 		var subject = new To();
-		var bytes = subject.bytes.png(FormatAssertions.fixtureImage());
+		var bytes = subject.bytes.webp(FormatAssertions.fixtureImage());
 
 		Assert.isTrue(subject.bytes == subject.bytes);
-		FormatAssertions.bytesStartWith(bytes, [0x89, 0x50, 0x4E, 0x47]);
-		FormatAssertions.imagesEqual(FormatAssertions.fixtureImage(), ImageIO.from.bytes.png(bytes));
-		#end
+		FormatAssertions.bytesStartWith(bytes, [0x52, 0x49, 0x46, 0x46]);
+		FormatAssertions.imagesEqual(FormatAssertions.fixtureImage(), ImageIO.from.bytes.webp(bytes));
 	}
 
 	@:visionTestId("vision.formats.to.To.framework#stableAccessor")

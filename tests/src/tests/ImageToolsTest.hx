@@ -1,10 +1,12 @@
 package tests;
 
+import tests.support.ExceptionAssertions;
 import tests.support.CollectionAssertions;
 import tests.support.ColorAssertions;
 import tests.support.Factories;
 import tests.support.ImageAssertions;
 import utest.Assert;
+import vision.exceptions.LibraryRequired;
 import vision.ds.Color;
 import vision.ds.Image;
 import vision.ds.ImageFormat;
@@ -99,23 +101,6 @@ class ImageToolsTest extends utest.Test {
 		#end
 	}
 
-	@:visionTestId("vision.tools.ImageTools.saveToFile#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_saveToFile__default() {
-		#if sys
-		withTempVisionPath("save-to-file", function(path) {
-			var source = Factories.checkerboardImage(4, 4, 1);
-			var expected = ImageTools.exportToBytes(source, ImageFormat.VISION);
-			Reflect.callMethod(ImageTools, Reflect.field(ImageTools, "saveToFile"), [source, path, ImageFormat.VISION]);
-			Assert.isTrue(FileSystem.exists(path));
-			CollectionAssertions.bytes(expected.toArray(), File.getBytes(path));
-		});
-		#else
-		Assert.pass();
-		#end
-	}
-
 	@:visionTestId("vision.tools.ImageTools.loadFromURL#default")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
@@ -155,7 +140,9 @@ class ImageToolsTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_loadFromBytes__tiny() {
-		#if (python || cs)
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> ImageTools.loadFromBytes(new Image(0, 0), new vision.ds.ByteArray(0), ImageFormat.PNG), LibraryRequired);
+		#elseif (python || cs)
 		Assert.pass();
 		#else
 		var source = Factories.checkerboardImage(2, 2, 1);
@@ -171,12 +158,16 @@ class ImageToolsTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_loadFromBytes__checkerboard() {
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> ImageTools.loadFromBytes(new Image(0, 0), new vision.ds.ByteArray(0), ImageFormat.BMP), LibraryRequired);
+		#else
 		var source = Factories.checkerboardImage(4, 4, 1);
 		var bytes = ImageTools.exportToBytes(source, ImageFormat.BMP);
 		var result = ImageTools.loadFromBytes(new Image(0, 0), bytes, ImageFormat.BMP);
 		ImageAssertions.hasDimensions(result, 4, 4);
 		ImageAssertions.pixelEquals(result, 0, 1, 0xFF000000);
 		ImageAssertions.pixelEquals(result, 1, 1, 0xFFFFFFFF);
+		#end
 	}
 
 	@:visionTestId("vision.tools.ImageTools.exportToBytes#default")
@@ -191,7 +182,9 @@ class ImageToolsTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_exportToBytes__tiny() {
-		#if (python || cs)
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> ImageTools.exportToBytes(labeledImage(), ImageFormat.PNG), LibraryRequired);
+		#elseif (python || cs)
 		Assert.pass();
 		#else
 		var result = ImageTools.exportToBytes(Factories.gradientImage(3, 3), ImageFormat.PNG);
@@ -203,38 +196,12 @@ class ImageToolsTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_exportToBytes__checkerboard() {
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> ImageTools.exportToBytes(labeledImage(), ImageFormat.BMP), LibraryRequired);
+		#else
 		var result = ImageTools.exportToBytes(Factories.checkerboardImage(4, 4, 1), ImageFormat.BMP);
 		CollectionAssertions.bytes([66, 77], result.getBytes(0, 2));
-	}
-
-	@:visionTestId("vision.tools.ImageTools.addToScreen#default")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_addToScreen__default() {
-		var image = Factories.gradientImage(3, 3);
-		var result = ImageTools.addToScreen(image, 1, 1, null);
-		Assert.equals(cast image, cast result);
-		ImageAssertions.hasDimensions(result, 3, 3);
-	}
-
-	@:visionTestId("vision.tools.ImageTools.addToScreen#tiny")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_addToScreen__tiny() {
-		var image = Factories.checkerboardImage(2, 2, 1);
-		var result = ImageTools.addToScreen(image, 2, 3, null);
-		Assert.equals(cast image, cast result);
-		ImageAssertions.pixelEquals(result, 1, 1, 0xFFFFFFFF);
-	}
-
-	@:visionTestId("vision.tools.ImageTools.addToScreen#checkerboard")
-	@:visionMaturity("semantic")
-	@:visionLifecycle("active")
-	function test_addToScreen__checkerboard() {
-		var image = labeledImage();
-		var result = ImageTools.addToScreen(image, 0, 0, {xUnits: "px", yUnits: "px", zIndex: "5"});
-		Assert.equals(cast image, cast result);
-		ImageAssertions.pixelEquals(result, 2, 0, 0xFF000033);
+		#end
 	}
 
 	@:visionTestId("vision.tools.ImageTools.getNeighborsOfPixel#default")

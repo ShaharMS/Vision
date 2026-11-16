@@ -1,0 +1,7 @@
+<project>
+  <app title="Vision OpenFL smoke" main="OpenFlDrawing" file="VisionOpenFlSmoke" path="../../bin/framework/openfl" />
+  <source path="." />
+  <haxelib name="openfl" />
+  <haxelib name="vision" />
+  <window width="64" height="64" hidden="true" />
+</project>

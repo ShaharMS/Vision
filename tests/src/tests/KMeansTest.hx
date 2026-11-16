@@ -7,7 +7,7 @@ import utest.Assert;
 import vision.algorithms.KMeans;
 import vision.ds.Color;
 import vision.ds.Image;
-import vision.exceptions.VisionException;
+import vision.exceptions.ClusteringError;
 
 @:access(vision.algorithms.KMeans)
 @:visionMaturity("semantic")
@@ -45,7 +45,7 @@ class KMeansTest extends utest.Test {
 	function test_generateClustersUsingConvergence__duplicates() {
 		ExceptionAssertions.throwsType(() -> {
 			KMeans.generateClustersUsingConvergence([], 2, (lhs, rhs) -> Math.abs(rhs - lhs), averageInts);
-		}, VisionException);
+		}, ClusteringError);
 	}
 
 	@:visionTestId("vision.algorithms.KMeans.getImageColorClusters#default")

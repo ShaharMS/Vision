@@ -2,7 +2,7 @@ package vision.algorithms;
 
 import vision.ds.Matrix2D;
 import vision.ds.Point2D;
-import vision.exceptions.VisionException;
+import vision.exceptions.InvalidWarpPoints;
 
 using vision.tools.MathTools;
 
@@ -11,16 +11,16 @@ class PerspectiveWarp {
 	public static function generateMatrix(destinationPoints:Array<Point2D>, sourcePoints:Array<Point2D>):Matrix2D {
 		if (destinationPoints == null || sourcePoints == null) {
 			#if vision_quiet
-			return Matrix2D.IDENTITY();
+			return Matrix2D.identity(3);
 			#else
-			throw new VisionException("Expected 4 source points and 4 destination points.", "Perspective Warp Error");
+			throw new InvalidWarpPoints();
 			#end
 		}
 		if (sourcePoints.length != 4 || destinationPoints.length != 4) {
 			#if vision_quiet
-			return Matrix2D.IDENTITY();
+			return Matrix2D.identity(3);
 			#else
-			throw new VisionException("Expected 4 source points and 4 destination points.", "Perspective Warp Error");
+			throw new InvalidWarpPoints();
 			#end
 		}
 

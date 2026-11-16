@@ -46,3 +46,49 @@ From repo root:
 ## cppia host configuration
 
 Use the pinned, patched interpreter host described in [cppia/README.md](cppia/README.md). The unpatched released host fails generic-array and matrix tests. GitHub CI builds the patched host; the local runner prefers the active haxelib checkout's host (including Linux64/Cppia) over an unrelated PATH executable. JIT mode is not qualified.
+
+## Browser drawing
+
+Run `haxe tests/ci/drawing.hxml` and open [drawing.html](drawing.html) in a browser with WebGL 2. The page reports `data-result="pass"` after the Canvas 2D, WebGL 2, attachment, readback, and compatibility checks.
+
+## Linux and macOS drawing
+
+Linux builds use pkg-config to discover Vulkan, X11 and Wayland development libraries.
+Install the Wayland client development files, `wayland-protocols` and `wayland-scanner`
+to enable native Wayland. When both window systems are built, Vision uses the
+current session. Wayland compositors choose window placement. Screen x and y
+remain logical coordinates on Wayland, and the compositor may choose the
+physical size when maximizing or entering fullscreen. A working Vulkan driver
+is required for a native window. Without the Vulkan SDK and either windowing SDK,
+Vision builds with in-memory Screen and CPU Image acceleration.
+
+macOS builds use the system Metal and AppKit frameworks. Create and operate
+windows on the main thread. Apple Silicon builds also use `-D HXCPP_ARM64`.
+
+```sh
+haxe -lib vision -lib utest -cp tests/src -main Main --cpp bin/unix-screen \
+  -D vision_screen_tests -dce full
+VISION_TESTS=ScreenTest bin/unix-screen/Main
+```
+
+Linux CI uses Mesa Vulkan with Xvfb for X11 and headless Weston for Wayland. The desktop suite presents a window, draws
+a device-resident image without CPU readback, checks captured pixels and resize,
+and closes the native window.
+
+## Windows drawing
+
+Install hxcpp and utest in the active haxelib repository. Build from the repository root with the Microsoft C++ toolchain available.
+
+```powershell
+haxe -cp src -cp tests/src -lib utest -main Main --cpp bin/native-drawing/cpp -D windows -D HXCPP_M64 -D vision_screen_tests
+$env:VISION_TESTS = 'ScreenTest'
+./bin/native-drawing/cpp/Main.exe
+```
+
+Windows uses Direct3D 11 hardware when available and falls back to its WARP
+implementation on hosts without a usable hardware adapter. The HashLink job
+builds the same Direct3D backend into `vision_screen.hdll` and tests it with
+`-D vision_hashlink_screen`.
+
+The suite exercises visible and hidden windows, compositing, presentation,
+resize, and frame timing.

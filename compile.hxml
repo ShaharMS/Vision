@@ -1,8 +1,6 @@
 --class-path src
 --main VisionMain
 
---library format
-
 # --library console.hx
 --debug
 --dce full

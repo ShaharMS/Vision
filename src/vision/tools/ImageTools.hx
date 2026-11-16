@@ -6,7 +6,7 @@ import sys.io.File;
 import haxe.Http;
 import vision.formats.ImageIO;
 #if format
-import vision.formats.__internal.FormatImageLoader;
+import vision.formats._internal.images.FormatImageLoader;
 #end
 import haxe.io.Path;
 import haxe.crypto.Base64;
@@ -23,8 +23,8 @@ import vision.ds.ImageResizeAlgorithm;
 #if js
 import js.Browser;
 import js.html.CanvasElement;
-import vision.formats.__internal.JsImageLoader;
-import vision.formats.__internal.JsImageExporter;
+import vision.formats._internal.images.JsImageLoader;
+import vision.formats._internal.images.JsImageExporter;
 import js.Syntax;
 import js.lib.Uint8Array;
 #end
@@ -74,6 +74,14 @@ class ImageTools {
 		@throws Unimplemented Thrown when used with unsupported file types.
 	**/
 	overload extern public static inline function loadFromFile(?image:Image, path:String, ?onComplete:Image->Void) {
+		#if (sys && !js)
+		final format = ImageFormat.fromString(Path.extension(path.split("?")[0]));
+		if (format == JPEG || format == WEBP) {
+			final result = path.contains("://") ? loadFromURL(image, path) : loadFromBytes(image, sys.io.File.getBytes(path), format);
+			if (onComplete != null) onComplete(result);
+			return;
+		}
+		#end
 		#if (!js)
 			#if format
 			var func:ByteArray -> Image;
@@ -142,36 +150,15 @@ class ImageTools {
 		#end
 	}
 	
-	/**
-	    Saves an image to a path.
-
-		**Note: this function requires the `format` library, and only supports PNG.**
-
-		To install:
-
-		`haxelib install format`
-
-
-		@param image The image to save
-		@param pathWithFileName The path to save to
-		@param saveFormat An image format.
-		@throws LibraryRequired Thrown when used without installing & including `format`
-		@throws ImageSavingFailed Thrown when trying to save a corrupted image.
-	**/
-	@:deprecated("ImageTools.saveToFile() is deprecated. use ImageTools.exportToFile() instead")
-	public static function saveToFile(image:Image, pathWithFileName:String, saveFormat:ImageFormat = PNG) {
-		return exportToFile(image, pathWithFileName, saveFormat);
-	}
-
-	
 	public static function loadFromBytes(?image:Image, bytes:ByteArray, fileFormat:ImageFormat):Image {
 		image = image == null ? new Image(0, 0) : image;
 		image.copyImageFrom(
 			switch fileFormat {
-				case VISION: cast bytes;
+				case VISION: Image.fromStorageBytes(bytes);
 				case PNG: ImageIO.from.bytes.png(bytes);
 				case BMP: ImageIO.from.bytes.bmp(bytes);
 				case JPEG: ImageIO.from.bytes.jpeg(bytes);
+				case WEBP: ImageIO.from.bytes.webp(bytes);
 				default: {
 					#if !vision_quiet
 					throw new Unimplemented('Using `ImageTools.fromBytes` with a file of type `${fileFormat}`');
@@ -190,8 +177,10 @@ class ImageTools {
 			return image.copyImageFrom(JsImageLoader.loadFileSync(path));
 		}
 		return image.copyImageFrom(loadFromFileNodeSync(path));
-		#else
+		#elseif sys
 		return loadFromBytes(image, File.getBytes(path), Path.extension(path));
+		#else
+		throw new Unimplemented("Synchronous file loading on this target");
 		#end
 	}
 
@@ -201,11 +190,11 @@ class ImageTools {
 			return image.copyImageFrom(JsImageLoader.loadURLSync(url));
 		}
 		return image.copyImageFrom(loadFromUrlNodeSync(url));
-		#else
+		#elseif sys
 		var http = new Http(url);
 		var requestStatus = 2;
 		http.onBytes = (data) -> {
-			loadFromBytes(image, data, Path.extension(url));
+			image = loadFromBytes(image, data, Path.extension(url.split("?")[0]));
 			requestStatus = 1;
 		}
 		http.onError = (msg) -> {
@@ -230,6 +219,8 @@ class ImageTools {
 		}
 		
 		return image;
+		#else
+		throw new Unimplemented("Synchronous URL loading on this target");
 		#end
 	}
 
@@ -355,6 +346,7 @@ class ImageTools {
 			case PNG: ImageIO.to.bytes.png(image);
 			case BMP: ImageIO.to.bytes.bmp(image);
 			case JPEG: ImageIO.to.bytes.jpeg(image);
+			case WEBP: ImageIO.to.bytes.webp(image);
 			default: {
 				#if !vision_quiet
 				throw new Unimplemented('Using `ImageTools.toBytes` with a file of type `${format}`');
@@ -367,62 +359,11 @@ class ImageTools {
 	public static function exportToFile(image:Image, pathWithFileName:String, format:ImageFormat = PNG) {
 		#if js
 		JsImageExporter.saveToFileAsync(image, pathWithFileName, format);
-		#else
+		#elseif sys
 		File.saveBytes(pathWithFileName, exportToBytes(image, format));
-		#end
-	}
-
-	/**
-		Adds an `Image` to the screen.
-
-		**Currently, this function only works on the web**, and
-		it uses an absolutely positioned canvas element.
-
-		#### Notice - JS Only
-
-		if you want to use this function to add an image to a web page,
-		and also want to use different units than pixels, you can use the `units` parameter.
-
-			addToScreen(image, 50, 20, {xUnits: "vw", yUnits: "vh", zIndex: 1});
-
-		@param image the image to add.
-		@param x the x position of the image.
-		@param y the y position of the image.
-
-		@returns the image object.
-	**/
-	public static function addToScreen(image:Image, x:Int, y:Int, ?units:{?xUnits:String, ?yUnits:String, ?zIndex:String}):Image {
-		#if (!js || nodejs)
 		#else
-		var c = js.Browser.document.createCanvasElement();
-
-		c.width = image.width;
-		c.height = image.height;
-
-		var ctx = c.getContext2d();
-		var imageData = ctx.getImageData(0, 0, image.width, image.height);
-		var data = imageData.data;
-
-		for (x in 0...image.width) {
-			for (y in 0...image.height) {
-				var i = (y * image.width + x) * 4;
-        for (o in 0...4)
-				  data[i + o] = image.underlying[i + (@:privateAccess Image.OFFSET + 1) + o];
-			}
-		}
-
-		ctx.putImageData(imageData, 0, 0);
-
-		c.style.position = "absolute";
-		if (units == null) units = {};
-
-		c.style.top = (y + units.yUnits) != null ? y + units.yUnits : y + "px";
-		c.style.left = (x + units.xUnits) != null ? x + units.xUnits : x + "px";
-		if (units.zIndex != null) c.style.zIndex = units.zIndex;
-
-		js.Browser.document.body.appendChild(c);
+		throw new Unimplemented("Saving to a file path on this target");
 		#end
-		return image;
 	}
 
 	/**

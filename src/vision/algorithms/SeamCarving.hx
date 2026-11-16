@@ -2,7 +2,7 @@ package vision.algorithms;
 
 import vision.ds.Image;
 import vision.ds.Color;
-import vision.exceptions.VisionException;
+import vision.exceptions.InvalidCarveSize;
 
 /**
 	Content-aware shrinking using Avidan and Shamir's minimum-energy seams (2007).
@@ -14,7 +14,7 @@ class SeamCarving {
 	/** Returns a new image; removes vertical seams before horizontal seams. **/
 	public static function compute(image:Image, width:Int, height:Int):Image {
 		if (width < 1 || height < 1 || width > image.width || height > image.height) {
-			throw new VisionException("Carve dimensions must be positive and no larger than the source.", "Invalid Carve Size");
+			throw new InvalidCarveSize();
 		}
 		var result = image.clone();
 		while (result.width > width) result = removeVertical(result);
