@@ -11,6 +11,9 @@ import vision.native.ScreenBackend;
 	A screen presents its contents in a browser canvas or desktop window when
 	that backend is available. Other targets use an in-memory surface. Use
 	`capture()` to read the drawn pixels on any target.
+
+	On Wayland the compositor chooses window placement. The `x` and `y`
+	properties report the coordinates requested by the caller.
 **/
 class Screen {
 	/** Horizontal position of the presentation surface, in pixels. **/

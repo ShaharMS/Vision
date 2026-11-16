@@ -53,9 +53,13 @@ Run `haxe tests/ci/drawing.hxml` and open [drawing.html](drawing.html) in a brow
 
 ## Linux and macOS drawing
 
-Linux builds use pkg-config to discover Vulkan and X11 development libraries.
-The window uses X11, including XWayland in a Wayland session. A working Vulkan
-driver is required for a native window. Without the Linux development libraries,
+Linux builds use pkg-config to discover Vulkan, X11 and Wayland development libraries.
+Install the Wayland client development files, `wayland-protocols` and `wayland-scanner`
+to enable native Wayland. When both window systems are built, Vision uses the
+current session. Wayland compositors choose window placement. Screen x and y
+remain logical coordinates on Wayland, and the compositor may choose the
+physical size when maximizing or entering fullscreen. A working Vulkan driver
+is required for a native window. Without the Vulkan SDK and either windowing SDK,
 Vision builds with in-memory Screen and CPU Image acceleration.
 
 macOS builds use the system Metal and AppKit frameworks. Create and operate
@@ -67,7 +71,7 @@ haxe -lib vision -lib utest -cp tests/src -main Main --cpp bin/unix-screen \
 VISION_TESTS=ScreenTest bin/unix-screen/Main
 ```
 
-Linux CI uses Mesa Vulkan under Xvfb. The desktop suite presents a window, draws
+Linux CI uses Mesa Vulkan with Xvfb for X11 and headless Weston for Wayland. The desktop suite presents a window, draws
 a device-resident image without CPU readback, checks captured pixels and resize,
 and closes the native window.
 

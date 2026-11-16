@@ -346,7 +346,7 @@ jobs:
         run: |
           if [ "$RUNNER_OS" = Linux ]; then
             sudo apt-get update
-            sudo apt-get install -y pkg-config libvulkan-dev libx11-dev mesa-vulkan-drivers xvfb xauth
+            sudo apt-get install -y pkg-config libvulkan-dev libx11-dev libwayland-dev wayland-protocols mesa-vulkan-drivers xvfb xauth weston
           else
             brew install haxe
           fi
@@ -368,10 +368,32 @@ jobs:
           VISION_TESTS: ScreenTest
         run: |
           if [ "$RUNNER_OS" = Linux ]; then
-            xvfb-run -a bin/unix-screen/Main
+            XDG_SESSION_TYPE=x11 VISION_TEST_WINDOW_SYSTEM=x11 xvfb-run -a bin/unix-screen/Main
           else
             bin/unix-screen/Main
           fi
+      - name: Run the Vulkan Screen suite on native Wayland
+        if: runner.os == 'Linux'
+        env:
+          VISION_TESTS: ScreenTest
+          VISION_TEST_WINDOW_SYSTEM: wayland
+          XDG_SESSION_TYPE: wayland
+          WAYLAND_DISPLAY: vision-wayland
+        run: |
+          unset DISPLAY XAUTHORITY WAYLAND_SOCKET
+          export XDG_RUNTIME_DIR="$RUNNER_TEMP/vision-wayland-runtime"
+          install -d -m 700 "$XDG_RUNTIME_DIR"
+          log="$RUNNER_TEMP/vision-weston.log"
+          weston --backend=headless-backend.so --use-pixman --socket="$WAYLAND_DISPLAY" --idle-time=0 >"$log" 2>&1 &
+          compositor=$!
+          trap 'kill "$compositor" 2>/dev/null || true; cat "$log"' EXIT
+          for attempt in {1..100}; do
+            if [ -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ]; then break; fi
+            kill -0 "$compositor"
+            sleep 0.1
+          done
+          test -S "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY"
+          timeout 30s bin/unix-screen/Main
 
   native-screen:
     name: Screen (Windows)

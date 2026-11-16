@@ -1,7 +1,11 @@
 #pragma once
+#ifdef VISION_VULKAN_X11
 #define VK_USE_PLATFORM_XLIB_KHR
+#endif
+#ifdef VISION_VULKAN_WAYLAND
+#define VK_USE_PLATFORM_WAYLAND_KHR
+#endif
 #include <vulkan/vulkan.h>
-#include <X11/Xatom.h>
 #include <algorithm>
 #include <atomic>
 #include <cstring>
@@ -18,7 +22,7 @@ struct Device {
     VkDevice logical = VK_NULL_HANDLE;
     VkPhysicalDevice physical = VK_NULL_HANDLE;
     uint32_t family = 0;
-    bool presentation = false;
+    bool presentation = false, x11 = false, wayland = false;
     VkQueue queue = VK_NULL_HANDLE;
     VkDescriptorSetLayout layout = VK_NULL_HANDLE;
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
@@ -35,10 +39,30 @@ struct Device {
         app.apiVersion = VK_API_VERSION_1_0;
         VkInstanceCreateInfo info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
         info.pApplicationInfo = &app;
-        const char* extensions[] = {VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_XLIB_SURFACE_EXTENSION_NAME};
-        info.enabledExtensionCount = 2;
-        info.ppEnabledExtensionNames = extensions;
-        presentation = true;
+        uint32_t extensionCount = 0;
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+        std::vector<VkExtensionProperties> advertised(extensionCount);
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, advertised.data());
+        const auto supports = [&](const char* name) {
+            return std::any_of(advertised.begin(), advertised.end(), [name](const VkExtensionProperties& property) {
+                return std::strcmp(property.extensionName, name) == 0;
+            });
+        };
+        std::vector<const char*> extensions;
+        if (supports(VK_KHR_SURFACE_EXTENSION_NAME)) {
+            #ifdef VISION_VULKAN_X11
+            x11 = supports(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
+            if (x11) extensions.push_back(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
+            #endif
+            #ifdef VISION_VULKAN_WAYLAND
+            wayland = supports(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
+            if (wayland) extensions.push_back(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
+            #endif
+            presentation = !extensions.empty();
+            if (presentation) extensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
+        }
+        info.enabledExtensionCount = extensions.size();
+        info.ppEnabledExtensionNames = extensions.data();
 
         if (vkCreateInstance(&info, nullptr, &instance) != VK_SUCCESS) return;
         uint32_t count = 0;

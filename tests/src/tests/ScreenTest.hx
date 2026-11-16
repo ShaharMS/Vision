@@ -1,7 +1,7 @@
 package tests;
 
 #if (vision_screen_tests && cpp && !windows && !mac && !vision_vulkan)
-#error "The Linux Screen test requires Vulkan and X11 development files discoverable by pkg-config."
+#error "The Linux Screen test requires Vulkan and Wayland or X11 development files discoverable by pkg-config."
 #end
 
 import haxe.Timer;
@@ -439,12 +439,26 @@ class ScreenTest extends utest.Test {
 		#if mac
 		Sys.println("Metal adapter: " + vision.native.apple.MetalDevice.adapterName().toString());
 		#else
+		final windowSystem = vision.native.linux.VulkanScreenBackend.VulkanWindowApi.windowSystem(backend.window).toString();
+		Sys.println("Vulkan window system: " + windowSystem);
 		Sys.println("Vulkan adapter: " + vision.native.linux.VulkanDevice.adapterName().toString());
+		final expected = Sys.getEnv("VISION_TEST_WINDOW_SYSTEM");
+		if (expected != null) Assert.equals(expected, windowSystem);
 		#end
 		Assert.isTrue(screen.poll());
 		Assert.isTrue(screen.poll());
 		Assert.isTrue(screen.deltaTime >= 0.015);
 		exerciseNativePixels(screen, backend);
+		#if !mac
+		if (windowSystem == "wayland") {
+			Assert.isTrue(vision.native.linux.VulkanScreenBackend.VulkanWindowApi.swapchainSizeMatches(backend.window, 64, 50));
+			Assert.isTrue(screen.minimize());
+			Assert.isTrue(screen.poll());
+			Assert.isTrue(screen.show());
+			Assert.isTrue(vision.native.linux.VulkanScreenBackend.VulkanWindowApi.swapchainSizeMatches(backend.window, 64, 50));
+			Assert.equals(0xffabcdef, screen.capture().getPixel(3, 2));
+		}
+		#end
 
 		final other = Screen.open(100, 100, 32, 32, {visible: false});
 		var closed = false;
