@@ -31,6 +31,9 @@ rid of them, define `vision_quiet`.**
 
 # Tutorials
 
+Vision builds without the `format` haxelib. To enable its PNG and BMP codecs,
+install it with `haxelib install format` and add `--library format` to your build.
+
 For more tutorials (or further details about the tutorials here) check out the links below:
 
  - [`Vision` Tutorials On The Haxe Learning Center](https://spacebubble-io.pages.dev/haxe/?name=Vision)

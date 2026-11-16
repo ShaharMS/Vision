@@ -5,6 +5,7 @@ import tests.support.ExceptionAssertions;
 import tests.support.FormatAssertions;
 import tests.support.ColorAssertions;
 import utest.Assert;
+import vision.exceptions.LibraryRequired;
 import vision.exceptions.ImageLoadingFailed;
 import vision.formats.ImageIO;
 import vision.formats.from.FromBytes;
@@ -17,7 +18,9 @@ class FromBytesTest extends utest.Test {
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_png__roundTrip() {
-		#if (python || cs)
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> new FromBytes().png(FormatAssertions.malformedBytes()), LibraryRequired);
+		#elseif (python || cs)
 		Assert.pass();
 		#else
 		var expected = FormatAssertions.fixtureImage();
@@ -32,24 +35,28 @@ class FromBytesTest extends utest.Test {
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_bmp__roundTrip() {
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> new FromBytes().bmp(FormatAssertions.malformedBytes()), LibraryRequired);
+		#else
 		var expected = FormatAssertions.fixtureImage();
 		var bytes = ImageIO.to.bytes.bmp(expected);
 		var actual = new FromBytes().bmp(bytes);
 		FormatAssertions.imagesEqual(expected, actual);
+		#end
 	}
 
 	@:visionTestId("vision.formats.from.FromBytes.png#invalidHeader")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_png__invalidHeaderThrows() {
-		ExceptionAssertions.throwsType(() -> new FromBytes().png(FormatAssertions.malformedBytes()), ImageLoadingFailed);
+		ExceptionAssertions.throwsType(() -> new FromBytes().png(FormatAssertions.malformedBytes()), #if (format || js) ImageLoadingFailed #else LibraryRequired #end);
 	}
 
 	@:visionTestId("vision.formats.from.FromBytes.bmp#invalidHeader")
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_bmp__invalidHeaderThrows() {
-		ExceptionAssertions.throwsType(() -> new FromBytes().bmp(FormatAssertions.malformedBytes()), ImageLoadingFailed);
+		ExceptionAssertions.throwsType(() -> new FromBytes().bmp(FormatAssertions.malformedBytes()), #if (format || js) ImageLoadingFailed #else LibraryRequired #end);
 	}
 
 	@:visionTestId("vision.formats.from.FromBytes.jpeg#invalidHeader")

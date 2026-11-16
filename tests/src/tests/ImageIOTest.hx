@@ -1,7 +1,9 @@
 package tests;
 
+import tests.support.ExceptionAssertions;
 import tests.support.FormatAssertions;
 import utest.Assert;
+import vision.exceptions.LibraryRequired;
 import vision.formats.ImageIO;
 
 @:visionMaturity("semantic")
@@ -26,7 +28,9 @@ class ImageIOTest extends utest.Test {
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_from__pngRoundTripThroughStatics() {
-		#if (python || cs)
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> ImageIO.from.bytes.png(FormatAssertions.malformedBytes()), LibraryRequired);
+		#elseif (python || cs)
 		Assert.pass();
 		#else
 		var expected = FormatAssertions.fixtureImage();
@@ -43,11 +47,15 @@ class ImageIOTest extends utest.Test {
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_to__bmpRoundTripThroughStatics() {
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> ImageIO.to.bytes.bmp(FormatAssertions.fixtureImage()), LibraryRequired);
+		#else
 		var expected = FormatAssertions.fixtureImage();
 		var bytes = ImageIO.to.bytes.bmp(expected);
 		var actual = ImageIO.from.bytes.bmp(bytes);
 
 		FormatAssertions.bytesStartWith(bytes, [0x42, 0x4D]);
 		FormatAssertions.imagesEqual(expected, actual);
+		#end
 	}
 }

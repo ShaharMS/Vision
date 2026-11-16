@@ -5,6 +5,7 @@ import tests.support.ExceptionAssertions;
 import tests.support.FormatAssertions;
 import tests.support.ColorAssertions;
 import utest.Assert;
+import vision.exceptions.LibraryRequired;
 import vision.ds.Image;
 import vision.ds.ImageAnimation;
 import vision.ds.Color;
@@ -20,6 +21,9 @@ class ToBytesTest extends utest.Test {
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_png__roundTrip() {
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> new ToBytes().png(FormatAssertions.fixtureImage()), LibraryRequired);
+		#else
 		var expected = FormatAssertions.fixtureImage();
 		#if (python || cs)
 		ExceptionAssertions.throwsType(() -> new ToBytes().png(expected), ImageSavingFailed);
@@ -29,6 +33,7 @@ class ToBytesTest extends utest.Test {
 		FormatAssertions.bytesStartWith(bytes, [0x89, 0x50, 0x4E, 0x47]);
 		FormatAssertions.imagesEqual(expected, ImageIO.from.bytes.png(bytes));
 		#end
+		#end
 	}
 
 	@:visionTestId("vision.formats.to.ToBytes.bmp#roundTrip")
@@ -36,11 +41,15 @@ class ToBytesTest extends utest.Test {
 	@:visionLifecycle("active")
 	@:visionRequires("image_fixture")
 	function test_bmp__roundTrip() {
+		#if (!format && !js)
+		ExceptionAssertions.throwsType(() -> new ToBytes().bmp(FormatAssertions.fixtureImage()), LibraryRequired);
+		#else
 		var expected = FormatAssertions.fixtureImage();
 		var bytes = new ToBytes().bmp(expected);
 
 		FormatAssertions.bytesStartWith(bytes, [0x42, 0x4D]);
 		FormatAssertions.imagesEqual(expected, ImageIO.from.bytes.bmp(bytes));
+		#end
 	}
 
 	@:visionTestId("vision.formats.to.ToBytes.jpeg#signature")

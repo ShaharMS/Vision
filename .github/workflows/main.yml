@@ -183,6 +183,10 @@ jobs:
         run: |
           haxelib dev vision $GITHUB_WORKSPACE
           haxelib install utest --quiet
+          if [ "${{ matrix.target }}" = "interp" ]; then
+            haxe compile.hxml
+            haxe test.hxml -D vision_skip_golden -D vision_skip_invalid_tests
+          fi
           haxelib install format --quiet
           if [ "${{ matrix.target }}" = "js" ]; then haxelib install hxnodejs --quiet; fi
           haxelib install hxcpp --quiet
@@ -232,7 +236,7 @@ jobs:
         env:
           VISION_TESTS: SeamCarvingTest,FromBytesTest,Transform2DTest
           VISION_TEST_CASES: (quiet|carve|projectiveDivision)
-        run: haxe test.hxml -D vision_quiet -D vision_higher_width_cap
+        run: haxe test.hxml --library format -D vision_quiet -D vision_higher_width_cap
 
       - name: Run (${{ matrix.target }})
         run: |
