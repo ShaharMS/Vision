@@ -1,7 +1,7 @@
 #ifndef VISION_WEBP_CODEC_H
 #define VISION_WEBP_CODEC_H
 
-#include <hxcpp.h>
+#include <climits>
 #include <cstring>
 #include <memory>
 #include <webp/decode.h>
