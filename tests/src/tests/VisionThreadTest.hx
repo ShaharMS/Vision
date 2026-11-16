@@ -5,6 +5,9 @@ import tests.support.ExceptionAssertions;
 import utest.Assert;
 import vision.exceptions.MultithreadFailure;
 import vision.helpers.VisionThread;
+#if target.threaded
+import sys.thread.Lock;
+#end
 
 @:access(vision.helpers.VisionThread)
 @:visionMaturity("semantic")
@@ -42,11 +45,21 @@ class VisionThreadTest extends utest.Test {
 	function test_start__callsOnDone() {
 		var ran = false;
 		var doneCalls = 0;
+		#if target.threaded
+		final notified = new Lock();
+		#end
 		var subject = new VisionThread(() -> ran = true);
-		subject.onDone = () -> doneCalls++;
+		subject.onDone = () -> {
+			doneCalls++;
+			#if target.threaded
+			notified.release();
+			#end
+		};
 
 		subject.start();
-		waitForResolution(subject);
+		#if target.threaded
+		Assert.isTrue(notified.wait(2), "The completion callback did not run");
+		#end
 
 		Assert.isTrue(ran);
 		Assert.equals(true, subject.jobDone);
@@ -109,11 +122,21 @@ class VisionThreadTest extends utest.Test {
 	function test_start__routesJobFailure() {
 		var captured:Exception = null;
 		var doneCalls = 0;
+		#if target.threaded
+		final notified = new Lock();
+		#end
 		var subject = new VisionThread(() -> { throw new Exception("job failure"); });
-		subject.onFailed = error -> captured = error;
+		subject.onFailed = error -> {
+			captured = error;
+			#if target.threaded
+			notified.release();
+			#end
+		};
 		subject.onDone = () -> doneCalls++;
 		subject.start();
-		waitForResolution(subject);
+		#if target.threaded
+		Assert.isTrue(notified.wait(2), "The failure callback did not run");
+		#end
 		Assert.equals(false, subject.jobDone);
 		Assert.notNull(captured);
 		Assert.equals("job failure", captured.message);
