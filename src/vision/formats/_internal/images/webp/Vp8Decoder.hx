@@ -163,7 +163,7 @@ class Vp8Decoder {
 	static inline function block():Vp8Block return {pred: [0, 0, 0, 0], nzMask: 0, nzY16: 0};
 	static inline function btou(value:Bool):Int return value ? 1 : 0;
 	static inline function pack(x:Array<Int>, shift:Int):Int return (x[0] | (x[1] << 1) | (x[2] << 2) | (x[3] << 3)) << shift;
-	static inline function int16(value:Int):Int return (value << 16) >> 16;
+	static inline function int16(value:Int):Int return ((value & 0xffff) ^ 0x8000) - 0x8000;
 	static inline function clip(value:Int, min:Int, max:Int):Int return value < min ? min : value > max ? max : value;
 	static inline function clip8(value:Int):Int return clip(value, 0, 255);
 	static inline function clamp255(value:Int):Int return clip8(value);
@@ -460,7 +460,7 @@ class Vp8Decoder {
 		var partition = op[mby&(nOP-1)];
 		var plane = planeY1SansY2;
 		var quant = quant[segment];
-	
+
 		// Parse the DC coefficient of each 4x4 luma region.
 		if (usePredY16) {
 			var nz = parseResiduals4(partition, planeY2, leftMB.nzY16+upMB[mbx].nzY16, quant.y2, false, whtCoeffBase);
@@ -469,13 +469,13 @@ class Vp8Decoder {
 			inverseWHT16();
 			plane = planeY1WithY2;
 		}
-	
+
 		var nzDC = [0, 0, 0, 0];
 		var nzAC = [0, 0, 0, 0];
 		var dcMask = 0;
 		var acMask = 0;
 		var coeffBase = 0;
-	
+
 		// Parse the luma coefficients.
 		var lnz = Vp8Tables.unpack[leftMB.nzMask & 0x0f].copy();
 		var unz = Vp8Tables.unpack[upMB[mbx].nzMask & 0x0f].copy();
@@ -494,7 +494,7 @@ class Vp8Decoder {
 		}
 		var lnzMask = pack(lnz, 0);
 		var unzMask = pack(unz, 0);
-	
+
 		// Parse the chroma coefficients.
 		lnz = Vp8Tables.unpack[leftMB.nzMask >> 4].copy();
 		unz = Vp8Tables.unpack[upMB[mbx].nzMask >> 4].copy();
@@ -516,13 +516,13 @@ class Vp8Decoder {
 		}
 		lnzMask |= pack(lnz, 4);
 		unzMask |= pack(unz, 4);
-	
+
 		// Save decoder state.
 		leftMB.nzMask = (lnzMask);
 		upMB[mbx].nzMask = (unzMask);
 		nzDCMask = dcMask;
 		nzACMask = acMask;
-	
+
 		// Section 15.1 of the spec says that "Steps 2 and 4 [of the loop filter]
 		// are skipped... [if] there is no DCT coefficient coded for the whole
 		// macroblock."
@@ -860,7 +860,7 @@ class Vp8Decoder {
 					baseLevel += filterHeader.level;
 				}
 			}
-	
+
 			for (j in 0...filterParams[i].length) {
 				var p = filterParams[i][j];
 				p.inner = j != 0;
