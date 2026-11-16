@@ -6,6 +6,7 @@ import cpp.Star;
 import haxe.io.Bytes;
 import vision.Vision;
 import vision.ds.Color;
+import vision.native.ScreenBackend.ScreenWindowMode;
 import vision.ds.Image;
 import vision.exceptions.ScreenError;
 import vision.native.ScreenBackend.ScreenDriver;
@@ -29,6 +30,8 @@ class SdlScreenBackend implements ScreenDriver {
 			throw new ScreenError("SDL could not present the initial frame: " + error);
 		}
 	}
+
+	public function setWindowMode(mode:ScreenWindowMode):Bool return SdlScreen.setWindowMode(window, mode);
 
 	public function processEvents():Bool {
 		final state = SdlScreen.poll(window);
@@ -65,18 +68,9 @@ class SdlScreenBackend implements ScreenDriver {
 		return Image.loadFromBytes(pixels, width, height);
 	}
 
-	public function attach(image:Image):Bool return false;
-	public function detach(image:Image):Void {}
 	public function hasWindow():Bool return window != null;
 
-	public function waitForFrame(remaining:()->Float, complete:()->Void):Void {
-		var delay = remaining();
-		while (delay > 0) {
-			Sys.sleep(delay);
-			delay = remaining();
-		}
-		complete();
-	}
+
 
 	inline function present():Void check(SdlScreen.present(window), "present the frame");
 

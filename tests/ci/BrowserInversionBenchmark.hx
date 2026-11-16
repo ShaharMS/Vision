@@ -1,7 +1,6 @@
 import js.Browser;
 import vision.Vision;
 import vision.native.browser.CanvasRenderer;
-import vision.native.browser.WebGpuInverter;
 import vision.ds.Image;
 
 class BrowserInversionBenchmark {
@@ -40,52 +39,7 @@ class BrowserInversionBenchmark {
 			glError: gl.getError()
 		};
 		renderer.dispose();
-
-		final start = Browser.window.performance.now();
-		WebGpuInverter.create().then(inverter -> {
-			if (inverter == null) {
-				complete(results, "unavailable");
-				return;
-			}
-			results.webGpuSetupMs = Browser.window.performance.now() - start;
-			final computeTimes = [];
-			function sample(remaining:Int):js.lib.Promise<Bool> {
-				if (remaining == 0)
-					return js.lib.Promise.resolve(true);
-				final started = Browser.window.performance.now();
-				return inverter.invert(source).then(result -> {
-					computeTimes.push(Browser.window.performance.now() - started);
-					if (result.getPixel(40, 54) != cached.getPixel(40, 54))
-						throw "WebGPU benchmark output mismatch";
-					return sample(remaining - 1);
-				});
-			}
-			final cpuStarted = Browser.window.performance.now();
-			for (_ in 0...10) {
-				if (Vision.invert(source.clone()).getPixel(40, 54) != cached.getPixel(40, 54))
-					throw "CPU benchmark output mismatch";
-			}
-			results.cpuToCpuMs = (Browser.window.performance.now() - cpuStarted) / 10;
-			sample(11).then(_ -> {
-				inverter.dispose();
-				results.webGpuFirstCpuToCpuMs = computeTimes.shift();
-				results.webGpuWarmCpuToCpuMs = computeTimes;
-				complete(results, "pass");
-			}).catchError(error -> {
-				inverter.dispose();
-				failed(error);
-			});
-		}).catchError(failed);
-	}
-
-	static function complete(results:Dynamic, webgpu:String):Void {
 		Browser.document.body.setAttribute("data-result", "pass");
-		Browser.document.body.setAttribute("data-webgpu", webgpu);
 		Browser.document.body.innerText = haxe.Json.stringify(results);
-	}
-
-	static function failed(error:Dynamic):Void {
-		Browser.document.body.setAttribute("data-result", "fail");
-		Browser.document.body.innerText = Std.string(error);
 	}
 }

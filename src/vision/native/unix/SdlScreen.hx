@@ -21,6 +21,7 @@ import cpp.UInt8;
 extern class SdlScreen {
 	@:native("vision_sdl_open") static function open(x:Int, y:Int, width:Int, height:Int, visible:Bool, preferGpu:Bool):Star<SdlWindow>;
 	@:native("vision_sdl_close") static function close(window:Star<SdlWindow>):Void;
+	@:native("vision_sdl_set_window_mode") static function setWindowMode(window:Star<SdlWindow>, mode:Int):Bool;
 	@:native("vision_sdl_poll") static function poll(window:Star<SdlWindow>):Int;
 	@:native("vision_sdl_bounds") static function setBounds(window:Star<SdlWindow>, x:Int, y:Int, width:Int, height:Int):Bool;
 	@:native("vision_sdl_clear") static function clear(window:Star<SdlWindow>, color:UInt):Bool;

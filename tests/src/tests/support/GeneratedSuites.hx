@@ -6,7 +6,6 @@ import tests.*;
 class GeneratedSuites {
 	public static function addCases(runner:Runner, includeTest:String->Bool):Void {
 		#if vision_browser_tests
-		if (includeTest("WebGpuInverterTest")) runner.addCase(new WebGpuInverterTest());
 		if (includeTest("TextDrawingTest")) runner.addCase(new TextDrawingTest());
 		#end
 		if (includeTest("ScreenTest")) runner.addCase(new ScreenTest());

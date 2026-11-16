@@ -52,7 +52,7 @@ class WebGLScreen implements CanvasScreenRenderer {
 	}
 
 	function owns(storage:ImageBackend):Bool {
-		return storage.deviceStorage is WebGLImage && (cast storage.deviceStorage : WebGLImage).owner == gpu;
+		return storage.deviceStorage is WebGLImageBackend && (cast storage.deviceStorage : WebGLImageBackend).owner == gpu;
 	}
 
 	/** Draw at a position in canvas pixels with source-over alpha blending. **/
@@ -72,7 +72,7 @@ class WebGLScreen implements CanvasScreenRenderer {
 		if (width <= 0 || height <= 0 || canvas.width <= 0 || canvas.height <= 0) return;
 		final storage = image.backend();
 		if (owns(storage) && storage.prepareDeviceStorage()) {
-			final surface:WebGLImage = cast storage.deviceStorage;
+			final surface:WebGLImageBackend = cast storage.deviceStorage;
 			gpu.presentTexture(surface.texture, width, height, x, y, canvas.width, canvas.height, invert);
 			return;
 		}

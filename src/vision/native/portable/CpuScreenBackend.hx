@@ -1,8 +1,8 @@
 package vision.native.portable;
 
-import haxe.Timer;
 import vision.Vision;
 import vision.ds.Color;
+import vision.native.ScreenBackend.ScreenWindowMode;
 import vision.ds.Image;
 import vision.native.ScreenBackend.ScreenDriver;
 
@@ -10,7 +10,6 @@ import vision.native.ScreenBackend.ScreenDriver;
 @:noCompletion
 class CpuScreenBackend implements ScreenDriver {
 	var frame:Image;
-	var timer:Null<Timer>;
 
 	public function new(width:Int, height:Int) {
 		frame = new Image(width, height, Color.BLACK);
@@ -49,35 +48,13 @@ class CpuScreenBackend implements ScreenDriver {
 	}
 
 	public function capture():Image return frame.clone();
-	public function attach(image:Image):Bool return false;
-	public function detach(image:Image):Void {}
+	public function setWindowMode(mode:ScreenWindowMode):Bool return false;
 	public function processEvents():Bool return true;
 	public function hasWindow():Bool return false;
 
-	public function waitForFrame(remaining:()->Float, complete:()->Void):Void {
-		#if (sys && !js)
-		var delay = remaining();
-		while (delay > 0) {
-			Sys.sleep(delay);
-			delay = remaining();
-		}
-		complete();
-		#else
-		final delay = remaining();
-		if (delay <= 0) {
-			complete();
-		} else {
-			timer = Timer.delay(() -> {
-				timer = null;
-				waitForFrame(remaining, complete);
-			}, Math.ceil(delay * 1000));
-		}
-		#end
-	}
+
 
 	public function dispose():Void {
-		if (timer != null) timer.stop();
-		timer = null;
 		frame = null;
 	}
 }

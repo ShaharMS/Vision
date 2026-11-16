@@ -53,22 +53,24 @@ class ScreenTest extends utest.Test {
 		image.setPixel(3, 2, 0xff000000);
 		Assert.equals(0xffabcdef, screen.capture().getPixel(3, 2));
 		screen.dispose();
-		Assert.equals(false, screen.poll().result);
+		Assert.equals(false, screen.poll());
 	}
 
 	@:visionTestId("vision.ds.Screen.poll#offscreen")
-	function test_poll__offscreenCompletesOnEveryTarget(async:Async):Void {
-		final screen = new Screen(0, 0, 4, 4, {offscreen: true, frameRate: 50});
-		screen.poll().then(ready -> {
-			Assert.isTrue(ready);
-			Assert.equals(0.0, screen.deltaTime);
-			screen.poll().then(next -> {
-				Assert.isTrue(next);
-				Assert.isTrue(screen.deltaTime >= 0.018, "Offscreen polling completed before the frame interval");
-				screen.dispose();
-				async.done();
-			});
-		});
+	function test_poll__offscreenCompletesOnEveryTarget():Void {
+		final screen = Screen.open(0, 0, 4, 4, {offscreen: true, frameRate: 50});
+		Assert.isTrue(screen.poll());
+		Assert.equals(0.0, screen.deltaTime);
+		Assert.isTrue(screen.poll());
+		#if (sys && !js)
+		Assert.isTrue(screen.deltaTime >= 0.018, "Offscreen polling completed before the frame interval");
+		#end
+		var closed = 0;
+		screen.onClose = () -> closed++;
+		screen.close();
+		screen.close();
+		Assert.equals(1, closed);
+		Assert.isFalse(screen.poll());
 	}
 
 	#if vision_browser_tests
@@ -100,7 +102,7 @@ class ScreenTest extends utest.Test {
 	@:visionMaturity("semantic")
 	@:visionLifecycle("active")
 	function test_poll__browserFrameWait(async:Async)
-		finishAsync(frameWait(), async);
+		frameWait(async);
 
 	function finishAsync(result:Promise<Bool>, async:Async):Void {
 		result.then(_ -> async.done(), error -> {
@@ -168,32 +170,37 @@ class ScreenTest extends utest.Test {
 		});
 	}
 
-	function frameWait():Promise<Bool> {
-		final screen = new Screen(3, 4, 5, 6, {preferGpu: false, frameRate: 20});
+	function frameWait(async:Async):Void {
+		final screen = Screen.open(3, 4, 5, 6, {preferGpu: false});
 		final canvas:CanvasElement = cast Browser.document.body.lastElementChild;
-		screen.draw(new Image(1, 1, 0xFF123456), 1, 2);
-		expectPixel(canvas, false, 1, 2, [18, 52, 86, 255]);
-		return new Promise((resolve, _) -> {
-			final first = screen.poll();
-			Assert.equals(first, screen.poll());
-			first.then(ready -> {
-				Assert.isFalse(!ready || screen.deltaTime != 0, "First poll should report zero delta");
-				final started = Timer.stamp();
-				screen.frameRate = 25;
-				screen.poll().then(next -> {
-					final elapsed = Timer.stamp() - started;
-					Assert.isFalse(!next || screen.deltaTime < 0.038 || Math.abs(screen.deltaTime - elapsed) > 0.010,
-						"Frame rate or elapsed seconds did not match the browser clock");
-					expectPixel(canvas, false, 1, 2, [18, 52, 86, 255]);
-					final pending = screen.poll();
-					screen.dispose();
-					pending.then(closed -> {
-						Assert.isFalse(closed, "Disposed screen reported ready");
-						resolve(true);
-					});
-				});
-			});
+		Assert.isTrue(screen.poll());
+		Assert.equals(0.0, screen.deltaTime);
+		Assert.isTrue(screen.minimize());
+		Assert.isTrue(canvas.hidden);
+		Assert.isTrue(screen.maximize());
+		Assert.isFalse(canvas.hidden);
+		Assert.equals("100vw", canvas.style.width);
+		Assert.isTrue(screen.show());
+		Assert.equals("5px", canvas.style.width);
+		Browser.window.requestAnimationFrame(_ -> {
+			Assert.isTrue(screen.poll());
+			Assert.isTrue(screen.deltaTime >= 0);
+			screen.close();
+			Assert.isFalse(screen.poll());
+			async.done();
 		});
+	}
+
+	@:visionTestId("vision.ds.Image.accelerate#webgl")
+	@:access(vision.ds.Image)
+	function test_accelerate__webgl():Void {
+		final source = new Image(3, 2, 0x80204060);
+		source.setPixel(0, 1, 0xff000000);
+		final result = source.accelerate().invert().grayscale(true).invert().commit();
+		Assert.isTrue(result.backend().deviceStorage != null);
+		Assert.equals(0xff404040, result.getPixel(0, 0));
+		Assert.equals(0xff000000, result.getPixel(0, 1));
+		Assert.equals(0x80204060, source.getPixel(0, 0));
 	}
 
 	@:visionTestId("vision.ds.Screen.setBounds#browser")
@@ -360,6 +367,12 @@ class ScreenTest extends utest.Test {
 		Assert.equals(0xFF00CC88, screen.capture().getPixel(4, 6));
 		final native:vision.native.windows.WindowsScreenBackend = cast screen.backend;
 		Assert.isTrue(native.present(), "Windows could not present the resized frame");
+		Assert.isTrue(screen.minimize());
+		Assert.isTrue(screen.maximize());
+		Assert.isTrue(screen.fullscreen());
+		Assert.isTrue(screen.show());
+		Assert.isTrue(screen.processEvents());
+		Assert.equals(0xFF00CC88, screen.capture().getPixel(4, 6));
 		screen.dispose();
 	}
 
@@ -377,14 +390,14 @@ class ScreenTest extends utest.Test {
 		Assert.equals(0, firstDraws);
 
 		var frames = 0;
-		while (frames < 2 && screen.processEvents() && screen.poll().result == true) {
+		while (frames < 2 && screen.processEvents() && screen.poll()) {
 			image.setPixel(1, 1, 0xFF00CC88);
 			if (frames == 0) screen.drawInverted(image, 4, 6);
 			else screen.draw(image, 4, 6);
 			frames++;
 		}
 		screen.dispose();
-		Assert.isFalse(frames != 2 || firstDraws != 1 || screen.poll().result == true, "Screen lifecycle did not match the caller's loop");
+		Assert.isFalse(frames != 2 || firstDraws != 1 || screen.poll(), "Screen lifecycle did not match the caller's loop");
 	}
 
 	@:visionTestId("vision.ds.Screen.poll#desktopFrameWait")
@@ -393,16 +406,16 @@ class ScreenTest extends utest.Test {
 	function test_poll__desktopFrameWait():Void {
 		final screen = new Screen(12, 18, 64, 48, {visible: false, frameRate: 20});
 		screen.draw(new Image(8, 8, 0xFF102030));
-		Assert.isTrue(screen.poll().result == true);
+		Assert.isTrue(screen.poll());
 		Assert.equals(0.0, screen.deltaTime);
 		final started = Timer.stamp();
 		Sys.sleep(0.020);
-		Assert.isTrue(screen.poll().result == true);
+		Assert.isTrue(screen.poll());
 		final elapsed = Timer.stamp() - started;
 		Assert.isFalse(screen.deltaTime < 0.045
 			|| Math.abs(screen.deltaTime - elapsed) > 0.015, "Frame rate or elapsed seconds did not match the frame clock");
 		screen.dispose();
-		Assert.isFalse(screen.poll().result == true || screen.processEvents(), "Disposed screen reported ready");
+		Assert.isFalse(screen.poll() || screen.processEvents(), "Disposed screen reported ready");
 	}
 	#elseif (cpp && !cppia && VISION_SDL_PREFIX && vision_screen_tests)
 	@:visionTestId("vision.ds.Screen.draw#sdlWindow")
@@ -425,7 +438,9 @@ class ScreenTest extends utest.Test {
 		Assert.isTrue(vision.native.unix.SdlScreen.accelerated(window));
 		Assert.isTrue(screen.hasDisplay);
 		Assert.isTrue(vision.native.unix.SdlScreen.isShown(window));
-		Assert.isTrue(screen.processEvents());
+		Assert.isTrue(screen.poll());
+		Assert.isTrue(screen.poll());
+		Assert.isTrue(screen.deltaTime >= 0.015);
 		screen.clear(0xff112233);
 		screen.draw(new Image(4, 4, 0xffabcdef), 3, 2);
 		screen.drawInverted(new Image(1, 1, 0xff0055bb), 8, 9);

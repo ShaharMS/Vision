@@ -18,7 +18,7 @@ import vision.native.unix.SdlScreenBackend;
 	Unix desktop packages contain their own bindings. Windows selects its
 	hxcpp or HashLink binding inside the Windows package.
 **/
-@:forward(setBounds, clear, draw, drawInverted, capture, attach, detach, processEvents, waitForFrame, dispose, hasWindow)
+@:forward(setBounds, clear, draw, drawInverted, capture, setWindowMode, processEvents, dispose, hasWindow)
 abstract ScreenBackend(ScreenDriver) {
 	public function new(x:Int, y:Int, width:Int, height:Int, options:ScreenOptions) {
 		if (options.offscreen) {
@@ -56,10 +56,18 @@ interface ScreenDriver {
 	function draw(image:Image, x:Int, y:Int):Void;
 	function drawInverted(image:Image, x:Int, y:Int):Void;
 	function capture():Image;
-	function attach(image:Image):Bool;
-	function detach(image:Image):Void;
+	function setWindowMode(mode:ScreenWindowMode):Bool;
 	function processEvents():Bool;
-	function waitForFrame(remaining:()->Float, complete:()->Void):Void;
 	function dispose():Void;
 	function hasWindow():Bool;
+}
+
+
+/** Presentation states shared by native windows and browser canvases. **/
+@:noCompletion
+enum abstract ScreenWindowMode(Int) to Int {
+	var Show = 0;
+	var Minimize = 1;
+	var Maximize = 2;
+	var Fullscreen = 3;
 }

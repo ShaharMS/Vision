@@ -25,6 +25,18 @@ extern class Win32 {
 	@:native("ShowWindow")
 	static function showWindow(window:Star<WinWindow>, command:Int):Int;
 
+	@:native("SetWindowLongW")
+	static function setWindowLong(window:Star<WinWindow>, index:Int, value:Int):Int;
+
+	@:native("MonitorFromWindow")
+	static function monitorFromWindow(window:Star<WinWindow>, flags:Int):Star<WinMonitor>;
+
+	@:native("GetMonitorInfoW")
+	static function getMonitorInfo(monitor:Star<WinMonitor>, info:Star<WinMonitorInfo>):Int;
+
+	@:native("GetClientRect")
+	static function getClientRect(window:Star<WinWindow>, bounds:Star<WinRect>):Int;
+
 	@:native("DestroyWindow")
 	static function destroyWindow(window:Star<WinWindow>):Int;
 
@@ -66,6 +78,19 @@ extern class WinInstance {}
 @:include("windows.h")
 @:native("HDC__")
 extern class WinDC {}
+
+@:include("windows.h")
+@:native("HMONITOR__")
+extern class WinMonitor {}
+
+@:include("windows.h")
+@:native("MONITORINFO")
+@:structAccess
+extern class WinMonitorInfo {
+	@:native("MONITORINFO") static function make():WinMonitorInfo;
+	var cbSize:Int;
+	var rcMonitor:WinRect;
+}
 
 @:include("windows.h")
 @:native("RECT")

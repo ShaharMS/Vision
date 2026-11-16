@@ -30,6 +30,19 @@ function overlayColor():Color {
 return Color.fromRGBA(255, 255, 255, 128);
 }
 
+@:visionTestId("vision.ds.Image.accelerate#blocking")
+function test_accelerate__blocking() {
+	final source = new Image(2, 2, 0xff000000);
+	final batch = source.accelerate().setPixel(1, 0, 0xff123456).invert();
+	Assert.equals(0xff000000, source.getPixel(1, 0));
+	final result = batch.commit();
+	Assert.equals(0xffedcba9, result.getPixel(1, 0));
+	Assert.equals(0xff000000, source.getPixel(1, 0));
+	ExceptionAssertions.throwsType(() -> batch.commit(), vision.exceptions.VisionError);
+	source.accelerate().clear(0xffabcdef).commit(InPlace);
+	Assert.equals(0xffabcdef, source.getPixel(1, 0));
+}
+
 @:visionTestId("vision.ds.Image.underlying#default")
 @:visionMaturity("semantic")
 @:visionLifecycle("active")

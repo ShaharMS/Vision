@@ -1,12 +1,14 @@
 package vision.native.browser;
 
 #if js
+import js.Browser;
 import js.html.webgl.Framebuffer;
 import js.html.webgl.GL;
 import js.html.webgl.Texture;
 import js.html.webgl.WebGL2RenderingContext;
 import js.lib.Uint8Array;
 import vision.ds.ByteArray;
+import vision.ds.Image;
 import vision.exceptions.WebGlError;
 import vision.native.ImageBackend;
 import vision.native.ImageBackend.DeviceImageStorage;
@@ -14,7 +16,32 @@ import vision.native.ImageBackend.ImageOperation;
 
 /** Device storage for one Image. Its textures belong to the creating WebGL renderer. **/
 @:noCompletion
-class WebGLImage implements DeviceImageStorage {
+class WebGLImageBackend implements DeviceImageStorage {
+	static var computeRenderer:Null<WebGlRenderer>;
+
+	/** Creates image-owned storage when a browser WebGL context is available. **/
+	public static function prepare(image:Image):Bool {
+		final backend = image.backend();
+		if (backend.deviceStorage != null) return backend.prepareDeviceStorage();
+		if (js.Syntax.code("typeof document === 'undefined'")) return false;
+		if (computeRenderer == null) {
+			final context = Browser.document.createCanvasElement().getContextWebGL2();
+			if (context == null) return false;
+			try {
+				computeRenderer = new WebGlRenderer(context);
+			} catch (_:Dynamic) {
+				return false;
+			}
+		}
+		final deviceImage = computeRenderer.createImageStorage(image.width, image.height);
+		if (deviceImage == null) return false;
+		if (!deviceImage.isAvailable() || !backend.bindDeviceStorage(deviceImage)) {
+			deviceImage.dispose();
+			return false;
+		}
+		return backend.prepareDeviceStorage();
+	}
+
 	public final owner:WebGlRenderer;
 	public var texture(default, null):Texture;
 	public var onDispose:Void->Void;

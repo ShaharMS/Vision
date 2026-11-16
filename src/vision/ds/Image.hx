@@ -66,12 +66,19 @@ abstract Image(ImageBackend) {
 	}
 	#end
 
-	/** Whether this source image has available device storage from Screen.attach(). **/
+	/** Whether this source image has available device storage owned by its native image backend. **/
 	public var isGpuBacked(get, never):Bool;
 
 	inline function get_isGpuBacked():Bool {
 		return this.isGpuBacked;
 	}
+
+	/**
+		Begins a batch of operations on this image. Calling `commit()` blocks
+		until the selected implementation finishes the batch. See the concrete
+		acceleration class for each operation's execution and fallback behavior.
+	**/
+	public inline function accelerate():ImageAcceleration return new ImageAcceleration(cast this);
 
 	@:allow(vision.native)
 	inline function backend():ImageBackend return this;

@@ -11,10 +11,12 @@ package vision.native.windows;
 	import vision.native.windows.Win32.WinBitmapHeader;
 	import vision.native.windows.Win32.WinBitmapInfo;
 	import vision.native.windows.Win32.WinMessage;
+	import vision.native.windows.Win32.WinMonitorInfo;
 	import vision.native.windows.Win32.WinRect;
 	import vision.native.windows.Win32.WinWindow;
 	#end
 import vision.ds.Color;
+import vision.native.ScreenBackend.ScreenWindowMode;
 import vision.native.portable.CpuScreenBackend;
 import vision.ds.Image;
 import vision.ds.PixelFormat;
@@ -27,7 +29,7 @@ class WindowsScreenBackend extends CpuScreenBackend {
 	static inline var WINDOW_OPEN = 1;
 	static inline var WINDOW_REPAINT = 2;
 	#else
-	static inline var WINDOW_STYLE = 0x00CA0000;
+	static inline var WINDOW_STYLE = 0x00CF0000;
 	static inline var SHOW_WINDOW = 5;
 	static inline var KEEP_Z_ORDER = 0x0004;
 	static inline var KEEP_FOCUS = 0x0010;
@@ -36,10 +38,15 @@ class WindowsScreenBackend extends CpuScreenBackend {
 	static inline var COPY_SOURCE = 0x00CC0020;
 	#end
 
+	var normalX:Int;
+	var normalY:Int;
+	var fullscreenWindow = false;
 	var window:#if hl HashLinkWindow #else Star<WinWindow> #end;
 
 	public function new(width:Int, height:Int, visible:Bool, x:Int, y:Int) {
 		super(width, height);
+		normalX = x;
+		normalY = y;
 		#if hl
 		window = HashLinkWindows.open(x, y, width, height, visible);
 		#else
@@ -53,6 +60,40 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		#end
 		if (window == null) throw new ScreenError("Windows could not open a drawing window");
 		present();
+	}
+
+	override public function setWindowMode(mode:ScreenWindowMode):Bool {
+		if (window == null) return false;
+		#if hl
+		if (!HashLinkWindows.setWindowMode(window, mode, fullscreenWindow, normalX, normalY, frame.width, frame.height))
+			return false;
+		#else
+		if (Win32.isWindow(window) == 0) return false;
+		if (mode == Fullscreen) {
+			var info = WinMonitorInfo.make();
+			info.cbSize = Native.sizeof(WinMonitorInfo);
+			if (Win32.getMonitorInfo(Win32.monitorFromWindow(window, 2), Native.addressOf(info)) == 0) return false;
+			Win32.showWindow(window, 9);
+			Win32.setWindowLong(window, -16, 0x90000000);
+			final bounds = info.rcMonitor;
+			if (Win32.setWindowPos(window, null, bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, 0x64) == 0)
+				return false;
+		} else {
+			if (fullscreenWindow) {
+				Win32.setWindowLong(window, -16, WINDOW_STYLE | 0x10000000);
+				var bounds = WinRect.make();
+				bounds.right = frame.width;
+				bounds.bottom = frame.height;
+				if (Win32.adjustWindowRect(Native.addressOf(bounds), WINDOW_STYLE, false) == 0
+					|| Win32.setWindowPos(window, null, normalX, normalY, bounds.right - bounds.left, bounds.bottom - bounds.top, 0x24) == 0)
+					return false;
+			}
+			Win32.showWindow(window, mode == Maximize ? 3 : mode == Minimize ? 6 : 9);
+		}
+		#end
+		fullscreenWindow = mode == Fullscreen;
+		if (mode != Minimize) present();
+		return true;
 	}
 
 	override public function processEvents():Bool {
@@ -84,6 +125,8 @@ class WindowsScreenBackend extends CpuScreenBackend {
 			&& Win32.setWindowPos(window, null, x, y, bounds.right - bounds.left, bounds.bottom - bounds.top, KEEP_Z_ORDER | KEEP_FOCUS) != 0;
 		#end
 		if (!moved) throw new ScreenError("Windows could not change the screen bounds");
+		normalX = x;
+		normalY = y;
 		frame = replacement;
 		present();
 	}
@@ -118,7 +161,9 @@ class WindowsScreenBackend extends CpuScreenBackend {
 		info.bmiHeader.biBitCount = 32;
 		final bytes = frame.exportToBytes(PixelFormat.BGRA);
 		final pixels = NativeArray.address(bytes.getData(), 0);
-		final rows = Win32.stretchBits(dc, 0, 0, frame.width, frame.height, 0, 0, frame.width, frame.height, pixels.constRaw, Native.addressOf(info), 0,
+		var client = WinRect.make();
+		Win32.getClientRect(window, Native.addressOf(client));
+		final rows = Win32.stretchBits(dc, 0, 0, client.right, client.bottom, 0, 0, frame.width, frame.height, pixels.constRaw, Native.addressOf(info), 0,
 			COPY_SOURCE);
 		Win32.releaseDC(window, dc);
 		return rows != 0 && rows != -1;

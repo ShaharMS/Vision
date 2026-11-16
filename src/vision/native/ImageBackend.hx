@@ -9,6 +9,7 @@ import vision.exceptions.TextDrawingError;
 import vision.native.portable.CpuImage;
 #if js
 import vision.native.browser.BrowserText;
+import vision.native.browser.WebGLImageBackend;
 #end
 
 /** Common Image API over a CPU buffer with optional platform-specific device storage. **/
@@ -46,8 +47,14 @@ abstract ImageBackend(CpuImage) {
 
 	public static function apply(image:Image, operation:ImageOperation, value:Int = 0):Void {
 		final backend = image.backend();
-		if (operation == ImageOperation.Grayscale || image.hasView() || !backend.transform(operation, value))
-			CpuImage.apply(image, operation, value);
+		if (operation != ImageOperation.Grayscale && !image.hasView()) {
+			#if js
+			if (backend.deviceStorage == null && image.width * 1.0 * image.height >= 65536)
+				WebGLImageBackend.prepare(image);
+			#end
+			if (backend.transform(operation, value)) return;
+		}
+		CpuImage.apply(image, operation, value);
 	}
 
 	public static function drawText(image:Image, x:Int, y:Int, text:String, options:TextOptions):Void {

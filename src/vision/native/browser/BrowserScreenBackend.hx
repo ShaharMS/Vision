@@ -4,6 +4,7 @@ package vision.native.browser;
 import js.Browser;
 import js.Syntax;
 import vision.ds.Color;
+import vision.native.ScreenBackend.ScreenWindowMode;
 import vision.ds.Image;
 import vision.ds.specifics.ScreenOptions;
 import vision.native.ScreenBackend.ScreenDriver;
@@ -12,7 +13,8 @@ import vision.native.ScreenBackend.ScreenDriver;
 @:noCompletion
 class BrowserScreenBackend implements ScreenDriver {
 	final renderer:CanvasRenderer;
-	var animationFrame:Null<Int>;
+	var x:Int;
+	var y:Int;
 
 	public static function isAvailable():Bool {
 		return Syntax.code("typeof document !== 'undefined'") && Browser.document.body != null;
@@ -39,6 +41,8 @@ class BrowserScreenBackend implements ScreenDriver {
 			renderer.clear(Color.BLACK);
 			renderer.draw(contents);
 		}
+		this.x = x;
+		this.y = y;
 		canvas.style.left = x + "px";
 		canvas.style.top = y + "px";
 		canvas.style.width = width + "px";
@@ -48,8 +52,25 @@ class BrowserScreenBackend implements ScreenDriver {
 	public function clear(color:Color):Void renderer.clear(color);
 	public function draw(image:Image, x:Int, y:Int):Void renderer.draw(image, x, y);
 	public function drawInverted(image:Image, x:Int, y:Int):Void renderer.drawInverted(image, x, y);
-	public function attach(image:Image):Bool return renderer.attach(image);
-	public function detach(image:Image):Void renderer.detach(image);
+	public function setWindowMode(mode:ScreenWindowMode):Bool {
+		if (mode == Fullscreen) return false;
+		final canvas = renderer.canvas;
+		canvas.hidden = mode == Minimize;
+		canvas.style.position = mode == Maximize ? "fixed" : "absolute";
+		if (mode == Maximize) {
+			canvas.style.left = canvas.style.top = "0";
+			canvas.style.width = "100vw";
+			canvas.style.height = "100vh";
+		} else {
+			canvas.style.left = x + "px";
+			canvas.style.top = y + "px";
+			canvas.style.width = canvas.width + "px";
+			canvas.style.height = canvas.height + "px";
+		}
+
+		return true;
+	}
+
 	public function processEvents():Bool return true;
 	public function hasWindow():Bool return true;
 
@@ -62,21 +83,9 @@ class BrowserScreenBackend implements ScreenDriver {
 		return Image.fromJsCanvas(copy);
 	}
 
-	public function waitForFrame(remaining:()->Float, complete:()->Void):Void {
-		function nextFrame(_:Float):Void {
-			if (remaining() > 0.001) {
-				animationFrame = Browser.window.requestAnimationFrame(nextFrame);
-			} else {
-				animationFrame = null;
-				complete();
-			}
-		}
-		animationFrame = Browser.window.requestAnimationFrame(nextFrame);
-	}
+
 
 	public function dispose():Void {
-		if (animationFrame != null) Browser.window.cancelAnimationFrame(animationFrame);
-		animationFrame = null;
 		renderer.dispose();
 		renderer.canvas.remove();
 	}

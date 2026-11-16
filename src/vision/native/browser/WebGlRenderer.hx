@@ -114,12 +114,12 @@ class WebGlRenderer {
 		presentTexture(texture, width, height, x, y, canvasWidth, canvasHeight, invert);
 	}
 
-	public function createImageStorage(width:Int, height:Int):WebGLImage {
+	public function createImageStorage(width:Int, height:Int):WebGLImageBackend {
 		if (gl.isContextLost() || width <= 0 || height <= 0 || width > maxSize || height > maxSize) return null;
-		return new WebGLImage(this, gl, width, height);
+		return new WebGLImageBackend(this, gl, width, height);
 	}
 
-	@:allow(vision.native.browser.WebGLImage)
+	@:allow(vision.native.browser.WebGLImageBackend)
 	function createTexture():Texture {
 		final result = gl.createTexture();
 		gl.bindTexture(GL.TEXTURE_2D, result);
@@ -137,7 +137,7 @@ class WebGlRenderer {
 		render(source, invert ? (ImageOperation.Invert : Int) : 0, 0, true);
 	}
 
-	@:allow(vision.native.browser.WebGLImage)
+	@:allow(vision.native.browser.WebGLImageBackend)
 	function transformTexture(source:Texture, width:Int, height:Int, operation:ImageOperation, value:Int):Void {
 		gl.viewport(0, 0, width, height);
 		gl.disable(GL.BLEND);

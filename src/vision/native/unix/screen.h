@@ -59,7 +59,7 @@ static inline VisionSdlWindow *vision_sdl_open(int x, int y, int width, int heig
 	SDL_SetMainReady();
 	if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0) return nullptr;
 	SDL_Window *window = SDL_CreateWindow("Vision", x, y, width, height,
-		visible ? SDL_WINDOW_SHOWN : SDL_WINDOW_HIDDEN);
+		SDL_WINDOW_RESIZABLE | (visible ? SDL_WINDOW_SHOWN : SDL_WINDOW_HIDDEN));
 	SDL_Renderer *renderer = window ? vision_sdl_renderer(window, preferGpu) : nullptr;
 	SDL_Texture *frame = renderer ? vision_sdl_frame(renderer, width, height) : nullptr;
 	if (!frame) {
@@ -83,6 +83,25 @@ static inline void vision_sdl_close(VisionSdlWindow *screen) {
 	SDL_DestroyWindow(screen->window);
 	delete screen;
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+}
+
+static inline bool vision_sdl_set_window_mode(VisionSdlWindow *screen, int mode) {
+	if (screen->closed) return false;
+	if (mode == 3) {
+		SDL_ShowWindow(screen->window);
+		return SDL_SetWindowFullscreen(screen->window, SDL_WINDOW_FULLSCREEN_DESKTOP) == 0;
+	}
+	if (SDL_GetWindowFlags(screen->window) & SDL_WINDOW_FULLSCREEN)
+		if (SDL_SetWindowFullscreen(screen->window, 0) != 0) return false;
+	if (mode == 1) {
+		SDL_MinimizeWindow(screen->window);
+	} else {
+		SDL_ShowWindow(screen->window);
+		if (mode == 2) SDL_MaximizeWindow(screen->window);
+		else SDL_RestoreWindow(screen->window);
+		SDL_RaiseWindow(screen->window);
+	}
+	return true;
 }
 
 static inline int vision_sdl_poll(VisionSdlWindow *screen) {

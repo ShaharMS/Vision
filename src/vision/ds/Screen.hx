@@ -31,6 +31,12 @@ class Screen {
 	/** Runs once, immediately before the first draw with a nonempty image. **/
 	public var onFirstDraw:Null<Void->Void>;
 
+	/** Invoked once after closing the screen and releasing its resources. **/
+	public var onClose:Null<Void->Void>;
+
+	/** Invoked after the logical drawing dimensions change. **/
+	public var onResize:Null<(Int, Int)->Void>;
+
 	/** Target frames per second used by `poll()`. Must be positive. **/
 	public var frameRate(default, set):Int = 60;
 
@@ -45,7 +51,11 @@ class Screen {
 	var drewImage = false;
 	var disposed = false;
 	var lastPoll:Null<Float>;
-	var pendingPoll:Null<ScreenPoll>;
+
+	/** Opens a new screen with a black background. **/
+	public static function open(x:Int, y:Int, width:Int, height:Int, ?options:ScreenOptions):Screen {
+		return new Screen(x, y, width, height, options);
+	}
 
 	/**
 		Opens a screen with a black background.
@@ -82,11 +92,32 @@ class Screen {
 		checkOpen();
 		ScreenBackend.validateSize(width, height);
 		if (x == this.x && y == this.y && width == this.width && height == this.height) return;
+		final resized = width != screenWidth || height != screenHeight;
 		backend.setBounds(x, y, width, height);
 		screenX = x;
 		screenY = y;
 		screenWidth = width;
 		screenHeight = height;
+		if (resized && onResize != null) onResize(width, height);
+	}
+
+	/** Restores and shows the window or browser canvas. Returns false for in-memory screens. **/
+	public function show():Bool return setWindowMode(Show);
+
+	/** Minimizes the window or hides the browser canvas. Returns false for in-memory screens. **/
+	public function minimize():Bool return setWindowMode(Minimize);
+
+	/** Shows and maximizes the window or fits the canvas to the browser viewport. **/
+	public function maximize():Bool return setWindowMode(Maximize);
+
+	/**
+		Enters desktop fullscreen. Returns false for browser canvases and in-memory screens.
+	**/
+	public function fullscreen():Bool return setWindowMode(Fullscreen);
+
+	function setWindowMode(mode:vision.native.ScreenBackend.ScreenWindowMode):Bool {
+		checkOpen();
+		return backend.setWindowMode(mode);
 	}
 
 	/**
@@ -101,7 +132,7 @@ class Screen {
 
 	/**
 		Composites the image's current pixels onto the screen using its alpha
-		channel. Call draw again to show later edits. Attachment is optional.
+		channel. Call draw again to show later edits.
 
 		@param image The image to draw
 		@param x Horizontal offset from the top-left of the drawing area
@@ -134,32 +165,6 @@ class Screen {
 	}
 
 	/**
-		Lets this screen's WebGL renderer keep a device copy of the source
-		image. The renderer uploads the pixels on first use. Supported Vision
-		operations can update that copy, and later draws can reuse it.
-		Call draw separately to composite the image onto the screen.
-
-		@param image The image to attach
-		@return True if the image has device storage on this screen. Canvas 2D,
-			desktop, and offscreen backends return false.
-	**/
-	public function attach(image:Image):Bool {
-		checkOpen();
-		return backend.attach(image);
-	}
-
-	/**
-		Copies any pending device edits back to the image's CPU buffer and
-		releases the device storage owned by this screen. The image remains
-		usable for pixel access and future draws.
-
-		@param image The image to detach
-	**/
-	public function detach(image:Image):Void {
-		if (!disposed) backend.detach(image);
-	}
-
-	/**
 		Processes pending presentation events.
 
 		@return False if the screen has closed
@@ -172,40 +177,37 @@ class Screen {
 	}
 
 	/**
-		Waits until the next frame may start, measured from the last completed wait.
+		Processes window events and blocks until the next frame on system targets.
+		Browser code calls this from its animation loop, since the browser owns frame pacing.
 
-		Callers manage their own drawing loop. Several calls while a wait is
-		pending share the same result. Use `ScreenPoll.then()` on any target.
-
-		@return A frame result that completes with false if the screen closes
+		@return True when the screen is open and ready to draw
 	**/
-	public function poll():ScreenPoll {
-		if (pendingPoll != null) return pendingPoll;
-		final poll = new ScreenPoll();
-		if (disposed) {
-			poll.complete(false);
-			return poll;
+	public function poll():Bool {
+		if (!processEvents()) return false;
+		#if (sys && !js)
+		var delay = remainingTime();
+		while (delay > 0) {
+			Sys.sleep(delay);
+			if (!processEvents()) return false;
+			delay = remainingTime();
 		}
-		pendingPoll = poll;
-		backend.waitForFrame(remainingTime, () -> {
-			final now = Timer.stamp();
-			deltaTime = lastPoll == null ? 0 : Math.max(0, now - lastPoll);
-			lastPoll = now;
-			pendingPoll = null;
-			poll.complete(true);
-		});
-		return poll;
+		#end
+		final now = Timer.stamp();
+		deltaTime = lastPoll == null ? 0 : Math.max(0, now - lastPoll);
+		lastPoll = now;
+		return true;
 	}
 
 	/** Closes the presentation surface and releases its drawing resources. **/
-	public function dispose():Void {
+	public function close():Void {
 		if (disposed) return;
 		disposed = true;
-		final poll = pendingPoll;
-		pendingPoll = null;
 		backend.dispose();
-		if (poll != null) poll.complete(false);
+		if (onClose != null) onClose();
 	}
+
+	/** Closes the screen. Equivalent to close(). **/
+	public function dispose():Void close();
 
 	inline function get_hasDisplay():Bool return !disposed && backend.hasWindow();
 	inline function get_x():Int return screenX;
