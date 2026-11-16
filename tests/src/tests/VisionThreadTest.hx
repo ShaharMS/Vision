@@ -58,7 +58,7 @@ class VisionThreadTest extends utest.Test {
 
 		subject.start();
 		#if target.threaded
-		Assert.isTrue(notified.wait(2), "The completion callback did not run");
+		Assert.isTrue(notified.wait(2.0), "The completion callback did not run");
 		#end
 
 		Assert.isTrue(ran);
@@ -135,7 +135,7 @@ class VisionThreadTest extends utest.Test {
 		subject.onDone = () -> doneCalls++;
 		subject.start();
 		#if target.threaded
-		Assert.isTrue(notified.wait(2), "The failure callback did not run");
+		Assert.isTrue(notified.wait(2.0), "The failure callback did not run");
 		#end
 		Assert.equals(false, subject.jobDone);
 		Assert.notNull(captured);
